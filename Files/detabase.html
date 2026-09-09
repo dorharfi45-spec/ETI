@@ -2596,6 +2596,18 @@
     </div>
     <span style="display:flex;align-items:center;gap:8px;">
       <label class="pl-daystart-label pl-cal-only">Day starts at <input type="time" id="plDayStart"></label>
+      <span id="cloudBox" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <button id="cloudBadge" type="button" class="tool-btn" title="cloud sync across your devices — click to sign in">☁ sign in</button>
+        <span id="cloudSignin" hidden style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <input id="cloudEmail" type="email" autocomplete="username" placeholder="email"
+            style="font-family:inherit;font-size:.82rem;padding:6px 9px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);">
+          <input id="cloudPass" type="password" autocomplete="current-password" placeholder="password"
+            style="font-family:inherit;font-size:.82rem;padding:6px 9px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);">
+          <button id="cloudGo" type="button" class="tool-btn">Sign in</button>
+          <button id="cloudSigninClose" type="button" class="tool-btn" title="cancel">✕</button>
+          <span id="cloudErr" style="font-size:.74rem;color:#c0392b;"></span>
+        </span>
+      </span>
       <span id="syncFileBox" style="display:flex;align-items:center;gap:6px;">
         <button id="plSyncSetup" type="button" class="tool-btn" title="pick one file to keep your data in — then Save/Load use it with one click">🔗 Sync file…</button>
         <button id="plSyncSave" type="button" class="tool-btn" title="save your data into the sync file now" hidden>⤓ Save</button>
@@ -4441,6 +4453,7 @@
   function saveStore() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch (e) {}
     if (typeof syncFileAutoSave === "function") syncFileAutoSave();
+    if (typeof window.cloudNotifyLocalChange === "function") window.cloudNotifyLocalChange();
   }
   function uid(pfx) { return pfx + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); }
 
@@ -8033,6 +8046,188 @@
   }).observe(document.body, { childList: true, subtree: true });
   prettyFractions(document.body);
 })();
+</script>
+
+<!-- =========================================================
+     Cloud sync (Firebase) — shares your data across devices.
+     Sign in once per device; changes then sync automatically.
+     ========================================================= -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }
+  from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD4j2ZKxkAyFY2N8cECXC-NJcTgPS8Oj_Q",
+  authDomain: "database-1136b.firebaseapp.com",
+  projectId: "database-1136b",
+  storageBucket: "database-1136b.firebasestorage.app",
+  messagingSenderId: "694684087738",
+  appId: "1:694684087738:web:995ffa10395c2e4d889983"
+};
+
+const LS_KEY = "detabase.v1";
+const TS_KEY = "detabase.cloudTs";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ref = doc(db, "sync", "main");
+
+let user = null;
+let lastPushedTs = 0;
+let pushTimer = null;
+let applying = false;
+let snapBound = false;
+
+const $ = (id) => document.getElementById(id);
+function setBadge(txt, tone) {
+  const b = $("cloudBadge");
+  if (!b) return;
+  b.textContent = txt;
+  b.style.color = tone === "bad" ? "#c0392b" : tone === "good" ? "#16a34a" : "";
+}
+function localStore() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch (e) { return {}; }
+}
+function localTs() {
+  const n = parseInt(localStorage.getItem(TS_KEY) || "0", 10);
+  return isNaN(n) ? 0 : n;
+}
+function isEmpty(s) {
+  if (!s || typeof s !== "object") return true;
+  const p = s.planner || {};
+  return !((s.subjects && s.subjects.length) || (s.problems && s.problems.length)
+    || Object.keys(s.notes || {}).length || (p.goals && p.goals.length)
+    || (p.sessions && p.sessions.length) || (p.events && p.events.length)
+    || (p.templates && p.templates.length) || (p.dayFormats && p.dayFormats.length));
+}
+function sameStore(a, b) {
+  try { return JSON.stringify(a) === JSON.stringify(b); } catch (e) { return false; }
+}
+
+async function pushLocal() {
+  if (!user) return;
+  const ts = Date.now();
+  try {
+    await setDoc(ref, { store: localStore(), updatedAt: ts, updatedBy: (navigator.platform || "device") });
+    lastPushedTs = ts;
+    try { localStorage.setItem(TS_KEY, String(ts)); } catch (e) {}
+    setBadge("☁ " + shortName() + " · saved", "good");
+  } catch (e) {
+    setBadge("☁ save failed", "bad");
+    if (window.console) console.error("cloud push:", e);
+  }
+}
+function schedulePush() {
+  if (!user) return;
+  if (pushTimer) clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => { pushTimer = null; pushLocal(); }, 2000);
+}
+window.cloudNotifyLocalChange = schedulePush;
+
+function applyRemote(d) {
+  applying = true;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(d.store));
+    localStorage.setItem(TS_KEY, String(d.updatedAt || Date.now()));
+  } catch (e) {}
+  location.reload();
+}
+function shortName() { return user && user.email ? user.email.split("@")[0] : "synced"; }
+
+async function onSignedIn(u) {
+  user = u;
+  setBadge("☁ " + shortName(), "good");
+  hideSignin();
+
+  let remote = null;
+  try { remote = (await getDoc(ref)).data() || null; }
+  catch (e) { if (window.console) console.error("cloud pull:", e); setBadge("☁ offline", "bad"); }
+
+  const local = localStore();
+  if (remote && remote.store) {
+    const remoteNewer = (remote.updatedAt || 0) > localTs();
+    if (!sameStore(remote.store, local)) {
+      if (remoteNewer && (isEmpty(local) ||
+          confirm("This device's data is different from the cloud, and the cloud copy is newer.\n\nLoad the cloud copy onto this device? (what's on this device now will be replaced)"))) {
+        applyRemote(remote); return;
+      }
+      pushLocal(); // this device wins / user kept it
+    } else {
+      try { localStorage.setItem(TS_KEY, String(remote.updatedAt || Date.now())); } catch (e) {}
+    }
+  } else if (!isEmpty(local)) {
+    pushLocal(); // first upload
+  }
+
+  if (!snapBound) {
+    snapBound = true;
+    onSnapshot(ref, (snap) => {
+      if (applying || !snap.exists()) return;
+      const d = snap.data();
+      if (!d || !d.store) return;
+      if ((d.updatedAt || 0) === lastPushedTs) return;      // our own write echoed back
+      if ((d.updatedAt || 0) <= localTs()) return;           // not newer than us
+      if (sameStore(d.store, localStore())) return;
+      setBadge("☁ updating…", "good");
+      applyRemote(d);
+    });
+  }
+}
+
+onAuthStateChanged(auth, (u) => {
+  if (u) onSignedIn(u);
+  else { user = null; setBadge("☁ sign in", ""); }
+});
+
+// ---- sign-in panel ----
+function showSignin() {
+  const p = $("cloudSignin"); if (!p) return;
+  p.hidden = false;
+  if (!$("cloudEmail").value) $("cloudEmail").value = "";
+  $("cloudEmail").focus();
+}
+function hideSignin() { const p = $("cloudSignin"); if (p) p.hidden = true; const e = $("cloudErr"); if (e) e.textContent = ""; }
+
+document.addEventListener("click", (e) => {
+  const t = e.target;
+  if (!t) return;
+  if (t.id === "cloudBadge" && !user) showSignin();
+  if (t.id === "cloudSigninClose") hideSignin();
+});
+document.addEventListener("contextmenu", (e) => {
+  if (e.target && e.target.id === "cloudBadge" && user) {
+    e.preventDefault();
+    if (confirm("Sign out of cloud sync on this device? (your data stays)")) signOut(auth);
+  }
+});
+
+function wireForm() {
+  const go = $("cloudGo");
+  if (!go) return;
+  async function submit() {
+    const em = ($("cloudEmail").value || "").trim();
+    const pw = $("cloudPass").value || "";
+    $("cloudErr").textContent = "";
+    if (!em || !pw) { $("cloudErr").textContent = "Enter email and password."; return; }
+    go.disabled = true;
+    setBadge("☁ signing in…", "");
+    try {
+      await signInWithEmailAndPassword(auth, em, pw);
+      $("cloudPass").value = "";
+    } catch (err) {
+      $("cloudErr").textContent = ((err && err.code) || "").replace("auth/", "").replace(/-/g, " ") || "sign-in failed";
+      setBadge("☁ sign in", "");
+    } finally { go.disabled = false; }
+  }
+  go.addEventListener("click", submit);
+  $("cloudPass").addEventListener("keydown", (ev) => { if (ev.key === "Enter") submit(); });
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wireForm);
+else wireForm();
 </script>
 </body>
 </html>
