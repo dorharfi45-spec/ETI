@@ -8054,7 +8054,8 @@
      ========================================================= -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence,
+         onAuthStateChanged, signInWithEmailAndPassword, signOut }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
@@ -8072,7 +8073,12 @@ const LS_KEY = "detabase.v1";
 const TS_KEY = "detabase.cloudTs";
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Persistence order: try IndexedDB, then localStorage, then session.
+// iOS standalone (home-screen) web apps handle localStorage more reliably,
+// so browserLocalPersistence is kept as a strong fallback.
+const auth = initializeAuth(app, {
+  persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence]
+});
 const db = getFirestore(app);
 const ref = doc(db, "sync", "main");
 
