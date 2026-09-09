@@ -1,0 +1,7 @@
+# Abandoned Obsidian setup — not part of the app, and it contains an API key
+.obsidian/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
