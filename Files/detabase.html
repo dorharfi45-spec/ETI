@@ -2598,7 +2598,7 @@
       <label class="pl-daystart-label pl-cal-only">Day starts at <input type="time" id="plDayStart"></label>
       <span id="cloudBox" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <button id="cloudBadge" type="button" class="tool-btn" title="cloud sync across your devices — click to sign in">☁ sign in</button>
-        <span id="cloudSignin" hidden style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <span id="cloudSignin" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
           <input id="cloudEmail" type="email" autocomplete="username" placeholder="email"
             style="font-family:inherit;font-size:.82rem;padding:6px 9px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);">
           <input id="cloudPass" type="password" autocomplete="current-password" placeholder="password"
@@ -8192,11 +8192,15 @@ onAuthStateChanged(auth, (u) => {
 // ---- sign-in panel ----
 function showSignin() {
   const p = $("cloudSignin"); if (!p) return;
-  p.hidden = false;
-  if (!$("cloudEmail").value) $("cloudEmail").value = "";
+  p.style.display = "flex";
+  const badge = $("cloudBadge"); if (badge) badge.style.display = "none";
   $("cloudEmail").focus();
 }
-function hideSignin() { const p = $("cloudSignin"); if (p) p.hidden = true; const e = $("cloudErr"); if (e) e.textContent = ""; }
+function hideSignin() {
+  const p = $("cloudSignin"); if (p) p.style.display = "none";
+  const badge = $("cloudBadge"); if (badge) badge.style.display = "";
+  const e = $("cloudErr"); if (e) e.textContent = "";
+}
 
 document.addEventListener("click", (e) => {
   const t = e.target;
