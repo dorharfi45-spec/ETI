@@ -140,6 +140,24 @@
   }
   .tool-btn:hover { color: var(--accent); border-color: var(--accent); }
 
+  /* global data bar — cloud sync + backup/restore, visible on every folder */
+  #dataBar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    margin: 0 0 20px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  #dataBar .databar-spacer { flex: 1 1 0; min-width: 0; }
+  #dataBar #cloudBox, #dataBar #syncFileBox { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  #dataBar #cloudEmail, #dataBar #cloudPass {
+    font-family: inherit; font-size: .82rem; padding: 6px 9px; border-radius: 8px;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary);
+    min-width: 0; width: 9.5rem;
+  }
+  #dataBar #cloudErr { font-size: .74rem; color: #c0392b; }
+  @media (max-width: 620px) {
+    #dataBar .databar-spacer { flex-basis: 100%; height: 0; }
+  }
+
   .pp-results-drop {
     position: absolute; left: 0; right: 0; top: calc(100% + 5px); z-index: 200;
     display: flex; flex-direction: column; gap: 5px;
@@ -1171,6 +1189,32 @@
   <h1 id="pageTitle">Math Base — High-School Reference</h1>
   <p class="subtitle" id="pageSubtitle">An interactive companion to the <span class="mono">Math/base</span> notes. Pick a subject folder, then a topic.</p>
 </header>
+
+<div id="dataBar">
+  <span id="cloudBox">
+    <button id="cloudBadge" type="button" class="tool-btn" title="cloud sync across your devices — click to sign in">☁ sign in</button>
+    <span id="cloudSignin" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
+      <input id="cloudEmail" type="email" autocomplete="username" placeholder="email">
+      <input id="cloudPass" type="password" autocomplete="current-password" placeholder="password">
+      <button id="cloudGo" type="button" class="tool-btn">Sign in</button>
+      <button id="cloudSigninClose" type="button" class="tool-btn" title="cancel">✕</button>
+      <span id="cloudErr"></span>
+    </span>
+  </span>
+  <span class="databar-spacer"></span>
+  <span id="syncFileBox">
+    <button id="plSyncSetup" type="button" class="tool-btn" title="pick one file on this computer to keep a copy of your data in">🔗 Sync file…</button>
+    <button id="plSyncSave" type="button" class="tool-btn" title="save your data into the sync file now" hidden>⤓ Save</button>
+    <button id="plSyncLoad" type="button" class="tool-btn" title="load data from the sync file (replaces what's on this device)" hidden>⤒ Load</button>
+    <label id="plSyncAutoWrap" style="display:none;align-items:center;gap:4px;font-size:.78rem;color:var(--text-muted);" title="automatically save into the sync file a moment after every change">
+      <input type="checkbox" id="plSyncAuto"> auto
+    </label>
+    <span id="plSyncStatus" style="font-size:.74rem;color:var(--text-muted);"></span>
+  </span>
+  <button id="plExport" type="button" class="tool-btn" title="download all your data as a file">⤓ Backup</button>
+  <button id="plImport" type="button" class="tool-btn" title="load data from a backup file (replaces everything here)">⤒ Restore</button>
+  <input id="plImportFile" type="file" accept="application/json,.json" hidden>
+</div>
 
 <div class="layout">
 
@@ -2596,30 +2640,6 @@
     </div>
     <span style="display:flex;align-items:center;gap:8px;">
       <label class="pl-daystart-label pl-cal-only">Day starts at <input type="time" id="plDayStart"></label>
-      <span id="cloudBox" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-        <button id="cloudBadge" type="button" class="tool-btn" title="cloud sync across your devices — click to sign in">☁ sign in</button>
-        <span id="cloudSignin" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
-          <input id="cloudEmail" type="email" autocomplete="username" placeholder="email"
-            style="font-family:inherit;font-size:.82rem;padding:6px 9px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);">
-          <input id="cloudPass" type="password" autocomplete="current-password" placeholder="password"
-            style="font-family:inherit;font-size:.82rem;padding:6px 9px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);">
-          <button id="cloudGo" type="button" class="tool-btn">Sign in</button>
-          <button id="cloudSigninClose" type="button" class="tool-btn" title="cancel">✕</button>
-          <span id="cloudErr" style="font-size:.74rem;color:#c0392b;"></span>
-        </span>
-      </span>
-      <span id="syncFileBox" style="display:flex;align-items:center;gap:6px;">
-        <button id="plSyncSetup" type="button" class="tool-btn" title="pick one file to keep your data in — then Save/Load use it with one click">🔗 Sync file…</button>
-        <button id="plSyncSave" type="button" class="tool-btn" title="save your data into the sync file now" hidden>⤓ Save</button>
-        <button id="plSyncLoad" type="button" class="tool-btn" title="load data from the sync file (replaces what's on this device)" hidden>⤒ Load</button>
-        <label id="plSyncAutoWrap" style="display:none;align-items:center;gap:4px;font-size:.78rem;color:var(--text-muted);" title="automatically save into the sync file a moment after every change">
-          <input type="checkbox" id="plSyncAuto"> auto
-        </label>
-        <span id="plSyncStatus" style="font-size:.74rem;color:var(--text-muted);"></span>
-      </span>
-      <button id="plExport" type="button" class="tool-btn" title="download all your data as a file">⤓ Backup</button>
-      <button id="plImport" type="button" class="tool-btn" title="load data from a backup file (replaces everything here)">⤒ Restore</button>
-      <input id="plImportFile" type="file" accept="application/json,.json" hidden>
     </span>
   </div>
 
@@ -7019,8 +7039,8 @@
 
     function reveal(linked) {
       if (!FS_OK) {
-        el("plSyncSetup").hidden = true;
-        setStatus("(this browser can't link a file — use Backup/Restore, or open the hosted version)");
+        var box = document.getElementById("syncFileBox");
+        if (box) box.style.display = "none";
         return;
       }
       el("plSyncSetup").hidden = linked;
