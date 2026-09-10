@@ -285,23 +285,14 @@
   .canvas-empty b { color: var(--text-secondary); }
 
   /* ---- fullscreen writing page (pen FAB → distraction-free canvas) ---- */
-  #inkFab {
-    position: fixed; top: 12px; left: 12px; z-index: 900;
-    width: 42px; height: 42px; border-radius: 13px; display: none;
-    align-items: center; justify-content: center; font-size: 1.2rem;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
-    box-shadow: var(--shadow); cursor: pointer;
-  }
-  body.show-inkfab #inkFab { display: flex; }
-  body.ink-full #inkFab { display: none; }
+  /* the small inline canvas is gone — a page/problem always opens the full-page writing view */
+  .pp-topbar, .pp-toolbar { display: none !important; }
+  body.top-notebook #rail { display: none !important; }
   body.ink-full { overflow: hidden; }
   body.ink-full header.page,
   body.ink-full #dataBar,
   body.ink-full .sidebar,
-  body.ink-full #rail,
-  body.ink-full .pp-topbar,
-  body.ink-full .pp-toolbar,
-  body.ink-full #ppWidgetAdd { display: none !important; }
+  body.ink-full #rail { display: none !important; }
   body.ink-full #problemPane {
     position: fixed; inset: 0; z-index: 800; margin: 0;
     background: var(--surface-1); display: block;
@@ -312,20 +303,91 @@
   }
   #ppInkbar.full {
     display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 850;
-    margin: 0; padding: 7px 10px; height: 54px; box-sizing: border-box; gap: 8px;
+    margin: 0; padding: 7px 10px; height: 54px; box-sizing: border-box; gap: 7px;
     align-items: center; flex-wrap: nowrap; overflow-x: auto;
     background: var(--bg); border-bottom: 1px solid var(--border-strong);
   }
-  #ppInkbar.full .ink-w { flex: 0 0 auto; width: 108px; }
+  #ppInkbar.full .ink-w { flex: 0 0 auto; width: 100px; }
   #ppInkbar.full .ink-tool, #ppInkbar.full .tool-btn { flex: 0 0 auto; }
   #ppInkbar.full .ink-swatches { flex: 0 0 auto; }
   #ppInkbar .ink-spacer { flex: 1 1 8px; min-width: 8px; }
+  #nbLibToggle { flex: 0 0 auto; font-size: 1rem; }
   #inkDone { flex: 0 0 auto; font-weight: 700; }
 
-  /* ---- floating + Shape / + Graph control on the normal canvas ---- */
-  #ppWidgetAdd { position: fixed; left: 16px; bottom: 16px; z-index: 700; display: none; align-items: center; gap: 6px; }
-  body.viewing-problem #ppWidgetAdd { display: flex; }
-  body.ink-full #ppWidgetAdd { display: none !important; }
+  /* ---- floating + Shape / + Graph control (bottom-left of the writing page) ---- */
+  #ppWidgetAdd { position: fixed; left: 16px; bottom: 16px; z-index: 860; display: none; align-items: center; gap: 6px; }
+  body.ink-full #ppWidgetAdd { display: flex; }
+  #ppWidgetAdd .wa-toggle {
+    width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
+    box-shadow: var(--shadow); cursor: pointer; transition: transform .12s;
+  }
+  #ppWidgetAdd.open .wa-toggle { transform: rotate(45deg); }
+  #ppWidgetAdd .wa-menu { display: none; gap: 6px; }
+  #ppWidgetAdd.open .wa-menu { display: flex; }
+  #ppWidgetAdd .wa-menu button {
+    padding: 8px 12px; border-radius: 10px; font-size: .84rem; font-weight: 600;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-secondary);
+    box-shadow: var(--shadow); cursor: pointer; white-space: nowrap;
+  }
+  #ppWidgetAdd .wa-menu button:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---- notebook bank (the main Notebook screen = a library of pages) ---- */
+  .nb-bank-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .nb-bank-head h2 { margin: 0; border: none; padding: 0; }
+  .nb-bank-search { width: 100%; max-width: 420px; box-sizing: border-box; margin-bottom: 16px;
+    padding: 8px 12px; border-radius: 9px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font: inherit; }
+  .nb-bank-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+  .nb-card {
+    border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface-1);
+    overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color .12s, transform .12s;
+  }
+  .nb-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .nb-card.recent { grid-column: 1 / -1; flex-direction: row; align-items: stretch; }
+  .nb-card .nb-thumb {
+    background: var(--surface-2); border-bottom: 1px solid var(--border);
+    aspect-ratio: 16 / 10; display: block; width: 100%;
+  }
+  .nb-card.recent .nb-thumb { width: 300px; max-width: 45%; border-bottom: none; border-right: 1px solid var(--border); aspect-ratio: auto; }
+  .nb-card .nb-meta { padding: 9px 11px; display: flex; align-items: center; gap: 6px; }
+  .nb-card .nb-name { flex: 1; font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nb-card.recent .nb-meta { flex-direction: column; align-items: flex-start; justify-content: center; padding: 16px; flex: 1; }
+  .nb-card.recent .nb-name { font-size: 1.1rem; white-space: normal; }
+  .nb-card .nb-x, .nb-card .nb-ren {
+    border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: .9rem; padding: 2px 4px; border-radius: 5px;
+  }
+  .nb-card .nb-x:hover { color: #dc2626; } .nb-card .nb-ren:hover { color: var(--accent); }
+  .nb-bank-tag { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; }
+
+  /* ---- library panel inside the writing page ---- */
+  #nbLib {
+    position: fixed; top: 54px; left: 0; bottom: 0; width: min(340px, 86vw); z-index: 870;
+    background: var(--bg); border-right: 1px solid var(--border-strong); box-shadow: var(--shadow);
+    display: flex; flex-direction: column; transform: translateX(-102%); transition: transform .18s ease;
+  }
+  #nbLib.open { transform: translateX(0); }
+  .nblib-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 700; }
+  .nblib-head b { flex: 1; }
+  .nblib-head button { border: none; background: transparent; color: var(--text-muted); font-size: 1rem; cursor: pointer; }
+  .nblib-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .nblib-sec { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .nblib-lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+  .nblib-search { width: 100%; box-sizing: border-box; padding: 7px 10px; border-radius: 8px;
+    border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); font: inherit; font-size: .85rem; }
+  .nblib-results { margin-top: 7px; display: flex; flex-direction: column; gap: 3px; max-height: 34vh; overflow-y: auto; }
+  .nblib-results:empty { display: none; }
+  .nblib-hit { display: flex; align-items: center; gap: 6px; padding: 5px 6px; border-radius: 7px; font-size: .82rem; background: var(--surface-1); }
+  .nblib-hit .h-t { flex: 1; min-width: 0; }
+  .nblib-hit .h-t small { display: block; color: var(--text-muted); font-size: .72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nblib-hit button { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--accent); cursor: pointer; font-size: .9rem; line-height: 1; }
+  .nblib-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .nblib-list:empty { display: none; }
+  .nblib-chip { display: flex; align-items: center; gap: 6px; padding: 5px 7px; border-radius: 7px; font-size: .82rem;
+    border: 1px solid var(--border-strong); background: var(--surface-1); }
+  .nblib-chip .c-t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nblib-chip button { flex: 0 0 auto; border: none; background: transparent; cursor: pointer; font-size: .82rem; color: var(--text-muted); padding: 2px 4px; }
+  .nblib-chip .c-clip { color: var(--accent); font-weight: 700; }
+  .nblib-chip .c-x:hover { color: #dc2626; }
   #ppWidgetAdd .wa-toggle {
     width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
     border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
@@ -1401,7 +1463,6 @@
 </style>
 </head>
 <body>
-<button id="inkFab" type="button" title="open the full-page writing canvas" aria-label="writing canvas">✎</button>
 <div class="wrap">
 
 <header class="page">
@@ -2841,6 +2902,15 @@
   </div>
 </div>
 
+<div id="nbBank" hidden>
+  <div class="nb-bank-head">
+    <h2>Notebook</h2>
+    <button id="nbNewPage" type="button" class="tool-btn">＋ New page</button>
+  </div>
+  <input id="nbBankSearch" class="nb-bank-search" placeholder="Filter pages by name…" autocomplete="off">
+  <div id="nbBankGrid" class="nb-bank-grid"></div>
+</div>
+
 <div id="topfolder-planner" hidden>
   <div class="pl-toolbar">
     <div class="pl-nav pl-cal-only">
@@ -2907,15 +2977,14 @@
   </div>
   <div class="pp-toolbar">
     <div class="pp-search-wrap">
-      <input id="ppSearch" class="pp-search" placeholder="Search every card, or pick “what your problem has” below…">
+      <input id="ppSearch" class="pp-search" placeholder="Search…">
       <button id="ppShortBadge" type="button" class="short-badge" hidden></button>
       <div id="ppResults" class="pp-results-drop" hidden></div>
     </div>
-    <button id="ppAddNote" type="button" class="tool-btn">＋ Text note</button>
-    <button id="ppTidy" type="button" class="tool-btn">Tidy</button>
     <span class="muted" id="ppBenchCount"></span>
   </div>
   <div id="ppInkbar" class="ink-toolbar">
+    <button type="button" id="nbLibToggle" class="tool-btn" title="library — clip in subjects, pages &amp; problem methods">📚</button>
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="erase" title="erase strokes">⌫</button>
     <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
@@ -2924,6 +2993,7 @@
     <button type="button" id="ppInkUndo" class="tool-btn" title="undo">↶</button>
     <button type="button" id="ppInkRedo" class="tool-btn" title="redo">↷</button>
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
+    <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
@@ -2933,6 +3003,23 @@
     <div class="wa-menu">
       <button type="button" data-wa="shape">△ Shape</button>
       <button type="button" data-wa="graph">📈 Graph</button>
+    </div>
+  </div>
+  <div id="nbLib" hidden>
+    <div class="nblib-head"><b>Library</b><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-scroll">
+      <section class="nblib-sec">
+        <div class="nblib-lbl">Raw materials</div>
+        <input id="libRawSearch" class="nblib-search" placeholder="Search subjects, cards &amp; pages…" autocomplete="off">
+        <div id="libRawResults" class="nblib-results"></div>
+        <div id="libRawList" class="nblib-list"></div>
+      </section>
+      <section class="nblib-sec">
+        <div class="nblib-lbl">Problem solving</div>
+        <input id="libProbSearch" class="nblib-search" placeholder="Search problem methods…" autocomplete="off">
+        <div id="libProbResults" class="nblib-results"></div>
+        <div id="libProbList" class="nblib-list"></div>
+      </section>
     </div>
   </div>
 </div>
@@ -5145,12 +5232,12 @@
   function applyView() {
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onPage = onProblem && isPage(activeProblem);
+    var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
     var builtin = !onProblem && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
     document.body.classList.toggle("viewing-problem", onProblem);
-    document.body.classList.toggle("show-inkfab", onProblem);
     if (!onProblem && document.body.classList.contains("ink-full") && typeof window.exitInkFull === "function") window.exitInkFull();
     document.body.classList.toggle("top-planner", showingPlanner);
     document.body.classList.toggle("is-planner", activeTop === "planner");
@@ -5172,8 +5259,19 @@
     $("topfolder-eti").classList.toggle("on", builtin);
     $("customPane").hidden = onProblem || !activeSubject;
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || showingPlanner || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
+    if ($("nbBank")) {
+      $("nbBank").hidden = !onNbBank;
+    }
+    if (onNbBank) {
+      renderNbBank();
+      $("pageTitle").textContent = "Notebook";
+      $("pageSubtitle").innerHTML = 'Your pages — tap one to open it full-screen.';
+      history.replaceState(null, "", "#notebook");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
 
     if (onProblem) {
       var pb = curProblem();
@@ -5225,11 +5323,9 @@
   }
   function openNotebook() {
     store.canvases = store.canvases || [];
+    activeTop = "notebook"; activeSubject = null; viewingProblem = false; activeProblem = null;
     renderPageList();
-    var target = (store.ui.lastPage && isPage(store.ui.lastPage)) ? store.ui.lastPage
-      : (store.canvases[0] && store.canvases[0].id);
-    if (target) selectPage(target);
-    else addPage("");
+    applyView();
   }
   function selectSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
@@ -7750,6 +7846,139 @@
     return scored.slice(0, tags.length && !toks.length ? 40 : 18).map(function (x) { return x.e; });
   }
 
+  // ============================================================
+  // NOTEBOOK BANK  —  the main Notebook screen = a library of pages
+  // ============================================================
+  function canvasThumb(id) {
+    var c = loadCanvas(id) || {};
+    var ink = c.ink || [], items = c.items || [];
+    var b = [1e9, 1e9, -1e9, -1e9], any = false;
+    ink.forEach(function (s) { (s.pts || []).forEach(function (q) { any = true; b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); }); });
+    items.forEach(function (it) { any = true; var x = it.x || 0, y = it.y || 0, w = it.w || 200, h = it.h || 140; b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x + w); b[3] = Math.max(b[3], y + h); });
+    if (!any) return '<svg viewBox="0 0 100 62" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><text x="50" y="34" text-anchor="middle" font-size="9" fill="#94a3b8">empty page</text></svg>';
+    var pad = 18, cw = Math.max(1, b[2] - b[0]), ch = Math.max(1, b[3] - b[1]);
+    var vb = (b[0] - pad) + ' ' + (b[1] - pad) + ' ' + (cw + pad * 2) + ' ' + (ch + pad * 2);
+    var g = "";
+    items.forEach(function (it) {
+      g += '<rect x="' + (it.x || 0) + '" y="' + (it.y || 0) + '" width="' + (it.w || 200) + '" height="' + (it.h || 140) + '" rx="6" fill="rgba(37,99,235,.10)" stroke="rgba(37,99,235,.45)" stroke-width="2"/>';
+    });
+    ink.forEach(function (s) {
+      if (!s.pts || s.pts.length < 2) return;
+      var d = "M" + s.pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L");
+      g += '<path d="' + d + '" fill="none" stroke="' + (s.color || "#1e293b") + '" stroke-width="' + ((s.w || 3) * 1.5) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    return '<svg viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">' + g + '</svg>';
+  }
+  function renderNbBank() {
+    var grid = $("nbBankGrid"); if (!grid) return;
+    store.canvases = store.canvases || [];
+    var box = $("nbBankSearch");
+    if (box) box.hidden = !store.canvases.length;
+    var q = ((box || {}).value || "").trim().toLowerCase();
+    var pages = store.canvases.filter(function (p) { return !q || (p.name || "untitled").toLowerCase().indexOf(q) >= 0; });
+    grid.innerHTML = "";
+    if (!store.canvases.length) { grid.innerHTML = '<p class="muted">No pages yet — tap “＋ New page”.</p>'; return; }
+    if (!pages.length) { grid.innerHTML = '<p class="muted">No page matches “' + escapeHtml(q) + '”.</p>'; return; }
+    var recentId = (store.ui.lastPage && isPage(store.ui.lastPage)) ? store.ui.lastPage : null;
+    var ordered = pages.slice().sort(function (a, b) {
+      if (a.id === recentId) return -1; if (b.id === recentId) return 1;
+      return (b.created || 0) - (a.created || 0);
+    });
+    ordered.forEach(function (p, i) {
+      var recent = !q && p.id === recentId && i === 0;
+      var card = document.createElement("div");
+      card.className = "nb-card" + (recent ? " recent" : "");
+      card.innerHTML =
+        '<div class="nb-thumb">' + canvasThumb(p.id) + '</div>' +
+        '<div class="nb-meta">' +
+          (recent ? '<span class="nb-bank-tag">Most recent</span>' : '') +
+          '<span class="nb-name">' + escapeHtml(p.name || "Untitled") + '</span>' +
+          '<button class="nb-ren" title="rename">✎</button>' +
+          '<button class="nb-x" title="delete">✕</button>' +
+        '</div>';
+      card.addEventListener("click", function (e) {
+        if (e.target.closest(".nb-x")) { e.stopPropagation(); delCanvasDoc(p.id); return; }
+        if (e.target.closest(".nb-ren")) {
+          e.stopPropagation();
+          var n = prompt("Rename page:", p.name || "");
+          if (n && n.trim()) { p.name = n.trim(); saveStore(); renderNbBank(); renderPageList(); }
+          return;
+        }
+        selectPage(p.id);
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  // ---- library panel (in the writing page): raw materials + problem solving ----
+  function nbLibList(which) { store.ui[which] = store.ui[which] || []; return store.ui[which]; }
+  function nbLibAdd(which, item) {
+    var l = nbLibList(which);
+    if (l.some(function (x) { return x.id === item.id; })) return;
+    l.push(item); saveStore(); renderNbLibLists();
+  }
+  function nbLibRemove(which, id) {
+    store.ui[which] = nbLibList(which).filter(function (x) { return x.id !== id; });
+    saveStore(); renderNbLibLists();
+  }
+  function nbLibClip(item) {
+    var libEl = $("nbLib"); if (libEl) libEl.classList.remove("open");
+    if (item.t === "card") startClipMode(item.id);
+    else startClipModePage(item.id);   // notebook page or problem method — both are canvas docs
+  }
+  function nbHitRow(title, sub, onAdd) {
+    var d = document.createElement("div");
+    d.className = "nblib-hit";
+    d.innerHTML = '<span class="h-t">' + escapeHtml(title) + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '') + '</span><button title="add to list">＋</button>';
+    d.querySelector("button").addEventListener("click", onAdd);
+    return d;
+  }
+  function renderNbLibRawResults() {
+    var box = $("libRawResults"); if (!box) return;
+    if (!searchIndex.length) { try { buildIndex(); } catch (e) {} }
+    var q = ($("libRawSearch").value || "").trim();
+    box.innerHTML = "";
+    if (!q) return;
+    var lc = q.toLowerCase();
+    runSearch(q, []).filter(function (e) { return e.kind !== "tab"; }).slice(0, 12).forEach(function (e) {
+      box.appendChild(nbHitRow(e.title, (e.folder || "") + (e.tab ? " · " + e.tab : ""), function () {
+        nbLibAdd("rawList", { t: "card", id: e.id, name: e.title });
+      }));
+    });
+    (store.canvases || []).filter(function (p) { return (p.name || "").toLowerCase().indexOf(lc) >= 0; }).slice(0, 6).forEach(function (p) {
+      box.appendChild(nbHitRow(p.name || "Untitled", "notebook page", function () {
+        nbLibAdd("rawList", { t: "page", id: p.id, name: p.name || "Page" });
+      }));
+    });
+  }
+  function renderNbLibProbResults() {
+    var box = $("libProbResults"); if (!box) return;
+    var q = ($("libProbSearch").value || "").trim().toLowerCase();
+    box.innerHTML = "";
+    if (!q) return;
+    (store.problems || []).filter(function (p) { return (p.name || "").toLowerCase().indexOf(q) >= 0; }).slice(0, 14).forEach(function (p) {
+      box.appendChild(nbHitRow(p.name || "Untitled problem", "problem method", function () {
+        nbLibAdd("probList", { t: "prob", id: p.id, name: p.name || "Problem" });
+      }));
+    });
+  }
+  function nbChip(which, item) {
+    var d = document.createElement("div");
+    d.className = "nblib-chip";
+    d.innerHTML = '<span class="c-t">' + escapeHtml(item.name || "item") + '</span>' +
+      '<button class="c-clip" title="clip onto this page">clip ▸</button>' +
+      '<button class="c-x" title="remove from list">✕</button>';
+    d.querySelector(".c-clip").addEventListener("click", function () { nbLibClip(item); });
+    d.querySelector(".c-x").addEventListener("click", function () { nbLibRemove(which, item.id); });
+    return d;
+  }
+  function renderNbLibLists() {
+    var r = $("libRawList"), pr = $("libProbList");
+    if (r) { r.innerHTML = ""; nbLibList("rawList").forEach(function (it) { r.appendChild(nbChip("rawList", it)); }); }
+    if (pr) { pr.innerHTML = ""; nbLibList("probList").forEach(function (it) { pr.appendChild(nbChip("probList", it)); }); }
+  }
+  function renderNbLib() { renderNbLibRawResults(); renderNbLibProbResults(); renderNbLibLists(); }
+
   // ---- rail: problem list (filterable by name) ----
   function renderProblemList() {
     var list = $("problemList");
@@ -7821,6 +8050,7 @@
     renderProblemList();
     applyView();
     history.replaceState(null, "", "#" + id);
+    if (typeof window.enterInkFull === "function") window.enterInkFull();
   }
   function selectPage(id) {
     activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "notebook";
@@ -7829,6 +8059,7 @@
     renderPageList();
     applyView();
     history.replaceState(null, "", "#" + id);
+    if (typeof window.enterInkFull === "function") window.enterInkFull();
   }
   function renderPageList() {
     var list = $("pageList"); if (!list) return;
@@ -8176,7 +8407,7 @@
     if (!p.bench.length && !ink.length) {
       var em = document.createElement("div");
       em.className = "canvas-empty";
-      em.innerHTML = "Empty board.<br>Search above and drag a result here · 📌 a card while browsing · <b>＋ Text note</b> · <b>✍️ Write</b> with the pencil.";
+      em.innerHTML = "Blank page.<br>Write with the pencil · <b>📚 Library</b> to clip in cards, pages &amp; methods · <b>＋</b> for a shape or graph.";
       canvas.appendChild(em);
     }
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
@@ -8571,7 +8802,7 @@
       if (!confirm("Erase all handwriting on this board?")) return;
       inkSnapshot(p); inkSet(p, []);
     });
-    // ---- full-page writing canvas ----
+    // ---- full-page writing canvas (the only canvas view) ----
     function enterInkFull() {
       var p = curProblem(); if (!p) return;
       document.body.classList.add("ink-full");
@@ -8585,17 +8816,39 @@
     function exitInkFull() {
       document.body.classList.remove("ink-full");
       bar.classList.remove("full", "show");
+      var lib = $("nbLib"); if (lib) { lib.classList.remove("open"); lib.hidden = true; }
       inkMode = false;
       inkSel = null; inkLassoPts = null;
       $("ppCanvas").classList.remove("drawing");
-      var p = curProblem(); if (p) renderCanvas();
+      var wasNotebook = activeTop === "notebook";
+      viewingProblem = false; activeProblem = null;
+      if (wasNotebook) openNotebook();
+      else { activeTop = "eti"; applyView(); }
     }
+    window.enterInkFull = enterInkFull;
     window.exitInkFull = exitInkFull;
-    var fab = $("inkFab"); if (fab) fab.addEventListener("click", enterInkFull);
     var done = $("inkDone"); if (done) done.addEventListener("click", exitInkFull);
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && document.body.classList.contains("ink-full")) exitInkFull();
+      if (e.key === "Escape" && document.body.classList.contains("ink-full")) {
+        var lib = $("nbLib");
+        if (lib && lib.classList.contains("open")) { lib.classList.remove("open"); return; }
+        exitInkFull();
+      }
     });
+    // ---- library panel (raw materials + problem solving) ----
+    var lib = $("nbLib");
+    if (lib) {
+      $("nbLibToggle").addEventListener("click", function () {
+        var open = !lib.classList.contains("open");
+        lib.hidden = false;
+        if (open) renderNbLib();
+        requestAnimationFrame(function () { lib.classList.toggle("open", open); });
+      });
+      $("nbLibClose").addEventListener("click", function () { lib.classList.remove("open"); });
+      var rawT, probT;
+      $("libRawSearch").addEventListener("input", function () { clearTimeout(rawT); rawT = setTimeout(renderNbLibRawResults, 160); });
+      $("libProbSearch").addEventListener("input", function () { clearTimeout(probT); probT = setTimeout(renderNbLibProbResults, 160); });
+    }
 
     // ---- floating + Shape / + Graph on the normal canvas ----
     var wa = $("ppWidgetAdd");
@@ -9363,7 +9616,6 @@
     });
   })();
 
-  $("ppAddNote").addEventListener("click", addNoteClip);
 
   $("ppTidy").addEventListener("click", function () {
     var p = curProblem(); if (!p || !p.bench.length) return;
@@ -9380,6 +9632,9 @@
     });
     saveStore(); renderCanvas();
   });
+
+  if ($("nbNewPage")) $("nbNewPage").addEventListener("click", function () { addPage(); });
+  if ($("nbBankSearch")) $("nbBankSearch").addEventListener("input", function () { renderNbBank(); });
 
   $("ppTitle").addEventListener("input", function () { var p = curProblem(); if (p) { p.name = this.value; saveStore(); renderProblemList(); } });
   $("ppSearch").addEventListener("input", function () { toggleDropdown(true); });
@@ -9706,7 +9961,9 @@
   }
   var initial = (location.hash || "").replace("#", "");
   var initFolder = folderForTab(initial);
-  if (isPage(initial)) {
+  if (initial === "notebook") {
+    selectTop("notebook");
+  } else if (isPage(initial)) {
     selectPage(initial);
   } else if (store.problems.some(function (p) { return p.id === initial; })) {
     selectProblem(initial);
