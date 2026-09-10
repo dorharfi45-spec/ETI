@@ -5461,15 +5461,17 @@
     longs.forEach(function (g, i) { pos[g.id] = { x: ltXs[i], y: y, sz: LT }; });
     y += LT / 2 + ROWGAP + 6;
 
+    // rows ordered by prerequisite depth: goals with no required goals on top,
+    // each row below holds goals whose required goals all sit in the rows above
     var tiers = {};
-    shorts.forEach(function (g) { var L = goalReqTotalLevel(g); (tiers[L] = tiers[L] || []).push(g); });
+    shorts.forEach(function (g) { var L = goalDepth(g); (tiers[L] = tiers[L] || []).push(g); });
     var tierKeys = Object.keys(tiers).map(Number).sort(function (a, b) { return a - b; });
     var rowLabels = "";
     tierKeys.forEach(function (L) {
       var gs = tiers[L].slice().sort(function (a, b) { return String(a.title || "").localeCompare(String(b.title || "")); });
       var xs = rowX(gs.length, ST), ry = y + ST / 2;
       gs.forEach(function (g, i) { pos[g.id] = { x: xs[i], y: ry, sz: ST }; });
-      rowLabels += '<div class="gt-tier" style="top:' + (ry - 7) + 'px">' + (L === 0 ? 'no requirement' : '🔒 Lv ' + L) + '</div>';
+      rowLabels += '<div class="gt-tier" style="top:' + (ry - 7) + 'px">' + (L === 0 ? 'start here' : 'stage ' + (L + 1)) + '</div>';
       y = ry + ST / 2 + ROWGAP;
     });
     var totalH = y + 96, totalW = maxRight; // room so hover cards near the bottom aren't clipped
@@ -6006,51 +6008,37 @@
     }
     return Object.keys(set).map(function (k) { return set[k]; });
   }
-  // skill levels implied by finishing g's ENTIRE prerequisite chain (weights add up on the curve)
-  function goalImpliedReq(g) {
-    var perMin = {}, totalMin = 0, seenShort = {};
-    function addShort(sg) {
-      if (!sg || seenShort[sg.id]) return; seenShort[sg.id] = 1;
-      var w = goalWeightMin(sg); if (!w) return;
-      totalMin += w;
-      goalSkills(sg).forEach(function (sk) { perMin[sk.id] = (perMin[sk.id] || 0) + w; });
-    }
-    var chain = goalReqClosure(g);
-    chain.forEach(function (pg) {
-      if (goalMode(pg) === "long") shortGoalsOf(pg.id).forEach(addShort);
-      else addShort(pg);
-    });
-    var per = {};
-    Object.keys(perMin).forEach(function (sid) { per[sid] = levelForXp(perMin[sid]); });
-    return { totalLevel: levelForXp(totalMin), per: per, any: totalMin > 0, chain: chain };
+  // is a goal finished?  manual "mark done", or 100% progress
+  function goalIsComplete(g) {
+    if (!g) return false;
+    if (g.done) return true;
+    return goalProgress(g).pct >= 100;
   }
-  // effective required total level for a goal (auto-derived, or the manual override if higher)
-  function goalReqTotalLevel(g) {
-    var imp = goalImpliedReq(g);
-    return Math.max(g.reqTotalLevel || 0, imp.any ? imp.totalLevel : 0);
+  // how many prerequisite steps sit before g — longest path through reqGoals (0 = a starting goal)
+  function goalDepth(g, seen) {
+    seen = seen || {};
+    if (!g || seen[g.id]) return 0;
+    seen[g.id] = 1;
+    var reqs = (g.reqGoals || []).map(function (id) {
+      return store.planner.goals.filter(function (x) { return x.id === id; })[0];
+    }).filter(function (x) { return x && goalMode(x) !== "skill"; });
+    var d = reqs.length ? 1 + Math.max.apply(null, reqs.map(function (r) { return goalDepth(r, seen); })) : 0;
+    delete seen[g.id];
+    return d;
   }
-  // does the current player meet a goal's prerequisites?
-  // required levels = the higher of (manually typed) and (auto-derived from required goals)
+  // a goal's prerequisites: ONLY its required goals (levels no longer gate goals — they're for skills)
   function goalReqStatus(g) {
-    var out = [];
-    var imp = goalImpliedReq(g);
-    var impTotal = imp.any ? imp.totalLevel : 0;
-    var reqTotal = Math.max(g.reqTotalLevel || 0, impTotal);
-    if (reqTotal > 0) {
-      var tl = totalSkillProgress().level;
-      out.push({ total: true, name: "Total", label: "Total Lv " + reqTotal, need: reqTotal, have: tl, met: tl >= reqTotal, fromGoals: impTotal >= reqTotal && imp.any, color: "var(--accent)" });
-    }
-    var skillReq = {};
-    (g.reqSkills || []).forEach(function (r) { if (r && r.level) skillReq[r.skillId] = r.level; });
-    Object.keys(imp.per).forEach(function (sid) { skillReq[sid] = Math.max(skillReq[sid] || 0, imp.per[sid]); });
-    Object.keys(skillReq).forEach(function (sid) {
-      var need = skillReq[sid]; if (!need) return;
-      var sk = store.planner.goals.filter(function (x) { return x.id === sid; })[0];
-      if (!sk || goalMode(sk) !== "skill") return;
-      var lv = skillLevel(sid);
-      out.push({ name: sk.title, label: escapeHtml(sk.title) + " Lv " + need, need: need, have: lv, met: lv >= need, fromGoals: (imp.per[sid] || 0) >= need, color: sk.color || "var(--accent)" });
+    var reqs = [];
+    (g.reqGoals || []).forEach(function (rid) {
+      var rg = store.planner.goals.filter(function (x) { return x.id === rid; })[0];
+      if (!rg || goalMode(rg) === "skill") return;
+      reqs.push({
+        goal: true, id: rid, name: rg.title, label: escapeHtml(rg.title),
+        met: goalIsComplete(rg), pct: goalProgress(rg).pct,
+        color: rg.color || "var(--accent)"
+      });
     });
-    return { reqs: out, any: out.length > 0, allMet: out.every(function (x) { return x.met; }), implied: imp };
+    return { reqs: reqs, any: reqs.length > 0, allMet: reqs.every(function (x) { return x.met; }) };
   }
   // hover card for a goal orb: skill requirements + level gain on completion
   function orbTipHtml(g) {
@@ -6058,13 +6046,11 @@
     var proj = goalCompletionProjection(g);
     var s = "";
     if (rq.any) {
-      s += '<div class="ot-sec"><b>Requires</b>';
+      s += '<div class="ot-sec"><b>Finish these first</b>';
       rq.reqs.forEach(function (r) {
-        s += '<div class="ot-row ' + (r.met ? 'ok' : 'no') + '"><span>' + escapeHtml(r.name) + ' Lv ' + r.need + (r.fromGoals ? ' <span class="muted">(auto)</span>' : '') + '</span><span>' +
-          (r.met ? '✓ Lv ' + r.have : 'you: Lv ' + r.have) + '</span></div>';
+        s += '<div class="ot-row ' + (r.met ? 'ok' : 'no') + '"><span>' + escapeHtml(r.name) + '</span><span>' +
+          (r.met ? '✓ done' : r.pct + '%') + '</span></div>';
       });
-      var pn = (rq.implied.chain || []).map(function (pg) { return pg.title; });
-      if (pn.length) s += '<div class="ot-imp">auto-set by finishing: ' + escapeHtml(pn.join(", ")) + '</div>';
       s += '</div>';
     }
     if (proj.pending > 0) {
@@ -6242,7 +6228,7 @@
       return;
     }
 
-    var byLvl = function (a, b) { return goalReqTotalLevel(a) - goalReqTotalLevel(b) || String(a.title || "").localeCompare(String(b.title || "")); };
+    var byLvl = function (a, b) { return goalDepth(a) - goalDepth(b) || String(a.title || "").localeCompare(String(b.title || "")); };
 
     // long-term goals to show: current, or with a current short child
     var showLt = {};
@@ -6653,9 +6639,7 @@
           '<p class="muted" style="font-size:.78rem;"><b>Target sessions</b> is a hard limit — the list can never hold more than this, and only this number changes it (it never creates sessions). Add sessions with <b>＋ New session</b> or <b>by type</b>; to fold a scheduled session in, open that session and set its "Counts toward goal". (Events don\'t count toward progress.)</p>';
       }
       if (gm !== "skill") {
-        var _rskills = skillsList();
         var _rst = goalReqStatus(d);
-        var _imp = _rst.implied;
         var _prereqCandidates = store.planner.goals.filter(function (x) { return goalMode(x) !== "skill" && x.id !== plEd.id; });
         // which candidates are pulled in transitively, and by which direct pick
         var _inheritedVia = {};
@@ -6683,32 +6667,7 @@
                   '<span>' + escapeHtml(x.title) + ' <span class="muted" style="font-weight:400;">· ' + goalProgress(x).pct + '%</span></span></label>';
               }).join('') + '</div>'
             : '<p class="muted" style="font-size:.78rem;">No other goals yet.</p>') +
-          (_imp && _imp.any
-            ? '<div class="pl-skill-stat" style="margin-top:8px;">Auto requirement: <b>Total Lv ' + _imp.totalLevel + '</b>' +
-              Object.keys(_imp.per).map(function (sid) {
-                var sk = store.planner.goals.filter(function (x) { return x.id === sid; })[0];
-                return sk ? ' · <b>' + escapeHtml(sk.title) + ' Lv ' + _imp.per[sid] + '</b>' : '';
-              }).join('') +
-              ((_imp.chain || []).length > (d.reqGoals || []).length
-                ? '<div class="muted" style="font-weight:400;font-size:.72rem;margin-top:3px;">includes the whole chain: ' + escapeHtml(_imp.chain.map(function (x) { return x.title; }).join(", ")) + '</div>'
-                : '') +
-              ((_imp.chain || []).some(function (x) { return goalMode(x) === "short" && !store.planner.sessions.some(function (s) { return s.goalId === x.id; }); })
-                ? '<div class="muted" style="font-weight:400;font-size:.72rem;margin-top:3px;">goals with no sessions yet are estimated at ' + (PL_EST_SESSION_MIN / 60) + 'h × target sessions</div>'
-                : '') +
-              '</div>'
-            : '') +
-          '<div class="pl-field" style="margin-top:12px;"><label>Extra: require an even higher total level (0 = just use the auto value)</label><input type="number" id="edReqTotal" min="0" step="1" value="' + (d.reqTotalLevel || 0) + '"> ' +
-          '<span class="muted" style="font-size:.72rem;">you: Lv ' + totalSkillProgress().level + '</span></div>' +
-          (_rskills.length
-            ? '<label style="font-size:.75rem;color:var(--text-muted);text-transform:none;">Extra: require a higher level in a specific skill (0 = none)</label>' +
-              _rskills.map(function (s) {
-                var cur = ((d.reqSkills || []).filter(function (r) { return r.skillId === s.id; })[0] || {}).level || 0;
-                return '<div class="pl-fmt-block-row"><span class="fb-title" style="flex:1;">' + escapeHtml(s.title) +
-                  ' <span class="muted" style="font-weight:400;">(you: Lv ' + skillLevel(s.id) + ')</span></span>' +
-                  '<input type="number" class="req-sk" data-id="' + s.id + '" min="0" step="1" value="' + cur + '"></div>';
-              }).join('')
-            : '') +
-          '<p class="muted" style="font-size:.78rem;">Anything not met here shows the goal <b>greyed-out / locked</b> on the Goals page. You can still open and work on it.</p>' +
+          '<p class="muted" style="font-size:.78rem;">Until every required goal is done, this goal shows <b>greyed-out / locked</b> on the Goals page and sits below them in the chart. You can still open and work on it. (Skill levels no longer lock goals.)</p>' +
           '</div></div>';
       }
     } else if (kind === "format") {
@@ -6815,24 +6774,6 @@
           plGoalReqOpen = !plGoalReqOpen;
           $("goalReqWrap").hidden = !plGoalReqOpen;
           $("goalReqToggle").textContent = plGoalReqOpen ? "▾" : "▸";
-        });
-        $("edReqTotal").addEventListener("change", function () {
-          var v = Math.max(0, parseInt(this.value, 10) || 0);
-          d.reqTotalLevel = v;
-          var g = storedGoal(); if (g) { g.reqTotalLevel = v; saveStore(); renderGoalList(); if (plView === "goals") renderGoalsPage(); }
-          renderPlannerEditor();
-        });
-        Array.prototype.slice.call(box.querySelectorAll(".req-sk")).forEach(function (inp) {
-          inp.addEventListener("change", function () {
-            var sid = this.getAttribute("data-id");
-            var v = Math.max(0, parseInt(this.value, 10) || 0);
-            var g = storedGoal(); if (!g) return;
-            g.reqSkills = (g.reqSkills || []).filter(function (r) { return r.skillId !== sid; });
-            if (v > 0) g.reqSkills.push({ skillId: sid, level: v });
-            d.reqSkills = g.reqSkills.slice();
-            saveStore(); renderGoalList(); if (plView === "goals") renderGoalsPage();
-            renderPlannerEditor();
-          });
         });
         Array.prototype.slice.call(box.querySelectorAll(".reqgoal-cb")).forEach(function (cb) {
           cb.addEventListener("change", function () {
