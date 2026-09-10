@@ -527,24 +527,59 @@
 
   .topfolder { display: none; }
   .topfolder.on { display: block; }
-  /* built-in math subject list + its tab bars only show inside ETI's built-in view */
-  body:not(.top-eti) #folderbar { display: none; }
-  body.is-planner #subjectsLabel, body.is-planner #customSubjectList, body.is-planner #addSubjectRow { display: none; }
   body:not(.showing-builtin) .tabbar[data-folder] { display: none !important; }
 
-  /* ---- group level: folders that live inside ETI ---- */
-  .groupbar button { font-weight: 700; font-size: .9rem; padding: 9px 12px; }
-  .groupbar button.on {
-    background: var(--surface-1); border-color: var(--angle); color: var(--angle);
-    box-shadow: inset 3px 0 0 var(--angle);
+  /* ---- ETI subject tree (groups + nested subjects) ---- */
+  #subjectsLabel { margin-top: 14px; }
+  #etiTree { display: flex; flex-direction: column; gap: 4px; }
+  .tree-group { display: flex; flex-direction: column; }
+  .tree-ghead {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; text-align: left;
+    padding: 9px 12px; border-radius: 10px;
+    font-weight: 800; font-size: .9rem;
+    background: var(--surface-1); border: 1px solid var(--border); color: var(--text-primary);
+    cursor: pointer;
   }
-  #groupsLabel, #subjectsLabel { margin-top: 14px; }
-  #customGroupList:empty { display: none; }
-  body:not(.top-eti) #groupsLabel,
-  body:not(.top-eti) #groupbar,
-  body:not(.top-eti) #customGroupList,
-  body:not(.top-eti) #addGroupRow { display: none; }
-  #groupbar { margin-bottom: 2px; }
+  .tree-ghead:hover { background: var(--surface-2); }
+  .tree-ghead.on { border-color: var(--angle); color: var(--angle); box-shadow: inset 3px 0 0 var(--angle); }
+  .tree-ghead .caret {
+    font-size: .65rem; flex-shrink: 0; color: var(--text-muted);
+    transition: transform .15s ease; transform: rotate(0deg);
+  }
+  .tree-group.open > .tree-ghead .caret { transform: rotate(90deg); }
+  .tree-ghead .ficon { font-size: 1rem; flex-shrink: 0; }
+  .tree-ghead .gname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tree-ghead .gcount { font-size: .75rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0; }
+  .tree-ghead .del-x { opacity: 0; font-weight: 700; padding: 0 4px; border-radius: 5px; flex-shrink: 0; }
+  .tree-ghead:hover .del-x { opacity: .5; }
+  .tree-ghead .del-x:hover { opacity: 1; background: rgba(0,0,0,.15); }
+  .tree-ghead.drop-hot { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); background: var(--surface-2); }
+  .tree-kids {
+    padding: 6px 0 8px 14px; margin-left: 5px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .tree-group:not(.open) > .tree-kids { display: none; }
+  .tree-kids.drop-hot { border-left-color: var(--accent); }
+  .tree-kids .add-btn { padding: 6px 12px; font-size: .8rem; }
+  .tree-empty { font-size: .74rem; color: var(--text-muted); padding: 2px 4px 4px; }
+  @media (max-width: 760px) {
+    .tree-kids { flex-direction: row; flex-wrap: wrap; }
+    .tree-kids button { width: auto; }
+  }
+
+  /* which subject UI shows for which top folder */
+  #folderbar { display: none; }                 /* source holder, never shown directly */
+  body:not(.top-eti) #etiTree,
+  body:not(.top-eti) #addGroupRow,
+  body.top-eti #customSubjectList,
+  body.top-eti #addSubjectRow { display: none; }
+  body:not(.top-eti) #customSubjectList:empty { display: none; }
+  body.is-planner #subjectsLabel,
+  body.is-planner #customSubjectList,
+  body.is-planner #addSubjectRow,
+  body.is-planner #addGroupRow { display: none; }
 
   .empty-note {
     margin-top: 40px; padding: 40px 24px;
@@ -604,9 +639,9 @@
   }
 
   /* ---- drag-to-rearrange ---- */
-  #topbar > button, #folderbar > button, #customSubjectList > button { cursor: grab; }
-  #topbar > button:active, #folderbar > button:active, #customSubjectList > button:active { cursor: grabbing; }
-  #groupbar > button, #customGroupList > button { cursor: pointer; }
+  #topbar > button, #customSubjectList > button, .tree-kids > button[draggable="true"] { cursor: grab; }
+  #topbar > button:active, #customSubjectList > button:active, .tree-kids > button:active { cursor: grabbing; }
+  .tree-ghead[draggable="true"]:active { cursor: grabbing; }
   .subject > summary[draggable="true"] { cursor: grab; }
   .grid2 > .card > h4[draggable="true"] { cursor: grab; }
   .drag-ghost { opacity: .35; }
@@ -1233,15 +1268,10 @@
     </form>
   </div>
 
-  <div class="sidebar-label" id="groupsLabel">Groups</div>
-  <nav class="folderbar groupbar" id="groupbar">
-    <button data-group="base" class="on"><span class="ficon">📁</span>Base</button>
-    <button data-group="calc"><span class="ficon">∑</span>Calculus</button>
-    <button data-group="physics"><span class="ficon">🔬</span>Physics</button>
-    <button data-group="ee"><span class="ficon">⚡</span>EE</button>
-    <button data-group="me"><span class="ficon">⚙️</span>ME</button>
-  </nav>
-  <nav class="folderbar groupbar" id="customGroupList"></nav>
+  <div class="sidebar-label" id="subjectsLabel">Subjects</div>
+
+  <!-- ETI: groups + subjects as one collapsible tree -->
+  <div id="etiTree"></div>
   <div class="add-row" id="addGroupRow">
     <button class="add-btn" data-add="group">+ Group</button>
     <form class="add-form" hidden>
@@ -1250,14 +1280,15 @@
     </form>
   </div>
 
-  <div class="sidebar-label" id="subjectsLabel">Subjects</div>
-  <nav class="folderbar" id="folderbar">
+  <!-- source list for the built-in math subjects; JS moves these buttons into #etiTree -->
+  <nav class="folderbar" id="folderbar" hidden>
     <button data-folder="trig" data-group="base" class="on"><span class="ficon">📐</span>Trig base</button>
     <button data-folder="algebra" data-group="base"><span class="ficon">➗</span>Algebra base</button>
     <button data-folder="geo" data-group="base"><span class="ficon">△</span>Geometry base</button>
     <button data-folder="powlog" data-group="base"><span class="ficon">🔟</span>Powers &amp; Logs</button>
     <button data-folder="precalc" data-group="base"><span class="ficon">∫</span>Precalc</button>
   </nav>
+  <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
   <div class="add-row" id="addSubjectRow">
     <button class="add-btn" data-add="subject">+ Subject</button>
@@ -4501,66 +4532,261 @@
     return BUILTIN_GROUPS[id] ? BUILTIN_GROUPS[id].name
       : ((store.groups.filter(function (g) { return g.id === id; })[0] || {}).name || id);
   }
-  function groupHasBuiltins(id) { return !!document.querySelector('#folderbar button[data-group="' + id + '"]'); }
-  function groupOfBuiltin(folderId) {
-    var b = document.querySelector('#folderbar button[data-folder="' + folderId + '"]');
+  var BUILTIN_GROUP_ORDER = ["base", "calc", "physics", "ee", "me"];
+  function everyGroupId() {
+    return BUILTIN_GROUP_ORDER.concat(store.groups.map(function (g) { return g.id; }));
+  }
+  function allGroupIds() {
+    var all = everyGroupId();
+    var ord = (store.order && store.order.etiGroups) || [];
+    return all.slice().sort(function (a, b) {
+      var ia = ord.indexOf(a), ib = ord.indexOf(b);
+      if (ia < 0) ia = 1000 + all.indexOf(a);
+      if (ib < 0) ib = 1000 + all.indexOf(b);
+      return ia - ib;
+    });
+  }
+  function groupIcon(id) { return BUILTIN_GROUPS[id] ? BUILTIN_GROUPS[id].icon : "📁"; }
+  function isGroupClosed(id) { return !!(store.ui.closedGroups && store.ui.closedGroups[id]); }
+  function setGroupClosed(id, closed) {
+    store.ui.closedGroups = store.ui.closedGroups || {};
+    if (closed) store.ui.closedGroups[id] = 1; else delete store.ui.closedGroups[id];
+    saveStore();
+  }
+  function openGroup(id) { setGroupClosed(id, false); }
+
+  function builtinFolderIds() { return folderButtons.map(function (b) { return b.getAttribute("data-folder"); }); }
+  function effGroupOfBuiltin(folderId) {
+    var o = store.builtinGroup && store.builtinGroup[folderId];
+    if (o && groupExists(o)) return o;
+    var b = folderButtons.filter(function (x) { return x.getAttribute("data-folder") === folderId; })[0];
     return (b && b.getAttribute("data-group")) || "base";
   }
-  function syncGroupButtons() {
-    Array.prototype.slice.call(document.querySelectorAll("#groupbar button, #customGroupList button")).forEach(function (b) {
-      b.classList.toggle("on", b.getAttribute("data-group") === activeGroup);
-    });
-    folderButtons.forEach(function (b) {
-      b.style.display = (b.getAttribute("data-group") || "base") === activeGroup ? "" : "none";
-    });
+  function effGroupOfSubject(s) { return (s.group && groupExists(s.group)) ? s.group : "base"; }
+  function groupOfBuiltin(folderId) { return effGroupOfBuiltin(folderId); }
+  function groupHasBuiltins(id) {
+    return builtinFolderIds().some(function (f) { return effGroupOfBuiltin(f) === id; });
   }
-  function renderGroupbar() {
-    var list = $("customGroupList");
-    list.innerHTML = "";
-    store.groups.forEach(function (g) {
-      var b = document.createElement("button");
-      b.setAttribute("data-group", g.id);
-      b.innerHTML = '<span class="ficon">📁</span>' + escapeHtml(g.name) + '<span class="del-x" title="delete group">✕</span>';
-      b.addEventListener("click", function (e) {
-        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delGroup(g.id); return; }
-        selectGroup(g.id);
+
+  // subject "keys" in a group:  "f:<folderId>" = built-in  |  "s:<id>" = custom
+  function groupSubjectKeys(gid) {
+    var keys = [];
+    builtinFolderIds().forEach(function (f) { if (effGroupOfBuiltin(f) === gid) keys.push("f:" + f); });
+    store.subjects.forEach(function (s) {
+      if (s.folder === "eti" && effGroupOfSubject(s) === gid) keys.push("s:" + s.id);
+    });
+    var saved = (store.order.etiKids && store.order.etiKids[gid]) || [];
+    if (saved.length) {
+      keys = keys.slice().sort(function (a, b) {
+        var ia = saved.indexOf(a), ib = saved.indexOf(b);
+        if (ia < 0) ia = 1000; if (ib < 0) ib = 1000;
+        return ia - ib;
       });
-      list.appendChild(b);
-    });
-    syncGroupButtons();
-  }
-  function selectGroup(id) {
-    activeGroup = id;
-    store.ui.group = id; saveStore();
-    activeTop = "eti"; activeSubject = null; viewingProblem = false;
-    if (groupHasBuiltins(id)) {
-      lastEtiFolder = document.querySelector('#folderbar button[data-group="' + id + '"]').getAttribute("data-folder");
     }
-    syncGroupButtons();
-    renderSubjectList();
+    return keys;
+  }
+
+  function subjectNodeForKey(key) {
+    if (key.slice(0, 2) === "f:") {
+      var fid = key.slice(2);
+      var b = folderButtons.filter(function (x) { return x.getAttribute("data-folder") === fid; })[0];
+      if (!b) return null;
+      b.draggable = true;
+      b.style.display = "";
+      b.dataset.treekey = key;
+      b.classList.toggle("on", activeTop === "eti" && !activeSubject && !viewingProblem && lastEtiFolder === fid);
+      return b;
+    }
+    var sid = key.slice(2);
+    var s = store.subjects.filter(function (x) { return x.id === sid; })[0];
+    if (!s) return null;
+    var btn = document.createElement("button");
+    btn.setAttribute("data-subject", s.id);
+    btn.dataset.treekey = key;
+    btn.draggable = true;
+    btn.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name) + '<span class="del-x" title="delete subject">✕</span>';
+    btn.classList.toggle("on", s.id === activeSubject);
+    btn.addEventListener("click", function (e) {
+      if (e.target.classList.contains("del-x")) { e.stopPropagation(); delSubject(s.id); return; }
+      selectSubject(s.id);
+    });
+    return btn;
+  }
+
+  var treeDrag = null;
+  function clearDropHot() {
+    Array.prototype.slice.call(document.querySelectorAll(".drop-hot")).forEach(function (el) { el.classList.remove("drop-hot"); });
+  }
+  function assignSubjectToGroup(key, gid) {
+    if (!groupExists(gid)) return;
+    if (key.slice(0, 2) === "f:") {
+      store.builtinGroup = store.builtinGroup || {};
+      store.builtinGroup[key.slice(2)] = gid;
+    } else {
+      var s = store.subjects.filter(function (x) { return x.id === key.slice(2); })[0];
+      if (s) s.group = gid;
+    }
+    store.order.etiKids = store.order.etiKids || {};
+    everyGroupId().forEach(function (id) {
+      if (store.order.etiKids[id]) store.order.etiKids[id] = store.order.etiKids[id].filter(function (k) { return k !== key; });
+    });
+    store.order.etiKids[gid] = groupSubjectKeys(gid).filter(function (k) { return k !== key; }).concat([key]);
+    setGroupClosed(gid, false);
+    saveStore();
+    if (!activeSubject && key === "f:" + lastEtiFolder) { activeGroup = gid; store.ui.group = gid; }
+    if (activeSubject && key === "s:" + activeSubject) { activeGroup = gid; store.ui.group = gid; }
+    saveStore();
+    renderEtiTree();
+    applyView();
+  }
+  function reorderGroups(draggedId, beforeId) {
+    var ids = allGroupIds().filter(function (i) { return i !== draggedId; });
+    var at = ids.indexOf(beforeId);
+    if (at < 0) ids.push(draggedId); else ids.splice(at, 0, draggedId);
+    store.order.etiGroups = ids;
+    saveStore();
+    renderEtiTree();
+  }
+
+  function renderEtiTree() {
+    var tree = $("etiTree");
+    if (!tree) return;
+    tree.textContent = "";
+    allGroupIds().forEach(function (gid) {
+      var custom = !BUILTIN_GROUPS[gid];
+      var keys = groupSubjectKeys(gid);
+      var wrap = document.createElement("div");
+      wrap.className = "tree-group" + (isGroupClosed(gid) ? "" : " open");
+      wrap.dataset.group = gid;
+
+      var head = document.createElement("div");
+      head.className = "tree-ghead" + (gid === activeGroup ? " on" : "");
+      head.setAttribute("role", "button");
+      head.tabIndex = 0;
+      head.draggable = true;
+      head.innerHTML = '<span class="caret">▶</span><span class="ficon">' + groupIcon(gid) + '</span>'
+        + '<span class="gname">' + escapeHtml(groupName(gid)) + '</span>'
+        + '<span class="gcount">' + keys.length + '</span>'
+        + (custom ? '<span class="del-x" title="delete group">✕</span>' : '');
+      head.addEventListener("click", function (e) {
+        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delGroup(gid); return; }
+        var closed = !isGroupClosed(gid);
+        setGroupClosed(gid, closed);
+        wrap.classList.toggle("open", !closed);
+      });
+      head.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); head.click(); }
+      });
+      head.addEventListener("dragstart", function (e) {
+        treeDrag = { type: "group", id: gid };
+        try { e.dataTransfer.setData("text/plain", "group:" + gid); } catch (_) {}
+        e.dataTransfer.effectAllowed = "move";
+      });
+      head.addEventListener("dragend", function () { treeDrag = null; clearDropHot(); });
+      wrap.appendChild(head);
+
+      var kids = document.createElement("div");
+      kids.className = "tree-kids folderbar";
+      keys.forEach(function (k) { var n = subjectNodeForKey(k); if (n) kids.appendChild(n); });
+      if (!keys.length) {
+        var em = document.createElement("div");
+        em.className = "tree-empty";
+        em.textContent = "No subjects yet — drag one here";
+        kids.appendChild(em);
+      }
+      var add = document.createElement("button");
+      add.type = "button";
+      add.className = "add-btn";
+      add.textContent = "+ subject";
+      add.addEventListener("click", function () {
+        var n = prompt("New subject in “" + groupName(gid) + "”:");
+        if (n && n.trim()) addSubjectToGroup(gid, n.trim());
+      });
+      kids.appendChild(add);
+
+      [head, kids].forEach(function (zone) {
+        zone.addEventListener("dragover", function (e) {
+          if (!treeDrag) return;
+          if (treeDrag.type === "group" && treeDrag.id === gid) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          zone.classList.add("drop-hot");
+        });
+        zone.addEventListener("dragleave", function () { zone.classList.remove("drop-hot"); });
+        zone.addEventListener("drop", function (e) {
+          e.preventDefault(); e.stopPropagation();
+          zone.classList.remove("drop-hot");
+          if (!treeDrag) return;
+          if (treeDrag.type === "group") { if (treeDrag.id !== gid) reorderGroups(treeDrag.id, gid); }
+          else if (treeDrag.type === "subject") { assignSubjectToGroup(treeDrag.key, gid); }
+          treeDrag = null;
+        });
+      });
+
+      wrap.appendChild(kids);
+      tree.appendChild(wrap);
+    });
+
+    Array.prototype.slice.call(tree.querySelectorAll('.tree-kids > button[data-treekey]')).forEach(function (b) {
+      if (b._treeDnd) return;         // built-in button nodes are reused across renders
+      b._treeDnd = 1;
+      b.addEventListener("dragstart", function (e) {
+        treeDrag = { type: "subject", key: b.dataset.treekey };
+        try { e.dataTransfer.setData("text/plain", b.dataset.treekey); } catch (_) {}
+        e.dataTransfer.effectAllowed = "move";
+        b.classList.add("drag-ghost");
+      });
+      b.addEventListener("dragend", function () { b.classList.remove("drag-ghost"); treeDrag = null; clearDropHot(); });
+    });
+  }
+  // keep old call sites working
+  function renderGroupbar() { renderEtiTree(); }
+  function syncGroupButtons() { if (activeTop === "eti") renderEtiTree(); }
+
+  function selectGroup(id) {
+    if (!groupExists(id)) return;
+    activeGroup = id;
+    store.ui.group = id;
+    setGroupClosed(id, false);
+    activeTop = "eti"; activeSubject = null; viewingProblem = false;
+    saveStore();
+    renderEtiTree();
     applyView();
   }
   function addGroup(name) {
     name = (name || "").trim(); if (!name) return;
     var g = { id: uid("g_"), name: name };
-    store.groups.push(g); saveStore();
-    renderGroupbar(); selectGroup(g.id);
+    store.groups.push(g);
+    setGroupClosed(g.id, false);
+    saveStore();
+    renderEtiTree();
+  }
+  function addSubjectToGroup(gid, name) {
+    var s = { id: uid("s_"), folder: "eti", name: name, group: gid };
+    store.subjects.push(s);
+    setGroupClosed(gid, false);
+    saveStore();
+    renderEtiTree();
+    selectSubject(s.id);
   }
   function delGroup(id) {
-    if (!confirm('Delete group "' + groupName(id) + '" and its subjects?')) return;
+    if (BUILTIN_GROUPS[id]) return;
+    if (!confirm('Delete group "' + groupName(id) + '"?  Its subjects move to Base.')) return;
+    if (store.builtinGroup) Object.keys(store.builtinGroup).forEach(function (f) {
+      if (store.builtinGroup[f] === id) delete store.builtinGroup[f];
+    });
+    store.subjects.forEach(function (s) { if (s.folder === "eti" && s.group === id) s.group = "base"; });
     store.groups = store.groups.filter(function (g) { return g.id !== id; });
-    store.subjects.filter(function (s) { return s.folder === "eti" && s.group === id; }).forEach(function (s) { delete store.notes[s.id]; });
-    store.subjects = store.subjects.filter(function (s) { return !(s.folder === "eti" && s.group === id); });
-    saveStore(); renderGroupbar();
-    if (activeGroup === id) selectGroup("base"); else applyView();
+    if (store.order.etiKids) delete store.order.etiKids[id];
+    if (store.order.etiGroups) store.order.etiGroups = store.order.etiGroups.filter(function (x) { return x !== id; });
+    if (activeGroup === id) activeGroup = "base";
+    saveStore();
+    renderEtiTree();
+    applyView();
   }
 
   function subjectsFor(top) {
-    return store.subjects.filter(function (s) {
-      if (s.folder !== top) return false;
-      if (top !== "eti") return true;
-      return (s.group || "base") === activeGroup;
-    });
+    return store.subjects.filter(function (s) { return s.folder === top; });
   }
 
   // ---- sidebar: custom top-folder buttons ----
@@ -4583,6 +4809,7 @@
   }
   // ---- sidebar: custom subject list for the active top folder ----
   function renderSubjectList() {
+    if (activeTop === "eti") { renderEtiTree(); return; }
     var list = $("customSubjectList");
     list.innerHTML = "";
     subjectsFor(activeTop).forEach(function (s) {
@@ -4673,8 +4900,9 @@
     activeTop = s.folder; activeSubject = id; viewingProblem = false;
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
-      store.ui.group = activeGroup; saveStore();
-      syncGroupButtons();
+      store.ui.group = activeGroup;
+      setGroupClosed(activeGroup, false);
+      saveStore();
     }
     renderSubjectList();
     applyView();
@@ -4714,10 +4942,6 @@
   });
   $("cpDelete").addEventListener("click", function () { if (activeSubject) delSubject(activeSubject); });
 
-  // built-in group buttons (Base, Calculus, Physics, EE, ME)
-  Array.prototype.slice.call(document.querySelectorAll('#groupbar button[data-group]')).forEach(function (b) {
-    b.addEventListener("click", function () { selectGroup(b.getAttribute("data-group")); });
-  });
 
   // built-in top-folder buttons
   Array.prototype.slice.call(document.querySelectorAll('#topbar button[data-top]')).forEach(function (b) {
@@ -4726,7 +4950,14 @@
   });
   // remember which ETI math subject is open
   folderButtons.forEach(function (b) {
-    b.addEventListener("click", function () { lastEtiFolder = b.getAttribute("data-folder"); activeSubject = null; viewingProblem = false; applyView(); });
+    b.addEventListener("click", function () {
+      var fid = b.getAttribute("data-folder");
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false;
+      activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
+      setGroupClosed(activeGroup, false);
+      saveStore();
+      applyView();
+    });
   });
 
   // "+ Folder" / "+ Subject" inline forms  ·  "+ Problem" creates immediately
@@ -8029,6 +8260,7 @@
   } else if (initFolder && document.getElementById("pane-" + initial)) {
     lastEtiFolder = initFolder;
     activeGroup = groupOfBuiltin(initFolder);
+    setGroupClosed(activeGroup, false);
     selectTop("eti");
     selectTab(initial);
   } else if (groupExists(initial)) {
