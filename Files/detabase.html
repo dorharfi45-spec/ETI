@@ -119,6 +119,7 @@
   .raillist button:hover .del-x { opacity: .55; }
 
   /* ---- problem page ---- */
+  #problemPane { position: relative; }
   .pp-topbar { display: flex; align-items: center; gap: 12px; }
   .pp-title {
     flex: 1; font-family: inherit; font-size: 1.4rem; font-weight: 800;
@@ -282,6 +283,74 @@
     color: var(--text-muted); font-size: .92rem; text-align: center; padding: 24px; pointer-events: none;
   }
   .canvas-empty b { color: var(--text-secondary); }
+
+  /* ---- fullscreen writing page (pen FAB → distraction-free canvas) ---- */
+  #inkFab {
+    position: fixed; top: 12px; left: 12px; z-index: 900;
+    width: 42px; height: 42px; border-radius: 13px; display: none;
+    align-items: center; justify-content: center; font-size: 1.2rem;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
+    box-shadow: var(--shadow); cursor: pointer;
+  }
+  body.show-inkfab #inkFab { display: flex; }
+  body.ink-full #inkFab { display: none; }
+  body.ink-full { overflow: hidden; }
+  body.ink-full header.page,
+  body.ink-full #dataBar,
+  body.ink-full .sidebar,
+  body.ink-full #rail,
+  body.ink-full .pp-topbar,
+  body.ink-full .pp-toolbar,
+  body.ink-full #ppWidgetAdd { display: none !important; }
+  body.ink-full #problemPane {
+    position: fixed; inset: 0; z-index: 800; margin: 0;
+    background: var(--surface-1); display: block;
+  }
+  body.ink-full .pp-canvas {
+    position: absolute; inset: 54px 0 0 0; height: auto; min-height: 0;
+    border: none; border-radius: 0;
+  }
+  #ppInkbar.full {
+    display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 850;
+    margin: 0; padding: 7px 10px; height: 54px; box-sizing: border-box; gap: 8px;
+    align-items: center; flex-wrap: nowrap; overflow-x: auto;
+    background: var(--bg); border-bottom: 1px solid var(--border-strong);
+  }
+  #ppInkbar.full .ink-w { flex-shrink: 0; }
+  #ppInkbar .ink-spacer { flex: 1; }
+  #inkDone { flex-shrink: 0; font-weight: 700; }
+
+  /* ---- floating + Shape / + Graph control on the normal canvas ---- */
+  #ppWidgetAdd { position: absolute; left: 16px; bottom: 16px; z-index: 4100; display: none; align-items: center; gap: 6px; }
+  body.top-notebook #ppWidgetAdd, body.viewing-problem #ppWidgetAdd { display: flex; }
+  #ppWidgetAdd .wa-toggle {
+    width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
+    box-shadow: var(--shadow); cursor: pointer; transition: transform .12s;
+  }
+  #ppWidgetAdd.open .wa-toggle { transform: rotate(45deg); }
+  #ppWidgetAdd .wa-menu { display: none; gap: 6px; }
+  #ppWidgetAdd.open .wa-menu { display: flex; }
+  #ppWidgetAdd .wa-menu button {
+    padding: 8px 12px; border-radius: 10px; font-size: .84rem; font-weight: 600;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-secondary);
+    box-shadow: var(--shadow); cursor: pointer; white-space: nowrap;
+  }
+  #ppWidgetAdd .wa-menu button:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---- lasso / crop selection ---- */
+  .pp-canvas.lasso .ink-capture { cursor: crosshair; }
+  .ink-lasso-path { fill: color-mix(in srgb, var(--accent) 12%, transparent); stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .ink-sel-box { fill: color-mix(in srgb, var(--accent) 7%, transparent); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  .ink-sel-toolbar {
+    position: absolute; z-index: 4200; display: flex; gap: 5px; padding: 4px 5px;
+    background: var(--bg); border: 1px solid var(--border-strong); border-radius: 9px; box-shadow: var(--shadow);
+  }
+  .ink-sel-toolbar button {
+    width: 30px; height: 28px; padding: 0; font-size: .95rem; border-radius: 7px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); cursor: pointer;
+  }
+  .ink-sel-toolbar button:hover { color: var(--accent); border-color: var(--accent); }
 
   .clip {
     position: absolute; display: flex; flex-direction: column;
@@ -1329,6 +1398,7 @@
 </style>
 </head>
 <body>
+<button id="inkFab" type="button" title="open the full-page writing canvas" aria-label="writing canvas">✎</button>
 <div class="wrap">
 
 <header class="page">
@@ -2839,22 +2909,29 @@
       <div id="ppResults" class="pp-results-drop" hidden></div>
     </div>
     <button id="ppAddNote" type="button" class="tool-btn">＋ Text note</button>
-    <button id="ppAddShape" type="button" class="tool-btn">＋ Shape</button>
-    <button id="ppAddGraph" type="button" class="tool-btn">＋ Graph</button>
-    <button id="ppWrite" type="button" class="tool-btn" title="write / draw with the Apple Pencil or mouse">✍️ Write</button>
     <button id="ppTidy" type="button" class="tool-btn">Tidy</button>
     <span class="muted" id="ppBenchCount"></span>
   </div>
   <div id="ppInkbar" class="ink-toolbar">
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="erase" title="erase strokes">⌫</button>
+    <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
     <span class="ink-swatches" id="ppInkSwatches"></span>
     <input type="range" id="ppInkW" class="ink-w" min="1" max="16" value="3" title="thickness">
     <button type="button" id="ppInkUndo" class="tool-btn" title="undo">↶</button>
     <button type="button" id="ppInkRedo" class="tool-btn" title="redo">↷</button>
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
+    <span class="ink-spacer"></span>
+    <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div class="canvas-sizer"></div></div>
+  <div id="ppWidgetAdd">
+    <button type="button" class="wa-toggle" title="add a shape or graph">＋</button>
+    <div class="wa-menu">
+      <button type="button" data-wa="shape">△ Shape</button>
+      <button type="button" data-wa="graph">📈 Graph</button>
+    </div>
+  </div>
 </div>
 
 <button id="selClipBtn" type="button" hidden>📌 clip selection</button>
@@ -5069,6 +5146,9 @@
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
+    document.body.classList.toggle("viewing-problem", onProblem);
+    document.body.classList.toggle("show-inkfab", onProblem);
+    if (!onProblem && document.body.classList.contains("ink-full") && typeof window.exitInkFull === "function") window.exitInkFull();
     document.body.classList.toggle("top-planner", showingPlanner);
     document.body.classList.toggle("is-planner", activeTop === "planner");
     document.body.classList.toggle("showing-builtin", builtin);
@@ -8163,6 +8243,107 @@
   var inkMode = false, inkTool = "pen", inkColor = "#1e293b", inkW = 3;
   var inkUndo = {}, inkRedo = {};
   var inkDrawing = false, inkCur = null, inkLive = null;
+  var inkSel = null;        // committed lasso result: { strokes:[ids], clips:[ids], box:{x,y,w,h} }
+  var inkLassoPts = null;   // live lasso polygon (canvas coords) while dragging
+
+  function pointInPoly(x, y, poly) {
+    var inside = false;
+    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      var xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+      if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+    }
+    return inside;
+  }
+  function inkComputeSel(p, poly) {
+    var c = loadCanvas(p.id), ink = c.ink || [];
+    var strokes = [], clips = [];
+    var pb = [1e9, 1e9, -1e9, -1e9];
+    poly.forEach(function (q) { pb[0] = Math.min(pb[0], q[0]); pb[1] = Math.min(pb[1], q[1]); pb[2] = Math.max(pb[2], q[0]); pb[3] = Math.max(pb[3], q[1]); });
+    ink.forEach(function (s) {
+      var pts = s.pts || [], hit = 0;
+      for (var i = 0; i < pts.length; i++) if (pointInPoly(pts[i][0], pts[i][1], poly)) hit++;
+      if (pts.length && hit / pts.length >= 0.4) strokes.push(s.id);
+    });
+    (p.bench || []).forEach(function (cl) {
+      var r = { x: cl.x || 0, y: cl.y || 0, w: cl.w || 300, h: cl.h || 200 };
+      if (r.x > pb[2] || r.x + r.w < pb[0] || r.y > pb[3] || r.y + r.h < pb[1]) return;
+      var cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+      if (pointInPoly(cx, cy, poly) || pointInPoly(r.x, r.y, poly) || pointInPoly(r.x + r.w, r.y, poly) ||
+          pointInPoly(r.x, r.y + r.h, poly) || pointInPoly(r.x + r.w, r.y + r.h, poly)) clips.push(cl.id);
+    });
+    if (!strokes.length && !clips.length) return null;
+    var b = [1e9, 1e9, -1e9, -1e9];
+    ink.forEach(function (s) { if (strokes.indexOf(s.id) < 0) return; (s.pts || []).forEach(function (q) { b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); }); });
+    (p.bench || []).forEach(function (cl) { if (clips.indexOf(cl.id) < 0) return; var r = { x: cl.x || 0, y: cl.y || 0, w: cl.w || 300, h: cl.h || 200 }; b[0] = Math.min(b[0], r.x); b[1] = Math.min(b[1], r.y); b[2] = Math.max(b[2], r.x + r.w); b[3] = Math.max(b[3], r.y + r.h); });
+    return { strokes: strokes, clips: clips, box: { x: b[0], y: b[1], w: b[2] - b[0], h: b[3] - b[1] } };
+  }
+  function inkSelClear() {
+    inkSel = null; inkLassoPts = null;
+    var t = $("ppCanvas") && $("ppCanvas").querySelector(".ink-sel-toolbar");
+    if (t) t.remove();
+    var p = curProblem(); if (p && $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer")) renderInk(p);
+  }
+  function inkSelMove(p, dx, dy) {
+    if (!inkSel) return;
+    var c = loadCanvas(p.id);
+    (c.ink || []).forEach(function (s) {
+      if (inkSel.strokes.indexOf(s.id) < 0) return;
+      s.pts = (s.pts || []).map(function (q) { return [q[0] + dx, q[1] + dy, q[2]]; });
+    });
+    (p.bench || []).forEach(function (cl) {
+      if (inkSel.clips.indexOf(cl.id) < 0) return;
+      cl.x = Math.round((cl.x || 0) + dx); cl.y = Math.round((cl.y || 0) + dy);
+    });
+    inkSel.box.x += dx; inkSel.box.y += dy;
+  }
+  function inkSelDelete(p) {
+    if (!p || !inkSel) return;
+    inkSnapshot(p);
+    var c = loadCanvas(p.id);
+    c.ink = (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) < 0; });
+    if (inkSel.clips.length) for (var i = p.bench.length - 1; i >= 0; i--) if (inkSel.clips.indexOf(p.bench[i].id) >= 0) p.bench.splice(i, 1);
+    saveCanvas(p.id); saveStore();
+    inkSel = null; inkLassoPts = null;
+    renderCanvas();
+  }
+  function inkSelDuplicate(p) {
+    if (!p || !inkSel) return;
+    inkSnapshot(p);
+    var c = loadCanvas(p.id); c.ink = c.ink || [];
+    var D = 20, ns = [], nc = [];
+    c.ink.slice().forEach(function (s) {
+      if (inkSel.strokes.indexOf(s.id) < 0) return;
+      var d = { id: uid("ik_"), color: s.color, w: s.w, pts: (s.pts || []).map(function (q) { return [q[0] + D, q[1] + D, q[2]]; }) };
+      c.ink.push(d); ns.push(d.id);
+    });
+    p.bench.slice().forEach(function (cl) {
+      if (inkSel.clips.indexOf(cl.id) < 0) return;
+      var d = JSON.parse(JSON.stringify(cl));
+      d.id = uid(cl.kind === "graph" ? "gr_" : cl.kind === "shape" ? "sh_" : "cl_");
+      d.x = (cl.x || 0) + D; d.y = (cl.y || 0) + D; d.z = ++zTop;
+      p.bench.push(d); nc.push(d.id);
+    });
+    saveCanvas(p.id); saveStore();
+    inkSel = { strokes: ns, clips: nc, box: { x: inkSel.box.x + D, y: inkSel.box.y + D, w: inkSel.box.w, h: inkSel.box.h } };
+    renderCanvas();
+  }
+  function inkSelToolbar(p) {
+    var canvas = $("ppCanvas"); if (!canvas) return;
+    var t = canvas.querySelector(".ink-sel-toolbar");
+    if (!inkSel) { if (t) t.remove(); return; }
+    if (!t) {
+      t = document.createElement("div");
+      t.className = "ink-sel-toolbar";
+      t.innerHTML = '<button data-s="dup" title="duplicate">⧉</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
+      canvas.appendChild(t);
+      t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+      t.querySelector('[data-s="dup"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDuplicate(curProblem()); });
+      t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
+      t.querySelector('[data-s="x"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelClear(); });
+    }
+    t.style.left = Math.max(2, inkSel.box.x) + "px";
+    t.style.top = Math.max(2, inkSel.box.y - 36) + "px";
+  }
 
   function inkStrokeWidth(s) {
     var pr = 0, n = 0;
@@ -8186,8 +8367,15 @@
         '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round"/>';
     });
     h += '<path class="ink-live" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    if (inkLassoPts && inkLassoPts.length > 1)
+      h += '<polygon class="ink-lasso-path" points="' + inkLassoPts.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '"/>';
+    if (inkSel) {
+      var b = inkSel.box;
+      h += '<rect class="ink-sel-box" x="' + b.x.toFixed(1) + '" y="' + b.y.toFixed(1) + '" width="' + Math.max(1, b.w).toFixed(1) + '" height="' + Math.max(1, b.h).toFixed(1) + '" rx="4"/>';
+    }
     il.innerHTML = h;
     inkLive = il.querySelector(".ink-live");
+    inkSelToolbar(p);
   }
   function inkSnapshot(p) {
     var k = p.id;
@@ -8229,6 +8417,52 @@
       inkLive.setAttribute("stroke", inkCur.color);
       inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
     }
+    // ---- lasso / crop: select handwriting + widgets, then move / copy / delete ----
+    var lassoDrag = null;
+    function lassoDown(e) {
+      e.preventDefault();
+      try { ic.setPointerCapture(e.pointerId); } catch (_) {}
+      var xy = P(e);
+      if (inkSel && xy[0] >= inkSel.box.x && xy[0] <= inkSel.box.x + inkSel.box.w &&
+          xy[1] >= inkSel.box.y && xy[1] <= inkSel.box.y + inkSel.box.h) {
+        lassoDrag = { mode: "move", last: xy, moved: false };
+      } else {
+        inkSel = null; inkLassoPts = [xy]; lassoDrag = { mode: "draw" };
+        renderInk(p);
+      }
+    }
+    function lassoMove(e) {
+      if (!lassoDrag) return;
+      e.preventDefault();
+      var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
+      var list = (coalesced && coalesced.length) ? coalesced : [e];
+      if (lassoDrag.mode === "draw") {
+        list.forEach(function (ev) { inkLassoPts.push(P(ev)); });
+        renderInk(p);
+      } else {
+        var xy = P(e), dx = xy[0] - lassoDrag.last[0], dy = xy[1] - lassoDrag.last[1];
+        lassoDrag.last = xy; lassoDrag.moved = true;
+        inkSelMove(p, dx, dy);
+        renderInk(p);
+        inkSel.clips.forEach(function (id) {
+          var el = canvas.querySelector('.clip[data-clip="' + id + '"]');
+          var cl = (p.bench || []).filter(function (x) { return x.id === id; })[0];
+          if (el && cl) { el.style.left = cl.x + "px"; el.style.top = cl.y + "px"; }
+        });
+      }
+    }
+    function lassoEnd() {
+      if (!lassoDrag) return;
+      var d = lassoDrag; lassoDrag = null;
+      if (d.mode === "draw") {
+        if (inkLassoPts && inkLassoPts.length >= 3) inkSel = inkComputeSel(p, inkLassoPts);
+        inkLassoPts = null;
+        renderInk(p);
+      } else if (d.moved) {
+        saveCanvas(p.id); saveStore();
+        renderCanvas();
+      }
+    }
     // two-finger pan while in draw mode (one finger / palm is ignored)
     var touchPts = {}, panC = null;
     function centroid() {
@@ -8239,6 +8473,7 @@
     ic.addEventListener("pointerdown", function (e) {
       if (!inkMode) return;
       if (e.pointerType === "touch") { touchPts[e.pointerId] = { x: e.clientX, y: e.clientY }; panC = centroid(); return; }
+      if (inkTool === "lasso") { lassoDown(e); return; }
       if (inkDrawing) return;                 // pen already down — ignore a second pointer
       e.preventDefault();
       try { ic.setPointerCapture(e.pointerId); } catch (_) {}
@@ -8263,6 +8498,7 @@
         panC = c;
         return;
       }
+      if (inkTool === "lasso") { lassoMove(e); return; }
       if (!inkDrawing) return;
       e.preventDefault();
       var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
@@ -8274,6 +8510,7 @@
     });
     function end(e) {
       if (e && e.pointerType === "touch") { delete touchPts[e.pointerId]; panC = centroid(); }
+      if (lassoDrag) { lassoEnd(); return; }
       if (!inkDrawing) return;
       inkDrawing = false;
       if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
@@ -8307,6 +8544,8 @@
       inkTool = t;
       bar.querySelectorAll("[data-inktool]").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-inktool") === t); });
       $("ppCanvas").classList.toggle("erase", t === "erase");
+      $("ppCanvas").classList.toggle("lasso", t === "lasso");
+      if (t !== "lasso") inkSelClear();
     }
     bar.querySelectorAll("[data-inktool]").forEach(function (x) {
       x.addEventListener("click", function () { setInkTool(x.getAttribute("data-inktool")); });
@@ -8329,12 +8568,49 @@
       if (!confirm("Erase all handwriting on this board?")) return;
       inkSnapshot(p); inkSet(p, []);
     });
-    $("ppWrite").addEventListener("click", function () {
-      inkMode = !inkMode;
-      $("ppWrite").classList.toggle("on", inkMode);
-      bar.classList.toggle("show", inkMode);
-      $("ppCanvas").classList.toggle("drawing", inkMode);
+    // ---- full-page writing canvas ----
+    function enterInkFull() {
+      var p = curProblem(); if (!p) return;
+      document.body.classList.add("ink-full");
+      bar.classList.add("full", "show");
+      inkMode = true;
+      $("ppCanvas").classList.add("drawing");
+      setInkTool(inkTool === "lasso" ? "lasso" : "pen");
+      renderCanvas();
+      window.scrollTo(0, 0);
+    }
+    function exitInkFull() {
+      document.body.classList.remove("ink-full");
+      bar.classList.remove("full", "show");
+      inkMode = false;
+      inkSel = null; inkLassoPts = null;
+      $("ppCanvas").classList.remove("drawing");
+      var p = curProblem(); if (p) renderCanvas();
+    }
+    window.exitInkFull = exitInkFull;
+    var fab = $("inkFab"); if (fab) fab.addEventListener("click", enterInkFull);
+    var done = $("inkDone"); if (done) done.addEventListener("click", exitInkFull);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.body.classList.contains("ink-full")) exitInkFull();
     });
+
+    // ---- floating + Shape / + Graph on the normal canvas ----
+    var wa = $("ppWidgetAdd");
+    if (wa) {
+      wa.querySelector(".wa-toggle").addEventListener("click", function (e) {
+        e.stopPropagation(); wa.classList.toggle("open");
+      });
+      wa.querySelectorAll("[data-wa]").forEach(function (b) {
+        b.addEventListener("click", function (e) {
+          e.stopPropagation();
+          wa.classList.remove("open");
+          if (b.getAttribute("data-wa") === "shape") addShape(); else addGraph();
+        });
+      });
+      document.addEventListener("click", function (e) {
+        if (wa.classList.contains("open") && !wa.contains(e.target)) wa.classList.remove("open");
+      });
+    }
   })();
 
   // ============================================================
@@ -9085,8 +9361,6 @@
   })();
 
   $("ppAddNote").addEventListener("click", addNoteClip);
-  $("ppAddShape").addEventListener("click", addShape);
-  $("ppAddGraph").addEventListener("click", addGraph);
 
   $("ppTidy").addEventListener("click", function () {
     var p = curProblem(); if (!p || !p.bench.length) return;
