@@ -303,6 +303,7 @@
   .clip-body > *:first-child { margin-top: 0; }
   .clip-body > *:last-child { margin-bottom: 0; }
   .clip-body input, .clip-body select, .clip-body button { pointer-events: none; }
+  .clip.widget .clip-body input, .clip.widget .clip-body button, .clip.widget .gw-canvas { pointer-events: auto; }
   .clip-body[contenteditable="true"] { outline: none; cursor: text; -webkit-user-select: text; user-select: text; }
   .clip-body[contenteditable="true"] > * { pointer-events: none; }
   .clip-body[contenteditable="true"]:focus { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent); }
@@ -321,10 +322,24 @@
   .clip-body .subject > summary::before, .clip-body .subject > summary .stag, .clip-body .accordion-controls { display: none; }
   .clip-body .subject-body { padding: 0; border: none; }
   .clip-body .gallery { flex-direction: column; }
-  /* ---- shape & graph widgets ---- */
-  .clip.shape .clip-body, .clip.graph .clip-body { padding: 0; overflow: hidden; }
-  .shape-host { width: 100%; height: 100%; display: flex; }
-  .shape-host svg { width: 100%; height: 100%; }
+  /* ---- shape & graph widgets: no frame until hovered/selected ---- */
+  .clip.widget { border: 1px solid transparent; background: transparent; box-shadow: none; overflow: visible; }
+  .clip.widget:hover, .clip.widget.sel { border-color: var(--border-strong); background: var(--bg); box-shadow: var(--shadow); }
+  .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 9px; }
+  .wtools { position: absolute; top: -13px; right: 4px; z-index: 6; display: none; gap: 4px; }
+  .clip.widget:hover .wtools, .clip.widget.sel .wtools { display: flex; }
+  .wtools button { width: 24px; height: 24px; padding: 0; font-size: .82rem; line-height: 1; border-radius: 7px;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-secondary); box-shadow: var(--shadow); }
+  .wtools button:hover { color: var(--accent); border-color: var(--accent); }
+  .wtools .wt-move { cursor: grab; touch-action: none; }
+  .wtools .wt-move:active { cursor: grabbing; }
+  .clip.widget .clip-resize { opacity: 0; transition: opacity .12s; }
+  .clip.widget:hover .clip-resize, .clip.widget.sel .clip-resize { opacity: 1; }
+  .clip.widget .clip-resize::after { border-color: var(--accent); }
+  .shape-host { width: 100%; height: 100%; display: flex; position: relative; }
+  .shape-host svg { width: 100%; height: 100%; touch-action: none; }
+  .sh-vert-c { touch-action: none; }
+  .clip.widget:not(:hover):not(.sel) .sh-vert-c { display: none; }
   .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; }
   .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: var(--bg); display: block; }
   .gw-canvas:active { cursor: grabbing; }
@@ -8032,31 +8047,41 @@
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
     p.bench.forEach(function (clip) {
       var kind = clip.kind || "clip";
-      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph";
+      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isW = isShape || isGraph;
       var el = document.createElement("div");
-      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "");
+      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isW ? " widget" : "");
       el.style.left = (clip.x || 12) + "px";
       el.style.top = (clip.y || 12) + "px";
       el.style.width = (clip.w || 300) + "px";
       el.style.height = (clip.h || 200) + "px";
       el.style.zIndex = clip.z || 1;
       el.dataset.clip = clip.id;
-      var editable = !isNote && !isShape && !isGraph;
+      var editable = !isNote && !isW;
       var body;
       if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
       else if (isShape) body = '<div class="shape-host"></div>';
       else if (isGraph) body = '<div class="graph-host"></div>';
       else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
-      var titleTxt = clip.title || (isNote ? "Note" : isShape ? "Shape" : isGraph ? "Graph" : "Clip");
-      el.innerHTML =
-        '<div class="clip-head">' +
-        '<span class="clip-title">' + escapeHtml(titleTxt) + '</span>' +
-        ((isShape || isGraph) ? '<button class="clip-edit" title="edit">⚙</button>' : '') +
-        (clip.cardId ? '<button class="clip-open" title="go to the source card">↗</button>' : '') +
-        '<button class="clip-del" title="remove from board">✕</button>' +
-        '</div>' +
-        '<div class="clip-body"' + (editable ? ' contenteditable="true" spellcheck="false"' : '') + '>' + body + '</div>' +
-        '<div class="clip-resize" title="resize"></div>';
+      var titleTxt = clip.title || (isNote ? "Note" : "Clip");
+      if (isW) {
+        el.innerHTML =
+          '<div class="wtools">' +
+          '<button class="wt-move" title="drag to move">✥</button>' +
+          '<button class="wt-edit" title="edit">✎</button>' +
+          '<button class="clip-del" title="delete">✕</button>' +
+          '</div>' +
+          '<div class="clip-body">' + body + '</div>' +
+          '<div class="clip-resize" title="resize"></div>';
+      } else {
+        el.innerHTML =
+          '<div class="clip-head">' +
+          '<span class="clip-title">' + escapeHtml(titleTxt) + '</span>' +
+          (clip.cardId ? '<button class="clip-open" title="go to the source card">↗</button>' : '') +
+          '<button class="clip-del" title="remove from board">✕</button>' +
+          '</div>' +
+          '<div class="clip-body"' + (editable ? ' contenteditable="true" spellcheck="false"' : '') + '>' + body + '</div>' +
+          '<div class="clip-resize" title="resize"></div>';
+      }
       if (isNote) el.querySelector(".note-ta").value = clip.text || "";
       if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
       if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
@@ -8275,19 +8300,65 @@
   }
   function addGraph() {
     var p = ensureProblem(), pos = nextClipPos(p);
-    p.bench.push({ id: uid("gr_"), kind: "graph", fns: [{ expr: "x^2", color: "#2563eb" }], view: { cx: 0, cy: 0, ppu: 32 },
+    p.bench.push({ id: uid("gr_"), kind: "graph", fns: [{ expr: "x^2", color: "#2563eb" }], view: { cx: 0, cy: 0, ppu: 32 }, showBar: true,
       x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: ++zTop, added: Date.now() });
     saveStore(); renderProblemList();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
 
+  var SHAPE_BOX = [34, 30, 226, 200];
+  function shapeAngleAt(P, i) {
+    var n = P.length, a = P[(i + n - 1) % n], b = P[i], c = P[(i + 1) % n];
+    var v1 = [a[0] - b[0], a[1] - b[1]], v2 = [c[0] - b[0], c[1] - b[1]];
+    var d = (v1[0] * v2[0] + v1[1] * v2[1]) / ((Math.hypot(v1[0], v1[1]) || 1) * (Math.hypot(v2[0], v2[1]) || 1));
+    return Math.round(Math.acos(Math.max(-1, Math.min(1, d))) * 180 / Math.PI);
+  }
   function renderShapeWidget(host, clip, p) {
     if (!host) return;
     var items = shapeItemsFor(clip.fam);
     var it = items[clip.type] || items[Object.keys(items)[0]];
     var slv = it.slider ? (clip.slider != null ? clip.slider : it.slider.val) : undefined;
     host.innerHTML = '<svg viewBox="0 0 260 240" preserveAspectRatio="xMidYMid meet"></svg>';
-    try { renderShape(host.querySelector("svg"), it.spec(slv)); } catch (e) { host.textContent = "shape error"; }
+    var svg = host.querySelector("svg");
+    var P;   // fitted vertices, viewBox coords
+    if (clip.poly && clip.poly.length >= 3) {
+      P = clip.poly.map(function (q) { return q.slice(); });
+      var body = '<rect x="1" y="1" width="258" height="238" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>';
+      body += '<polygon points="' + P.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") +
+        '" fill="color-mix(in srgb, var(--accent) 12%, transparent)" stroke="var(--accent)" stroke-width="2"/>';
+      P.forEach(function (q, i) {
+        var n = P.length, mid = [(q[0] + P[(i + 1) % n][0] + P[(i + n - 1) % n][0]) / 3, (q[1] + P[(i + 1) % n][1] + P[(i + n - 1) % n][1]) / 3];
+        var lx = q[0] + (mid[0] - q[0]) * 0.32, ly = q[1] + (mid[1] - q[1]) * 0.32 + 3;
+        body += '<text x="' + lx.toFixed(0) + '" y="' + ly.toFixed(0) + '" font-size="10" fill="var(--text-secondary)" text-anchor="middle">' + shapeAngleAt(P, i) + '°</text>';
+      });
+      svg.innerHTML = body;
+    } else {
+      try { renderShape(svg, it.spec(slv)); } catch (e) { host.textContent = "shape error"; return; }
+      P = fitToBox(it.spec(slv).poly, SHAPE_BOX);
+    }
+    // draggable vertex handles (SVG circles, scale with the shape)
+    P.forEach(function (q, i) {
+      var h = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      h.setAttribute("cx", q[0]); h.setAttribute("cy", q[1]); h.setAttribute("r", 6.5);
+      h.setAttribute("class", "sh-vert-c");
+      h.setAttribute("fill", "var(--bg)"); h.setAttribute("stroke", "var(--accent)"); h.setAttribute("stroke-width", "2");
+      h.style.cursor = "move";
+      h.addEventListener("pointerdown", function (ev) {
+        ev.preventDefault(); ev.stopPropagation();
+        try { h.setPointerCapture(ev.pointerId); } catch (_) {}
+        if (!clip.poly) clip.poly = P.map(function (x) { return x.slice(); });
+        function mv(e2) {
+          var m = svg.getScreenCTM(); if (!m) return;
+          var pt = new DOMPoint(e2.clientX, e2.clientY).matrixTransform(m.inverse());
+          clip.poly[i] = [Math.max(6, Math.min(254, pt.x)), Math.max(6, Math.min(234, pt.y))];
+          renderShapeWidget(host, clip, p);
+        }
+        function up() { document.removeEventListener("pointermove", mv, true); document.removeEventListener("pointerup", up, true); saveStore(); }
+        document.addEventListener("pointermove", mv, true);
+        document.addEventListener("pointerup", up, true);
+      });
+      svg.appendChild(h);
+    });
   }
   function openShapePicker(anchor, clip, p) {
     var old = document.querySelector(".shape-pick"); if (old) old.remove();
@@ -8309,17 +8380,19 @@
         Object.keys(SHAPE_FAMS).map(function (f) { return '<button data-fam="' + f + '"' + (f === clip.fam ? ' class="on"' : '') + '>' + SHAPE_FAMS[f].label + '</button>'; }).join("") + '</div>' +
         '<div class="sp-lbl">Type</div><div class="sp-row">' +
         Object.keys(items).map(function (t) { return '<button data-type="' + t + '"' + (t === clip.type ? ' class="on"' : '') + '>' + escapeHtml(items[t].label) + '</button>'; }).join("") + '</div>' +
-        (it.slider ? '<div class="sp-lbl">' + escapeHtml(it.slider.label) + '</div><input type="range" min="' + it.slider.min + '" max="' + it.slider.max + '" value="' + (clip.slider != null ? clip.slider : it.slider.val) + '">' : '') +
-        '<div class="sp-row"><button data-close style="margin-left:auto;">done</button></div>';
+        (it.slider && !clip.poly ? '<div class="sp-lbl">' + escapeHtml(it.slider.label) + '</div><input type="range" min="' + it.slider.min + '" max="' + it.slider.max + '" value="' + (clip.slider != null ? clip.slider : it.slider.val) + '">' : '') +
+        '<div class="sp-row">' + (clip.poly ? '<button data-restore>↺ reset shape</button>' : '<span class="sp-lbl" style="font-weight:400;text-transform:none;">tip: drag the corners</span>') + '<button data-close style="margin-left:auto;">done</button></div>';
       box.querySelectorAll("[data-fam]").forEach(function (b) { b.addEventListener("click", function () {
-        clip.fam = b.getAttribute("data-fam"); clip.type = Object.keys(shapeItemsFor(clip.fam))[0]; clip.slider = null;
+        clip.fam = b.getAttribute("data-fam"); clip.type = Object.keys(shapeItemsFor(clip.fam))[0]; clip.slider = null; clip.poly = null;
         saveStore(); build(); refresh();
       }); });
       box.querySelectorAll("[data-type]").forEach(function (b) { b.addEventListener("click", function () {
-        clip.type = b.getAttribute("data-type"); clip.slider = null; saveStore(); build(); refresh();
+        clip.type = b.getAttribute("data-type"); clip.slider = null; clip.poly = null; saveStore(); build(); refresh();
       }); });
       var sl = box.querySelector("input[type=range]");
       if (sl) sl.addEventListener("input", function () { clip.slider = +this.value; saveStore(); refresh(); });
+      var rs = box.querySelector("[data-restore]");
+      if (rs) rs.addEventListener("click", function () { clip.poly = null; saveStore(); build(); refresh(); });
       box.querySelector("[data-close]").addEventListener("click", function () { box.remove(); });
     }
     build();
@@ -8406,7 +8479,7 @@
     var COLS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
     clip.fns = (clip.fns && clip.fns.length) ? clip.fns : [{ expr: "", color: COLS[0] }];
     clip.view = clip.view || { cx: 0, cy: 0, ppu: 32 };
-    var bar = clip.barHidden ? "" :
+    var bar = !clip.showBar ? "" :
       '<div class="gw-bar">' + clip.fns.map(function (f, idx) {
         return '<div class="gw-row"><span class="gw-dot" style="background:' + (f.color || COLS[idx % COLS.length]) + '"></span>' +
           '<span style="font-size:.78rem;color:var(--text-muted)">y=</span>' +
@@ -8654,15 +8727,23 @@
 
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
+    var isW = clip.kind === "shape" || clip.kind === "graph";
     function front() { clip.z = ++zTop; el.style.zIndex = clip.z; saveStore(); }
-    el.addEventListener("pointerdown", front, true);
+    el.addEventListener("pointerdown", function () {
+      front();
+      if (isW) {
+        Array.prototype.slice.call(document.querySelectorAll(".clip.widget.sel")).forEach(function (x) { if (x !== el) x.classList.remove("sel"); });
+        el.classList.add("sel");
+      }
+    }, true);
     var co = el.querySelector(".clip-open");
     if (co) co.addEventListener("click", function (e) { e.stopPropagation(); if (clip.cardId) jumpToCard(clip.cardId); });
-    var ce = el.querySelector(".clip-edit");
+    var ce = el.querySelector(".wt-edit");
     if (ce) ce.addEventListener("click", function (e) {
       e.stopPropagation();
+      el.classList.add("sel");
       if (clip.kind === "shape") openShapePicker(ce, clip, p);
-      else if (clip.kind === "graph") { clip.barHidden = !clip.barHidden; saveStore(); renderCanvas(); }
+      else if (clip.kind === "graph") { clip.showBar = !clip.showBar; saveStore(); renderCanvas(); }
     });
     el.querySelector(".clip-del").addEventListener("click", function (e) { e.stopPropagation(); clipRemove(clip.id); });
 
@@ -8694,10 +8775,11 @@
       ta.addEventListener("keyup", chk);
     }
 
-    var head = el.querySelector(".clip-head");
-    head.addEventListener("pointerdown", function (e) {
-      if (e.target.closest("button")) return;
-      e.preventDefault();
+    var head = el.querySelector(".clip-head") || el.querySelector(".wt-move");
+    if (head) head.addEventListener("pointerdown", function (e) {
+      if (e.target.closest("button") && !e.target.closest(".wt-move")) return;
+      e.preventDefault(); e.stopPropagation();
+      try { head.setPointerCapture(e.pointerId); } catch (_) {}
       var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0;
       function mv(ev) {
         clip.x = Math.max(0, ox + (ev.clientX - sx));
@@ -8738,6 +8820,11 @@
   var dragCardId = null;
   (function () {
     var canvas = $("ppCanvas");
+    canvas.addEventListener("pointerdown", function (e) {
+      if (!e.target.closest(".clip.widget") && !e.target.closest(".shape-pick")) {
+        Array.prototype.slice.call(document.querySelectorAll(".clip.widget.sel")).forEach(function (x) { x.classList.remove("sel"); });
+      }
+    }, true);
     canvas.addEventListener("dragover", function (e) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; canvas.classList.add("dragover"); });
     canvas.addEventListener("dragleave", function () { canvas.classList.remove("dragover"); });
     canvas.addEventListener("drop", function (e) {
