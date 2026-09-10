@@ -7989,9 +7989,19 @@
     var ic = canvas.querySelector(".ink-capture");
     if (!ic) return;
     function P(e) {
-      // content coordinate = (pointer within the canvas viewport) + how far the canvas is scrolled
+      // map the screen point into the ink SVG's own coordinate system — robust to
+      // scroll, page zoom, safe-area insets and iOS's viewport quirks
+      var pr = (e.pressure && e.pressure > 0 ? e.pressure : 0.5);
+      var svg = canvas.querySelector(".ink-layer");
+      try {
+        var m = svg.getScreenCTM();
+        if (m) {
+          var pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+          return [pt.x, pt.y, pr];
+        }
+      } catch (_) {}
       var r = canvas.getBoundingClientRect();
-      return [e.clientX - r.left + canvas.scrollLeft, e.clientY - r.top + canvas.scrollTop, (e.pressure && e.pressure > 0 ? e.pressure : 0.5)];
+      return [e.clientX - r.left + canvas.scrollLeft, e.clientY - r.top + canvas.scrollTop, pr];
     }
     function liveDraw() {
       if (!inkCur || !inkLive) return;
