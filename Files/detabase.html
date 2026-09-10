@@ -326,10 +326,10 @@
   .clip-body .subject > summary::before, .clip-body .subject > summary .stag, .clip-body .accordion-controls { display: none; }
   .clip-body .subject-body { padding: 0; border: none; }
   .clip-body .gallery { flex-direction: column; }
-  /* ---- shape & graph widgets: no frame until hovered/selected ---- */
-  .clip.widget { border: 1px solid transparent; background: transparent; box-shadow: none; overflow: visible; }
-  .clip.widget:hover, .clip.widget.sel { border-color: var(--border-strong); background: var(--bg); box-shadow: var(--shadow); }
-  .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 9px; }
+  /* ---- shape & graph widgets: never a frame — just the shape/graph, sitting on the page ---- */
+  .clip.widget { border: none; background: transparent; box-shadow: none; overflow: visible; }
+  .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 3px; }
+  .clip.widget .clip-body { padding: 0; overflow: visible; border-radius: 0; background: transparent; }
   .wtools { position: absolute; top: -13px; right: 4px; z-index: 6; display: none; gap: 4px; }
   .clip.widget:hover .wtools, .clip.widget.sel .wtools { display: flex; }
   .wtools button { width: 24px; height: 24px; padding: 0; font-size: .82rem; line-height: 1; border-radius: 7px;
@@ -345,7 +345,7 @@
   .sh-vert-c { touch-action: none; }
   .clip.widget:not(:hover):not(.sel) .sh-vert-c { display: none; }
   .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
-  .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: var(--bg); display: block; }
+  .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: transparent; display: block; }
   .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
     background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-primary); box-shadow: var(--shadow); pointer-events: none; white-space: nowrap; }
   .gw-canvas:active { cursor: grabbing; }
@@ -8362,11 +8362,19 @@
     else { try { P = fitToBox(it.spec(slv).poly, SHAPE_BOX); } catch (e) { host.textContent = "shape error"; return; } }
 
     function paint() {
-      var body = '<rect x="1" y="1" width="258" height="238" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>';
+      var body = '';
       if (!clip.poly) {
-        // pristine parametric shape with its tick/angle decorations
+        // pristine parametric shape with its tick/angle decorations — no background box, just the shape
         var tmp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        try { renderShape(tmp, it.spec(slv)); body = tmp.querySelector("g") ? tmp.querySelector("g").innerHTML : body; } catch (e) {}
+        try {
+          renderShape(tmp, it.spec(slv));
+          var gg = tmp.querySelector("g");
+          if (gg) {
+            var r0 = gg.querySelector("rect");
+            if (r0 && /surface/.test(r0.getAttribute("fill") || "")) r0.parentNode.removeChild(r0);
+            body = gg.innerHTML;
+          }
+        } catch (e) {}
       } else {
         body += '<polygon points="' + P.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") +
           '" fill="color-mix(in srgb, var(--accent) 12%, transparent)" stroke="var(--accent)" stroke-width="2"/>';
@@ -8642,7 +8650,7 @@
     function localXY(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
 
     // ---- pointer interaction: pan / pinch in edit mode, tap-markers in set mode ----
-    var pts = {}, startDist = 0, startPpu = 0, pcx0, pcy0, panFrom = null, downXY = null, moved = 0;
+    var pts = {}, startDist = 0, startPpu = 0, startCx = 0, startCy = 0, startMid = null, pcx0, pcy0, panFrom = null, downXY = null, moved = 0;
     cv.addEventListener("pointerdown", function (e) {
       e.stopPropagation();
       try { cv.setPointerCapture(e.pointerId); } catch (_) {}
@@ -8651,6 +8659,9 @@
       if (editMode && ids.length === 2) {
         var a = pts[ids[0]], b = pts[ids[1]];
         startDist = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1; startPpu = clip.view.ppu;
+        startCx = clip.view.cx; startCy = clip.view.cy;
+        startMid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        panFrom = null;
       } else if (editMode) {
         panFrom = localXY(e); pcx0 = clip.view.cx; pcy0 = clip.view.cy;
       }
@@ -8665,7 +8676,13 @@
         var a = pts[ids[0]], b = pts[ids[1]];
         var d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1;
         var mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-        clip.view.ppu = startPpu; zoomAt(mid[0], mid[1], d / startDist);
+        // rebuild from the view captured when the 2nd finger landed, so multi-frame pinch never drifts
+        clip.view.ppu = startPpu; clip.view.cx = startCx; clip.view.cy = startCy;
+        zoomAt(mid[0], mid[1], d / startDist);
+        if (startMid) {
+          clip.view.cx -= (mid[0] - startMid[0]) / clip.view.ppu;
+          clip.view.cy += (mid[1] - startMid[1]) / clip.view.ppu;
+        }
         draw();
       } else if (editMode && panFrom) {
         clip.view.cx = pcx0 - (pts[e.pointerId][0] - panFrom[0]) / clip.view.ppu;
@@ -8678,7 +8695,7 @@
     function endPtr(e) {
       var wasTap = downXY && moved < 6;
       delete pts[e.pointerId];
-      if (Object.keys(pts).length < 2) startDist = 0;
+      if (Object.keys(pts).length < 2) { startDist = 0; startMid = null; }
       if (Object.keys(pts).length === 0) { panFrom = null; if (editMode) saveStore(); }
       if (!editMode && wasTap) toggleMarkerAt(downXY);
       downXY = null;
