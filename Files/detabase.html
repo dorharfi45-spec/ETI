@@ -254,7 +254,22 @@
     background-size: 26px 26px;
   }
   .pp-canvas.dragover { border-color: var(--accent); background-color: color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
+  .pp-canvas.drawing { border-style: solid; border-color: var(--accent); }
   .canvas-sizer { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
+
+  /* ---- Apple Pencil / mouse ink layer ---- */
+  .ink-layer { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 4000; }
+  .ink-capture { position: absolute; top: 0; left: 0; z-index: 4001; pointer-events: none; touch-action: pan-x pan-y; }
+  .pp-canvas.drawing .ink-capture { pointer-events: auto; cursor: crosshair; }
+  .pp-canvas.drawing.erase .ink-capture { cursor: cell; }
+  .ink-toolbar { display: none; align-items: center; gap: 7px; flex-wrap: wrap; margin: -2px 0 8px; }
+  .ink-toolbar.show { display: flex; }
+  .ink-swatches { display: inline-flex; gap: 5px; }
+  .ink-sw { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-strong); padding: 0; cursor: pointer; }
+  .ink-sw.on { border-color: var(--text-primary); transform: scale(1.14); }
+  .ink-w { width: 96px; }
+  .ink-tool { font-size: .95rem; }
+  .tool-btn.on, .ink-tool.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   .canvas-empty {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     color: var(--text-muted); font-size: .92rem; text-align: center; padding: 24px; pointer-events: none;
@@ -2735,8 +2750,18 @@
       <div id="ppResults" class="pp-results-drop" hidden></div>
     </div>
     <button id="ppAddNote" type="button" class="tool-btn">＋ Text note</button>
+    <button id="ppWrite" type="button" class="tool-btn" title="write / draw with the Apple Pencil or mouse">✍️ Write</button>
     <button id="ppTidy" type="button" class="tool-btn">Tidy</button>
     <span class="muted" id="ppBenchCount"></span>
+  </div>
+  <div id="ppInkbar" class="ink-toolbar">
+    <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
+    <button type="button" class="ink-tool" data-inktool="erase" title="erase strokes">⌫</button>
+    <span class="ink-swatches" id="ppInkSwatches"></span>
+    <input type="range" id="ppInkW" class="ink-w" min="1" max="16" value="3" title="thickness">
+    <button type="button" id="ppInkUndo" class="tool-btn" title="undo">↶</button>
+    <button type="button" id="ppInkRedo" class="tool-btn" title="redo">↷</button>
+    <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div class="canvas-sizer"></div></div>
 </div>
@@ -4535,6 +4560,7 @@
     var c = canvasCache[id]; if (!c) return;
     c.ts = Date.now();
     putCanvasLocal(id, c);
+    if (typeof syncFileAutoSave === "function") syncFileAutoSave();
     if (canvasSaveTimers[id]) clearTimeout(canvasSaveTimers[id]);
     canvasSaveTimers[id] = setTimeout(function () {
       canvasSaveTimers[id] = null;
@@ -7855,16 +7881,16 @@
   function renderCanvas() {
     var p = curProblem(); if (!p) return;
     var canvas = $("ppCanvas");
-    canvas.innerHTML = '<div class="canvas-sizer"></div>';
-    $("ppBenchCount").textContent = p.bench.length ? p.bench.length + " on board" : "empty";
-    if (!p.bench.length) {
+    canvas.innerHTML = '<div class="canvas-sizer"></div><svg class="ink-layer"></svg><div class="ink-capture"></div>';
+    var ink = loadCanvas(p.id).ink || [];
+    $("ppBenchCount").textContent = p.bench.length ? p.bench.length + " on board" : (ink.length ? "handwriting only" : "empty");
+    if (!p.bench.length && !ink.length) {
       var em = document.createElement("div");
       em.className = "canvas-empty";
-      em.innerHTML = "Empty board.<br>Search above and drag a result here · 📌 a card while browsing · <b>＋ Text note</b> for your own working.";
+      em.innerHTML = "Empty board.<br>Search above and drag a result here · 📌 a card while browsing · <b>＋ Text note</b> · <b>✍️ Write</b> with the pencil.";
       canvas.appendChild(em);
-      return;
     }
-    var maxX = canvas.clientWidth, maxY = canvas.clientHeight;
+    var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
     p.bench.forEach(function (clip) {
       var isNote = clip.kind === "note";
       var el = document.createElement("div");
@@ -7895,11 +7921,163 @@
       maxX = Math.max(maxX, (clip.x || 0) + (clip.w || 300) + 60);
       maxY = Math.max(maxY, (clip.y || 0) + (clip.h || 200) + 60);
     });
+    ink.forEach(function (s) { (s.pts || []).forEach(function (q) { maxX = Math.max(maxX, q[0] + 90); maxY = Math.max(maxY, q[1] + 90); }); });
+    maxX = Math.max(maxX, 1800); maxY = Math.max(maxY, 1300);   // headroom to write into
     var sizer = canvas.querySelector(".canvas-sizer");
     sizer.style.width = maxX + "px";
     sizer.style.height = maxY + "px";
+    var il = canvas.querySelector(".ink-layer");
+    il.setAttribute("width", maxX); il.setAttribute("height", maxY); il.setAttribute("viewBox", "0 0 " + maxX + " " + maxY);
+    var ic = canvas.querySelector(".ink-capture");
+    ic.style.width = maxX + "px"; ic.style.height = maxY + "px";
+    renderInk(p);
+    wireInkCapture(p);
     try { prettyFractions(canvas); } catch (e) {}
   }
+
+  // ============================================================
+  // INK — Apple Pencil / mouse handwriting on the canvas
+  // strokes live in loadCanvas(id).ink = [{ id, color, w, pts:[[x,y,pressure],…] }]
+  // ============================================================
+  var inkMode = false, inkTool = "pen", inkColor = "#1e293b", inkW = 3;
+  var inkUndo = {}, inkRedo = {};
+  var inkDrawing = false, inkCur = null, inkLive = null;
+
+  function inkStrokeWidth(s) {
+    var pr = 0, n = 0;
+    (s.pts || []).forEach(function (q) { if (q[2] != null) { pr += q[2]; n++; } });
+    var f = n ? (0.55 + 0.9 * (pr / n)) : 1;
+    return Math.max(0.6, (s.w || 3) * f);
+  }
+  function inkPathD(s) {
+    if (!s.pts || !s.pts.length) return "";
+    var d = "M" + s.pts[0][0].toFixed(1) + " " + s.pts[0][1].toFixed(1);
+    for (var i = 1; i < s.pts.length; i++) d += " L" + s.pts[i][0].toFixed(1) + " " + s.pts[i][1].toFixed(1);
+    return d;
+  }
+  function renderInk(p) {
+    var il = $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer");
+    if (!il) return;
+    var ink = loadCanvas(p.id).ink || [];
+    var h = "";
+    ink.forEach(function (s) {
+      h += '<path d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#1e293b") +
+        '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    h += '<path class="ink-live" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    il.innerHTML = h;
+    inkLive = il.querySelector(".ink-live");
+  }
+  function inkSnapshot(p) {
+    var k = p.id;
+    inkUndo[k] = inkUndo[k] || [];
+    inkUndo[k].push(JSON.stringify(loadCanvas(k).ink || []));
+    if (inkUndo[k].length > 40) inkUndo[k].shift();
+    inkRedo[k] = [];
+  }
+  function inkSet(p, arr) { loadCanvas(p.id).ink = arr; saveCanvas(p.id); renderInk(p); }
+  function inkEraseAt(p, xy) {
+    var ink = loadCanvas(p.id).ink || [], R2 = 13 * 13;
+    var kept = ink.filter(function (s) {
+      return !(s.pts || []).some(function (q) { var dx = q[0] - xy[0], dy = q[1] - xy[1]; return dx * dx + dy * dy < R2; });
+    });
+    if (kept.length !== ink.length) { loadCanvas(p.id).ink = kept; saveCanvas(p.id); renderInk(p); }
+  }
+  function wireInkCapture(p) {
+    var canvas = $("ppCanvas");
+    var ic = canvas.querySelector(".ink-capture");
+    if (!ic) return;
+    function P(e) {
+      var r = ic.getBoundingClientRect();
+      return [e.clientX - r.left, e.clientY - r.top, (e.pressure && e.pressure > 0 ? e.pressure : 0.5)];
+    }
+    function liveDraw() {
+      if (!inkCur || !inkLive) return;
+      inkLive.setAttribute("d", inkPathD(inkCur));
+      inkLive.setAttribute("stroke", inkCur.color);
+      inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
+    }
+    ic.addEventListener("pointerdown", function (e) {
+      if (!inkMode || e.pointerType === "touch") return;
+      e.preventDefault();
+      try { ic.setPointerCapture(e.pointerId); } catch (_) {}
+      inkSnapshot(p);
+      inkDrawing = true;
+      if (inkTool === "erase") { inkEraseAt(p, P(e)); return; }
+      inkCur = { id: uid("ik_"), color: inkColor, w: inkW, pts: [P(e)] };
+      liveDraw();
+    });
+    ic.addEventListener("pointermove", function (e) {
+      if (!inkMode || !inkDrawing || e.pointerType === "touch") return;
+      e.preventDefault();
+      var list = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      if (inkTool === "erase") { list.forEach(function (ev) { inkEraseAt(p, P(ev)); }); return; }
+      list.forEach(function (ev) { inkCur.pts.push(P(ev)); });
+      liveDraw();
+    });
+    function end() {
+      if (!inkDrawing) return;
+      inkDrawing = false;
+      if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
+        var c = loadCanvas(p.id); c.ink = c.ink || []; c.ink.push(inkCur); saveCanvas(p.id);
+      } else if (inkUndo[p.id]) { inkUndo[p.id].pop(); }   // nothing drawn — drop the snapshot
+      inkCur = null;
+      renderInk(p);
+    }
+    ic.addEventListener("pointerup", end);
+    ic.addEventListener("pointercancel", end);
+    ic.addEventListener("pointerleave", end);
+  }
+
+  (function inkToolbarSetup() {
+    var bar = $("ppInkbar"); if (!bar) return;
+    var COLORS = ["#1e293b", "#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed"];
+    var sw = $("ppInkSwatches");
+    COLORS.forEach(function (c, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ink-sw" + (i === 0 ? " on" : "");
+      b.style.background = c;
+      b.addEventListener("click", function () {
+        inkColor = c;
+        Array.prototype.forEach.call(sw.children, function (x) { x.classList.toggle("on", x === b); });
+        setInkTool("pen");
+      });
+      sw.appendChild(b);
+    });
+    function setInkTool(t) {
+      inkTool = t;
+      bar.querySelectorAll("[data-inktool]").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-inktool") === t); });
+      $("ppCanvas").classList.toggle("erase", t === "erase");
+    }
+    bar.querySelectorAll("[data-inktool]").forEach(function (x) {
+      x.addEventListener("click", function () { setInkTool(x.getAttribute("data-inktool")); });
+    });
+    $("ppInkW").addEventListener("input", function () { inkW = +this.value || 3; });
+    $("ppInkUndo").addEventListener("click", function () {
+      var p = curProblem(); if (!p) return; var k = p.id;
+      if (!inkUndo[k] || !inkUndo[k].length) return;
+      inkRedo[k] = inkRedo[k] || []; inkRedo[k].push(JSON.stringify(loadCanvas(k).ink || []));
+      inkSet(p, JSON.parse(inkUndo[k].pop()));
+    });
+    $("ppInkRedo").addEventListener("click", function () {
+      var p = curProblem(); if (!p) return; var k = p.id;
+      if (!inkRedo[k] || !inkRedo[k].length) return;
+      inkUndo[k] = inkUndo[k] || []; inkUndo[k].push(JSON.stringify(loadCanvas(k).ink || []));
+      inkSet(p, JSON.parse(inkRedo[k].pop()));
+    });
+    $("ppInkClear").addEventListener("click", function () {
+      var p = curProblem(); if (!p || !(loadCanvas(p.id).ink || []).length) return;
+      if (!confirm("Erase all handwriting on this board?")) return;
+      inkSnapshot(p); inkSet(p, []);
+    });
+    $("ppWrite").addEventListener("click", function () {
+      inkMode = !inkMode;
+      $("ppWrite").classList.toggle("on", inkMode);
+      bar.classList.toggle("show", inkMode);
+      $("ppCanvas").classList.toggle("drawing", inkMode);
+    });
+  })();
 
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
