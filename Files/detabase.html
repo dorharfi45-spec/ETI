@@ -330,9 +330,12 @@
   .clip.widget { border: none; background: transparent; box-shadow: none; overflow: visible; }
   .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: -1px; }
   .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; pointer-events: none; }
+  /* graph: let the function bar float above the box (not clipped) */
+  .clip.graph .clip-body, .clip.graph .graph-host { overflow: visible; }
   /* empty widget box doesn't grab — only the shape/graph itself and its controls do (so overlapping widgets stay independent) */
   .clip.widget .clip-body svg, .clip.widget .clip-body canvas,
-  .clip.widget .clip-body input, .clip.widget .clip-body button { pointer-events: auto; }
+  .clip.widget .clip-body input, .clip.widget .clip-body button,
+  .clip.widget .clip-body .gw-bar { pointer-events: auto; }
   /* drag grip: slim bar along the widget's top edge — the only way to move it. hidden until hover/selected */
   .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 15px; z-index: 7; display: none;
     align-items: center; gap: 4px; padding: 0 4px; box-sizing: border-box;
