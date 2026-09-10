@@ -294,7 +294,7 @@
     display: flex; align-items: center; gap: 5px; padding: 4px 6px 4px 9px;
     background: var(--surface-2); border-bottom: 1px solid var(--border);
     font-size: .72rem; font-weight: 700; color: var(--text-secondary);
-    cursor: grab; user-select: none; flex-shrink: 0;
+    cursor: grab; user-select: none; flex-shrink: 0; touch-action: none;
   }
   .clip-head:active { cursor: grabbing; }
   .clip-head .clip-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -345,9 +345,9 @@
   .wgrip button { width: 17px; height: 13px; padding: 0; font-size: .68rem; line-height: 1; border: none;
     background: transparent; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; }
   .wgrip button:hover { color: var(--accent); }
-  .clip.widget .clip-resize { opacity: 0; transition: opacity .12s; }
+  .clip.widget .clip-resize { width: 34px; height: 34px; opacity: 0; transition: opacity .12s; }
   .clip.widget:hover .clip-resize, .clip.widget.sel .clip-resize { opacity: 1; }
-  .clip.widget .clip-resize::after { border-color: var(--accent); }
+  .clip.widget .clip-resize::after { right: 7px; bottom: 7px; width: 13px; height: 13px; border-width: 3px; border-color: var(--accent); }
   .shape-host { width: 100%; height: 100%; display: flex; position: relative; }
   .shape-host svg { width: 100%; height: 100%; touch-action: none; }
   .sh-vert-c { touch-action: none; }
@@ -395,8 +395,8 @@
   .cm-lasso { position: absolute; z-index: 20; border: 1.5px dashed var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); pointer-events: none; }
   .clipmode.cropping .clipmode-src { cursor: crosshair; }
 
-  .clip-resize { position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; cursor: nwse-resize; }
-  .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 7px; height: 7px;
+  .clip-resize { position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; cursor: nwse-resize; z-index: 8; touch-action: none; }
+  .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 8px; height: 8px;
     border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); }
 
   #selClipBtn {
@@ -9010,38 +9010,50 @@
       e.preventDefault(); e.stopPropagation();
       try { head.setPointerCapture(e.pointerId); } catch (_) {}
       var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0;
+      var moved = false;
       function mv(ev) {
-        clip.x = Math.max(0, ox + (ev.clientX - sx));
-        clip.y = Math.max(0, oy + (ev.clientY - sy));
+        moved = true;
+        clip.x = Math.max(0, Math.round(ox + (ev.clientX - sx)));
+        clip.y = Math.max(0, Math.round(oy + (ev.clientY - sy)));
         el.style.left = clip.x + "px"; el.style.top = clip.y + "px";
       }
       function up() {
         document.removeEventListener("pointermove", mv, true);
         document.removeEventListener("pointerup", up, true);
-        clip.x = Math.round(clip.x); clip.y = Math.round(clip.y);
-        saveStore(); renderCanvas();
+        document.removeEventListener("pointercancel", up, true);
+        if (moved) { saveStore(); renderCanvas(); }
       }
       document.addEventListener("pointermove", mv, true);
       document.addEventListener("pointerup", up, true);
+      document.addEventListener("pointercancel", up, true);
     });
 
     var rz = el.querySelector(".clip-resize");
     rz.addEventListener("pointerdown", function (e) {
       e.preventDefault(); e.stopPropagation();
-      var sx = e.clientX, sy = e.clientY, ow = clip.w || 300, oh = clip.h || 200;
+      try { rz.setPointerCapture(e.pointerId); } catch (_) {}
+      // start from the ACTUAL rendered size, so the box never jumps on the first move
+      var r = el.getBoundingClientRect();
+      var sx = e.clientX, sy = e.clientY, ow = r.width, oh = r.height;
+      var minW = isW ? 90 : 130, minH = 70;
+      var moved = false;
       function mv(ev) {
-        clip.w = Math.max(130, ow + (ev.clientX - sx));
-        clip.h = Math.max(70, oh + (ev.clientY - sy));
+        moved = true;
+        clip.w = Math.max(minW, Math.round(ow + (ev.clientX - sx)));
+        clip.h = Math.max(minH, Math.round(oh + (ev.clientY - sy)));
         el.style.width = clip.w + "px"; el.style.height = clip.h + "px";
+        if (clip.kind === "graph" && typeof clip._redraw === "function") clip._redraw();
       }
       function up() {
-        document.removeEventListener("pointermove", mv, true);
-        document.removeEventListener("pointerup", up, true);
-        clip.w = Math.round(clip.w); clip.h = Math.round(clip.h);
-        saveStore(); renderCanvas();
+        try { rz.releasePointerCapture(e.pointerId); } catch (_) {}
+        rz.removeEventListener("pointermove", mv);
+        rz.removeEventListener("pointerup", up);
+        rz.removeEventListener("pointercancel", up);
+        if (moved) { saveStore(); renderCanvas(); }
       }
-      document.addEventListener("pointermove", mv, true);
-      document.addEventListener("pointerup", up, true);
+      rz.addEventListener("pointermove", mv);
+      rz.addEventListener("pointerup", up);
+      rz.addEventListener("pointercancel", up);
     });
   }
 
