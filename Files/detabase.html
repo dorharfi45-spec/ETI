@@ -316,9 +316,11 @@
     align-items: center; flex-wrap: nowrap; overflow-x: auto;
     background: var(--bg); border-bottom: 1px solid var(--border-strong);
   }
-  #ppInkbar.full .ink-w { flex-shrink: 0; }
-  #ppInkbar .ink-spacer { flex: 1; }
-  #inkDone { flex-shrink: 0; font-weight: 700; }
+  #ppInkbar.full .ink-w { flex: 0 0 auto; width: 108px; }
+  #ppInkbar.full .ink-tool, #ppInkbar.full .tool-btn { flex: 0 0 auto; }
+  #ppInkbar.full .ink-swatches { flex: 0 0 auto; }
+  #ppInkbar .ink-spacer { flex: 1 1 8px; min-width: 8px; }
+  #inkDone { flex: 0 0 auto; font-weight: 700; }
 
   /* ---- floating + Shape / + Graph control on the normal canvas ---- */
   #ppWidgetAdd { position: absolute; left: 16px; bottom: 16px; z-index: 4100; display: none; align-items: center; gap: 6px; }
