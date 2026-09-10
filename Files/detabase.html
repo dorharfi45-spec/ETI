@@ -7989,8 +7989,9 @@
     var ic = canvas.querySelector(".ink-capture");
     if (!ic) return;
     function P(e) {
-      var r = ic.getBoundingClientRect();
-      return [e.clientX - r.left, e.clientY - r.top, (e.pressure && e.pressure > 0 ? e.pressure : 0.5)];
+      // content coordinate = (pointer within the canvas viewport) + how far the canvas is scrolled
+      var r = canvas.getBoundingClientRect();
+      return [e.clientX - r.left + canvas.scrollLeft, e.clientY - r.top + canvas.scrollTop, (e.pressure && e.pressure > 0 ? e.pressure : 0.5)];
     }
     function liveDraw() {
       if (!inkCur || !inkLive) return;
