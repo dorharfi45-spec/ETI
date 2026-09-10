@@ -8557,16 +8557,32 @@
     var blocks = [];
     function enterMarking() {
       ov.classList.add("marking");
-      // markable blocks: cards, tools, subjects, and top-level text nodes
+      // dig past a single wrapper (a whole pane / subject / folder) to its real parts
+      var root = src;
+      while (root.children.length === 1 && root.firstElementChild.children.length &&
+             /pane|subject|folder|subject-body|grid2/.test(root.firstElementChild.className || "")) {
+        root = root.firstElementChild;
+        if (root.tagName === "DETAILS") root.open = true;
+      }
+      var SEL = ".card, .tool, .gallery, .subject, table, blockquote, pre, ul, ol, h2, h3, h4, p, figure, svg";
+      var cand = [];
+      root.querySelectorAll(SEL.split(", ").map(function (s) { return ":scope > " + s; }).join(", ")).forEach(function (n) { cand.push(n); });
+      root.querySelectorAll(":scope > .grid2 > .card, :scope > .subject-body > *").forEach(function (n) { if (cand.indexOf(n) < 0) cand.push(n); });
       blocks = [];
-      src.querySelectorAll(":scope > *, :scope .card, :scope .tool, :scope .subject, :scope .grid2 > .card, :scope .subject-body > *, :scope > .pane > *").forEach(function (n) {
-        if (n.classList.contains("clipmode-src") || n.classList.contains("cm-block")) return;
-        if (!n.textContent.trim() && !n.querySelector("svg,img")) return;
+      cand.forEach(function (n) {
+        if (n.classList.contains("cm-block")) return;
+        if (!n.textContent.trim() && !n.querySelector("svg,img,table")) return;
         n.classList.add("cm-block");
         blocks.push(n);
       });
-      src.querySelectorAll(".cm-block .cm-block").forEach(function (n) { n.classList.remove("cm-block"); });   // outermost only
+      // never mark a block that sits inside another marked block
+      src.querySelectorAll(".cm-block .cm-block").forEach(function (n) { n.classList.remove("cm-block"); });
       blocks = Array.prototype.slice.call(src.querySelectorAll(".cm-block"));
+      if (!blocks.length && root.children.length) {   // fall back: mark the direct children
+        Array.prototype.slice.call(root.children).forEach(function (n) {
+          if (n.textContent.trim() || n.querySelector("svg,img")) { n.classList.add("cm-block"); blocks.push(n); }
+        });
+      }
       blocks.forEach(function (n) {
         n.addEventListener("click", function (ev) { ev.stopPropagation(); n.classList.toggle("cm-marked"); });
       });
