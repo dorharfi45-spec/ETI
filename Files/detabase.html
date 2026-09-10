@@ -8591,10 +8591,15 @@
     var rb = host.querySelector("[data-reset]");
     if (rb) rb.addEventListener("click", function (e) { e.stopPropagation(); clip.view = { cx: 0, cy: 0, ppu: 32 }; saveStore(); draw(); });
 
-    function tfNow() { if (!clip._tf) { try { draw(); } catch (e) {} } return clip._tf; }
+    // live transform from the CURRENT canvas size (never stale)
+    function tfNow() {
+      var r = cv.getBoundingClientRect();
+      var W = Math.max(1, r.width), H = Math.max(1, r.height), v = clip.view;
+      return { W: W, H: H, ppu: v.ppu, ox: W / 2 - v.cx * v.ppu, oy: H / 2 + v.cy * v.ppu };
+    }
     var MINPPU = 0.02, MAXPPU = 4000;
     function zoomAt(mx, my, k) {
-      var tf = tfNow() || { W: cv.clientWidth || 300, H: cv.clientHeight || 200 }; var v = clip.view;
+      var tf = tfNow(), v = clip.view;
       var ux = (mx - tf.W / 2) / v.ppu + v.cx, uy = -(my - tf.H / 2) / v.ppu + v.cy;
       v.ppu = Math.max(MINPPU, Math.min(MAXPPU, v.ppu * k));
       v.cx = ux - (mx - tf.W / 2) / v.ppu; v.cy = uy + (my - tf.H / 2) / v.ppu;
