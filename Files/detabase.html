@@ -8591,9 +8591,10 @@
     var rb = host.querySelector("[data-reset]");
     if (rb) rb.addEventListener("click", function (e) { e.stopPropagation(); clip.view = { cx: 0, cy: 0, ppu: 32 }; saveStore(); draw(); });
 
+    function tfNow() { if (!clip._tf) { try { draw(); } catch (e) {} } return clip._tf; }
     var MINPPU = 0.02, MAXPPU = 4000;
     function zoomAt(mx, my, k) {
-      var tf = clip._tf || { W: cv.clientWidth, H: cv.clientHeight }; var v = clip.view;
+      var tf = tfNow() || { W: cv.clientWidth || 300, H: cv.clientHeight || 200 }; var v = clip.view;
       var ux = (mx - tf.W / 2) / v.ppu + v.cx, uy = -(my - tf.H / 2) / v.ppu + v.cy;
       v.ppu = Math.max(MINPPU, Math.min(MAXPPU, v.ppu * k));
       v.cx = ux - (mx - tf.W / 2) / v.ppu; v.cy = uy + (my - tf.H / 2) / v.ppu;
@@ -8653,7 +8654,7 @@
     }, { passive: false });
 
     function nearestCurve(xy) {
-      var tf = clip._tf; if (!tf) return null;
+      var tf = tfNow(); if (!tf) return null;
       var xu = (xy[0] - tf.ox) / tf.ppu, best = null;
       clip.fns.forEach(function (f, fi) {
         var fn = compileExpr(f.expr); if (!fn) return;
@@ -8674,7 +8675,7 @@
       clearTimeout(clip._rt); clip._rt = setTimeout(function () { readout.hidden = true; }, 1400);
     }
     function toggleMarkerAt(xy) {
-      var tf = clip._tf; if (!tf) return;
+      var tf = tfNow(); if (!tf) return;
       // remove a marker if we tapped one
       for (var k = 0; k < clip.markers.length; k++) {
         var mk = clip.markers[k], f = clip.fns[mk.fi]; if (!f) continue;
@@ -8685,6 +8686,7 @@
       var n = nearestCurve(xy);
       if (n) { clip.markers.push({ fi: n.fi, x: +n.x.toFixed(4) }); saveStore(); draw(); }
     }
+    try { draw(); } catch (e) {}
     requestAnimationFrame(draw);
   }
 
