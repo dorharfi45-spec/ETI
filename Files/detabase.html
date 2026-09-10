@@ -4460,11 +4460,11 @@
     coath:   { name: "Coath Inc.", icon: "🎓" }
   };
   var LS_KEY = "detabase.v1";
-  var store = { folders: [], groups: [], ui: {}, subjects: [], notes: {}, order: {}, problems: [], planner: { events: [], sessions: [], templates: [], goals: [], dayFormats: [], daySettings: { startHour: "06:00" } } };
+  var store = { schema: 0, folders: [], groups: [], ui: {}, subjects: [], notes: {}, order: {}, problems: [], canvases: [], planner: { events: [], sessions: [], templates: [], goals: [], dayFormats: [], daySettings: { startHour: "06:00" } } };
   try {
     var raw = localStorage.getItem(LS_KEY);
     if (raw) {
-      var p = JSON.parse(raw); store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.problems = p.problems || [];
+      var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.problems = p.problems || []; store.canvases = p.canvases || [];
       var pl = p.planner || {};
       var dayFormats = pl.dayFormats || [];
       if (!pl.dayFormats && pl.dayFormat && pl.dayFormat.length) {
@@ -4509,12 +4509,104 @@
       void beforeCount;
     }
   } catch (e) {}
+  // ============================================================
+  // Canvas storage — a canvas's heavy data (items + ink) lives OUTSIDE
+  // the main store: local key "detabase.canvas.<id>", cloud doc "sync/canvas_<id>".
+  // The main store only carries small metadata.
+  // ============================================================
+  var CANVAS_PFX = "detabase.canvas.";
+  var canvasCache = {};                 // id -> { items:[], ink:[], ts:Number }
+  function canvasKey(id) { return CANVAS_PFX + id; }
+  function loadCanvas(id) {
+    if (canvasCache[id]) return canvasCache[id];
+    var c = { items: [], ink: [], ts: 0 };
+    try {
+      var rawc = localStorage.getItem(canvasKey(id));
+      if (rawc) { var pc = JSON.parse(rawc); c.items = pc.items || []; c.ink = pc.ink || []; c.ts = pc.ts || 0; }
+    } catch (e) {}
+    canvasCache[id] = c;
+    return c;
+  }
+  function putCanvasLocal(id, c) {
+    try { localStorage.setItem(canvasKey(id), JSON.stringify({ items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() })); } catch (e) {}
+  }
+  var canvasSaveTimers = {};
+  function saveCanvas(id) {
+    var c = canvasCache[id]; if (!c) return;
+    c.ts = Date.now();
+    putCanvasLocal(id, c);
+    if (canvasSaveTimers[id]) clearTimeout(canvasSaveTimers[id]);
+    canvasSaveTimers[id] = setTimeout(function () {
+      canvasSaveTimers[id] = null;
+      if (typeof window.cloudSaveCanvas === "function") window.cloudSaveCanvas(id, { items: c.items, ink: c.ink, ts: c.ts });
+    }, 1200);
+  }
+  function allCanvasesObj() {
+    var out = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf(CANVAS_PFX) === 0) {
+        try { out[k.slice(CANVAS_PFX.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+      }
+    }
+    // include any in-memory canvases not yet flushed
+    Object.keys(canvasCache).forEach(function (id) { out[id] = { items: canvasCache[id].items, ink: canvasCache[id].ink, ts: canvasCache[id].ts }; });
+    return out;
+  }
+  // write a bundle of canvases (from a backup / sync file) into local storage
+  function restoreCanvases(obj) {
+    if (!obj || typeof obj !== "object") return;
+    Object.keys(obj).forEach(function (id) {
+      var c = obj[id]; if (!c) return;
+      try { localStorage.setItem(canvasKey(id), JSON.stringify({ items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() })); } catch (e) {}
+    });
+  }
+  // remote canvas arrived from another device (called by the Firebase module)
+  window.onCloudCanvas = function (id) {
+    delete canvasCache[id];
+    var cp = curProblem();
+    if (cp && cp.id === id) { cp.bench = loadCanvas(id).items; if (viewingProblem && activeProblem === id) renderCanvas(); }
+  };
+
+  // the main store, minus each problem's heavy bench (which lives in its canvas doc)
+  function mainSnapshot() {
+    var out = {};
+    for (var k in store) if (store.hasOwnProperty(k)) out[k] = store[k];
+    out.problems = (store.problems || []).map(function (pr) {
+      var q = {}; for (var kk in pr) if (pr.hasOwnProperty(kk) && kk !== "bench") q[kk] = pr[kk];
+      return q;
+    });
+    return out;
+  }
+
   function saveStore() {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch (e) {}
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+    if (activeProblem && canvasCache[activeProblem]) saveCanvas(activeProblem);
     if (typeof syncFileAutoSave === "function") syncFileAutoSave();
     if (typeof window.cloudNotifyLocalChange === "function") window.cloudNotifyLocalChange();
   }
   function uid(pfx) { return pfx + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); }
+
+  // ---- schema 2: move each problem's board (bench) into its own canvas doc ----
+  (function migrateToCanvases() {
+    if (store.schema >= 2) { (store.problems || []).forEach(function (pr) { delete pr.bench; }); return; }
+    try {
+      if (!localStorage.getItem("detabase.v1.premigration"))
+        localStorage.setItem("detabase.v1.premigration", localStorage.getItem(LS_KEY) || "");
+    } catch (e) {}
+    (store.problems || []).forEach(function (pr) {
+      var c = loadCanvas(pr.id);
+      if ((!c.items || !c.items.length) && pr.bench && pr.bench.length) {
+        c.items = pr.bench.slice();
+        c.ink = c.ink || [];
+        c.ts = Date.now();
+        putCanvasLocal(pr.id, c);
+      }
+      delete pr.bench;
+    });
+    store.schema = 2;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
 
   var activeTop = "eti";
   var activeSubject = null;   // custom-subject id, or null
@@ -7097,7 +7189,7 @@
     if (scrollWrap) scrollWrap.scrollTop = Math.max(0, (dayStartMin() / 60 * PL_PXH) - 22);
   });
   $("plExport").addEventListener("click", function () {
-    var payload = JSON.stringify({ _detabase: LS_KEY, exportedAt: new Date().toISOString(), store: store }, null, 2);
+    var payload = JSON.stringify({ _detabase: LS_KEY, exportedAt: new Date().toISOString(), store: mainSnapshot(), canvases: allCanvasesObj() }, null, 2);
     var blob = new Blob([payload], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -7117,7 +7209,10 @@
         alert("That doesn't look like a Detabase backup."); return;
       }
       if (!confirm("Replace ALL data on this computer with the backup? This can't be undone.")) return;
-      try { localStorage.setItem(LS_KEY, JSON.stringify(incoming)); } catch (e2) { alert("Couldn't save — storage may be full or blocked."); return; }
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(incoming));
+        if (data && data.canvases) restoreCanvases(data.canvases);
+      } catch (e2) { alert("Couldn't save — storage may be full or blocked."); return; }
       location.reload();
     };
     reader.readAsText(f);
@@ -7183,7 +7278,7 @@
     }
 
     function payloadText() {
-      return JSON.stringify({ _detabase: LS_KEY, exportedAt: new Date().toISOString(), store: store }, null, 2);
+      return JSON.stringify({ _detabase: LS_KEY, exportedAt: new Date().toISOString(), store: mainSnapshot(), canvases: allCanvasesObj() }, null, 2);
     }
 
     function ensurePerm(mode) {
@@ -7220,7 +7315,10 @@
           }
           var when = data && data.exportedAt ? "\nSaved in file: " + new Date(data.exportedAt).toLocaleString() : "";
           if (!confirm("Load the sync file? This replaces the data on THIS device." + when)) return;
-          try { localStorage.setItem(LS_KEY, JSON.stringify(incoming)); }
+          try {
+            localStorage.setItem(LS_KEY, JSON.stringify(incoming));
+            if (data && data.canvases) restoreCanvases(data.canvases);
+          }
           catch (e2) { alert("Couldn't save locally — storage may be full or blocked."); return; }
           location.reload();
         });
@@ -7440,11 +7538,14 @@
       list.appendChild(b);
     });
   }
-  function curProblem() { return store.problems.filter(function (p) { return p.id === activeProblem; })[0]; }
+  function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
+  function curProblem() { return bindBench(store.problems.filter(function (p) { return p.id === activeProblem; })[0]); }
 
   function addProblem(name) {
-    var p = { id: uid("pb_"), name: (name || "").trim() || ("Problem " + (store.problems.length + 1)), statement: "", bench: [], created: Date.now() };
-    store.problems.push(p); saveStore();
+    var p = { id: uid("pb_"), name: (name || "").trim() || ("Problem " + (store.problems.length + 1)), statement: "", created: Date.now() };
+    store.problems.push(p);
+    bindBench(p);
+    saveStore();
     renderProblemList();
     selectProblem(p.id);
   }
@@ -7452,6 +7553,9 @@
     var p = store.problems.filter(function (x) { return x.id === id; })[0];
     if (!p || !confirm('Delete problem "' + (p.name || "Untitled") + '"?')) return;
     store.problems = store.problems.filter(function (x) { return x.id !== id; });
+    delete canvasCache[id];
+    try { localStorage.removeItem(canvasKey(id)); } catch (e) {}
+    if (typeof window.cloudDeleteCanvas === "function") window.cloudDeleteCanvas(id);
     saveStore();
     if (activeProblem === id) { activeProblem = null; viewingProblem = false; }
     renderProblemList();
@@ -7459,6 +7563,7 @@
   }
   function selectProblem(id) {
     activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "eti";
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
     renderProblemList();
     applyView();
     history.replaceState(null, "", "#" + id);
@@ -7466,9 +7571,10 @@
   function ensureProblem() {
     var cur = curProblem();
     if (cur) return cur;
-    var p = { id: uid("pb_"), name: "Problem " + (store.problems.length + 1), statement: "", bench: [], created: Date.now() };
+    var p = { id: uid("pb_"), name: "Problem " + (store.problems.length + 1), statement: "", created: Date.now() };
     store.problems.push(p);
     activeProblem = p.id;          // becomes the pin target, but we do NOT switch the view
+    bindBench(p);
     saveStore();
     renderProblemList();
     return p;
@@ -7515,16 +7621,21 @@
     renderProblemList();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
+  function benchKeep(p, pred) {   // rebuild p.bench IN PLACE (it is a shared reference into canvasCache)
+    var kept = p.bench.filter(pred);
+    p.bench.length = 0;
+    for (var i = 0; i < kept.length; i++) p.bench.push(kept[i]);
+  }
   function clipRemove(clipId) {
     var p = curProblem(); if (!p) return;
     var gone = p.bench.filter(function (x) { return x.id === clipId; })[0];
-    p.bench = p.bench.filter(function (x) { return x.id !== clipId; });
+    benchKeep(p, function (x) { return x.id !== clipId; });
     saveStore(); renderCanvas(); renderProblemList();
     if (gone && gone.cardId && !isBenched(gone.cardId)) refreshCardButtons(gone.cardId);
   }
   function benchRemoveByCard(cardId) {
     var p = curProblem(); if (!p) return;
-    p.bench = p.bench.filter(function (x) { return !(x.cardId === cardId && !x.frag); });
+    benchKeep(p, function (x) { return !(x.cardId === cardId && !x.frag); });
     saveStore(); renderCanvas(); renderProblemList();
     if (!isBenched(cardId)) refreshCardButtons(cardId);
   }
@@ -7590,6 +7701,7 @@
   // ---- problem page render ----
   function renderProblemPage() {
     var p = curProblem(); if (!p) return;
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(p.id);
     if (p.statement && p.statement.trim()) {   // migrate old single statement → a note clip
       p.bench.unshift({ id: uid("cl_"), kind: "note", text: p.statement, title: "The problem",
         x: 14, y: 14, w: 340, h: 200, z: ++zTop, added: Date.now() });
@@ -8268,7 +8380,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/fireba
 import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence,
          onAuthStateChanged, signInWithEmailAndPassword, signOut }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot }
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -8292,12 +8404,87 @@ const auth = initializeAuth(app, {
 });
 const db = getFirestore(app);
 const ref = doc(db, "sync", "main");
+const canvasRef = (id) => doc(db, "sync", "canvas_" + id);
 
 let user = null;
 let lastPushedTs = 0;
 let pushTimer = null;
 let applying = false;
 let snapBound = false;
+
+// ---- per-canvas sync (heavy items + ink, one doc each) ----
+const CANVAS_PFX = "detabase.canvas.";
+const canvasPushed = {};   // id -> ts we last wrote
+const canvasSubs = {};     // id -> unsubscribe
+
+function canvasLocalTs(id) {
+  try { return (JSON.parse(localStorage.getItem(CANVAS_PFX + id) || "{}").ts) || 0; } catch (e) { return 0; }
+}
+function applyCanvas(id, d) {
+  try {
+    localStorage.setItem(CANVAS_PFX + id, JSON.stringify({
+      items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [], ts: d.updatedAt || Date.now()
+    }));
+  } catch (e) {}
+  if (typeof window.onCloudCanvas === "function") { try { window.onCloudCanvas(id); } catch (e) {} }
+}
+window.cloudSaveCanvas = async function (id, data) {
+  if (!user) return;
+  const ts = Date.now();
+  try {
+    await setDoc(canvasRef(id), { data: { items: data.items || [], ink: data.ink || [] }, updatedAt: ts, updatedBy: (navigator.platform || "device") });
+    canvasPushed[id] = ts;
+  } catch (e) { if (window.console) console.error("cloud canvas push:", e); }
+};
+window.cloudDeleteCanvas = async function (id) {
+  if (canvasSubs[id]) { try { canvasSubs[id](); } catch (e) {} delete canvasSubs[id]; }
+  if (!user) return;
+  try { await deleteDoc(canvasRef(id)); } catch (e) {}
+};
+window.cloudOpenCanvas = async function (id) {
+  if (!user || !id) return;
+  try {
+    const snap = await getDoc(canvasRef(id));
+    if (snap.exists()) {
+      const d = snap.data();
+      if (d && d.data && (d.updatedAt || 0) > canvasLocalTs(id)) applyCanvas(id, d);
+    } else if (canvasLocalTs(id) > 0) {
+      const c = JSON.parse(localStorage.getItem(CANVAS_PFX + id) || "{}");
+      window.cloudSaveCanvas(id, c);
+    }
+  } catch (e) { if (window.console) console.error("cloud canvas open:", e); }
+  if (!canvasSubs[id]) {
+    canvasSubs[id] = onSnapshot(canvasRef(id), (snap) => {
+      if (!snap.exists()) return;
+      const d = snap.data();
+      if (!d || !d.data) return;
+      if ((d.updatedAt || 0) === canvasPushed[id]) return;
+      if ((d.updatedAt || 0) <= canvasLocalTs(id)) return;
+      applyCanvas(id, d);
+    });
+  }
+};
+// sync every canvas this device knows about, both directions (runs once per sign-in)
+async function sweepCanvases() {
+  if (!user) return;
+  const ids = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(CANVAS_PFX)) ids.push(k.slice(CANVAS_PFX.length));
+  }
+  for (const id of ids) {
+    try {
+      const local = JSON.parse(localStorage.getItem(CANVAS_PFX + id) || "{}");
+      const snap = await getDoc(canvasRef(id));
+      const rts = snap.exists() ? (snap.data().updatedAt || 0) : 0;
+      if ((local.ts || 0) > rts) {
+        await window.cloudSaveCanvas(id, local);
+      } else if (snap.exists() && rts > (local.ts || 0)) {
+        applyCanvas(id, snap.data());
+      }
+    } catch (e) {}
+  }
+}
 
 const $ = (id) => document.getElementById(id);
 function setBadge(txt, tone) {
@@ -8359,6 +8546,9 @@ async function onSignedIn(u) {
   user = u;
   setBadge("☁ " + shortName(), "good");
   hideSignin();
+
+  // get every local canvas up to the cloud BEFORE the (now bench-free) main doc is pushed
+  try { await sweepCanvases(); } catch (e) {}
 
   let remote = null;
   try { remote = (await getDoc(ref)).data() || null; }
