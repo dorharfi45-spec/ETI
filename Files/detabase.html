@@ -74,7 +74,9 @@
     width: 194px; flex-shrink: 0;
     position: sticky; top: 14px;
   }
-  body:not(.top-eti) .rail { display: none; }
+  body:not(.top-eti):not(.top-notebook) .rail { display: none; }
+  body:not(.top-notebook) #railPages { display: none; }
+  body.top-notebook #railProblems { display: none; }
   .sidebar-label {
     font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
     font-weight: 700; color: var(--text-muted);
@@ -595,7 +597,11 @@
   body.is-planner #subjectsLabel,
   body.is-planner #customSubjectList,
   body.is-planner #addSubjectRow,
-  body.is-planner #addGroupRow { display: none; }
+  body.is-planner #addGroupRow,
+  body.top-notebook #subjectsLabel,
+  body.top-notebook #customSubjectList,
+  body.top-notebook #addSubjectRow,
+  body.top-notebook #addGroupRow { display: none; }
 
   .empty-note {
     margin-top: 40px; padding: 40px 24px;
@@ -1280,6 +1286,7 @@
 <aside class="sidebar">
   <div class="sidebar-label">Folders</div>
   <nav class="topbar" id="topbar">
+    <button data-top="notebook"><span class="ficon">📓</span>Notebook</button>
     <button data-top="eti" class="on"><span class="ficon">📚</span>ETI</button>
     <button data-top="planner"><span class="ficon">🗓️</span>Planner</button>
     <button data-top="coath"><span class="ficon">🎓</span>Coath Inc.</button>
@@ -2776,13 +2783,24 @@
 </div><!-- /content -->
 
 <aside class="rail" id="rail">
-  <div class="sidebar-label">Problem solving</div>
-  <input id="problemSearch" class="rail-search" placeholder="Filter problems by name…" autocomplete="off">
-  <nav class="raillist" id="problemList"></nav>
-  <div class="add-row" id="addProblemRow">
-    <button class="add-btn" data-add="problem">+ New problem page</button>
+  <div id="railProblems">
+    <div class="sidebar-label">Problem solving</div>
+    <input id="problemSearch" class="rail-search" placeholder="Filter problems by name…" autocomplete="off">
+    <nav class="raillist" id="problemList"></nav>
+    <div class="add-row" id="addProblemRow">
+      <button class="add-btn" data-add="problem">+ New problem page</button>
+    </div>
+    <p class="rail-hint">A private library of problems you've worked — independent of the folders &amp; subjects. Each page has its own search over every card, plus a bench.</p>
   </div>
-  <p class="rail-hint">A private library of problems you've worked — independent of the folders &amp; subjects. Each page has its own search over every card, plus a bench.</p>
+  <div id="railPages">
+    <div class="sidebar-label">Notebook pages</div>
+    <input id="pageSearch" class="rail-search" placeholder="Filter pages by name…" autocomplete="off">
+    <nav class="raillist" id="pageList"></nav>
+    <div class="add-row" id="addPageRow">
+      <button class="add-btn" data-add="page">+ New page</button>
+    </div>
+    <p class="rail-hint">Loose practice pages — write with the pencil, place shapes and graphs, clip in cards. Each page is its own canvas.</p>
+  </div>
 </aside>
 
 </div><!-- /layout -->
@@ -4481,6 +4499,7 @@
   // TOP-LEVEL FOLDERS + user-created folders & subjects
   // =========================================================
   var BUILTIN_TOP = {
+    notebook: { name: "Notebook",   icon: "📓" },
     eti:     { name: "ETI",        icon: "📚" },
     planner: { name: "Planner",    icon: "🗓️" },
     coath:   { name: "Coath Inc.", icon: "🎓" }
@@ -4595,10 +4614,15 @@
     if (cp && cp.id === id) { cp.bench = loadCanvas(id).items; if (viewingProblem && activeProblem === id) renderCanvas(); }
   };
 
-  // the main store, minus each problem's heavy bench (which lives in its canvas doc)
+  // the main store, minus each canvas doc's heavy bench (which lives in its own canvas doc)
+  function stripBench(pr) {
+    var q = {}; for (var kk in pr) if (pr.hasOwnProperty(kk) && kk !== "bench") q[kk] = pr[kk];
+    return q;
+  }
   function mainSnapshot() {
     var out = {};
     for (var k in store) if (store.hasOwnProperty(k)) out[k] = store[k];
+    out.canvases = (store.canvases || []).map(stripBench);
     out.problems = (store.problems || []).map(function (pr) {
       var q = {}; for (var kk in pr) if (pr.hasOwnProperty(kk) && kk !== "bench") q[kk] = pr[kk];
       return q;
@@ -4956,15 +4980,18 @@
 
   // ---- master view update ----
   function applyView() {
-    var onProblem = viewingProblem && !!activeProblem && store.problems.some(function (p) { return p.id === activeProblem; });
+    var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
+    var onPage = onProblem && isPage(activeProblem);
     var builtin = !onProblem && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
+    document.body.classList.toggle("top-notebook", activeTop === "notebook");
     document.body.classList.toggle("top-planner", showingPlanner);
     document.body.classList.toggle("is-planner", activeTop === "planner");
     document.body.classList.toggle("showing-builtin", builtin);
     Array.prototype.slice.call(document.querySelectorAll("#topbar button")).forEach(function (b) {
-      b.classList.toggle("on", !onProblem && b.getAttribute("data-top") === activeTop);
+      var t = b.getAttribute("data-top");
+      b.classList.toggle("on", (onPage && t === "notebook") || (!onProblem && t === activeTop));
     });
     Array.prototype.slice.call($("customSubjectList").children).forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-subject") === activeSubject);
@@ -4972,6 +4999,9 @@
     syncGroupButtons();
     Array.prototype.slice.call($("problemList").children).forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-problem") === activeProblem);
+    });
+    Array.prototype.slice.call($("pageList").children).forEach(function (b) {
+      b.classList.toggle("on", b.getAttribute("data-page") === activeProblem);
     });
     $("topfolder-eti").classList.toggle("on", builtin);
     $("customPane").hidden = onProblem || !activeSubject;
@@ -4981,8 +5011,13 @@
 
     if (onProblem) {
       var pb = curProblem();
+      if (onPage) {
+        $("pageTitle").textContent = pb ? (pb.name || "Untitled page") : "Page";
+        $("pageSubtitle").innerHTML = 'Notebook page — write with the pencil, clip in cards, place shapes &amp; graphs.';
+      } else {
       $("pageTitle").textContent = "Problem solving";
       $("pageSubtitle").innerHTML = 'Working on <b>' + escapeHtml(pb ? (pb.name || "untitled") : "") + '</b> — search the whole reference and bench what you need.';
+      }
       renderProblemPage();
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -5018,8 +5053,17 @@
 
   function selectTop(id) {
     activeTop = id; activeSubject = null; viewingProblem = false;
+    if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
+  }
+  function openNotebook() {
+    store.canvases = store.canvases || [];
+    renderPageList();
+    var target = (store.ui.lastPage && isPage(store.ui.lastPage)) ? store.ui.lastPage
+      : (store.canvases[0] && store.canvases[0].id);
+    if (target) selectPage(target);
+    else addPage("");
   }
   function selectSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
@@ -5091,8 +5135,8 @@
   document.querySelectorAll(".add-row").forEach(function (row) {
     var btn = row.querySelector(".add-btn"), form = row.querySelector(".add-form");
     var kind = btn.getAttribute("data-add");
-    if (kind === "problem" || !form) {
-      btn.addEventListener("click", function () { addProblem(); });   // one click → new page, rename in the title field
+    if (kind === "problem" || kind === "page" || !form) {
+      btn.addEventListener("click", function () { kind === "page" ? addPage() : addProblem(); });   // one click → new page, rename in the title field
       return;
     }
     var input = form.querySelector("input");
@@ -7564,9 +7608,14 @@
       });
       list.appendChild(b);
     });
+    if (typeof renderPageList === "function") renderPageList();
   }
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
-  function curProblem() { return bindBench(store.problems.filter(function (p) { return p.id === activeProblem; })[0]); }
+  // a "canvas doc" is a problem-solving page (store.problems) OR a loose notebook page (store.canvases)
+  function canvasDocs() { return store.problems.concat(store.canvases || []); }
+  function canvasDocById(id) { return canvasDocs().filter(function (p) { return p.id === id; })[0]; }
+  function isPage(id) { return (store.canvases || []).some(function (p) { return p.id === id; }); }
+  function curProblem() { return bindBench(canvasDocById(activeProblem)); }
 
   function addProblem(name) {
     var p = { id: uid("pb_"), name: (name || "").trim() || ("Problem " + (store.problems.length + 1)), statement: "", created: Date.now() };
@@ -7576,24 +7625,65 @@
     renderProblemList();
     selectProblem(p.id);
   }
-  function delProblem(id) {
-    var p = store.problems.filter(function (x) { return x.id === id; })[0];
-    if (!p || !confirm('Delete problem "' + (p.name || "Untitled") + '"?')) return;
+  function addPage(name) {
+    store.canvases = store.canvases || [];
+    var p = { id: uid("pg_"), kind: "page", name: (name || "").trim() || ("Page " + (store.canvases.length + 1)), created: Date.now() };
+    store.canvases.push(p);
+    bindBench(p);
+    saveStore();
+    renderPageList();
+    selectPage(p.id);
+  }
+  function delCanvasDoc(id) {
+    var p = canvasDocById(id); if (!p) return;
+    var isPg = isPage(id);
+    if (!confirm('Delete "' + (p.name || "Untitled") + '"?')) return;
     store.problems = store.problems.filter(function (x) { return x.id !== id; });
+    store.canvases = (store.canvases || []).filter(function (x) { return x.id !== id; });
     delete canvasCache[id];
     try { localStorage.removeItem(canvasKey(id)); } catch (e) {}
     if (typeof window.cloudDeleteCanvas === "function") window.cloudDeleteCanvas(id);
     saveStore();
     if (activeProblem === id) { activeProblem = null; viewingProblem = false; }
-    renderProblemList();
-    selectTop("eti");
+    renderProblemList(); renderPageList();
+    if (isPg) { selectTop("notebook"); } else { selectTop("eti"); }
   }
+  function delProblem(id) { delCanvasDoc(id); }
   function selectProblem(id) {
     activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "eti";
     if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
     renderProblemList();
     applyView();
     history.replaceState(null, "", "#" + id);
+  }
+  function selectPage(id) {
+    activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "notebook";
+    store.ui.lastPage = id; saveStore();
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
+    renderPageList();
+    applyView();
+    history.replaceState(null, "", "#" + id);
+  }
+  function renderPageList() {
+    var list = $("pageList"); if (!list) return;
+    list.innerHTML = "";
+    var pages = store.canvases || [];
+    var box = $("pageSearch");
+    if (box) box.hidden = !pages.length;
+    var q = ((box || {}).value || "").trim().toLowerCase();
+    var shown = pages.filter(function (p) { return !q || (p.name || "untitled").toLowerCase().indexOf(q) >= 0; });
+    if (pages.length && !shown.length) list.innerHTML = '<div class="rr-empty">No page matches “' + escapeHtml(q) + '”.</div>';
+    shown.forEach(function (p) {
+      var b = document.createElement("button");
+      b.setAttribute("data-page", p.id);
+      b.classList.toggle("on", p.id === activeProblem);
+      b.innerHTML = escapeHtml(p.name || "Untitled") + '<span class="del-x" title="delete page">✕</span>';
+      b.addEventListener("click", function (e) {
+        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delCanvasDoc(p.id); return; }
+        selectPage(p.id);
+      });
+      list.appendChild(b);
+    });
   }
   function ensureProblem() {
     var cur = curProblem();
@@ -8327,6 +8417,11 @@
     pSearch.addEventListener("input", renderProblemList);
     pSearch.addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; renderProblemList(); this.blur(); } });
   }
+  var pgSearch = $("pageSearch");
+  if (pgSearch) {
+    pgSearch.addEventListener("input", renderPageList);
+    pgSearch.addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; renderPageList(); this.blur(); } });
+  }
 
   // ---- 📌 pin buttons on every card & subject ----
   function addPinButtons() {
@@ -8536,7 +8631,9 @@
   }
   var initial = (location.hash || "").replace("#", "");
   var initFolder = folderForTab(initial);
-  if (store.problems.some(function (p) { return p.id === initial; })) {
+  if (isPage(initial)) {
+    selectPage(initial);
+  } else if (store.problems.some(function (p) { return p.id === initial; })) {
     selectProblem(initial);
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
