@@ -259,8 +259,9 @@
 
   /* ---- Apple Pencil / mouse ink layer ---- */
   .ink-layer { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 4000; }
-  .ink-capture { position: absolute; top: 0; left: 0; z-index: 4001; pointer-events: none; touch-action: pan-x pan-y; }
-  .pp-canvas.drawing .ink-capture { pointer-events: auto; cursor: crosshair; }
+  .ink-capture { position: absolute; top: 0; left: 0; z-index: 4001; pointer-events: none; touch-action: pan-x pan-y;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .pp-canvas.drawing .ink-capture { pointer-events: auto; cursor: crosshair; touch-action: none; }
   .pp-canvas.drawing.erase .ink-capture { cursor: cell; }
   .ink-toolbar { display: none; align-items: center; gap: 7px; flex-wrap: wrap; margin: -2px 0 8px; }
   .ink-toolbar.show { display: flex; }
@@ -7997,8 +7998,17 @@
       inkLive.setAttribute("stroke", inkCur.color);
       inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
     }
+    // two-finger pan while in draw mode (one finger / palm is ignored)
+    var touchPts = {}, panC = null;
+    function centroid() {
+      var xs = 0, ys = 0, n = 0;
+      for (var k in touchPts) { xs += touchPts[k].x; ys += touchPts[k].y; n++; }
+      return n ? { x: xs / n, y: ys / n, n: n } : null;
+    }
     ic.addEventListener("pointerdown", function (e) {
-      if (!inkMode || e.pointerType === "touch") return;
+      if (!inkMode) return;
+      if (e.pointerType === "touch") { touchPts[e.pointerId] = { x: e.clientX, y: e.clientY }; panC = centroid(); return; }
+      if (inkDrawing) return;                 // pen already down — ignore a second pointer
       e.preventDefault();
       try { ic.setPointerCapture(e.pointerId); } catch (_) {}
       inkSnapshot(p);
@@ -8008,7 +8018,21 @@
       liveDraw();
     });
     ic.addEventListener("pointermove", function (e) {
-      if (!inkMode || !inkDrawing || e.pointerType === "touch") return;
+      if (!inkMode) return;
+      if (e.pointerType === "touch") {
+        if (!touchPts[e.pointerId]) return;
+        touchPts[e.pointerId] = { x: e.clientX, y: e.clientY };
+        var c = centroid();
+        if (c && c.n >= 2 && panC) {
+          var canvas = $("ppCanvas");
+          canvas.scrollLeft -= (c.x - panC.x);
+          canvas.scrollTop -= (c.y - panC.y);
+          e.preventDefault();
+        }
+        panC = c;
+        return;
+      }
+      if (!inkDrawing) return;
       e.preventDefault();
       var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
       var list = (coalesced && coalesced.length) ? coalesced : [e];
@@ -8017,7 +8041,8 @@
       list.forEach(function (ev) { inkCur.pts.push(P(ev)); });
       liveDraw();
     });
-    function end() {
+    function end(e) {
+      if (e && e.pointerType === "touch") { delete touchPts[e.pointerId]; panC = centroid(); }
       if (!inkDrawing) return;
       inkDrawing = false;
       if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
