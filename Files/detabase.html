@@ -5461,17 +5461,20 @@
     longs.forEach(function (g, i) { pos[g.id] = { x: ltXs[i], y: y, sz: LT }; });
     y += LT / 2 + ROWGAP + 6;
 
-    // rows ordered by prerequisite depth: goals with no required goals on top,
-    // each row below holds goals whose required goals all sit in the rows above
+    // completed goals always sit above every unfinished goal; the rest are
+    // ordered by how many *unfinished* required goals still sit before them
     var tiers = {};
-    shorts.forEach(function (g) { var L = goalDepth(g); (tiers[L] = tiers[L] || []).push(g); });
+    shorts.forEach(function (g) {
+      var L = goalIsComplete(g) ? -1 : goalDepthOpen(g);
+      (tiers[L] = tiers[L] || []).push(g);
+    });
     var tierKeys = Object.keys(tiers).map(Number).sort(function (a, b) { return a - b; });
     var rowLabels = "";
     tierKeys.forEach(function (L) {
       var gs = tiers[L].slice().sort(function (a, b) { return String(a.title || "").localeCompare(String(b.title || "")); });
       var xs = rowX(gs.length, ST), ry = y + ST / 2;
       gs.forEach(function (g, i) { pos[g.id] = { x: xs[i], y: ry, sz: ST }; });
-      rowLabels += '<div class="gt-tier" style="top:' + (ry - 7) + 'px">' + (L === 0 ? 'start here' : 'stage ' + (L + 1)) + '</div>';
+      rowLabels += '<div class="gt-tier" style="top:' + (ry - 7) + 'px">' + (L === -1 ? 'done' : L === 0 ? 'start here' : 'stage ' + (L + 1)) + '</div>';
       y = ry + ST / 2 + ROWGAP;
     });
     var totalH = y + 96, totalW = maxRight; // room so hover cards near the bottom aren't clipped
@@ -5978,12 +5981,10 @@
     return Math.round(total);
   }
   function totalSkillProgress() { var p = progressAtXp(totalSkillXp()); p.mode = "total"; return p; }
-  // a goal counts as "finished" when it has sessions and every one of them is done
+  // a goal is finished when it's marked done, or its progress reaches 100%
   function goalIsComplete(g) {
     if (!g) return false;
-    if (goalMode(g) === "long") { var k = shortGoalsOf(g.id); return k.length > 0 && k.every(goalIsComplete); }
-    var ss = goalSessions(g.id);
-    return ss.length > 0 && ss.every(function (s) { return s.done; });
+    return !!g.done || goalProgress(g).pct >= 100;
   }
   var PL_EST_SESSION_MIN = 240; // a goal with no real sessions yet is estimated at this per target session
   // total session minutes a goal represents. real sessions if any; otherwise target-count × estimate.
@@ -6008,12 +6009,6 @@
     }
     return Object.keys(set).map(function (k) { return set[k]; });
   }
-  // is a goal finished?  manual "mark done", or 100% progress
-  function goalIsComplete(g) {
-    if (!g) return false;
-    if (g.done) return true;
-    return goalProgress(g).pct >= 100;
-  }
   // how many prerequisite steps sit before g — longest path through reqGoals (0 = a starting goal)
   function goalDepth(g, seen) {
     seen = seen || {};
@@ -6023,6 +6018,19 @@
       return store.planner.goals.filter(function (x) { return x.id === id; })[0];
     }).filter(function (x) { return x && goalMode(x) !== "skill"; });
     var d = reqs.length ? 1 + Math.max.apply(null, reqs.map(function (r) { return goalDepth(r, seen); })) : 0;
+    delete seen[g.id];
+    return d;
+  }
+  // like goalDepth but counts only UNFINISHED required goals — so a goal whose
+  // prerequisites are all done reads as "start here" in the chart's to-do zone
+  function goalDepthOpen(g, seen) {
+    seen = seen || {};
+    if (!g || seen[g.id]) return 0;
+    seen[g.id] = 1;
+    var reqs = (g.reqGoals || []).map(function (id) {
+      return store.planner.goals.filter(function (x) { return x.id === id; })[0];
+    }).filter(function (x) { return x && goalMode(x) !== "skill" && !goalIsComplete(x); });
+    var d = reqs.length ? 1 + Math.max.apply(null, reqs.map(function (r) { return goalDepthOpen(r, seen); })) : 0;
     delete seen[g.id];
     return d;
   }
