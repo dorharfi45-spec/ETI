@@ -10,9 +10,9 @@
 <link rel="icon" type="image/svg+xml" href="Files/icon.svg">
 <link rel="apple-touch-icon" href="Files/icon-192.png">
 <meta name="apple-mobile-web-app-title" content="Detabase">
-<!-- bump ?v= on every deploy so devices pick up the new version without waiting for the CDN cache -->
-<meta http-equiv="refresh" content="0; url=Files/detabase.html?v=20260910j">
-<script>location.replace("Files/detabase.html?v=20260910j" + location.hash);</script>
+<!-- always load a fresh copy of the app: a unique query string per open defeats the CDN / iPad cache -->
+<script>location.replace("Files/detabase.html?t=" + Date.now() + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=Files/detabase.html">
 </head>
 <body>
 <p>Opening Detabase… <a href="Files/detabase.html">tap here if it doesn't load</a>.</p>
