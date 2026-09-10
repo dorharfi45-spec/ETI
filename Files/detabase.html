@@ -340,8 +340,10 @@
   .shape-host svg { width: 100%; height: 100%; touch-action: none; }
   .sh-vert-c { touch-action: none; }
   .clip.widget:not(:hover):not(.sel) .sh-vert-c { display: none; }
-  .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; }
+  .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
   .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: var(--bg); display: block; }
+  .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+    background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-primary); box-shadow: var(--shadow); pointer-events: none; white-space: nowrap; }
   .gw-canvas:active { cursor: grabbing; }
   .gw-bar { display: flex; flex-direction: column; gap: 3px; padding: 4px 5px; border-bottom: 1px solid var(--border); background: var(--surface-2); flex-shrink: 0; max-height: 44%; overflow: auto; }
   .gw-row { display: flex; align-items: center; gap: 4px; }
@@ -8320,45 +8322,69 @@
     var slv = it.slider ? (clip.slider != null ? clip.slider : it.slider.val) : undefined;
     host.innerHTML = '<svg viewBox="0 0 260 240" preserveAspectRatio="xMidYMid meet"></svg>';
     var svg = host.querySelector("svg");
-    var P;   // fitted vertices, viewBox coords
-    if (clip.poly && clip.poly.length >= 3) {
-      P = clip.poly.map(function (q) { return q.slice(); });
+    var P;   // vertices, viewBox coords
+    if (clip.poly && clip.poly.length >= 3) P = clip.poly.map(function (q) { return q.slice(); });
+    else { try { P = fitToBox(it.spec(slv).poly, SHAPE_BOX); } catch (e) { host.textContent = "shape error"; return; } }
+
+    function paint() {
       var body = '<rect x="1" y="1" width="258" height="238" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>';
-      body += '<polygon points="' + P.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") +
-        '" fill="color-mix(in srgb, var(--accent) 12%, transparent)" stroke="var(--accent)" stroke-width="2"/>';
+      if (!clip.poly) {
+        // pristine parametric shape with its tick/angle decorations
+        var tmp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        try { renderShape(tmp, it.spec(slv)); body = tmp.querySelector("g") ? tmp.querySelector("g").innerHTML : body; } catch (e) {}
+      } else {
+        body += '<polygon points="' + P.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") +
+          '" fill="color-mix(in srgb, var(--accent) 12%, transparent)" stroke="var(--accent)" stroke-width="2"/>';
+        var n = P.length;
+        P.forEach(function (q, i) {
+          var mid = [(P[(i + 1) % n][0] + P[(i + n - 1) % n][0]) / 2, (P[(i + 1) % n][1] + P[(i + n - 1) % n][1]) / 2];
+          var lx = q[0] + (mid[0] - q[0]) * 0.4, ly = q[1] + (mid[1] - q[1]) * 0.4 + 3;
+          body += '<text x="' + lx.toFixed(0) + '" y="' + ly.toFixed(0) + '" font-size="10" fill="var(--text-secondary)" text-anchor="middle">' + shapeAngleAt(P, i) + '°</text>';
+        });
+      }
       P.forEach(function (q, i) {
-        var n = P.length, mid = [(q[0] + P[(i + 1) % n][0] + P[(i + n - 1) % n][0]) / 3, (q[1] + P[(i + 1) % n][1] + P[(i + n - 1) % n][1]) / 3];
-        var lx = q[0] + (mid[0] - q[0]) * 0.32, ly = q[1] + (mid[1] - q[1]) * 0.32 + 3;
-        body += '<text x="' + lx.toFixed(0) + '" y="' + ly.toFixed(0) + '" font-size="10" fill="var(--text-secondary)" text-anchor="middle">' + shapeAngleAt(P, i) + '°</text>';
+        body += '<circle class="sh-vert-c" data-vi="' + i + '" cx="' + q[0] + '" cy="' + q[1] + '" r="7" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>';
       });
       svg.innerHTML = body;
-    } else {
-      try { renderShape(svg, it.spec(slv)); } catch (e) { host.textContent = "shape error"; return; }
-      P = fitToBox(it.spec(slv).poly, SHAPE_BOX);
-    }
-    // draggable vertex handles (SVG circles, scale with the shape)
-    P.forEach(function (q, i) {
-      var h = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      h.setAttribute("cx", q[0]); h.setAttribute("cy", q[1]); h.setAttribute("r", 6.5);
-      h.setAttribute("class", "sh-vert-c");
-      h.setAttribute("fill", "var(--bg)"); h.setAttribute("stroke", "var(--accent)"); h.setAttribute("stroke-width", "2");
-      h.style.cursor = "move";
-      h.addEventListener("pointerdown", function (ev) {
-        ev.preventDefault(); ev.stopPropagation();
-        try { h.setPointerCapture(ev.pointerId); } catch (_) {}
-        if (!clip.poly) clip.poly = P.map(function (x) { return x.slice(); });
-        function mv(e2) {
-          var m = svg.getScreenCTM(); if (!m) return;
-          var pt = new DOMPoint(e2.clientX, e2.clientY).matrixTransform(m.inverse());
-          clip.poly[i] = [Math.max(6, Math.min(254, pt.x)), Math.max(6, Math.min(234, pt.y))];
-          renderShapeWidget(host, clip, p);
-        }
-        function up() { document.removeEventListener("pointermove", mv, true); document.removeEventListener("pointerup", up, true); saveStore(); }
-        document.addEventListener("pointermove", mv, true);
-        document.addEventListener("pointerup", up, true);
+      Array.prototype.slice.call(svg.querySelectorAll(".sh-vert-c")).forEach(function (h) {
+        h.addEventListener("pointerdown", startVert);
       });
-      svg.appendChild(h);
-    });
+    }
+    function startVert(ev) {
+      ev.preventDefault(); ev.stopPropagation();
+      var i = +this.getAttribute("data-vi");
+      try { this.setPointerCapture(ev.pointerId); } catch (_) {}
+      if (!clip.poly) clip.poly = P.map(function (x) { return x.slice(); });
+      var poly = svg.querySelector("polygon"), circles = svg.querySelectorAll(".sh-vert-c"), texts = svg.querySelectorAll("text");
+      function toVB(cx, cy) {
+        var m = svg.getScreenCTM(); if (!m) return null;
+        return new DOMPoint(cx, cy).matrixTransform(m.inverse());
+      }
+      function mv(e2) {
+        var pt = toVB(e2.clientX, e2.clientY); if (!pt) return;
+        P[i] = [Math.max(8, Math.min(252, pt.x)), Math.max(8, Math.min(232, pt.y))];
+        clip.poly[i] = P[i].slice();
+        if (poly) poly.setAttribute("points", P.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "));
+        var c = circles[i]; if (c) { c.setAttribute("cx", P[i][0]); c.setAttribute("cy", P[i][1]); }
+        // refresh angle labels (they're the only <text> nodes, in vertex order)
+        var n = P.length;
+        Array.prototype.slice.call(texts).forEach(function (t, k) {
+          if (k >= n) return;
+          var q = P[k], mid = [(P[(k + 1) % n][0] + P[(k + n - 1) % n][0]) / 2, (P[(k + 1) % n][1] + P[(k + n - 1) % n][1]) / 2];
+          t.setAttribute("x", (q[0] + (mid[0] - q[0]) * 0.4).toFixed(0));
+          t.setAttribute("y", (q[1] + (mid[1] - q[1]) * 0.4 + 3).toFixed(0));
+          t.textContent = shapeAngleAt(P, k) + "°";
+        });
+      }
+      function up() {
+        document.removeEventListener("pointermove", mv, true);
+        document.removeEventListener("pointerup", up, true);
+        saveStore();
+      }
+      document.addEventListener("pointermove", mv, true);
+      document.addEventListener("pointerup", up, true);
+    }
+    paint();
   }
   function openShapePicker(anchor, clip, p) {
     var old = document.querySelector(".shape-pick"); if (old) old.remove();
@@ -8479,16 +8505,21 @@
     var COLS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
     clip.fns = (clip.fns && clip.fns.length) ? clip.fns : [{ expr: "", color: COLS[0] }];
     clip.view = clip.view || { cx: 0, cy: 0, ppu: 32 };
-    var bar = !clip.showBar ? "" :
+    clip.markers = clip.markers || [];
+    var editMode = (clip.mode || "edit") === "edit";
+    var bar = !editMode ? "" :
       '<div class="gw-bar">' + clip.fns.map(function (f, idx) {
         return '<div class="gw-row"><span class="gw-dot" style="background:' + (f.color || COLS[idx % COLS.length]) + '"></span>' +
           '<span style="font-size:.78rem;color:var(--text-muted)">y=</span>' +
           '<input data-fi="' + idx + '" value="' + escapeHtml(f.expr || "") + '" placeholder="sin(x), x^2, 1/x, ln(x)…">' +
           '<button data-del="' + idx + '">✕</button></div>';
       }).join("") +
-      '<div class="gw-foot"><button data-addfn>＋ line</button><button data-reset>reset view</button></div></div>';
-    host.innerHTML = bar + '<canvas class="gw-canvas"></canvas>';
+      '<div class="gw-foot"><button data-addfn>＋ line</button><button data-reset>reset view</button>' +
+      '<span style="margin-left:auto;font-size:.68rem;color:var(--text-muted);align-self:center">drag = pan · pinch/scroll = zoom</span></div></div>';
+    host.innerHTML = bar + '<canvas class="gw-canvas"></canvas>' +
+      (editMode ? '' : '<div class="gw-readout" hidden></div>');
     var cv = host.querySelector(".gw-canvas");
+    var readout = host.querySelector(".gw-readout");
     function niceStep(t) { var p10 = Math.pow(10, Math.floor(Math.log(t) / Math.LN10)); var f = t / p10; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p10; }
     function fmtNum(n) { return Math.abs(n) < 1e-9 ? "0" : String(Math.round(n * 1000) / 1000); }
     function draw() {
@@ -8498,6 +8529,7 @@
       var g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
       var v = clip.view, ppu = v.ppu, ox = W / 2 - v.cx * ppu, oy = H / 2 + v.cy * ppu;
       function SX(u) { return ox + u * ppu; } function SY(u) { return oy - u * ppu; }
+      clip._tf = { W: W, H: H, ppu: ppu, ox: ox, oy: oy };
       var axisc = (getComputedStyle(document.body).getPropertyValue("--text-secondary") || "#475569").trim();
       var step = niceStep(60 / ppu);
       g.lineWidth = 1; g.strokeStyle = "rgba(128,128,140,.20)";
@@ -8526,6 +8558,23 @@
         }
         g.stroke();
       });
+      // locked markers
+      (clip.markers || []).forEach(function (mk) {
+        var f = clip.fns[mk.fi]; if (!f) return;
+        var fn = compileExpr(f.expr); if (!fn) return;
+        var yv = fn(mk.x); if (!isFinite(yv)) return;
+        var mxp = SX(mk.x), myp = SY(yv);
+        if (mxp < -20 || mxp > W + 20 || myp < -20 || myp > H + 20) return;
+        g.fillStyle = f.color || COLS[mk.fi % COLS.length];
+        g.beginPath(); g.arc(mxp, myp, 4, 0, 7); g.fill();
+        g.strokeStyle = "#fff"; g.lineWidth = 1.5; g.stroke();
+        var lbl = "(" + fmtNum(mk.x) + ", " + fmtNum(yv) + ")";
+        g.font = "10px system-ui, sans-serif";
+        var tw = g.measureText(lbl).width;
+        var bx = Math.min(W - tw - 8, mxp + 7), by = Math.max(12, myp - 8);
+        g.fillStyle = "rgba(255,255,255,.9)"; g.fillRect(bx - 3, by - 10, tw + 6, 14);
+        g.fillStyle = axisc; g.fillText(lbl, bx, by);
+      });
     }
     clip._redraw = draw;
     host.querySelectorAll("input[data-fi]").forEach(function (inp) {
@@ -8541,29 +8590,101 @@
     if (ab) ab.addEventListener("click", function (e) { e.stopPropagation(); clip.fns.push({ expr: "", color: COLS[clip.fns.length % COLS.length] }); saveStore(); renderCanvas(); });
     var rb = host.querySelector("[data-reset]");
     if (rb) rb.addEventListener("click", function (e) { e.stopPropagation(); clip.view = { cx: 0, cy: 0, ppu: 32 }; saveStore(); draw(); });
-    var pan = false, psx, psy, pcx, pcy;
+
+    var MINPPU = 0.02, MAXPPU = 4000;
+    function zoomAt(mx, my, k) {
+      var tf = clip._tf || { W: cv.clientWidth, H: cv.clientHeight }; var v = clip.view;
+      var ux = (mx - tf.W / 2) / v.ppu + v.cx, uy = -(my - tf.H / 2) / v.ppu + v.cy;
+      v.ppu = Math.max(MINPPU, Math.min(MAXPPU, v.ppu * k));
+      v.cx = ux - (mx - tf.W / 2) / v.ppu; v.cy = uy + (my - tf.H / 2) / v.ppu;
+    }
+    function localXY(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+
+    // ---- pointer interaction: pan / pinch in edit mode, tap-markers in set mode ----
+    var pts = {}, startDist = 0, startPpu = 0, pcx0, pcy0, panFrom = null, downXY = null, moved = 0;
     cv.addEventListener("pointerdown", function (e) {
-      e.stopPropagation(); pan = true; psx = e.clientX; psy = e.clientY; pcx = clip.view.cx; pcy = clip.view.cy;
+      e.stopPropagation();
       try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+      pts[e.pointerId] = localXY(e);
+      var ids = Object.keys(pts);
+      if (editMode && ids.length === 2) {
+        var a = pts[ids[0]], b = pts[ids[1]];
+        startDist = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1; startPpu = clip.view.ppu;
+      } else if (editMode) {
+        panFrom = localXY(e); pcx0 = clip.view.cx; pcy0 = clip.view.cy;
+      }
+      downXY = localXY(e); moved = 0;
     });
     cv.addEventListener("pointermove", function (e) {
-      if (!pan) return;
-      clip.view.cx = pcx - (e.clientX - psx) / clip.view.ppu;
-      clip.view.cy = pcy + (e.clientY - psy) / clip.view.ppu;
-      draw();
+      if (!pts[e.pointerId]) return;
+      pts[e.pointerId] = localXY(e);
+      if (downXY) moved = Math.max(moved, Math.hypot(pts[e.pointerId][0] - downXY[0], pts[e.pointerId][1] - downXY[1]));
+      var ids = Object.keys(pts);
+      if (editMode && ids.length >= 2 && startDist) {
+        var a = pts[ids[0]], b = pts[ids[1]];
+        var d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1;
+        var mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        clip.view.ppu = startPpu; zoomAt(mid[0], mid[1], d / startDist);
+        draw();
+      } else if (editMode && panFrom) {
+        clip.view.cx = pcx0 - (pts[e.pointerId][0] - panFrom[0]) / clip.view.ppu;
+        clip.view.cy = pcy0 + (pts[e.pointerId][1] - panFrom[1]) / clip.view.ppu;
+        draw();
+      } else if (!editMode) {
+        showReadout(pts[e.pointerId]);
+      }
     });
-    function endpan() { if (pan) { pan = false; saveStore(); } }
-    cv.addEventListener("pointerup", endpan);
-    cv.addEventListener("pointercancel", endpan);
+    function endPtr(e) {
+      var wasTap = downXY && moved < 6;
+      delete pts[e.pointerId];
+      if (Object.keys(pts).length < 2) startDist = 0;
+      if (Object.keys(pts).length === 0) { panFrom = null; if (editMode) saveStore(); }
+      if (!editMode && wasTap) toggleMarkerAt(downXY);
+      downXY = null;
+    }
+    cv.addEventListener("pointerup", endPtr);
+    cv.addEventListener("pointercancel", endPtr);
     cv.addEventListener("wheel", function (e) {
+      if (!editMode) return;
       e.preventDefault(); e.stopPropagation();
-      var rect = cv.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      var W = rect.width, H = rect.height, v = clip.view;
-      var ux = (mx - W / 2) / v.ppu + v.cx, uy = -(my - H / 2) / v.ppu + v.cy;
-      v.ppu = Math.max(4, Math.min(400, v.ppu * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));
-      v.cx = ux - (mx - W / 2) / v.ppu; v.cy = uy + (my - H / 2) / v.ppu;
+      var xy = localXY(e);
+      zoomAt(xy[0], xy[1], e.deltaY < 0 ? 1.12 : 1 / 1.12);
       draw(); clearTimeout(clip._zt); clip._zt = setTimeout(function () { saveStore(); }, 350);
     }, { passive: false });
+
+    function nearestCurve(xy) {
+      var tf = clip._tf; if (!tf) return null;
+      var xu = (xy[0] - tf.ox) / tf.ppu, best = null;
+      clip.fns.forEach(function (f, fi) {
+        var fn = compileExpr(f.expr); if (!fn) return;
+        var yv = fn(xu); if (!isFinite(yv)) return;
+        var py = tf.oy - yv * tf.ppu, dy = Math.abs(py - xy[1]);
+        if (dy < 26 && (!best || dy < best.dy)) best = { fi: fi, x: xu, y: yv, dy: dy };
+      });
+      return best;
+    }
+    function showReadout(xy) {
+      if (!readout) return;
+      var n = nearestCurve(xy);
+      if (!n) { readout.hidden = true; return; }
+      readout.hidden = false;
+      readout.textContent = "x = " + fmtNum(n.x) + "   y = " + fmtNum(n.y);
+      readout.style.left = Math.min(cv.clientWidth - 120, xy[0] + 8) + "px";
+      readout.style.top = Math.max(2, xy[1] - 26) + "px";
+      clearTimeout(clip._rt); clip._rt = setTimeout(function () { readout.hidden = true; }, 1400);
+    }
+    function toggleMarkerAt(xy) {
+      var tf = clip._tf; if (!tf) return;
+      // remove a marker if we tapped one
+      for (var k = 0; k < clip.markers.length; k++) {
+        var mk = clip.markers[k], f = clip.fns[mk.fi]; if (!f) continue;
+        var fn = compileExpr(f.expr); if (!fn) continue;
+        var mxp = tf.ox + mk.x * tf.ppu, myp = tf.oy - fn(mk.x) * tf.ppu;
+        if (Math.hypot(mxp - xy[0], myp - xy[1]) < 14) { clip.markers.splice(k, 1); saveStore(); draw(); return; }
+      }
+      var n = nearestCurve(xy);
+      if (n) { clip.markers.push({ fi: n.fi, x: +n.x.toFixed(4) }); saveStore(); draw(); }
+    }
     requestAnimationFrame(draw);
   }
 
@@ -8743,8 +8864,12 @@
       e.stopPropagation();
       el.classList.add("sel");
       if (clip.kind === "shape") openShapePicker(ce, clip, p);
-      else if (clip.kind === "graph") { clip.showBar = !clip.showBar; saveStore(); renderCanvas(); }
+      else if (clip.kind === "graph") { clip.mode = (clip.mode || "edit") === "edit" ? "set" : "edit"; saveStore(); renderCanvas(); }
     });
+    if (clip.kind === "graph") {
+      var meb = el.querySelector(".wt-edit");
+      if (meb) { meb.textContent = (clip.mode || "edit") === "edit" ? "✎" : "🔒"; meb.title = (clip.mode || "edit") === "edit" ? "editing — tap for set mode" : "set — tap to edit"; }
+    }
     el.querySelector(".clip-del").addEventListener("click", function (e) { e.stopPropagation(); clipRemove(clip.id); });
 
     var edBody = el.querySelector('.clip-body[contenteditable="true"]');
