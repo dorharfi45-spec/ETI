@@ -189,6 +189,10 @@
   .pp-results-drop .pp-empty { font-size: .85rem; color: var(--text-muted); padding: 6px 4px; }
 
   /* ---- situation search: "what does your problem have?" — collapsed until opened ---- */
+  .dd-source { display: flex; gap: 5px; padding: 0 2px 8px; }
+  .dd-source button { flex: 1; font-size: .8rem; font-weight: 700; padding: 5px 8px; border-radius: 8px;
+    border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); }
+  .dd-source button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   .dd-tagbar { padding-bottom: 8px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
   .dd-chips-label { display: block; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); padding: 2px 2px 6px; }
   .dd-tag-pills { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 6px; }
@@ -7905,6 +7909,7 @@
   }
   var activeTags = [];
   var chipFilter = "";
+  var ppSource = "subjects";   // "subjects" (ETI cards) | "problems" (saved solutions + pages)
   var tagListOpen = false;   // the full tag list only appears while you're using the situation search
   function toggleDropdown(show) {
     var box = $("ppResults");
@@ -7920,6 +7925,34 @@
     var html = "";
     var focusedChipFilter = document.activeElement && document.activeElement.id === "ddChipFilter";
     var caret = focusedChipFilter ? document.activeElement.selectionStart : null;
+
+    html += '<div class="dd-source">' +
+      '<button type="button" data-src="subjects"' + (ppSource === "subjects" ? ' class="on"' : '') + '>ETI cards</button>' +
+      '<button type="button" data-src="problems"' + (ppSource === "problems" ? ' class="on"' : '') + '>My pages</button></div>';
+
+    if (ppSource === "problems") {
+      var qq = (q || "").trim().toLowerCase();
+      var mine = canvasDocs().filter(function (d) { return d.id !== activeProblem; })
+        .filter(function (d) { return !qq || (d.name || "").toLowerCase().indexOf(qq) >= 0; })
+        .sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
+      html += '<div class="dd-results">';
+      if (!mine.length) html += '<div class="pp-empty">' + (qq ? 'No page named “' + escapeHtml(q) + '”.' : 'No other pages yet — problem-solving pages and notebook pages you make show up here to clip from.') + '</div>';
+      mine.forEach(function (d) {
+        var n = (loadCanvas(d.id).items || []).length, hasInk = (loadCanvas(d.id).ink || []).length;
+        html += '<div class="pp-hit" data-page="' + d.id + '"><div class="hit-main">' +
+          '<div class="hit-title">' + escapeHtml(d.name || "Untitled") + '</div>' +
+          '<div class="hit-src">' + (isPage(d.id) ? "notebook page" : "problem") + ' · ' + n + ' item' + (n !== 1 ? "s" : "") + (hasInk ? " · handwriting" : "") + '</div></div>' +
+          '<button class="hit-open" data-page="' + d.id + '">open</button>' +
+          '<button class="hit-add" data-pageclip="' + d.id + '">＋ board</button></div>';
+      });
+      html += '</div>';
+      box.innerHTML = html;
+      box.querySelectorAll('[data-src]').forEach(function (b) { b.addEventListener("click", function () { ppSource = b.getAttribute("data-src"); renderDropdown(); }); });
+      box.querySelectorAll('[data-pageclip]').forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); hideResults(); startClipModePage(b.getAttribute("data-pageclip")); }); });
+      box.querySelectorAll('.hit-open[data-page]').forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); var id = b.getAttribute("data-page"); if (isPage(id)) selectPage(id); else selectProblem(id); }); });
+      renderShortBadge();
+      return;
+    }
 
     html += '<div class="dd-tagbar">';
     html += '<span class="dd-chips-label">What does your problem have?</span>';
@@ -7984,6 +8017,8 @@
     html += '</div>';
 
     box.innerHTML = html;
+
+    box.querySelectorAll('[data-src]').forEach(function (b) { b.addEventListener("click", function () { ppSource = b.getAttribute("data-src"); renderDropdown(); }); });
 
     var cf = box.querySelector("#ddChipFilter");
     cf.addEventListener("focus", function () { if (!tagListOpen) { tagListOpen = true; renderDropdown(); } });
@@ -8709,11 +8744,45 @@
   }
   var clipModeOverlay = null;
   function closeClipMode() { if (clipModeOverlay) { clipModeOverlay.remove(); clipModeOverlay = null; } }
+  function canvasSnapshotHtml(id) {
+    var c = loadCanvas(id), parts = [];
+    var ink = c.ink || [];
+    if (ink.length) {
+      var mnX = 1e9, mnY = 1e9, mxX = -1e9, mxY = -1e9;
+      ink.forEach(function (s) { (s.pts || []).forEach(function (q) { mnX = Math.min(mnX, q[0]); mnY = Math.min(mnY, q[1]); mxX = Math.max(mxX, q[0]); mxY = Math.max(mxY, q[1]); }); });
+      var pd = 12, w = (mxX - mnX + pd * 2) || 1, h = (mxY - mnY + pd * 2) || 1;
+      var paths = ink.map(function (s) {
+        if (!s.pts || !s.pts.length) return "";
+        var d = "M" + s.pts.map(function (q) { return (q[0] - mnX + pd).toFixed(1) + " " + (q[1] - mnY + pd).toFixed(1); }).join(" L");
+        return '<path d="' + d + '" fill="none" stroke="' + (s.color || "#1e293b") + '" stroke-width="' + (s.w || 3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+      }).join("");
+      parts.push('<svg viewBox="0 0 ' + w.toFixed(0) + ' ' + h.toFixed(0) + '" style="max-width:100%;height:auto;display:block;margin:4px 0">' + paths + '</svg>');
+    }
+    (c.items || []).slice().sort(function (a, b) { return (a.y || 0) - (b.y || 0) || (a.x || 0) - (b.x || 0); }).forEach(function (it) {
+      if (it.kind === "note") { if (it.text && it.text.trim()) parts.push('<p>' + escapeHtml(it.text).replace(/\n/g, "<br>") + '</p>'); }
+      else if (it.kind === "graph") parts.push('<p class="muted">📈 ' + escapeHtml((it.fns || []).map(function (f) { return "y=" + f.expr; }).filter(Boolean).join(",  ")) + '</p>');
+      else if (it.kind === "shape") parts.push('<p class="muted">△ ' + escapeHtml((it.type || "shape")) + '</p>');
+      else if (it.html) parts.push('<div>' + it.html + '</div>');
+    });
+    return parts.join("");
+  }
   function startClipMode(sourceId, pos) {
     closeClipMode();
     var e = indexById(sourceId);
     var html = getCardHTML(sourceId);
     if (!html) { benchAdd(sourceId, pos); return; }
+    openClipOverlay(html, e ? e.title : "Clip", pos, function (pos2) { benchAdd(sourceId, pos2); });
+  }
+  function startClipModePage(pageId, pos) {
+    closeClipMode();
+    var d = canvasDocById(pageId);
+    var inner = canvasSnapshotHtml(pageId);
+    if (!inner.trim()) { alert("That page has nothing to clip yet."); return; }
+    var html = '<div>' + inner + '</div>';
+    openClipOverlay(html, (d && d.name) || "Page", pos, function (pos2) { newMergedClip(html, (d && d.name) || "Page", pos2); });
+  }
+  function openClipOverlay(html, title, pos, onKeepAll) {
+    closeClipMode();
     var canvas = $("ppCanvas");
     var pp = pos || { x: (canvas.scrollLeft || 0) + 40, y: (canvas.scrollTop || 0) + 40 };
     var ov = document.createElement("div");
@@ -8724,7 +8793,7 @@
     ov.style.height = "440px";
     ov.style.zIndex = (++zTop) + 5000;
     ov.innerHTML =
-      '<div class="clipmode-bar"><b>' + escapeHtml(e ? e.title : "Clip") + '</b>' +
+      '<div class="clipmode-bar"><b>' + escapeHtml(title || "Clip") + '</b>' +
       '<button data-cm="all" class="hot">Keep all</button>' +
       '<button data-cm="mark">Mark parts</button>' +
       '<button data-cm="cancel">✕</button></div>' +
@@ -8803,7 +8872,7 @@
         var pos2 = finalPos();
         var htmlOut = marked.map(cleanHtml).join("");
         closeClipMode();
-        newMergedClip('<div>' + htmlOut + '</div>', (e ? e.title : "Clip") + " — parts", pos2);
+        newMergedClip('<div>' + htmlOut + '</div>', (title || "Clip") + " — parts", pos2);
       });
       var cropBtn = ov.querySelector('[data-cm2="crop"]');
       cropBtn.addEventListener("click", function () {
@@ -8846,7 +8915,7 @@
     }
     ov.querySelector('[data-cm="all"]').addEventListener("click", function () {
       var pos2 = finalPos(); closeClipMode();
-      if (e) benchAdd(sourceId, pos2); else newMergedClip(html, "Clip", pos2);
+      onKeepAll(pos2);
     });
     ov.querySelector('[data-cm="cancel"]').addEventListener("click", closeClipMode);
     markBtn.addEventListener("click", enterMarking);
