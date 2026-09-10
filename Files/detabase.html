@@ -315,7 +315,7 @@
   #inkDone { flex: 0 0 auto; font-weight: 700; }
 
   /* ---- floating + Shape / + Graph control (bottom-left of the writing page) ---- */
-  #ppWidgetAdd { position: fixed; left: 16px; bottom: 16px; z-index: 860; display: none; align-items: center; gap: 6px; }
+  #ppWidgetAdd { position: fixed; left: 16px; bottom: 16px; z-index: 4300; display: none; align-items: center; gap: 6px; }
   body.ink-full #ppWidgetAdd { display: flex; }
   #ppWidgetAdd .wa-toggle {
     width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
@@ -349,10 +349,11 @@
     aspect-ratio: 16 / 10; display: block; width: 100%;
   }
   .nb-card.recent .nb-thumb { width: 300px; max-width: 45%; border-bottom: none; border-right: 1px solid var(--border); aspect-ratio: auto; }
-  .nb-card .nb-meta { padding: 9px 11px; display: flex; align-items: center; gap: 6px; }
-  .nb-card .nb-name { flex: 1; font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .nb-card.recent .nb-meta { flex-direction: column; align-items: flex-start; justify-content: center; padding: 16px; flex: 1; }
-  .nb-card.recent .nb-name { font-size: 1.1rem; white-space: normal; }
+  .nb-card .nb-meta { padding: 9px 11px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .nb-card .nb-name { flex: 1 1 60px; min-width: 0; font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nb-card.recent .nb-meta { align-content: center; padding: 16px; flex: 1; }
+  .nb-card.recent .nb-name { flex-basis: 100%; font-size: 1.1rem; white-space: normal; margin-bottom: 4px; }
+  .nb-card.recent .nb-bank-tag { flex-basis: 100%; }
   .nb-card .nb-x, .nb-card .nb-ren {
     border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: .9rem; padding: 2px 4px; border-radius: 5px;
   }
@@ -361,7 +362,7 @@
 
   /* ---- library panel inside the writing page ---- */
   #nbLib {
-    position: fixed; top: 54px; left: 0; bottom: 0; width: min(340px, 86vw); z-index: 870;
+    position: fixed; top: 54px; left: 0; bottom: 0; width: min(340px, 86vw); z-index: 4300;
     background: var(--bg); border-right: 1px solid var(--border-strong); box-shadow: var(--shadow);
     display: flex; flex-direction: column; transform: translateX(-102%); transition: transform .18s ease;
   }
@@ -2985,6 +2986,7 @@
   </div>
   <div id="ppInkbar" class="ink-toolbar">
     <button type="button" id="nbLibToggle" class="tool-btn" title="library — clip in subjects, pages &amp; problem methods">📚</button>
+    <button type="button" class="ink-tool" data-inktool="select" title="select — move &amp; edit shapes, graphs and clips">✋</button>
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="erase" title="erase strokes">⌫</button>
     <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
@@ -8779,6 +8781,8 @@
       bar.querySelectorAll("[data-inktool]").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-inktool") === t); });
       $("ppCanvas").classList.toggle("erase", t === "erase");
       $("ppCanvas").classList.toggle("lasso", t === "lasso");
+      // "select" lifts the ink capture layer so shapes / graphs / clips take input again
+      $("ppCanvas").classList.toggle("drawing", document.body.classList.contains("ink-full") && t !== "select");
       if (t !== "lasso") inkSelClear();
     }
     bar.querySelectorAll("[data-inktool]").forEach(function (x) {
