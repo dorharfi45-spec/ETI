@@ -328,15 +328,23 @@
   .clip-body .gallery { flex-direction: column; }
   /* ---- shape & graph widgets: never a frame — just the shape/graph, sitting on the page ---- */
   .clip.widget { border: none; background: transparent; box-shadow: none; overflow: visible; }
-  .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 3px; }
-  .clip.widget .clip-body { padding: 0; overflow: visible; border-radius: 0; background: transparent; }
-  .wtools { position: absolute; top: -13px; right: 4px; z-index: 6; display: none; gap: 4px; }
-  .clip.widget:hover .wtools, .clip.widget.sel .wtools { display: flex; }
-  .wtools button { width: 24px; height: 24px; padding: 0; font-size: .82rem; line-height: 1; border-radius: 7px;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-secondary); box-shadow: var(--shadow); }
-  .wtools button:hover { color: var(--accent); border-color: var(--accent); }
-  .wtools .wt-move { cursor: grab; touch-action: none; }
-  .wtools .wt-move:active { cursor: grabbing; }
+  .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: -1px; }
+  .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; pointer-events: none; }
+  /* empty widget box doesn't grab — only the shape/graph itself and its controls do (so overlapping widgets stay independent) */
+  .clip.widget .clip-body svg, .clip.widget .clip-body canvas,
+  .clip.widget .clip-body input, .clip.widget .clip-body button { pointer-events: auto; }
+  /* drag grip: slim bar along the widget's top edge — the only way to move it. hidden until hover/selected */
+  .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 15px; z-index: 7; display: none;
+    align-items: center; gap: 4px; padding: 0 4px; box-sizing: border-box;
+    background: color-mix(in srgb, var(--surface-2) 85%, transparent); border-radius: 8px 8px 0 0;
+    cursor: grab; touch-action: none; }
+  .wgrip:active { cursor: grabbing; }
+  .clip.widget:hover .wgrip, .clip.widget.sel .wgrip { display: flex; }
+  .wgrip .wgrip-bar { flex: 1; height: 3px; border-radius: 2px; pointer-events: none;
+    background: repeating-linear-gradient(90deg, var(--text-muted) 0 5px, transparent 5px 9px); opacity: .55; }
+  .wgrip button { width: 17px; height: 13px; padding: 0; font-size: .68rem; line-height: 1; border: none;
+    background: transparent; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; }
+  .wgrip button:hover { color: var(--accent); }
   .clip.widget .clip-resize { opacity: 0; transition: opacity .12s; }
   .clip.widget:hover .clip-resize, .clip.widget.sel .clip-resize { opacity: 1; }
   .clip.widget .clip-resize::after { border-color: var(--accent); }
@@ -349,7 +357,10 @@
   .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
     background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-primary); box-shadow: var(--shadow); pointer-events: none; white-space: nowrap; }
   .gw-canvas:active { cursor: grabbing; }
-  .gw-bar { display: flex; flex-direction: column; gap: 3px; padding: 4px 5px; border-bottom: 1px solid var(--border); background: var(--surface-2); flex-shrink: 0; max-height: 44%; overflow: auto; }
+  /* function bar overlays the top of the graph only while it's selected/hovered — otherwise it's just the graph */
+  .gw-bar { position: absolute; top: 15px; left: 0; right: 0; z-index: 5; display: flex; flex-direction: column; gap: 3px;
+    padding: 4px 5px; border: 1px solid var(--border); border-radius: 0 0 8px 8px; background: var(--surface-2); max-height: 62%; overflow: auto; }
+  .clip.widget:not(:hover):not(.sel) .gw-bar { display: none; }
   .gw-row { display: flex; align-items: center; gap: 4px; }
   .gw-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
   .gw-row input { flex: 1; min-width: 0; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .78rem; padding: 3px 6px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text-primary); }
@@ -8102,8 +8113,8 @@
       var titleTxt = clip.title || (isNote ? "Note" : "Clip");
       if (isW) {
         el.innerHTML =
-          '<div class="wtools">' +
-          '<button class="wt-move" title="drag to move">✥</button>' +
+          '<div class="wgrip" title="drag to move">' +
+          '<span class="wgrip-bar"></span>' +
           '<button class="wt-edit" title="edit">✎</button>' +
           '<button class="clip-del" title="delete">✕</button>' +
           '</div>' +
@@ -8993,9 +9004,9 @@
       ta.addEventListener("keyup", chk);
     }
 
-    var head = el.querySelector(".clip-head") || el.querySelector(".wt-move");
+    var head = el.querySelector(".clip-head") || el.querySelector(".wgrip");
     if (head) head.addEventListener("pointerdown", function (e) {
-      if (e.target.closest("button") && !e.target.closest(".wt-move")) return;
+      if (e.target.closest("button")) return;
       e.preventDefault(); e.stopPropagation();
       try { head.setPointerCapture(e.pointerId); } catch (_) {}
       var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0;
