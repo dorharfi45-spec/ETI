@@ -323,8 +323,9 @@
   #inkDone { flex: 0 0 auto; font-weight: 700; }
 
   /* ---- floating + Shape / + Graph control on the normal canvas ---- */
-  #ppWidgetAdd { position: absolute; left: 16px; bottom: 16px; z-index: 4100; display: none; align-items: center; gap: 6px; }
-  body.top-notebook #ppWidgetAdd, body.viewing-problem #ppWidgetAdd { display: flex; }
+  #ppWidgetAdd { position: fixed; left: 16px; bottom: 16px; z-index: 700; display: none; align-items: center; gap: 6px; }
+  body.viewing-problem #ppWidgetAdd { display: flex; }
+  body.ink-full #ppWidgetAdd { display: none !important; }
   #ppWidgetAdd .wa-toggle {
     width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
     border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
