@@ -302,7 +302,10 @@
   .clip-body { flex: 1; overflow: auto; padding: 10px 12px; font-size: .86rem; line-height: 1.55; }
   .clip-body > *:first-child { margin-top: 0; }
   .clip-body > *:last-child { margin-bottom: 0; }
-  .clip-body input, .clip-body button, .clip-body select, .clip-body [contenteditable] { pointer-events: none; }
+  .clip-body input, .clip-body select, .clip-body button { pointer-events: none; }
+  .clip-body[contenteditable="true"] { outline: none; cursor: text; -webkit-user-select: text; user-select: text; }
+  .clip-body[contenteditable="true"] > * { pointer-events: none; }
+  .clip-body[contenteditable="true"]:focus { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent); }
   .clip.note { border-left: 3px solid var(--accent); }
   .clip.note .clip-body { padding: 0; }
   .clip .note-ta {
@@ -341,6 +344,24 @@
   .shape-pick input[type=range] { width: 100%; }
   .clip-edit { padding: 0 5px; font-size: .74rem; line-height: 1.5; border-radius: 5px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); }
   .clip-edit:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---- clip mode: bring in a card / page, keep all or mark parts ---- */
+  .clipmode { position: absolute; z-index: 5500; background: var(--bg); border: 2px solid var(--accent);
+    border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
+  .clipmode-bar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--accent); flex-shrink: 0; }
+  .clipmode-bar b { color: #fff; font-size: .78rem; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .clipmode-bar button { font-size: .76rem; font-weight: 700; padding: 4px 9px; border-radius: 7px;
+    border: 1px solid rgba(255,255,255,.5); background: rgba(255,255,255,.15); color: #fff; }
+  .clipmode-bar button.hot { background: #fff; color: var(--accent); }
+  .clipmode-src { flex: 1; overflow: auto; padding: 12px 14px; font-size: .86rem; line-height: 1.55; position: relative; }
+  .clipmode.marking .clipmode-src { opacity: 1; }
+  .clipmode:not(.marking) .clipmode-src { opacity: .55; }
+  .clipmode-src input, .clipmode-src button, .clipmode-src select { pointer-events: none; }
+  .clipmode.marking .cm-block { cursor: pointer; border-radius: 6px; box-shadow: 0 0 0 1px var(--border-strong); margin: 3px 0; transition: box-shadow .1s, background .1s; }
+  .clipmode.marking .cm-block:hover { box-shadow: 0 0 0 2px var(--accent); }
+  .clipmode.marking .cm-block.cm-marked { box-shadow: 0 0 0 2px #16a34a; background: color-mix(in srgb, #16a34a 12%, transparent); }
+  .cm-lasso { position: absolute; z-index: 20; border: 1.5px dashed var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); pointer-events: none; }
+  .clipmode.cropping .clipmode-src { cursor: crosshair; }
 
   .clip-resize { position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; cursor: nwse-resize; }
   .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 7px; height: 7px;
@@ -7987,7 +8008,8 @@
     });
     box.querySelectorAll(".hit-star").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); shortlistToggle(b.dataset.idx); }); });
     box.querySelectorAll(".hit-open, .sl-open").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); jumpToCard(b.dataset.idx); }); });
-    box.querySelectorAll(".hit-add, .sl-add").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); benchAdd(b.dataset.idx); renderDropdown(); }); });
+    box.querySelectorAll(".hit-add").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); hideResults(); startClipMode(b.dataset.idx); }); });
+    box.querySelectorAll(".sl-add").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); benchAdd(b.dataset.idx); renderDropdown(); }); });
     box.querySelectorAll(".sl-x").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); shortlistRemove(b.dataset.idx); saveStore(); renderDropdown(); }); });
     box.querySelectorAll(".dd-sl-item").forEach(function (row) {
       row.addEventListener("dragstart", function (ev) { dragCardId = row.dataset.idx; try { ev.dataTransfer.setData("text/plain", row.dataset.idx); ev.dataTransfer.effectAllowed = "copy"; } catch (_) {} });
@@ -8019,11 +8041,12 @@
       el.style.height = (clip.h || 200) + "px";
       el.style.zIndex = clip.z || 1;
       el.dataset.clip = clip.id;
+      var editable = !isNote && !isShape && !isGraph;
       var body;
       if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
       else if (isShape) body = '<div class="shape-host"></div>';
       else if (isGraph) body = '<div class="graph-host"></div>';
-      else body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : "");
+      else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
       var titleTxt = clip.title || (isNote ? "Note" : isShape ? "Shape" : isGraph ? "Graph" : "Clip");
       el.innerHTML =
         '<div class="clip-head">' +
@@ -8032,7 +8055,7 @@
         (clip.cardId ? '<button class="clip-open" title="go to the source card">↗</button>' : '') +
         '<button class="clip-del" title="remove from board">✕</button>' +
         '</div>' +
-        '<div class="clip-body">' + body + '</div>' +
+        '<div class="clip-body"' + (editable ? ' contenteditable="true" spellcheck="false"' : '') + '>' + body + '</div>' +
         '<div class="clip-resize" title="resize"></div>';
       if (isNote) el.querySelector(".note-ta").value = clip.text || "";
       if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
@@ -8471,6 +8494,144 @@
     requestAnimationFrame(draw);
   }
 
+  // ============================================================
+  // CLIP MODE — pull a card / whole page onto the board:
+  // keep it whole, or mark the parts to keep (tap blocks, or lasso them)
+  // ============================================================
+  function newMergedClip(html, title, pos) {
+    var p = ensureProblem();
+    var pp = pos || nextClipPos(p);
+    p.bench.push({ id: uid("cl_"), kind: "merged", frag: true, html: html, title: title || "Clip",
+      x: Math.round(pp.x), y: Math.round(pp.y), w: 340, h: 260, z: ++zTop, added: Date.now() });
+    saveStore(); renderProblemList();
+    if (viewingProblem && activeProblem === p.id) renderCanvas();
+  }
+  var clipModeOverlay = null;
+  function closeClipMode() { if (clipModeOverlay) { clipModeOverlay.remove(); clipModeOverlay = null; } }
+  function startClipMode(sourceId, pos) {
+    closeClipMode();
+    var e = indexById(sourceId);
+    var html = getCardHTML(sourceId);
+    if (!html) { benchAdd(sourceId, pos); return; }
+    var canvas = $("ppCanvas");
+    var pp = pos || { x: (canvas.scrollLeft || 0) + 40, y: (canvas.scrollTop || 0) + 40 };
+    var ov = document.createElement("div");
+    ov.className = "clipmode";
+    ov.style.left = Math.round(pp.x) + "px";
+    ov.style.top = Math.round(pp.y) + "px";
+    ov.style.width = "380px";
+    ov.style.height = "440px";
+    ov.style.zIndex = (++zTop) + 5000;
+    ov.innerHTML =
+      '<div class="clipmode-bar"><b>' + escapeHtml(e ? e.title : "Clip") + '</b>' +
+      '<button data-cm="all" class="hot">Keep all</button>' +
+      '<button data-cm="mark">Mark parts</button>' +
+      '<button data-cm="cancel">✕</button></div>' +
+      '<div class="clipmode-src">' + html + '</div>';
+    canvas.appendChild(ov);
+    clipModeOverlay = ov;
+    var src = ov.querySelector(".clipmode-src");
+    src.querySelectorAll(".pin-btn, .del-x, [id]").forEach(function (x) { if (x.classList && x.classList.contains("pin-btn")) x.remove(); else if (x.removeAttribute) x.removeAttribute("id"); });
+
+    // dragging the overlay by its bar
+    var bar = ov.querySelector(".clipmode-bar");
+    bar.addEventListener("pointerdown", function (ev) {
+      if (ev.target.closest("button")) return;
+      ev.preventDefault();
+      var sx = ev.clientX, sy = ev.clientY, ox = parseFloat(ov.style.left), oy = parseFloat(ov.style.top);
+      function mv(e2) { ov.style.left = Math.max(0, ox + e2.clientX - sx) + "px"; ov.style.top = Math.max(0, oy + e2.clientY - sy) + "px"; }
+      function up() { document.removeEventListener("pointermove", mv, true); document.removeEventListener("pointerup", up, true); }
+      document.addEventListener("pointermove", mv, true); document.addEventListener("pointerup", up, true);
+    });
+
+    function finalPos() { return { x: parseFloat(ov.style.left), y: parseFloat(ov.style.top) }; }
+    function cleanHtml(node) {
+      var c = node.cloneNode(true);
+      c.classList && c.classList.remove("cm-block", "cm-marked");
+      c.querySelectorAll && c.querySelectorAll(".cm-block, .cm-marked").forEach(function (x) { x.classList.remove("cm-block", "cm-marked"); });
+      c.querySelectorAll && c.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
+      return c.outerHTML;
+    }
+
+    var markBtn = ov.querySelector('[data-cm="mark"]');
+    var blocks = [];
+    function enterMarking() {
+      ov.classList.add("marking");
+      // markable blocks: cards, tools, subjects, and top-level text nodes
+      blocks = [];
+      src.querySelectorAll(":scope > *, :scope .card, :scope .tool, :scope .subject, :scope .grid2 > .card, :scope .subject-body > *, :scope > .pane > *").forEach(function (n) {
+        if (n.classList.contains("clipmode-src") || n.classList.contains("cm-block")) return;
+        if (!n.textContent.trim() && !n.querySelector("svg,img")) return;
+        n.classList.add("cm-block");
+        blocks.push(n);
+      });
+      src.querySelectorAll(".cm-block .cm-block").forEach(function (n) { n.classList.remove("cm-block"); });   // outermost only
+      blocks = Array.prototype.slice.call(src.querySelectorAll(".cm-block"));
+      blocks.forEach(function (n) {
+        n.addEventListener("click", function (ev) { ev.stopPropagation(); n.classList.toggle("cm-marked"); });
+      });
+      ov.querySelector(".clipmode-bar").innerHTML =
+        '<b>Tap the parts to keep · or drag a box</b>' +
+        '<button data-cm2="crop">▭ Box</button>' +
+        '<button data-cm2="done" class="hot">Done</button>' +
+        '<button data-cm2="cancel">✕</button>';
+      ov.querySelector('[data-cm2="cancel"]').addEventListener("click", closeClipMode);
+      ov.querySelector('[data-cm2="done"]').addEventListener("click", function () {
+        var marked = Array.prototype.slice.call(src.querySelectorAll(".cm-block.cm-marked"));
+        if (!marked.length) { alert("Tap at least one part, or drag a box over what you want."); return; }
+        var pos2 = finalPos();
+        var htmlOut = marked.map(cleanHtml).join("");
+        closeClipMode();
+        newMergedClip('<div>' + htmlOut + '</div>', (e ? e.title : "Clip") + " — parts", pos2);
+      });
+      var cropBtn = ov.querySelector('[data-cm2="crop"]');
+      cropBtn.addEventListener("click", function () {
+        ov.classList.toggle("cropping");
+        cropBtn.classList.toggle("hot", ov.classList.contains("cropping"));
+      });
+      // lasso
+      var lasso = null, lx, ly;
+      src.addEventListener("pointerdown", function (ev) {
+        if (!ov.classList.contains("cropping")) return;
+        ev.preventDefault(); ev.stopPropagation();
+        var r = src.getBoundingClientRect();
+        lx = ev.clientX - r.left + src.scrollLeft; ly = ev.clientY - r.top + src.scrollTop;
+        lasso = document.createElement("div"); lasso.className = "cm-lasso";
+        lasso.style.left = lx + "px"; lasso.style.top = ly + "px"; lasso.style.width = "0px"; lasso.style.height = "0px";
+        src.appendChild(lasso);
+      });
+      src.addEventListener("pointermove", function (ev) {
+        if (!lasso) return;
+        var r = src.getBoundingClientRect();
+        var cx = ev.clientX - r.left + src.scrollLeft, cy = ev.clientY - r.top + src.scrollTop;
+        lasso.style.left = Math.min(lx, cx) + "px"; lasso.style.top = Math.min(ly, cy) + "px";
+        lasso.style.width = Math.abs(cx - lx) + "px"; lasso.style.height = Math.abs(cy - ly) + "px";
+      });
+      src.addEventListener("pointerup", function () {
+        if (!lasso) return;
+        var lr = { x: parseFloat(lasso.style.left), y: parseFloat(lasso.style.top), w: parseFloat(lasso.style.width), h: parseFloat(lasso.style.height) };
+        lasso.remove(); lasso = null;
+        if (lr.w < 8 && lr.h < 8) return;
+        var sr = src.getBoundingClientRect();
+        blocks = Array.prototype.slice.call(src.querySelectorAll(".cm-block"));
+        blocks.forEach(function (n) {
+          var b = n.getBoundingClientRect();
+          var nx = b.left - sr.left + src.scrollLeft, ny = b.top - sr.top + src.scrollTop;
+          var hit = !(nx > lr.x + lr.w || nx + b.width < lr.x || ny > lr.y + lr.h || ny + b.height < lr.y);
+          if (hit) n.classList.add("cm-marked");
+        });
+        ov.classList.remove("cropping"); cropBtn.classList.remove("hot");
+      });
+    }
+    ov.querySelector('[data-cm="all"]').addEventListener("click", function () {
+      var pos2 = finalPos(); closeClipMode();
+      if (e) benchAdd(sourceId, pos2); else newMergedClip(html, "Clip", pos2);
+    });
+    ov.querySelector('[data-cm="cancel"]').addEventListener("click", closeClipMode);
+    markBtn.addEventListener("click", enterMarking);
+    try { prettyFractions(src); } catch (_) {}
+  }
+
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
     function front() { clip.z = ++zTop; el.style.zIndex = clip.z; saveStore(); }
@@ -8484,6 +8645,18 @@
       else if (clip.kind === "graph") { clip.barHidden = !clip.barHidden; saveStore(); renderCanvas(); }
     });
     el.querySelector(".clip-del").addEventListener("click", function (e) { e.stopPropagation(); clipRemove(clip.id); });
+
+    var edBody = el.querySelector('.clip-body[contenteditable="true"]');
+    if (edBody) {
+      var edT;
+      edBody.addEventListener("input", function () {
+        clearTimeout(edT);
+        edT = setTimeout(function () { clip.html = edBody.innerHTML; saveStore(); }, 500);
+      });
+      edBody.addEventListener("blur", function () { clip.html = edBody.innerHTML; saveStore(); });
+      edBody.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+      try { prettyFractions(edBody); } catch (e) {}
+    }
 
     var ta = el.querySelector(".note-ta");
     if (ta) {
@@ -8553,8 +8726,8 @@
       dragCardId = null;
       if (!id || !indexById(id)) return;
       var r = canvas.getBoundingClientRect();
-      benchAdd(id, { x: e.clientX - r.left + canvas.scrollLeft - 40, y: e.clientY - r.top + canvas.scrollTop - 12 });
       hideResults();
+      startClipMode(id, { x: e.clientX - r.left + canvas.scrollLeft - 40, y: e.clientY - r.top + canvas.scrollTop - 12 });
     });
   })();
 
