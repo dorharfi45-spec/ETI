@@ -8010,8 +8010,10 @@
     ic.addEventListener("pointermove", function (e) {
       if (!inkMode || !inkDrawing || e.pointerType === "touch") return;
       e.preventDefault();
-      var list = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
+      var list = (coalesced && coalesced.length) ? coalesced : [e];
       if (inkTool === "erase") { list.forEach(function (ev) { inkEraseAt(p, P(ev)); }); return; }
+      if (!inkCur) return;
       list.forEach(function (ev) { inkCur.pts.push(P(ev)); });
       liveDraw();
     });
