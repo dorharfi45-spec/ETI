@@ -8548,8 +8548,12 @@
     function cleanHtml(node) {
       var c = node.cloneNode(true);
       c.classList && c.classList.remove("cm-block", "cm-marked");
-      c.querySelectorAll && c.querySelectorAll(".cm-block, .cm-marked").forEach(function (x) { x.classList.remove("cm-block", "cm-marked"); });
-      c.querySelectorAll && c.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
+      c.removeAttribute && (c.removeAttribute("data-idx"), c.removeAttribute("data-ck"), c.removeAttribute("id"));
+      if (c.querySelectorAll) {
+        c.querySelectorAll(".cm-block, .cm-marked").forEach(function (x) { x.classList.remove("cm-block", "cm-marked"); });
+        c.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
+        c.querySelectorAll("[data-idx], [data-ck], [id]").forEach(function (x) { x.removeAttribute("data-idx"); x.removeAttribute("data-ck"); x.removeAttribute("id"); });
+      }
       return c.outerHTML;
     }
 
