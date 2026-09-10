@@ -825,6 +825,9 @@
   .plg-row.open .orb-track { stroke: color-mix(in srgb, #3b82f6 20%, var(--surface-2)); }
   .plg-row.current .orb-prog { stroke: #22c55e; }
   .plg-row.current .orb-track { stroke: color-mix(in srgb, #22c55e 22%, var(--surface-2)); }
+  .plg-row.done .orb-prog { stroke: #16a34a; }
+  .plg-row.done .orb-track { stroke: color-mix(in srgb, #16a34a 26%, var(--surface-2)); }
+  .plg-row.done { opacity: .72; }
   .plg-row.lt .orb-prog { stroke: var(--goal-color, var(--accent)); }
   .plg-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .56rem; font-weight: 800; color: var(--text-primary); }
   .plg-body { flex: 1; min-width: 0; }
@@ -995,6 +998,11 @@
   .gt-node.open .orb-track { stroke: color-mix(in srgb, #3b82f6 22%, var(--surface-2)); }
   .gt-node.current .orb-prog { stroke: #22c55e; }
   .gt-node.current .orb-track { stroke: color-mix(in srgb, #22c55e 24%, var(--surface-2)); }
+  .gt-node.done .orb-prog { stroke: #16a34a; }
+  .gt-node.done .orb-track { stroke: color-mix(in srgb, #16a34a 30%, var(--surface-2)); }
+  .gt-node.done { opacity: .78; }
+  .gt-node.done:hover { opacity: 1; }
+  .gt-node.done .gt-lock { color: #16a34a; font-weight: 800; }
   .gt-node.lt .orb-prog { stroke: var(--accent); }
   .gt-node.locked { filter: grayscale(.85); opacity: .42; }
   .gt-node.locked:hover { opacity: .8; filter: grayscale(.3); }
@@ -5485,14 +5493,15 @@
       var isLong = goalMode(g) === "long";
       var pr = goalProgress(g);
       var rq = isLong ? { any: false } : goalReqStatus(g);
-      var locked = rq.any && !rq.allMet;
-      var state = isLong ? 'lt' : (locked ? 'locked' : (g.current ? 'current' : 'open'));
+      var complete = !isLong && goalIsComplete(g);
+      var locked = !complete && rq.any && !rq.allMet;
+      var state = isLong ? 'lt' : (complete ? 'done' : locked ? 'locked' : (g.current ? 'current' : 'open'));
       var member = isLong ? '' : (g.parentIds || []).filter(function (x) { return byId[x] && goalMode(byId[x]) === "long"; }).map(function (x) { return ' m-' + x; }).join('');
       htmlNodes += '<div class="gt-node ' + state + member + '" data-id="' + g.id + '" data-pct="' + pr.pct + '"' + (isLong ? ' data-lt="' + g.id + '"' : '') +
         ' style="left:' + (p.x - p.sz / 2) + 'px;top:' + (p.y - p.sz / 2) + 'px;width:' + p.sz + 'px;height:' + p.sz + 'px">' +
         orbSvg(pr.pct) +
         '<div class="gt-label"><span class="gt-pct">' + pr.pct + '%</span><span class="gt-name">' + escapeHtml(g.title) + '</span></div>' +
-        (locked ? '<span class="gt-lock">🔒</span>' : '') +
+        (locked ? '<span class="gt-lock">🔒</span>' : complete ? '<span class="gt-lock">✓</span>' : '') +
         (isLong ? '' : '<button type="button" class="orb-star' + (g.current ? ' on' : '') + '" data-star="' + g.id + '" title="working on now">' + (g.current ? '★' : '☆') + '</button>') +
         (isLong ? ltStatsBox(g) : orbTipHtml(g)) +
         '</div>';
@@ -6186,8 +6195,9 @@
     opts = opts || {};
     var m = goalMode(g), pr = goalProgress(g);
     var rq = m === "skill" ? { any: false } : goalReqStatus(g);
-    var locked = rq.any && !rq.allMet;
-    var state = m === "long" ? "lt" : (locked ? "locked" : (g.current ? "current" : "open"));
+    var complete = m !== "skill" && m !== "long" && goalIsComplete(g);
+    var locked = !complete && rq.any && !rq.allMet;
+    var state = m === "long" ? "lt" : (complete ? "done" : locked ? "locked" : (g.current ? "current" : "open"));
     var label = m === "skill"
       ? ('Lv ' + pr.level + ' · ' + fmtXp(pr.into) + ' / ' + fmtXp(pr.need))
       : (m === "long"
