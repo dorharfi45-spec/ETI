@@ -318,6 +318,30 @@
   .clip-body .subject > summary::before, .clip-body .subject > summary .stag, .clip-body .accordion-controls { display: none; }
   .clip-body .subject-body { padding: 0; border: none; }
   .clip-body .gallery { flex-direction: column; }
+  /* ---- shape & graph widgets ---- */
+  .clip.shape .clip-body, .clip.graph .clip-body { padding: 0; overflow: hidden; }
+  .shape-host { width: 100%; height: 100%; display: flex; }
+  .shape-host svg { width: 100%; height: 100%; }
+  .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; }
+  .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: var(--bg); display: block; }
+  .gw-canvas:active { cursor: grabbing; }
+  .gw-bar { display: flex; flex-direction: column; gap: 3px; padding: 4px 5px; border-bottom: 1px solid var(--border); background: var(--surface-2); flex-shrink: 0; max-height: 44%; overflow: auto; }
+  .gw-row { display: flex; align-items: center; gap: 4px; }
+  .gw-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .gw-row input { flex: 1; min-width: 0; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .78rem; padding: 3px 6px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text-primary); }
+  .gw-row input.bad { border-color: #c0392b; }
+  .gw-row button { font-size: .74rem; line-height: 1; padding: 3px 6px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); flex-shrink: 0; }
+  .gw-foot { display: flex; gap: 5px; padding: 3px 5px; }
+  .gw-foot button { font-size: .7rem; padding: 2px 7px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); }
+  .shape-pick { position: absolute; z-index: 6000; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: var(--shadow); padding: 9px; display: flex; flex-direction: column; gap: 7px; width: 240px; }
+  .shape-pick .sp-lbl { font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; }
+  .shape-pick .sp-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .shape-pick button { font-size: .74rem; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary); }
+  .shape-pick button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .shape-pick input[type=range] { width: 100%; }
+  .clip-edit { padding: 0 5px; font-size: .74rem; line-height: 1.5; border-radius: 5px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); }
+  .clip-edit:hover { color: var(--accent); border-color: var(--accent); }
+
   .clip-resize { position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; cursor: nwse-resize; }
   .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 7px; height: 7px;
     border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); }
@@ -2758,6 +2782,8 @@
       <div id="ppResults" class="pp-results-drop" hidden></div>
     </div>
     <button id="ppAddNote" type="button" class="tool-btn">＋ Text note</button>
+    <button id="ppAddShape" type="button" class="tool-btn">＋ Shape</button>
+    <button id="ppAddGraph" type="button" class="tool-btn">＋ Graph</button>
     <button id="ppWrite" type="button" class="tool-btn" title="write / draw with the Apple Pencil or mouse">✍️ Write</button>
     <button id="ppTidy" type="button" class="tool-btn">Tidy</button>
     <span class="muted" id="ppBenchCount"></span>
@@ -7983,9 +8009,10 @@
     }
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
     p.bench.forEach(function (clip) {
-      var isNote = clip.kind === "note";
+      var kind = clip.kind || "clip";
+      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph";
       var el = document.createElement("div");
-      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "");
+      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "");
       el.style.left = (clip.x || 12) + "px";
       el.style.top = (clip.y || 12) + "px";
       el.style.width = (clip.w || 300) + "px";
@@ -7993,20 +8020,23 @@
       el.style.zIndex = clip.z || 1;
       el.dataset.clip = clip.id;
       var body;
-      if (isNote) {
-        body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
-      } else {
-        body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : "");
-      }
+      if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
+      else if (isShape) body = '<div class="shape-host"></div>';
+      else if (isGraph) body = '<div class="graph-host"></div>';
+      else body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : "");
+      var titleTxt = clip.title || (isNote ? "Note" : isShape ? "Shape" : isGraph ? "Graph" : "Clip");
       el.innerHTML =
         '<div class="clip-head">' +
-        '<span class="clip-title">' + escapeHtml(clip.title || (isNote ? "Note" : "Clip")) + '</span>' +
+        '<span class="clip-title">' + escapeHtml(titleTxt) + '</span>' +
+        ((isShape || isGraph) ? '<button class="clip-edit" title="edit">⚙</button>' : '') +
         (clip.cardId ? '<button class="clip-open" title="go to the source card">↗</button>' : '') +
         '<button class="clip-del" title="remove from board">✕</button>' +
         '</div>' +
         '<div class="clip-body">' + body + '</div>' +
         '<div class="clip-resize" title="resize"></div>';
       if (isNote) el.querySelector(".note-ta").value = clip.text || "";
+      if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
+      if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
       wireClip(el, clip, p);
       canvas.appendChild(el);
       maxX = Math.max(maxX, (clip.x || 0) + (clip.w || 300) + 60);
@@ -8207,12 +8237,252 @@
     });
   })();
 
+  // ============================================================
+  // SHAPE + GRAPH widgets — new canvas item kinds
+  // ============================================================
+  var SHAPE_FAMS = { tri: { label: "Triangle", items: triItems }, quad: { label: "Quad", items: quadItems } };
+  function shapeItemsFor(fam) { return (SHAPE_FAMS[fam] || SHAPE_FAMS.tri).items; }
+
+  function addShape() {
+    var p = ensureProblem(), pos = nextClipPos(p);
+    p.bench.push({ id: uid("sh_"), kind: "shape", fam: "tri", type: Object.keys(triItems)[0], slider: null,
+      x: Math.round(pos.x), y: Math.round(pos.y), w: 240, h: 220, z: ++zTop, added: Date.now() });
+    saveStore(); renderProblemList();
+    if (viewingProblem && activeProblem === p.id) renderCanvas();
+  }
+  function addGraph() {
+    var p = ensureProblem(), pos = nextClipPos(p);
+    p.bench.push({ id: uid("gr_"), kind: "graph", fns: [{ expr: "x^2", color: "#2563eb" }], view: { cx: 0, cy: 0, ppu: 32 },
+      x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: ++zTop, added: Date.now() });
+    saveStore(); renderProblemList();
+    if (viewingProblem && activeProblem === p.id) renderCanvas();
+  }
+
+  function renderShapeWidget(host, clip, p) {
+    if (!host) return;
+    var items = shapeItemsFor(clip.fam);
+    var it = items[clip.type] || items[Object.keys(items)[0]];
+    var slv = it.slider ? (clip.slider != null ? clip.slider : it.slider.val) : undefined;
+    host.innerHTML = '<svg viewBox="0 0 260 240" preserveAspectRatio="xMidYMid meet"></svg>';
+    try { renderShape(host.querySelector("svg"), it.spec(slv)); } catch (e) { host.textContent = "shape error"; }
+  }
+  function openShapePicker(anchor, clip, p) {
+    var old = document.querySelector(".shape-pick"); if (old) old.remove();
+    var box = document.createElement("div");
+    box.className = "shape-pick";
+    var r = anchor.getBoundingClientRect();
+    box.style.position = "fixed";
+    box.style.left = Math.max(6, Math.min(window.innerWidth - 252, r.left - 120)) + "px";
+    box.style.top = Math.min(window.innerHeight - 260, r.bottom + 6) + "px";
+    function refresh() {
+      var h = document.querySelector('.clip[data-clip="' + clip.id + '"] .shape-host');
+      if (h) renderShapeWidget(h, clip, p);
+    }
+    function build() {
+      var items = shapeItemsFor(clip.fam);
+      var it = items[clip.type] || items[Object.keys(items)[0]];
+      box.innerHTML =
+        '<div class="sp-lbl">Family</div><div class="sp-row">' +
+        Object.keys(SHAPE_FAMS).map(function (f) { return '<button data-fam="' + f + '"' + (f === clip.fam ? ' class="on"' : '') + '>' + SHAPE_FAMS[f].label + '</button>'; }).join("") + '</div>' +
+        '<div class="sp-lbl">Type</div><div class="sp-row">' +
+        Object.keys(items).map(function (t) { return '<button data-type="' + t + '"' + (t === clip.type ? ' class="on"' : '') + '>' + escapeHtml(items[t].label) + '</button>'; }).join("") + '</div>' +
+        (it.slider ? '<div class="sp-lbl">' + escapeHtml(it.slider.label) + '</div><input type="range" min="' + it.slider.min + '" max="' + it.slider.max + '" value="' + (clip.slider != null ? clip.slider : it.slider.val) + '">' : '') +
+        '<div class="sp-row"><button data-close style="margin-left:auto;">done</button></div>';
+      box.querySelectorAll("[data-fam]").forEach(function (b) { b.addEventListener("click", function () {
+        clip.fam = b.getAttribute("data-fam"); clip.type = Object.keys(shapeItemsFor(clip.fam))[0]; clip.slider = null;
+        saveStore(); build(); refresh();
+      }); });
+      box.querySelectorAll("[data-type]").forEach(function (b) { b.addEventListener("click", function () {
+        clip.type = b.getAttribute("data-type"); clip.slider = null; saveStore(); build(); refresh();
+      }); });
+      var sl = box.querySelector("input[type=range]");
+      if (sl) sl.addEventListener("input", function () { clip.slider = +this.value; saveStore(); refresh(); });
+      box.querySelector("[data-close]").addEventListener("click", function () { box.remove(); });
+    }
+    build();
+    document.body.appendChild(box);
+    setTimeout(function () {
+      document.addEventListener("pointerdown", function h(ev) {
+        if (!box.contains(ev.target)) { box.remove(); document.removeEventListener("pointerdown", h, true); }
+      }, true);
+    }, 0);
+  }
+
+  // ---- expression compiler: "sin(x)+x^2" -> f(x) | null ----
+  function compileExpr(src) {
+    var s = String(src || "").replace(/\s+/g, "").replace(/^y=/i, "");
+    if (!s) return null;
+    var FN = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan,
+      sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh, sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs,
+      exp: Math.exp, ln: Math.log, log: function (x) { return Math.log(x) / Math.LN10; },
+      floor: Math.floor, ceil: Math.ceil, round: Math.round, sign: Math.sign };
+    var toks = [], i = 0;
+    while (i < s.length) {
+      var c = s[i];
+      if ((c >= "0" && c <= "9") || c === ".") { var j = i; while (j < s.length && ((s[j] >= "0" && s[j] <= "9") || s[j] === ".")) j++; toks.push({ t: "n", v: parseFloat(s.slice(i, j)) }); i = j; continue; }
+      if (/[a-z]/i.test(c)) { var j2 = i; while (j2 < s.length && /[a-z0-9]/i.test(s[j2])) j2++; var nm = s.slice(i, j2).toLowerCase(); i = j2;
+        if (nm === "x") toks.push({ t: "x" });
+        else if (nm === "pi") toks.push({ t: "n", v: Math.PI });
+        else if (nm === "e") toks.push({ t: "n", v: Math.E });
+        else if (FN[nm]) toks.push({ t: "f", v: nm });
+        else return null;
+        continue; }
+      if ("+-*/^(),".indexOf(c) >= 0) { toks.push({ t: "o", v: c }); i++; continue; }
+      return null;
+    }
+    var t2 = [];
+    for (var k = 0; k < toks.length; k++) {
+      t2.push(toks[k]);
+      var a = toks[k], b = toks[k + 1]; if (!b) continue;
+      var aEnd = a.t === "n" || a.t === "x" || (a.t === "o" && a.v === ")");
+      var bSt = b.t === "n" || b.t === "x" || b.t === "f" || (b.t === "o" && b.v === "(");
+      if (aEnd && bSt) t2.push({ t: "o", v: "*" });
+    }
+    toks = t2;
+    var out = [], ops = [], prec = { "+": 1, "-": 1, "*": 2, "/": 2, "^": 4, u: 5 }, R = { "^": 1, u: 1 }, prev = null;
+    for (var m = 0; m < toks.length; m++) {
+      var tk = toks[m];
+      if (tk.t === "n" || tk.t === "x") { out.push(tk); prev = "v"; }
+      else if (tk.t === "f") { ops.push(tk); prev = "f"; }
+      else if (tk.v === ",") { while (ops.length && ops[ops.length - 1].v !== "(") out.push(ops.pop()); prev = "o"; }
+      else if (tk.v === "(") { ops.push(tk); prev = "o"; }
+      else if (tk.v === ")") {
+        while (ops.length && ops[ops.length - 1].v !== "(") out.push(ops.pop());
+        if (!ops.length) return null; ops.pop();
+        if (ops.length && ops[ops.length - 1].t === "f") out.push(ops.pop());
+        prev = "v";
+      } else {
+        var op = tk.v;
+        if (op === "-" && (prev === null || prev === "o" || prev === "f")) op = "u";
+        while (ops.length) {
+          var top = ops[ops.length - 1]; if (top.v === "(") break;
+          var tp = top.t === "f" ? 6 : prec[top.v];
+          if (tp > prec[op] || (tp === prec[op] && !R[op])) out.push(ops.pop()); else break;
+        }
+        ops.push({ t: "o", v: op }); prev = "o";
+      }
+    }
+    while (ops.length) { var o = ops.pop(); if (o.v === "(") return null; out.push(o); }
+    return function (x) {
+      var st = [], n = 0;
+      for (var q = 0; q < out.length; q++) {
+        var e = out[q];
+        if (e.t === "n") st[n++] = e.v;
+        else if (e.t === "x") st[n++] = x;
+        else if (e.t === "f") st[n - 1] = FN[e.v](st[n - 1]);
+        else if (e.v === "u") st[n - 1] = -st[n - 1];
+        else { var bb = st[--n], aa = st[n - 1];
+          st[n - 1] = e.v === "+" ? aa + bb : e.v === "-" ? aa - bb : e.v === "*" ? aa * bb : e.v === "/" ? aa / bb : Math.pow(aa, bb); }
+      }
+      return st[0];
+    };
+  }
+
+  function renderGraphWidget(host, clip, p) {
+    if (!host) return;
+    var COLS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
+    clip.fns = (clip.fns && clip.fns.length) ? clip.fns : [{ expr: "", color: COLS[0] }];
+    clip.view = clip.view || { cx: 0, cy: 0, ppu: 32 };
+    var bar = clip.barHidden ? "" :
+      '<div class="gw-bar">' + clip.fns.map(function (f, idx) {
+        return '<div class="gw-row"><span class="gw-dot" style="background:' + (f.color || COLS[idx % COLS.length]) + '"></span>' +
+          '<span style="font-size:.78rem;color:var(--text-muted)">y=</span>' +
+          '<input data-fi="' + idx + '" value="' + escapeHtml(f.expr || "") + '" placeholder="sin(x), x^2, 1/x, ln(x)…">' +
+          '<button data-del="' + idx + '">✕</button></div>';
+      }).join("") +
+      '<div class="gw-foot"><button data-addfn>＋ line</button><button data-reset>reset view</button></div></div>';
+    host.innerHTML = bar + '<canvas class="gw-canvas"></canvas>';
+    var cv = host.querySelector(".gw-canvas");
+    function niceStep(t) { var p10 = Math.pow(10, Math.floor(Math.log(t) / Math.LN10)); var f = t / p10; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p10; }
+    function fmtNum(n) { return Math.abs(n) < 1e-9 ? "0" : String(Math.round(n * 1000) / 1000); }
+    function draw() {
+      var rect = cv.getBoundingClientRect();
+      var W = Math.max(40, rect.width), H = Math.max(40, rect.height), dpr = window.devicePixelRatio || 1;
+      cv.width = W * dpr; cv.height = H * dpr;
+      var g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+      var v = clip.view, ppu = v.ppu, ox = W / 2 - v.cx * ppu, oy = H / 2 + v.cy * ppu;
+      function SX(u) { return ox + u * ppu; } function SY(u) { return oy - u * ppu; }
+      var axisc = (getComputedStyle(document.body).getPropertyValue("--text-secondary") || "#475569").trim();
+      var step = niceStep(60 / ppu);
+      g.lineWidth = 1; g.strokeStyle = "rgba(128,128,140,.20)";
+      for (var xu = Math.ceil(((0 - ox) / ppu) / step) * step; SX(xu) <= W; xu += step) { g.beginPath(); g.moveTo(SX(xu), 0); g.lineTo(SX(xu), H); g.stroke(); }
+      for (var yu = Math.ceil(((oy - H) / ppu) / step) * step; SY(yu) >= 0; yu += step) { g.beginPath(); g.moveTo(0, SY(yu)); g.lineTo(W, SY(yu)); g.stroke(); }
+      g.strokeStyle = axisc; g.lineWidth = 1.4;
+      g.beginPath(); g.moveTo(0, SY(0)); g.lineTo(W, SY(0)); g.stroke();
+      g.beginPath(); g.moveTo(SX(0), 0); g.lineTo(SX(0), H); g.stroke();
+      g.fillStyle = axisc; g.font = "10px system-ui, sans-serif";
+      for (var xt = Math.ceil(((0 - ox) / ppu) / step) * step; SX(xt) <= W; xt += step) { if (Math.abs(xt) > 1e-9) g.fillText(fmtNum(xt), SX(xt) + 2, SY(0) + 11); }
+      for (var yt = Math.ceil(((oy - H) / ppu) / step) * step; SY(yt) >= 0; yt += step) { if (Math.abs(yt) > 1e-9) g.fillText(fmtNum(yt), SX(0) + 3, SY(yt) - 2); }
+      clip.fns.forEach(function (f, idx) {
+        var fn = compileExpr(f.expr);
+        var inp = host.querySelector('input[data-fi="' + idx + '"]');
+        if (inp) inp.classList.toggle("bad", !!(f.expr && !fn));
+        if (!fn) return;
+        g.strokeStyle = f.color || COLS[idx % COLS.length]; g.lineWidth = 1.9; g.beginPath();
+        var pen = false, lastPy = null;
+        for (var px = 0; px <= W; px++) {
+          var yv = fn((px - ox) / ppu);
+          if (!isFinite(yv) || Math.abs(yv) > 1e7) { pen = false; continue; }
+          var py = SY(yv);
+          if (pen && lastPy != null && Math.abs(py - lastPy) > H * 2) pen = false;
+          if (!pen) { g.moveTo(px, py); pen = true; } else g.lineTo(px, py);
+          lastPy = py;
+        }
+        g.stroke();
+      });
+    }
+    clip._redraw = draw;
+    host.querySelectorAll("input[data-fi]").forEach(function (inp) {
+      inp.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+      inp.addEventListener("input", function () { clip.fns[+inp.getAttribute("data-fi")].expr = inp.value; saveStore(); draw(); });
+    });
+    host.querySelectorAll("[data-del]").forEach(function (b) { b.addEventListener("click", function (e) {
+      e.stopPropagation(); clip.fns.splice(+b.getAttribute("data-del"), 1);
+      if (!clip.fns.length) clip.fns.push({ expr: "", color: COLS[0] });
+      saveStore(); renderCanvas();
+    }); });
+    var ab = host.querySelector("[data-addfn]");
+    if (ab) ab.addEventListener("click", function (e) { e.stopPropagation(); clip.fns.push({ expr: "", color: COLS[clip.fns.length % COLS.length] }); saveStore(); renderCanvas(); });
+    var rb = host.querySelector("[data-reset]");
+    if (rb) rb.addEventListener("click", function (e) { e.stopPropagation(); clip.view = { cx: 0, cy: 0, ppu: 32 }; saveStore(); draw(); });
+    var pan = false, psx, psy, pcx, pcy;
+    cv.addEventListener("pointerdown", function (e) {
+      e.stopPropagation(); pan = true; psx = e.clientX; psy = e.clientY; pcx = clip.view.cx; pcy = clip.view.cy;
+      try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    cv.addEventListener("pointermove", function (e) {
+      if (!pan) return;
+      clip.view.cx = pcx - (e.clientX - psx) / clip.view.ppu;
+      clip.view.cy = pcy + (e.clientY - psy) / clip.view.ppu;
+      draw();
+    });
+    function endpan() { if (pan) { pan = false; saveStore(); } }
+    cv.addEventListener("pointerup", endpan);
+    cv.addEventListener("pointercancel", endpan);
+    cv.addEventListener("wheel", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var rect = cv.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      var W = rect.width, H = rect.height, v = clip.view;
+      var ux = (mx - W / 2) / v.ppu + v.cx, uy = -(my - H / 2) / v.ppu + v.cy;
+      v.ppu = Math.max(4, Math.min(400, v.ppu * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));
+      v.cx = ux - (mx - W / 2) / v.ppu; v.cy = uy + (my - H / 2) / v.ppu;
+      draw(); clearTimeout(clip._zt); clip._zt = setTimeout(function () { saveStore(); }, 350);
+    }, { passive: false });
+    requestAnimationFrame(draw);
+  }
+
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
     function front() { clip.z = ++zTop; el.style.zIndex = clip.z; saveStore(); }
     el.addEventListener("pointerdown", front, true);
     var co = el.querySelector(".clip-open");
     if (co) co.addEventListener("click", function (e) { e.stopPropagation(); if (clip.cardId) jumpToCard(clip.cardId); });
+    var ce = el.querySelector(".clip-edit");
+    if (ce) ce.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (clip.kind === "shape") openShapePicker(ce, clip, p);
+      else if (clip.kind === "graph") { clip.barHidden = !clip.barHidden; saveStore(); renderCanvas(); }
+    });
     el.querySelector(".clip-del").addEventListener("click", function (e) { e.stopPropagation(); clipRemove(clip.id); });
 
     var ta = el.querySelector(".note-ta");
@@ -8289,6 +8559,8 @@
   })();
 
   $("ppAddNote").addEventListener("click", addNoteClip);
+  $("ppAddShape").addEventListener("click", addShape);
+  $("ppAddGraph").addEventListener("click", addGraph);
 
   $("ppTidy").addEventListener("click", function () {
     var p = curProblem(); if (!p || !p.bench.length) return;
