@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B12</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B13</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9775,10 +9775,31 @@
           // on the board is the new one when screenshotting, no matter what else is nearby.
           setTimeout(function () {
             var el2 = document.querySelector('[data-clip="' + cropClip.id + '"]');
-            if (el2) {
-              el2.style.outline = "4px solid lime"; el2.style.outlineOffset = "2px";
-              setTimeout(function () { el2.style.outline = ""; el2.style.outlineOffset = ""; }, 5000);
-            }
+            if (!el2) return;
+            el2.style.outline = "4px solid lime"; el2.style.outlineOffset = "2px";
+            setTimeout(function () { el2.style.outline = ""; el2.style.outlineOffset = ""; }, 6000);
+            // TEMPORARY DEBUG (B13): the exact same `html` string renders correctly (right
+            // content) in the B11 full-page preview but wrong (different content) inside the
+            // real widget's .crop-host/.crop-frame nesting — same numbers, same string, two
+            // different results. That can only mean something about that nesting changes how
+            // the content reflows. Render the identical html again in a neutral, unstyled spot
+            // and compare its actual computed font-size/line-height/height against the copy
+            // that's actually inside the widget right now, to find the mismatch directly.
+            var wrapperB_inWidget = el2.querySelector(".crop-frame > div > div");
+            var neutral = document.createElement("div");
+            neutral.style.cssText = "position:fixed;left:-9999px;top:0;width:" + innerW + "px;";
+            neutral.innerHTML = html;
+            document.body.appendChild(neutral);
+            var wrapperB_neutral = neutral.firstElementChild;
+            var hIn = wrapperB_inWidget ? wrapperB_inWidget.getBoundingClientRect().height : -1;
+            var hNe = wrapperB_neutral ? wrapperB_neutral.getBoundingClientRect().height : -1;
+            var csIn = wrapperB_inWidget ? getComputedStyle(wrapperB_inWidget) : null;
+            var csNe = wrapperB_neutral ? getComputedStyle(wrapperB_neutral) : null;
+            neutral.remove();
+            alert("HEIGHT DEBUG\n" +
+              "in-widget: h=" + Math.round(hIn) + "px font=" + (csIn ? csIn.fontSize : "?") + " lh=" + (csIn ? csIn.lineHeight : "?") + "\n" +
+              "neutral:   h=" + Math.round(hNe) + "px font=" + (csNe ? csNe.fontSize : "?") + " lh=" + (csNe ? csNe.lineHeight : "?") + "\n" +
+              "cropX=" + cropClip.cropX + " cropY=" + cropClip.cropY + " cropW=" + cropClip.cropW + " cropH=" + cropClip.cropH);
           }, 50);
         }
         // TEMPORARY DEBUG (B11): render the WHOLE captured source, unscrolled, with the exact
