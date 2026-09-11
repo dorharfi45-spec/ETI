@@ -519,7 +519,7 @@
   .clipmode.marking .cm-block:hover { box-shadow: 0 0 0 2px var(--accent); }
   .clipmode.marking .cm-block.cm-marked { box-shadow: 0 0 0 2px #16a34a; background: color-mix(in srgb, #16a34a 12%, transparent); }
   .cm-lasso { position: absolute; z-index: 20; border: 1.5px dashed var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); pointer-events: none; }
-  .clipmode.cropping .clipmode-src { cursor: crosshair; }
+  .clipmode.cropping .clipmode-src { cursor: crosshair; touch-action: none; }
 
   .clip-resize { position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; cursor: nwse-resize; z-index: 8; touch-action: none; }
   .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 8px; height: 8px;
@@ -9592,29 +9592,36 @@
         ov.classList.toggle("cropping");
         cropBtn.classList.toggle("hot", ov.classList.contains("cropping"));
       });
-      // lasso
-      var lasso = null, lx, ly;
+      // lasso — touch-action:none on .clipmode-src (while cropping) stops the browser's own
+      // scroll from hijacking the drag; pointer capture + preventDefault on every step keeps it
+      // tracking even if the finger slides off a child card.
+      var lasso = null, lx, ly, lassoId = null;
       src.addEventListener("pointerdown", function (ev) {
         if (!ov.classList.contains("cropping")) return;
         ev.preventDefault(); ev.stopPropagation();
+        try { src.setPointerCapture(ev.pointerId); } catch (_) {}
+        lassoId = ev.pointerId;
         var r = src.getBoundingClientRect();
         lx = ev.clientX - r.left + src.scrollLeft; ly = ev.clientY - r.top + src.scrollTop;
         lasso = document.createElement("div"); lasso.className = "cm-lasso";
         lasso.style.left = lx + "px"; lasso.style.top = ly + "px"; lasso.style.width = "0px"; lasso.style.height = "0px";
         src.appendChild(lasso);
-      });
+      }, { passive: false });
       src.addEventListener("pointermove", function (ev) {
-        if (!lasso) return;
+        if (!lasso || ev.pointerId !== lassoId) return;
+        ev.preventDefault(); ev.stopPropagation();
         var r = src.getBoundingClientRect();
         var cx = ev.clientX - r.left + src.scrollLeft, cy = ev.clientY - r.top + src.scrollTop;
         lasso.style.left = Math.min(lx, cx) + "px"; lasso.style.top = Math.min(ly, cy) + "px";
         lasso.style.width = Math.abs(cx - lx) + "px"; lasso.style.height = Math.abs(cy - ly) + "px";
-      });
-      src.addEventListener("pointerup", function () {
-        if (!lasso) return;
+      }, { passive: false });
+      function endLasso(ev) {
+        if (!lasso || (ev && ev.pointerId !== lassoId)) return;
+        if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+        var cancelled = ev && ev.type === "pointercancel";
         var lr = { x: parseFloat(lasso.style.left), y: parseFloat(lasso.style.top), w: parseFloat(lasso.style.width), h: parseFloat(lasso.style.height) };
-        lasso.remove(); lasso = null;
-        if (lr.w < 8 && lr.h < 8) return;
+        lasso.remove(); lasso = null; lassoId = null;
+        if (cancelled || lr.w < 8 || lr.h < 8) return;
         var sr = src.getBoundingClientRect();
         blocks = Array.prototype.slice.call(src.querySelectorAll(".cm-block"));
         blocks.forEach(function (n) {
@@ -9624,7 +9631,9 @@
           if (hit) n.classList.add("cm-marked");
         });
         ov.classList.remove("cropping"); cropBtn.classList.remove("hot");
-      });
+      }
+      src.addEventListener("pointerup", endLasso);
+      src.addEventListener("pointercancel", endLasso);
     }
     ov.querySelector('[data-cm="all"]').addEventListener("click", function () {
       var pos2 = finalPos(); closeClipMode();
