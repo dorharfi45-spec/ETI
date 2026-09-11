@@ -510,23 +510,8 @@
   .clip-edit { padding: 0 5px; font-size: .74rem; line-height: 1.5; border-radius: 5px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); }
   .clip-edit:hover { color: var(--accent); border-color: var(--accent); }
 
-  /* ---- clip mode: bring in a card / page, keep all or mark parts ---- */
-  .clipmode { position: absolute; z-index: 5500; background: var(--bg); border: 2px solid var(--accent);
-    border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
-  .clipmode-bar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--accent); flex-shrink: 0; }
-  .clipmode-bar b { color: #fff; font-size: .78rem; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .clipmode-bar button { font-size: .76rem; font-weight: 700; padding: 4px 9px; border-radius: 7px;
-    border: 1px solid rgba(255,255,255,.5); background: rgba(255,255,255,.15); color: #fff; }
-  .clipmode-bar button.hot { background: #fff; color: var(--accent); }
-  .clipmode-src { flex: 1; overflow: auto; padding: 12px 14px; font-size: .86rem; line-height: 1.55; position: relative; }
-  .clipmode.marking .clipmode-src { opacity: 1; }
-  .clipmode:not(.marking) .clipmode-src { opacity: .55; }
-  .clipmode-src input, .clipmode-src button, .clipmode-src select { pointer-events: none; }
-  .clipmode.marking .cm-block { cursor: pointer; border-radius: 6px; box-shadow: 0 0 0 1px var(--border-strong); margin: 3px 0; transition: box-shadow .1s, background .1s; }
-  .clipmode.marking .cm-block:hover { box-shadow: 0 0 0 2px var(--accent); }
-  .clipmode.marking .cm-block.cm-marked { box-shadow: 0 0 0 2px #16a34a; background: color-mix(in srgb, #16a34a 12%, transparent); }
+  /* ---- crop-drag box: reused by the ✂ "crop after clipping" tool on an already-placed clip ---- */
   .cm-lasso { position: absolute; z-index: 20; border: 1.5px dashed var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); pointer-events: none; }
-  .clipmode.cropping .clipmode-src { cursor: crosshair; touch-action: none; }
 
   .clip-resize { position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; cursor: nwse-resize; z-index: 8; touch-action: none; }
   .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 8px; height: 8px;
@@ -2992,7 +2977,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B18</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B19</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9600,224 +9585,34 @@
     });
     return parts.join("");
   }
+  // where a clip lands when it isn't dropped at a specific point: the middle of whatever the
+  // user is currently looking at, in canvas coords (was openClipOverlay's finalPos()).
+  function viewCenterPos() {
+    var canvas = $("ppCanvas");
+    var r = canvas.getBoundingClientRect();
+    var z = (typeof navScale === "number" && navScale) ? navScale : 1;
+    var tx = (typeof navTx === "number") ? navTx : 0, ty = (typeof navTy === "number") ? navTy : 0;
+    return { x: Math.max(0, Math.round((r.width / 2 - tx) / z - 170)), y: Math.max(0, Math.round((r.height / 2 - ty) / z - 120)) };
+  }
+  function cleanClipHtml(html) {
+    var tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    tmp.querySelectorAll(".pin-btn, .del-x, [id]").forEach(function (x) { if (x.classList && x.classList.contains("pin-btn")) x.remove(); else if (x.removeAttribute) x.removeAttribute("id"); });
+    return tmp.innerHTML;
+  }
+  // Clipping from the library/search always adds the whole card straight away — no more
+  // "Keep all / Mark parts / Box" chooser (superseded by the ✂ crop-after-clipping tool on an
+  // already-placed clip, which is simpler and doesn't need to clone a differently-laid-out page).
   function startClipMode(sourceId, pos) {
     closeClipMode();
-    var e = indexById(sourceId);
-    var html = getCardHTML(sourceId);
-    if (!html) { benchAdd(sourceId, pos); return; }
-    openClipOverlay(html, e ? e.title : "Clip", pos, function (pos2) { benchAdd(sourceId, pos2); });
+    benchAdd(sourceId, pos || viewCenterPos());
   }
   function startClipModePage(pageId, pos) {
     closeClipMode();
     var d = canvasDocById(pageId);
     var inner = canvasSnapshotHtml(pageId);
     if (!inner.trim()) { alert("That page has nothing to clip yet."); return; }
-    var html = '<div>' + inner + '</div>';
-    openClipOverlay(html, (d && d.name) || "Page", pos, function (pos2) { newMergedClip(html, (d && d.name) || "Page", pos2); });
-  }
-  function openClipOverlay(html, title, pos, onKeepAll) {
-    closeClipMode();
-    var canvas = $("ppCanvas");
-    var pp = pos || { x: 18, y: 18 };
-    var ov = document.createElement("div");
-    ov.className = "clipmode";
-    ov.style.left = Math.round(pp.x) + "px";
-    ov.style.top = Math.round(pp.y) + "px";
-    ov.style.width = "380px";
-    ov.style.height = "440px";
-    ov.style.zIndex = (++zTop) + 5000;
-    ov.innerHTML =
-      '<div class="clipmode-bar"><b>' + escapeHtml(title || "Clip") + '</b>' +
-      '<button data-cm="all" class="hot">Keep all</button>' +
-      '<button data-cm="mark">Mark parts</button>' +
-      '<button data-cm="cancel">✕</button></div>' +
-      '<div class="clipmode-src">' + html + '</div>';
-    canvas.appendChild(ov);
-    clipModeOverlay = ov;
-    var src = ov.querySelector(".clipmode-src");
-    src.querySelectorAll(".pin-btn, .del-x, [id]").forEach(function (x) { if (x.classList && x.classList.contains("pin-btn")) x.remove(); else if (x.removeAttribute) x.removeAttribute("id"); });
-
-    // dragging the overlay by its bar
-    var bar = ov.querySelector(".clipmode-bar");
-    bar.addEventListener("pointerdown", function (ev) {
-      if (ev.target.closest("button")) return;
-      ev.preventDefault();
-      var sx = ev.clientX, sy = ev.clientY, ox = parseFloat(ov.style.left), oy = parseFloat(ov.style.top);
-      function mv(e2) { ov.style.left = Math.max(0, ox + e2.clientX - sx) + "px"; ov.style.top = Math.max(0, oy + e2.clientY - sy) + "px"; }
-      function up() { document.removeEventListener("pointermove", mv, true); document.removeEventListener("pointerup", up, true); }
-      document.addEventListener("pointermove", mv, true); document.addEventListener("pointerup", up, true);
-    });
-
-    // where the clipped item lands: the middle of what the user is currently looking at, in canvas coords
-    function finalPos() {
-      var r = canvas.getBoundingClientRect();
-      var z = (typeof navScale === "number" && navScale) ? navScale : 1;
-      var tx = (typeof navTx === "number") ? navTx : 0, ty = (typeof navTy === "number") ? navTy : 0;
-      return { x: Math.max(0, Math.round((r.width / 2 - tx) / z - 170)), y: Math.max(0, Math.round((r.height / 2 - ty) / z - 120)) };
-    }
-    function cleanHtml(node) {
-      var c = node.cloneNode(true);
-      c.classList && c.classList.remove("cm-block", "cm-marked");
-      c.removeAttribute && (c.removeAttribute("data-idx"), c.removeAttribute("data-ck"), c.removeAttribute("id"));
-      if (c.querySelectorAll) {
-        c.querySelectorAll(".cm-block, .cm-marked").forEach(function (x) { x.classList.remove("cm-block", "cm-marked"); });
-        c.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
-        c.querySelectorAll("[data-idx], [data-ck], [id]").forEach(function (x) { x.removeAttribute("data-idx"); x.removeAttribute("data-ck"); x.removeAttribute("id"); });
-      }
-      return c.outerHTML;
-    }
-
-    var markBtn = ov.querySelector('[data-cm="mark"]');
-    var blocks = [];
-    function enterMarking() {
-      ov.classList.add("marking");
-      // dig past a single wrapper (a whole pane / subject / folder) to its real parts
-      var root = src;
-      while (root.children.length === 1 && root.firstElementChild.children.length &&
-             /pane|subject|folder|subject-body|grid2/.test(root.firstElementChild.className || "")) {
-        root = root.firstElementChild;
-        if (root.tagName === "DETAILS") root.open = true;
-      }
-      var SEL = ".card, .tool, .gallery, .subject, table, blockquote, pre, ul, ol, h2, h3, h4, p, figure, svg";
-      var cand = [];
-      root.querySelectorAll(SEL.split(", ").map(function (s) { return ":scope > " + s; }).join(", ")).forEach(function (n) { cand.push(n); });
-      root.querySelectorAll(":scope > .grid2 > .card, :scope > .subject-body > *").forEach(function (n) { if (cand.indexOf(n) < 0) cand.push(n); });
-      blocks = [];
-      cand.forEach(function (n) {
-        if (n.classList.contains("cm-block")) return;
-        if (!n.textContent.trim() && !n.querySelector("svg,img,table")) return;
-        n.classList.add("cm-block");
-        blocks.push(n);
-      });
-      // never mark a block that sits inside another marked block
-      src.querySelectorAll(".cm-block .cm-block").forEach(function (n) { n.classList.remove("cm-block"); });
-      blocks = Array.prototype.slice.call(src.querySelectorAll(".cm-block"));
-      if (!blocks.length && root.children.length) {   // fall back: mark the direct children
-        Array.prototype.slice.call(root.children).forEach(function (n) {
-          if (n.textContent.trim() || n.querySelector("svg,img")) { n.classList.add("cm-block"); blocks.push(n); }
-        });
-      }
-      blocks.forEach(function (n) {
-        n.addEventListener("click", function (ev) { ev.stopPropagation(); n.classList.toggle("cm-marked"); });
-      });
-      ov.querySelector(".clipmode-bar").innerHTML =
-        '<b>Tap the parts to keep · or drag a box</b>' +
-        '<button data-cm2="crop">▭ Box</button>' +
-        '<button data-cm2="done" class="hot">Done</button>' +
-        '<button data-cm2="cancel">✕</button>';
-      ov.querySelector('[data-cm2="cancel"]').addEventListener("click", closeClipMode);
-      ov.querySelector('[data-cm2="done"]').addEventListener("click", function () {
-        var marked = Array.prototype.slice.call(src.querySelectorAll(".cm-block.cm-marked"));
-        if (!marked.length) { alert("Tap at least one part, or drag a box over what you want."); return; }
-        var pos2 = finalPos();
-        var htmlOut = marked.map(cleanHtml).join("");
-        closeClipMode();
-        newMergedClip('<div>' + htmlOut + '</div>', (title || "Clip") + " — parts", pos2);
-      });
-      var cropBtn = ov.querySelector('[data-cm2="crop"]');
-      cropBtn.addEventListener("click", function () {
-        ov.classList.toggle("cropping");
-        cropBtn.classList.toggle("hot", ov.classList.contains("cropping"));
-      });
-      // lasso — touch-action:none on .clipmode-src (while cropping) stops the browser's own
-      // scroll from hijacking the drag; pointer capture + preventDefault on every step keeps it
-      // tracking even if the finger slides off a child card. Scroll position is LOCKED for the
-      // whole drag (and forced back if anything nudges it, e.g. iOS's own edge/focus scrolling)
-      // so the box and the final crop can never drift relative to what's on screen.
-      var lasso = null, lx, ly, lassoId = null, lockL = 0, lockT = 0, lastCX = 0, lastCY = 0;
-      function lockedXY(ev) {
-        if (src.scrollLeft !== lockL) src.scrollLeft = lockL;
-        if (src.scrollTop !== lockT) src.scrollTop = lockT;
-        var r = src.getBoundingClientRect();
-        return [ev.clientX - r.left + lockL, ev.clientY - r.top + lockT];
-      }
-      src.addEventListener("pointerdown", function (ev) {
-        if (!ov.classList.contains("cropping")) return;
-        ev.preventDefault(); ev.stopPropagation();
-        try { src.setPointerCapture(ev.pointerId); } catch (_) {}
-        lassoId = ev.pointerId;
-        lockL = src.scrollLeft; lockT = src.scrollTop;
-        var xy = lockedXY(ev); lx = xy[0]; ly = xy[1]; lastCX = lx; lastCY = ly;
-        lasso = document.createElement("div"); lasso.className = "cm-lasso";
-        lasso.style.left = lx + "px"; lasso.style.top = ly + "px"; lasso.style.width = "0px"; lasso.style.height = "0px";
-        src.appendChild(lasso);
-      }, { passive: false });
-      src.addEventListener("pointermove", function (ev) {
-        if (!lasso || ev.pointerId !== lassoId) return;
-        ev.preventDefault(); ev.stopPropagation();
-        var xy = lockedXY(ev); lastCX = xy[0]; lastCY = xy[1];
-        lasso.style.left = Math.min(lx, lastCX) + "px"; lasso.style.top = Math.min(ly, lastCY) + "px";
-        lasso.style.width = Math.abs(lastCX - lx) + "px"; lasso.style.height = Math.abs(lastCY - ly) + "px";
-      }, { passive: false });
-      // the box cuts out exactly what's under it — any rectangle, not just whole cards/blocks —
-      // and drops it on the board right away as a frameless, resizable "picture" clip
-      function cropSourceHtml() {
-        var tmp = document.createElement("div");
-        tmp.innerHTML = src.innerHTML;
-        // Diagrams (e.g. the triangle solver's <svg viewBox="0 0 300 240" style="max-width:300px">,
-        // no explicit width/height) size themselves from the aspect ratio stretched against
-        // whatever container they're CURRENTLY in — layout-dependent. The exact same markup can
-        // render at a different height once this clone ends up somewhere else, which silently
-        // shifts how much space everything below the diagram takes up — this is what was making
-        // the crop grab content from further down the page than what was actually marked. Freeze
-        // every diagram at its current live pixel size before it goes anywhere else.
-        var liveGraphics = src.querySelectorAll("svg, canvas");
-        var cloneGraphics = tmp.querySelectorAll("svg, canvas");
-        for (var gi = 0; gi < liveGraphics.length && gi < cloneGraphics.length; gi++) {
-          var gr = liveGraphics[gi].getBoundingClientRect();
-          if (gr.width > 0 && gr.height > 0) {
-            cloneGraphics[gi].style.width = gr.width + "px";
-            cloneGraphics[gi].style.height = gr.height + "px";
-            cloneGraphics[gi].style.maxWidth = "none";
-          }
-        }
-        tmp.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
-        tmp.querySelectorAll("[data-idx], [data-ck], [id]").forEach(function (x) { x.removeAttribute("data-idx"); x.removeAttribute("data-ck"); x.removeAttribute("id"); });
-        // .cm-block's marking-mode margin (3px 0, from the ".clipmode.marking .cm-block" rule) is
-        // part of the live layout the box was actually drawn against. Stripping the class below
-        // silently drops that margin, making the final content render more compact than what was
-        // on screen — the box's saved pixel window then lands over different (lower) content the
-        // further down the page it is. Freeze the margin inline first so layout can't shift.
-        tmp.querySelectorAll(".cm-block").forEach(function (x) { x.style.margin = "3px 0"; });
-        tmp.querySelectorAll(".cm-block, .cm-marked").forEach(function (x) { x.classList.remove("cm-block", "cm-marked"); });
-        return tmp.innerHTML;
-      }
-      function endLasso(ev) {
-        if (!lasso || (ev && ev.pointerId !== lassoId)) return;
-        if (ev) { ev.preventDefault(); ev.stopPropagation(); if (ev.type !== "pointercancel") { var xy = lockedXY(ev); lastCX = xy[0]; lastCY = xy[1]; } }
-        var cancelled = ev && ev.type === "pointercancel";
-        // compute from the same tracked coordinates the box was drawn with — not a re-parsed
-        // style string — so what gets cut is exactly the box that was visible
-        var lr = { x: Math.min(lx, lastCX), y: Math.min(ly, lastCY), w: Math.abs(lastCX - lx), h: Math.abs(lastCY - ly) };
-        lasso.remove(); lasso = null; lassoId = null;
-        if (cancelled || lr.w < 8 || lr.h < 8) return;
-        var pos2 = finalPos();
-        var innerW = src.clientWidth;
-        var fullHtml = cropSourceHtml();
-        var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + fullHtml + '</div>';
-        var cropClip = { id: uid("cl_"), kind: "crop", cropX: Math.round(lr.x), cropY: Math.round(lr.y),
-          cropW: Math.round(lr.w), cropH: Math.round(lr.h), html: html,
-          x: Math.round(pos2.x), y: Math.round(pos2.y), w: Math.round(lr.w), h: Math.round(lr.h), z: ++zTop, added: Date.now() };
-        // close the overlay BEFORE renderCanvas() runs — renderCanvas rebuilds #ppCanvas from
-        // scratch, which was silently destroying this still-open overlay (and everything in it,
-        // including the box tool) right after the first crop, so every crop after that landed on
-        // dead, detached elements — which is why it looked like it kept "creating the same part".
-        closeClipMode();
-        var pB = ensureProblem();
-        pB.bench.push(cropClip);
-        saveStore(); renderProblemList();
-        if (viewingProblem && activeProblem === pB.id) renderCanvas();
-      }
-      src.addEventListener("pointerup", endLasso);
-      src.addEventListener("pointercancel", endLasso);
-    }
-    ov.querySelector('[data-cm="all"]').addEventListener("click", function () {
-      var pos2 = finalPos(); closeClipMode();
-      onKeepAll(pos2);
-    });
-    ov.querySelector('[data-cm="cancel"]').addEventListener("click", closeClipMode);
-    markBtn.addEventListener("click", enterMarking);
-    try { prettyFractions(src); } catch (_) {}
+    newMergedClip(cleanClipHtml('<div>' + inner + '</div>'), (d && d.name) || "Page", pos || viewCenterPos());
   }
 
   // A finger touch on a clip, in ANY writing tool, needs to reach that clip's own grip / resize
