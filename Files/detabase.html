@@ -451,6 +451,7 @@
   /* ---- shape & graph widgets: never a frame — just the shape/graph, sitting on the page ---- */
   .clip.widget { border: none; background: transparent; box-shadow: none; overflow: visible; }
   .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: -1px; }
+  .clip.sel:not(.widget) { box-shadow: 0 0 0 2px var(--accent); }
   .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; pointer-events: none; }
   .clip.graph .graph-host { overflow: hidden; }
   /* empty widget box doesn't grab — only the shape/graph itself and its controls do (so overlapping widgets stay independent) */
@@ -9758,6 +9759,33 @@
     try { prettyFractions(src); } catch (_) {}
   }
 
+  // A finger touch on a clip, in ANY writing tool, needs to reach that clip's own grip / resize
+  // handle / ✂ / ✕ — but .ink-capture sits on top of everything (so the pencil can draw over a
+  // clip) and normally swallows the touch first, so e.target is always .ink-capture, never the
+  // clip beneath it. SEL_Z briefly lifts the tapped clip's OWN z-index above .ink-capture's so its
+  // controls become directly reachable for the very next touch, without needing a mode switch.
+  var SEL_Z = 4700;
+  function clipUnderPoint(clientX, clientY) {
+    var stack = document.elementsFromPoint ? document.elementsFromPoint(clientX, clientY) : [];
+    for (var i = 0; i < stack.length; i++) {
+      var c = stack[i].closest && stack[i].closest(".clip");
+      if (c) return c;
+    }
+    return null;
+  }
+  function deselectAllClips(except) {
+    Array.prototype.slice.call(document.querySelectorAll(".clip.sel")).forEach(function (x) {
+      if (x === except) return;
+      x.classList.remove("sel");
+      if (x.dataset.baseZ) { x.style.zIndex = x.dataset.baseZ; delete x.dataset.baseZ; }
+    });
+  }
+  function selectClipEl(el) {
+    deselectAllClips(el);
+    if (!el.classList.contains("sel")) el.dataset.baseZ = el.style.zIndex || "1";
+    el.classList.add("sel");
+    el.style.zIndex = SEL_Z;
+  }
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
     var isW = clip.kind === "shape" || clip.kind === "graph" || clip.kind === "crop";
@@ -9874,9 +9902,7 @@
   (function () {
     var canvas = $("ppCanvas");
     canvas.addEventListener("pointerdown", function (e) {
-      if (!e.target.closest(".clip.widget") && !e.target.closest(".shape-pick")) {
-        Array.prototype.slice.call(document.querySelectorAll(".clip.widget.sel")).forEach(function (x) { x.classList.remove("sel"); });
-      }
+      if (!e.target.closest(".clip") && !e.target.closest(".shape-pick")) deselectAllClips();
     }, true);
     canvas.addEventListener("dragover", function (e) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; canvas.classList.add("dragover"); });
     canvas.addEventListener("dragleave", function () { canvas.classList.remove("dragover"); });
@@ -9985,19 +10011,24 @@
       if (e.pointerType !== "touch") return;
       if (!document.body.classList.contains("ink-full")) return;
       if (inkDrawing) return;
-      // long-press a shape/graph → Duplicate / Delete
-      var widgetEl = e.target.closest && e.target.closest(".clip.widget");
-      if (widgetEl) {
-        var p0 = curProblem();
-        var clip0 = p0 && (p0.bench || []).filter(function (x) { return x.id === widgetEl.dataset.clip; })[0];
-        if (clip0) {
-          wLpEl = { x: e.clientX, y: e.clientY };
-          clearTimeout(wLpT);
-          wLpT = setTimeout(function () { wLpT = null; openWidgetMenu(clip0, wLpEl.x, wLpEl.y); }, 480);
+      // a finger touch always reaches whatever clip is visually underneath — e.target here is
+      // always .ink-capture (it sits on top so the pencil can draw over a clip), so hit-test by
+      // point instead of by e.target. Selecting lifts the clip's z above .ink-capture so its own
+      // grip / resize / ✂ / ✕ are reachable on the very next touch, in ANY writing tool.
+      var underClip = clipUnderPoint(e.clientX, e.clientY);
+      if (underClip) {
+        selectClipEl(underClip);
+        if (underClip.classList.contains("widget")) {   // long-press a shape/graph/crop → Duplicate / Delete
+          var p0 = curProblem();
+          var clip0 = p0 && (p0.bench || []).filter(function (x) { return x.id === underClip.dataset.clip; })[0];
+          if (clip0) {
+            wLpEl = { x: e.clientX, y: e.clientY };
+            clearTimeout(wLpT);
+            wLpT = setTimeout(function () { wLpT = null; openWidgetMenu(clip0, wLpEl.x, wLpEl.y); }, 480);
+          }
         }
-        return;
+        return;   // don't also start a pan / lasso / long-press-add gesture over a clip
       }
-      if (e.target.closest && e.target.closest(".clip")) return;   // other clips take their own drag
       // finger lasso when the lasso tool is active
       if (inkTool === "lasso" && ids().length === 0) {
         lassoId = e.pointerId;
