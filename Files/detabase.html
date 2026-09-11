@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B17</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B18</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9861,7 +9861,11 @@
     var co = el.querySelector(".clip-open");
     if (co) co.addEventListener("click", function (e) { e.stopPropagation(); if (clip.cardId) jumpToCard(clip.cardId); });
     var cropTrigger = el.querySelector(".clip-crop") || el.querySelector(".wt-crop");
-    if (cropTrigger) cropTrigger.addEventListener("click", function (e) { e.stopPropagation(); el.classList.add("sel"); startInPlaceCrop(el, clip, p); });
+    // selectClipEl (not just adding the "sel" class) is what actually lifts this clip's
+    // z-index above .ink-capture — every other clip control depends on that same lift to be
+    // touchable at all. Skipping it here left the crop-drag overlay sitting underneath the
+    // drawing layer, so a finger drag on it did nothing.
+    if (cropTrigger) cropTrigger.addEventListener("click", function (e) { e.stopPropagation(); selectClipEl(el); startInPlaceCrop(el, clip, p); });
     var ce = el.querySelector(".wt-edit");
     if (ce) ce.addEventListener("click", function (e) {
       e.stopPropagation();
