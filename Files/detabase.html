@@ -412,18 +412,28 @@
     min-width: 130px; min-height: 70px;
   }
   .clip.frag { border-left: 3px solid var(--tan); }
+  /* view mode (default): no visible bar — edit mode (.sel, "pressed with a finger", or hover for
+     a mouse) reveals it. Absolutely positioned (overlaying the top of .clip-body) rather than a
+     flex child, so hiding it never leaves a blank gap where it used to push content down. It
+     stays hit-testable at opacity:0 (unlike display:none) so drag-to-reposition still works
+     without first entering edit mode — same treatment as .wgrip below, for every asset type. */
   .clip-head {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 7;
     display: flex; align-items: center; gap: 5px; padding: 4px 6px 4px 9px;
     background: var(--surface-2); border-bottom: 1px solid var(--border);
     font-size: .72rem; font-weight: 700; color: var(--text-secondary);
-    cursor: grab; user-select: none; flex-shrink: 0; touch-action: none;
+    cursor: grab; user-select: none; touch-action: none;
+    opacity: 0; transition: opacity .12s;
   }
+  .clip:hover .clip-head, .clip.sel .clip-head { opacity: 1; }
   .clip-head:active { cursor: grabbing; }
   .clip-head .clip-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .clip-head button {
     padding: 0 5px; font-size: .74rem; line-height: 1.5; border-radius: 5px; flex-shrink: 0;
     border: 1px solid var(--border); background: var(--bg); color: var(--text-muted);
+    pointer-events: none;   /* only the plain drag strip is live in view mode, never a button */
   }
+  .clip.sel .clip-head button, .clip:hover .clip-head button { pointer-events: auto; }
   .clip-head button:hover { color: var(--accent); border-color: var(--accent); }
   .clip-body { flex: 1; overflow: auto; padding: 10px 12px; font-size: .86rem; line-height: 1.55; }
   .clip-body > *:first-child { margin-top: 0; }
@@ -464,21 +474,27 @@
   .crop-frame * { pointer-events: none !important; }
   /* "crop after clipping": drag a box directly on a placed clip's rendered content to trim it down */
   .clip-crop-overlay { position: absolute; inset: 0; z-index: 60; cursor: crosshair; background: rgba(0,0,0,.15); touch-action: none; pointer-events: auto; }
-  /* drag grip: slim bar along the widget's top edge — the only way to move it. hidden until hover/selected */
-  .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 20px; z-index: 7; display: none;
+  /* drag grip: slim bar along the widget's top edge, the same view/edit-mode treatment as
+     .clip-head — invisible (but still hit-testable, so reposition works) in view mode, shown in
+     edit mode (.sel / hover). opacity, not display:none, is what keeps it draggable while hidden.
+     Its own BUTTONS stay pointer-events:none while hidden, though — only the plain drag area
+     should be live in view mode; a delete/edit button must never be clickable while unseen. */
+  .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 20px; z-index: 7; display: flex;
     align-items: center; gap: 5px; padding: 0 5px; box-sizing: border-box;
     background: color-mix(in srgb, var(--surface-2) 88%, transparent); border-radius: 8px 8px 0 0;
-    cursor: grab; touch-action: none; }
+    cursor: grab; touch-action: none; opacity: 0; transition: opacity .12s; }
   .wgrip:active { cursor: grabbing; }
-  .clip.widget:hover .wgrip, .clip.widget.sel .wgrip { display: flex; }
+  .wgrip button { pointer-events: none; }
+  .clip.widget:hover .wgrip, .clip.widget.sel .wgrip { opacity: 1; }
+  .clip.widget:hover .wgrip button, .clip.widget.sel .wgrip button { pointer-events: auto; }
   .wgrip .wgrip-bar { flex: 1; height: 3px; border-radius: 2px; pointer-events: none;
     background: repeating-linear-gradient(90deg, var(--text-muted) 0 5px, transparent 5px 9px); opacity: .55; }
   .wgrip button { width: 24px; height: 18px; padding: 0; font-size: .82rem; line-height: 1; border: none;
     background: transparent; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; border-radius: 4px; }
   .wgrip button:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
   .wgrip .clip-del:hover { color: #dc2626; background: color-mix(in srgb, #dc2626 12%, transparent); }
-  .clip.widget .clip-resize { width: 34px; height: 34px; opacity: 0; transition: opacity .12s; }
-  .clip.widget:hover .clip-resize, .clip.widget.sel .clip-resize { opacity: 1; }
+  /* resize always works, view mode included — unlike the grip/bar, it's not gated by .sel/hover */
+  .clip.widget .clip-resize { width: 34px; height: 34px; }
   .clip.widget .clip-resize::after { right: 7px; bottom: 7px; width: 13px; height: 13px; border-width: 3px; border-color: var(--accent); }
   .shape-host { width: 100%; height: 100%; display: flex; position: relative; }
   .shape-host svg { width: 100%; height: 100%; touch-action: none; }
@@ -2977,7 +2993,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B19</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B20</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
