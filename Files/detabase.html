@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B10</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B11</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9751,19 +9751,40 @@
         if (cancelled || lr.w < 8 || lr.h < 8) return;
         var pos2 = finalPos();
         var innerW = src.clientWidth;
-        var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + cropSourceHtml() + '</div>';
+        var fullHtml = cropSourceHtml();
+        var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + fullHtml + '</div>';
         var cropClip = { id: uid("cl_"), kind: "crop", cropX: Math.round(lr.x), cropY: Math.round(lr.y),
           cropW: Math.round(lr.w), cropH: Math.round(lr.h), html: html,
           x: Math.round(pos2.x), y: Math.round(pos2.y), w: Math.round(lr.w), h: Math.round(lr.h), z: ++zTop, added: Date.now() };
-        // close the overlay BEFORE renderCanvas() runs — renderCanvas rebuilds #ppCanvas from
-        // scratch, which was silently destroying this still-open overlay (and everything in it,
-        // including the box tool) right after the first crop, so every crop after that landed on
-        // dead, detached elements — which is why it looked like it kept "creating the same part".
-        closeClipMode();
-        var pB = ensureProblem();
-        pB.bench.push(cropClip);
-        saveStore(); renderProblemList();
-        if (viewingProblem && activeProblem === pB.id) renderCanvas();
+        function finishCrop() {
+          // close the overlay BEFORE renderCanvas() runs — renderCanvas rebuilds #ppCanvas from
+          // scratch, which was silently destroying this still-open overlay (and everything in it,
+          // including the box tool) right after the first crop, so every crop after that landed on
+          // dead, detached elements — which is why it looked like it kept "creating the same part".
+          closeClipMode();
+          var pB = ensureProblem();
+          pB.bench.push(cropClip);
+          saveStore(); renderProblemList();
+          if (viewingProblem && activeProblem === pB.id) renderCanvas();
+        }
+        // TEMPORARY DEBUG (B11): render the WHOLE captured source, unscrolled, with the exact
+        // rectangle that will be cropped drawn on top in red — a direct visual check of whether
+        // the box lines up with the content it's supposed to, instead of guessing from numbers.
+        // Screenshot this (scroll if needed) and send it, then tap Close to finish as normal.
+        var dbg = document.createElement("div");
+        dbg.style.cssText = "position:fixed;inset:0;z-index:99999;background:#fff;overflow:auto;-webkit-overflow-scrolling:touch;";
+        dbg.innerHTML =
+          '<div style="position:sticky;top:0;background:#111;color:#fff;padding:10px;font:14px sans-serif;z-index:2;display:flex;gap:10px;align-items:center;">' +
+          '<b style="flex:1">DEBUG: red box = what gets cropped. Screenshot, then Close.</b>' +
+          '<button id="cropDbgClose" style="padding:8px 16px;font-weight:700;">Close</button></div>' +
+          '<div style="position:relative;width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' +
+          fullHtml +
+          '<div class="dbg-redbox" style="position:absolute;left:' + lr.x + 'px;top:' + lr.y + 'px;width:' +
+          lr.w + 'px;height:' + lr.h + 'px;border:3px solid red;background:rgba(255,0,0,.18);box-sizing:border-box;"></div>' +
+          '</div>';
+        document.body.appendChild(dbg);
+        dbg.querySelector(".dbg-redbox").scrollIntoView({ block: "center" });
+        dbg.querySelector("#cropDbgClose").addEventListener("click", function () { dbg.remove(); finishCrop(); });
       }
       src.addEventListener("pointerup", endLasso);
       src.addEventListener("pointercancel", endLasso);
