@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B16</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B17</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9076,8 +9076,28 @@
     var baseCropY = wasCrop ? (clip.cropY || 0) : 0;
     var baseScaleX = wasCrop ? (clip.w || clip.cropW) / (clip.cropW || 1) : 1;
     var baseScaleY = wasCrop ? (clip.h || clip.cropH) / (clip.cropH || 1) : 1;
-    var baseHtml = wasCrop ? (clip.html || "") :
-      '<div style="width:' + (clip.w || 300) + 'px;padding:10px 12px;box-sizing:border-box;">' + (clip.html || "") + '</div>';
+    // Same fix as cropSourceHtml() (B15): an unsized <svg>/<canvas> diagram sizes itself from
+    // whatever container it's currently in, so it can render at a different height once this
+    // card becomes a chrome-less crop widget (no header, different padding) even at the same
+    // width. Freeze every diagram at its current live pixel size before it's wrapped up.
+    var baseHtml;
+    if (wasCrop) {
+      baseHtml = clip.html || "";
+    } else {
+      var bhTmp = document.createElement("div");
+      bhTmp.innerHTML = clip.html || "";
+      var bhLiveG = bodyEl.querySelectorAll("svg, canvas");
+      var bhCloneG = bhTmp.querySelectorAll("svg, canvas");
+      for (var bhi = 0; bhi < bhLiveG.length && bhi < bhCloneG.length; bhi++) {
+        var bhr = bhLiveG[bhi].getBoundingClientRect();
+        if (bhr.width > 0 && bhr.height > 0) {
+          bhCloneG[bhi].style.width = bhr.width + "px";
+          bhCloneG[bhi].style.height = bhr.height + "px";
+          bhCloneG[bhi].style.maxWidth = "none";
+        }
+      }
+      baseHtml = '<div style="width:' + (clip.w || 300) + 'px;padding:10px 12px;box-sizing:border-box;">' + bhTmp.innerHTML + '</div>';
+    }
     var overlay = document.createElement("div");
     overlay.className = "clip-crop-overlay";
     if (!bodyEl.style.position) bodyEl.style.position = "relative";
@@ -10672,6 +10692,27 @@ function applyRemote(d) {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(d.store));
     localStorage.setItem(TS_KEY, String(d.updatedAt || Date.now()));
+  } catch (e) {}
+  // Circuit breaker: the B16 signedInDone guard only stops onSignedIn's compare-and-confirm
+  // dance from re-running MULTIPLE TIMES within one page load — it can't stop a RELOAD LOOP,
+  // since every fresh reload resets that in-memory guard and legitimately gets to run once
+  // again. If something keeps making the cloud copy look newer/different every time (still
+  // being investigated), each reload was re-triggering the "cloud is newer" confirm() again,
+  // which is what was making the app unusable even after that guard. sessionStorage survives
+  // a reload (unlike a module variable), so track reload timestamps there and stop reloading
+  // automatically once too many happen too fast — the data above is already saved either way,
+  // this only stops the page from yanking itself out from under the user on a loop.
+  try {
+    var now = Date.now();
+    var hist = JSON.parse(sessionStorage.getItem("detabase.reloadHist") || "[]").filter(function (t) { return now - t < 20000; });
+    hist.push(now);
+    sessionStorage.setItem("detabase.reloadHist", JSON.stringify(hist));
+    if (hist.length > 3) {
+      setBadge("☁ updated — tap ↻ to refresh", "good");
+      var badgeEl = document.getElementById("cloudBadge");
+      if (badgeEl) badgeEl.onclick = function () { sessionStorage.removeItem("detabase.reloadHist"); location.reload(); };
+      return;
+    }
   } catch (e) {}
   location.reload();
 }
