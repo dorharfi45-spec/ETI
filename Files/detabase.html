@@ -8834,10 +8834,9 @@
       } else if (inkUndo[p.id]) { inkUndo[p.id].pop(); }   // nothing drawn — drop the snapshot
       inkCur = null;
       renderInk(p);
-      try { window.__dbg = { wasTap: !!wasTap, isPen: isPen, penDownT: penDownT, dt: Date.now() - penDownT, penMoved: penMoved, penTapT: penTapT, tool: inkTool }; } catch (_) {}
       if (wasTap) {
         var now = Date.now();
-        if (penTapT && now - penTapT < 380 && penTapXY && Math.hypot(penDownXY[0] - penTapXY[0], penDownXY[1] - penTapXY[1]) < 70) {
+        if (penTapT && now - penTapT < 500 && penTapXY && Math.hypot(penDownXY[0] - penTapXY[0], penDownXY[1] - penTapXY[1]) < 90) {
           penTapT = 0; penTapXY = null;
           if (inkTool === "erase") _setInkTool(inkPrevWrite || "pen");
           else { inkPrevWrite = inkTool; _setInkTool("erase"); }
@@ -9777,8 +9776,8 @@
     function ids() { return Object.keys(pts); }
     function handleTwoFingerTap() {
       var now = Date.now();
-      if (twoTapStreak && now - twoTapLastT < 700) { inkDoUndo(); twoTapLastT = now; }
-      else if (twoTapLastT && now - twoTapLastT < 550) { inkDoUndo(); twoTapLastT = now; twoTapStreak = true; }   // the "twice"
+      if (twoTapStreak && now - twoTapLastT < 850) { inkDoUndo(); twoTapLastT = now; }
+      else if (twoTapLastT && now - twoTapLastT < 650) { inkDoUndo(); twoTapLastT = now; twoTapStreak = true; }   // the "twice"
       else { twoTapLastT = now; twoTapStreak = false; }
     }
     function two() { var k = ids(), a = pts[k[0]], b = pts[k[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
@@ -9869,7 +9868,7 @@
       var wasN = ids().length;
       delete pts[e.pointerId];
       clearTimeout(lpT); lpT = null;
-      if (wasN === 2 && !twoMoved && twoT0 && Date.now() - twoT0 < 280) handleTwoFingerTap();
+      if (wasN === 2 && !twoMoved && twoT0 && Date.now() - twoT0 < 340) handleTwoFingerTap();
       if (ids().length >= 1) begin(); else { g = null; navSave(); }
     }
     cv.addEventListener("pointerup", up);
