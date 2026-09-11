@@ -8726,7 +8726,7 @@
     ink.forEach(function (s) {
       if (!s.hi) return;
       h += '<path d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#fde047") +
-        '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.42"/>';
+        '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>';
     });
     ink.forEach(function (s) {
       if (s.hi) return;
@@ -8779,7 +8779,7 @@
       inkLive.setAttribute("d", inkPathD(inkCur));
       inkLive.setAttribute("stroke", inkCur.color);
       inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
-      inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.42" : "1");
+      inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.5" : "1");
     }
     // lasso funcs are module-level (lassoStart/lassoTo/lassoDone) so touch (mountGestures) can drive them too
     // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
