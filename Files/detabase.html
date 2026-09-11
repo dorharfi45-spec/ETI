@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B8</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B9</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9743,6 +9743,16 @@
         var lr = { x: Math.min(lx, lastCX), y: Math.min(ly, lastCY), w: Math.abs(lastCX - lx), h: Math.abs(lastCY - ly) };
         lasso.remove(); lasso = null; lassoId = null;
         if (cancelled || lr.w < 8 || lr.h < 8) return;
+        try {
+          var sr = src.getBoundingClientRect();
+          var vv = window.visualViewport ? { l: Math.round(window.visualViewport.offsetLeft), t: Math.round(window.visualViewport.offsetTop) } : "n/a";
+          alert("CROP DEBUG\n" +
+            "box(local): x=" + Math.round(lr.x) + " y=" + Math.round(lr.y) + " w=" + Math.round(lr.w) + " h=" + Math.round(lr.h) + "\n" +
+            "start(local): " + Math.round(lx) + "," + Math.round(ly) + "  end(local): " + Math.round(lastCX) + "," + Math.round(lastCY) + "\n" +
+            "src rect: L=" + Math.round(sr.left) + " T=" + Math.round(sr.top) + " W=" + Math.round(sr.width) + " H=" + Math.round(sr.height) + "\n" +
+            "src scroll: L=" + lockL + " T=" + lockT + "\n" +
+            "dpr=" + window.devicePixelRatio + "  visualViewport=" + JSON.stringify(vv));
+        } catch (_e) {}
         var pos2 = finalPos();
         var innerW = src.clientWidth;
         var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + cropSourceHtml() + '</div>';
