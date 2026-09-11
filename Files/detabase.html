@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B11</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B12</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9048,7 +9048,12 @@
     if (!host) return;
     var cw = clip.cropW || clip.w || 200, ch = clip.cropH || clip.h || 150;
     host.innerHTML = '<div class="crop-frame" style="width:' + cw + 'px;height:' + ch + 'px">' +
-      '<div style="position:absolute;left:' + (-(clip.cropX || 0)) + 'px;top:' + (-(clip.cropY || 0)) + 'px">' + (clip.html || "") + '</div></div>';
+      '<div style="position:absolute;left:' + (-(clip.cropX || 0)) + 'px;top:' + (-(clip.cropY || 0)) + 'px">' + (clip.html || "") + '</div></div>' +
+      // TEMPORARY DEBUG (B12): stamp the values actually used to render this widget, so a
+      // screenshot of the finished widget can be compared directly against the capture-time
+      // debug overlay's numbers instead of trusting that nothing changed in between.
+      '<div style="position:absolute;left:1px;top:1px;z-index:5;background:rgba(255,0,0,.85);color:#fff;font:8px monospace;padding:1px 3px;pointer-events:none;">' +
+      'cx' + Math.round(clip.cropX || 0) + ' cy' + Math.round(clip.cropY || 0) + ' ' + Math.round(cw) + 'x' + Math.round(ch) + '</div>';
     var frame = host.querySelector(".crop-frame");
     function applyScale() {
       var sx = (clip.w || cw) / cw, sy = (clip.h || ch) / ch;
@@ -9766,6 +9771,15 @@
           pB.bench.push(cropClip);
           saveStore(); renderProblemList();
           if (viewingProblem && activeProblem === pB.id) renderCanvas();
+          // TEMPORARY DEBUG (B12): flash the just-created widget so it's unmistakable which one
+          // on the board is the new one when screenshotting, no matter what else is nearby.
+          setTimeout(function () {
+            var el2 = document.querySelector('[data-clip="' + cropClip.id + '"]');
+            if (el2) {
+              el2.style.outline = "4px solid lime"; el2.style.outlineOffset = "2px";
+              setTimeout(function () { el2.style.outline = ""; el2.style.outlineOffset = ""; }, 5000);
+            }
+          }, 50);
         }
         // TEMPORARY DEBUG (B11): render the WHOLE captured source, unscrolled, with the exact
         // rectangle that will be cropped drawn on top in red — a direct visual check of whether
