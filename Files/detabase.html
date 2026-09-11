@@ -2976,7 +2976,7 @@
     <button type="button" class="ink-tool" data-inktool="select" title="select — move &amp; edit shapes, graphs and clips">✋</button>
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="highlight" title="highlighter">🖍️</button>
-    <button type="button" class="ink-tool" data-inktool="erase" title="erase — double-tap the page to toggle, or hold the pencil tip still to erase while held">⌫</button>
+    <button type="button" class="ink-tool" data-inktool="erase" title="erase — double-tap the page with the pencil to toggle">⌫</button>
     <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
     <span class="ink-swatches" id="ppInkSwatches"></span>
     <input type="range" id="ppInkW" class="ink-w" min="1" max="16" value="3" title="thickness">
@@ -8784,7 +8784,15 @@
     }
     // lasso funcs are module-level (lassoStart/lassoTo/lassoDone) so touch (mountGestures) can drive them too
     // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
-    var holdT = null, holdErasing = false, holdErasedAny = false;
+    var holdT = null, straightening = false;
+    function tryStraighten() {
+      holdT = null;
+      if (!inkDrawing || straightening || !inkCur || inkCur.pts.length < 2) return;
+      straightening = true;
+      var start = inkCur.pts[0], end = inkCur.pts[inkCur.pts.length - 1];
+      inkCur.pts = [start, end];
+      liveDraw();
+    }
     ic.addEventListener("pointerdown", function (e) {
       if (!inkMode || e.pointerType === "touch") return;
       if (inkTool === "lasso") { e.preventDefault(); try { ic.setPointerCapture(e.pointerId); } catch (_) {} lassoStart(P(e)); return; }
@@ -8795,25 +8803,12 @@
       penDownXY = [d0[0], d0[1]]; penDownT = Date.now(); penMoved = 0;
       inkSnapshot(p);
       inkDrawing = true;
-      holdErasing = false; holdErasedAny = false; clearTimeout(holdT); holdT = null;
+      straightening = false; clearTimeout(holdT); holdT = null;
       if (inkTool === "erase") { inkEraseAt(p, d0); return; }
       var hi = inkTool === "highlight";
       inkCur = { id: uid("ik_"), color: hi ? inkHiColor : inkColor, w: hi ? Math.max(10, inkW * 3) : inkW, pts: [d0] };
       if (hi) inkCur.hi = true;
       liveDraw();
-      // hold the pencil tip still on the page → erase while held, revert on lift
-      holdT = setTimeout(function () {
-        holdT = null;
-        if (!inkDrawing || holdErasing || penMoved > 6) return;
-        holdErasing = true;
-        inkCur = null;
-        if (inkLive) inkLive.setAttribute("d", "");
-        $("ppCanvas").classList.add("erase");
-        var eb = $("ppInkbar") && $("ppInkbar").querySelector('[data-inktool="erase"]');
-        var cb = $("ppInkbar") && $("ppInkbar").querySelector('[data-inktool="' + inkTool + '"]');
-        if (eb) eb.classList.add("on"); if (cb) cb.classList.remove("on");
-        if (inkEraseAt(p, penDownXY)) holdErasedAny = true;
-      }, 420);
     });
     ic.addEventListener("pointermove", function (e) {
       if (!inkMode || e.pointerType === "touch") return;
@@ -8829,15 +8824,22 @@
       e.preventDefault();
       var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
       var list = (coalesced && coalesced.length) ? coalesced : [e];
-      if (holdErasing) { list.forEach(function (ev) { if (inkEraseAt(p, P(ev))) holdErasedAny = true; }); return; }
       if (inkTool === "erase") { list.forEach(function (ev) { inkEraseAt(p, P(ev)); }); return; }
       if (!inkCur) return;
+      var sawRealMove = false;
       list.forEach(function (ev) {
         var xy = P(ev);
-        if (penDownXY) penMoved = Math.max(penMoved, Math.hypot(xy[0] - penDownXY[0], xy[1] - penDownXY[1]));
-        inkCur.pts.push(xy);
+        var last = inkCur.pts[inkCur.pts.length - 1];
+        if (Math.hypot(xy[0] - last[0], xy[1] - last[1]) > 1.5) sawRealMove = true;
+        if (penDownXY) { var d = Math.hypot(xy[0] - penDownXY[0], xy[1] - penDownXY[1]); if (d > penMoved) penMoved = d; }
+        if (straightening) inkCur.pts = [inkCur.pts[0], xy];   // drag the straightened line's endpoint live
+        else inkCur.pts.push(xy);
       });
-      if (penMoved > 6) { clearTimeout(holdT); holdT = null; }
+      // draw a line, then hold the pencil still at the end (~350ms, no further real movement) → snap it straight
+      if (sawRealMove) {
+        clearTimeout(holdT); holdT = null;
+        if (!straightening && penMoved > 22) holdT = setTimeout(tryStraighten, 350);
+      }
       liveDraw();
     });
     function end(e) {
@@ -8845,18 +8847,7 @@
       if (lassoDrag) { lassoDone(); return; }
       if (!inkDrawing) return;
       inkDrawing = false;
-      clearTimeout(holdT); holdT = null;
-      if (holdErasing) {
-        holdErasing = false;
-        $("ppCanvas").classList.toggle("erase", inkTool === "erase");
-        var eb2 = $("ppInkbar") && $("ppInkbar").querySelector('[data-inktool="erase"]');
-        var cb2 = $("ppInkbar") && $("ppInkbar").querySelector('[data-inktool="' + inkTool + '"]');
-        if (eb2) eb2.classList.toggle("on", inkTool === "erase"); if (cb2) cb2.classList.add("on");
-        if (!holdErasedAny && inkUndo[p.id]) inkUndo[p.id].pop();
-        inkCur = null; renderInk(p);
-        penDownT = 0; penTapT = 0; penTapXY = null;   // a hold is not a tap
-        return;
-      }
+      clearTimeout(holdT); holdT = null; straightening = false;
       var isPen = e && e.pointerType === "pen";
       var wasTap = isPen && penDownT && (Date.now() - penDownT < 300) && penMoved < 10;
       if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1 && !wasTap) {
