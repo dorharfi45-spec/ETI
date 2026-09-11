@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B14</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B15</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9734,6 +9734,23 @@
       function cropSourceHtml() {
         var tmp = document.createElement("div");
         tmp.innerHTML = src.innerHTML;
+        // Diagrams (e.g. the triangle solver's <svg viewBox="0 0 300 240" style="max-width:300px">,
+        // no explicit width/height) size themselves from the aspect ratio stretched against
+        // whatever container they're CURRENTLY in — layout-dependent. The exact same markup can
+        // render at a different height once this clone ends up somewhere else, which silently
+        // shifts how much space everything below the diagram takes up — this is what was making
+        // the crop grab content from further down the page than what was actually marked. Freeze
+        // every diagram at its current live pixel size before it goes anywhere else.
+        var liveGraphics = src.querySelectorAll("svg, canvas");
+        var cloneGraphics = tmp.querySelectorAll("svg, canvas");
+        for (var gi = 0; gi < liveGraphics.length && gi < cloneGraphics.length; gi++) {
+          var gr = liveGraphics[gi].getBoundingClientRect();
+          if (gr.width > 0 && gr.height > 0) {
+            cloneGraphics[gi].style.width = gr.width + "px";
+            cloneGraphics[gi].style.height = gr.height + "px";
+            cloneGraphics[gi].style.maxWidth = "none";
+          }
+        }
         tmp.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
         tmp.querySelectorAll("[data-idx], [data-ck], [id]").forEach(function (x) { x.removeAttribute("data-idx"); x.removeAttribute("data-ck"); x.removeAttribute("id"); });
         // .cm-block's marking-mode margin (3px 0, from the ".clipmode.marking .cm-block" rule) is
@@ -9812,17 +9829,22 @@
               "cropX=" + cropClip.cropX + " cropY=" + cropClip.cropY + " cropW=" + cropClip.cropW + " cropH=" + cropClip.cropH);
           }, 50);
         }
-        // TEMPORARY DEBUG (B11): render the WHOLE captured source, unscrolled, with the exact
-        // rectangle that will be cropped drawn on top in red — a direct visual check of whether
-        // the box lines up with the content it's supposed to, instead of guessing from numbers.
-        // Screenshot this (scroll if needed) and send it, then tap Close to finish as normal.
+        // TEMPORARY DEBUG (B11, fixed in B15): render the WHOLE captured source, unscrolled, with
+        // the exact rectangle that will be cropped drawn on top in red — a direct visual check of
+        // whether the box lines up with the content it's supposed to. B14 proved this preview was
+        // itself using the WRONG typography (16px/1.65 default vs. the real 13.76px/1.55 from
+        // .clip-body) since it's a bare page-level div with no ancestor styling — so its red box
+        // could look "right" near the top of a page and still be measuring against a taller/wrong
+        // reflow. Pin the exact live font-size/line-height explicitly so this preview is finally
+        // trustworthy. Screenshot this (scroll if needed) and send it, then tap Close to finish.
         var dbg = document.createElement("div");
         dbg.style.cssText = "position:fixed;inset:0;z-index:99999;background:#fff;overflow:auto;-webkit-overflow-scrolling:touch;";
         dbg.innerHTML =
           '<div style="position:sticky;top:0;background:#111;color:#fff;padding:10px;font:14px sans-serif;z-index:2;display:flex;gap:10px;align-items:center;">' +
           '<b style="flex:1">DEBUG: red box = what gets cropped. Screenshot, then Close.</b>' +
           '<button id="cropDbgClose" style="padding:8px 16px;font-weight:700;">Close</button></div>' +
-          '<div style="position:relative;width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' +
+          '<div style="position:relative;width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;font-size:' +
+          srcFontSize + ';line-height:' + srcLineHeight + ';">' +
           fullHtml +
           '<div class="dbg-redbox" style="position:absolute;left:' + lr.x + 'px;top:' + lr.y + 'px;width:' +
           lr.w + 'px;height:' + lr.h + 'px;border:3px solid red;background:rgba(255,0,0,.18);box-sizing:border-box;"></div>' +
