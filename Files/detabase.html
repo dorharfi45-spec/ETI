@@ -2993,7 +2993,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B20</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B21</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9019,6 +9019,14 @@
       var rawT, probT;
       $("libRawSearch").addEventListener("input", function () { clearTimeout(rawT); rawT = setTimeout(renderNbLibRawResults, 160); });
       $("libProbSearch").addEventListener("input", function () { clearTimeout(probT); probT = setTimeout(renderNbLibProbResults, 160); });
+      // the results box otherwise stays showing whatever was last typed even after the search
+      // bar is no longer selected — hide it on blur (delayed so a tap on a result's own "＋"
+      // button, which blurs the input first on some browsers, still gets to register its click),
+      // and restore it on refocus if there's still a query in the box.
+      $("libRawSearch").addEventListener("blur", function () { setTimeout(function () { var b = $("libRawResults"); if (b) b.innerHTML = ""; }, 150); });
+      $("libRawSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibRawResults(); });
+      $("libProbSearch").addEventListener("blur", function () { setTimeout(function () { var b = $("libProbResults"); if (b) b.innerHTML = ""; }, 150); });
+      $("libProbSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibProbResults(); });
     }
 
   })();
@@ -9777,7 +9785,11 @@
   var dragCardId = null;
   (function () {
     var canvas = $("ppCanvas");
-    canvas.addEventListener("pointerdown", function (e) {
+    // document-level (not just the canvas) so a selected card's bar/title actually goes away
+    // the moment you tap ANYTHING else — the library panel, a toolbar button, a search field —
+    // not only when you tap empty canvas space. It was only bound to the canvas before, so
+    // moving focus elsewhere in the app left the last-selected clip's edit-mode bar stuck open.
+    document.addEventListener("pointerdown", function (e) {
       if (!e.target.closest(".clip") && !e.target.closest(".shape-pick")) deselectAllClips();
     }, true);
     canvas.addEventListener("dragover", function (e) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; canvas.classList.add("dragover"); });
