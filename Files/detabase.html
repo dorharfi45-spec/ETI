@@ -454,9 +454,13 @@
   .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; pointer-events: none; }
   .clip.graph .graph-host { overflow: hidden; }
   /* empty widget box doesn't grab — only the shape/graph itself and its controls do (so overlapping widgets stay independent) */
-  .clip.widget .clip-body svg, .clip.widget .clip-body canvas,
-  .clip.widget .clip-body input, .clip.widget .clip-body button { pointer-events: auto; }
+  .clip.widget:not(.crop) .clip-body svg, .clip.widget:not(.crop) .clip-body canvas,
+  .clip.widget:not(.crop) .clip-body input, .clip.widget:not(.crop) .clip-body button { pointer-events: auto; }
   .clip.widget > .gw-bar { pointer-events: auto; }
+  /* crop widget: an inert "picture" cut from a card/page — nothing inside it is ever interactive */
+  .crop-host { width: 100%; height: 100%; position: relative; overflow: hidden; pointer-events: none; }
+  .crop-frame { position: absolute; top: 0; left: 0; overflow: hidden; transform-origin: top left; }
+  .crop-frame * { pointer-events: none !important; }
   /* drag grip: slim bar along the widget's top edge — the only way to move it. hidden until hover/selected */
   .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 20px; z-index: 7; display: none;
     align-items: center; gap: 5px; padding: 0 5px; box-sizing: border-box;
@@ -8429,9 +8433,10 @@
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
     p.bench.forEach(function (clip) {
       var kind = clip.kind || "clip";
-      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isW = isShape || isGraph;
+      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop";
+      var isW = isShape || isGraph || isCrop;
       var el = document.createElement("div");
-      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isW ? " widget" : "");
+      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "");
       el.style.left = (clip.x || 12) + "px";
       el.style.top = (clip.y || 12) + "px";
       el.style.width = (clip.w || 300) + "px";
@@ -8443,13 +8448,14 @@
       if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
       else if (isShape) body = '<div class="shape-host"></div>';
       else if (isGraph) body = '<div class="graph-host"></div>';
+      else if (isCrop) body = '<div class="crop-host"></div>';
       else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
       var titleTxt = clip.title || (isNote ? "Note" : "Clip");
       if (isW) {
         el.innerHTML =
           '<div class="wgrip" title="drag to move">' +
           '<span class="wgrip-bar"></span>' +
-          '<button class="wt-edit" title="edit">✎</button>' +
+          (isCrop ? "" : '<button class="wt-edit" title="edit">✎</button>') +
           '<button class="clip-del" title="delete">✕</button>' +
           '</div>' +
           '<div class="clip-body">' + body + '</div>' +
@@ -8467,6 +8473,7 @@
       if (isNote) el.querySelector(".note-ta").value = clip.text || "";
       if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
       if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
+      if (isCrop) renderCropWidget(el.querySelector(".crop-host"), clip);
       wireClip(el, clip, p);
       view.appendChild(el);
       maxX = Math.max(maxX, (clip.x || 0) + (clip.w || 300) + 60);
@@ -9021,6 +9028,22 @@
       x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: ++zTop, added: Date.now() });
     saveStore(); renderProblemList();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
+  }
+
+  // ---- crop widget: a frameless "picture" cut from any rectangle of a card/page — no text, no header ----
+  function renderCropWidget(host, clip) {
+    if (!host) return;
+    var cw = clip.cropW || clip.w || 200, ch = clip.cropH || clip.h || 150;
+    host.innerHTML = '<div class="crop-frame" style="width:' + cw + 'px;height:' + ch + 'px">' +
+      '<div style="position:absolute;left:' + (-(clip.cropX || 0)) + 'px;top:' + (-(clip.cropY || 0)) + 'px">' + (clip.html || "") + '</div></div>';
+    var frame = host.querySelector(".crop-frame");
+    function applyScale() {
+      var sx = (clip.w || cw) / cw, sy = (clip.h || ch) / ch;
+      frame.style.transform = "scale(" + sx + "," + sy + ")";
+    }
+    applyScale();
+    clip._onResize = applyScale;
+    try { prettyFractions(frame); } catch (e) {}
   }
 
   var SHAPE_BOX = [34, 30, 226, 200];
@@ -9615,6 +9638,16 @@
         lasso.style.left = Math.min(lx, cx) + "px"; lasso.style.top = Math.min(ly, cy) + "px";
         lasso.style.width = Math.abs(cx - lx) + "px"; lasso.style.height = Math.abs(cy - ly) + "px";
       }, { passive: false });
+      // the box cuts out exactly what's under it — any rectangle, not just whole cards/blocks —
+      // and drops it on the board right away as a frameless, resizable "picture" clip
+      function cropSourceHtml() {
+        var tmp = document.createElement("div");
+        tmp.innerHTML = src.innerHTML;
+        tmp.querySelectorAll(".pin-btn, .del-x").forEach(function (x) { x.remove(); });
+        tmp.querySelectorAll("[data-idx], [data-ck], [id]").forEach(function (x) { x.removeAttribute("data-idx"); x.removeAttribute("data-ck"); x.removeAttribute("id"); });
+        tmp.querySelectorAll(".cm-block, .cm-marked").forEach(function (x) { x.classList.remove("cm-block", "cm-marked"); });
+        return tmp.innerHTML;
+      }
       function endLasso(ev) {
         if (!lasso || (ev && ev.pointerId !== lassoId)) return;
         if (ev) { ev.preventDefault(); ev.stopPropagation(); }
@@ -9622,14 +9655,15 @@
         var lr = { x: parseFloat(lasso.style.left), y: parseFloat(lasso.style.top), w: parseFloat(lasso.style.width), h: parseFloat(lasso.style.height) };
         lasso.remove(); lasso = null; lassoId = null;
         if (cancelled || lr.w < 8 || lr.h < 8) return;
-        var sr = src.getBoundingClientRect();
-        blocks = Array.prototype.slice.call(src.querySelectorAll(".cm-block"));
-        blocks.forEach(function (n) {
-          var b = n.getBoundingClientRect();
-          var nx = b.left - sr.left + src.scrollLeft, ny = b.top - sr.top + src.scrollTop;
-          var hit = !(nx > lr.x + lr.w || nx + b.width < lr.x || ny > lr.y + lr.h || ny + b.height < lr.y);
-          if (hit) n.classList.add("cm-marked");
-        });
+        var pos2 = finalPos();
+        var innerW = src.clientWidth;
+        var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + cropSourceHtml() + '</div>';
+        var pB = ensureProblem();
+        pB.bench.push({ id: uid("cl_"), kind: "crop", cropX: Math.round(lr.x), cropY: Math.round(lr.y),
+          cropW: Math.round(lr.w), cropH: Math.round(lr.h), html: html,
+          x: Math.round(pos2.x), y: Math.round(pos2.y), w: Math.round(lr.w), h: Math.round(lr.h), z: ++zTop, added: Date.now() });
+        saveStore(); renderProblemList();
+        if (viewingProblem && activeProblem === pB.id) renderCanvas();
         ov.classList.remove("cropping"); cropBtn.classList.remove("hot");
       }
       src.addEventListener("pointerup", endLasso);
@@ -9646,7 +9680,7 @@
 
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
-    var isW = clip.kind === "shape" || clip.kind === "graph";
+    var isW = clip.kind === "shape" || clip.kind === "graph" || clip.kind === "crop";
     function front() { clip.z = ++zTop; el.style.zIndex = clip.z; saveStore(); }
     el.addEventListener("pointerdown", function () {
       front();
@@ -9738,6 +9772,7 @@
         clip.h = Math.max(minH, Math.round(oh + (ev.clientY - sy) / z));
         el.style.width = clip.w + "px"; el.style.height = clip.h + "px";
         if (clip.kind === "graph" && typeof clip._redraw === "function") clip._redraw();
+        if (typeof clip._onResize === "function") clip._onResize();
       }
       function up() {
         try { rz.releasePointerCapture(e.pointerId); } catch (_) {}
