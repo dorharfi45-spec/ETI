@@ -392,8 +392,9 @@
 
   /* ---- lasso / crop selection ---- */
   .pp-canvas.lasso .ink-capture { cursor: crosshair; }
-  .ink-lasso-path { fill: color-mix(in srgb, var(--accent) 12%, transparent); stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 4; }
-  .ink-sel-box { fill: color-mix(in srgb, var(--accent) 7%, transparent); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  .ink-lasso-live { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 5; opacity: .85; vector-effect: non-scaling-stroke; }
+  .ink-sel-lasso { fill: color-mix(in srgb, var(--accent) 9%, transparent); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 5; vector-effect: non-scaling-stroke; }
+  .ink-sel-box { fill: color-mix(in srgb, var(--accent) 7%, transparent); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
   .ink-sel-toolbar {
     position: absolute; z-index: 4200; display: flex; gap: 5px; padding: 4px 5px;
     background: var(--bg); border: 1px solid var(--border-strong); border-radius: 9px; box-shadow: var(--shadow);
@@ -451,24 +452,24 @@
   .clip.widget { border: none; background: transparent; box-shadow: none; overflow: visible; }
   .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: -1px; }
   .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; pointer-events: none; }
-  /* graph: let the function bar float above the box (not clipped) */
-  .clip.graph .clip-body, .clip.graph .graph-host { overflow: visible; }
+  .clip.graph .graph-host { overflow: hidden; }
   /* empty widget box doesn't grab — only the shape/graph itself and its controls do (so overlapping widgets stay independent) */
   .clip.widget .clip-body svg, .clip.widget .clip-body canvas,
-  .clip.widget .clip-body input, .clip.widget .clip-body button,
-  .clip.widget .clip-body .gw-bar { pointer-events: auto; }
+  .clip.widget .clip-body input, .clip.widget .clip-body button { pointer-events: auto; }
+  .clip.widget > .gw-bar { pointer-events: auto; }
   /* drag grip: slim bar along the widget's top edge — the only way to move it. hidden until hover/selected */
-  .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 15px; z-index: 7; display: none;
-    align-items: center; gap: 4px; padding: 0 4px; box-sizing: border-box;
-    background: color-mix(in srgb, var(--surface-2) 85%, transparent); border-radius: 8px 8px 0 0;
+  .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 20px; z-index: 7; display: none;
+    align-items: center; gap: 5px; padding: 0 5px; box-sizing: border-box;
+    background: color-mix(in srgb, var(--surface-2) 88%, transparent); border-radius: 8px 8px 0 0;
     cursor: grab; touch-action: none; }
   .wgrip:active { cursor: grabbing; }
   .clip.widget:hover .wgrip, .clip.widget.sel .wgrip { display: flex; }
   .wgrip .wgrip-bar { flex: 1; height: 3px; border-radius: 2px; pointer-events: none;
     background: repeating-linear-gradient(90deg, var(--text-muted) 0 5px, transparent 5px 9px); opacity: .55; }
-  .wgrip button { width: 17px; height: 13px; padding: 0; font-size: .68rem; line-height: 1; border: none;
-    background: transparent; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; }
-  .wgrip button:hover { color: var(--accent); }
+  .wgrip button { width: 24px; height: 18px; padding: 0; font-size: .82rem; line-height: 1; border: none;
+    background: transparent; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; border-radius: 4px; }
+  .wgrip button:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .wgrip .clip-del:hover { color: #dc2626; background: color-mix(in srgb, #dc2626 12%, transparent); }
   .clip.widget .clip-resize { width: 34px; height: 34px; opacity: 0; transition: opacity .12s; }
   .clip.widget:hover .clip-resize, .clip.widget.sel .clip-resize { opacity: 1; }
   .clip.widget .clip-resize::after { right: 7px; bottom: 7px; width: 13px; height: 13px; border-width: 3px; border-color: var(--accent); }
@@ -481,11 +482,11 @@
   .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
     background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-primary); box-shadow: var(--shadow); pointer-events: none; white-space: nowrap; }
   .gw-canvas:active { cursor: grabbing; }
-  /* function bar sits ABOVE the graph (never over it), shown only while selected/hovered; sizes scale with the widget */
-  .gw-bar { position: absolute; bottom: calc(100% + 4px); left: 0; right: 0; z-index: 7; display: flex; flex-direction: column; gap: .35em;
+  /* function bar sits ABOVE the widget (a direct child of .clip, so the plot's own box stays clipped) */
+  .clip.widget > .gw-bar { position: absolute; bottom: calc(100% + 6px); left: 0; right: 0; z-index: 8; display: flex; flex-direction: column; gap: .35em;
     padding: .45em .5em; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--surface-2); box-shadow: var(--shadow);
     max-height: 240px; overflow: auto; font-size: var(--gw-fs, 12px); }
-  .clip.widget:not(:hover):not(.sel) .gw-bar { display: none; }
+  .clip.widget:not(:hover):not(.sel) > .gw-bar { display: none; }
   .gw-row { display: flex; align-items: center; gap: .35em; }
   .gw-dot { width: .85em; height: .85em; border-radius: 2px; flex-shrink: 0; }
   .gw-row input { flex: 1; min-width: 0; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 1em; padding: .25em .5em; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text-primary); }
@@ -8529,8 +8530,8 @@
     return { strokes: strokes, clips: clips, box: { x: b[0], y: b[1], w: b[2] - b[0], h: b[3] - b[1] } };
   }
   function inkSelClear() {
-    inkSel = null; inkLassoPts = null;
-    var t = $("ppCanvas") && $("ppCanvas").querySelector(".ink-sel-toolbar");
+    inkSel = null; inkLassoPts = null; lassoDrag = null;
+    var t = $("ppView") && $("ppView").querySelector(".ink-sel-toolbar");
     if (t) t.remove();
     var p = curProblem(); if (p && $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer")) renderInk(p);
   }
@@ -8546,6 +8547,7 @@
       cl.x = Math.round((cl.x || 0) + dx); cl.y = Math.round((cl.y || 0) + dy);
     });
     inkSel.box.x += dx; inkSel.box.y += dy;
+    if (inkSel.lasso) inkSel.lasso = inkSel.lasso.map(function (q) { return [q[0] + dx, q[1] + dy]; });
   }
   function inkSelDelete(p) {
     if (!p || !inkSel) return;
@@ -8578,6 +8580,92 @@
     inkSel = { strokes: ns, clips: nc, box: { x: inkSel.box.x + D, y: inkSel.box.y + D, w: inkSel.box.w, h: inkSel.box.h } };
     renderCanvas();
   }
+  // ---- lasso clipboard (move / copy / cut / paste, Notability-style) ----
+  var inkClip = null;      // { strokes:[{color,w,pts}], clips:[obj], w, h }  normalized to (0,0)
+  var lassoDrag = null;
+  function ppContentXY(clientX, clientY) {
+    var cv = $("ppCanvas"); if (!cv) return [0, 0];
+    var svg = cv.querySelector(".ink-layer");
+    if (svg) { try { var m = svg.getScreenCTM(); if (m) { var pt = new DOMPoint(clientX, clientY).matrixTransform(m.inverse()); return [pt.x, pt.y]; } } catch (_) {} }
+    var r = cv.getBoundingClientRect(), z = (typeof navScale === "number" && navScale) ? navScale : 1;
+    return [(clientX - r.left - (navTx || 0)) / z, (clientY - r.top - (navTy || 0)) / z];
+  }
+  function lassoStart(xy) {
+    var p = curProblem(); if (!p) return;
+    if (inkSel && xy[0] >= inkSel.box.x && xy[0] <= inkSel.box.x + inkSel.box.w &&
+        xy[1] >= inkSel.box.y && xy[1] <= inkSel.box.y + inkSel.box.h) {
+      lassoDrag = { mode: "move", last: xy, moved: false };
+    } else {
+      inkSel = null; inkLassoPts = [xy]; lassoDrag = { mode: "draw" };
+      renderInk(p);
+    }
+  }
+  function lassoTo(xy) {
+    var p = curProblem(); if (!p || !lassoDrag) return;
+    if (lassoDrag.mode === "draw") { inkLassoPts.push(xy); renderInk(p); }
+    else {
+      var dx = xy[0] - lassoDrag.last[0], dy = xy[1] - lassoDrag.last[1];
+      lassoDrag.last = xy; lassoDrag.moved = true;
+      inkSelMove(p, dx, dy);
+      renderInk(p);
+      inkSel.clips.forEach(function (id) {
+        var el = $("ppView") && $("ppView").querySelector('.clip[data-clip="' + id + '"]');
+        var cl = (p.bench || []).filter(function (x) { return x.id === id; })[0];
+        if (el && cl) { el.style.left = cl.x + "px"; el.style.top = cl.y + "px"; }
+      });
+    }
+  }
+  function lassoDone() {
+    var p = curProblem(); if (!p || !lassoDrag) return;
+    var d = lassoDrag; lassoDrag = null;
+    if (d.mode === "draw") {
+      var pts = inkLassoPts; inkLassoPts = null;
+      if (pts && pts.length >= 3) {
+        inkSel = inkComputeSel(p, pts);
+        if (inkSel) inkSel.lasso = pts.slice();
+        renderInk(p);
+      } else if (pts && pts.length && inkClip) {
+        inkPasteAt(pts[0][0] - inkClip.w / 2, pts[0][1] - inkClip.h / 2);
+      } else { renderInk(p); }
+    } else if (d.moved) { saveCanvas(p.id); saveStore(); renderCanvas(); }
+  }
+  function inkSelCopy(p) {
+    if (!p || !inkSel) return;
+    var c = loadCanvas(p.id), ox = inkSel.box.x, oy = inkSel.box.y;
+    inkClip = {
+      w: inkSel.box.w, h: inkSel.box.h,
+      strokes: (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) >= 0; })
+        .map(function (s) { return { color: s.color, w: s.w, pts: (s.pts || []).map(function (q) { return [q[0] - ox, q[1] - oy, q[2]]; }) }; }),
+      clips: (p.bench || []).filter(function (cl) { return inkSel.clips.indexOf(cl.id) >= 0; })
+        .map(function (cl) { var dd = JSON.parse(JSON.stringify(cl)); dd.x = (cl.x || 0) - ox; dd.y = (cl.y || 0) - oy; delete dd.id; delete dd.z; return dd; })
+    };
+    updatePasteBtn();
+  }
+  function inkSelCut(p) { inkSelCopy(p); inkSelDelete(p); }
+  function inkPasteAt(cx, cy) {
+    var p = curProblem(); if (!p || !inkClip) return;
+    cx = Math.max(0, Math.round(cx)); cy = Math.max(0, Math.round(cy));
+    inkSnapshot(p);
+    var c = loadCanvas(p.id); c.ink = c.ink || [];
+    var ns = [], nc = [];
+    inkClip.strokes.forEach(function (s) {
+      var dd = { id: uid("ik_"), color: s.color, w: s.w, pts: s.pts.map(function (q) { return [q[0] + cx, q[1] + cy, q[2]]; }) };
+      c.ink.push(dd); ns.push(dd.id);
+    });
+    inkClip.clips.forEach(function (cl) {
+      var dd = JSON.parse(JSON.stringify(cl));
+      dd.id = uid(cl.kind === "graph" ? "gr_" : cl.kind === "shape" ? "sh_" : "cl_");
+      dd.x = Math.round((cl.x || 0) + cx); dd.y = Math.round((cl.y || 0) + cy); dd.z = ++zTop;
+      p.bench.push(dd); nc.push(dd.id);
+    });
+    saveCanvas(p.id); saveStore();
+    inkSel = { strokes: ns, clips: nc, box: { x: cx, y: cy, w: inkClip.w, h: inkClip.h }, lasso: null };
+    renderCanvas();
+  }
+  function updatePasteBtn() {
+    var b = $("inkPaste"); if (b) b.disabled = !inkClip;
+  }
+
   function inkSelToolbar(p) {
     var host = $("ppView"); if (!host) return;
     var t = host.querySelector(".ink-sel-toolbar");
@@ -8585,10 +8673,11 @@
     if (!t) {
       t = document.createElement("div");
       t.className = "ink-sel-toolbar";
-      t.innerHTML = '<button data-s="dup" title="duplicate">⧉</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
+      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
       host.appendChild(t);
       t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
-      t.querySelector('[data-s="dup"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDuplicate(curProblem()); });
+      t.querySelector('[data-s="copy"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCopy(curProblem()); });
+      t.querySelector('[data-s="cut"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCut(curProblem()); });
       t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
       t.querySelector('[data-s="x"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelClear(); });
     }
@@ -8622,10 +8711,14 @@
     });
     h += '<path class="ink-live" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
     if (inkLassoPts && inkLassoPts.length > 1)
-      h += '<polygon class="ink-lasso-path" points="' + inkLassoPts.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '"/>';
+      h += '<polyline class="ink-lasso-live" fill="none" points="' + inkLassoPts.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '"/>';
     if (inkSel) {
-      var b = inkSel.box;
-      h += '<rect class="ink-sel-box" x="' + b.x.toFixed(1) + '" y="' + b.y.toFixed(1) + '" width="' + Math.max(1, b.w).toFixed(1) + '" height="' + Math.max(1, b.h).toFixed(1) + '" rx="4"/>';
+      if (inkSel.lasso && inkSel.lasso.length >= 3)
+        h += '<polygon class="ink-sel-lasso" points="' + inkSel.lasso.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '"/>';
+      else {
+        var b = inkSel.box;
+        h += '<rect class="ink-sel-box" x="' + b.x.toFixed(1) + '" y="' + b.y.toFixed(1) + '" width="' + Math.max(1, b.w).toFixed(1) + '" height="' + Math.max(1, b.h).toFixed(1) + '" rx="4"/>';
+      }
     }
     il.innerHTML = h;
     inkLive = il.querySelector(".ink-live");
@@ -8671,56 +8764,11 @@
       inkLive.setAttribute("stroke", inkCur.color);
       inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
     }
-    // ---- lasso / crop: select handwriting + widgets, then move / copy / delete ----
-    var lassoDrag = null;
-    function lassoDown(e) {
-      e.preventDefault();
-      try { ic.setPointerCapture(e.pointerId); } catch (_) {}
-      var xy = P(e);
-      if (inkSel && xy[0] >= inkSel.box.x && xy[0] <= inkSel.box.x + inkSel.box.w &&
-          xy[1] >= inkSel.box.y && xy[1] <= inkSel.box.y + inkSel.box.h) {
-        lassoDrag = { mode: "move", last: xy, moved: false };
-      } else {
-        inkSel = null; inkLassoPts = [xy]; lassoDrag = { mode: "draw" };
-        renderInk(p);
-      }
-    }
-    function lassoMove(e) {
-      if (!lassoDrag) return;
-      e.preventDefault();
-      var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
-      var list = (coalesced && coalesced.length) ? coalesced : [e];
-      if (lassoDrag.mode === "draw") {
-        list.forEach(function (ev) { inkLassoPts.push(P(ev)); });
-        renderInk(p);
-      } else {
-        var xy = P(e), dx = xy[0] - lassoDrag.last[0], dy = xy[1] - lassoDrag.last[1];
-        lassoDrag.last = xy; lassoDrag.moved = true;
-        inkSelMove(p, dx, dy);
-        renderInk(p);
-        inkSel.clips.forEach(function (id) {
-          var el = canvas.querySelector('.clip[data-clip="' + id + '"]');
-          var cl = (p.bench || []).filter(function (x) { return x.id === id; })[0];
-          if (el && cl) { el.style.left = cl.x + "px"; el.style.top = cl.y + "px"; }
-        });
-      }
-    }
-    function lassoEnd() {
-      if (!lassoDrag) return;
-      var d = lassoDrag; lassoDrag = null;
-      if (d.mode === "draw") {
-        if (inkLassoPts && inkLassoPts.length >= 3) inkSel = inkComputeSel(p, inkLassoPts);
-        inkLassoPts = null;
-        renderInk(p);
-      } else if (d.moved) {
-        saveCanvas(p.id); saveStore();
-        renderCanvas();
-      }
-    }
+    // lasso funcs are module-level (lassoStart/lassoTo/lassoDone) so touch (mountGestures) can drive them too
     // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
     ic.addEventListener("pointerdown", function (e) {
       if (!inkMode || e.pointerType === "touch") return;
-      if (inkTool === "lasso") { lassoDown(e); return; }
+      if (inkTool === "lasso") { e.preventDefault(); try { ic.setPointerCapture(e.pointerId); } catch (_) {} lassoStart(P(e)); return; }
       if (inkDrawing) return;                 // pen already down — ignore a second pointer
       e.preventDefault();
       try { ic.setPointerCapture(e.pointerId); } catch (_) {}
@@ -8732,7 +8780,14 @@
     });
     ic.addEventListener("pointermove", function (e) {
       if (!inkMode || e.pointerType === "touch") return;
-      if (inkTool === "lasso") { lassoMove(e); return; }
+      if (inkTool === "lasso") {
+        if (!lassoDrag) return;
+        e.preventDefault();
+        var cc = e.getCoalescedEvents && e.getCoalescedEvents();
+        var ll = (cc && cc.length) ? cc : [e];
+        ll.forEach(function (ev) { lassoTo(P(ev)); });
+        return;
+      }
       if (!inkDrawing) return;
       e.preventDefault();
       var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
@@ -8744,7 +8799,7 @@
     });
     function end(e) {
       if (e && e.pointerType === "touch") return;
-      if (lassoDrag) { lassoEnd(); return; }
+      if (lassoDrag) { lassoDone(); return; }
       if (!inkDrawing) return;
       inkDrawing = false;
       if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
@@ -8832,10 +8887,24 @@
     window.exitInkFull = exitInkFull;
     var done = $("inkDone"); if (done) done.addEventListener("click", exitInkFull);
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && document.body.classList.contains("ink-full")) {
+      if (!document.body.classList.contains("ink-full")) return;
+      if (e.key === "Escape") {
         var lib = $("nbLib");
         if (lib && lib.classList.contains("open")) { lib.classList.remove("open"); return; }
+        if (inkSel) { inkSelClear(); return; }
         exitInkFull();
+        return;
+      }
+      var tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable)) return;
+      if (!(e.ctrlKey || e.metaKey)) return;
+      var k = e.key.toLowerCase(), p = curProblem();
+      if (k === "c" && inkSel) { e.preventDefault(); inkSelCopy(p); }
+      else if (k === "x" && inkSel) { e.preventDefault(); inkSelCut(p); }
+      else if (k === "v" && inkClip) {
+        e.preventDefault();
+        var r = $("ppCanvas").getBoundingClientRect();
+        inkPasteAt((r.width / 2 - navTx) / navScale - inkClip.w / 2, (r.height / 2 - navTy) / navScale - inkClip.h / 2);
       }
     });
     // ---- library panel (raw materials + problem solving) ----
@@ -9083,20 +9152,29 @@
     clip.view = clip.view || { cx: 0, cy: 0, ppu: 32 };
     clip.markers = clip.markers || [];
     var editMode = (clip.mode || "edit") === "edit";
+    var clipEl = host.closest(".clip");
     // bar font scales with the widget width so it always stays proportionate
     var gwFs = Math.max(9.5, Math.min(14, (clip.w || 300) / 24));
-    var bar = !editMode ? "" :
-      '<div class="gw-bar" style="--gw-fs:' + gwFs.toFixed(2) + 'px">' + clip.fns.map(function (f, idx) {
+    host.innerHTML = '<canvas class="gw-canvas"></canvas>' + (editMode ? '' : '<div class="gw-readout" hidden></div>');
+    var cv = host.querySelector(".gw-canvas");
+    var readout = host.querySelector(".gw-readout");
+    // the function bar lives OUTSIDE the clip's clipped body, floating above the widget
+    var oldBar = clipEl && clipEl.querySelector(":scope > .gw-bar"); if (oldBar) oldBar.remove();
+    var bar = null;
+    if (editMode && clipEl) {
+      bar = document.createElement("div");
+      bar.className = "gw-bar";
+      bar.style.setProperty("--gw-fs", gwFs.toFixed(2) + "px");
+      bar.innerHTML = clip.fns.map(function (f, idx) {
         return '<div class="gw-row"><span class="gw-dot" style="background:' + (f.color || COLS[idx % COLS.length]) + '"></span>' +
           '<span style="color:var(--text-muted)">y=</span>' +
           '<input data-fi="' + idx + '" value="' + escapeHtml(f.expr || "") + '" placeholder="sin(x), x^2, 1/x…">' +
           '<button data-del="' + idx + '">✕</button></div>';
       }).join("") +
-      '<div class="gw-foot"><button data-addfn>＋ line</button><button data-reset>reset view</button></div></div>';
-    host.innerHTML = bar + '<canvas class="gw-canvas"></canvas>' +
-      (editMode ? '' : '<div class="gw-readout" hidden></div>');
-    var cv = host.querySelector(".gw-canvas");
-    var readout = host.querySelector(".gw-readout");
+      '<div class="gw-foot"><button data-addfn>＋ line</button><button data-reset>reset view</button></div>';
+      clipEl.appendChild(bar);
+    }
+    var barScope = bar || host;
     function niceStep(t) { var p10 = Math.pow(10, Math.floor(Math.log(t) / Math.LN10)); var f = t / p10; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p10; }
     function fmtNum(n) { return Math.abs(n) < 1e-9 ? "0" : String(Math.round(n * 1000) / 1000); }
     function draw() {
@@ -9120,7 +9198,7 @@
       for (var yt = Math.ceil(((oy - H) / ppu) / step) * step; SY(yt) >= 0; yt += step) { if (Math.abs(yt) > 1e-9) g.fillText(fmtNum(yt), SX(0) + 3, SY(yt) - 2); }
       clip.fns.forEach(function (f, idx) {
         var fn = compileExpr(f.expr);
-        var inp = host.querySelector('input[data-fi="' + idx + '"]');
+        var inp = barScope.querySelector('input[data-fi="' + idx + '"]');
         if (inp) inp.classList.toggle("bad", !!(f.expr && !fn));
         if (!fn) return;
         g.strokeStyle = f.color || COLS[idx % COLS.length]; g.lineWidth = 1.9; g.beginPath();
@@ -9154,18 +9232,18 @@
       });
     }
     clip._redraw = draw;
-    host.querySelectorAll("input[data-fi]").forEach(function (inp) {
+    barScope.querySelectorAll("input[data-fi]").forEach(function (inp) {
       inp.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
       inp.addEventListener("input", function () { clip.fns[+inp.getAttribute("data-fi")].expr = inp.value; saveStore(); draw(); });
     });
-    host.querySelectorAll("[data-del]").forEach(function (b) { b.addEventListener("click", function (e) {
+    barScope.querySelectorAll("[data-del]").forEach(function (b) { b.addEventListener("click", function (e) {
       e.stopPropagation(); clip.fns.splice(+b.getAttribute("data-del"), 1);
       if (!clip.fns.length) clip.fns.push({ expr: "", color: COLS[0] });
       saveStore(); renderCanvas();
     }); });
-    var ab = host.querySelector("[data-addfn]");
+    var ab = barScope.querySelector("[data-addfn]");
     if (ab) ab.addEventListener("click", function (e) { e.stopPropagation(); clip.fns.push({ expr: "", color: COLS[clip.fns.length % COLS.length] }); saveStore(); renderCanvas(); });
-    var rb = host.querySelector("[data-reset]");
+    var rb = barScope.querySelector("[data-reset]");
     if (rb) rb.addEventListener("click", function (e) { e.stopPropagation(); clip.view = { cx: 0, cy: 0, ppu: 32 }; saveStore(); draw(); });
 
     // live transform from the CURRENT canvas size (never stale)
@@ -9630,30 +9708,33 @@
   if ($("nbBankSearch")) $("nbBankSearch").addEventListener("input", function () { renderNbBank(); });
 
   // ---- writing-page gestures: smooth pan / pinch-zoom / wheel-zoom + long-press "add" ----
+  function positionMenu(m, sx, sy) {
+    m.style.left = Math.max(6, Math.min(window.innerWidth - 190, sx - 20)) + "px";
+    m.style.top = Math.max(6, Math.min(window.innerHeight - 130, sy - 10)) + "px";
+    m.classList.add("open");
+  }
   function openAddMenuScreen(sx, sy) {
     var m = $("ppAddMenu"); if (!m) return;
     var r = $("ppCanvas").getBoundingClientRect();
-    m._cx = (sx - r.left - navTx) / navScale - 130;
-    m._cy = (sy - r.top - navTy) / navScale - 90;
-    m.style.left = Math.max(6, Math.min(window.innerWidth - 190, sx - 20)) + "px";
-    m.style.top = Math.max(6, Math.min(window.innerHeight - 110, sy - 10)) + "px";
-    m.classList.add("open");
+    var cx = (sx - r.left - navTx) / navScale - 130, cy = (sy - r.top - navTy) / navScale - 90;
+    m.innerHTML = '<button data-wa="shape">△  Add shape</button><button data-wa="graph">📈  Add graph</button>';
+    m.querySelectorAll("[data-wa]").forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.stopPropagation(); m.classList.remove("open");
+        var pos = { x: Math.max(0, cx), y: Math.max(0, cy) };
+        if (b.getAttribute("data-wa") === "shape") addShape(pos); else addGraph(pos);
+      });
+    });
+    positionMenu(m, sx, sy);
   }
   (function mountGestures() {
     var cv = $("ppCanvas"); if (!cv) return;
     var m = $("ppAddMenu");
-    if (m) m.querySelectorAll("[data-wa]").forEach(function (b) {
-      b.addEventListener("click", function (e) {
-        e.stopPropagation(); m.classList.remove("open");
-        var pos = { x: Math.max(0, m._cx || 40), y: Math.max(0, m._cy || 40) };
-        if (b.getAttribute("data-wa") === "shape") addShape(pos); else addGraph(pos);
-      });
-    });
     document.addEventListener("pointerdown", function (e) {
       if (m && m.classList.contains("open") && !m.contains(e.target)) m.classList.remove("open");
     }, true);
 
-    var pts = {}, g = null, moved = false, lpT = null, lpAt = null;
+    var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null, wLpT = null, wLpEl = null;
     function ids() { return Object.keys(pts); }
     function two() { var k = ids(), a = pts[k[0]], b = pts[k[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
     function begin() {
@@ -9672,15 +9753,47 @@
       navTy = (cyp - r.top) - g.cy * s;
       applyNav();
     }
+    function openWidgetMenu(clip, sx, sy) {
+      var mm = $("ppAddMenu"); if (!mm) return;
+      mm.innerHTML = '<button data-wact="dup">⧉  Duplicate</button><button data-wact="del">🗑  Delete</button>';
+      mm.querySelector('[data-wact="dup"]').addEventListener("click", function (ev) {
+        ev.stopPropagation(); mm.classList.remove("open");
+        var p = curProblem(); if (!p) return;
+        inkSel = { strokes: [], clips: [clip.id], box: { x: clip.x || 0, y: clip.y || 0, w: clip.w || 200, h: clip.h || 200 } };
+        inkSelDuplicate(p);
+      });
+      mm.querySelector('[data-wact="del"]').addEventListener("click", function (ev) {
+        ev.stopPropagation(); mm.classList.remove("open"); clipRemove(clip.id);
+      });
+      positionMenu(mm, sx, sy);
+    }
     cv.addEventListener("pointerdown", function (e) {
       if (e.pointerType !== "touch") return;
       if (!document.body.classList.contains("ink-full")) return;
       if (inkDrawing) return;
-      if (e.target.closest && e.target.closest(".clip")) return;   // let a clip take its own drag
+      // long-press a shape/graph → Duplicate / Delete
+      var widgetEl = e.target.closest && e.target.closest(".clip.widget");
+      if (widgetEl) {
+        var p0 = curProblem();
+        var clip0 = p0 && (p0.bench || []).filter(function (x) { return x.id === widgetEl.dataset.clip; })[0];
+        if (clip0) {
+          wLpEl = { x: e.clientX, y: e.clientY };
+          clearTimeout(wLpT);
+          wLpT = setTimeout(function () { wLpT = null; openWidgetMenu(clip0, wLpEl.x, wLpEl.y); }, 480);
+        }
+        return;
+      }
+      if (e.target.closest && e.target.closest(".clip")) return;   // other clips take their own drag
+      // finger lasso when the lasso tool is active
+      if (inkTool === "lasso" && ids().length === 0) {
+        lassoId = e.pointerId;
+        lassoStart(ppContentXY(e.clientX, e.clientY));
+        return;
+      }
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       moved = false;
       clearTimeout(lpT); lpT = null;
-      if (ids().length === 1) {
+      if (ids().length === 1 && inkTool !== "lasso") {
         lpAt = { x: e.clientX, y: e.clientY };
         lpT = setTimeout(function () {
           lpT = null;
@@ -9690,14 +9803,20 @@
       begin();
     });
     cv.addEventListener("pointermove", function (e) {
-      if (e.pointerType !== "touch" || !pts[e.pointerId]) return;
+      if (e.pointerType !== "touch") return;
+      if (wLpT && wLpEl && Math.hypot(e.clientX - wLpEl.x, e.clientY - wLpEl.y) > 9) { clearTimeout(wLpT); wLpT = null; }
+      if (lassoId === e.pointerId) { e.preventDefault(); lassoTo(ppContentXY(e.clientX, e.clientY)); return; }
+      if (!pts[e.pointerId]) return;
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       if (lpAt && Math.hypot(e.clientX - lpAt.x, e.clientY - lpAt.y) > 9) { moved = true; clearTimeout(lpT); lpT = null; }
       e.preventDefault();
       update();
     }, { passive: false });
     function up(e) {
-      if (e.pointerType !== "touch" || !pts[e.pointerId]) return;
+      if (e.pointerType !== "touch") return;
+      clearTimeout(wLpT); wLpT = null;
+      if (lassoId === e.pointerId) { lassoId = null; lassoDone(); return; }
+      if (!pts[e.pointerId]) return;
       delete pts[e.pointerId];
       clearTimeout(lpT); lpT = null;
       if (ids().length >= 1) begin(); else { g = null; navSave(); }
