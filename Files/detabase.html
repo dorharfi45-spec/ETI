@@ -4851,11 +4851,19 @@
       try { localStorage.setItem(canvasKey(id), JSON.stringify({ items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() })); } catch (e) {}
     });
   }
-  // remote canvas arrived from another device (called by the Firebase module)
+  // remote canvas arrived from another device (called by the Firebase module) — including the
+  // echo of this SAME device's own just-saved write, which typically comes back 1-3s later.
+  // Never rebuild the canvas while something transient (a search-clip overlay, an in-place crop
+  // drag) is on top of it: renderCanvas() wipes #ppCanvas from scratch and would silently destroy
+  // whatever the user is mid-interaction with a few seconds after they started it. The data still
+  // updates in memory; the next real render (when that overlay closes) picks it up.
   window.onCloudCanvas = function (id) {
     delete canvasCache[id];
     var cp = curProblem();
-    if (cp && cp.id === id) { cp.bench = loadCanvas(id).items; if (viewingProblem && activeProblem === id) renderCanvas(); }
+    if (cp && cp.id === id) {
+      cp.bench = loadCanvas(id).items;
+      if (viewingProblem && activeProblem === id && !clipModeOverlay && !inPlaceCropBusy) renderCanvas();
+    }
   };
 
   // the main store, minus each canvas doc's heavy bench (which lives in its own canvas doc)
@@ -9078,6 +9086,7 @@
     }
     function down(ev) {
       ev.preventDefault(); ev.stopPropagation();
+      inPlaceCropBusy = true;
       try { overlay.setPointerCapture(ev.pointerId); } catch (_) {}
       var xy = toLocal(ev); sx0 = xy[0]; sy0 = xy[1];
       box = document.createElement("div"); box.className = "cm-lasso";
@@ -9092,6 +9101,7 @@
       box.style.width = Math.abs(xy[0] - sx0) + "px"; box.style.height = Math.abs(xy[1] - sy0) + "px";
     }
     function finish(ev) {
+      inPlaceCropBusy = false;
       var w = box ? parseFloat(box.style.width) : 0, h = box ? parseFloat(box.style.height) : 0;
       var bx = box ? parseFloat(box.style.left) : 0, by = box ? parseFloat(box.style.top) : 0;
       overlay.remove();
@@ -9540,6 +9550,7 @@
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
   var clipModeOverlay = null;
+  var inPlaceCropBusy = false;   // true while the ✂ in-place crop drag is active — see onCloudCanvas
   function closeClipMode() { if (clipModeOverlay) { clipModeOverlay.remove(); clipModeOverlay = null; } }
   function canvasSnapshotHtml(id) {
     var c = loadCanvas(id), parts = [];
