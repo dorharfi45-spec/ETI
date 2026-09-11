@@ -251,24 +251,28 @@
 
   /* ---- the board / clipboard canvas (fills the page) ---- */
   .pp-canvas {
-    position: relative; overflow: auto;
+    position: relative; overflow: hidden; touch-action: none;
     height: calc(100vh - 200px); min-height: 440px;
     border: 1px dashed var(--border-strong); border-radius: 14px;
     background-color: var(--surface-1);
+  }
+  .pp-canvas.dragover { border-color: var(--accent); background-color: color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
+  .pp-canvas.drawing { border-style: solid; border-color: var(--accent); }
+  /* the pannable / zoomable layer — everything on the page rides this transform */
+  #ppView {
+    position: absolute; top: 0; left: 0; transform-origin: 0 0; will-change: transform;
     background-image:
       linear-gradient(var(--border) 1px, transparent 1px),
       linear-gradient(90deg, var(--border) 1px, transparent 1px);
     background-size: 26px 26px;
   }
-  .pp-canvas.dragover { border-color: var(--accent); background-color: color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
-  .pp-canvas.drawing { border-style: solid; border-color: var(--accent); }
   .canvas-sizer { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 
   /* ---- Apple Pencil / mouse ink layer ---- */
   .ink-layer { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 4000; }
-  .ink-capture { position: absolute; top: 0; left: 0; z-index: 4001; pointer-events: none; touch-action: pan-x pan-y;
+  .ink-capture { position: absolute; top: 0; left: 0; z-index: 4001; pointer-events: none; touch-action: none;
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-  .pp-canvas.drawing .ink-capture { pointer-events: auto; cursor: crosshair; touch-action: none; }
+  .pp-canvas.drawing .ink-capture { pointer-events: auto; cursor: crosshair; }
   .pp-canvas.drawing.erase .ink-capture { cursor: cell; }
   .ink-toolbar { display: none; align-items: center; gap: 7px; flex-wrap: wrap; margin: -2px 0 8px; }
   .ink-toolbar.show { display: flex; }
@@ -298,12 +302,14 @@
     background: var(--surface-1); display: block;
   }
   body.ink-full .pp-canvas {
-    position: absolute; inset: 54px 0 0 0; height: auto; min-height: 0;
+    position: absolute; inset: calc(54px + env(safe-area-inset-top)) 0 0 0; height: auto; min-height: 0;
     border: none; border-radius: 0;
   }
   #ppInkbar.full {
     display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 850;
-    margin: 0; padding: 7px 10px; height: 54px; box-sizing: border-box; gap: 7px;
+    margin: 0; box-sizing: border-box; gap: 7px;
+    padding: calc(7px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) 7px calc(10px + env(safe-area-inset-left));
+    height: calc(54px + env(safe-area-inset-top));
     align-items: center; flex-wrap: nowrap; overflow-x: auto;
     background: var(--bg); border-bottom: 1px solid var(--border-strong);
   }
@@ -314,23 +320,17 @@
   #nbLibToggle { flex: 0 0 auto; font-size: 1rem; }
   #inkDone { flex: 0 0 auto; font-weight: 700; }
 
-  /* ---- floating + Shape / + Graph control (bottom-left of the writing page) ---- */
-  #ppWidgetAdd { position: fixed; left: 16px; bottom: 16px; z-index: 4300; display: none; align-items: center; gap: 6px; }
-  body.ink-full #ppWidgetAdd { display: flex; }
-  #ppWidgetAdd .wa-toggle {
-    width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
-    box-shadow: var(--shadow); cursor: pointer; transition: transform .12s;
+  /* ---- long-press "add" menu (shape / graph) ---- */
+  #ppAddMenu {
+    position: fixed; z-index: 4400; display: none; flex-direction: column; gap: 4px; padding: 5px;
+    background: var(--bg); border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: var(--shadow);
   }
-  #ppWidgetAdd.open .wa-toggle { transform: rotate(45deg); }
-  #ppWidgetAdd .wa-menu { display: none; gap: 6px; }
-  #ppWidgetAdd.open .wa-menu { display: flex; }
-  #ppWidgetAdd .wa-menu button {
-    padding: 8px 12px; border-radius: 10px; font-size: .84rem; font-weight: 600;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-secondary);
-    box-shadow: var(--shadow); cursor: pointer; white-space: nowrap;
+  #ppAddMenu.open { display: flex; }
+  #ppAddMenu button {
+    padding: 9px 16px; border-radius: 9px; font-size: .9rem; font-weight: 600; text-align: left;
+    border: none; background: transparent; color: var(--text-secondary); cursor: pointer; white-space: nowrap;
   }
-  #ppWidgetAdd .wa-menu button:hover { color: var(--accent); border-color: var(--accent); }
+  #ppAddMenu button:hover { background: var(--surface-2); color: var(--accent); }
 
   /* ---- notebook bank (the main Notebook screen = a library of pages) ---- */
   .nb-bank-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -362,7 +362,7 @@
 
   /* ---- library panel inside the writing page ---- */
   #nbLib {
-    position: fixed; top: 54px; left: 0; bottom: 0; width: min(340px, 86vw); z-index: 4300;
+    position: fixed; top: calc(54px + env(safe-area-inset-top)); left: 0; bottom: 0; width: min(340px, 86vw); z-index: 4300;
     background: var(--bg); border-right: 1px solid var(--border-strong); box-shadow: var(--shadow);
     display: flex; flex-direction: column; transform: translateX(-102%); transition: transform .18s ease;
   }
@@ -389,20 +389,6 @@
   .nblib-chip button { flex: 0 0 auto; border: none; background: transparent; cursor: pointer; font-size: .82rem; color: var(--text-muted); padding: 2px 4px; }
   .nblib-chip .c-clip { color: var(--accent); font-weight: 700; }
   .nblib-chip .c-x:hover { color: #dc2626; }
-  #ppWidgetAdd .wa-toggle {
-    width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; line-height: 1;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--accent);
-    box-shadow: var(--shadow); cursor: pointer; transition: transform .12s;
-  }
-  #ppWidgetAdd.open .wa-toggle { transform: rotate(45deg); }
-  #ppWidgetAdd .wa-menu { display: none; gap: 6px; }
-  #ppWidgetAdd.open .wa-menu { display: flex; }
-  #ppWidgetAdd .wa-menu button {
-    padding: 8px 12px; border-radius: 10px; font-size: .84rem; font-weight: 600;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-secondary);
-    box-shadow: var(--shadow); cursor: pointer; white-space: nowrap;
-  }
-  #ppWidgetAdd .wa-menu button:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ---- lasso / crop selection ---- */
   .pp-canvas.lasso .ink-capture { cursor: crosshair; }
@@ -2999,13 +2985,10 @@
     <span class="ink-spacer"></span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
-  <div id="ppCanvas" class="pp-canvas"><div class="canvas-sizer"></div></div>
-  <div id="ppWidgetAdd">
-    <button type="button" class="wa-toggle" title="add a shape or graph">＋</button>
-    <div class="wa-menu">
-      <button type="button" data-wa="shape">△ Shape</button>
-      <button type="button" data-wa="graph">📈 Graph</button>
-    </div>
+  <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
+  <div id="ppAddMenu">
+    <button type="button" data-wa="shape">△  Add shape</button>
+    <button type="button" data-wa="graph">📈  Add graph</button>
   </div>
   <div id="nbLib" hidden>
     <div class="nblib-head"><b>Library</b><button id="nbLibClose" type="button" title="close">✕</button></div>
@@ -8400,16 +8383,45 @@
     var slAll = $("ddSlAll"); if (slAll) slAll.addEventListener("click", function () { shortlistAllToBoard(); renderDropdown(); });
   }
 
+  // ---- pan / zoom viewport for the writing page ----
+  var navScale = 1, navTx = 0, navTy = 0, navMaxX = 2600, navMaxY = 2000, navSaveT = null;
+  function navClamp() {
+    navScale = Math.max(0.25, Math.min(4, navScale));
+    var cv = $("ppCanvas"); if (!cv) return;
+    var W = cv.clientWidth || 900, H = cv.clientHeight || 600, m = 140;
+    navTx = Math.min(W - m, Math.max(m - navMaxX * navScale, navTx));
+    navTy = Math.min(H - m, Math.max(m - navMaxY * navScale, navTy));
+  }
+  function applyNav() {
+    navClamp();
+    var v = $("ppView");
+    if (v) v.style.transform = "translate(" + navTx.toFixed(1) + "px," + navTy.toFixed(1) + "px) scale(" + navScale.toFixed(4) + ")";
+  }
+  function navLoad(p) {
+    var n = p && (loadCanvas(p.id) || {}).nav;
+    if (n && isFinite(n.s) && isFinite(n.tx) && isFinite(n.ty)) { navScale = n.s; navTx = n.tx; navTy = n.ty; }
+    else { navScale = 1; navTx = 0; navTy = 0; }
+  }
+  function navSave() {
+    var p = curProblem(); if (!p) return;
+    clearTimeout(navSaveT);
+    navSaveT = setTimeout(function () {
+      var c = loadCanvas(p.id); if (c) { c.nav = { s: navScale, tx: navTx, ty: navTy }; saveCanvas(p.id); }
+    }, 500);
+  }
+  window.navLoad = navLoad;
+
   function renderCanvas() {
     var p = curProblem(); if (!p) return;
     var canvas = $("ppCanvas");
-    canvas.innerHTML = '<div class="canvas-sizer"></div><svg class="ink-layer"></svg><div class="ink-capture"></div>';
+    canvas.innerHTML = '<div id="ppView"><div class="canvas-sizer"></div><svg class="ink-layer"></svg><div class="ink-capture"></div></div>';
+    var view = $("ppView");
     var ink = loadCanvas(p.id).ink || [];
     $("ppBenchCount").textContent = p.bench.length ? p.bench.length + " on board" : (ink.length ? "handwriting only" : "empty");
     if (!p.bench.length && !ink.length) {
       var em = document.createElement("div");
       em.className = "canvas-empty";
-      em.innerHTML = "Blank page.<br>Write with the pencil · <b>📚 Library</b> to clip in cards, pages &amp; methods · <b>＋</b> for a shape or graph.";
+      em.innerHTML = "Blank page.<br>Write with the pencil · pinch to zoom · <b>📚 Library</b> to clip things in · <b>press &amp; hold</b> for a shape or graph.";
       canvas.appendChild(em);
     }
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
@@ -8454,12 +8466,14 @@
       if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
       if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
       wireClip(el, clip, p);
-      canvas.appendChild(el);
+      view.appendChild(el);
       maxX = Math.max(maxX, (clip.x || 0) + (clip.w || 300) + 60);
       maxY = Math.max(maxY, (clip.y || 0) + (clip.h || 200) + 60);
     });
     ink.forEach(function (s) { (s.pts || []).forEach(function (q) { maxX = Math.max(maxX, q[0] + 90); maxY = Math.max(maxY, q[1] + 90); }); });
-    maxX = Math.max(maxX, 1800); maxY = Math.max(maxY, 1300);   // headroom to write into
+    maxX = Math.max(maxX, 2600); maxY = Math.max(maxY, 2000);   // headroom to write / pan into
+    navMaxX = maxX; navMaxY = maxY;
+    view.style.width = maxX + "px"; view.style.height = maxY + "px";
     var sizer = canvas.querySelector(".canvas-sizer");
     sizer.style.width = maxX + "px";
     sizer.style.height = maxY + "px";
@@ -8469,6 +8483,7 @@
     ic.style.width = maxX + "px"; ic.style.height = maxY + "px";
     renderInk(p);
     wireInkCapture(p);
+    applyNav();
     try { prettyFractions(canvas); } catch (e) {}
   }
 
@@ -8564,21 +8579,24 @@
     renderCanvas();
   }
   function inkSelToolbar(p) {
-    var canvas = $("ppCanvas"); if (!canvas) return;
-    var t = canvas.querySelector(".ink-sel-toolbar");
+    var host = $("ppView"); if (!host) return;
+    var t = host.querySelector(".ink-sel-toolbar");
     if (!inkSel) { if (t) t.remove(); return; }
     if (!t) {
       t = document.createElement("div");
       t.className = "ink-sel-toolbar";
       t.innerHTML = '<button data-s="dup" title="duplicate">⧉</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
-      canvas.appendChild(t);
+      host.appendChild(t);
       t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
       t.querySelector('[data-s="dup"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDuplicate(curProblem()); });
       t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
       t.querySelector('[data-s="x"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelClear(); });
     }
+    var z = (typeof navScale === "number" && navScale) ? navScale : 1;
+    t.style.transform = "scale(" + (1 / z).toFixed(3) + ")";
+    t.style.transformOrigin = "left bottom";
     t.style.left = Math.max(2, inkSel.box.x) + "px";
-    t.style.top = Math.max(2, inkSel.box.y - 36) + "px";
+    t.style.top = Math.max(2, inkSel.box.y) + "px";
   }
 
   function inkStrokeWidth(s) {
@@ -8699,16 +8717,9 @@
         renderCanvas();
       }
     }
-    // two-finger pan while in draw mode (one finger / palm is ignored)
-    var touchPts = {}, panC = null;
-    function centroid() {
-      var xs = 0, ys = 0, n = 0;
-      for (var k in touchPts) { xs += touchPts[k].x; ys += touchPts[k].y; n++; }
-      return n ? { x: xs / n, y: ys / n, n: n } : null;
-    }
+    // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
     ic.addEventListener("pointerdown", function (e) {
-      if (!inkMode) return;
-      if (e.pointerType === "touch") { touchPts[e.pointerId] = { x: e.clientX, y: e.clientY }; panC = centroid(); return; }
+      if (!inkMode || e.pointerType === "touch") return;
       if (inkTool === "lasso") { lassoDown(e); return; }
       if (inkDrawing) return;                 // pen already down — ignore a second pointer
       e.preventDefault();
@@ -8720,20 +8731,7 @@
       liveDraw();
     });
     ic.addEventListener("pointermove", function (e) {
-      if (!inkMode) return;
-      if (e.pointerType === "touch") {
-        if (!touchPts[e.pointerId]) return;
-        touchPts[e.pointerId] = { x: e.clientX, y: e.clientY };
-        var c = centroid();
-        if (c && c.n >= 2 && panC) {
-          var canvas = $("ppCanvas");
-          canvas.scrollLeft -= (c.x - panC.x);
-          canvas.scrollTop -= (c.y - panC.y);
-          e.preventDefault();
-        }
-        panC = c;
-        return;
-      }
+      if (!inkMode || e.pointerType === "touch") return;
       if (inkTool === "lasso") { lassoMove(e); return; }
       if (!inkDrawing) return;
       e.preventDefault();
@@ -8745,7 +8743,7 @@
       liveDraw();
     });
     function end(e) {
-      if (e && e.pointerType === "touch") { delete touchPts[e.pointerId]; panC = centroid(); }
+      if (e && e.pointerType === "touch") return;
       if (lassoDrag) { lassoEnd(); return; }
       if (!inkDrawing) return;
       inkDrawing = false;
@@ -8813,6 +8811,7 @@
       bar.classList.add("full", "show");
       inkMode = true;
       $("ppCanvas").classList.add("drawing");
+      navLoad(p);
       setInkTool(inkTool === "lasso" ? "lasso" : "pen");
       renderCanvas();
       window.scrollTo(0, 0);
@@ -8854,23 +8853,6 @@
       $("libProbSearch").addEventListener("input", function () { clearTimeout(probT); probT = setTimeout(renderNbLibProbResults, 160); });
     }
 
-    // ---- floating + Shape / + Graph on the normal canvas ----
-    var wa = $("ppWidgetAdd");
-    if (wa) {
-      wa.querySelector(".wa-toggle").addEventListener("click", function (e) {
-        e.stopPropagation(); wa.classList.toggle("open");
-      });
-      wa.querySelectorAll("[data-wa]").forEach(function (b) {
-        b.addEventListener("click", function (e) {
-          e.stopPropagation();
-          wa.classList.remove("open");
-          if (b.getAttribute("data-wa") === "shape") addShape(); else addGraph();
-        });
-      });
-      document.addEventListener("click", function (e) {
-        if (wa.classList.contains("open") && !wa.contains(e.target)) wa.classList.remove("open");
-      });
-    }
   })();
 
   // ============================================================
@@ -8879,15 +8861,15 @@
   var SHAPE_FAMS = { tri: { label: "Triangle", items: triItems }, quad: { label: "Quad", items: quadItems } };
   function shapeItemsFor(fam) { return (SHAPE_FAMS[fam] || SHAPE_FAMS.tri).items; }
 
-  function addShape() {
-    var p = ensureProblem(), pos = nextClipPos(p);
+  function addShape(pos) {
+    var p = ensureProblem(); pos = pos || nextClipPos(p);
     p.bench.push({ id: uid("sh_"), kind: "shape", fam: "tri", type: Object.keys(triItems)[0], slider: null,
       x: Math.round(pos.x), y: Math.round(pos.y), w: 240, h: 220, z: ++zTop, added: Date.now() });
     saveStore(); renderProblemList();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
-  function addGraph() {
-    var p = ensureProblem(), pos = nextClipPos(p);
+  function addGraph(pos) {
+    var p = ensureProblem(); pos = pos || nextClipPos(p);
     p.bench.push({ id: uid("gr_"), kind: "graph", fns: [{ expr: "x^2", color: "#2563eb" }], view: { cx: 0, cy: 0, ppu: 32 }, showBar: true,
       x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: ++zTop, added: Date.now() });
     saveStore(); renderProblemList();
@@ -9353,7 +9335,7 @@
   function openClipOverlay(html, title, pos, onKeepAll) {
     closeClipMode();
     var canvas = $("ppCanvas");
-    var pp = pos || { x: (canvas.scrollLeft || 0) + 40, y: (canvas.scrollTop || 0) + 40 };
+    var pp = pos || { x: 18, y: 18 };
     var ov = document.createElement("div");
     ov.className = "clipmode";
     ov.style.left = Math.round(pp.x) + "px";
@@ -9383,7 +9365,13 @@
       document.addEventListener("pointermove", mv, true); document.addEventListener("pointerup", up, true);
     });
 
-    function finalPos() { return { x: parseFloat(ov.style.left), y: parseFloat(ov.style.top) }; }
+    // where the clipped item lands: the middle of what the user is currently looking at, in canvas coords
+    function finalPos() {
+      var r = canvas.getBoundingClientRect();
+      var z = (typeof navScale === "number" && navScale) ? navScale : 1;
+      var tx = (typeof navTx === "number") ? navTx : 0, ty = (typeof navTy === "number") ? navTy : 0;
+      return { x: Math.max(0, Math.round((r.width / 2 - tx) / z - 170)), y: Math.max(0, Math.round((r.height / 2 - ty) / z - 120)) };
+    }
     function cleanHtml(node) {
       var c = node.cloneNode(true);
       c.classList && c.classList.remove("cm-block", "cm-marked");
@@ -9551,11 +9539,11 @@
       e.preventDefault(); e.stopPropagation();
       try { head.setPointerCapture(e.pointerId); } catch (_) {}
       var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0;
-      var moved = false;
+      var moved = false, z = (typeof navScale === "number" && navScale) ? navScale : 1;
       function mv(ev) {
         moved = true;
-        clip.x = Math.max(0, Math.round(ox + (ev.clientX - sx)));
-        clip.y = Math.max(0, Math.round(oy + (ev.clientY - sy)));
+        clip.x = Math.max(0, Math.round(ox + (ev.clientX - sx) / z));
+        clip.y = Math.max(0, Math.round(oy + (ev.clientY - sy) / z));
         el.style.left = clip.x + "px"; el.style.top = clip.y + "px";
       }
       function up() {
@@ -9573,15 +9561,16 @@
     rz.addEventListener("pointerdown", function (e) {
       e.preventDefault(); e.stopPropagation();
       try { rz.setPointerCapture(e.pointerId); } catch (_) {}
-      // start from the ACTUAL rendered size, so the box never jumps on the first move
+      var z = (typeof navScale === "number" && navScale) ? navScale : 1;
+      // start from the ACTUAL rendered size (÷ zoom → content units), so the box never jumps
       var r = el.getBoundingClientRect();
-      var sx = e.clientX, sy = e.clientY, ow = r.width, oh = r.height;
+      var sx = e.clientX, sy = e.clientY, ow = r.width / z, oh = r.height / z;
       var minW = isW ? 90 : 130, minH = 70;
       var moved = false;
       function mv(ev) {
         moved = true;
-        clip.w = Math.max(minW, Math.round(ow + (ev.clientX - sx)));
-        clip.h = Math.max(minH, Math.round(oh + (ev.clientY - sy)));
+        clip.w = Math.max(minW, Math.round(ow + (ev.clientX - sx) / z));
+        clip.h = Math.max(minH, Math.round(oh + (ev.clientY - sy) / z));
         el.style.width = clip.w + "px"; el.style.height = clip.h + "px";
         if (clip.kind === "graph" && typeof clip._redraw === "function") clip._redraw();
       }
@@ -9639,6 +9628,94 @@
 
   if ($("nbNewPage")) $("nbNewPage").addEventListener("click", function () { addPage(); });
   if ($("nbBankSearch")) $("nbBankSearch").addEventListener("input", function () { renderNbBank(); });
+
+  // ---- writing-page gestures: smooth pan / pinch-zoom / wheel-zoom + long-press "add" ----
+  function openAddMenuScreen(sx, sy) {
+    var m = $("ppAddMenu"); if (!m) return;
+    var r = $("ppCanvas").getBoundingClientRect();
+    m._cx = (sx - r.left - navTx) / navScale - 130;
+    m._cy = (sy - r.top - navTy) / navScale - 90;
+    m.style.left = Math.max(6, Math.min(window.innerWidth - 190, sx - 20)) + "px";
+    m.style.top = Math.max(6, Math.min(window.innerHeight - 110, sy - 10)) + "px";
+    m.classList.add("open");
+  }
+  (function mountGestures() {
+    var cv = $("ppCanvas"); if (!cv) return;
+    var m = $("ppAddMenu");
+    if (m) m.querySelectorAll("[data-wa]").forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.stopPropagation(); m.classList.remove("open");
+        var pos = { x: Math.max(0, m._cx || 40), y: Math.max(0, m._cy || 40) };
+        if (b.getAttribute("data-wa") === "shape") addShape(pos); else addGraph(pos);
+      });
+    });
+    document.addEventListener("pointerdown", function (e) {
+      if (m && m.classList.contains("open") && !m.contains(e.target)) m.classList.remove("open");
+    }, true);
+
+    var pts = {}, g = null, moved = false, lpT = null, lpAt = null;
+    function ids() { return Object.keys(pts); }
+    function two() { var k = ids(), a = pts[k[0]], b = pts[k[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+    function begin() {
+      var r = cv.getBoundingClientRect(), k = ids(), ax, ay, ad = 0;
+      if (k.length >= 2) { var t = two(); ax = t.x; ay = t.y; ad = t.d; }
+      else { ax = pts[k[0]].x; ay = pts[k[0]].y; }
+      g = { s: navScale, d: ad, cx: (ax - r.left - navTx) / navScale, cy: (ay - r.top - navTy) / navScale };
+    }
+    function update() {
+      if (!g) return;
+      var r = cv.getBoundingClientRect(), k = ids(), cxp, cyp, s = g.s;
+      if (k.length >= 2) { var t = two(); cxp = t.x; cyp = t.y; if (g.d) s = Math.max(0.25, Math.min(4, g.s * (t.d / g.d))); }
+      else { cxp = pts[k[0]].x; cyp = pts[k[0]].y; }
+      navScale = s;
+      navTx = (cxp - r.left) - g.cx * s;
+      navTy = (cyp - r.top) - g.cy * s;
+      applyNav();
+    }
+    cv.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "touch") return;
+      if (!document.body.classList.contains("ink-full")) return;
+      if (inkDrawing) return;
+      if (e.target.closest && e.target.closest(".clip")) return;   // let a clip take its own drag
+      pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+      moved = false;
+      clearTimeout(lpT); lpT = null;
+      if (ids().length === 1) {
+        lpAt = { x: e.clientX, y: e.clientY };
+        lpT = setTimeout(function () {
+          lpT = null;
+          if (ids().length === 1 && !moved) { openAddMenuScreen(lpAt.x, lpAt.y); pts = {}; g = null; }
+        }, 480);
+      }
+      begin();
+    });
+    cv.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "touch" || !pts[e.pointerId]) return;
+      pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+      if (lpAt && Math.hypot(e.clientX - lpAt.x, e.clientY - lpAt.y) > 9) { moved = true; clearTimeout(lpT); lpT = null; }
+      e.preventDefault();
+      update();
+    }, { passive: false });
+    function up(e) {
+      if (e.pointerType !== "touch" || !pts[e.pointerId]) return;
+      delete pts[e.pointerId];
+      clearTimeout(lpT); lpT = null;
+      if (ids().length >= 1) begin(); else { g = null; navSave(); }
+    }
+    cv.addEventListener("pointerup", up);
+    cv.addEventListener("pointercancel", up);
+    cv.addEventListener("wheel", function (e) {
+      if (!document.body.classList.contains("ink-full")) return;
+      e.preventDefault();
+      var r = cv.getBoundingClientRect();
+      var cx = (e.clientX - r.left - navTx) / navScale, cy = (e.clientY - r.top - navTy) / navScale;
+      var k = e.deltaY < 0 ? 1.1 : 1 / 1.1;
+      navScale = Math.max(0.25, Math.min(4, navScale * k));
+      navTx = (e.clientX - r.left) - cx * navScale;
+      navTy = (e.clientY - r.top) - cy * navScale;
+      applyNav(); navSave();
+    }, { passive: false });
+  })();
 
   $("ppTitle").addEventListener("input", function () { var p = curProblem(); if (p) { p.name = this.value; saveStore(); renderProblemList(); } });
   $("ppSearch").addEventListener("input", function () { toggleDropdown(true); });
