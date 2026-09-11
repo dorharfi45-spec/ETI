@@ -2992,7 +2992,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B13</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B14</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -9756,6 +9756,11 @@
         if (cancelled || lr.w < 8 || lr.h < 8) return;
         var pos2 = finalPos();
         var innerW = src.clientWidth;
+        // TEMPORARY DEBUG (B14): the real baseline — what .clipmode-src (where the user is
+        // actually looking when they draw the box) is ACTUALLY rendering at, measured before
+        // it gets torn down by closeClipMode(). Everything else gets compared against this.
+        var srcCS = getComputedStyle(src);
+        var srcFontSize = srcCS.fontSize, srcLineHeight = srcCS.lineHeight, srcScrollH = src.scrollHeight;
         var fullHtml = cropSourceHtml();
         var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + fullHtml + '</div>';
         var cropClip = { id: uid("cl_"), kind: "crop", cropX: Math.round(lr.x), cropY: Math.round(lr.y),
@@ -9793,12 +9798,17 @@
             var wrapperB_neutral = neutral.firstElementChild;
             var hIn = wrapperB_inWidget ? wrapperB_inWidget.getBoundingClientRect().height : -1;
             var hNe = wrapperB_neutral ? wrapperB_neutral.getBoundingClientRect().height : -1;
-            var csIn = wrapperB_inWidget ? getComputedStyle(wrapperB_inWidget) : null;
-            var csNe = wrapperB_neutral ? getComputedStyle(wrapperB_neutral) : null;
+            // read+stringify BEFORE removing — a detached element's computed style reads back
+            // blank in Safari, which is why B13's "neutral" font/lh came back empty last time
+            var fsIn = wrapperB_inWidget ? getComputedStyle(wrapperB_inWidget).fontSize : "?";
+            var lhIn = wrapperB_inWidget ? getComputedStyle(wrapperB_inWidget).lineHeight : "?";
+            var fsNe = wrapperB_neutral ? getComputedStyle(wrapperB_neutral).fontSize : "?";
+            var lhNe = wrapperB_neutral ? getComputedStyle(wrapperB_neutral).lineHeight : "?";
             neutral.remove();
-            alert("HEIGHT DEBUG\n" +
-              "in-widget: h=" + Math.round(hIn) + "px font=" + (csIn ? csIn.fontSize : "?") + " lh=" + (csIn ? csIn.lineHeight : "?") + "\n" +
-              "neutral:   h=" + Math.round(hNe) + "px font=" + (csNe ? csNe.fontSize : "?") + " lh=" + (csNe ? csNe.lineHeight : "?") + "\n" +
+            alert("HEIGHT DEBUG (B14)\n" +
+              "src (live, at capture): scrollH=" + srcScrollH + "px font=" + srcFontSize + " lh=" + srcLineHeight + "\n" +
+              "in-widget: h=" + Math.round(hIn) + "px font=" + fsIn + " lh=" + lhIn + "\n" +
+              "neutral:   h=" + Math.round(hNe) + "px font=" + fsNe + " lh=" + lhNe + "\n" +
               "cropX=" + cropClip.cropX + " cropY=" + cropClip.cropY + " cropW=" + cropClip.cropW + " cropH=" + cropClip.cropH);
           }, 50);
         }
