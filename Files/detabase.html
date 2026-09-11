@@ -2975,7 +2975,8 @@
     <button type="button" id="nbLibToggle" class="tool-btn" title="library — clip in subjects, pages &amp; problem methods">📚</button>
     <button type="button" class="ink-tool" data-inktool="select" title="select — move &amp; edit shapes, graphs and clips">✋</button>
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
-    <button type="button" class="ink-tool" data-inktool="erase" title="erase strokes">⌫</button>
+    <button type="button" class="ink-tool" data-inktool="highlight" title="highlighter">🖍️</button>
+    <button type="button" class="ink-tool" data-inktool="erase" title="erase strokes — or double-tap the pencil to toggle">⌫</button>
     <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
     <span class="ink-swatches" id="ppInkSwatches"></span>
     <input type="range" id="ppInkW" class="ink-w" min="1" max="16" value="3" title="thickness">
@@ -8493,8 +8494,23 @@
   // strokes live in loadCanvas(id).ink = [{ id, color, w, pts:[[x,y,pressure],…] }]
   // ============================================================
   var inkMode = false, inkTool = "pen", inkColor = "#1e293b", inkW = 3;
+  var inkHiColor = "#fde047", inkPrevWrite = "pen";   // highlighter colour + last writing tool (for the pencil double-tap)
   var inkUndo = {}, inkRedo = {};
   var inkDrawing = false, inkCur = null, inkLive = null;
+  var penDownXY = null, penDownT = 0, penMoved = 0, penTapT = 0, penTapXY = null;   // pencil double-tap
+  var _setInkTool = function () {};   // assigned in inkToolbarSetup
+  function inkDoUndo() {
+    var p = curProblem(); if (!p) return; var k = p.id;
+    if (!inkUndo[k] || !inkUndo[k].length) return;
+    inkRedo[k] = inkRedo[k] || []; inkRedo[k].push(JSON.stringify(loadCanvas(k).ink || []));
+    inkSet(p, JSON.parse(inkUndo[k].pop()));
+  }
+  function inkDoRedo() {
+    var p = curProblem(); if (!p) return; var k = p.id;
+    if (!inkRedo[k] || !inkRedo[k].length) return;
+    inkUndo[k] = inkUndo[k] || []; inkUndo[k].push(JSON.stringify(loadCanvas(k).ink || []));
+    inkSet(p, JSON.parse(inkRedo[k].pop()));
+  }
   var inkSel = null;        // committed lasso result: { strokes:[ids], clips:[ids], box:{x,y,w,h} }
   var inkLassoPts = null;   // live lasso polygon (canvas coords) while dragging
 
@@ -8689,6 +8705,7 @@
   }
 
   function inkStrokeWidth(s) {
+    if (s.hi) return Math.max(6, s.w || 16);   // highlighter: flat, uniform width
     var pr = 0, n = 0;
     (s.pts || []).forEach(function (q) { if (q[2] != null) { pr += q[2]; n++; } });
     var f = n ? (0.55 + 0.9 * (pr / n)) : 1;
@@ -8705,7 +8722,14 @@
     if (!il) return;
     var ink = loadCanvas(p.id).ink || [];
     var h = "";
+    // highlighter first, so pen ink stays readable on top
     ink.forEach(function (s) {
+      if (!s.hi) return;
+      h += '<path d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#fde047") +
+        '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.42"/>';
+    });
+    ink.forEach(function (s) {
+      if (s.hi) return;
       h += '<path d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#1e293b") +
         '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round"/>';
     });
@@ -8755,6 +8779,7 @@
       inkLive.setAttribute("d", inkPathD(inkCur));
       inkLive.setAttribute("stroke", inkCur.color);
       inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
+      inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.42" : "1");
     }
     // lasso funcs are module-level (lassoStart/lassoTo/lassoDone) so touch (mountGestures) can drive them too
     // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
@@ -8764,10 +8789,14 @@
       if (inkDrawing) return;                 // pen already down — ignore a second pointer
       e.preventDefault();
       try { ic.setPointerCapture(e.pointerId); } catch (_) {}
+      var d0 = P(e);
+      penDownXY = [d0[0], d0[1]]; penDownT = Date.now(); penMoved = 0;
       inkSnapshot(p);
       inkDrawing = true;
-      if (inkTool === "erase") { inkEraseAt(p, P(e)); return; }
-      inkCur = { id: uid("ik_"), color: inkColor, w: inkW, pts: [P(e)] };
+      if (inkTool === "erase") { inkEraseAt(p, d0); return; }
+      var hi = inkTool === "highlight";
+      inkCur = { id: uid("ik_"), color: hi ? inkHiColor : inkColor, w: hi ? Math.max(10, inkW * 3) : inkW, pts: [d0] };
+      if (hi) inkCur.hi = true;
       liveDraw();
     });
     ic.addEventListener("pointermove", function (e) {
@@ -8786,7 +8815,11 @@
       var list = (coalesced && coalesced.length) ? coalesced : [e];
       if (inkTool === "erase") { list.forEach(function (ev) { inkEraseAt(p, P(ev)); }); return; }
       if (!inkCur) return;
-      list.forEach(function (ev) { inkCur.pts.push(P(ev)); });
+      list.forEach(function (ev) {
+        var xy = P(ev);
+        if (penDownXY) penMoved = Math.max(penMoved, Math.hypot(xy[0] - penDownXY[0], xy[1] - penDownXY[1]));
+        inkCur.pts.push(xy);
+      });
       liveDraw();
     });
     function end(e) {
@@ -8794,11 +8827,22 @@
       if (lassoDrag) { lassoDone(); return; }
       if (!inkDrawing) return;
       inkDrawing = false;
-      if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
+      var isPen = e && e.pointerType === "pen";
+      var wasTap = isPen && penDownT && (Date.now() - penDownT < 300) && penMoved < 10;
+      if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1 && !wasTap) {
         var c = loadCanvas(p.id); c.ink = c.ink || []; c.ink.push(inkCur); saveCanvas(p.id);
       } else if (inkUndo[p.id]) { inkUndo[p.id].pop(); }   // nothing drawn — drop the snapshot
       inkCur = null;
       renderInk(p);
+      if (wasTap) {
+        var now = Date.now();
+        if (penTapT && now - penTapT < 380 && penTapXY && Math.hypot(penDownXY[0] - penTapXY[0], penDownXY[1] - penTapXY[1]) < 70) {
+          penTapT = 0; penTapXY = null;
+          if (inkTool === "erase") _setInkTool(inkPrevWrite || "pen");
+          else { inkPrevWrite = inkTool; _setInkTool("erase"); }
+        } else { penTapT = now; penTapXY = penDownXY; }
+      } else { penTapT = 0; penTapXY = null; }
+      penDownT = 0;
     }
     ic.addEventListener("pointerup", end);
     ic.addEventListener("pointercancel", end);
@@ -8807,45 +8851,44 @@
 
   (function inkToolbarSetup() {
     var bar = $("ppInkbar"); if (!bar) return;
-    var COLORS = ["#1e293b", "#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed"];
+    var PEN_COLORS = ["#1e293b", "#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed"];
+    var HI_COLORS = ["#fde047", "#fca5a5", "#86efac", "#7dd3fc", "#f9a8d4", "#fdba74"];
     var sw = $("ppInkSwatches");
-    COLORS.forEach(function (c, i) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "ink-sw" + (i === 0 ? " on" : "");
-      b.style.background = c;
-      b.addEventListener("click", function () {
-        inkColor = c;
-        Array.prototype.forEach.call(sw.children, function (x) { x.classList.toggle("on", x === b); });
-        setInkTool("pen");
+    function renderSwatches() {
+      var hi = inkTool === "highlight";
+      var pal = hi ? HI_COLORS : PEN_COLORS, cur = hi ? inkHiColor : inkColor;
+      sw.innerHTML = "";
+      pal.forEach(function (c) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "ink-sw" + (c === cur ? " on" : "");
+        b.style.background = c;
+        b.addEventListener("click", function () {
+          if (inkTool === "highlight") inkHiColor = c; else { inkColor = c; if (inkTool !== "pen") setInkTool("pen"); }
+          Array.prototype.forEach.call(sw.children, function (x) { x.classList.toggle("on", x === b); });
+        });
+        sw.appendChild(b);
       });
-      sw.appendChild(b);
-    });
+    }
     function setInkTool(t) {
       inkTool = t;
+      if (t === "pen" || t === "highlight") inkPrevWrite = t;
       bar.querySelectorAll("[data-inktool]").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-inktool") === t); });
       $("ppCanvas").classList.toggle("erase", t === "erase");
       $("ppCanvas").classList.toggle("lasso", t === "lasso");
       // "select" lifts the ink capture layer so shapes / graphs / clips take input again
       $("ppCanvas").classList.toggle("drawing", document.body.classList.contains("ink-full") && t !== "select");
       if (t !== "lasso") inkSelClear();
+      renderSwatches();
     }
+    _setInkTool = setInkTool;
+    renderSwatches();
     bar.querySelectorAll("[data-inktool]").forEach(function (x) {
       x.addEventListener("click", function () { setInkTool(x.getAttribute("data-inktool")); });
     });
     $("ppInkW").addEventListener("input", function () { inkW = +this.value || 3; });
-    $("ppInkUndo").addEventListener("click", function () {
-      var p = curProblem(); if (!p) return; var k = p.id;
-      if (!inkUndo[k] || !inkUndo[k].length) return;
-      inkRedo[k] = inkRedo[k] || []; inkRedo[k].push(JSON.stringify(loadCanvas(k).ink || []));
-      inkSet(p, JSON.parse(inkUndo[k].pop()));
-    });
-    $("ppInkRedo").addEventListener("click", function () {
-      var p = curProblem(); if (!p) return; var k = p.id;
-      if (!inkRedo[k] || !inkRedo[k].length) return;
-      inkUndo[k] = inkUndo[k] || []; inkUndo[k].push(JSON.stringify(loadCanvas(k).ink || []));
-      inkSet(p, JSON.parse(inkRedo[k].pop()));
-    });
+    $("ppInkUndo").addEventListener("click", inkDoUndo);
+    $("ppInkRedo").addEventListener("click", inkDoRedo);
     $("ppInkClear").addEventListener("click", function () {
       var p = curProblem(); if (!p || !(loadCanvas(p.id).ink || []).length) return;
       if (!confirm("Erase all handwriting on this board?")) return;
@@ -8891,7 +8934,9 @@
       if (tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable)) return;
       if (!(e.ctrlKey || e.metaKey)) return;
       var k = e.key.toLowerCase(), p = curProblem();
-      if (k === "c" && inkSel) { e.preventDefault(); inkSelCopy(p); }
+      if (k === "z") { e.preventDefault(); if (e.shiftKey) inkDoRedo(); else inkDoUndo(); }
+      else if (k === "y") { e.preventDefault(); inkDoRedo(); }
+      else if (k === "c" && inkSel) { e.preventDefault(); inkSelCopy(p); }
       else if (k === "x" && inkSel) { e.preventDefault(); inkSelCut(p); }
       else if (k === "v" && inkClip) {
         e.preventDefault();
@@ -9727,7 +9772,14 @@
     }, true);
 
     var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null, wLpT = null, wLpEl = null;
+    var twoT0 = 0, twoMid0 = null, twoMoved = false, twoTapLastT = 0, twoTapStreak = false;
     function ids() { return Object.keys(pts); }
+    function handleTwoFingerTap() {
+      var now = Date.now();
+      if (twoTapStreak && now - twoTapLastT < 700) { inkDoUndo(); twoTapLastT = now; }
+      else if (twoTapLastT && now - twoTapLastT < 550) { inkDoUndo(); twoTapLastT = now; twoTapStreak = true; }   // the "twice"
+      else { twoTapLastT = now; twoTapStreak = false; }
+    }
     function two() { var k = ids(), a = pts[k[0]], b = pts[k[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
     function begin() {
       var r = cv.getBoundingClientRect(), k = ids(), ax, ay, ad = 0;
@@ -9738,7 +9790,10 @@
     function update() {
       if (!g) return;
       var r = cv.getBoundingClientRect(), k = ids(), cxp, cyp, s = g.s;
-      if (k.length >= 2) { var t = two(); cxp = t.x; cyp = t.y; if (g.d) s = Math.max(0.25, Math.min(4, g.s * (t.d / g.d))); }
+      if (k.length >= 2) {
+        var t = two(); cxp = t.x; cyp = t.y; if (g.d) s = Math.max(0.25, Math.min(4, g.s * (t.d / g.d)));
+        if (twoMid0 && (Math.abs(s / g.s - 1) > 0.05 || Math.hypot(cxp - twoMid0[0], cyp - twoMid0[1]) > 14)) twoMoved = true;
+      }
       else { cxp = pts[k[0]].x; cyp = pts[k[0]].y; }
       navScale = s;
       navTx = (cxp - r.left) - g.cx * s;
@@ -9785,6 +9840,7 @@
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       moved = false;
       clearTimeout(lpT); lpT = null;
+      if (ids().length === 2) { twoT0 = Date.now(); var tw = two(); twoMid0 = [tw.x, tw.y]; twoMoved = false; }
       if (ids().length === 1 && inkTool !== "lasso") {
         lpAt = { x: e.clientX, y: e.clientY };
         lpT = setTimeout(function () {
@@ -9809,8 +9865,10 @@
       clearTimeout(wLpT); wLpT = null;
       if (lassoId === e.pointerId) { lassoId = null; lassoDone(); return; }
       if (!pts[e.pointerId]) return;
+      var wasN = ids().length;
       delete pts[e.pointerId];
       clearTimeout(lpT); lpT = null;
+      if (wasN === 2 && !twoMoved && twoT0 && Date.now() - twoT0 < 280) handleTwoFingerTap();
       if (ids().length >= 1) begin(); else { g = null; navSave(); }
     }
     cv.addEventListener("pointerup", up);
