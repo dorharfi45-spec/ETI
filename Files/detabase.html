@@ -461,6 +461,8 @@
   .crop-host { width: 100%; height: 100%; position: relative; overflow: hidden; pointer-events: none; }
   .crop-frame { position: absolute; top: 0; left: 0; overflow: hidden; transform-origin: top left; }
   .crop-frame * { pointer-events: none !important; }
+  /* "crop after clipping": drag a box directly on a placed clip's rendered content to trim it down */
+  .clip-crop-overlay { position: absolute; inset: 0; z-index: 60; cursor: crosshair; background: rgba(0,0,0,.15); touch-action: none; pointer-events: auto; }
   /* drag grip: slim bar along the widget's top edge — the only way to move it. hidden until hover/selected */
   .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 20px; z-index: 7; display: none;
     align-items: center; gap: 5px; padding: 0 5px; box-sizing: border-box;
@@ -8455,7 +8457,7 @@
         el.innerHTML =
           '<div class="wgrip" title="drag to move">' +
           '<span class="wgrip-bar"></span>' +
-          (isCrop ? "" : '<button class="wt-edit" title="edit">✎</button>') +
+          (isCrop ? '<button class="wt-crop" title="crop this further">✂</button>' : '<button class="wt-edit" title="edit">✎</button>') +
           '<button class="clip-del" title="delete">✕</button>' +
           '</div>' +
           '<div class="clip-body">' + body + '</div>' +
@@ -8465,6 +8467,7 @@
           '<div class="clip-head">' +
           '<span class="clip-title">' + escapeHtml(titleTxt) + '</span>' +
           (clip.cardId ? '<button class="clip-open" title="go to the source card">↗</button>' : '') +
+          (isNote ? '' : '<button class="clip-crop" title="crop this down to a part of it">✂</button>') +
           '<button class="clip-del" title="remove from board">✕</button>' +
           '</div>' +
           '<div class="clip-body"' + (editable ? ' contenteditable="true" spellcheck="false"' : '') + '>' + body + '</div>' +
@@ -9044,6 +9047,63 @@
     applyScale();
     clip._onResize = applyScale;
     try { prettyFractions(frame); } catch (e) {}
+  }
+
+  // "crop after clipping" — draw a box directly on an already-placed clip to trim it down to that
+  // part. Works on any non-note, non-shape/graph clip (a plain card/merged clip, or an existing
+  // crop being cropped further — offsets/scale compose against its underlying full html).
+  function startInPlaceCrop(el, clip, p) {
+    var wasCrop = clip.kind === "crop";
+    var bodyEl = el.querySelector(wasCrop ? ".crop-host" : ".clip-body");
+    if (!bodyEl) return;
+    var z = (typeof navScale === "number" && navScale) ? navScale : 1;
+    var baseCropX = wasCrop ? (clip.cropX || 0) : 0;
+    var baseCropY = wasCrop ? (clip.cropY || 0) : 0;
+    var baseScaleX = wasCrop ? (clip.w || clip.cropW) / (clip.cropW || 1) : 1;
+    var baseScaleY = wasCrop ? (clip.h || clip.cropH) / (clip.cropH || 1) : 1;
+    var baseHtml = wasCrop ? (clip.html || "") :
+      '<div style="width:' + (clip.w || 300) + 'px;padding:10px 12px;box-sizing:border-box;">' + (clip.html || "") + '</div>';
+    var overlay = document.createElement("div");
+    overlay.className = "clip-crop-overlay";
+    if (!bodyEl.style.position) bodyEl.style.position = "relative";
+    bodyEl.appendChild(overlay);
+    var box = null, sx0 = 0, sy0 = 0;
+    function toLocal(ev) { var r = bodyEl.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; }
+    function down(ev) {
+      ev.preventDefault(); ev.stopPropagation();
+      try { overlay.setPointerCapture(ev.pointerId); } catch (_) {}
+      var xy = toLocal(ev); sx0 = xy[0]; sy0 = xy[1];
+      box = document.createElement("div"); box.className = "cm-lasso";
+      box.style.left = sx0 + "px"; box.style.top = sy0 + "px"; box.style.width = "0px"; box.style.height = "0px";
+      overlay.appendChild(box);
+    }
+    function move(ev) {
+      if (!box) return;
+      ev.preventDefault(); ev.stopPropagation();
+      var xy = toLocal(ev);
+      box.style.left = Math.min(sx0, xy[0]) + "px"; box.style.top = Math.min(sy0, xy[1]) + "px";
+      box.style.width = Math.abs(xy[0] - sx0) + "px"; box.style.height = Math.abs(xy[1] - sy0) + "px";
+    }
+    function finish(ev) {
+      var w = box ? parseFloat(box.style.width) : 0, h = box ? parseFloat(box.style.height) : 0;
+      var bx = box ? parseFloat(box.style.left) : 0, by = box ? parseFloat(box.style.top) : 0;
+      overlay.remove();
+      if (!box || w < 8 || h < 8 || (ev && ev.type === "pointercancel")) { box = null; return; }
+      box = null;
+      clip.kind = "crop";
+      clip.html = baseHtml;
+      clip.cropX = Math.round(baseCropX + (bx / z) / baseScaleX);
+      clip.cropY = Math.round(baseCropY + (by / z) / baseScaleY);
+      clip.cropW = Math.max(4, Math.round((w / z) / baseScaleX));
+      clip.cropH = Math.max(4, Math.round((h / z) / baseScaleY));
+      clip.w = clip.cropW; clip.h = clip.cropH;
+      delete clip._onResize;
+      saveStore(); renderCanvas();
+    }
+    overlay.addEventListener("pointerdown", down);
+    overlay.addEventListener("pointermove", move);
+    overlay.addEventListener("pointerup", finish);
+    overlay.addEventListener("pointercancel", finish);
   }
 
   var SHAPE_BOX = [34, 30, 226, 200];
@@ -9658,13 +9718,18 @@
         var pos2 = finalPos();
         var innerW = src.clientWidth;
         var html = '<div style="width:' + innerW + 'px;padding:12px 14px;box-sizing:border-box;">' + cropSourceHtml() + '</div>';
-        var pB = ensureProblem();
-        pB.bench.push({ id: uid("cl_"), kind: "crop", cropX: Math.round(lr.x), cropY: Math.round(lr.y),
+        var cropClip = { id: uid("cl_"), kind: "crop", cropX: Math.round(lr.x), cropY: Math.round(lr.y),
           cropW: Math.round(lr.w), cropH: Math.round(lr.h), html: html,
-          x: Math.round(pos2.x), y: Math.round(pos2.y), w: Math.round(lr.w), h: Math.round(lr.h), z: ++zTop, added: Date.now() });
+          x: Math.round(pos2.x), y: Math.round(pos2.y), w: Math.round(lr.w), h: Math.round(lr.h), z: ++zTop, added: Date.now() };
+        // close the overlay BEFORE renderCanvas() runs — renderCanvas rebuilds #ppCanvas from
+        // scratch, which was silently destroying this still-open overlay (and everything in it,
+        // including the box tool) right after the first crop, so every crop after that landed on
+        // dead, detached elements — which is why it looked like it kept "creating the same part".
+        closeClipMode();
+        var pB = ensureProblem();
+        pB.bench.push(cropClip);
         saveStore(); renderProblemList();
         if (viewingProblem && activeProblem === pB.id) renderCanvas();
-        ov.classList.remove("cropping"); cropBtn.classList.remove("hot");
       }
       src.addEventListener("pointerup", endLasso);
       src.addEventListener("pointercancel", endLasso);
@@ -9691,6 +9756,8 @@
     }, true);
     var co = el.querySelector(".clip-open");
     if (co) co.addEventListener("click", function (e) { e.stopPropagation(); if (clip.cardId) jumpToCard(clip.cardId); });
+    var cropTrigger = el.querySelector(".clip-crop") || el.querySelector(".wt-crop");
+    if (cropTrigger) cropTrigger.addEventListener("click", function (e) { e.stopPropagation(); el.classList.add("sel"); startInPlaceCrop(el, clip, p); });
     var ce = el.querySelector(".wt-edit");
     if (ce) ce.addEventListener("click", function (e) {
       e.stopPropagation();
