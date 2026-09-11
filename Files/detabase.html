@@ -9068,7 +9068,13 @@
     if (!bodyEl.style.position) bodyEl.style.position = "relative";
     bodyEl.appendChild(overlay);
     var box = null, sx0 = 0, sy0 = 0;
-    function toLocal(ev) { var r = bodyEl.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; }
+    var lockL = bodyEl.scrollLeft, lockT = bodyEl.scrollTop;   // lock scroll so a scrollable card body can't drift the box mid-drag
+    function toLocal(ev) {
+      if (bodyEl.scrollLeft !== lockL) bodyEl.scrollLeft = lockL;
+      if (bodyEl.scrollTop !== lockT) bodyEl.scrollTop = lockT;
+      var r = bodyEl.getBoundingClientRect();
+      return [ev.clientX - r.left + lockL, ev.clientY - r.top + lockT];
+    }
     function down(ev) {
       ev.preventDefault(); ev.stopPropagation();
       try { overlay.setPointerCapture(ev.pointerId); } catch (_) {}
@@ -9677,15 +9683,23 @@
       });
       // lasso — touch-action:none on .clipmode-src (while cropping) stops the browser's own
       // scroll from hijacking the drag; pointer capture + preventDefault on every step keeps it
-      // tracking even if the finger slides off a child card.
-      var lasso = null, lx, ly, lassoId = null;
+      // tracking even if the finger slides off a child card. Scroll position is LOCKED for the
+      // whole drag (and forced back if anything nudges it, e.g. iOS's own edge/focus scrolling)
+      // so the box and the final crop can never drift relative to what's on screen.
+      var lasso = null, lx, ly, lassoId = null, lockL = 0, lockT = 0, lastCX = 0, lastCY = 0;
+      function lockedXY(ev) {
+        if (src.scrollLeft !== lockL) src.scrollLeft = lockL;
+        if (src.scrollTop !== lockT) src.scrollTop = lockT;
+        var r = src.getBoundingClientRect();
+        return [ev.clientX - r.left + lockL, ev.clientY - r.top + lockT];
+      }
       src.addEventListener("pointerdown", function (ev) {
         if (!ov.classList.contains("cropping")) return;
         ev.preventDefault(); ev.stopPropagation();
         try { src.setPointerCapture(ev.pointerId); } catch (_) {}
         lassoId = ev.pointerId;
-        var r = src.getBoundingClientRect();
-        lx = ev.clientX - r.left + src.scrollLeft; ly = ev.clientY - r.top + src.scrollTop;
+        lockL = src.scrollLeft; lockT = src.scrollTop;
+        var xy = lockedXY(ev); lx = xy[0]; ly = xy[1]; lastCX = lx; lastCY = ly;
         lasso = document.createElement("div"); lasso.className = "cm-lasso";
         lasso.style.left = lx + "px"; lasso.style.top = ly + "px"; lasso.style.width = "0px"; lasso.style.height = "0px";
         src.appendChild(lasso);
@@ -9693,10 +9707,9 @@
       src.addEventListener("pointermove", function (ev) {
         if (!lasso || ev.pointerId !== lassoId) return;
         ev.preventDefault(); ev.stopPropagation();
-        var r = src.getBoundingClientRect();
-        var cx = ev.clientX - r.left + src.scrollLeft, cy = ev.clientY - r.top + src.scrollTop;
-        lasso.style.left = Math.min(lx, cx) + "px"; lasso.style.top = Math.min(ly, cy) + "px";
-        lasso.style.width = Math.abs(cx - lx) + "px"; lasso.style.height = Math.abs(cy - ly) + "px";
+        var xy = lockedXY(ev); lastCX = xy[0]; lastCY = xy[1];
+        lasso.style.left = Math.min(lx, lastCX) + "px"; lasso.style.top = Math.min(ly, lastCY) + "px";
+        lasso.style.width = Math.abs(lastCX - lx) + "px"; lasso.style.height = Math.abs(lastCY - ly) + "px";
       }, { passive: false });
       // the box cuts out exactly what's under it — any rectangle, not just whole cards/blocks —
       // and drops it on the board right away as a frameless, resizable "picture" clip
@@ -9710,9 +9723,11 @@
       }
       function endLasso(ev) {
         if (!lasso || (ev && ev.pointerId !== lassoId)) return;
-        if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+        if (ev) { ev.preventDefault(); ev.stopPropagation(); if (ev.type !== "pointercancel") { var xy = lockedXY(ev); lastCX = xy[0]; lastCY = xy[1]; } }
         var cancelled = ev && ev.type === "pointercancel";
-        var lr = { x: parseFloat(lasso.style.left), y: parseFloat(lasso.style.top), w: parseFloat(lasso.style.width), h: parseFloat(lasso.style.height) };
+        // compute from the same tracked coordinates the box was drawn with — not a re-parsed
+        // style string — so what gets cut is exactly the box that was visible
+        var lr = { x: Math.min(lx, lastCX), y: Math.min(ly, lastCY), w: Math.abs(lastCX - lx), h: Math.abs(lastCY - ly) };
         lasso.remove(); lasso = null; lassoId = null;
         if (cancelled || lr.w < 8 || lr.h < 8) return;
         var pos2 = finalPos();
