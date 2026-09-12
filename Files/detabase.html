@@ -390,6 +390,19 @@
   .nblib-chip .c-clip { color: var(--accent); font-weight: 700; }
   .nblib-chip .c-x:hover { color: #dc2626; }
 
+  /* ---- library panel: browse the raw material / method bank by subject (group>folder>topic) ---- */
+  .nblib-browse-toggle { width: 100%; text-align: left; margin-top: 8px; padding: 6px 8px; font-size: .78rem; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); }
+  .nblib-browse-toggle:hover { color: var(--accent); border-color: var(--accent); }
+  .nblib-browse { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+  .bbt-crumb { font-size: .74rem; color: var(--text-muted); margin-bottom: 4px; }
+  .bbt-crumb-btn { border: none; background: transparent; color: var(--accent); font-size: .74rem; padding: 0; cursor: pointer; }
+  .bbt-crumb-btn:hover { text-decoration: underline; }
+  .bbt-crumb-cur { font-weight: 700; color: var(--text-secondary); }
+  .bbt-row { display: flex; align-items: center; gap: 6px; padding: 6px 7px; border-radius: 7px; font-size: .84rem; cursor: pointer; background: var(--surface-1); border: 1px solid var(--border-strong); margin-bottom: 3px; }
+  .bbt-row:hover { border-color: var(--accent); }
+  .bbt-row .bbt-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bbt-row .bbt-count { flex: 0 0 auto; font-size: .72rem; color: var(--text-muted); background: var(--surface-2); border-radius: 999px; padding: 1px 7px; }
+
   /* ---- lasso / crop selection ---- */
   .pp-canvas.lasso .ink-capture { cursor: crosshair; }
   .ink-lasso-live { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 5; opacity: .85; vector-effect: non-scaling-stroke; }
@@ -404,6 +417,35 @@
     border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); cursor: pointer;
   }
   .ink-sel-toolbar button:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---- save-to-bank modal (raw material / problem-solving method) ---- */
+  .bank-modal { position: fixed; inset: 0; background: rgba(15,23,42,.4); z-index: 9990; display: flex; align-items: center; justify-content: center; }
+  .bank-modal[hidden] { display: none; }
+  .bank-modal-card { width: 420px; max-width: 92vw; max-height: 85vh; overflow-y: auto; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: var(--shadow); }
+  .bank-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .bank-modal-head b { font-size: .95rem; }
+  .bank-modal-head button { font-size: 1rem; padding: 3px 9px; border-radius: 7px; border: 1px solid var(--border-strong); background: transparent; color: var(--text-muted); }
+  .bank-modal-head button:hover { color: var(--text-primary); }
+  .bank-modal-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .bank-modal-body label { display: block; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-bottom: 4px; }
+  .bank-modal-body input[type="text"], .bank-modal-body select {
+    width: 100%; box-sizing: border-box; font-family: inherit; font-size: .9rem;
+    padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-strong);
+    background: var(--surface-1); color: var(--text-primary);
+  }
+  .bank-type-toggle { display: flex; gap: 6px; }
+  .bank-type-toggle button { flex: 1; padding: 8px 6px; font-size: .84rem; font-weight: 700; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-muted); }
+  .bank-type-toggle button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .bank-node-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
+  .bank-node-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .bn-line { display: flex; gap: 6px; align-items: center; }
+  .bn-line select, .bn-line input { flex: 1; min-width: 0; }
+  .bn-line .bn-remove { flex: 0 0 auto; width: 28px; padding: 8px 0; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); }
+  .bn-line .bn-remove:hover { color: #dc2626; border-color: #dc2626; }
+  #bankAddNode { align-self: flex-start; font-size: .8rem; padding: 5px 10px; border-radius: 7px; border: 1px dashed var(--border-strong); background: transparent; color: var(--text-secondary); }
+  #bankAddNode:hover { color: var(--accent); border-color: var(--accent); }
+  .bank-modal-foot { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+  .bank-modal-foot button { padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: .88rem; border: 1px solid var(--accent); background: var(--accent); color: #fff; }
 
   .clip {
     position: absolute; display: flex; flex-direction: column;
@@ -2993,7 +3035,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B22</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B23</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -3008,12 +3050,16 @@
         <div class="nblib-lbl">Raw materials</div>
         <input id="libRawSearch" class="nblib-search" placeholder="Search subjects, cards &amp; pages…" autocomplete="off">
         <div id="libRawResults" class="nblib-results"></div>
+        <button type="button" class="nblib-browse-toggle" id="libRawBrowseToggle">📂 Browse by subject</button>
+        <div id="libRawBrowse" class="nblib-browse" hidden></div>
         <div id="libRawList" class="nblib-list"></div>
       </section>
       <section class="nblib-sec">
         <div class="nblib-lbl">Problem solving</div>
         <input id="libProbSearch" class="nblib-search" placeholder="Search problem methods…" autocomplete="off">
         <div id="libProbResults" class="nblib-results"></div>
+        <button type="button" class="nblib-browse-toggle" id="libProbBrowseToggle">📂 Browse by subject</button>
+        <div id="libProbBrowse" class="nblib-browse" hidden></div>
         <div id="libProbList" class="nblib-list"></div>
       </section>
     </div>
@@ -3021,6 +3067,23 @@
 </div>
 
 <button id="selClipBtn" type="button" hidden>📌 clip selection</button>
+
+<div id="bankSaveModal" class="bank-modal" hidden>
+  <div class="bank-modal-card">
+    <div class="bank-modal-head"><b>Save to bank</b><button id="bankModalClose" type="button" title="cancel">✕</button></div>
+    <div class="bank-modal-body">
+      <div class="bank-type-toggle">
+        <button data-bt="raw" type="button" class="on">Raw material</button>
+        <button data-bt="method" type="button">Problem-solving method</button>
+      </div>
+      <label class="muted">Title</label>
+      <input id="bankTitle" type="text" placeholder="Title">
+      <div id="bankNodes"></div>
+      <button id="bankAddNode" type="button" hidden>+ add another location</button>
+    </div>
+    <div class="bank-modal-foot"><button id="bankSaveBtn" type="button" class="hot">Save</button></div>
+  </div>
+</div>
 
 </main>
 
@@ -4751,11 +4814,12 @@
     coath:   { name: "Coath Inc.", icon: "🎓" }
   };
   var LS_KEY = "detabase.v1";
-  var store = { schema: 0, folders: [], groups: [], ui: {}, subjects: [], notes: {}, order: {}, problems: [], canvases: [], planner: { events: [], sessions: [], templates: [], goals: [], dayFormats: [], daySettings: { startHour: "06:00" } } };
+  var store = { schema: 0, folders: [], groups: [], ui: {}, subjects: [], notes: {}, order: {}, problems: [], canvases: [], bank: { raw: [], methods: [] }, planner: { events: [], sessions: [], templates: [], goals: [], dayFormats: [], daySettings: { startHour: "06:00" } } };
   try {
     var raw = localStorage.getItem(LS_KEY);
     if (raw) {
       var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.problems = p.problems || []; store.canvases = p.canvases || [];
+      var bk = p.bank || {}; store.bank = { raw: bk.raw || [], methods: bk.methods || [] };
       var pl = p.planner || {};
       var dayFormats = pl.dayFormats || [];
       if (!pl.dayFormats && pl.dayFormat && pl.dayFormat.length) {
@@ -4969,6 +5033,68 @@
   }
   function effGroupOfSubject(s) { return (s.group && groupExists(s.group)) ? s.group : "base"; }
   function groupOfBuiltin(folderId) { return effGroupOfBuiltin(folderId); }
+
+  // ============================================================
+  // Problem-solving method bank + raw material bank
+  // A "folder" here is an existing ETI subject id (builtin or custom, store.subjects);
+  // a "topic" is a freeform label (not a real DOM tab) since new class content can't create
+  // real ETI HTML tabs. Raw entries live at exactly one {group,folder,topic} address; a method
+  // can attach to several nodes, each as broad as {group} alone or as narrow as
+  // {group,folder,topic,rawId}. Browsing any node shows everything attached there, at any
+  // ancestor (broader) node, or at any descendant (narrower) node — a straightforward "is one
+  // path a prefix of the other" check, computed at render time (no cached index).
+  // ============================================================
+  function bankFoldersInGroup(gid) {
+    var out = builtinFolderIds().filter(function (fid) { return effGroupOfBuiltin(fid) === gid; })
+      .map(function (fid) { return { id: fid, name: (folderMeta[fid] && folderMeta[fid].title.split(" — ")[0]) || fid }; });
+    store.subjects.filter(function (s) { return s.folder === "eti" && effGroupOfSubject(s) === gid; })
+      .forEach(function (s) { out.push({ id: s.id, name: s.name }); });
+    return out;
+  }
+  function bankFolderLabel(fid) {
+    if (folderMeta[fid]) return folderMeta[fid].title.split(" — ")[0];
+    var s = store.subjects.filter(function (x) { return x.id === fid; })[0];
+    return s ? s.name : fid;
+  }
+  function bankTopicsInFolder(fid) {
+    var seen = {}, out = [];
+    (store.bank.raw || []).forEach(function (r) {
+      if (r.folder === fid && r.topic && !seen[r.topic]) { seen[r.topic] = 1; out.push(r.topic); }
+    });
+    (store.bank.methods || []).forEach(function (m) {
+      (m.nodes || []).forEach(function (n) {
+        if (n.folder === fid && n.topic && !seen[n.topic]) { seen[n.topic] = 1; out.push(n.topic); }
+      });
+    });
+    return out;
+  }
+  function bankPathOf(n) {
+    var path = [n.group];
+    if (n.folder) { path.push(n.folder); if (n.topic) { path.push(n.topic); if (n.rawId) path.push(n.rawId); } }
+    return path;
+  }
+  function bankPathsRelated(a, b) {   // true if one path is a prefix of the other (or equal)
+    var len = Math.min(a.length, b.length);
+    for (var i = 0; i < len; i++) if (a[i] !== b[i]) return false;
+    return true;
+  }
+  function bankMethodsFor(qGroup, qFolder, qTopic, qRawId) {
+    var qPath = bankPathOf({ group: qGroup, folder: qFolder, topic: qTopic, rawId: qRawId });
+    return (store.bank.methods || []).filter(function (m) {
+      return (m.nodes || []).some(function (n) { return bankPathsRelated(bankPathOf(n), qPath); });
+    });
+  }
+  function bankRawFor(qGroup, qFolder, qTopic) {
+    var qPath = [qGroup]; if (qFolder) { qPath.push(qFolder); if (qTopic) qPath.push(qTopic); }
+    return (store.bank.raw || []).filter(function (r) {
+      var rPath = [r.group]; if (r.folder) { rPath.push(r.folder); if (r.topic) rPath.push(r.topic); }
+      if (rPath.length < qPath.length) return false;
+      for (var i = 0; i < qPath.length; i++) if (rPath[i] !== qPath[i]) return false;
+      return true;
+    });
+  }
+  function bankRawById(id) { return (store.bank.raw || []).filter(function (r) { return r.id === id; })[0] || null; }
+  function bankMethodById(id) { return (store.bank.methods || []).filter(function (m) { return m.id === id; })[0] || null; }
   function groupHasBuiltins(id) {
     return builtinFolderIds().some(function (f) { return effGroupOfBuiltin(f) === id; });
   }
@@ -7928,6 +8054,10 @@
   function nbLibClip(item) {
     var libEl = $("nbLib"); if (libEl) libEl.classList.remove("open");
     if (item.t === "card") startClipMode(item.id);
+    else if (item.t === "bank") {
+      var entry = item.bankType === "raw" ? bankRawById(item.id) : bankMethodById(item.id);
+      if (entry) newMergedClip(entry.html, entry.title, viewCenterPos());
+    }
     else startClipModePage(item.id);   // notebook page or problem method — both are canvas docs
   }
   function nbHitRow(title, sub, onAdd) {
@@ -7982,6 +8112,89 @@
     if (pr) { pr.innerHTML = ""; nbLibList("probList").forEach(function (it) { pr.appendChild(nbChip("probList", it)); }); }
   }
   function renderNbLib() { renderNbLibRawResults(); renderNbLibProbResults(); renderNbLibLists(); }
+
+  // ---- library panel: browse the raw material / method bank by subject ----
+  // drill-down state per side (group -> folder -> topic), rather than an always-expanded tree —
+  // matches how the user described looking things up (group, then subject, then tab, then card).
+  var bankBrowseState = { raw: {}, method: {} };
+  function bbRowHtml(label, count, lvl, key) {
+    return '<div class="bbt-row" data-lvl="' + lvl + '" data-key="' + escapeHtml(key) + '">' +
+      '<span class="bbt-name">' + escapeHtml(label) + '</span><span class="bbt-count">' + count + '</span></div>';
+  }
+  function bbCrumbHtml(side, st) {
+    var h = '<div class="bbt-crumb"><button type="button" class="bbt-crumb-btn" data-to="root">All</button>';
+    if (st.group) h += ' › <button type="button" class="bbt-crumb-btn" data-to="group">' + escapeHtml(groupName(st.group)) + '</button>';
+    if (st.folder) h += ' › <button type="button" class="bbt-crumb-btn" data-to="folder">' + escapeHtml(bankFolderLabel(st.folder)) + '</button>';
+    if (st.topic) h += ' › <span class="bbt-crumb-cur">' + escapeHtml(st.topic) + '</span>';
+    return h + '</div>';
+  }
+  function bbItemRows(side, group, folder, topic) {
+    var h = "";
+    if (side === "raw") {
+      bankRawFor(group, folder, topic).forEach(function (r) {
+        h += '<div class="nblib-hit" data-add="' + r.id + '"><span class="h-t">' + escapeHtml(r.title) + '</span><button title="add to list">＋</button></div>';
+      });
+    } else {
+      bankMethodsFor(group, folder, topic).forEach(function (m) {
+        h += '<div class="nblib-hit" data-add="' + m.id + '"><span class="h-t">' + escapeHtml(m.title) + '</span><button title="add to list">＋</button></div>';
+      });
+    }
+    return h;
+  }
+  function renderBankBrowse(side) {
+    var el = $(side === "raw" ? "libRawBrowse" : "libProbBrowse");
+    if (!el || el.hidden) return;
+    var st = bankBrowseState[side];
+    var countFor = side === "raw"
+      ? function (g, f, t) { return bankRawFor(g, f, t).length; }
+      : function (g, f, t) { return bankMethodsFor(g, f, t).length; };
+    var html = bbCrumbHtml(side, st);
+    if (!st.group) {
+      allGroupIds().forEach(function (g) {
+        var n = countFor(g);
+        if (n) html += bbRowHtml(groupName(g), n, "group", g);
+      });
+    } else if (!st.folder) {
+      bankFoldersInGroup(st.group).forEach(function (f) {
+        var n = countFor(st.group, f.id);
+        if (n) html += bbRowHtml(f.name, n, "folder", f.id);
+      });
+    } else if (!st.topic) {
+      bankTopicsInFolder(st.folder).forEach(function (t) {
+        var n = countFor(st.group, st.folder, t);
+        if (n) html += bbRowHtml(t, n, "topic", t);
+      });
+      html += bbItemRows(side, st.group, st.folder, "");   // items filed straight under the folder, no topic
+    } else {
+      html += bbItemRows(side, st.group, st.folder, st.topic);
+    }
+    el.innerHTML = html;
+    el.querySelectorAll(".bbt-crumb-btn").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (b.dataset.to === "root") bankBrowseState[side] = {};
+        else if (b.dataset.to === "group") bankBrowseState[side] = { group: st.group };
+        else if (b.dataset.to === "folder") bankBrowseState[side] = { group: st.group, folder: st.folder };
+        renderBankBrowse(side);
+      });
+    });
+    el.querySelectorAll(".bbt-row").forEach(function (row) {
+      row.addEventListener("click", function () {
+        var lvl = row.dataset.lvl, key = row.dataset.key;
+        if (lvl === "group") bankBrowseState[side] = { group: key };
+        else if (lvl === "folder") bankBrowseState[side] = { group: st.group, folder: key };
+        else if (lvl === "topic") bankBrowseState[side] = { group: st.group, folder: st.folder, topic: key };
+        renderBankBrowse(side);
+      });
+    });
+    el.querySelectorAll(".nblib-hit button").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var id = btn.closest(".nblib-hit").dataset.add;
+        var entry = side === "raw" ? bankRawById(id) : bankMethodById(id);
+        if (entry) nbLibAdd(side === "raw" ? "rawList" : "probList", { t: "bank", bankType: side, id: id, name: entry.title });
+      });
+    });
+  }
 
   // ---- rail: problem list (filterable by name) ----
   function renderProblemList() {
@@ -8678,6 +8891,123 @@
     };
     updatePasteBtn();
   }
+  // renders the current lasso selection to static HTML for the bank (same ink-as-inline-SVG +
+  // clip-html-joining pattern as canvasSnapshotHtml, just filtered to inkSel's strokes/clips
+  // instead of the whole canvas). Copy only — never mutates the selection or the page.
+  function inkSelToHtml(p) {
+    if (!p || !inkSel) return "";
+    var c = loadCanvas(p.id), parts = [];
+    var strokes = (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) >= 0; });
+    if (strokes.length) {
+      var ox = inkSel.box.x, oy = inkSel.box.y, pd = 8;
+      var paths = strokes.map(function (s) {
+        if (!s.pts || !s.pts.length) return "";
+        var d = "M" + s.pts.map(function (q) { return (q[0] - ox + pd).toFixed(1) + " " + (q[1] - oy + pd).toFixed(1); }).join(" L");
+        return '<path d="' + d + '" fill="none" stroke="' + (s.color || "#1e293b") + '" stroke-width="' + (s.w || 3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+      }).join("");
+      parts.push('<svg viewBox="0 0 ' + (inkSel.box.w + pd * 2).toFixed(0) + ' ' + (inkSel.box.h + pd * 2).toFixed(0) + '" style="max-width:100%;height:auto;display:block;margin:4px 0">' + paths + '</svg>');
+    }
+    (p.bench || []).filter(function (cl) { return inkSel.clips.indexOf(cl.id) >= 0; })
+      .slice().sort(function (a, b) { return (a.y || 0) - (b.y || 0) || (a.x || 0) - (b.x || 0); })
+      .forEach(function (it) {
+        if (it.kind === "note") { if (it.text && it.text.trim()) parts.push('<p>' + escapeHtml(it.text).replace(/\n/g, "<br>") + '</p>'); }
+        else if (it.kind === "graph") parts.push('<p class="muted">📈 ' + escapeHtml((it.fns || []).map(function (f) { return "y=" + f.expr; }).filter(Boolean).join(",  ")) + '</p>');
+        else if (it.kind === "shape") parts.push('<p class="muted">△ ' + escapeHtml((it.type || "shape")) + '</p>');
+        else if (it.html) parts.push('<div>' + it.html + '</div>');
+      });
+    return parts.join("");
+  }
+  // ---- save-to-bank modal: classify the current lasso selection as raw material or a method ----
+  var bankSaveState = null;   // { type:'raw'|'method', nodes:[{group,folder,topic,rawId}] }
+  function bankDefaultNode() {
+    var g = allGroupIds()[0] || "base";
+    var folders = bankFoldersInGroup(g);
+    return { group: g, folder: (folders[0] && folders[0].id) || "", topic: "", rawId: "" };
+  }
+  function openBankSaveModal() {
+    if (!inkSel) return;
+    bankSaveState = { type: "raw", nodes: [bankDefaultNode()] };
+    var m = $("bankSaveModal"); if (!m) return;
+    $("bankTitle").value = "";
+    m.hidden = false;
+    bankRenderModal();
+  }
+  function closeBankSaveModal() {
+    var m = $("bankSaveModal"); if (m) m.hidden = true;
+    bankSaveState = null;
+  }
+  function bankRenderModal() {
+    if (!bankSaveState) return;
+    var isMethod = bankSaveState.type === "method";
+    var modal = $("bankSaveModal");
+    modal.querySelectorAll(".bank-type-toggle button").forEach(function (b) {
+      b.classList.toggle("on", b.dataset.bt === bankSaveState.type);
+    });
+    $("bankAddNode").hidden = !isMethod;
+    var wrap = $("bankNodes"); wrap.innerHTML = "";
+    var groups = allGroupIds();
+    bankSaveState.nodes.forEach(function (n, i) {
+      var row = document.createElement("div"); row.className = "bank-node-row";
+      var folders = bankFoldersInGroup(n.group);
+      var rawOpts = n.topic ? bankRawFor(n.group, n.folder, n.topic) : [];
+      row.innerHTML =
+        '<div class="bn-line">' +
+        '<select class="bn-group">' + groups.map(function (g) { return '<option value="' + g + '"' + (g === n.group ? " selected" : "") + '>' + escapeHtml(groupName(g)) + '</option>'; }).join("") + '</select>' +
+        '<select class="bn-folder">' + folders.map(function (f) { return '<option value="' + f.id + '"' + (f.id === n.folder ? " selected" : "") + '>' + escapeHtml(f.name) + '</option>'; }).join("") + '</select>' +
+        '<input class="bn-topic" type="text" placeholder="Topic (optional)" list="bn-topics-' + i + '" value="' + escapeHtml(n.topic || "") + '">' +
+        (isMethod && bankSaveState.nodes.length > 1 ? '<button type="button" class="bn-remove" title="remove this location">✕</button>' : '') +
+        '</div>' +
+        '<datalist id="bn-topics-' + i + '">' + bankTopicsInFolder(n.folder).map(function (t) { return '<option value="' + escapeHtml(t) + '">'; }).join("") + '</datalist>' +
+        (isMethod && n.topic ? '<select class="bn-raw"><option value="">(applies to the whole topic)</option>' +
+          rawOpts.map(function (r) { return '<option value="' + r.id + '"' + (r.id === n.rawId ? " selected" : "") + '>' + escapeHtml(r.title) + '</option>'; }).join("") + '</select>' : '');
+      row.querySelector(".bn-group").addEventListener("change", function () {
+        n.group = this.value;
+        var fl = bankFoldersInGroup(n.group);
+        n.folder = (fl[0] && fl[0].id) || ""; n.topic = ""; n.rawId = "";
+        bankRenderModal();
+      });
+      row.querySelector(".bn-folder").addEventListener("change", function () { n.folder = this.value; n.topic = ""; n.rawId = ""; bankRenderModal(); });
+      row.querySelector(".bn-topic").addEventListener("input", function () { n.topic = this.value; n.rawId = ""; });
+      row.querySelector(".bn-topic").addEventListener("change", function () { bankRenderModal(); });   // refresh the raw-entry picker once topic settles
+      var rm = row.querySelector(".bn-remove");
+      if (rm) rm.addEventListener("click", function () { bankSaveState.nodes.splice(i, 1); bankRenderModal(); });
+      var rawSel = row.querySelector(".bn-raw");
+      if (rawSel) rawSel.addEventListener("change", function () { n.rawId = this.value; });
+      wrap.appendChild(row);
+    });
+  }
+  function bankSaveConfirm() {
+    if (!bankSaveState || !inkSel) return;
+    var p = curProblem(); if (!p) return;
+    var title = ($("bankTitle").value || "").trim() || "Untitled";
+    var html = inkSelToHtml(p);
+    if (!html.trim()) { alert("Nothing in the selection to save."); return; }
+    var nodes = bankSaveState.nodes.filter(function (n) { return n.group && n.folder; });
+    if (!nodes.length) { alert("Pick at least a group and subject."); return; }
+    if (bankSaveState.type === "raw") {
+      var n0 = nodes[0];
+      store.bank.raw.push({ id: uid("rm_"), title: title, html: html, group: n0.group, folder: n0.folder, topic: n0.topic || "", added: Date.now() });
+    } else {
+      store.bank.methods.push({
+        id: uid("pm_"), title: title, html: html,
+        nodes: nodes.map(function (n) { return { group: n.group, folder: n.folder, topic: n.topic || undefined, rawId: n.rawId || undefined }; }),
+        added: Date.now()
+      });
+    }
+    saveStore();
+    closeBankSaveModal();
+    inkSelClear();   // copy, not move — the page itself is untouched; this just closes the selection toolbar
+  }
+  (function () {
+    var m = $("bankSaveModal"); if (!m) return;
+    $("bankModalClose").addEventListener("click", closeBankSaveModal);
+    m.addEventListener("pointerdown", function (e) { if (e.target === m) closeBankSaveModal(); });
+    m.querySelectorAll(".bank-type-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { if (bankSaveState) { bankSaveState.type = b.dataset.bt; bankRenderModal(); } });
+    });
+    $("bankAddNode").addEventListener("click", function () { if (bankSaveState) { bankSaveState.nodes.push(bankDefaultNode()); bankRenderModal(); } });
+    $("bankSaveBtn").addEventListener("click", bankSaveConfirm);
+  })();
   function inkSelCut(p) { inkSelCopy(p); inkSelDelete(p); }
   function inkPasteAt(cx, cy) {
     var p = curProblem(); if (!p || !inkClip) return;
@@ -8710,11 +9040,12 @@
     if (!t) {
       t = document.createElement("div");
       t.className = "ink-sel-toolbar";
-      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
+      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="bank" title="save to bank">📚</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
       host.appendChild(t);
       t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
       t.querySelector('[data-s="copy"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCopy(curProblem()); });
       t.querySelector('[data-s="cut"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCut(curProblem()); });
+      t.querySelector('[data-s="bank"]').addEventListener("click", function (e) { e.stopPropagation(); openBankSaveModal(); });
       t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
       t.querySelector('[data-s="x"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelClear(); });
     }
@@ -9033,6 +9364,14 @@
       $("libRawSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibRawResults(); });
       $("libProbSearch").addEventListener("blur", function () { setTimeout(function () { var b = $("libProbResults"); if (b) b.innerHTML = ""; }, 150); });
       $("libProbSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibProbResults(); });
+      $("libRawBrowseToggle").addEventListener("click", function () {
+        var b = $("libRawBrowse"); b.hidden = !b.hidden;
+        if (!b.hidden) { bankBrowseState.raw = {}; renderBankBrowse("raw"); }
+      });
+      $("libProbBrowseToggle").addEventListener("click", function () {
+        var b = $("libProbBrowse"); b.hidden = !b.hidden;
+        if (!b.hidden) { bankBrowseState.method = {}; renderBankBrowse("method"); }
+      });
     }
 
   })();
