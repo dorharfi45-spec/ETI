@@ -3026,7 +3026,7 @@
     <button type="button" class="ink-tool" data-inktool="select" title="select — move &amp; edit shapes, graphs and clips">✋</button>
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="highlight" title="highlighter">🖍️</button>
-    <button type="button" class="ink-tool" data-inktool="erase" title="erase — double-tap the page with the pencil to toggle">⌫</button>
+    <button type="button" class="ink-tool" data-inktool="erase" title="erase — hold the pencil still on the page (~half a second) to toggle">⌫</button>
     <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
     <span class="ink-swatches" id="ppInkSwatches"></span>
     <input type="range" id="ppInkW" class="ink-w" min="1" max="16" value="3" title="thickness">
@@ -3035,7 +3035,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B23</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B24</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -8731,7 +8731,7 @@
   var inkHiColor = "#fde047", inkPrevWrite = "pen";   // highlighter colour + last writing tool (for the pencil double-tap)
   var inkUndo = {}, inkRedo = {};
   var inkDrawing = false, inkCur = null, inkLive = null;
-  var penDownXY = null, penDownT = 0, penMoved = 0, penTapT = 0, penTapXY = null;   // pencil double-tap
+  var penDownXY = null, penDownT = 0, penMoved = 0;   // pencil tap / long-press detection
   var _setInkTool = function () {};   // assigned in inkToolbarSetup
   function inkDoUndo() {
     var p = curProblem(); if (!p) return; var k = p.id;
@@ -9173,6 +9173,12 @@
       inkSnapshot(p);
       inkDrawing = true;
       straightening = false; straightMode = null; straightCenter = null; clearTimeout(holdT); holdT = null;
+      // long-press (pencil held ~still from touch-down) toggles write<->erase. Armed here, before
+      // any movement — pointermove's own hold-to-straighten timer only ever arms AFTER real
+      // movement (a drawn line), so the two can never both be "live" at once: this one gets
+      // cleared the instant the pen actually moves (see pointermove), well before straightening's
+      // own timer would arm. Safe for both pen and highlighter, either direction into/out of erase.
+      if (e.pointerType === "pen") holdT = setTimeout(function () { holdT = null; if (inkDrawing && penMoved < 10) longPressToggle(); }, 500);
       if (inkTool === "erase") { inkEraseAt(p, d0); return; }
       var hi = inkTool === "highlight";
       inkCur = { id: uid("ik_"), color: hi ? inkHiColor : inkColor, w: hi ? Math.max(10, inkW * 3) : inkW, pts: [d0] };
@@ -9214,6 +9220,17 @@
       }
       liveDraw();
     });
+    // fires from the pointerdown-armed hold timer once the pencil has sat ~still for 500ms —
+    // a genuine "hold to switch tool" gesture, never a real stroke, so nothing gets committed.
+    function longPressToggle() {
+      if (!inkDrawing) return;
+      inkCur = null;
+      if (inkUndo[p.id]) inkUndo[p.id].pop();   // drop the snapshot taken at pointerdown — nothing was drawn
+      inkDrawing = false;
+      renderInk(p);
+      if (inkTool === "erase") _setInkTool(inkPrevWrite || "pen");
+      else { inkPrevWrite = inkTool; _setInkTool("erase"); }
+    }
     function end(e) {
       if (e && e.pointerType === "touch") return;
       if (lassoDrag) { lassoDone(); return; }
@@ -9222,25 +9239,14 @@
       clearTimeout(holdT); holdT = null; straightening = false; straightMode = null; straightCenter = null;
       var isPen = e && e.pointerType === "pen";
       var wasTap = isPen && penDownT && (Date.now() - penDownT < 300) && penMoved < 10;
-      // a bare tap used to never commit any ink at all (waiting to see if a 2nd tap would follow),
-      // which silently ate every intentional dot. Now it always draws one — a single point becomes
-      // a zero-length, round-linecap segment (renders as a filled dot) — and a genuine double-tap
-      // (checked below) retroactively undoes the two dots it drew as a side effect, then toggles.
+      // a bare tap still needs to draw something — a single captured point becomes a zero-length,
+      // round-linecap segment (renders as a filled dot), instead of being silently discarded.
       if (wasTap && inkCur && inkCur.pts.length === 1) inkCur.pts.push(inkCur.pts[0]);
       if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
         var c = loadCanvas(p.id); c.ink = c.ink || []; c.ink.push(inkCur); saveCanvas(p.id);
       } else if (inkUndo[p.id]) { inkUndo[p.id].pop(); }   // nothing drawn — drop the snapshot
       inkCur = null;
       renderInk(p);
-      if (wasTap) {
-        var now = Date.now();
-        if (penTapT && now - penTapT < 500 && penTapXY && Math.hypot(penDownXY[0] - penTapXY[0], penDownXY[1] - penTapXY[1]) < 90) {
-          penTapT = 0; penTapXY = null;
-          if (inkTool !== "erase") { inkDoUndo(); inkDoUndo(); }   // undo both taps' dots — exactly two taps, no stray marks left
-          if (inkTool === "erase") _setInkTool(inkPrevWrite || "pen");
-          else { inkPrevWrite = inkTool; _setInkTool("erase"); }
-        } else { penTapT = now; penTapXY = penDownXY; }
-      } else { penTapT = 0; penTapXY = null; }
       penDownT = 0;
     }
     ic.addEventListener("pointerup", end);
