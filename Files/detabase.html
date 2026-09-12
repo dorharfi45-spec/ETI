@@ -3035,7 +3035,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B24</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B25</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -5044,15 +5044,27 @@
   // ancestor (broader) node, or at any descendant (narrower) node — a straightforward "is one
   // path a prefix of the other" check, computed at render time (no cached index).
   // ============================================================
+  // the sidebar button's own visible text (e.g. "Trig base") — NOT folderMeta[fid].title (e.g.
+  // "Trigonometry — High-School Reference", used for card-preview headers only). Those two
+  // names for the same folder can differ, which was confusing when the bank picker showed one
+  // and the real sidebar showed the other for the identical folder.
+  function folderButtonLabel(fid) {
+    var b = folderButtons.filter(function (x) { return x.getAttribute("data-folder") === fid; })[0];
+    if (!b) return null;
+    var c = b.cloneNode(true);
+    c.querySelectorAll(".ficon").forEach(function (x) { x.remove(); });
+    return c.textContent.replace(/\s+/g, " ").trim();
+  }
   function bankFoldersInGroup(gid) {
     var out = builtinFolderIds().filter(function (fid) { return effGroupOfBuiltin(fid) === gid; })
-      .map(function (fid) { return { id: fid, name: (folderMeta[fid] && folderMeta[fid].title.split(" — ")[0]) || fid }; });
+      .map(function (fid) { return { id: fid, name: folderButtonLabel(fid) || fid }; });
     store.subjects.filter(function (s) { return s.folder === "eti" && effGroupOfSubject(s) === gid; })
       .forEach(function (s) { out.push({ id: s.id, name: s.name }); });
     return out;
   }
   function bankFolderLabel(fid) {
-    if (folderMeta[fid]) return folderMeta[fid].title.split(" — ")[0];
+    var fb = folderButtonLabel(fid);
+    if (fb) return fb;
     var s = store.subjects.filter(function (x) { return x.id === fid; })[0];
     return s ? s.name : fid;
   }
@@ -5095,6 +5107,56 @@
   }
   function bankRawById(id) { return (store.bank.raw || []).filter(function (r) { return r.id === id; })[0] || null; }
   function bankMethodById(id) { return (store.bank.methods || []).filter(function (m) { return m.id === id; })[0] || null; }
+
+  // Saved raw material needs to actually show up when the user browses that subject normally in
+  // ETI — not just through the mining section's own browse tree — or it just feels lost. For a
+  // BUILTIN folder (which has a real .tabbar/.folder DOM), add one extra "📝 My raw material" tab
+  // that lists everything filed there, grouped by topic. Custom (store.subjects) folders don't
+  // have this DOM structure and keep using the mining-section browse tree only, for now.
+  function ensureBankPaneForFolder(fid) {
+    var bar = document.querySelector('.tabbar[data-folder="' + fid + '"]');
+    var folderEl = document.getElementById("folder-" + fid);
+    if (!bar || !folderEl) return null;
+    var target = "bank-" + fid;
+    var pane = document.getElementById("pane-" + target);
+    if (!pane) {
+      var btn = document.createElement("button");
+      btn.setAttribute("data-target", target);
+      btn.innerHTML = '<span class="tnum">📝</span>My raw material';
+      bar.appendChild(btn);
+      btn.addEventListener("click", function () { selectTab(target); });
+      allTabButtons.push(btn);
+      pane = document.createElement("section");
+      pane.className = "pane";
+      pane.id = "pane-" + target;
+      folderEl.appendChild(pane);
+    }
+    return pane;
+  }
+  function renderBankRawIntoEti() {
+    var byFolder = {};
+    (store.bank.raw || []).forEach(function (r) { (byFolder[r.folder] = byFolder[r.folder] || []).push(r); });
+    Object.keys(byFolder).forEach(function (fid) {
+      var pane = ensureBankPaneForFolder(fid);
+      if (!pane) return;
+      var byTopic = {}, order = [];
+      byFolder[fid].forEach(function (r) {
+        var t = r.topic || "General";
+        if (!byTopic[t]) { byTopic[t] = []; order.push(t); }
+        byTopic[t].push(r);
+      });
+      var html = "<h2><span class=\"num\">📝</span>My raw material</h2>";
+      order.forEach(function (t) {
+        html += "<h3>" + escapeHtml(t) + "</h3>";
+        byTopic[t].forEach(function (r) {
+          html += '<div class="card" data-idx="' + r.id + '"><h4>' + escapeHtml(r.title) + "</h4>" + r.html + "</div>";
+        });
+      });
+      pane.innerHTML = html;
+    });
+    try { buildIndex(); } catch (e) {}   // pick the new cards up for the main search too
+  }
+  try { renderBankRawIntoEti(); } catch (e) {}   // restore any previously-saved raw material on load
   function groupHasBuiltins(id) {
     return builtinFolderIds().some(function (f) { return effGroupOfBuiltin(f) === id; });
   }
@@ -8987,6 +9049,7 @@
     if (bankSaveState.type === "raw") {
       var n0 = nodes[0];
       store.bank.raw.push({ id: uid("rm_"), title: title, html: html, group: n0.group, folder: n0.folder, topic: n0.topic || "", added: Date.now() });
+      try { renderBankRawIntoEti(); } catch (e) {}   // show up as a real ETI card right away, not just in the mining section
     } else {
       store.bank.methods.push({
         id: uid("pm_"), title: title, html: html,
