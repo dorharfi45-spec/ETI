@@ -580,6 +580,44 @@
   .mb-card .nb-thumb { height: 90px; background: var(--bg); border-radius: 6px; overflow: hidden; }
   .lw-group { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 10px 2px 4px; }
 
+  /* ---- navigation graph ---- */
+  .mp-searchrow { display: flex; gap: 6px; align-items: center; }
+  .mp-searchrow .mp-search { flex: 1; min-width: 0; }
+  .mp-views { display: flex; border: 1px solid var(--border-strong); border-radius: 9px; overflow: hidden; flex-shrink: 0; }
+  .mp-views button { border: none; background: var(--bg); color: var(--text-muted); padding: 8px 10px; font-size: .84rem; font-weight: 600; }
+  .mp-views button.on { background: var(--accent); color: #fff; }
+  .mp-list.graph { padding: 0; overflow: hidden; }
+  .ng-viewport { position: relative; width: 100%; height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; }
+  .ng-viewport.big { overflow: hidden; touch-action: none; cursor: grab; background:
+    radial-gradient(circle, color-mix(in srgb, var(--text-muted) 22%, transparent) 1px, transparent 1.2px) 0 0 / 22px 22px; }
+  .ng-stage { position: relative; transform-origin: 0 0; }
+  .ng-viewport.big .ng-stage { position: absolute; left: 0; top: 0; }
+  .ng-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  .ng-edges path { fill: none; stroke: color-mix(in srgb, var(--text-muted) 55%, transparent); stroke-width: 1.6; transition: opacity .15s; }
+  .ng-edges path.hot { stroke: var(--accent); stroke-width: 3; }
+  .ng-viewport.focused .ng-edges path:not(.hot) { opacity: .12; }
+  .ng-head { position: absolute; font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 20px; }
+  .ng-head.title { font-size: .78rem; color: var(--text-secondary); }
+  .ng-node { position: absolute; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 5px 30px 5px 10px;
+    border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); box-shadow: 0 1px 2px rgba(15,23,42,.06); cursor: pointer; user-select: none; -webkit-user-select: none; transition: opacity .15s, box-shadow .15s; }
+  .ng-node .mp-lvl { align-self: flex-start; margin: 0; font-size: .56rem; }
+  .ng-name { font-size: .82rem; line-height: 1.2; color: var(--text-primary); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .ng-node.side-0 { border-left: 4px solid #e11d48; }
+  .ng-node.side-1.lvl-s { border-left: 4px solid #2563eb; } .ng-node.side-1.lvl-t { border-left: 4px solid #16a34a; }
+  .ng-node.side-1.lvl-c { border-left: 4px solid #d97706; } .ng-node.side-1.lvl-e { border-left: 4px solid #a21caf; }
+  .ng-check { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border-strong);
+    font-size: .7rem; line-height: 14px; text-align: center; color: transparent; }
+  .ng-node.sel .ng-check { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ng-node.sel { box-shadow: 0 0 0 2px var(--accent); }
+  .ng-viewport.focused .ng-node:not(.hot) { opacity: .3; }
+  .ng-node.focus { box-shadow: 0 0 0 3px var(--accent), 0 6px 18px rgba(37,99,235,.25); }
+  .ng-viewport.big .ng-name { font-size: .9rem; }
+  .ng-preview { position: fixed; z-index: 7000; width: 372px; max-height: 60vh; overflow: auto; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: var(--shadow); }
+  .ng-pv-head { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); }
+  .ng-pv-head b { flex: 1; font-size: .9rem; }
+  .ng-pv-head button { border: none; background: transparent; color: var(--text-muted); }
+  .ng-pv-body { padding: 6px 4px; }
+
   /* ---- Mining component ---- */
   #nbMining { overflow: hidden; }
   .mp { display: flex; flex-direction: column; height: 100%; min-height: 0; }
@@ -3130,7 +3168,7 @@
   <div id="ppAddMenu">
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B33</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B34</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -10810,11 +10848,12 @@ function __detabaseMain() {
 
   function createMiningPanel(host, opts) {
     opts = opts || {};
-    var state = { tab: "m", q: "", sel: [], open: {} };
+    var state = { tab: "m", q: "", sel: [], open: {}, view: "list", focus: null, gv: { x: 0, y: 0, s: 1 } };
     host.innerHTML =
-      '<div class="mp">' +
+      '<div class="mp' + (opts.big ? ' big' : '') + '">' +
       '<div class="mp-tabs"><button type="button" data-t="m">🧱 Material</button><button type="button" data-t="p">🧩 Problem solving</button></div>' +
-      '<div class="mp-searchrow"><input type="search" class="mp-search" placeholder="Search by name…" autocomplete="off"></div>' +
+      '<div class="mp-searchrow"><input type="search" class="mp-search" placeholder="Search by name…" autocomplete="off">' +
+      '<div class="mp-views"><button type="button" data-v="list" title="list">☰</button><button type="button" data-v="graph" title="links between problem pages and assets">⟠ Graph</button></div></div>' +
       '<div class="mp-list"></div>' +
       '<div class="mp-tray"><div class="mp-tray-items"></div>' +
       '<div class="mp-tray-foot"><span class="mp-count"></span><button type="button" class="mp-clear">Clear</button>' +
@@ -10827,6 +10866,7 @@ function __detabaseMain() {
       else state.sel.push({ lvl: r.lvl, id: r.id });
       renderTray();
       Array.prototype.forEach.call(host.querySelectorAll('.mp-row[data-k="' + cssEsc(refKey(r)) + '"] input'), function (cb) { cb.checked = isSel(r); });
+      Array.prototype.forEach.call(host.querySelectorAll('.ng-node[data-k="' + cssEsc(refKey(r)) + '"]'), function (n) { n.classList.toggle("sel", isSel(r)); });
     }
     function cssEsc(s) { return String(s).replace(/["\\]/g, "\\$&"); }
     function row(ref, name, sub, depth, kids) {
@@ -10851,6 +10891,9 @@ function __detabaseMain() {
       if (state.open[refKey(ref)]) kids.forEach(function (k) { addNode(k, depth + 1); });
     }
     function renderList() {
+      closePreview();
+      list.classList.toggle("graph", state.view === "graph");
+      if (state.view === "graph") { renderGraph(); return; }
       var scroll = list.scrollTop;
       list.innerHTML = "";
       var q = state.q.trim();
@@ -10888,6 +10931,177 @@ function __detabaseMain() {
       }
       list.scrollTop = scroll;
     }
+    // ---- navigation graph: problem pages (left) ↔ the assets they use (right), links from ps.pages[].assets ----
+    var preview = null;
+    function closePreview() { if (preview) { preview.remove(); preview = null; } }
+    function openPreview(ref, x, y) {
+      closePreview();
+      preview = document.createElement("div");
+      preview.className = "ng-preview";
+      preview.innerHTML = '<div class="ng-pv-head"><span class="mp-lvl lvl-' + ref.lvl + '">' + ASSET_LV[ref.lvl] + '</span><b>' + escapeHtml(refLabel(ref)) + '</b><button type="button" class="ng-pv-x">✕</button></div><div class="ng-pv-body"></div>';
+      var body = preview.querySelector(".ng-pv-body");
+      body.appendChild(assetBody(ref, 340));
+      preview.querySelector(".ng-pv-x").addEventListener("click", closePreview);
+      preview.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+      document.body.appendChild(preview);
+      var w = 372, h = Math.min(preview.offsetHeight, window.innerHeight * 0.6);
+      preview.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x + 12)) + "px";
+      preview.style.top = Math.max(8, Math.min(window.innerHeight - h - 8, y - 20)) + "px";
+      setTimeout(function () {
+        document.addEventListener("pointerdown", function h2(ev) { if (preview && !preview.contains(ev.target)) closePreview(); document.removeEventListener("pointerdown", h2, true); }, true);
+      }, 0);
+    }
+    function renderGraph() {
+      libEnsure();
+      list.innerHTML = "";
+      var pages = store.ps.pages.filter(function (pg) { return (pg.assets || []).some(refExists); });
+      if (!pages.length) { list.appendChild(empty("The graph links problem-solving pages to the assets they use. Mine assets onto a board, write the method next to them and save it as a problem page with the lasso and 📚.")); return; }
+      var toks = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      var assetMap = {}, edges = [], pageNodes = [];
+      pages.forEach(function (pg) {
+        var st = byId(store.ps.subtopics, pg.subtopic), tp = st && byId(store.ps.topics, st.topic);
+        var pk = refKey({ lvl: "p", id: pg.id });
+        pageNodes.push({ key: pk, ref: { lvl: "p", id: pg.id }, name: pg.name, group: (tp ? tp.name : "") + (st ? " › " + st.name : "") });
+        pg.assets.filter(refExists).forEach(function (r) {
+          var k = refKey(r);
+          if (!assetMap[k]) assetMap[k] = { key: k, ref: r, name: refName(r), group: refPath(r) || ASSET_LV[r.lvl] };
+          edges.push([pk, k]);
+        });
+      });
+      var assetNodes = Object.keys(assetMap).map(function (k) { return assetMap[k]; });
+      if (toks.length) {   // keep what matches, plus whatever it links to
+        var direct = {}, keep = {};
+        pageNodes.concat(assetNodes).forEach(function (n) {
+          var hay = (n.name + " " + n.group).toLowerCase();
+          if (toks.every(function (t) { return hay.indexOf(t) >= 0; })) { direct[n.key] = 1; keep[n.key] = 1; }
+        });
+        edges.forEach(function (e) { if (direct[e[0]]) keep[e[1]] = 1; if (direct[e[1]]) keep[e[0]] = 1; });
+        pageNodes = pageNodes.filter(function (n) { return keep[n.key]; });
+        assetNodes = assetNodes.filter(function (n) { return keep[n.key]; });
+        edges = edges.filter(function (e) { return keep[e[0]] && keep[e[1]]; });
+        if (!pageNodes.length && !assetNodes.length) { list.appendChild(empty("Nothing in the graph matches “" + state.q.trim() + "”.")); return; }
+      }
+      var byGroup = function (a, b) { return a.group.localeCompare(b.group) || a.name.localeCompare(b.name); };
+      pageNodes.sort(byGroup); assetNodes.sort(byGroup);
+      var big = !!opts.big, pad = 16, nodeH = big ? 54 : 48, gap = 8, headH = 24;
+      var avail = (list.clientWidth || (big ? 900 : 380)) - pad * 2;
+      var colW = big ? 250 : Math.max(130, Math.floor((avail - 44) / 2)), mid = big ? Math.max(120, Math.min(320, avail - colW * 2)) : 44;
+      var xs = [pad, pad + colW + mid], pos = {}, heads = [], nodes = [];
+      [pageNodes, assetNodes].forEach(function (col, ci) {
+        var y = pad + 26, last = null;
+        heads.push({ x: xs[ci], y: pad, text: ci ? "Assets" : "Problem pages", title: true });
+        col.forEach(function (n) {
+          if (n.group !== last) { last = n.group; heads.push({ x: xs[ci], y: y, text: n.group }); y += headH; }
+          pos[n.key] = { x: xs[ci], y: y };
+          nodes.push({ n: n, x: xs[ci], y: y, side: ci });
+          y += nodeH + gap;
+        });
+        col.h = y;
+      });
+      var W = pad * 2 + colW * 2 + mid, H = Math.max(pageNodes.h || 0, assetNodes.h || 0) + pad;
+      var vp = document.createElement("div");
+      vp.className = "ng-viewport" + (big ? " big" : "");
+      var stage = document.createElement("div");
+      stage.className = "ng-stage";
+      stage.style.width = W + "px"; stage.style.height = H + "px";
+      var paths = edges.map(function (e) {
+        var a = pos[e[0]], b = pos[e[1]]; if (!a || !b) return "";
+        var x1 = a.x + colW, y1 = a.y + nodeH / 2, x2 = b.x, y2 = b.y + nodeH / 2, cx = (x2 - x1) * 0.5;
+        return '<path data-a="' + escapeHtml(e[0]) + '" data-b="' + escapeHtml(e[1]) + '" d="M' + x1 + ' ' + y1 + ' C' + (x1 + cx) + ' ' + y1 + ' ' + (x2 - cx) + ' ' + y2 + ' ' + x2 + ' ' + y2 + '"/>';
+      }).join("");
+      stage.innerHTML = '<svg class="ng-edges" width="' + W + '" height="' + H + '">' + paths + '</svg>' +
+        heads.map(function (h) { return '<div class="ng-head' + (h.title ? ' title' : '') + '" style="left:' + h.x + 'px;top:' + h.y + 'px;width:' + colW + 'px">' + escapeHtml(h.text) + '</div>'; }).join("");
+      nodes.forEach(function (it) {
+        var d = document.createElement("div");
+        d.className = "ng-node side-" + it.side + " lvl-" + it.n.ref.lvl + (isSel(it.n.ref) ? " sel" : "");
+        d.setAttribute("data-k", it.n.key);
+        d.style.left = it.x + "px"; d.style.top = it.y + "px"; d.style.width = colW + "px"; d.style.height = nodeH + "px";
+        d.innerHTML = '<span class="mp-lvl lvl-' + it.n.ref.lvl + '">' + ASSET_LV[it.n.ref.lvl] + '</span><span class="ng-name">' + escapeHtml(it.n.name) + '</span><span class="ng-check">✓</span>';
+        d._ref = it.n.ref;
+        stage.appendChild(d);
+      });
+      vp.appendChild(stage);
+      list.appendChild(vp);
+      var adj = {};
+      edges.forEach(function (e) { (adj[e[0]] = adj[e[0]] || {})[e[1]] = 1; (adj[e[1]] = adj[e[1]] || {})[e[0]] = 1; });
+      function applyFocus() {
+        var f = state.focus && pos[state.focus] ? state.focus : null;
+        vp.classList.toggle("focused", !!f);
+        Array.prototype.forEach.call(stage.querySelectorAll(".ng-node"), function (n) {
+          var k = n.getAttribute("data-k");
+          n.classList.toggle("hot", !!f && (k === f || !!(adj[f] && adj[f][k])));
+          n.classList.toggle("focus", k === f);
+        });
+        Array.prototype.forEach.call(stage.querySelectorAll(".ng-edges path"), function (p) {
+          p.classList.toggle("hot", !!f && (p.getAttribute("data-a") === f || p.getAttribute("data-b") === f));
+        });
+      }
+      function applyGV() { if (big) stage.style.transform = "translate(" + state.gv.x.toFixed(1) + "px," + state.gv.y.toFixed(1) + "px) scale(" + state.gv.s.toFixed(3) + ")"; }
+      applyGV(); applyFocus();
+      // pointer handling: tap a node = select it for adding + highlight its links; hold = preview;
+      // tap empty space = clear the highlight. The big (ETI) graph also pans with a drag and zooms with pinch / wheel.
+      var ptrs = {}, down = null, holdT = null, pinch = null;
+      vp.addEventListener("pointerdown", function (e) {
+        ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+        var ids = Object.keys(ptrs);
+        if (ids.length === 2 && big) {
+          clearTimeout(holdT); down = null;
+          var a = ptrs[ids[0]], b = ptrs[ids[1]];
+          pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, s: state.gv.s, x: state.gv.x, y: state.gv.y, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+          return;
+        }
+        if (ids.length > 1) return;
+        var node = e.target.closest(".ng-node");
+        down = { id: e.pointerId, x: e.clientX, y: e.clientY, node: node, gx: state.gv.x, gy: state.gv.y, moved: false };
+        if (big) { try { vp.setPointerCapture(e.pointerId); } catch (_) {} }
+        clearTimeout(holdT);
+        if (node) holdT = setTimeout(function () { if (down && !down.moved) { down.held = true; openPreview(node._ref, down.x, down.y); } }, 480);
+      });
+      vp.addEventListener("pointermove", function (e) {
+        if (!ptrs[e.pointerId]) return;
+        ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+        if (pinch) {
+          var ids = Object.keys(ptrs); if (ids.length < 2) return;
+          var a = ptrs[ids[0]], b = ptrs[ids[1]], r = vp.getBoundingClientRect();
+          var s = Math.max(0.3, Math.min(2.5, pinch.s * (Math.hypot(a.x - b.x, a.y - b.y) || 1) / pinch.d));
+          var cx = pinch.mx - r.left, cy = pinch.my - r.top;
+          state.gv.s = s;
+          state.gv.x = cx - (cx - pinch.x) * (s / pinch.s) + ((a.x + b.x) / 2 - pinch.mx);
+          state.gv.y = cy - (cy - pinch.y) * (s / pinch.s) + ((a.y + b.y) / 2 - pinch.my);
+          applyGV(); return;
+        }
+        if (!down || e.pointerId !== down.id) return;
+        if (!down.moved && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) { down.moved = true; clearTimeout(holdT); }
+        if (down.moved && big) { state.gv.x = down.gx + (e.clientX - down.x); state.gv.y = down.gy + (e.clientY - down.y); applyGV(); }
+      });
+      function up(e) {
+        if (!ptrs[e.pointerId]) return;
+        delete ptrs[e.pointerId];
+        if (pinch) { if (Object.keys(ptrs).length < 2) pinch = null; return; }
+        if (!down || e.pointerId !== down.id) return;
+        clearTimeout(holdT);
+        var d = down; down = null;
+        if (e.type === "pointercancel" || d.moved || d.held) return;
+        if (d.node) { toggle(d.node._ref); state.focus = d.node.getAttribute("data-k"); }
+        else state.focus = null;
+        applyFocus();
+      }
+      vp.addEventListener("pointerup", up);
+      vp.addEventListener("pointercancel", up);
+      if (big) vp.addEventListener("wheel", function (e) {
+        e.preventDefault();
+        var r = vp.getBoundingClientRect(), cx = e.clientX - r.left, cy = e.clientY - r.top;
+        var s = Math.max(0.3, Math.min(2.5, state.gv.s * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+        state.gv.x = cx - (cx - state.gv.x) * (s / state.gv.s); state.gv.y = cy - (cy - state.gv.y) * (s / state.gv.s); state.gv.s = s;
+        applyGV();
+      }, { passive: false });
+    }
+    function setView(v) {
+      state.view = v;
+      Array.prototype.forEach.call(host.querySelectorAll(".mp-views button"), function (b) { b.classList.toggle("on", b.getAttribute("data-v") === v); });
+      renderList();
+    }
+    Array.prototype.forEach.call(host.querySelectorAll(".mp-views button"), function (b) { b.addEventListener("click", function () { setView(b.getAttribute("data-v")); }); });
     function renderTray() {
       var box = host.querySelector(".mp-tray-items");
       box.innerHTML = "";
@@ -10919,7 +11133,7 @@ function __detabaseMain() {
       state.sel = []; renderTray(); renderList();
       if (opts.onAdd) opts.onAdd(refs);
     });
-    setTab("m"); renderTray();
+    setTab("m"); setView("list"); renderTray();
     return {
       render: function () { renderList(); renderTray(); },
       clear: function () { state.sel = []; renderTray(); renderList(); },
@@ -11104,7 +11318,7 @@ function __detabaseMain() {
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() {
-    if (!etiMiningPanel) etiMiningPanel = createMiningPanel($("etiMining"), { addLabel: "Add to a board…", onAdd: chooseBoardAndMine });
+    if (!etiMiningPanel) etiMiningPanel = createMiningPanel($("etiMining"), { big: true, addLabel: "Add to a board…", onAdd: chooseBoardAndMine });
     else etiMiningPanel.render();
   }
   function chooseBoardAndMine(refs) {
