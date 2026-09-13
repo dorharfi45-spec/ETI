@@ -331,6 +331,8 @@
     border: none; background: transparent; color: var(--text-secondary); cursor: pointer; white-space: nowrap;
   }
   #ppAddMenu button:hover { background: var(--surface-2); color: var(--accent); }
+  #ppAddMenu .am-row { display: flex; gap: 2px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+  #ppAddMenu .am-row button { padding: 8px 0; width: 44px; text-align: center; font-size: 1.2rem; }
 
   /* ---- notebook bank (the main Notebook screen = a library of pages) ---- */
   .nb-bank-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -441,37 +443,16 @@
     min-width: 130px; min-height: 70px;
   }
   .clip.frag { border-left: 3px solid var(--tan); }
-  /* view mode (default): no visible bar — edit mode (.sel, "pressed with a finger", or hover for
-     a mouse) reveals it. Absolutely positioned (overlaying the top of .clip-body) rather than a
-     flex child, so hiding it never leaves a blank gap where it used to push content down. It
-     stays hit-testable at opacity:0 (unlike display:none) so drag-to-reposition still works
-     without first entering edit mode — same treatment as .wgrip below, for every asset type. */
-  .clip-head {
-    position: absolute; top: 0; left: 0; right: 0; z-index: 7;
-    display: flex; align-items: center; gap: 5px; padding: 4px 6px 4px 9px;
-    background: var(--surface-2); border-bottom: 1px solid var(--border);
-    font-size: .72rem; font-weight: 700; color: var(--text-secondary);
-    cursor: grab; user-select: none; touch-action: none;
-    opacity: 0; transition: opacity .12s;
-  }
-  .clip:hover .clip-head, .clip.sel .clip-head { opacity: 1; }
-  .clip-head:active { cursor: grabbing; }
-  .clip-head .clip-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .clip-head button {
-    padding: 0 5px; font-size: .74rem; line-height: 1.5; border-radius: 5px; flex-shrink: 0;
-    border: 1px solid var(--border); background: var(--bg); color: var(--text-muted);
-    pointer-events: none;   /* only the plain drag strip is live in view mode, never a button */
-  }
-  .clip.sel .clip-head button, .clip:hover .clip-head button { pointer-events: auto; }
-  .clip-head button:hover { color: var(--accent); border-color: var(--accent); }
-  .clip-body { flex: 1; overflow: auto; padding: 10px 12px; font-size: .86rem; line-height: 1.55; }
+  /* Board item modes:
+     rest  — just the content, no chrome, nothing inside takes input
+     .sel  — move/resize mode (finger tap): outline, drag anywhere to move, corner handle, #itemBar
+     .use  — use mode (press & hold a selected item): its own controls come alive (USE_MODES) */
+  .clip-body { flex: 1; overflow: hidden; padding: 10px 12px; font-size: .86rem; line-height: 1.55; }
   .clip-body > *:first-child { margin-top: 0; }
   .clip-body > *:last-child { margin-bottom: 0; }
-  .clip-body input, .clip-body select, .clip-body button { pointer-events: none; }
-  .clip.widget .clip-body input, .clip.widget .clip-body button, .clip.widget .gw-canvas { pointer-events: auto; }
-  .clip-body[contenteditable="true"] { outline: none; cursor: text; -webkit-user-select: text; user-select: text; }
-  .clip-body[contenteditable="true"] > * { pointer-events: none; }
-  .clip-body[contenteditable="true"]:focus { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent); }
+  .clip:not(.use) .clip-body, .clip:not(.use) .clip-body * { pointer-events: none !important; }
+  .clip.sel { outline: 2px solid var(--accent); outline-offset: 3px; cursor: move; touch-action: none; }
+  .clip.sel.use { outline-color: #16a34a; cursor: auto; }
   .clip.note { border-left: 3px solid var(--accent); }
   .clip.note .clip-body { padding: 0; }
   .clip .note-ta {
@@ -488,47 +469,31 @@
   .clip-body .subject-body { padding: 0; border: none; }
   .clip-body .gallery { flex-direction: column; }
   /* ---- shape & graph widgets: never a frame — just the shape/graph, sitting on the page ---- */
-  .clip.widget { border: none; background: transparent; box-shadow: none; overflow: visible; }
-  .clip.widget.sel { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: -1px; }
-  .clip.sel:not(.widget) { box-shadow: 0 0 0 2px var(--accent); }
-  .clip.widget .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; pointer-events: none; }
+  .clip.widget, .clip.vshape { border: none; background: transparent; box-shadow: none; overflow: visible; }
+  .clip.widget .clip-body, .clip.vshape .clip-body { padding: 0; overflow: hidden; border-radius: 0; background: transparent; }
+  .clip.vshape { min-width: 0; min-height: 0; }
+  .clip.vshape .clip-body { overflow: visible; }
   .clip.graph .graph-host { overflow: hidden; }
-  /* empty widget box doesn't grab — only the shape/graph itself and its controls do (so overlapping widgets stay independent) */
-  .clip.widget:not(.crop) .clip-body svg, .clip.widget:not(.crop) .clip-body canvas,
-  .clip.widget:not(.crop) .clip-body input, .clip.widget:not(.crop) .clip-body button { pointer-events: auto; }
-  .clip.widget > .gw-bar { pointer-events: auto; }
-  /* crop widget: an inert "picture" cut from a card/page — nothing inside it is ever interactive */
-  .crop-host { width: 100%; height: 100%; position: relative; overflow: hidden; pointer-events: none; }
+  .vshape-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .crop-host { width: 100%; height: 100%; position: relative; overflow: hidden; }
   .crop-frame { position: absolute; top: 0; left: 0; overflow: hidden; transform-origin: top left; }
-  .crop-frame * { pointer-events: none !important; }
-  /* "crop after clipping": drag a box directly on a placed clip's rendered content to trim it down */
-  .clip-crop-overlay { position: absolute; inset: 0; z-index: 60; cursor: crosshair; background: rgba(0,0,0,.15); touch-action: none; pointer-events: auto; }
-  /* drag grip: slim bar along the widget's top edge, the same view/edit-mode treatment as
-     .clip-head — invisible (but still hit-testable, so reposition works) in view mode, shown in
-     edit mode (.sel / hover). opacity, not display:none, is what keeps it draggable while hidden.
-     Its own BUTTONS stay pointer-events:none while hidden, though — only the plain drag area
-     should be live in view mode; a delete/edit button must never be clickable while unseen. */
-  .wgrip { position: absolute; top: 0; left: 0; right: 0; height: 20px; z-index: 7; display: flex;
-    align-items: center; gap: 5px; padding: 0 5px; box-sizing: border-box;
-    background: color-mix(in srgb, var(--surface-2) 88%, transparent); border-radius: 8px 8px 0 0;
-    cursor: grab; touch-action: none; opacity: 0; transition: opacity .12s; }
-  .wgrip:active { cursor: grabbing; }
-  .wgrip button { pointer-events: none; }
-  .clip.widget:hover .wgrip, .clip.widget.sel .wgrip { opacity: 1; }
-  .clip.widget:hover .wgrip button, .clip.widget.sel .wgrip button { pointer-events: auto; }
-  .wgrip .wgrip-bar { flex: 1; height: 3px; border-radius: 2px; pointer-events: none;
-    background: repeating-linear-gradient(90deg, var(--text-muted) 0 5px, transparent 5px 9px); opacity: .55; }
-  .wgrip button { width: 24px; height: 18px; padding: 0; font-size: .82rem; line-height: 1; border: none;
-    background: transparent; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; border-radius: 4px; }
-  .wgrip button:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
-  .wgrip .clip-del:hover { color: #dc2626; background: color-mix(in srgb, #dc2626 12%, transparent); }
-  /* resize always works, view mode included — unlike the grip/bar, it's not gated by .sel/hover */
-  .clip.widget .clip-resize { width: 34px; height: 34px; }
-  .clip.widget .clip-resize::after { right: 7px; bottom: 7px; width: 13px; height: 13px; border-width: 3px; border-color: var(--accent); }
+  .clip.widget > .gw-bar { pointer-events: auto; }
   .shape-host { width: 100%; height: 100%; display: flex; position: relative; }
   .shape-host svg { width: 100%; height: 100%; touch-action: none; }
   .sh-vert-c { touch-action: none; }
-  .clip.widget:not(:hover):not(.sel) .sh-vert-c { display: none; }
+  .clip:not(.use) .sh-vert-c { display: none; }
+  /* move-mode toolbar, floating just above the selected item (scaled against the board zoom) */
+  #itemBar { position: absolute; z-index: 4800; display: flex; gap: 4px; padding: 4px; border-radius: 10px;
+    background: var(--bg); border: 1px solid var(--border-strong); box-shadow: var(--shadow); transform-origin: left bottom; white-space: nowrap; }
+  #itemBar button { min-width: 36px; height: 34px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-secondary); font-size: .9rem; }
+  #itemBar button:hover { color: var(--accent); border-color: var(--accent); }
+  #itemBar button[data-ib="del"]:hover { color: #dc2626; border-color: #dc2626; }
+  #itemBar .ib-hint { align-self: center; font-size: .7rem; color: var(--text-muted); padding: 0 4px; }
+  /* shape recognition: ring that fills while the pencil rests at the end of a stroke */
+  .shape-ring { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; z-index: 4900; pointer-events: none; }
+  .shape-ring circle { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 82; stroke-dashoffset: 82; animation: shapeRing .4s linear forwards; }
+  @keyframes shapeRing { to { stroke-dashoffset: 0; } }
   .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
   .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: transparent; display: block; }
   .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
@@ -552,15 +517,13 @@
   .shape-pick button { font-size: .74rem; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary); }
   .shape-pick button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   .shape-pick input[type=range] { width: 100%; }
-  .clip-edit { padding: 0 5px; font-size: .74rem; line-height: 1.5; border-radius: 5px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); }
-  .clip-edit:hover { color: var(--accent); border-color: var(--accent); }
-
-  /* ---- crop-drag box: reused by the ✂ "crop after clipping" tool on an already-placed clip ---- */
-  .cm-lasso { position: absolute; z-index: 20; border: 1.5px dashed var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); pointer-events: none; }
-
-  .clip-resize { position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; cursor: nwse-resize; z-index: 8; touch-action: none; }
-  .clip-resize::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 8px; height: 8px;
-    border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); }
+  /* corner resize handle — only in move mode; sits on the corner, half outside the item */
+  .clip-resize { display: none; position: absolute; right: -16px; bottom: -16px; width: 36px; height: 36px; cursor: nwse-resize; z-index: 8; touch-action: none; }
+  .clip.sel:not(.use) .clip-resize { display: block; }
+  .clip-resize::after { content: ""; position: absolute; left: 9px; top: 9px; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg); border: 3px solid var(--accent); box-sizing: border-box; }
+  .clip.sel:not(.widget):not(.vshape) { overflow: visible; }
+  .clip.sel:not(.widget):not(.vshape) > .clip-body { border-radius: 10px; }
 
   #selClipBtn {
     position: fixed; z-index: 9999; padding: 5px 10px; font-size: .8rem; font-weight: 700;
@@ -3010,11 +2973,9 @@
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
   <div id="ppAddMenu">
-    <button type="button" data-wa="shape">△  Add shape</button>
-    <button type="button" data-wa="graph">📈  Add graph</button>
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B27</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B28</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll">
       <section class="nblib-sec">
         <div class="nblib-lbl">Raw materials</div>
@@ -8257,6 +8218,7 @@ function __detabaseMain() {
     navClamp();
     var v = $("ppView");
     if (v) v.style.transform = "translate(" + navTx.toFixed(1) + "px," + navTy.toFixed(1) + "px) scale(" + navScale.toFixed(4) + ")";
+    if (selItemId) placeItemBar();   // the item bar keeps a constant on-screen size
   }
   function navLoad(p) {
     var n = p && (loadCanvas(p.id) || {}).nav;
@@ -8288,50 +8250,36 @@ function __detabaseMain() {
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
     p.bench.forEach(function (clip) {
       var kind = clip.kind || "clip";
-      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop";
+      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape";
       var isW = isShape || isGraph || isCrop;
       var el = document.createElement("div");
-      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "");
-      el.style.left = (clip.x || 12) + "px";
-      el.style.top = (clip.y || 12) + "px";
+      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "");
+      el.style.left = (clip.x || 0) + "px";
+      el.style.top = (clip.y || 0) + "px";
       el.style.width = (clip.w || 300) + "px";
       el.style.height = (clip.h || 200) + "px";
       el.style.zIndex = clip.z || 1;
       el.dataset.clip = clip.id;
-      var editable = !isNote && !isW;
       var body;
       if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
       else if (isShape) body = '<div class="shape-host"></div>';
       else if (isGraph) body = '<div class="graph-host"></div>';
       else if (isCrop) body = '<div class="crop-host"></div>';
+      else if (isV) body = vshapeSvg(clip);
       else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
-      var titleTxt = clip.title || (isNote ? "Note" : "Clip");
-      if (isW) {
-        el.innerHTML =
-          '<div class="wgrip" title="drag to move">' +
-          '<span class="wgrip-bar"></span>' +
-          (isCrop ? '<button class="wt-crop" title="crop this further">✂</button>' : '<button class="wt-edit" title="edit">✎</button>') +
-          '<button class="clip-del" title="delete">✕</button>' +
-          '</div>' +
-          '<div class="clip-body">' + body + '</div>' +
-          '<div class="clip-resize" title="resize"></div>';
-      } else {
-        el.innerHTML =
-          '<div class="clip-head">' +
-          '<span class="clip-title">' + escapeHtml(titleTxt) + '</span>' +
-          (clip.cardId ? '<button class="clip-open" title="go to the source card">↗</button>' : '') +
-          (isNote ? '' : '<button class="clip-crop" title="crop this down to a part of it">✂</button>') +
-          '<button class="clip-del" title="remove from board">✕</button>' +
-          '</div>' +
-          '<div class="clip-body"' + (editable ? ' contenteditable="true" spellcheck="false"' : '') + '>' + body + '</div>' +
-          '<div class="clip-resize" title="resize"></div>';
-      }
+      // no chrome on the item itself — move mode adds the outline, corner handle and #itemBar
+      el.innerHTML = '<div class="clip-body">' + body + '</div><div class="clip-resize" title="resize"></div>';
       if (isNote) el.querySelector(".note-ta").value = clip.text || "";
       if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
       if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
       if (isCrop) renderCropWidget(el.querySelector(".crop-host"), clip);
       wireClip(el, clip, p);
       view.appendChild(el);
+      // keep the mode an item was in across re-renders (a move, a resize, an undo…)
+      if (clip.id === selItemId) {
+        selectClipEl(el, true);
+        if (clip.id === useItemId) enterUseMode(el, clip, p, true);
+      }
       maxX = Math.max(maxX, (clip.x || 0) + (clip.w || 300) + 60);
       maxY = Math.max(maxY, (clip.y || 0) + (clip.h || 200) + 60);
     });
@@ -8722,31 +8670,37 @@ function __detabaseMain() {
     }
     // lasso funcs are module-level (lassoStart/lassoTo/lassoDone) so touch (mountGestures) can drive them too
     // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
-    var holdT = null, straightening = false, straightMode = null, straightCenter = null;
-    function ellipsePts(cx, cy, rx, ry) {
-      var n = 48, out = [];
-      for (var i = 0; i <= n; i++) { var a = (i / n) * Math.PI * 2; out.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a), 0.5]); }
-      return out;
+    // ---- shape recognition: draw, then REST the pencil at the end of the stroke. A ring appears
+    // after ~150ms and fills; at 400ms the stroke is recognized (line / triangle / rectangle / circle /
+    // ellipse). Pen → becomes a vector-shape item on lift; highlighter → a straight highlight (lines only).
+    // After a line snaps, keep dragging to move its end point. Nothing recognizable → the ink is kept.
+    var holdT = null, snapped = null, ringEl = null;
+    function hideRing() { if (ringEl) { ringEl.remove(); ringEl = null; } }
+    function showRing(xy) {
+      hideRing();
+      var v = $("ppView"); if (!v) return;
+      ringEl = document.createElement("div");
+      ringEl.className = "shape-ring";
+      ringEl.innerHTML = '<svg viewBox="0 0 30 30" width="30" height="30"><circle cx="15" cy="15" r="13" style="animation-duration:.25s"/></svg>';
+      ringEl.style.left = xy[0] + "px"; ringEl.style.top = xy[1] + "px";
+      ringEl.style.transform = "scale(" + (1 / (navScale || 1)).toFixed(3) + ")";
+      v.appendChild(ringEl);
     }
-    function tryStraighten() {
-      holdT = null;
-      if (!inkDrawing || straightening || !inkCur || inkCur.pts.length < 3) return;
-      var pts = inkCur.pts;
-      var b = [1e9, 1e9, -1e9, -1e9];
-      pts.forEach(function (q) { b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); });
-      var w = b[2] - b[0], h = b[3] - b[1], diag = Math.hypot(w, h) || 1;
-      var start = pts[0], end = pts[pts.length - 1];
-      var closure = Math.hypot(end[0] - start[0], end[1] - start[1]);
-      straightening = true;
-      if (closure < diag * 0.35) {   // the stroke looped back near where it started → treat it as a circle/oval
-        straightMode = "circle";
-        straightCenter = [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
-        inkCur.pts = ellipsePts(straightCenter[0], straightCenter[1], Math.max(6, w / 2), Math.max(6, h / 2));
-      } else {
-        straightMode = "line";
-        inkCur.pts = [start, end];
-      }
-      liveDraw(true);
+    function armShapeHold() {
+      clearTimeout(holdT); hideRing();
+      if (snapped || !inkCur || inkTool === "erase") return;
+      holdT = setTimeout(function () {
+        if (!inkDrawing || !inkCur || snapped) return;
+        showRing(inkCur.pts[inkCur.pts.length - 1]);
+        holdT = setTimeout(function () {
+          holdT = null; hideRing();
+          if (!inkDrawing || !inkCur || snapped) return;
+          var rec = recognizeShape(inkCur.pts);
+          if (!rec || (inkCur.hi && rec.shape !== "line")) return;
+          snapped = rec;
+          inkLive.setAttribute("d", recPathD(rec));
+        }, 250);
+      }, 150);
     }
     var toggleT = null, erasedAny = false;   // pencil-rest toggle timer; did this erase gesture remove anything
     function cancelToggle() { clearTimeout(toggleT); toggleT = null; }
@@ -8766,7 +8720,7 @@ function __detabaseMain() {
       penDownXY = [d0[0], d0[1]]; penDownT = Date.now(); penMoved = 0; erasedAny = false;
       inkSnapshot(p);
       inkDrawing = true;
-      straightening = false; straightMode = null; straightCenter = null; clearTimeout(holdT); holdT = null;
+      snapped = null; clearTimeout(holdT); holdT = null; hideRing();
       // write <-> erase toggle: ONLY when the pencil rests on the page without moving (<10px) for
       // 500ms. Any movement, or erasing something, cancels it for the rest of this touch — so a long
       // slow erase or a held dot can never flip the tool mid-gesture.
@@ -8809,18 +8763,12 @@ function __detabaseMain() {
         var last = inkCur.pts[inkCur.pts.length - 1];
         if (Math.hypot(xy[0] - last[0], xy[1] - last[1]) > 1.5) sawRealMove = true;
         track(xy);
-        if (straightening && straightMode === "line") inkCur.pts = [inkCur.pts[0], xy];   // drag the endpoint live
-        else if (straightening && straightMode === "circle") {
-          var rr = Math.max(6, Math.hypot(xy[0] - straightCenter[0], xy[1] - straightCenter[1]));
-          inkCur.pts = ellipsePts(straightCenter[0], straightCenter[1], rr, rr);   // drag to resize, live
-        } else inkCur.pts.push(xy);
+        if (snapped) { if (snapped.shape === "line") snapped.pts[1] = [xy[0], xy[1]]; }   // drag a snapped line's end
+        else inkCur.pts.push(xy);
       });
-      // draw a line, then hold the pencil still at the end (~350ms, no further real movement) → snap it straight
-      if (sawRealMove) {
-        clearTimeout(holdT); holdT = null;
-        if (!straightening && penMoved > 22) holdT = setTimeout(tryStraighten, 350);
-      }
-      liveDraw(straightening);
+      if (snapped) { if (sawRealMove) inkLive.setAttribute("d", recPathD(snapped)); return; }
+      if (sawRealMove) armShapeHold();
+      liveDraw();
     });
     // fires from the pointerdown-armed timer once the pencil has rested still for 500ms —
     // a genuine "hold to switch tool" gesture, never a real stroke, so nothing gets committed.
@@ -8839,12 +8787,23 @@ function __detabaseMain() {
       if (!inkDrawing) return;
       inkDrawing = false;
       cancelToggle();
-      clearTimeout(holdT); holdT = null; straightening = false; straightMode = null; straightCenter = null;
+      clearTimeout(holdT); holdT = null; hideRing();
+      var rec = snapped; snapped = null;
       var isPen = e && e.pointerType === "pen";
       var wasTap = isPen && penDownT && (Date.now() - penDownT < 300) && penMoved < 10;
       // a bare tap still needs to draw something — a single captured point becomes a zero-length,
       // round-linecap segment (renders as a filled dot), instead of being silently discarded.
       if (wasTap && inkCur && inkCur.pts.length === 1) inkCur.pts.push(inkCur.pts[0]);
+      if (rec && inkCur && inkCur.hi) {   // straight highlight: stays ink
+        inkCur.pts = [rec.pts[0].concat(0.5), rec.pts[1].concat(0.5)];
+      } else if (rec && inkCur) {         // recognized shape → vector item
+        var sw = inkCur.fw != null ? inkCur.fw : liveWidth();
+        if (inkLive) inkLive.setAttribute("d", "");
+        p.bench.push(makeVShape(rec, inkCur.color, sw));
+        inkCur = null; liveN = 0; strokeRect = null; penDownT = 0;
+        saveStore(); renderCanvas();
+        return;
+      }
       if (inkTool === "erase") {
         if (erasedAny) saveCanvas(p.id); else undoDrop(p);   // an erase that removed something is undoable
       } else if (inkCur && inkCur.pts.length > 1) {
@@ -8998,17 +8957,153 @@ function __detabaseMain() {
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
 
-  // ---- crop widget: a frameless "picture" cut from any rectangle of a card/page — no text, no header ----
+  // ============================================================
+  // VECTOR SHAPES — kind:"vshape": line / tri / rect / circle / ellipse
+  // { shape, pts:[[x,y]…] | ell:[cx,cy,rx,ry], vw, vh, color, sw, x, y, w, h }
+  // geometry is in the item's own box (0..vw, 0..vh); resizing stretches it (preserveAspectRatio
+  // none) while the stroke keeps its width (vector-effect).
+  // ============================================================
+  function vshapeSvg(c) {
+    var vw = c.vw || c.w || 100, vh = c.vh || c.h || 100;
+    var st = ' fill="none" stroke="' + escapeHtml(c.color || "#1e293b") + '" stroke-width="' + (c.sw || 3) +
+      '" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
+    var inner = "", f = function (n) { return (+n).toFixed(1); };
+    if (c.ell) inner = '<ellipse cx="' + f(c.ell[0]) + '" cy="' + f(c.ell[1]) + '" rx="' + f(c.ell[2]) + '" ry="' + f(c.ell[3]) + '"' + st + '/>';
+    else if (c.shape === "line") inner = '<line x1="' + f(c.pts[0][0]) + '" y1="' + f(c.pts[0][1]) + '" x2="' + f(c.pts[1][0]) + '" y2="' + f(c.pts[1][1]) + '"' + st + '/>';
+    else inner = '<polygon points="' + (c.pts || []).map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" ") + '"' + st + '/>';
+    return '<svg class="vshape-svg" viewBox="0 0 ' + f(vw) + ' ' + f(vh) + '" preserveAspectRatio="none">' + inner + '</svg>';
+  }
+  // build a vshape item from geometry in BOARD coordinates
+  function makeVShape(rec, color, sw) {
+    var pad = Math.max(8, (sw || 3) * 2), b;
+    if (rec.ell) b = [rec.ell[0] - rec.ell[2], rec.ell[1] - rec.ell[3], rec.ell[0] + rec.ell[2], rec.ell[1] + rec.ell[3]];
+    else { b = [1e9, 1e9, -1e9, -1e9]; rec.pts.forEach(function (q) { b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); }); }
+    var x = Math.max(0, Math.floor(b[0] - pad)), y = Math.max(0, Math.floor(b[1] - pad));
+    var vw = Math.ceil(b[2] + pad - x), vh = Math.ceil(b[3] + pad - y);
+    var r1 = function (n) { return Math.round(n * 10) / 10; };
+    var it = { id: uid("vs_"), kind: "vshape", shape: rec.shape, color: color || "#1e293b", sw: +(sw || 3).toFixed(2),
+      x: x, y: y, w: vw, h: vh, vw: vw, vh: vh, z: nextZ(), added: Date.now() };
+    if (rec.ell) it.ell = [r1(rec.ell[0] - x), r1(rec.ell[1] - y), r1(rec.ell[2]), r1(rec.ell[3])];
+    else it.pts = rec.pts.map(function (q) { return [r1(q[0] - x), r1(q[1] - y)]; });
+    return it;
+  }
+  function recPathD(rec) {
+    if (rec.ell) {
+      var e = rec.ell;
+      return "M" + (e[0] - e[2]).toFixed(1) + " " + e[1].toFixed(1) + " a" + e[2].toFixed(1) + " " + e[3].toFixed(1) + " 0 1 0 " + (2 * e[2]).toFixed(1) + " 0" +
+        " a" + e[2].toFixed(1) + " " + e[3].toFixed(1) + " 0 1 0 " + (-2 * e[2]).toFixed(1) + " 0";
+    }
+    var d = "M" + rec.pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L");
+    return rec.shape === "line" ? d : d + " Z";
+  }
+  function rdp(pts, eps) {   // Ramer–Douglas–Peucker simplification of an open polyline
+    if (pts.length < 3) return pts.slice();
+    var a = pts[0], b = pts[pts.length - 1], dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, best = 0, bi = 0;
+    for (var i = 1; i < pts.length - 1; i++) {
+      var d = Math.abs(dy * pts[i][0] - dx * pts[i][1] + b[0] * a[1] - b[1] * a[0]) / len;
+      if (d > best) { best = d; bi = i; }
+    }
+    if (best <= eps) return [a, b];
+    var l = rdp(pts.slice(0, bi + 1), eps), r = rdp(pts.slice(bi), eps);
+    return l.slice(0, -1).concat(r);
+  }
+  // hand-drawn stroke → { shape, pts | ell } in board coords, or null when it isn't clearly a shape
+  function recognizeShape(raw) {
+    var pts = raw.map(function (q) { return [q[0], q[1]]; });
+    if (pts.length < 4) return null;
+    var L = 0, b = [1e9, 1e9, -1e9, -1e9];
+    pts.forEach(function (q, i) {
+      if (i) L += Math.hypot(q[0] - pts[i - 1][0], q[1] - pts[i - 1][1]);
+      b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]);
+    });
+    if (L < 40) return null;
+    var w = b[2] - b[0], h = b[3] - b[1], diag = Math.hypot(w, h) || 1;
+    var first = pts[0], last = pts[pts.length - 1];
+    // closed = the stroke comes back near its start somewhere in its last 30% (allows overshoot)
+    var back = 1e9;
+    for (var bi = Math.floor(pts.length * 0.7); bi < pts.length; bi++) back = Math.min(back, Math.hypot(pts[bi][0] - first[0], pts[bi][1] - first[1]));
+    var closed = back < Math.max(20, 0.22 * diag) && L > 2 * diag;
+    if (!closed) {
+      var len = Math.hypot(last[0] - first[0], last[1] - first[1]);
+      if (len < 30) return null;
+      var dx = last[0] - first[0], dy = last[1] - first[1], dev = 0;
+      pts.forEach(function (q) { dev = Math.max(dev, Math.abs(dy * q[0] - dx * q[1] + last[0] * first[1] - last[1] * first[0]) / len); });
+      return dev < Math.max(6, 0.07 * len) ? { shape: "line", pts: [first.slice(), last.slice()] } : null;
+    }
+    if (w < 16 || h < 16) return null;
+    // hand-drawn loops often overshoot past the start — cut the tail at its closest approach to the start
+    var cut = pts.length - 1, cd = 1e9;
+    for (var ti = Math.floor(pts.length * 0.7); ti < pts.length; ti++) {
+      var tdd = Math.hypot(pts[ti][0] - first[0], pts[ti][1] - first[1]);
+      if (tdd < cd) { cd = tdd; cut = ti; }
+    }
+    pts = pts.slice(0, cut + 1);
+    var cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2, rx = w / 2, ry = h / 2, err = 0;
+    pts.forEach(function (q) { err += Math.abs(Math.hypot((q[0] - cx) / rx, (q[1] - cy) / ry) - 1); });
+    err /= pts.length;
+    // corners: start the loop at the point farthest from the centre (almost surely a corner), simplify
+    var far = 0, fd = -1;
+    pts.forEach(function (q, i) { var d = Math.hypot(q[0] - cx, q[1] - cy); if (d > fd) { fd = d; far = i; } });
+    var loop = pts.slice(far).concat(pts.slice(0, far + 1));
+    // a closed loop starts and ends on the same point (zero-length chord) — split it at the point
+    // farthest from the start and simplify the two halves
+    var opp = 0, od = -1;
+    loop.forEach(function (q, i) { var d = Math.hypot(q[0] - loop[0][0], q[1] - loop[0][1]); if (d > od) { od = d; opp = i; } });
+    var eps = Math.min(0.09 * diag, 0.3 * Math.min(w, h));   // thin shapes need a finer tolerance
+    var cs = rdp(loop.slice(0, opp + 1), eps).slice(0, -1).concat(rdp(loop.slice(opp), eps).slice(0, -1));
+    cs = cs.filter(function (q, i) {   // merge corners that sit on top of each other
+      var nx = cs[(i + 1) % cs.length];
+      return cs.length < 2 || Math.hypot(nx[0] - q[0], nx[1] - q[1]) > Math.max(8, 0.05 * diag);
+    });
+    cs = cs.filter(function (q, i) {   // drop near-straight "corners"
+      var n = cs.length, a = cs[(i + n - 1) % n], c = cs[(i + 1) % n];
+      var v1 = [a[0] - q[0], a[1] - q[1]], v2 = [c[0] - q[0], c[1] - q[1]];
+      var cos = (v1[0] * v2[0] + v1[1] * v2[1]) / ((Math.hypot(v1[0], v1[1]) * Math.hypot(v2[0], v2[1])) || 1);
+      return cos > -0.94;   // angle < ~160°
+    });
+    if (err < 0.1 || (cs.length >= 6 && err < 0.135)) {   // (a square scores ≈0.15)
+      if (Math.min(rx, ry) / Math.max(rx, ry) > 0.85) {
+        var r = 0; pts.forEach(function (q) { r += Math.hypot(q[0] - cx, q[1] - cy); }); r /= pts.length;
+        return { shape: "circle", ell: [cx, cy, r, r] };
+      }
+      return { shape: "ellipse", ell: [cx, cy, rx, ry] };
+    }
+    if (cs.length === 3) return { shape: "tri", pts: cs.map(function (q) { return q.slice(); }) };
+    if (cs.length === 4) {
+      // a clean rectangle: dominant edge orientation (snapped to the axes when within 10°), then the
+      // stroke's bounding box in that rotated frame
+      var sx = 0, sy = 0;
+      cs.forEach(function (q, i) { var n2 = cs[(i + 1) % 4], t = Math.atan2(n2[1] - q[1], n2[0] - q[0]) * 4; sx += Math.cos(t); sy += Math.sin(t); });
+      var th = Math.atan2(sy, sx) / 4;
+      if (Math.abs(th) < Math.PI / 18) th = 0;
+      var co = Math.cos(th), si = Math.sin(th), rb = [1e9, 1e9, -1e9, -1e9];
+      pts.forEach(function (q) { var u = q[0] * co + q[1] * si, v = -q[0] * si + q[1] * co; rb[0] = Math.min(rb[0], u); rb[1] = Math.min(rb[1], v); rb[2] = Math.max(rb[2], u); rb[3] = Math.max(rb[3], v); });
+      var unrot = function (u, v) { return [u * co - v * si, u * si + v * co]; };
+      return { shape: "rect", pts: [unrot(rb[0], rb[1]), unrot(rb[2], rb[1]), unrot(rb[2], rb[3]), unrot(rb[0], rb[3])] };
+    }
+    return null;
+  }
+  function addVShape(shape, pos) {
+    var p = curProblem(); if (!p) return;
+    inkSnapshot(p);
+    var x = pos.x, y = pos.y, W = 160, H = 110, rec;
+    if (shape === "line") rec = { shape: "line", pts: [[x, y + H / 2], [x + W, y + H / 2]] };
+    else if (shape === "tri") rec = { shape: "tri", pts: [[x + W / 2, y], [x + W, y + H], [x, y + H]] };
+    else if (shape === "rect") rec = { shape: "rect", pts: [[x, y], [x + W, y], [x + W, y + H], [x, y + H]] };
+    else if (shape === "circle") rec = { shape: "circle", ell: [x + H / 2, y + H / 2, H / 2, H / 2] };
+    else rec = { shape: "ellipse", ell: [x + W / 2, y + H / 2, W / 2, H / 2 * 0.75] };
+    var it = makeVShape(rec, inkColor, inkW);
+    p.bench.push(it);
+    selItemId = it.id; useItemId = null;
+    saveStore(); renderCanvas();
+  }
+
+  // ---- crop widget (legacy): a picture cut from a card — still displayed on old boards, no longer created ----
   function renderCropWidget(host, clip) {
     if (!host) return;
     var cw = clip.cropW || clip.w || 200, ch = clip.cropH || clip.h || 150;
     host.innerHTML = '<div class="crop-frame" style="width:' + cw + 'px;height:' + ch + 'px">' +
-      '<div style="position:absolute;left:' + (-(clip.cropX || 0)) + 'px;top:' + (-(clip.cropY || 0)) + 'px">' + (clip.html || "") + '</div></div>' +
-      // TEMPORARY DEBUG (B12): stamp the values actually used to render this widget, so a
-      // screenshot of the finished widget can be compared directly against the capture-time
-      // debug overlay's numbers instead of trusting that nothing changed in between.
-      '<div style="position:absolute;left:1px;top:1px;z-index:5;background:rgba(255,0,0,.85);color:#fff;font:8px monospace;padding:1px 3px;pointer-events:none;">' +
-      'cx' + Math.round(clip.cropX || 0) + ' cy' + Math.round(clip.cropY || 0) + ' ' + Math.round(cw) + 'x' + Math.round(ch) + '</div>';
+      '<div style="position:absolute;left:' + (-(clip.cropX || 0)) + 'px;top:' + (-(clip.cropY || 0)) + 'px">' + (clip.html || "") + '</div></div>';
     var frame = host.querySelector(".crop-frame");
     function applyScale() {
       var sx = (clip.w || cw) / cw, sy = (clip.h || ch) / ch;
@@ -9017,91 +9112,6 @@ function __detabaseMain() {
     applyScale();
     clip._onResize = applyScale;
     try { prettyFractions(frame); } catch (e) {}
-  }
-
-  // "crop after clipping" — draw a box directly on an already-placed clip to trim it down to that
-  // part. Works on any non-note, non-shape/graph clip (a plain card/merged clip, or an existing
-  // crop being cropped further — offsets/scale compose against its underlying full html).
-  function startInPlaceCrop(el, clip, p) {
-    var wasCrop = clip.kind === "crop";
-    var bodyEl = el.querySelector(wasCrop ? ".crop-host" : ".clip-body");
-    if (!bodyEl) return;
-    var z = (typeof navScale === "number" && navScale) ? navScale : 1;
-    var baseCropX = wasCrop ? (clip.cropX || 0) : 0;
-    var baseCropY = wasCrop ? (clip.cropY || 0) : 0;
-    var baseScaleX = wasCrop ? (clip.w || clip.cropW) / (clip.cropW || 1) : 1;
-    var baseScaleY = wasCrop ? (clip.h || clip.cropH) / (clip.cropH || 1) : 1;
-    // Same fix as cropSourceHtml() (B15): an unsized <svg>/<canvas> diagram sizes itself from
-    // whatever container it's currently in, so it can render at a different height once this
-    // card becomes a chrome-less crop widget (no header, different padding) even at the same
-    // width. Freeze every diagram at its current live pixel size before it's wrapped up.
-    var baseHtml;
-    if (wasCrop) {
-      baseHtml = clip.html || "";
-    } else {
-      var bhTmp = document.createElement("div");
-      bhTmp.innerHTML = clip.html || "";
-      var bhLiveG = bodyEl.querySelectorAll("svg, canvas");
-      var bhCloneG = bhTmp.querySelectorAll("svg, canvas");
-      for (var bhi = 0; bhi < bhLiveG.length && bhi < bhCloneG.length; bhi++) {
-        var bhr = bhLiveG[bhi].getBoundingClientRect();
-        if (bhr.width > 0 && bhr.height > 0) {
-          bhCloneG[bhi].style.width = bhr.width + "px";
-          bhCloneG[bhi].style.height = bhr.height + "px";
-          bhCloneG[bhi].style.maxWidth = "none";
-        }
-      }
-      baseHtml = '<div style="width:' + (clip.w || 300) + 'px;padding:10px 12px;box-sizing:border-box;">' + bhTmp.innerHTML + '</div>';
-    }
-    var overlay = document.createElement("div");
-    overlay.className = "clip-crop-overlay";
-    if (!bodyEl.style.position) bodyEl.style.position = "relative";
-    bodyEl.appendChild(overlay);
-    var box = null, sx0 = 0, sy0 = 0;
-    var lockL = bodyEl.scrollLeft, lockT = bodyEl.scrollTop;   // lock scroll so a scrollable card body can't drift the box mid-drag
-    function toLocal(ev) {
-      if (bodyEl.scrollLeft !== lockL) bodyEl.scrollLeft = lockL;
-      if (bodyEl.scrollTop !== lockT) bodyEl.scrollTop = lockT;
-      var r = bodyEl.getBoundingClientRect();
-      return [ev.clientX - r.left + lockL, ev.clientY - r.top + lockT];
-    }
-    function down(ev) {
-      ev.preventDefault(); ev.stopPropagation();
-      inPlaceCropBusy = true;
-      try { overlay.setPointerCapture(ev.pointerId); } catch (_) {}
-      var xy = toLocal(ev); sx0 = xy[0]; sy0 = xy[1];
-      box = document.createElement("div"); box.className = "cm-lasso";
-      box.style.left = sx0 + "px"; box.style.top = sy0 + "px"; box.style.width = "0px"; box.style.height = "0px";
-      overlay.appendChild(box);
-    }
-    function move(ev) {
-      if (!box) return;
-      ev.preventDefault(); ev.stopPropagation();
-      var xy = toLocal(ev);
-      box.style.left = Math.min(sx0, xy[0]) + "px"; box.style.top = Math.min(sy0, xy[1]) + "px";
-      box.style.width = Math.abs(xy[0] - sx0) + "px"; box.style.height = Math.abs(xy[1] - sy0) + "px";
-    }
-    function finish(ev) {
-      inPlaceCropBusy = false;
-      var w = box ? parseFloat(box.style.width) : 0, h = box ? parseFloat(box.style.height) : 0;
-      var bx = box ? parseFloat(box.style.left) : 0, by = box ? parseFloat(box.style.top) : 0;
-      overlay.remove();
-      if (!box || w < 8 || h < 8 || (ev && ev.type === "pointercancel")) { box = null; return; }
-      box = null;
-      clip.kind = "crop";
-      clip.html = baseHtml;
-      clip.cropX = Math.round(baseCropX + (bx / z) / baseScaleX);
-      clip.cropY = Math.round(baseCropY + (by / z) / baseScaleY);
-      clip.cropW = Math.max(4, Math.round((w / z) / baseScaleX));
-      clip.cropH = Math.max(4, Math.round((h / z) / baseScaleY));
-      clip.w = clip.cropW; clip.h = clip.cropH;
-      delete clip._onResize;
-      saveStore(); renderCanvas();
-    }
-    overlay.addEventListener("pointerdown", down);
-    overlay.addEventListener("pointermove", move);
-    overlay.addEventListener("pointerup", finish);
-    overlay.addEventListener("pointercancel", finish);
   }
 
   var SHAPE_BOX = [34, 30, 226, 200];
@@ -9320,7 +9330,7 @@ function __detabaseMain() {
     // the function bar lives OUTSIDE the clip's clipped body, floating above the widget
     var oldBar = clipEl && clipEl.querySelector(":scope > .gw-bar"); if (oldBar) oldBar.remove();
     var bar = null;
-    if (editMode && clipEl) {
+    if (editMode && clipEl && clipEl.classList.contains("use")) {   // the function bar only exists in use mode
       bar = document.createElement("div");
       bar.className = "gw-bar";
       bar.style.setProperty("--gw-fs", gwFs.toFixed(2) + "px");
@@ -9530,9 +9540,6 @@ function __detabaseMain() {
     saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
-  var clipModeOverlay = null;
-  var inPlaceCropBusy = false;   // true while the ✂ in-place crop drag is active — see onCloudCanvas
-  function closeClipMode() { if (clipModeOverlay) { clipModeOverlay.remove(); clipModeOverlay = null; } }
   function canvasSnapshotHtml(id) {
     var c = loadCanvas(id), parts = [];
     var ink = c.ink || [];
@@ -9570,27 +9577,27 @@ function __detabaseMain() {
     tmp.querySelectorAll(".pin-btn, .del-x, [id]").forEach(function (x) { if (x.classList && x.classList.contains("pin-btn")) x.remove(); else if (x.removeAttribute) x.removeAttribute("id"); });
     return tmp.innerHTML;
   }
-  // Clipping from the library/search always adds the whole card straight away — no more
-  // "Keep all / Mark parts / Box" chooser (superseded by the ✂ crop-after-clipping tool on an
-  // already-placed clip, which is simpler and doesn't need to clone a differently-laid-out page).
+  // adding from the Mining panel places the whole card (assets are Lego — never cropped)
   function startClipMode(sourceId, pos) {
-    closeClipMode();
     benchAdd(sourceId, pos || viewCenterPos());
   }
   function startClipModePage(pageId, pos) {
-    closeClipMode();
     var d = canvasDocById(pageId);
     var inner = canvasSnapshotHtml(pageId);
     if (!inner.trim()) { alert("That page has nothing to clip yet."); return; }
     newMergedClip(cleanClipHtml('<div>' + inner + '</div>'), (d && d.name) || "Page", pos || viewCenterPos());
   }
 
-  // A finger touch on a clip, in ANY writing tool, needs to reach that clip's own grip / resize
-  // handle / ✂ / ✕ — but .ink-capture sits on top of everything (so the pencil can draw over a
-  // clip) and normally swallows the touch first, so e.target is always .ink-capture, never the
-  // clip beneath it. SEL_Z briefly lifts the tapped clip's OWN z-index above .ink-capture's so its
-  // controls become directly reachable for the very next touch, without needing a mode switch.
+  // ============================================================
+  // BOARD ITEMS — three modes:
+  //   rest          content only, no chrome; the pencil writes over it
+  //   move (.sel)   finger tap: outline, drag anywhere to move, corner handle, #itemBar
+  //   use  (.use)   press & hold a selected item: its own controls come alive (USE_MODES)
+  // .ink-capture sits above every item, so a selected item is lifted above it (SEL_Z) to take
+  // touches directly; a finger reaches an unselected item by hit-testing the point (mountGestures).
+  // ============================================================
   var SEL_Z = 4700;
+  var selItemId = null, useItemId = null;
   function clipUnderPoint(clientX, clientY) {
     var stack = document.elementsFromPoint ? document.elementsFromPoint(clientX, clientY) : [];
     for (var i = 0; i < stack.length; i++) {
@@ -9599,120 +9606,167 @@ function __detabaseMain() {
     }
     return null;
   }
+  function itemById(p, id) { return ((p && p.bench) || []).filter(function (x) { return x.id === id; })[0]; }
+
+  // Use mode per item kind. Extensible: USE_MODES[kind] = { enter(el, clip, p), exit(el, clip, p), bar?(clip, p) → [{id,label,run}] }
+  var USE_MODES = {
+    graph: {
+      enter: function (el, clip, p) { renderGraphWidget(el.querySelector(".graph-host"), clip, p); },
+      exit: function (el, clip, p) { renderGraphWidget(el.querySelector(".graph-host"), clip, p); },
+      bar: function (clip) {
+        var ed = (clip.mode || "edit") === "edit";
+        return [{ id: "gmode", label: ed ? "📍 Mark points" : "✎ Functions", run: function (el, c, p) {
+          c.mode = ed ? "set" : "edit"; saveStore();
+          renderGraphWidget(el.querySelector(".graph-host"), c, p); showItemBar(el, c, p);
+        } }];
+      }
+    },
+    // the math-gallery triangle / quad: corner dragging + type picker (kept from before)
+    shape: {
+      enter: function () {}, exit: function () {},
+      bar: function () { return [{ id: "spick", label: "⚙ Shape type", run: function (el, c, p, btn) { openShapePicker(btn, c, p); } }]; }
+    }
+  };
+  // kind → fn(p, clip): replace an asset item by its child items (filled in with the library)
+  var DECOMPOSE = {};
+
   function deselectAllClips(except) {
+    var p = curProblem();
     Array.prototype.slice.call(document.querySelectorAll(".clip.sel")).forEach(function (x) {
       if (x === except) return;
+      exitUseMode(x, itemById(p, x.dataset.clip), p);
       x.classList.remove("sel");
       if (x.dataset.baseZ) { x.style.zIndex = x.dataset.baseZ; delete x.dataset.baseZ; }
     });
+    if (!except) { selItemId = null; useItemId = null; hideItemBar(); }
   }
-  function selectClipEl(el) {
+  function selectClipEl(el, keepMode) {
+    var p = curProblem(), clip = itemById(p, el.dataset.clip);
     deselectAllClips(el);
-    if (!el.classList.contains("sel")) el.dataset.baseZ = el.style.zIndex || "1";
+    if (clip && clip.z !== zTop && !keepMode) { clip.z = nextZ(); saveStore(); }   // a picked item comes to the front
+    el.dataset.baseZ = clip ? clip.z : (el.dataset.baseZ || el.style.zIndex || "1");
     el.classList.add("sel");
     el.style.zIndex = SEL_Z;
+    if (selItemId !== el.dataset.clip) useItemId = null;
+    selItemId = el.dataset.clip;
+    if (clip) showItemBar(el, clip, p);
   }
-  function wireClip(el, clip, p) {
-    var canvas = $("ppCanvas");
-    var isW = clip.kind === "shape" || clip.kind === "graph" || clip.kind === "crop";
-    function front() {
-      if (clip.z === zTop) return;   // already on top — no z bump, no save
-      clip.z = nextZ();
-      // a selected item is lifted above the ink capture layer (SEL_Z) — only its resting z changes
-      if (el.classList.contains("sel")) el.dataset.baseZ = clip.z; else el.style.zIndex = clip.z;
-      saveStore();
+  function enterUseMode(el, clip, p) {
+    var um = clip && USE_MODES[clip.kind]; if (!um) return false;
+    el.classList.add("use"); useItemId = clip.id;
+    try { um.enter(el, clip, p); } catch (e) { if (window.console) console.error("use mode:", e); }
+    showItemBar(el, clip, p);
+    return true;
+  }
+  function exitUseMode(el, clip, p) {
+    if (!el || !el.classList.contains("use")) return;
+    el.classList.remove("use");
+    if (clip && useItemId === clip.id) useItemId = null;
+    var um = clip && USE_MODES[clip.kind];
+    if (um) { try { um.exit(el, clip, p); } catch (e) {} }
+    saveStore();
+  }
+
+  function hideItemBar() { var b = $("itemBar"); if (b) b.remove(); }
+  function showItemBar(el, clip, p) {
+    var view = $("ppView"); if (!view || !clip) return;
+    var bar = $("itemBar");
+    if (!bar) {
+      bar = document.createElement("div"); bar.id = "itemBar";
+      bar.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
     }
-    el.addEventListener("pointerdown", function () {
-      front();
-      if (isW) {
-        Array.prototype.slice.call(document.querySelectorAll(".clip.widget.sel")).forEach(function (x) { if (x !== el) x.classList.remove("sel"); });
-        el.classList.add("sel");
-      }
-    }, true);
-    var co = el.querySelector(".clip-open");
-    if (co) co.addEventListener("click", function (e) { e.stopPropagation(); if (clip.cardId) jumpToCard(clip.cardId); });
-    var cropTrigger = el.querySelector(".clip-crop") || el.querySelector(".wt-crop");
-    // selectClipEl (not just adding the "sel" class) is what actually lifts this clip's
-    // z-index above .ink-capture — every other clip control depends on that same lift to be
-    // touchable at all. Skipping it here left the crop-drag overlay sitting underneath the
-    // drawing layer, so a finger drag on it did nothing.
-    if (cropTrigger) cropTrigger.addEventListener("click", function (e) { e.stopPropagation(); selectClipEl(el); startInPlaceCrop(el, clip, p); });
-    var ce = el.querySelector(".wt-edit");
-    if (ce) ce.addEventListener("click", function (e) {
-      e.stopPropagation();
-      el.classList.add("sel");
-      if (clip.kind === "shape") openShapePicker(ce, clip, p);
-      else if (clip.kind === "graph") { clip.mode = (clip.mode || "edit") === "edit" ? "set" : "edit"; saveStore(); renderCanvas(); }
+    if (bar.parentNode !== view) view.appendChild(bar);
+    var inUse = el.classList.contains("use"), um = USE_MODES[clip.kind], btns = [];
+    if (inUse) {
+      if (um && um.bar) btns = btns.concat(um.bar(clip, p));
+      btns.push({ id: "done", label: "✓ Done", run: function () { exitUseMode(el, clip, p); showItemBar(el, clip, p); } });
+    } else {
+      btns.push({ id: "dup", label: "⧉", title: "duplicate", run: function () { itemDuplicate(p, clip); } });
+      if (DECOMPOSE[clip.kind]) btns.push({ id: "split", label: "⤓ Decompose", run: function () { DECOMPOSE[clip.kind](p, clip); } });
+      if (clip.cardId) btns.push({ id: "open", label: "↗", title: "open the source in ETI", run: function () { jumpToCard(clip.cardId); } });
+      btns.push({ id: "del", label: "🗑", title: "delete", run: function () { selItemId = null; useItemId = null; hideItemBar(); clipRemove(clip.id); } });
+      if (um) btns.push({ hint: "hold to use" });
+    }
+    bar.innerHTML = "";
+    btns.forEach(function (b) {
+      if (b.hint) { var s = document.createElement("span"); s.className = "ib-hint"; s.textContent = b.hint; bar.appendChild(s); return; }
+      var x = document.createElement("button");
+      x.type = "button"; x.dataset.ib = b.id; x.textContent = b.label; if (b.title) x.title = b.title;
+      x.addEventListener("click", function (e) { e.stopPropagation(); b.run(el, clip, p, x); });
+      bar.appendChild(x);
     });
-    if (clip.kind === "graph") {
-      var meb = el.querySelector(".wt-edit");
-      if (meb) { meb.textContent = (clip.mode || "edit") === "edit" ? "✎" : "🔒"; meb.title = (clip.mode || "edit") === "edit" ? "editing — tap for set mode" : "set — tap to edit"; }
-    }
-    el.querySelector(".clip-del").addEventListener("click", function (e) { e.stopPropagation(); clipRemove(clip.id); });
+    placeItemBar();
+  }
+  // above the item in move mode; below it in use mode (a graph's function bar floats above)
+  function placeItemBar() {
+    var bar = $("itemBar"), p = curProblem(), clip = itemById(p, selItemId);
+    if (!bar || !clip) return;
+    var z = navScale || 1, el = $("ppView").querySelector('.clip[data-clip="' + clip.id + '"]');
+    var below = !!(el && el.classList.contains("use"));
+    bar.style.transformOrigin = below ? "left top" : "left bottom";
+    bar.style.transform = "scale(" + (1 / z).toFixed(4) + ")";
+    bar.style.left = (clip.x || 0) + "px";
+    bar.style.top = (below ? (clip.y || 0) + (clip.h || 200) + 12 / z : (clip.y || 0) - 12 / z - bar.offsetHeight) + "px";
+  }
+  function itemDuplicate(p, clip) {
+    if (!p || !clip) return;
+    inkSnapshot(p);
+    var d = JSON.parse(JSON.stringify(clip));
+    d.id = uid((clip.kind === "graph" ? "gr" : clip.kind === "shape" ? "sh" : clip.kind === "vshape" ? "vs" : "cl") + "_");
+    d.x = (clip.x || 0) + 24; d.y = (clip.y || 0) + 24; d.z = nextZ(); d.added = Date.now();
+    p.bench.push(d);
+    selItemId = d.id; useItemId = null;
+    saveStore(); renderCanvas();
+  }
 
-    var edBody = el.querySelector('.clip-body[contenteditable="true"]');
-    if (edBody) {
-      var edT;
-      edBody.addEventListener("input", function () {
-        clearTimeout(edT);
-        edT = setTimeout(function () { clip.html = edBody.innerHTML; saveStore(); }, 500);
-      });
-      edBody.addEventListener("blur", function () { clip.html = edBody.innerHTML; saveStore(); });
-      edBody.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
-      try { prettyFractions(edBody); } catch (e) {}
-    }
-
-    var ta = el.querySelector(".note-ta");
-    if (ta) {
-      ta.addEventListener("input", function () { clip.text = this.value; saveStore(); });
-      ta.addEventListener("pointerdown", function (e) { e.stopPropagation(); }); // don't start a drag from inside the note
-      var chk = function (e) {
-        setTimeout(function () {
-          if (ta.selectionStart !== ta.selectionEnd && ta.value.slice(ta.selectionStart, ta.selectionEnd).trim()) {
-            var rc = ta.getBoundingClientRect();
-            showSelBtn(e && e.clientX ? e.clientX : rc.left + 16, e && e.clientY ? e.clientY : rc.bottom - 28, "note", { clipId: clip.id });
-          } else if (selKind === "note") { hideSelBtn(); }
-        }, 0);
-      };
-      ta.addEventListener("mouseup", chk);
-      ta.addEventListener("keyup", chk);
-    }
-
-    var head = el.querySelector(".clip-head") || el.querySelector(".wgrip");
-    if (head) head.addEventListener("pointerdown", function (e) {
-      if (e.target.closest("button")) return;
+  function wireClip(el, clip, p) {
+    // move mode: drag from anywhere on the item; press & hold without moving → use mode
+    el.addEventListener("pointerdown", function (e) {
+      if (!el.classList.contains("sel") || el.classList.contains("use")) return;
+      if (e.target.closest(".clip-resize") || e.button > 0) return;
       e.preventDefault(); e.stopPropagation();
-      try { head.setPointerCapture(e.pointerId); } catch (_) {}
+      try { el.setPointerCapture(e.pointerId); } catch (_) {}
       inkSnapshot(p);
-      var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0;
-      var moved = false, z = (typeof navScale === "number" && navScale) ? navScale : 1;
+      var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0, moved = false, pid = e.pointerId;
+      var z = navScale || 1;
+      var holdT = USE_MODES[clip.kind] ? setTimeout(function () {
+        holdT = null;
+        if (!moved) { finish(); enterUseMode(el, clip, p); }
+      }, 450) : null;
       function mv(ev) {
-        moved = true;
+        if (ev.pointerId !== pid) return;
+        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) return;
+        moved = true; clearTimeout(holdT); holdT = null;
         clip.x = Math.max(0, Math.round(ox + (ev.clientX - sx) / z));
         clip.y = Math.max(0, Math.round(oy + (ev.clientY - sy) / z));
         el.style.left = clip.x + "px"; el.style.top = clip.y + "px";
+        placeItemBar();
       }
-      function up() {
-        document.removeEventListener("pointermove", mv, true);
-        document.removeEventListener("pointerup", up, true);
-        document.removeEventListener("pointercancel", up, true);
-        if (moved) { saveStore(); renderCanvas(); } else undoDrop(p);
+      function finish() {
+        clearTimeout(holdT); holdT = null;
+        el.removeEventListener("pointermove", mv);
+        el.removeEventListener("pointerup", up);
+        el.removeEventListener("pointercancel", up);
+        if (moved) saveStore(); else undoDrop(p);
       }
-      document.addEventListener("pointermove", mv, true);
-      document.addEventListener("pointerup", up, true);
-      document.addEventListener("pointercancel", up, true);
+      function up(ev) { if (ev.pointerId === pid) finish(); }
+      el.addEventListener("pointermove", mv);
+      el.addEventListener("pointerup", up);
+      el.addEventListener("pointercancel", up);
     });
+
+    var ta = el.querySelector(".note-ta");
+    if (ta) ta.addEventListener("input", function () { clip.text = this.value; saveStore(); });
 
     var rz = el.querySelector(".clip-resize");
     rz.addEventListener("pointerdown", function (e) {
       e.preventDefault(); e.stopPropagation();
       try { rz.setPointerCapture(e.pointerId); } catch (_) {}
       inkSnapshot(p);
-      var z = (typeof navScale === "number" && navScale) ? navScale : 1;
-      // start from the ACTUAL rendered size (÷ zoom → content units), so the box never jumps
-      var r = el.getBoundingClientRect();
-      var sx = e.clientX, sy = e.clientY, ow = r.width / z, oh = r.height / z;
-      var minW = isW ? 90 : 130, minH = 70;
+      var z = navScale || 1;
+      var sx = e.clientX, sy = e.clientY, ow = clip.w || el.offsetWidth, oh = clip.h || el.offsetHeight;
+      var minW = clip.kind === "vshape" ? 16 : (clip.kind === "shape" || clip.kind === "graph" || clip.kind === "crop") ? 90 : 130;
+      var minH = clip.kind === "vshape" ? 16 : 70;
       var moved = false;
       function mv(ev) {
         moved = true;
@@ -9721,13 +9775,14 @@ function __detabaseMain() {
         el.style.width = clip.w + "px"; el.style.height = clip.h + "px";
         if (clip.kind === "graph" && typeof clip._redraw === "function") clip._redraw();
         if (typeof clip._onResize === "function") clip._onResize();
+        placeItemBar();
       }
       function up() {
         try { rz.releasePointerCapture(e.pointerId); } catch (_) {}
         rz.removeEventListener("pointermove", mv);
         rz.removeEventListener("pointerup", up);
         rz.removeEventListener("pointercancel", up);
-        if (moved) { saveStore(); renderCanvas(); } else undoDrop(p);
+        if (moved) saveStore(); else undoDrop(p);
       }
       rz.addEventListener("pointermove", mv);
       rz.addEventListener("pointerup", up);
@@ -9735,10 +9790,9 @@ function __detabaseMain() {
     });
   }
 
-  // a selected item's edit-mode bar goes away the moment you tap ANYTHING else in the app
-  // (document-level, not just the canvas — the library panel, a toolbar button, a search field)
+  // tapping anywhere else in the app (board, toolbar, Mining panel…) leaves move / use mode
   document.addEventListener("pointerdown", function (e) {
-    if (!e.target.closest(".clip") && !e.target.closest(".shape-pick")) deselectAllClips();
+    if (!e.target.closest(".clip") && !e.target.closest(".shape-pick") && !e.target.closest("#itemBar")) deselectAllClips();
   }, true);
 
 
@@ -9747,19 +9801,29 @@ function __detabaseMain() {
 
   // ---- writing-page gestures: smooth pan / pinch-zoom / wheel-zoom + long-press "add" ----
   function positionMenu(m, sx, sy) {
-    m.style.left = Math.max(6, Math.min(window.innerWidth - 190, sx - 20)) + "px";
-    m.style.top = Math.max(6, Math.min(window.innerHeight - 130, sy - 10)) + "px";
+    m.style.left = Math.max(6, Math.min(window.innerWidth - 250, sx - 20)) + "px";
+    m.style.top = Math.max(6, Math.min(window.innerHeight - 190, sy - 10)) + "px";
     m.classList.add("open");
   }
   function openAddMenuScreen(sx, sy) {
     var m = $("ppAddMenu"); if (!m) return;
     var r = $("ppCanvas").getBoundingClientRect();
-    var cx = (sx - r.left - navTx) / navScale - 130, cy = (sy - r.top - navTy) / navScale - 90;
-    m.innerHTML = '<button data-wa="shape">△  Add shape</button><button data-wa="graph">📈  Add graph</button>';
+    var px = (sx - r.left - navTx) / navScale, py = (sy - r.top - navTy) / navScale;
+    m.innerHTML =
+      '<div class="am-row">' +
+      '<button data-vs="line" title="line">╱</button><button data-vs="tri" title="triangle">△</button><button data-vs="rect" title="rectangle">▭</button>' +
+      '<button data-vs="circle" title="circle">◯</button><button data-vs="ellipse" title="ellipse">⬭</button></div>' +
+      '<button data-wa="shape">📐  Math shape</button><button data-wa="graph">📈  Graph</button>';
+    m.querySelectorAll("[data-vs]").forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.stopPropagation(); m.classList.remove("open");
+        addVShape(b.getAttribute("data-vs"), { x: Math.max(0, px - 80), y: Math.max(0, py - 55) });
+      });
+    });
     m.querySelectorAll("[data-wa]").forEach(function (b) {
       b.addEventListener("click", function (e) {
         e.stopPropagation(); m.classList.remove("open");
-        var pos = { x: Math.max(0, cx), y: Math.max(0, cy) };
+        var pos = { x: Math.max(0, px - 130), y: Math.max(0, py - 90) };
         if (b.getAttribute("data-wa") === "shape") addShape(pos); else addGraph(pos);
       });
     });
@@ -9772,7 +9836,7 @@ function __detabaseMain() {
       if (m && m.classList.contains("open") && !m.contains(e.target)) m.classList.remove("open");
     }, true);
 
-    var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null, wLpT = null, wLpEl = null;
+    var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null;
     function ids() { return Object.keys(pts); }
     // ---- multi-finger tap recognizer: counts EVERY finger on the board (over items too), from the
     // first finger down until the last one lifts. A "tap" = short, no finger travelled; its size is
@@ -9834,20 +9898,6 @@ function __detabaseMain() {
       navTy = (cyp - r.top) - g.cy * s;
       applyNav();
     }
-    function openWidgetMenu(clip, sx, sy) {
-      var mm = $("ppAddMenu"); if (!mm) return;
-      mm.innerHTML = '<button data-wact="dup">⧉  Duplicate</button><button data-wact="del">🗑  Delete</button>';
-      mm.querySelector('[data-wact="dup"]').addEventListener("click", function (ev) {
-        ev.stopPropagation(); mm.classList.remove("open");
-        var p = curProblem(); if (!p) return;
-        inkSel = { strokes: [], clips: [clip.id], box: { x: clip.x || 0, y: clip.y || 0, w: clip.w || 200, h: clip.h || 200 } };
-        inkSelDuplicate(p);
-      });
-      mm.querySelector('[data-wact="del"]').addEventListener("click", function (ev) {
-        ev.stopPropagation(); mm.classList.remove("open"); clipRemove(clip.id);
-      });
-      positionMenu(mm, sx, sy);
-    }
     cv.addEventListener("pointerdown", function (e) {
       if (e.pointerType !== "touch") return;
       if (!document.body.classList.contains("ink-full")) return;
@@ -9860,15 +9910,6 @@ function __detabaseMain() {
       var underClip = clipUnderPoint(e.clientX, e.clientY);
       if (underClip && underClip.classList.contains("sel")) return;
       tapClip = (underClip && ids().length === 0) ? underClip : null;
-      if (underClip && ids().length === 0 && underClip.classList.contains("widget")) {   // long-press a shape/graph → Duplicate / Delete
-        var p0 = curProblem();
-        var clip0 = p0 && (p0.bench || []).filter(function (x) { return x.id === underClip.dataset.clip; })[0];
-        if (clip0) {
-          wLpEl = { x: e.clientX, y: e.clientY };
-          clearTimeout(wLpT);
-          wLpT = setTimeout(function () { wLpT = null; if (ids().length <= 1) { selectClipEl(underClip); openWidgetMenu(clip0, wLpEl.x, wLpEl.y); pts = {}; g = null; tapClip = null; } }, 480);
-        }
-      }
       // finger lasso when the lasso tool is active
       if (!underClip && inkTool === "lasso" && ids().length === 0) {
         lassoId = e.pointerId;
@@ -9878,7 +9919,6 @@ function __detabaseMain() {
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       moved = false;
       clearTimeout(lpT); lpT = null;
-      if (ids().length > 1) { clearTimeout(wLpT); wLpT = null; }
       if (ids().length === 1 && inkTool !== "lasso" && !underClip) {
         lpAt = { x: e.clientX, y: e.clientY };
         lpT = setTimeout(function () {
@@ -9890,7 +9930,6 @@ function __detabaseMain() {
     });
     cv.addEventListener("pointermove", function (e) {
       if (e.pointerType !== "touch") return;
-      if (wLpT && wLpEl && Math.hypot(e.clientX - wLpEl.x, e.clientY - wLpEl.y) > 9) { clearTimeout(wLpT); wLpT = null; }
       if (lassoId === e.pointerId) { e.preventDefault(); lassoTo(ppContentXY(e.clientX, e.clientY)); return; }
       if (!pts[e.pointerId]) return;
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
@@ -9900,7 +9939,6 @@ function __detabaseMain() {
     }, { passive: false });
     function up(e) {
       if (e.pointerType !== "touch") return;
-      clearTimeout(wLpT); wLpT = null;
       if (lassoId === e.pointerId) { lassoId = null; lassoDone(); return; }
       if (!pts[e.pointerId]) return;
       delete pts[e.pointerId];
