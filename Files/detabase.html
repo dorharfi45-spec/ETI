@@ -557,6 +557,29 @@
   .lib-toast.out { opacity: 0; }
   @media (max-width: 560px) { .lw-kinds { grid-template-columns: 1fr; } }
 
+  /* ---- ETI Mining screen: same component, bigger ---- */
+  .eti-mining-btn { display: flex; align-items: center; gap: 8px; width: 100%; margin: 4px 0 10px; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--accent); font-weight: 700; font-size: .95rem; text-align: left; }
+  .eti-mining-btn.on { background: var(--accent); color: #fff; }
+  body:not(.top-eti) #etiMiningBtn { display: none; }
+  .eti-mining { height: calc(100vh - 190px); min-height: 480px; border: 1px solid var(--border-strong); border-radius: 14px; overflow: hidden; background: var(--bg); box-shadow: var(--shadow); margin-top: 10px; }
+  .eti-mining .mp-tabs { padding: 12px 14px 0; }
+  .eti-mining .mp-tabs button { font-size: 1rem; padding: 11px; }
+  .eti-mining .mp-searchrow { padding: 12px 14px; }
+  .eti-mining .mp-search { font-size: 1.05rem; padding: 12px 14px; }
+  .eti-mining .mp-list { padding: 4px 12px 14px; }
+  .eti-mining .mp-name { font-size: .98rem; }
+  .eti-mining .mp-row label { padding: 8px 6px; }
+  .eti-mining .mp-row input[type=checkbox] { width: 24px; height: 24px; }
+  .eti-mining .mp-head { font-size: .78rem; margin: 16px 8px 6px; }
+  .eti-mining .mp-tray { padding: 12px 14px; }
+  .eti-mining .mp-add { font-size: 1rem; padding: 10px 18px; }
+  .mb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 6px; }
+  .mb-card { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-1); text-align: left; color: var(--text-primary); font-size: .86rem; }
+  .mb-card:hover { border-color: var(--accent); }
+  .mb-card .nb-thumb { height: 90px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+  .lw-group { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 10px 2px 4px; }
+
   /* ---- Mining component ---- */
   #nbMining { overflow: hidden; }
   .mp { display: flex; flex-direction: column; height: 100%; min-height: 0; }
@@ -1613,6 +1636,7 @@
     </form>
   </div>
 
+  <button type="button" id="etiMiningBtn" class="eti-mining-btn" title="pick assets from both banks and add them to a board">⛏ Mining</button>
   <div class="sidebar-label" id="subjectsLabel">Subjects</div>
 
   <!-- ETI: groups + subjects as one collapsible tree -->
@@ -2998,6 +3022,10 @@
   </details>
 </div>
 
+<div id="miningPane" hidden>
+  <div id="etiMining" class="eti-mining"></div>
+</div>
+
 <div id="psPane" hidden>
   <div class="ps-crumb" id="psCrumb"></div>
   <div class="cp-head">
@@ -3102,7 +3130,7 @@
   <div id="ppAddMenu">
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B32</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B33</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -5379,7 +5407,7 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
     saveStore();
     renderEtiTree();
     applyView();
@@ -5463,8 +5491,9 @@ function __detabaseMain() {
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onPage = onProblem && isPage(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
-    var onPs = !onProblem && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
-    var builtin = !onProblem && !onPs && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onMining = !onProblem && activeTop === "eti" && miningScreen;
+    var onPs = !onProblem && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
+    var builtin = !onProblem && !onPs && !onMining && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -5485,10 +5514,12 @@ function __detabaseMain() {
       b.classList.toggle("on", b.getAttribute("data-page") === activeProblem);
     });
     $("topfolder-eti").classList.toggle("on", builtin);
-    $("customPane").hidden = onProblem || !activeSubject;
+    $("customPane").hidden = onProblem || onMining || !activeSubject;
     $("psPane").hidden = !onPs;
+    $("miningPane").hidden = !onMining;
+    if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining);
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     Array.prototype.forEach.call(document.querySelectorAll("#psRail button[data-pp]"), function (b) { b.classList.toggle("on", onPs && b.getAttribute("data-pp") === activePsPage); });
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
@@ -5516,7 +5547,12 @@ function __detabaseMain() {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (onPs) {
+    if (onMining) {
+      $("pageTitle").textContent = "Mining";
+      $("pageSubtitle").innerHTML = 'Pick assets from both banks and add them to a notebook board — nothing is taken out of ETI.';
+      history.replaceState(null, "", "#mining");
+      renderMiningScreen();
+    } else if (onPs) {
       var pgx = psPageById(activePsPage);
       $("pageTitle").textContent = pgx.name;
       $("pageSubtitle").innerHTML = 'Problem-solving bank';
@@ -5554,7 +5590,7 @@ function __detabaseMain() {
   }
 
   function selectTop(id) {
-    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null;
+    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
@@ -5568,7 +5604,7 @@ function __detabaseMain() {
   function selectSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; miningScreen = false;
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
       store.ui.group = activeGroup;
@@ -5623,7 +5659,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -8526,7 +8562,7 @@ function __detabaseMain() {
     el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
   }
   function openSubjectRef(key) {
-    activePsPage = null;
+    activePsPage = null; miningScreen = false;
     if (key.slice(0, 2) === "s:") { selectSubject(key.slice(2)); return; }
     var fid = key.slice(2);
     viewingProblem = false; activeTop = "eti"; activeSubject = null; lastEtiFolder = fid;
@@ -8534,7 +8570,7 @@ function __detabaseMain() {
     selectFolder(fid); applyView(); renderEtiTree();
   }
   function openTabRef(tabId, then) {
-    activePsPage = null; viewingProblem = false; activeTop = "eti";
+    activePsPage = null; miningScreen = false; viewingProblem = false; activeTop = "eti";
     var t = tabId.slice(0, 2) === "b:" ? null : byId(store.tabs, tabId);
     if (t && t.subject.slice(0, 2) === "s:") {        // a tab of a custom subject
       store.ui.cpTab = store.ui.cpTab || {}; store.ui.cpTab[t.subject.slice(2)] = t.id;
@@ -8558,11 +8594,11 @@ function __detabaseMain() {
     var uc = byId(store.cards, cardId);
     function focus() { flashEl(elId ? document.querySelector('.ue-block[data-ue="' + elId + '"]') : document.querySelector(uc ? '.ue-card[data-uc="' + cardId + '"]' : '[data-el="' + cardId + '"]')); }
     if (uc) openTabRef(uc.tab, focus);
-    else { activePsPage = null; jumpToCard(cardId); if (elId) setTimeout(focus, 120); }
+    else { activePsPage = null; miningScreen = false; jumpToCard(cardId); if (elId) setTimeout(focus, 120); }
   }
 
   // ---- problem-solving bank: right rail + page view ----
-  var activePsPage = null;
+  var activePsPage = null, miningScreen = false;
   function renderPsRail() {
     var nav = $("psRail"); if (!nav) return;
     libEnsure();
@@ -8593,7 +8629,7 @@ function __detabaseMain() {
   }
   function selectPsPage(id) {
     if (!psPageById(id)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; miningScreen = false;
     applyView(); renderPsRail(); renderEtiTree();
   }
   function renderPsPane() {
@@ -9036,7 +9072,7 @@ function __detabaseMain() {
 
   function jumpToCard(idx) {
     var e = indexById(idx); if (!e) return;
-    viewingProblem = false; activeSubject = null; activeTop = "eti"; activePsPage = null;
+    viewingProblem = false; activeSubject = null; activeTop = "eti"; activePsPage = null; miningScreen = false;
     lastEtiFolder = e.folderId;
     activeGroup = groupOfBuiltin(e.folderId);
     store.ui.group = activeGroup; saveStore();
@@ -10884,7 +10920,11 @@ function __detabaseMain() {
       if (opts.onAdd) opts.onAdd(refs);
     });
     setTab("m"); renderTray();
-    return { render: function () { renderList(); renderTray(); }, clear: function () { state.sel = []; renderTray(); renderList(); } };
+    return {
+      render: function () { renderList(); renderTray(); },
+      clear: function () { state.sel = []; renderTray(); renderList(); },
+      select: function (refs) { state.sel = refs.map(function (r) { return { lvl: r.lvl, id: r.id }; }); renderTray(); renderList(); }
+    };
   }
 
   // ---- rendering a mined asset (live) ----
@@ -11057,6 +11097,44 @@ function __detabaseMain() {
     saveStore();
     selectGroupOnBoard(p, [], kids.map(function (it) { return it.id; }));
   };
+  // ---- ETI's Mining screen: the same component, full size; the target board is chosen on add ----
+  var etiMiningPanel = null;
+  function openMiningScreen() {
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = true;
+    applyView(); renderEtiTree();
+  }
+  function renderMiningScreen() {
+    if (!etiMiningPanel) etiMiningPanel = createMiningPanel($("etiMining"), { addLabel: "Add to a board…", onAdd: chooseBoardAndMine });
+    else etiMiningPanel.render();
+  }
+  function chooseBoardAndMine(refs) {
+    var ov = document.createElement("div");
+    ov.className = "lw-overlay";
+    ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b>Add ' + refs.length + ' asset' + (refs.length === 1 ? '' : 's') + ' to…</b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
+      '<div class="lw-body"><div class="lw-new"><input type="text" maxlength="60" placeholder="New board name…"><button type="button" class="lw-primary">＋ New board</button></div>' +
+      '<div class="lw-group" style="margin-top:14px">Existing boards</div><div class="mb-grid"></div></div></div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); }
+    function go(openBoard) { close(); openBoard(); mineToBoard(refs); libToast("Added " + refs.length + " asset" + (refs.length === 1 ? "" : "s") + " — drag them into place"); }
+    ov.querySelector(".lw-x").addEventListener("click", function () { close(); if (etiMiningPanel) etiMiningPanel.select(refs); });   // cancel keeps the selection
+    var inp = ov.querySelector(".lw-new input");
+    function makeNew() { var n = inp.value.trim(); go(function () { addPage(n); }); }
+    ov.querySelector(".lw-new button").addEventListener("click", makeNew);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") makeNew(); });
+    var grid = ov.querySelector(".mb-grid"), pages = (store.canvases || []).slice();
+    var recent = store.ui.lastPage;
+    pages.sort(function (a, b) { if (a.id === recent) return -1; if (b.id === recent) return 1; return (b.created || 0) - (a.created || 0); });
+    if (!pages.length) grid.innerHTML = '<p class="muted">No boards yet — create one above.</p>';
+    pages.forEach(function (pg) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "mb-card";
+      b.innerHTML = '<div class="nb-thumb">' + canvasThumb(pg.id) + '</div><span>' + escapeHtml(pg.name || "Untitled") + '</span>';
+      b.addEventListener("click", function () { go(function () { selectPage(pg.id); }); });
+      grid.appendChild(b);
+    });
+  }
+  if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
+
   DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return r.lvl === "p" || (refExists(r) && refKids(r).length > 0); };
 
   // tapping anywhere else in the app (board, toolbar, Mining panel…) leaves move / use mode
@@ -11447,6 +11525,8 @@ function __detabaseMain() {
     selectTop("notebook");
   } else if (isPage(initial)) {
     selectPage(initial);
+  } else if (initial === "mining") {
+    openMiningScreen();
   } else if (psPageById(initial)) {
     selectPsPage(initial);
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
