@@ -2998,20 +2998,14 @@
 <div id="problemPane" hidden>
   <div class="pp-toolbar"><span class="muted" id="ppBenchCount"></span></div>
   <div id="ppInkbar" class="ink-toolbar">
-    <button type="button" id="nbLibToggle" class="tool-btn" title="library — clip in subjects, pages &amp; problem methods">📚</button>
-    <button type="button" class="ink-tool" data-inktool="select" title="select — move &amp; edit shapes, graphs and clips">✋</button>
+    <button type="button" id="nbLibToggle" class="tool-btn" title="Mining — add assets to this board">⛏ Mining</button>
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="highlight" title="highlighter">🖍️</button>
     <button type="button" class="ink-tool" data-inktool="erase" title="erase — hold the pencil still on the page (~half a second) to toggle">⌫</button>
     <button type="button" class="ink-tool" data-inktool="lasso" title="lasso — select handwriting, shapes &amp; graphs to move, copy or delete">◌</button>
     <span class="ink-swatches" id="ppInkSwatches"></span>
     <input type="range" id="ppInkW" class="ink-w" min="1" max="16" value="3" title="thickness">
-    <button type="button" id="ppInkUndo" class="tool-btn" title="undo">↶</button>
-    <button type="button" id="ppInkRedo" class="tool-btn" title="redo">↷</button>
-    <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
-    <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B26</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -3020,7 +3014,7 @@
     <button type="button" data-wa="graph">📈  Add graph</button>
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Library</b><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B27</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll">
       <section class="nblib-sec">
         <div class="nblib-lbl">Raw materials</div>
@@ -4907,7 +4901,9 @@ function __detabaseMain() {
     return c;
   }
   function putCanvasLocal(id, c) {
-    var doc = { items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() };
+    // items go through JSON: live graph items carry functions (_redraw…) that IndexedDB can't clone,
+    // which made the whole put fail. Strokes are plain data already (and are never mutated in place).
+    var doc = { items: JSON.parse(JSON.stringify(c.items || [])), ink: c.ink || [], ts: c.ts || Date.now() };
     if (c.nav) doc.nav = c.nav;   // view position is per-device: kept locally, never pushed to the cloud
     window.DBX.put(id, doc);
   }
@@ -8159,6 +8155,25 @@ function __detabaseMain() {
 
   // ---- clips (board items) ----
   var zTop = 10;
+  // item z-order must stay well below the ink layer (4000) — renumber the board's items (keeping
+  // their order) before the counter ever gets close, so nothing gets stuck above the handwriting
+  var Z_CEIL = 3000;
+  function normalizeZ(p) {
+    var items = (p && p.bench) || [];
+    items.slice().sort(function (a, b) { return (a.z || 0) - (b.z || 0); })
+      .forEach(function (it, i) { it.z = 11 + i; });
+    zTop = 10 + items.length;
+    var v = $("ppView");
+    if (v) items.forEach(function (it) {
+      var el = v.querySelector('.clip[data-clip="' + it.id + '"]');
+      if (!el) return;
+      if (el.dataset.baseZ) el.dataset.baseZ = it.z; else el.style.zIndex = it.z;
+    });
+  }
+  function nextZ() {
+    if (zTop >= Z_CEIL) normalizeZ(curProblem());
+    return ++zTop;
+  }
   function getCardHTML(cardId) {
     var el = document.querySelector('[data-idx="' + cardId + '"]');
     if (!el) return null;
@@ -8177,11 +8192,12 @@ function __detabaseMain() {
   function benchAdd(idx, pos) {
     var p = curProblem(); if (!p) return;
     var dup = p.bench.filter(function (x) { return x.cardId === idx && !x.frag; })[0];
-    if (dup) { dup.z = ++zTop; saveStore(); if (viewingProblem && activeProblem === p.id) renderCanvas(); return; }
+    if (dup) { dup.z = nextZ(); saveStore(); if (viewingProblem && activeProblem === p.id) renderCanvas(); return; }
     var e = indexById(idx);
     var pp = pos || nextClipPos(p);
+    inkSnapshot(p);
     p.bench.push({ id: uid("cl_"), cardId: idx, title: e ? e.title : "Card", html: getCardHTML(idx),
-      x: Math.round(pp.x), y: Math.round(pp.y), w: 320, h: 240, z: ++zTop, added: Date.now() });
+      x: Math.round(pp.x), y: Math.round(pp.y), w: 320, h: 240, z: nextZ(), added: Date.now() });
     saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
@@ -8192,6 +8208,7 @@ function __detabaseMain() {
   }
   function clipRemove(clipId) {
     var p = curProblem(); if (!p) return;
+    inkSnapshot(p);
     benchKeep(p, function (x) { return x.id !== clipId; });
     saveStore(); renderCanvas();
   }
@@ -8221,7 +8238,9 @@ function __detabaseMain() {
   function renderProblemPage() {
     var p = curProblem(); if (!p) return;
     if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(p.id);
+    zTop = 10;
     (p.bench || []).forEach(function (c) { if ((c.z || 0) > zTop) zTop = c.z; });
+    if (zTop >= Z_CEIL) normalizeZ(p);
     renderCanvas();
   }
 
@@ -8263,7 +8282,7 @@ function __detabaseMain() {
     if (!p.bench.length && !ink.length) {
       var em = document.createElement("div");
       em.className = "canvas-empty";
-      em.innerHTML = "Blank page.<br>Write with the pencil · pinch to zoom · <b>📚 Library</b> to clip things in · <b>press &amp; hold</b> for a shape or graph.";
+      em.innerHTML = "Blank page.<br>Write with the pencil · pinch to zoom · <b>⛏ Mining</b> to add assets · <b>press &amp; hold</b> for a shape or graph · two-finger double tap = undo, three-finger = redo.";
       canvas.appendChild(em);
     }
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
@@ -8343,18 +8362,37 @@ function __detabaseMain() {
   var inkDrawing = false, inkCur = null, inkLive = null;
   var penDownXY = null, penDownT = 0, penMoved = 0;   // pencil tap / long-press detection
   var _setInkTool = function () {};   // assigned in inkToolbarSetup
+  // ---- board undo / redo: one stack per board covering BOTH ink and items ----
+  // a snapshot = { ink: shallow copy of the stroke array, items: JSON of the items }. Strokes are
+  // treated as immutable (anything that changes one replaces the object), so sharing them is safe
+  // and a snapshot stays cheap even on a page with thousands of strokes.
+  function boardState(k) {
+    var c = loadCanvas(k);
+    return { ink: (c.ink || []).slice(), items: JSON.stringify(c.items || []) };
+  }
+  function boardRestore(p, st) {
+    var c = loadCanvas(p.id);
+    c.ink = st.ink.slice();
+    var items = JSON.parse(st.items);
+    p.bench = c.items; benchKeep(p, function () { return false; });
+    items.forEach(function (it) { p.bench.push(it); });
+    inkSel = null; inkLassoPts = null;
+    saveCanvas(p.id); saveStore();
+    renderCanvas();
+  }
   function inkDoUndo() {
     var p = curProblem(); if (!p) return; var k = p.id;
     if (!inkUndo[k] || !inkUndo[k].length) return;
-    inkRedo[k] = inkRedo[k] || []; inkRedo[k].push(JSON.stringify(loadCanvas(k).ink || []));
-    inkSet(p, JSON.parse(inkUndo[k].pop()));
+    inkRedo[k] = inkRedo[k] || []; inkRedo[k].push(boardState(k));
+    boardRestore(p, inkUndo[k].pop());
   }
   function inkDoRedo() {
     var p = curProblem(); if (!p) return; var k = p.id;
     if (!inkRedo[k] || !inkRedo[k].length) return;
-    inkUndo[k] = inkUndo[k] || []; inkUndo[k].push(JSON.stringify(loadCanvas(k).ink || []));
-    inkSet(p, JSON.parse(inkRedo[k].pop()));
+    inkUndo[k] = inkUndo[k] || []; inkUndo[k].push(boardState(k));
+    boardRestore(p, inkRedo[k].pop());
   }
+  function undoDrop(p) { if (p && inkUndo[p.id]) inkUndo[p.id].pop(); }   // an action that turned out to change nothing
   var inkSel = null;        // committed lasso result: { strokes:[ids], clips:[ids], box:{x,y,w,h} }
   var inkLassoPts = null;   // live lasso polygon (canvas coords) while dragging
 
@@ -8398,9 +8436,12 @@ function __detabaseMain() {
   function inkSelMove(p, dx, dy) {
     if (!inkSel) return;
     var c = loadCanvas(p.id);
-    (c.ink || []).forEach(function (s) {
-      if (inkSel.strokes.indexOf(s.id) < 0) return;
-      s.pts = (s.pts || []).map(function (q) { return [q[0] + dx, q[1] + dy, q[2]]; });
+    // replace (never mutate) moved strokes — undo snapshots share the stroke objects
+    c.ink = (c.ink || []).map(function (s) {
+      if (inkSel.strokes.indexOf(s.id) < 0) return s;
+      var n = {}; for (var key in s) n[key] = s[key];
+      n.pts = (s.pts || []).map(function (q) { return [q[0] + dx, q[1] + dy, q[2]]; });
+      return n;
     });
     (p.bench || []).forEach(function (cl) {
       if (inkSel.clips.indexOf(cl.id) < 0) return;
@@ -8433,7 +8474,7 @@ function __detabaseMain() {
       if (inkSel.clips.indexOf(cl.id) < 0) return;
       var d = JSON.parse(JSON.stringify(cl));
       d.id = uid(cl.kind === "graph" ? "gr_" : cl.kind === "shape" ? "sh_" : "cl_");
-      d.x = (cl.x || 0) + D; d.y = (cl.y || 0) + D; d.z = ++zTop;
+      d.x = (cl.x || 0) + D; d.y = (cl.y || 0) + D; d.z = nextZ();
       p.bench.push(d); nc.push(d.id);
     });
     saveCanvas(p.id); saveStore();
@@ -8443,9 +8484,9 @@ function __detabaseMain() {
   // ---- lasso clipboard (move / copy / cut / paste, Notability-style) ----
   var inkClip = null;      // { strokes:[{color,w,pts}], clips:[obj], w, h }  normalized to (0,0)
   var lassoDrag = null;
-  function ppContentXY(clientX, clientY) {
+  function ppContentXY(clientX, clientY, rect) {
     var cv = $("ppCanvas"); if (!cv) return [0, 0];
-    var r = cv.getBoundingClientRect();
+    var r = rect || cv.getBoundingClientRect();
     var z = (typeof navScale === "number" && navScale) ? navScale : 1;
     var tx = (typeof navTx === "number") ? navTx : 0, ty = (typeof navTy === "number") ? navTy : 0;
     return [(clientX - r.left - tx) / z, (clientY - r.top - ty) / z];
@@ -8454,6 +8495,7 @@ function __detabaseMain() {
     var p = curProblem(); if (!p) return;
     if (inkSel && xy[0] >= inkSel.box.x && xy[0] <= inkSel.box.x + inkSel.box.w &&
         xy[1] >= inkSel.box.y && xy[1] <= inkSel.box.y + inkSel.box.h) {
+      inkSnapshot(p);
       lassoDrag = { mode: "move", last: xy, moved: false };
     } else {
       inkSel = null; inkLassoPts = [xy]; lassoDrag = { mode: "draw" };
@@ -8488,6 +8530,7 @@ function __detabaseMain() {
         inkPasteAt(pts[0][0] - inkClip.w / 2, pts[0][1] - inkClip.h / 2);
       } else { renderInk(p); }
     } else if (d.moved) { saveCanvas(p.id); saveStore(); renderCanvas(); }
+    else undoDrop(p);
   }
   function inkSelCopy(p) {
     if (!p || !inkSel) return;
@@ -8515,7 +8558,7 @@ function __detabaseMain() {
     inkClip.clips.forEach(function (cl) {
       var dd = JSON.parse(JSON.stringify(cl));
       dd.id = uid(cl.kind === "graph" ? "gr_" : cl.kind === "shape" ? "sh_" : "cl_");
-      dd.x = Math.round((cl.x || 0) + cx); dd.y = Math.round((cl.y || 0) + cy); dd.z = ++zTop;
+      dd.x = Math.round((cl.x || 0) + cx); dd.y = Math.round((cl.y || 0) + cy); dd.z = nextZ();
       p.bench.push(dd); nc.push(dd.id);
     });
     saveCanvas(p.id); saveStore();
@@ -8561,6 +8604,9 @@ function __detabaseMain() {
     for (var i = 1; i < s.pts.length; i++) d += " L" + s.pts[i][0].toFixed(1) + " " + s.pts[i][1].toFixed(1);
     return d;
   }
+  // new strokes carry their width (fw), fixed early in the stroke, so it never shifts while writing
+  // and the committed stroke looks exactly like the live one
+  function inkWidthOf(s) { return s.fw != null ? s.fw : inkStrokeWidth(s); }
   function renderInk(p) {
     var il = $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer");
     if (!il) return;
@@ -8569,13 +8615,13 @@ function __detabaseMain() {
     // highlighter first, so pen ink stays readable on top
     ink.forEach(function (s) {
       if (!s.hi) return;
-      h += '<path d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#fde047") +
-        '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>';
+      h += '<path data-ik="' + s.id + '" d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#fde047") +
+        '" stroke-width="' + inkWidthOf(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>';
     });
     ink.forEach(function (s) {
       if (s.hi) return;
-      h += '<path d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#1e293b") +
-        '" stroke-width="' + inkStrokeWidth(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+      h += '<path data-ik="' + s.id + '" d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#1e293b") +
+        '" stroke-width="' + inkWidthOf(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round"/>';
     });
     h += '<path class="ink-live" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
     if (inkLassoPts && inkLassoPts.length > 1)
@@ -8593,38 +8639,86 @@ function __detabaseMain() {
     inkSelToolbar(p);
   }
   function inkSnapshot(p) {
+    if (!p) return;
     var k = p.id;
     inkUndo[k] = inkUndo[k] || [];
-    inkUndo[k].push(JSON.stringify(loadCanvas(k).ink || []));
-    if (inkUndo[k].length > 40) inkUndo[k].shift();
+    inkUndo[k].push(boardState(k));
+    if (inkUndo[k].length > 60) inkUndo[k].shift();
     inkRedo[k] = [];
   }
-  function inkSet(p, arr) { loadCanvas(p.id).ink = arr; saveCanvas(p.id); renderInk(p); }
+  // erase: drop the hit strokes from the doc and just remove their <path>s — no full re-render and
+  // no save per hit; the caller saves once when the pencil lifts
   function inkEraseAt(p, xy) {
-    var ink = loadCanvas(p.id).ink || [], R2 = 13 * 13;
+    var c = loadCanvas(p.id), ink = c.ink || [], R2 = 13 * 13, hit = [];
     var kept = ink.filter(function (s) {
-      return !(s.pts || []).some(function (q) { var dx = q[0] - xy[0], dy = q[1] - xy[1]; return dx * dx + dy * dy < R2; });
+      var pts = s.pts || [], b = s._bb;
+      if (!b) {
+        b = [1e9, 1e9, -1e9, -1e9];
+        for (var i = 0; i < pts.length; i++) { var q0 = pts[i]; if (q0[0] < b[0]) b[0] = q0[0]; if (q0[1] < b[1]) b[1] = q0[1]; if (q0[0] > b[2]) b[2] = q0[0]; if (q0[1] > b[3]) b[3] = q0[1]; }
+        Object.defineProperty(s, "_bb", { value: b, enumerable: false, configurable: true });   // not serialized
+      }
+      if (xy[0] < b[0] - 13 || xy[0] > b[2] + 13 || xy[1] < b[1] - 13 || xy[1] > b[3] + 13) return true;
+      var on = pts.some(function (q) { var dx = q[0] - xy[0], dy = q[1] - xy[1]; return dx * dx + dy * dy < R2; });
+      if (on) hit.push(s.id);
+      return !on;
     });
-    if (kept.length !== ink.length) { loadCanvas(p.id).ink = kept; saveCanvas(p.id); renderInk(p); return true; }
-    return false;
+    if (!hit.length) return false;
+    c.ink = kept;
+    var il = $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer");
+    hit.forEach(function (id) { var el = il && il.querySelector('path[data-ik="' + id + '"]'); if (el) el.remove(); });
+    return true;
   }
   function wireInkCapture(p) {
     var canvas = $("ppCanvas");
     var ic = canvas.querySelector(".ink-capture");
     if (!ic) return;
+    var strokeRect = null;   // canvas rect measured ONCE per stroke — the page can't move while the pen is down
     function P(e) {
       // invert the exact transform we put on #ppView — no getScreenCTM (unreliable inside a
       // CSS-transformed container on iOS Safari, which is what caused the write-offset)
       var pr = (e.pressure && e.pressure > 0 ? e.pressure : 0.5);
-      var xy = ppContentXY(e.clientX, e.clientY);
-      return [xy[0], xy[1], pr];
+      var xy = ppContentXY(e.clientX, e.clientY, strokeRect);
+      return [Math.round(xy[0] * 10) / 10, Math.round(xy[1] * 10) / 10, Math.round(pr * 100) / 100];
     }
-    function liveDraw() {
+    var liveD = "", liveN = 0;   // live path string, grown one segment at a time (not rebuilt per move)
+    var FW_SAMPLES = 6;           // width follows pressure for the first few samples, then stays fixed
+    function liveWidth() {
+      if (inkCur.hi) return Math.max(6, inkCur.w);
+      var pr = 0, n = Math.min(inkCur.pts.length, FW_SAMPLES);
+      for (var i = 0; i < n; i++) pr += inkCur.pts[i][2];
+      return Math.max(0.6, inkCur.w * (0.55 + 0.9 * (pr / (n || 1))));
+    }
+    function liveDraw(full) {
       if (!inkCur || !inkLive) return;
-      inkLive.setAttribute("d", inkPathD(inkCur));
-      inkLive.setAttribute("stroke", inkCur.color);
-      inkLive.setAttribute("stroke-width", inkStrokeWidth(inkCur).toFixed(2));
-      inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.5" : "1");
+      var pts = inkCur.pts;
+      if (full || liveN === 0 || liveN > pts.length) {
+        liveD = inkPathD(inkCur); liveN = pts.length;
+        inkLive.setAttribute("stroke", inkCur.color);
+        inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.5" : "1");
+      } else {
+        for (; liveN < pts.length; liveN++) liveD += " L" + pts[liveN][0].toFixed(1) + " " + pts[liveN][1].toFixed(1);
+      }
+      inkLive.setAttribute("d", liveD);
+      if (inkCur.fw == null) {
+        inkLive.setAttribute("stroke-width", liveWidth().toFixed(2));
+        if (pts.length >= FW_SAMPLES) inkCur.fw = +liveWidth().toFixed(2);
+      }
+    }
+    // commit a finished stroke by adding ONE <path> (highlighter below pen ink) instead of re-rendering the layer
+    function appendStrokePath(s) {
+      var il = inkLive && inkLive.parentNode; if (!il) return false;
+      var el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      el.setAttribute("data-ik", s.id); el.setAttribute("d", inkPathD(s)); el.setAttribute("fill", "none");
+      el.setAttribute("stroke", s.color); el.setAttribute("stroke-width", inkWidthOf(s).toFixed(2));
+      el.setAttribute("stroke-linecap", "round"); el.setAttribute("stroke-linejoin", "round");
+      if (s.hi) {
+        el.setAttribute("stroke-opacity", "0.5");
+        var firstPen = null, kids = il.querySelectorAll("path[data-ik]");
+        for (var i = 0; i < kids.length; i++) if (kids[i].getAttribute("stroke-opacity") !== "0.5") { firstPen = kids[i]; break; }
+        il.insertBefore(el, firstPen || inkLive);
+      } else il.insertBefore(el, inkLive);
+      inkLive.setAttribute("d", "");
+      return true;
     }
     // lasso funcs are module-level (lassoStart/lassoTo/lassoDone) so touch (mountGestures) can drive them too
     // touch = pan / zoom / long-press (handled once, on #ppCanvas — see mountGestures); the pen draws
@@ -8652,29 +8746,37 @@ function __detabaseMain() {
         straightMode = "line";
         inkCur.pts = [start, end];
       }
-      liveDraw();
+      liveDraw(true);
     }
+    var toggleT = null, erasedAny = false;   // pencil-rest toggle timer; did this erase gesture remove anything
+    function cancelToggle() { clearTimeout(toggleT); toggleT = null; }
     ic.addEventListener("pointerdown", function (e) {
       if (!inkMode || e.pointerType === "touch") return;
+      // mouse (desktop) treats items like a finger does: click one to select it instead of drawing over it
+      if (e.pointerType === "mouse" && e.button === 0) {
+        var uc = clipUnderPoint(e.clientX, e.clientY);
+        if (uc) { e.preventDefault(); selectClipEl(uc); return; }
+      }
+      strokeRect = $("ppCanvas").getBoundingClientRect();
       if (inkTool === "lasso") { e.preventDefault(); try { ic.setPointerCapture(e.pointerId); } catch (_) {} lassoStart(P(e)); return; }
       if (inkDrawing) return;                 // pen already down — ignore a second pointer
       e.preventDefault();
       try { ic.setPointerCapture(e.pointerId); } catch (_) {}
       var d0 = P(e);
-      penDownXY = [d0[0], d0[1]]; penDownT = Date.now(); penMoved = 0;
+      penDownXY = [d0[0], d0[1]]; penDownT = Date.now(); penMoved = 0; erasedAny = false;
       inkSnapshot(p);
       inkDrawing = true;
       straightening = false; straightMode = null; straightCenter = null; clearTimeout(holdT); holdT = null;
-      // long-press (pencil held ~still from touch-down) toggles write<->erase. Armed here, before
-      // any movement — pointermove's own hold-to-straighten timer only ever arms AFTER real
-      // movement (a drawn line), so the two can never both be "live" at once: this one gets
-      // cleared the instant the pen actually moves (see pointermove), well before straightening's
-      // own timer would arm. Safe for both pen and highlighter, either direction into/out of erase.
-      if (e.pointerType === "pen") holdT = setTimeout(function () { holdT = null; if (inkDrawing && penMoved < 10) longPressToggle(); }, 500);
-      if (inkTool === "erase") { inkEraseAt(p, d0); return; }
+      // write <-> erase toggle: ONLY when the pencil rests on the page without moving (<10px) for
+      // 500ms. Any movement, or erasing something, cancels it for the rest of this touch — so a long
+      // slow erase or a held dot can never flip the tool mid-gesture.
+      cancelToggle();
+      if (e.pointerType === "pen") toggleT = setTimeout(function () { toggleT = null; if (inkDrawing && penMoved < 10 && !erasedAny) longPressToggle(); }, 500);
+      if (inkTool === "erase") { if (inkEraseAt(p, d0)) { erasedAny = true; cancelToggle(); } return; }
       var hi = inkTool === "highlight";
       inkCur = { id: uid("ik_"), color: hi ? inkHiColor : inkColor, w: hi ? Math.max(10, inkW * 3) : inkW, pts: [d0] };
       if (hi) inkCur.hi = true;
+      liveN = 0;
       liveDraw();
     });
     ic.addEventListener("pointermove", function (e) {
@@ -8691,14 +8793,22 @@ function __detabaseMain() {
       e.preventDefault();
       var coalesced = e.getCoalescedEvents && e.getCoalescedEvents();
       var list = (coalesced && coalesced.length) ? coalesced : [e];
-      if (inkTool === "erase") { list.forEach(function (ev) { inkEraseAt(p, P(ev)); }); return; }
+      function track(xy) {
+        if (penDownXY) { var d = Math.hypot(xy[0] - penDownXY[0], xy[1] - penDownXY[1]); if (d > penMoved) penMoved = d; }
+        if (penMoved >= 10) cancelToggle();
+      }
+      if (inkTool === "erase") {
+        list.forEach(function (ev) { var xy = P(ev); track(xy); if (inkEraseAt(p, xy)) erasedAny = true; });
+        if (erasedAny) cancelToggle();
+        return;
+      }
       if (!inkCur) return;
       var sawRealMove = false;
       list.forEach(function (ev) {
         var xy = P(ev);
         var last = inkCur.pts[inkCur.pts.length - 1];
         if (Math.hypot(xy[0] - last[0], xy[1] - last[1]) > 1.5) sawRealMove = true;
-        if (penDownXY) { var d = Math.hypot(xy[0] - penDownXY[0], xy[1] - penDownXY[1]); if (d > penMoved) penMoved = d; }
+        track(xy);
         if (straightening && straightMode === "line") inkCur.pts = [inkCur.pts[0], xy];   // drag the endpoint live
         else if (straightening && straightMode === "circle") {
           var rr = Math.max(6, Math.hypot(xy[0] - straightCenter[0], xy[1] - straightCenter[1]));
@@ -8710,16 +8820,16 @@ function __detabaseMain() {
         clearTimeout(holdT); holdT = null;
         if (!straightening && penMoved > 22) holdT = setTimeout(tryStraighten, 350);
       }
-      liveDraw();
+      liveDraw(straightening);
     });
-    // fires from the pointerdown-armed hold timer once the pencil has sat ~still for 500ms —
+    // fires from the pointerdown-armed timer once the pencil has rested still for 500ms —
     // a genuine "hold to switch tool" gesture, never a real stroke, so nothing gets committed.
     function longPressToggle() {
       if (!inkDrawing) return;
       inkCur = null;
-      if (inkUndo[p.id]) inkUndo[p.id].pop();   // drop the snapshot taken at pointerdown — nothing was drawn
+      undoDrop(p);   // drop the snapshot taken at pointerdown — nothing was drawn
       inkDrawing = false;
-      renderInk(p);
+      if (inkLive) inkLive.setAttribute("d", "");
       if (inkTool === "erase") _setInkTool(inkPrevWrite || "pen");
       else { inkPrevWrite = inkTool; _setInkTool("erase"); }
     }
@@ -8728,17 +8838,24 @@ function __detabaseMain() {
       if (lassoDrag) { lassoDone(); return; }
       if (!inkDrawing) return;
       inkDrawing = false;
+      cancelToggle();
       clearTimeout(holdT); holdT = null; straightening = false; straightMode = null; straightCenter = null;
       var isPen = e && e.pointerType === "pen";
       var wasTap = isPen && penDownT && (Date.now() - penDownT < 300) && penMoved < 10;
       // a bare tap still needs to draw something — a single captured point becomes a zero-length,
       // round-linecap segment (renders as a filled dot), instead of being silently discarded.
       if (wasTap && inkCur && inkCur.pts.length === 1) inkCur.pts.push(inkCur.pts[0]);
-      if (inkTool !== "erase" && inkCur && inkCur.pts.length > 1) {
+      if (inkTool === "erase") {
+        if (erasedAny) saveCanvas(p.id); else undoDrop(p);   // an erase that removed something is undoable
+      } else if (inkCur && inkCur.pts.length > 1) {
+        if (inkCur.fw == null) inkCur.fw = +liveWidth().toFixed(2);
         var c = loadCanvas(p.id); c.ink = c.ink || []; c.ink.push(inkCur); saveCanvas(p.id);
-      } else if (inkUndo[p.id]) { inkUndo[p.id].pop(); }   // nothing drawn — drop the snapshot
-      inkCur = null;
-      renderInk(p);
+        if (!appendStrokePath(inkCur)) renderInk(p);
+      } else {
+        undoDrop(p);   // nothing drawn — drop the snapshot
+        if (inkLive) inkLive.setAttribute("d", "");
+      }
+      inkCur = null; liveN = 0; strokeRect = null;
       penDownT = 0;
     }
     ic.addEventListener("pointerup", end);
@@ -8784,13 +8901,7 @@ function __detabaseMain() {
       x.addEventListener("click", function () { setInkTool(x.getAttribute("data-inktool")); });
     });
     $("ppInkW").addEventListener("input", function () { inkW = +this.value || 3; });
-    $("ppInkUndo").addEventListener("click", inkDoUndo);
-    $("ppInkRedo").addEventListener("click", inkDoRedo);
-    $("ppInkClear").addEventListener("click", function () {
-      var p = curProblem(); if (!p || !(loadCanvas(p.id).ink || []).length) return;
-      if (!confirm("Erase all handwriting on this board?")) return;
-      inkSnapshot(p); inkSet(p, []);
-    });
+    // undo / redo live on gestures (2- / 3-finger double tap, see mountGestures) and Ctrl+Z / Ctrl+Y
     // ---- full-page writing canvas (the only canvas view) ----
     function enterInkFull() {
       var p = curProblem(); if (!p) return;
@@ -8871,16 +8982,18 @@ function __detabaseMain() {
   function shapeItemsFor(fam) { return (SHAPE_FAMS[fam] || SHAPE_FAMS.tri).items; }
 
   function addShape(pos) {
-    var p = ensureProblem(); pos = pos || nextClipPos(p);
+    var p = ensureProblem(); if (!p) return; pos = pos || nextClipPos(p);
+    inkSnapshot(p);
     p.bench.push({ id: uid("sh_"), kind: "shape", fam: "tri", type: Object.keys(triItems)[0], slider: null,
-      x: Math.round(pos.x), y: Math.round(pos.y), w: 240, h: 220, z: ++zTop, added: Date.now() });
+      x: Math.round(pos.x), y: Math.round(pos.y), w: 240, h: 220, z: nextZ(), added: Date.now() });
     saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
   function addGraph(pos) {
-    var p = ensureProblem(); pos = pos || nextClipPos(p);
+    var p = ensureProblem(); if (!p) return; pos = pos || nextClipPos(p);
+    inkSnapshot(p);
     p.bench.push({ id: uid("gr_"), kind: "graph", fns: [{ expr: "x^2", color: "#2563eb" }], view: { cx: 0, cy: 0, ppu: 32 }, showBar: true,
-      x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: ++zTop, added: Date.now() });
+      x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: nextZ(), added: Date.now() });
     saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
@@ -9413,7 +9526,7 @@ function __detabaseMain() {
     var p = ensureProblem();
     var pp = pos || nextClipPos(p);
     p.bench.push({ id: uid("cl_"), kind: "merged", frag: true, html: html, title: title || "Clip",
-      x: Math.round(pp.x), y: Math.round(pp.y), w: 340, h: 260, z: ++zTop, added: Date.now() });
+      x: Math.round(pp.x), y: Math.round(pp.y), w: 340, h: 260, z: nextZ(), added: Date.now() });
     saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
@@ -9502,7 +9615,13 @@ function __detabaseMain() {
   function wireClip(el, clip, p) {
     var canvas = $("ppCanvas");
     var isW = clip.kind === "shape" || clip.kind === "graph" || clip.kind === "crop";
-    function front() { clip.z = ++zTop; el.style.zIndex = clip.z; saveStore(); }
+    function front() {
+      if (clip.z === zTop) return;   // already on top — no z bump, no save
+      clip.z = nextZ();
+      // a selected item is lifted above the ink capture layer (SEL_Z) — only its resting z changes
+      if (el.classList.contains("sel")) el.dataset.baseZ = clip.z; else el.style.zIndex = clip.z;
+      saveStore();
+    }
     el.addEventListener("pointerdown", function () {
       front();
       if (isW) {
@@ -9564,6 +9683,7 @@ function __detabaseMain() {
       if (e.target.closest("button")) return;
       e.preventDefault(); e.stopPropagation();
       try { head.setPointerCapture(e.pointerId); } catch (_) {}
+      inkSnapshot(p);
       var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0;
       var moved = false, z = (typeof navScale === "number" && navScale) ? navScale : 1;
       function mv(ev) {
@@ -9576,7 +9696,7 @@ function __detabaseMain() {
         document.removeEventListener("pointermove", mv, true);
         document.removeEventListener("pointerup", up, true);
         document.removeEventListener("pointercancel", up, true);
-        if (moved) { saveStore(); renderCanvas(); }
+        if (moved) { saveStore(); renderCanvas(); } else undoDrop(p);
       }
       document.addEventListener("pointermove", mv, true);
       document.addEventListener("pointerup", up, true);
@@ -9587,6 +9707,7 @@ function __detabaseMain() {
     rz.addEventListener("pointerdown", function (e) {
       e.preventDefault(); e.stopPropagation();
       try { rz.setPointerCapture(e.pointerId); } catch (_) {}
+      inkSnapshot(p);
       var z = (typeof navScale === "number" && navScale) ? navScale : 1;
       // start from the ACTUAL rendered size (÷ zoom → content units), so the box never jumps
       var r = el.getBoundingClientRect();
@@ -9606,7 +9727,7 @@ function __detabaseMain() {
         rz.removeEventListener("pointermove", mv);
         rz.removeEventListener("pointerup", up);
         rz.removeEventListener("pointercancel", up);
-        if (moved) { saveStore(); renderCanvas(); }
+        if (moved) { saveStore(); renderCanvas(); } else undoDrop(p);
       }
       rz.addEventListener("pointermove", mv);
       rz.addEventListener("pointerup", up);
@@ -9620,22 +9741,6 @@ function __detabaseMain() {
     if (!e.target.closest(".clip") && !e.target.closest(".shape-pick")) deselectAllClips();
   }, true);
 
-
-  $("ppTidy").addEventListener("click", function () {
-    var p = curProblem(); if (!p || !p.bench.length) return;
-    var cw = $("ppCanvas").clientWidth, colW = 320, gap = 14;
-    var cols = Math.max(1, Math.floor((cw + gap) / (colW + gap)));
-    var colY = [];
-    for (var i = 0; i < cols; i++) colY[i] = 14;
-    p.bench.forEach(function (clip) {
-      var c = colY.indexOf(Math.min.apply(null, colY));
-      clip.x = 14 + c * (colW + gap);
-      clip.y = colY[c];
-      clip.w = colW;
-      colY[c] += (clip.h || 200) + gap;
-    });
-    saveStore(); renderCanvas();
-  });
 
   if ($("nbNewPage")) $("nbNewPage").addEventListener("click", function () { addPage(); });
   if ($("nbBankSearch")) $("nbBankSearch").addEventListener("input", function () { renderNbBank(); });
@@ -9668,14 +9773,48 @@ function __detabaseMain() {
     }, true);
 
     var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null, wLpT = null, wLpEl = null;
-    var twoT0 = 0, twoMid0 = null, twoMoved = false, twoTapLastT = 0, twoTapStreak = false;
     function ids() { return Object.keys(pts); }
-    function handleTwoFingerTap() {
-      var now = Date.now();
-      if (twoTapStreak && now - twoTapLastT < 850) { inkDoUndo(); twoTapLastT = now; }
-      else if (twoTapLastT && now - twoTapLastT < 650) { inkDoUndo(); twoTapLastT = now; twoTapStreak = true; }   // the "twice"
-      else { twoTapLastT = now; twoTapStreak = false; }
+    // ---- multi-finger tap recognizer: counts EVERY finger on the board (over items too), from the
+    // first finger down until the last one lifts. A "tap" = short, no finger travelled; its size is
+    // the MAX number of fingers seen (lifting 3 fingers passes through 2, so we never judge mid-lift).
+    // 2-finger double tap = undo, 3-finger double tap = redo; keep tapping (same count) to repeat.
+    var tap = null, lastTap = { n: 0, t: 0, streak: false }, tapClip = null;
+    var TAP_MS = 320, TAP_GAP = 450, STREAK_GAP = 800, TAP_SLOP = 14;
+    function tapDown(e) {
+      if (!tap) tap = { t0: Date.now(), max: 0, live: {}, moved: false, cancelled: false };
+      tap.live[e.pointerId] = { x: e.clientX, y: e.clientY };
+      tap.max = Math.max(tap.max, Object.keys(tap.live).length);
     }
+    function tapMove(e) {
+      var s = tap && tap.live[e.pointerId]; if (!s) return;
+      if (Math.hypot(e.clientX - s.x, e.clientY - s.y) > TAP_SLOP) tap.moved = true;
+    }
+    function tapUp(e, cancelled) {
+      if (!tap || !tap.live[e.pointerId]) return;
+      if (cancelled) tap.cancelled = true;
+      delete tap.live[e.pointerId];
+      if (Object.keys(tap.live).length) return;
+      var t = tap; tap = null;
+      var isTap = !t.moved && !t.cancelled && Date.now() - t.t0 < TAP_MS;
+      if (!isTap) { lastTap = { n: 0, t: 0, streak: false }; tapClip = null; return; }
+      if (t.max === 1) {   // one-finger tap → select the item under it (a drag pans instead)
+        if (tapClip) selectClipEl(tapClip);
+        tapClip = null;
+        return;
+      }
+      tapClip = null;
+      if (t.max !== 2 && t.max !== 3) return;
+      var now = Date.now(), same = lastTap.n === t.max;
+      var act = t.max === 2 ? inkDoUndo : inkDoRedo;
+      if (same && lastTap.streak && now - lastTap.t < STREAK_GAP) { act(); lastTap.t = now; }
+      else if (same && lastTap.t && now - lastTap.t < TAP_GAP) { act(); lastTap = { n: t.max, t: now, streak: true }; }
+      else lastTap = { n: t.max, t: now, streak: false };
+    }
+    window.__detabaseTapState = function () { return { lastTap: lastTap, tap: tap }; };   // debug hook for local tests
+    cv.addEventListener("pointerdown", function (e) { if (e.pointerType === "touch" && document.body.classList.contains("ink-full")) tapDown(e); }, true);
+    cv.addEventListener("pointermove", function (e) { if (e.pointerType === "touch") tapMove(e); }, true);
+    cv.addEventListener("pointerup", function (e) { if (e.pointerType === "touch") tapUp(e, false); }, true);
+    cv.addEventListener("pointercancel", function (e) { if (e.pointerType === "touch") tapUp(e, true); }, true);
     function two() { var k = ids(), a = pts[k[0]], b = pts[k[1]]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
     function begin() {
       var r = cv.getBoundingClientRect(), k = ids(), ax, ay, ad = 0;
@@ -9688,7 +9827,6 @@ function __detabaseMain() {
       var r = cv.getBoundingClientRect(), k = ids(), cxp, cyp, s = g.s;
       if (k.length >= 2) {
         var t = two(); cxp = t.x; cyp = t.y; if (g.d) s = Math.max(0.25, Math.min(4, g.s * (t.d / g.d)));
-        if (twoMid0 && (Math.abs(s / g.s - 1) > 0.05 || Math.hypot(cxp - twoMid0[0], cyp - twoMid0[1]) > 14)) twoMoved = true;
       }
       else { cxp = pts[k[0]].x; cyp = pts[k[0]].y; }
       navScale = s;
@@ -9714,26 +9852,25 @@ function __detabaseMain() {
       if (e.pointerType !== "touch") return;
       if (!document.body.classList.contains("ink-full")) return;
       if (inkDrawing) return;
-      // a finger touch always reaches whatever clip is visually underneath — e.target here is
-      // always .ink-capture (it sits on top so the pencil can draw over a clip), so hit-test by
-      // point instead of by e.target. Selecting lifts the clip's z above .ink-capture so its own
-      // grip / resize / ✂ / ✕ are reachable on the very next touch, in ANY writing tool.
+      // a finger reaches whatever item is visually underneath — e.target here is usually
+      // .ink-capture (it sits on top so the pencil can draw over items), so hit-test by point.
+      // An item that is ALREADY selected is lifted above .ink-capture and handles its own touches
+      // (drag / resize / buttons). An unselected one is only a candidate: it gets selected if the
+      // finger lifts as a tap (see tapUp) — dragging from it pans the page like anywhere else.
       var underClip = clipUnderPoint(e.clientX, e.clientY);
-      if (underClip) {
-        selectClipEl(underClip);
-        if (underClip.classList.contains("widget")) {   // long-press a shape/graph/crop → Duplicate / Delete
-          var p0 = curProblem();
-          var clip0 = p0 && (p0.bench || []).filter(function (x) { return x.id === underClip.dataset.clip; })[0];
-          if (clip0) {
-            wLpEl = { x: e.clientX, y: e.clientY };
-            clearTimeout(wLpT);
-            wLpT = setTimeout(function () { wLpT = null; openWidgetMenu(clip0, wLpEl.x, wLpEl.y); }, 480);
-          }
+      if (underClip && underClip.classList.contains("sel")) return;
+      tapClip = (underClip && ids().length === 0) ? underClip : null;
+      if (underClip && ids().length === 0 && underClip.classList.contains("widget")) {   // long-press a shape/graph → Duplicate / Delete
+        var p0 = curProblem();
+        var clip0 = p0 && (p0.bench || []).filter(function (x) { return x.id === underClip.dataset.clip; })[0];
+        if (clip0) {
+          wLpEl = { x: e.clientX, y: e.clientY };
+          clearTimeout(wLpT);
+          wLpT = setTimeout(function () { wLpT = null; if (ids().length <= 1) { selectClipEl(underClip); openWidgetMenu(clip0, wLpEl.x, wLpEl.y); pts = {}; g = null; tapClip = null; } }, 480);
         }
-        return;   // don't also start a pan / lasso / long-press-add gesture over a clip
       }
       // finger lasso when the lasso tool is active
-      if (inkTool === "lasso" && ids().length === 0) {
+      if (!underClip && inkTool === "lasso" && ids().length === 0) {
         lassoId = e.pointerId;
         lassoStart(ppContentXY(e.clientX, e.clientY));
         return;
@@ -9741,8 +9878,8 @@ function __detabaseMain() {
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       moved = false;
       clearTimeout(lpT); lpT = null;
-      if (ids().length === 2) { twoT0 = Date.now(); var tw = two(); twoMid0 = [tw.x, tw.y]; twoMoved = false; }
-      if (ids().length === 1 && inkTool !== "lasso") {
+      if (ids().length > 1) { clearTimeout(wLpT); wLpT = null; }
+      if (ids().length === 1 && inkTool !== "lasso" && !underClip) {
         lpAt = { x: e.clientX, y: e.clientY };
         lpT = setTimeout(function () {
           lpT = null;
@@ -9766,10 +9903,8 @@ function __detabaseMain() {
       clearTimeout(wLpT); wLpT = null;
       if (lassoId === e.pointerId) { lassoId = null; lassoDone(); return; }
       if (!pts[e.pointerId]) return;
-      var wasN = ids().length;
       delete pts[e.pointerId];
       clearTimeout(lpT); lpT = null;
-      if (wasN === 2 && !twoMoved && twoT0 && Date.now() - twoT0 < 340) handleTwoFingerTap();
       if (ids().length >= 1) begin(); else { g = null; navSave(); }
     }
     cv.addEventListener("pointerup", up);
@@ -10086,9 +10221,33 @@ const canvasSubs = {};     // id -> unsubscribe
 function deadIds() { const s = localStore(); return new Set(s.deadCanvases || []); }
 function canvasLocal(id) { return (window.DBX && window.DBX.get(id)) || null; }
 function canvasLocalTs(id) { const d = canvasLocal(id); return (d && d.ts) || 0; }
-function applyCanvas(id, d) {
+// Cloud format v2: Firestore rejects nested arrays (every stroke's pts is [[x,y,p],…]) and function
+// values (live graph items), so a canvas travels as a JSON string. A doc is capped at 1 MiB, so a
+// long string is split: the main doc holds part 0 + the part count, parts 1… live in
+// "canvas_<id>__p<n>" docs stamped with the same updatedAt (written BEFORE the main doc).
+const CHUNK = 250000;   // chars — ≤ ~750 KB even if every char were 3-byte UTF-8
+const partRef = (id, n) => doc(db, "sync", "canvas_" + id + "__p" + n);
+const canvasParts = {};  // id -> part count we last saw/wrote (to clean up leftovers)
+function isCanvasDoc(d) { return !!d && (d.v === 2 ? typeof d.j === "string" : !!d.data); }
+async function decodeCanvas(id, d) {
+  if (d.v !== 2) return { items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [] };
+  let s = d.j;
+  const n = d.parts || 1;
+  for (let i = 1; i < n; i++) {
+    const ps = await getDoc(partRef(id, i));
+    if (!ps.exists() || ps.data().updatedAt !== d.updatedAt) throw new Error("canvas part " + i + " not ready");
+    s += ps.data().j;
+  }
+  canvasParts[id] = n;
+  const o = JSON.parse(s);
+  return { items: o.items || [], ink: o.ink || [] };
+}
+async function applyCanvas(id, d) {
+  let body;
+  try { body = await decodeCanvas(id, d); } catch (e) { if (window.console) console.error("cloud canvas decode:", e); return; }
   const prev = canvasLocal(id);
-  const docv = { items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [], ts: d.updatedAt || Date.now() };
+  if (prev && (prev.ts || 0) >= (d.updatedAt || 0)) return;   // a newer local edit landed meanwhile
+  const docv = { items: body.items, ink: body.ink, ts: d.updatedAt || Date.now() };
   if (prev && prev.nav) docv.nav = prev.nav;
   window.DBX.put(id, docv);
   if (typeof window.onCloudCanvas === "function") { try { window.onCloudCanvas(id); } catch (e) {} }
@@ -10097,14 +10256,25 @@ window.cloudSaveCanvas = async function (id, data) {
   if (!user || deadIds().has(id)) return;
   const ts = Date.now();
   try {
-    await setDoc(canvasRef(id), { data: { items: data.items || [], ink: data.ink || [] }, updatedAt: ts, updatedBy: (navigator.platform || "device") });
+    const s = JSON.stringify({ items: data.items || [], ink: data.ink || [] });
+    const n = Math.max(1, Math.ceil(s.length / CHUNK));
+    for (let i = 1; i < n; i++) await setDoc(partRef(id, i), { j: s.slice(i * CHUNK, (i + 1) * CHUNK), updatedAt: ts });
+    await setDoc(canvasRef(id), { v: 2, j: s.slice(0, CHUNK), parts: n, updatedAt: ts, updatedBy: (navigator.platform || "device") });
     canvasPushed[id] = ts;
+    const had = canvasParts[id] || 1;
+    canvasParts[id] = n;
+    for (let i = n; i < had; i++) { try { await deleteDoc(partRef(id, i)); } catch (e) {} }
     await setDoc(indexRef, { m: { [id]: ts } }, { merge: true });
   } catch (e) { if (window.console) console.error("cloud canvas push:", e); }
 };
 window.cloudDeleteCanvas = async function (id) {
   if (canvasSubs[id]) { try { canvasSubs[id](); } catch (e) {} delete canvasSubs[id]; }
   if (!user) return;
+  try {
+    const snap = await getDoc(canvasRef(id));
+    const n = (snap.exists() && snap.data().parts) || canvasParts[id] || 1;
+    for (let i = 1; i < n; i++) { try { await deleteDoc(partRef(id, i)); } catch (e) {} }
+  } catch (e) {}
   try { await deleteDoc(canvasRef(id)); } catch (e) {}
   try { await updateDoc(indexRef, { ["m." + id]: deleteField() }); } catch (e) {}
 };
@@ -10115,7 +10285,7 @@ window.cloudOpenCanvas = async function (id) {
     const snap = await getDoc(canvasRef(id));
     if (snap.exists()) {
       const d = snap.data();
-      if (d && d.data && (d.updatedAt || 0) > canvasLocalTs(id)) applyCanvas(id, d);
+      if (isCanvasDoc(d) && (d.updatedAt || 0) > canvasLocalTs(id)) await applyCanvas(id, d);
     } else if (canvasLocalTs(id) > 0) {
       window.cloudSaveCanvas(id, canvasLocal(id));
     }
@@ -10124,7 +10294,7 @@ window.cloudOpenCanvas = async function (id) {
     canvasSubs[id] = onSnapshot(canvasRef(id), (snap) => {
       if (!snap.exists()) return;
       const d = snap.data();
-      if (!d || !d.data) return;
+      if (!isCanvasDoc(d)) return;
       if ((d.updatedAt || 0) === canvasPushed[id]) return;
       if ((d.updatedAt || 0) <= canvasLocalTs(id)) return;
       applyCanvas(id, d);
@@ -10155,7 +10325,7 @@ async function sweepCanvases() {
       const rts = snap.exists() ? (snap.data().updatedAt || 0) : 0;
       if (lts > rts) await window.cloudSaveCanvas(id, canvasLocal(id));
       else if (snap.exists()) {
-        if (rts > lts) applyCanvas(id, snap.data());
+        if (rts > lts && isCanvasDoc(snap.data())) await applyCanvas(id, snap.data());
         await setDoc(indexRef, { m: { [id]: rts } }, { merge: true });
       }
     });
@@ -10164,10 +10334,10 @@ async function sweepCanvases() {
   await inBatches(live, 6, async (id) => {
     const lts = canvasLocalTs(id), rts = remote[id] || 0;
     if (lts > rts) await window.cloudSaveCanvas(id, canvasLocal(id));
-    else if (rts > lts) { const snap = await getDoc(canvasRef(id)); if (snap.exists()) applyCanvas(id, snap.data()); }
+    else if (rts > lts) { const snap = await getDoc(canvasRef(id)); if (snap.exists() && isCanvasDoc(snap.data())) await applyCanvas(id, snap.data()); }
   });
   const missing = Object.keys(remote).filter((id) => !dead.has(id) && !canvasLocal(id));
-  await inBatches(missing, 6, async (id) => { const snap = await getDoc(canvasRef(id)); if (snap.exists()) applyCanvas(id, snap.data()); });
+  await inBatches(missing, 6, async (id) => { const snap = await getDoc(canvasRef(id)); if (snap.exists() && isCanvasDoc(snap.data())) await applyCanvas(id, snap.data()); });
 }
 
 const $ = (id) => document.getElementById(id);
