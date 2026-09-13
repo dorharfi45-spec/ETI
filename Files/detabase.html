@@ -364,7 +364,7 @@
 
   /* ---- library panel inside the writing page ---- */
   #nbLib {
-    position: fixed; top: calc(54px + env(safe-area-inset-top)); left: 0; bottom: 0; width: min(340px, 86vw); z-index: 4300;
+    position: fixed; top: calc(54px + env(safe-area-inset-top)); left: 0; bottom: 0; width: min(400px, 92vw); z-index: 4300;
     background: var(--bg); border-right: 1px solid var(--border-strong); box-shadow: var(--shadow);
     display: flex; flex-direction: column; transform: translateX(-102%); transition: transform .18s ease;
   }
@@ -556,6 +556,55 @@
   .lib-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 7000; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: .9rem; box-shadow: var(--shadow); transition: opacity .5s; }
   .lib-toast.out { opacity: 0; }
   @media (max-width: 560px) { .lw-kinds { grid-template-columns: 1fr; } }
+
+  /* ---- Mining component ---- */
+  #nbMining { overflow: hidden; }
+  .mp { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  .mp-tabs { display: flex; gap: 4px; padding: 8px 10px 0; }
+  .mp-tabs button { flex: 1; padding: 8px 6px; border-radius: 9px 9px 0 0; border: 1px solid var(--border); border-bottom: none; background: var(--surface-1); color: var(--text-muted); font-weight: 600; font-size: .86rem; }
+  .mp-tabs button.on { background: var(--bg); color: var(--accent); border-color: var(--border-strong); }
+  .mp-searchrow { padding: 8px 10px; border-top: 1px solid var(--border-strong); }
+  .mp-search { width: 100%; box-sizing: border-box; padding: 9px 11px; border-radius: 9px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font-size: .92rem; }
+  .mp-list { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 6px 10px; -webkit-overflow-scrolling: touch; }
+  .mp-head { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 12px 6px 4px; }
+  .mp-sub { font-size: .8rem; font-weight: 700; color: var(--text-secondary); margin: 8px 6px 2px 14px; }
+  .mp-empty { margin: 14px 8px; font-size: .86rem; }
+  .mp-row { display: flex; align-items: center; gap: 4px; padding-top: 2px; padding-bottom: 2px; padding-right: 6px; border-radius: 8px; }
+  .mp-row:hover { background: var(--surface-1); }
+  .mp-row label { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 6px 4px; cursor: pointer; }
+  .mp-row input[type=checkbox] { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--accent); }
+  .mp-name { min-width: 0; font-size: .88rem; color: var(--text-primary); line-height: 1.3; }
+  .mp-name small { display: block; font-size: .72rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mp-caret, .mp-caret-sp { width: 26px; height: 26px; flex-shrink: 0; }
+  .mp-caret { border: none; background: transparent; color: var(--text-muted); font-size: .7rem; border-radius: 6px; transition: transform .12s; }
+  .mp-caret.open { transform: rotate(90deg); }
+  .mp-lvl { display: inline-block; font-size: .6rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-right: 6px; vertical-align: 1px; background: var(--surface-2); color: var(--text-muted); }
+  .mp-lvl.lvl-s { background: #dbeafe; color: #1d4ed8; } .mp-lvl.lvl-t { background: #dcfce7; color: #15803d; }
+  .mp-lvl.lvl-c { background: #fef3c7; color: #b45309; } .mp-lvl.lvl-e { background: #fae8ff; color: #a21caf; }
+  .mp-lvl.lvl-p { background: #ffe4e6; color: #be123c; }
+  .mp-tray { border-top: 1px solid var(--border-strong); padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: var(--surface-1); }
+  .mp-tray-items { display: flex; flex-wrap: wrap; gap: 4px; max-height: 22vh; overflow-y: auto; }
+  .mp-tray.has .mp-tray-items { margin-bottom: 8px; }
+  .mp-chip { display: inline-flex; align-items: center; gap: 2px; padding: 3px 4px 3px 6px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); font-size: .78rem; max-width: 100%; }
+  .mp-chip button { border: none; background: transparent; color: var(--text-muted); padding: 0 4px; }
+  .mp-tray-foot { display: flex; align-items: center; gap: 8px; }
+  .mp-count { flex: 1; font-size: .8rem; color: var(--text-muted); }
+  .mp-clear { border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); border-radius: 8px; padding: 7px 10px; }
+  .mp-add { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 8px 14px; font-weight: 700; }
+  .mp-add:disabled { opacity: .4; }
+  /* mined asset on a board: a live, scaled picture of the library content */
+  .clip.asset { background: var(--bg); }
+  .clip.asset .clip-body { padding: 0; position: relative; }
+  .asset-host { position: absolute; left: 0; top: 0; }
+  .asset-body { box-sizing: border-box; padding: 10px 12px; transform-origin: 0 0; font-size: .86rem; line-height: 1.55; }
+  .asset-body > h3, .asset-body > h4 { margin: 0 0 8px; border: none; padding: 0; font-size: .98rem; }
+  .asset-body .card, .asset-body .tool, .asset-body .subject { margin: 0 0 10px; box-shadow: none; }
+  .asset-body .asset-card { margin: 0 0 10px; }
+  .asset-body .asset-card > h4 { margin: 0 0 6px; font-size: .92rem; }
+  .asset-body .asset-el { margin: 6px 0; }
+  .asset-body .asset-tabs { margin: 0; padding-left: 18px; }
+  .clip.asset.lvl-e { border-style: dashed; }
+  .clip.asset.lvl-s { background: color-mix(in srgb, #dbeafe 45%, var(--bg)); }
   .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
   .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: transparent; display: block; }
   .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
@@ -3053,14 +3102,8 @@
   <div id="ppAddMenu">
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B31</span><button id="nbLibClose" type="button" title="close">✕</button></div>
-    <div class="nblib-scroll">
-      <section class="nblib-sec">
-        <div class="nblib-lbl">Raw materials</div>
-        <input id="libRawSearch" class="nblib-search" placeholder="Search the reference…" autocomplete="off">
-        <div id="libRawResults" class="nblib-results"></div>
-      </section>
-    </div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B32</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
 
@@ -8143,31 +8186,6 @@ function __detabaseMain() {
     });
   }
 
-  // ---- library panel (in the writing page) ----
-  // Interim version: search the ETI reference and drop a result straight onto the open board.
-  // Replaced by the shared Mining component (search + both banks + multi-select) in a later stage.
-  function nbHitRow(title, sub, onAdd) {
-    var d = document.createElement("div");
-    d.className = "nblib-hit";
-    d.innerHTML = '<span class="h-t">' + escapeHtml(title) + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '') + '</span><button title="add to this board">＋</button>';
-    d.querySelector("button").addEventListener("click", onAdd);
-    return d;
-  }
-  function renderNbLibRawResults() {
-    var box = $("libRawResults"); if (!box) return;
-    if (!searchIndex.length) { try { buildIndex(); } catch (e) {} }
-    var q = ($("libRawSearch").value || "").trim();
-    box.innerHTML = "";
-    if (!q) return;
-    runSearch(q, []).filter(function (e) { return e.kind !== "tab"; }).slice(0, 12).forEach(function (e) {
-      box.appendChild(nbHitRow(e.title, (e.folder || "") + (e.tab ? " · " + e.tab : ""), function () {
-        var libEl = $("nbLib"); if (libEl) libEl.classList.remove("open");
-        startClipMode(e.id);
-      }));
-    });
-  }
-  function renderNbLib() { renderNbLibRawResults(); }
-
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
   // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
   function canvasDocs() { libEnsure(); return (store.canvases || []).concat(store.elements, store.ps.pages); }
@@ -8924,7 +8942,7 @@ function __detabaseMain() {
     }
     function stepName() {
       var refs = [], seen = {};
-      content.items.forEach(function (it) { var r = itemAssetRef(it); if (r && !seen[r.lvl + r.id]) { seen[r.lvl + r.id] = 1; refs.push(r); } });
+      content.items.forEach(function (it) { var r = itemAssetRef(it); if (r && r.lvl !== "p" && !seen[r.lvl + r.id]) { seen[r.lvl + r.id] = 1; refs.push(r); } });
       var body = wizSet("Page name",
         '<p class="lw-hint">Everything in the selection is copied into the page; mined assets are linked both ways.</p>' +
         '<div class="lw-new"><input type="text" maxlength="80" placeholder="Name this method…"></div>' +
@@ -9079,10 +9097,10 @@ function __detabaseMain() {
   // the DOM for one board item (no interaction wiring) — used by the board and the static renderer
   function buildItemEl(clip, p) {
     var kind = clip.kind || "clip";
-    var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape";
+    var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape", isA = kind === "asset";
     var isW = isShape || isGraph || isCrop;
     var el = document.createElement("div");
-    el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "");
+    el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "") + (isA ? " asset lvl-" + ((clip.ref || {}).lvl || "") : "");
     el.style.left = (clip.x || 0) + "px";
     el.style.top = (clip.y || 0) + "px";
     el.style.width = (clip.w || 300) + "px";
@@ -9095,6 +9113,7 @@ function __detabaseMain() {
     else if (isGraph) body = '<div class="graph-host"></div>';
     else if (isCrop) body = '<div class="crop-host"></div>';
     else if (isV) body = vshapeSvg(clip);
+    else if (isA) body = '<div class="asset-host"></div>';
     else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
     // no chrome on the item itself — move mode adds the outline, corner handle and #itemBar
     el.innerHTML = '<div class="clip-body">' + body + '</div><div class="clip-resize" title="resize"></div>';
@@ -9102,6 +9121,7 @@ function __detabaseMain() {
     if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
     if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
     if (isCrop) renderCropWidget(el.querySelector(".crop-host"), clip);
+    if (isA) { try { renderAssetInto(el.querySelector(".asset-host"), clip); } catch (e) { if (window.console) console.error("asset render:", e); } }
     return el;
   }
   function renderCanvas() {
@@ -9785,22 +9805,22 @@ function __detabaseMain() {
         inkPasteAt((r.width / 2 - navTx) / navScale - inkClip.w / 2, (r.height / 2 - navTy) / navScale - inkClip.h / 2);
       }
     });
-    // ---- library panel (raw materials + problem solving) ----
-    var lib = $("nbLib");
+    // ---- Mining panel (shared component: search + both banks + multi-select) ----
+    var lib = $("nbLib"), miningPanel = null;
     if (lib) {
       $("nbLibToggle").addEventListener("click", function () {
         var open = !lib.classList.contains("open");
         lib.hidden = false;
-        if (open) renderNbLib();
-        requestAnimationFrame(function () { lib.classList.toggle("open", open); });
+        if (open) {
+          if (!miningPanel) miningPanel = createMiningPanel($("nbMining"), {
+            addLabel: "Add to this board",
+            onAdd: function (refs) { lib.classList.remove("open"); mineToBoard(refs); }
+          });
+          else miningPanel.render();
+        }
+        setTimeout(function () { lib.classList.toggle("open", open); }, 16);
       });
       $("nbLibClose").addEventListener("click", function () { lib.classList.remove("open"); });
-      var rawT;
-      $("libRawSearch").addEventListener("input", function () { clearTimeout(rawT); rawT = setTimeout(renderNbLibRawResults, 160); });
-      // hide results on blur (delayed so a tap on a result's own "＋" still registers first),
-      // restore on refocus if there's still a query
-      $("libRawSearch").addEventListener("blur", function () { setTimeout(function () { var b = $("libRawResults"); if (b) b.innerHTML = ""; }, 150); });
-      $("libRawSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibRawResults(); });
     }
 
   })();
@@ -10553,8 +10573,10 @@ function __detabaseMain() {
       btns.push({ id: "done", label: "✓ Done", run: function () { exitUseMode(el, clip, p); showItemBar(el, clip, p); } });
     } else {
       btns.push({ id: "dup", label: "⧉", title: "duplicate", run: function () { itemDuplicate(p, clip); } });
-      if (DECOMPOSE[clip.kind]) btns.push({ id: "split", label: "⤓ Decompose", run: function () { DECOMPOSE[clip.kind](p, clip); } });
-      if (clip.cardId) btns.push({ id: "open", label: "↗", title: "open the source in ETI", run: function () { jumpToCard(clip.cardId); } });
+      var dc = DECOMPOSE[clip.kind];
+      if (dc && (!dc.can || dc.can(clip))) btns.push({ id: "split", label: "⤓ Decompose", run: function () { hideItemBar(); dc(p, clip); } });
+      if (clip.kind === "asset" && clip.ref) btns.push({ id: "open", label: "↗", title: "open it in ETI", run: function () { var r = clip.ref; if (r.lvl === "p") selectPsPage(r.id); else openRef(r); } });
+      else if (clip.cardId) btns.push({ id: "open", label: "↗", title: "open the source in ETI", run: function () { jumpToCard(clip.cardId); } });
       btns.push({ id: "del", label: "🗑", title: "delete", run: function () { selItemId = null; useItemId = null; hideItemBar(); clipRemove(clip.id); } });
       if (um) btns.push({ hint: "hold to use" });
     }
@@ -10664,6 +10686,378 @@ function __detabaseMain() {
       rz.addEventListener("pointercancel", up);
     });
   }
+
+  // ============================================================
+  // MINING — one component for both banks (the notebook's Mining panel; ETI's Mining screen reuses it)
+  // Board item for a mined asset: { kind:"asset", ref:{lvl,id}, baseW, x,y,w,h } — a live REFERENCE,
+  // rendered from the library every time (built-in content straight from the ETI DOM, custom content
+  // from its canvas docs). Decompose replaces it by the level below. Adding never touches ETI.
+  // Extra ref level "p" = a problem-solving page.
+  // ============================================================
+  var ASSET_LV = { s: "Subject", t: "Tab", c: "Card", e: "Element", p: "Problem page" };
+  function refKey(r) { return r.lvl + "|" + r.id; }
+  function refExists(ref) {
+    if (ref.lvl === "p") return !!psPageById(ref.id);
+    if (ref.lvl === "e") return !!byId(store.elements, ref.id);
+    if (ref.lvl === "c") return !!byId(store.cards, ref.id) || !!document.querySelector('[data-el="' + ref.id + '"]');
+    if (ref.lvl === "t") return ref.id.slice(0, 2) === "b:" ? !!$("pane-" + ref.id.slice(2)) : !!byId(store.tabs, ref.id);
+    return ref.id.slice(0, 2) === "f:" ? builtinFolderIds().indexOf(ref.id.slice(2)) >= 0 : !!byId(store.subjects, ref.id.slice(2));
+  }
+  function refLabel(ref) { return ref.lvl === "p" ? ((psPageById(ref.id) || {}).name || "(deleted page)") : refName(ref); }
+  function refKids(ref) {
+    if (ref.lvl === "s") return libTabs(ref.id).map(function (x) { return { lvl: "t", id: x.id }; });
+    if (ref.lvl === "t") return libCards(ref.id).map(function (x) { return { lvl: "c", id: x.id }; });
+    if (ref.lvl === "c") return libElements(ref.id).map(function (x) { return { lvl: "e", id: x.id }; });
+    return [];
+  }
+  function refParent(ref) {
+    if (ref.lvl === "e") { var e = byId(store.elements, ref.id); return e ? { lvl: "c", id: e.card } : null; }
+    if (ref.lvl === "c") {
+      var c = byId(store.cards, ref.id);
+      if (c) return { lvl: "t", id: c.tab };
+      return ref.id.indexOf(":") > 0 ? { lvl: "t", id: "b:" + ref.id.split(":")[0] } : null;
+    }
+    if (ref.lvl === "t") {
+      if (ref.id.slice(0, 2) === "b:") { var f = folderForTab(ref.id.slice(2)); return f ? { lvl: "s", id: "f:" + f } : null; }
+      var t = byId(store.tabs, ref.id); return t ? { lvl: "s", id: t.subject } : null;
+    }
+    return null;
+  }
+  function refPath(ref) {
+    var names = [], r = refParent(ref), guard = 0;
+    while (r && guard++ < 5) { names.unshift(refName(r)); r = refParent(r); }
+    return names.join(" › ");
+  }
+  // flat index of every material node, rebuilt on demand (a few hundred entries)
+  function materialIndex() {
+    var out = [];
+    allSubjectKeys().forEach(function (sk) {
+      var sref = { lvl: "s", id: sk };
+      out.push({ ref: sref, name: refName(sref) });
+      libTabs(sk).forEach(function (t) {
+        var tref = { lvl: "t", id: t.id };
+        out.push({ ref: tref, name: t.name });
+        libCards(t.id).forEach(function (c) {
+          out.push({ ref: { lvl: "c", id: c.id }, name: c.name });
+          libElements(c.id).forEach(function (e) { out.push({ ref: { lvl: "e", id: e.id }, name: e.name }); });
+        });
+      });
+    });
+    return out;
+  }
+  function problemIndex() {
+    libEnsure();
+    return store.ps.pages.map(function (pg) {
+      var st = byId(store.ps.subtopics, pg.subtopic), tp = st && byId(store.ps.topics, st.topic);
+      var assetNames = (pg.assets || []).map(refName).join(" ");
+      return { ref: { lvl: "p", id: pg.id }, name: pg.name, path: (tp ? tp.name : "") + (st ? " › " + st.name : ""),
+        hay: [pg.name, st && st.name, tp && tp.name, assetNames].join(" ").toLowerCase(), assets: assetNames };
+    });
+  }
+  function searchEntries(list, q, hayOf) {
+    var toks = q.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!toks.length) return [];
+    var scored = [];
+    list.forEach(function (en) {
+      var name = en.name.toLowerCase(), hay = hayOf(en), score = 0;
+      for (var i = 0; i < toks.length; i++) {
+        var inName = name.indexOf(toks[i]) >= 0;
+        if (!inName && hay.indexOf(toks[i]) < 0) return;
+        score += inName ? 3 : 1;
+      }
+      if (name === q.toLowerCase().trim()) score += 5;
+      scored.push({ en: en, score: score });
+    });
+    scored.sort(function (a, b) { return b.score - a.score; });
+    return scored.slice(0, 50).map(function (x) { return x.en; });
+  }
+
+  function createMiningPanel(host, opts) {
+    opts = opts || {};
+    var state = { tab: "m", q: "", sel: [], open: {} };
+    host.innerHTML =
+      '<div class="mp">' +
+      '<div class="mp-tabs"><button type="button" data-t="m">🧱 Material</button><button type="button" data-t="p">🧩 Problem solving</button></div>' +
+      '<div class="mp-searchrow"><input type="search" class="mp-search" placeholder="Search by name…" autocomplete="off"></div>' +
+      '<div class="mp-list"></div>' +
+      '<div class="mp-tray"><div class="mp-tray-items"></div>' +
+      '<div class="mp-tray-foot"><span class="mp-count"></span><button type="button" class="mp-clear">Clear</button>' +
+      '<button type="button" class="mp-add">' + escapeHtml(opts.addLabel || "Add to board") + '</button></div></div>' +
+      '</div>';
+    var list = host.querySelector(".mp-list"), search = host.querySelector(".mp-search");
+    function isSel(r) { return state.sel.some(function (x) { return refKey(x) === refKey(r); }); }
+    function toggle(r) {
+      if (isSel(r)) state.sel = state.sel.filter(function (x) { return refKey(x) !== refKey(r); });
+      else state.sel.push({ lvl: r.lvl, id: r.id });
+      renderTray();
+      Array.prototype.forEach.call(host.querySelectorAll('.mp-row[data-k="' + cssEsc(refKey(r)) + '"] input'), function (cb) { cb.checked = isSel(r); });
+    }
+    function cssEsc(s) { return String(s).replace(/["\\]/g, "\\$&"); }
+    function row(ref, name, sub, depth, kids) {
+      var d = document.createElement("div");
+      d.className = "mp-row"; d.setAttribute("data-k", refKey(ref));
+      d.style.paddingLeft = (6 + depth * 16) + "px";
+      var open = !!state.open[refKey(ref)];
+      d.innerHTML =
+        (kids ? '<button type="button" class="mp-caret' + (open ? " open" : "") + '">▶</button>' : '<span class="mp-caret-sp"></span>') +
+        '<label><input type="checkbox"' + (isSel(ref) ? " checked" : "") + '><span class="mp-name"><span class="mp-lvl lvl-' + ref.lvl + '">' + ASSET_LV[ref.lvl] + '</span>' + escapeHtml(name) +
+        (sub ? '<small>' + escapeHtml(sub) + '</small>' : '') + '</span></label>';
+      d.querySelector("input").addEventListener("change", function () { toggle(ref); });
+      var caret = d.querySelector(".mp-caret");
+      if (caret) caret.addEventListener("click", function () { state.open[refKey(ref)] = !state.open[refKey(ref)]; renderList(); });
+      return d;
+    }
+    function heading(txt) { var h = document.createElement("div"); h.className = "mp-head"; h.textContent = txt; return h; }
+    function empty(txt) { var p = document.createElement("p"); p.className = "muted mp-empty"; p.textContent = txt; return p; }
+    function addNode(ref, depth) {
+      var kids = refKids(ref);
+      list.appendChild(row(ref, refName(ref), "", depth, kids.length));
+      if (state.open[refKey(ref)]) kids.forEach(function (k) { addNode(k, depth + 1); });
+    }
+    function renderList() {
+      var scroll = list.scrollTop;
+      list.innerHTML = "";
+      var q = state.q.trim();
+      if (state.tab === "m") {
+        if (q) {
+          var hits = searchEntries(materialIndex(), q, function (en) { return (en.name + " " + refPath(en.ref)).toLowerCase(); });
+          if (!hits.length) list.appendChild(empty("No material matches “" + q + "”."));
+          hits.forEach(function (en) { list.appendChild(row(en.ref, en.name, refPath(en.ref), 0, 0)); });
+        } else {
+          allGroupIds().forEach(function (g) {
+            var keys = groupSubjectKeys(g); if (!keys.length) return;
+            list.appendChild(heading(groupName(g)));
+            keys.forEach(function (k) { addNode({ lvl: "s", id: k }, 0); });
+          });
+        }
+      } else {
+        libEnsure();
+        if (q) {
+          var ph = searchEntries(problemIndex(), q, function (en) { return en.hay; });
+          if (!ph.length) list.appendChild(empty("No problem page matches “" + q + "”."));
+          ph.forEach(function (en) { list.appendChild(row(en.ref, en.name, en.path + (en.assets ? " · uses " + en.assets : ""), 0, 0)); });
+        } else if (!store.ps.topics.length) {
+          list.appendChild(empty("No problem-solving pages yet — save one from a board with the lasso and 📚."));
+        } else {
+          store.ps.topics.forEach(function (tp) {
+            list.appendChild(heading(tp.name));
+            store.ps.subtopics.filter(function (st) { return st.topic === tp.id; }).forEach(function (st) {
+              var sh = document.createElement("div"); sh.className = "mp-sub"; sh.textContent = st.name; list.appendChild(sh);
+              store.ps.pages.filter(function (pg) { return pg.subtopic === st.id; }).forEach(function (pg) {
+                list.appendChild(row({ lvl: "p", id: pg.id }, pg.name, (pg.assets || []).length ? "uses " + pg.assets.map(refName).join(", ") : "", 1, 0));
+              });
+            });
+          });
+        }
+      }
+      list.scrollTop = scroll;
+    }
+    function renderTray() {
+      var box = host.querySelector(".mp-tray-items");
+      box.innerHTML = "";
+      state.sel.forEach(function (r) {
+        var ch = document.createElement("span");
+        ch.className = "mp-chip";
+        ch.innerHTML = '<span class="mp-lvl lvl-' + r.lvl + '">' + ASSET_LV[r.lvl] + '</span>' + escapeHtml(refLabel(r)) + '<button type="button" title="remove">✕</button>';
+        ch.querySelector("button").addEventListener("click", function () { toggle(r); });
+        box.appendChild(ch);
+      });
+      host.querySelector(".mp-count").textContent = state.sel.length ? state.sel.length + " selected" : "Tick items to add them";
+      host.querySelector(".mp-add").disabled = !state.sel.length;
+      host.querySelector(".mp-clear").hidden = !state.sel.length;
+      host.querySelector(".mp-tray").classList.toggle("has", !!state.sel.length);
+    }
+    function setTab(t) {
+      state.tab = t;
+      Array.prototype.forEach.call(host.querySelectorAll(".mp-tabs button"), function (b) { b.classList.toggle("on", b.getAttribute("data-t") === t); });
+      search.placeholder = t === "m" ? "Search material by name…" : "Search pages, topics, linked assets…";
+      renderList();
+    }
+    Array.prototype.forEach.call(host.querySelectorAll(".mp-tabs button"), function (b) { b.addEventListener("click", function () { setTab(b.getAttribute("data-t")); }); });
+    var st;
+    search.addEventListener("input", function () { clearTimeout(st); st = setTimeout(function () { state.q = search.value; renderList(); }, 140); });
+    host.querySelector(".mp-clear").addEventListener("click", function () { state.sel = []; renderTray(); renderList(); });
+    host.querySelector(".mp-add").addEventListener("click", function () {
+      var refs = state.sel.filter(refExists);
+      if (!refs.length) return;
+      state.sel = []; renderTray(); renderList();
+      if (opts.onAdd) opts.onAdd(refs);
+    });
+    setTab("m"); renderTray();
+    return { render: function () { renderList(); renderTray(); }, clear: function () { state.sel = []; renderTray(); renderList(); } };
+  }
+
+  // ---- rendering a mined asset (live) ----
+  function cloneForAsset(nodes) {
+    var wrap = document.createElement("div");
+    nodes.forEach(function (n) {
+      var c = n.cloneNode(true);
+      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls").forEach(function (x) { x.remove(); });
+      c.querySelectorAll("details").forEach(function (d) { d.open = true; });
+      if (c.tagName === "DETAILS") c.open = true;
+      c.removeAttribute("id"); c.removeAttribute("data-idx"); c.removeAttribute("data-ck"); c.removeAttribute("data-el");
+      c.querySelectorAll("[id]").forEach(function (x) { x.removeAttribute("id"); });
+      // interactive tools become a still picture of their current drawing
+      var live = n.querySelectorAll("canvas"), cl = c.querySelectorAll("canvas");
+      for (var i = 0; i < live.length && i < cl.length; i++) {
+        try {
+          if (live[i].width && live[i].height) {
+            var img = document.createElement("img");
+            img.src = live[i].toDataURL(); img.style.width = (live[i].clientWidth || live[i].width) + "px"; img.style.maxWidth = "100%";
+            cl[i].parentNode.replaceChild(img, cl[i]);
+          }
+        } catch (e) {}
+      }
+      wrap.appendChild(c);
+    });
+    return wrap;
+  }
+  function docStaticFor(id, w) {
+    var doc = canvasCache[id] || window.DBX.get(id);
+    if (!doc) { var ph = document.createElement("div"); ph.className = "doc-empty"; ph.textContent = "Syncing…"; return ph; }
+    return renderDocStatic(doc, w);
+  }
+  function assetBody(ref, baseW) {
+    var d = document.createElement("div");
+    d.className = "asset-body lvl-" + ref.lvl;
+    d.style.width = baseW + "px";
+    if (!refExists(ref)) { d.innerHTML = '<p class="muted">(this asset was deleted from the library)</p>'; return d; }
+    var inner = baseW - 24;
+    function cardInto(host, cardId) {
+      var uc = byId(store.cards, cardId);
+      var box = document.createElement("div"); box.className = "asset-card";
+      if (uc) box.insertAdjacentHTML("beforeend", '<h4>' + escapeHtml(uc.name) + '</h4>');
+      else box.appendChild(cloneForAsset(Array.prototype.slice.call(document.querySelectorAll('[data-el="' + cardId + '"]'))));
+      libElements(cardId).forEach(function (e) {
+        var eb = document.createElement("div"); eb.className = "asset-el";
+        eb.appendChild(docStaticFor(e.id, inner - 12));
+        box.appendChild(eb);
+      });
+      host.appendChild(box);
+    }
+    if (ref.lvl === "e") {
+      d.appendChild(docStaticFor(ref.id, baseW - 8));
+    } else if (ref.lvl === "p") {
+      var pg = psPageById(ref.id);
+      d.insertAdjacentHTML("beforeend", '<h4>🧩 ' + escapeHtml(pg.name) + '</h4>');
+      d.appendChild(docStaticFor(pg.id, inner));
+    } else if (ref.lvl === "c") {
+      cardInto(d, ref.id);
+    } else if (ref.lvl === "t") {
+      d.insertAdjacentHTML("beforeend", '<h3>' + escapeHtml(tabLabel(ref.id)) + '</h3>');
+      if (ref.id.slice(0, 2) === "b:") {
+        var pane = $("pane-" + ref.id.slice(2));
+        var nodes = Array.prototype.filter.call(pane ? pane.children : [], function (ch) { return !ch.matches("h2, .accordion-controls, .ue-extra"); });
+        d.appendChild(cloneForAsset(nodes));
+        store.cards.filter(function (c) { return c.tab === ref.id; }).forEach(function (c) { cardInto(d, c.id); });
+      } else {
+        libCards(ref.id).forEach(function (c) { cardInto(d, c.id); });
+      }
+    } else {   // a subject: a compact tile — its tabs, not all its content
+      var tabs = libTabs(ref.id);
+      d.insertAdjacentHTML("beforeend", '<h3>📚 ' + escapeHtml(subjectName(ref.id)) + '</h3><ul class="asset-tabs">' +
+        tabs.map(function (t) { return '<li>' + escapeHtml(t.name) + '</li>'; }).join("") + '</ul>');
+    }
+    return d;
+  }
+  function renderAssetInto(host, clip) {
+    var baseW = clip.baseW || clip.w || 380;
+    var body = assetBody(clip.ref || {}, baseW);
+    host.innerHTML = "";
+    host.appendChild(body);
+    function applyScale() { body.style.transform = "scale(" + ((clip.w || baseW) / baseW).toFixed(4) + ")"; }
+    applyScale();
+    clip._onResize = applyScale;
+    try { prettyFractions(body); } catch (e) {}
+  }
+  // natural size of an asset rendered at baseW (measured off-screen)
+  function measureAsset(ref, baseW) {
+    var m = document.createElement("div");
+    m.className = "clip asset";
+    m.style.cssText = "position:fixed;left:-20000px;top:0;visibility:hidden;height:auto;width:" + baseW + "px";
+    var bodyEl = document.createElement("div"); bodyEl.className = "clip-body";
+    bodyEl.appendChild(assetBody(ref, baseW));
+    m.appendChild(bodyEl);
+    document.body.appendChild(m);
+    var h = bodyEl.firstChild.offsetHeight || 160;
+    m.remove();
+    return h;
+  }
+  function assetBaseW(ref) {
+    if (ref.lvl === "e" || ref.lvl === "p") {
+      var doc = canvasCache[ref.id] || window.DBX.get(ref.id), b = doc && docBBox(doc);
+      var w = b ? b[2] - b[0] + 20 : 320;
+      return Math.round(Math.max(160, Math.min(640, w + (ref.lvl === "p" ? 24 : 8))));
+    }
+    return { c: 400, t: 520, s: 280 }[ref.lvl] || 400;
+  }
+  var ASSET_MAX_H = 760;
+  function makeAssetItem(ref) {
+    var baseW = assetBaseW(ref), h = measureAsset(ref, baseW), w = baseW;
+    if (h > ASSET_MAX_H) { w = Math.round(baseW * ASSET_MAX_H / h); h = ASSET_MAX_H; }   // tall assets land as a smaller picture
+    return { id: uid("as_"), kind: "asset", ref: { lvl: ref.lvl, id: ref.id }, baseW: baseW, x: 0, y: 0, w: w, h: Math.round(h * (w === baseW ? 1 : 1)), z: nextZ(), added: Date.now() };
+  }
+  // lay blocks out left→right in rows, starting at (x0, y0)
+  function layoutBlocks(items, x0, y0, rowW) {
+    var x = x0, y = y0, rowH = 0, gap = 24;
+    items.forEach(function (it) {
+      if (x > x0 && x - x0 + it.w > rowW) { x = x0; y += rowH + gap; rowH = 0; }
+      it.x = Math.round(x); it.y = Math.round(y);
+      x += it.w + gap; rowH = Math.max(rowH, it.h);
+    });
+  }
+  // select a set of board objects as one lasso group, ready to move
+  function selectGroupOnBoard(p, strokeIds, clipIds) {
+    var c = loadCanvas(p.id), b = [1e9, 1e9, -1e9, -1e9];
+    (c.ink || []).forEach(function (s) { if (strokeIds.indexOf(s.id) < 0) return; (s.pts || []).forEach(function (q) { b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); }); });
+    p.bench.forEach(function (it) { if (clipIds.indexOf(it.id) < 0) return; b[0] = Math.min(b[0], it.x); b[1] = Math.min(b[1], it.y); b[2] = Math.max(b[2], it.x + it.w); b[3] = Math.max(b[3], it.y + it.h); });
+    selItemId = null; useItemId = null;
+    _setInkTool("lasso");
+    inkSel = b[0] < 1e9 ? { strokes: strokeIds, clips: clipIds, box: { x: b[0] - 6, y: b[1] - 6, w: b[2] - b[0] + 12, h: b[3] - b[1] + 12 }, lasso: null } : null;
+    renderCanvas();
+  }
+  function mineToBoard(refs) {
+    var p = curProblem(); if (!p || !refs.length) return;
+    inkSnapshot(p);
+    var cv = $("ppCanvas"), z = navScale || 1;
+    var x0 = Math.max(0, (40 - navTx) / z), y0 = Math.max(0, (40 - navTy) / z), rowW = Math.max(320, ((cv.clientWidth || 900) - 80) / z);
+    var items = refs.map(makeAssetItem);
+    layoutBlocks(items, x0, y0, rowW);
+    items.forEach(function (it) { p.bench.push(it); });
+    saveStore();
+    selectGroupOnBoard(p, [], items.map(function (it) { return it.id; }));
+  }
+  // decompose: Subject → Tabs → Cards → Elements; a problem page → its content back on the board
+  DECOMPOSE.asset = function (p, clip) {
+    var ref = clip.ref || {};
+    inkSnapshot(p);
+    benchKeep(p, function (x) { return x.id !== clip.id; });
+    if (ref.lvl === "p") {
+      var doc = canvasCache[ref.id] || window.DBX.get(ref.id);
+      if (!doc) { undoDrop(p); p.bench.push(clip); libToast("That page hasn't synced yet"); return; }
+      var s = (clip.w || clip.baseW) / (clip.baseW || clip.w || 1), c = loadCanvas(p.id), sIds = [], cIds = [];
+      var b = docBBox(doc) || [0, 0, 0, 0], ox = clip.x + 12 - b[0], oy = clip.y + 40 - b[1];
+      (doc.ink || []).forEach(function (sk) {
+        var n = JSON.parse(JSON.stringify(sk)); n.id = uid("ik_");
+        n.pts = n.pts.map(function (q) { return [Math.round((q[0] + ox) * 10) / 10, Math.round((q[1] + oy) * 10) / 10, q[2]]; });
+        c.ink.push(n); sIds.push(n.id);
+      });
+      (doc.items || []).forEach(function (it) {
+        var n = JSON.parse(JSON.stringify(it)); n.id = uid("it_"); n.x = Math.round(it.x + ox); n.y = Math.round(it.y + oy); n.z = nextZ();
+        p.bench.push(n); cIds.push(n.id);
+      });
+      void s;
+      saveCanvas(p.id); saveStore();
+      selectGroupOnBoard(p, sIds, cIds);
+      return;
+    }
+    var kids = refKids(ref).map(makeAssetItem);
+    layoutBlocks(kids, clip.x, clip.y, Math.max(600, clip.w * 1.6));
+    kids.forEach(function (it) { p.bench.push(it); });
+    saveStore();
+    selectGroupOnBoard(p, [], kids.map(function (it) { return it.id; }));
+  };
+  DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return r.lvl === "p" || (refExists(r) && refKids(r).length > 0); };
 
   // tapping anywhere else in the app (board, toolbar, Mining panel…) leaves move / use mode
   document.addEventListener("pointerdown", function (e) {
