@@ -2975,7 +2975,7 @@
   <div id="ppAddMenu">
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B28</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B29</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll">
       <section class="nblib-sec">
         <div class="nblib-lbl">Raw materials</div>
@@ -4908,7 +4908,21 @@ function __detabaseMain() {
   // echo of this SAME device's own just-saved write, which typically comes back 1-3s later.
   // Never rebuild the canvas the user is mid-stroke on; the data still updates in memory and the
   // next real render picks it up.
+  // a board update from another device never lands mid-gesture: replacing the doc under a live
+  // drag / lasso / stroke / use mode is what broke them. It waits and is applied once the board is idle.
+  var cloudPending = {}, itemGesture = false;
+  function boardBusy() { return inkDrawing || !!lassoDrag || itemGesture || !!useItemId || !!inkSel; }
+  function flushCloudPending() {
+    if (boardBusy()) return;
+    Object.keys(cloudPending).forEach(function (id) {
+      delete cloudPending[id];
+      var d = window.DBX.get(id), c = canvasCache[id];
+      if (d && (!c || (d.ts || 0) > (c.ts || 0))) window.onCloudCanvas(id);
+    });
+  }
+  setInterval(function () { for (var k in cloudPending) { flushCloudPending(); return; } }, 800);
   window.onCloudCanvas = function (id) {
+    if (activeProblem === id && boardBusy()) { cloudPending[id] = 1; return; }
     var navKeep = canvasCache[id] && canvasCache[id].nav;
     delete canvasCache[id];
     var fresh = loadCanvas(id);
@@ -8304,7 +8318,7 @@ function __detabaseMain() {
   // INK — Apple Pencil / mouse handwriting on the canvas
   // strokes live in loadCanvas(id).ink = [{ id, color, w, pts:[[x,y,pressure],…] }]
   // ============================================================
-  var inkMode = false, inkTool = "pen", inkColor = "#1e293b", inkW = 3;
+  var inkMode = false, inkTool = "pen", inkColor = "#2563eb", inkW = 3;
   var inkHiColor = "#fde047", inkPrevWrite = "pen";   // highlighter colour + last writing tool (for the pencil double-tap)
   var inkUndo = {}, inkRedo = {};
   var inkDrawing = false, inkCur = null, inkLive = null;
@@ -8824,7 +8838,7 @@ function __detabaseMain() {
 
   (function inkToolbarSetup() {
     var bar = $("ppInkbar"); if (!bar) return;
-    var PEN_COLORS = ["#1e293b", "#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed"];
+    var PEN_COLORS = ["#2563eb", "#dc2626", "#1e293b", "#16a34a", "#d97706", "#7c3aed"];
     var HI_COLORS = ["#fde047", "#fca5a5", "#86efac", "#7dd3fc", "#f9a8d4", "#fdba74"];
     var sw = $("ppInkSwatches");
     function renderSwatches() {
@@ -9727,6 +9741,7 @@ function __detabaseMain() {
       e.preventDefault(); e.stopPropagation();
       try { el.setPointerCapture(e.pointerId); } catch (_) {}
       inkSnapshot(p);
+      itemGesture = true;
       var sx = e.clientX, sy = e.clientY, ox = clip.x || 0, oy = clip.y || 0, moved = false, pid = e.pointerId;
       var z = navScale || 1;
       var holdT = USE_MODES[clip.kind] ? setTimeout(function () {
@@ -9744,6 +9759,7 @@ function __detabaseMain() {
       }
       function finish() {
         clearTimeout(holdT); holdT = null;
+        itemGesture = false;
         el.removeEventListener("pointermove", mv);
         el.removeEventListener("pointerup", up);
         el.removeEventListener("pointercancel", up);
@@ -9763,6 +9779,7 @@ function __detabaseMain() {
       e.preventDefault(); e.stopPropagation();
       try { rz.setPointerCapture(e.pointerId); } catch (_) {}
       inkSnapshot(p);
+      itemGesture = true;
       var z = navScale || 1;
       var sx = e.clientX, sy = e.clientY, ow = clip.w || el.offsetWidth, oh = clip.h || el.offsetHeight;
       var minW = clip.kind === "vshape" ? 16 : (clip.kind === "shape" || clip.kind === "graph" || clip.kind === "crop") ? 90 : 130;
@@ -9778,6 +9795,7 @@ function __detabaseMain() {
         placeItemBar();
       }
       function up() {
+        itemGesture = false;
         try { rz.releasePointerCapture(e.pointerId); } catch (_) {}
         rz.removeEventListener("pointermove", mv);
         rz.removeEventListener("pointerup", up);
@@ -9836,7 +9854,7 @@ function __detabaseMain() {
       if (m && m.classList.contains("open") && !m.contains(e.target)) m.classList.remove("open");
     }, true);
 
-    var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null;
+    var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null, lassoPend = null;
     function ids() { return Object.keys(pts); }
     // ---- multi-finger tap recognizer: counts EVERY finger on the board (over items too), from the
     // first finger down until the last one lifts. A "tap" = short, no finger travelled; its size is
@@ -9862,7 +9880,9 @@ function __detabaseMain() {
       var isTap = !t.moved && !t.cancelled && Date.now() - t.t0 < TAP_MS;
       if (!isTap) { lastTap = { n: 0, t: 0, streak: false }; tapClip = null; return; }
       if (t.max === 1) {   // one-finger tap → select the item under it (a drag pans instead)
-        if (tapClip) selectClipEl(tapClip);
+        // look the item up again by id — the board may have re-rendered since the finger went down
+        var live = tapClip && $("ppView") && $("ppView").querySelector('.clip[data-clip="' + tapClip.dataset.clip + '"]');
+        if (live) selectClipEl(live);
         tapClip = null;
         return;
       }
@@ -9910,16 +9930,24 @@ function __detabaseMain() {
       var underClip = clipUnderPoint(e.clientX, e.clientY);
       if (underClip && underClip.classList.contains("sel")) return;
       tapClip = (underClip && ids().length === 0) ? underClip : null;
-      // finger lasso when the lasso tool is active
-      if (!underClip && inkTool === "lasso" && ids().length === 0) {
-        lassoId = e.pointerId;
-        lassoStart(ppContentXY(e.clientX, e.clientY));
+      // lasso tool + one finger: moving draws a lasso (from where the finger landed); holding still
+      // opens the add menu, like in every other tool; a second finger turns it into pan / pinch
+      if (lassoPend) {
+        clearTimeout(lpT); lpT = null;
+        pts[lassoPend.id] = { x: lassoPend.x, y: lassoPend.y };
+        lassoPend = null;
+      } else if (!underClip && inkTool === "lasso" && ids().length === 0 && lassoId == null) {
+        lassoPend = { id: e.pointerId, x: e.clientX, y: e.clientY };
+        lpT = setTimeout(function () {
+          lpT = null;
+          if (lassoPend) { var lp = lassoPend; lassoPend = null; openAddMenuScreen(lp.x, lp.y); }
+        }, 480);
         return;
       }
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       moved = false;
       clearTimeout(lpT); lpT = null;
-      if (ids().length === 1 && inkTool !== "lasso" && !underClip) {
+      if (ids().length === 1 && !underClip) {
         lpAt = { x: e.clientX, y: e.clientY };
         lpT = setTimeout(function () {
           lpT = null;
@@ -9930,6 +9958,14 @@ function __detabaseMain() {
     });
     cv.addEventListener("pointermove", function (e) {
       if (e.pointerType !== "touch") return;
+      if (lassoPend && lassoPend.id === e.pointerId) {
+        e.preventDefault();
+        if (Math.hypot(e.clientX - lassoPend.x, e.clientY - lassoPend.y) <= 9) return;
+        clearTimeout(lpT); lpT = null;
+        lassoId = e.pointerId;
+        lassoStart(ppContentXY(lassoPend.x, lassoPend.y));
+        lassoPend = null;
+      }
       if (lassoId === e.pointerId) { e.preventDefault(); lassoTo(ppContentXY(e.clientX, e.clientY)); return; }
       if (!pts[e.pointerId]) return;
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
@@ -9939,6 +9975,7 @@ function __detabaseMain() {
     }, { passive: false });
     function up(e) {
       if (e.pointerType !== "touch") return;
+      if (lassoPend && lassoPend.id === e.pointerId) { lassoPend = null; clearTimeout(lpT); lpT = null; return; }
       if (lassoId === e.pointerId) { lassoId = null; lassoDone(); return; }
       if (!pts[e.pointerId]) return;
       delete pts[e.pointerId];
@@ -10292,13 +10329,16 @@ async function applyCanvas(id, d) {
 }
 window.cloudSaveCanvas = async function (id, data) {
   if (!user || deadIds().has(id)) return;
-  const ts = Date.now();
+  // stamp the push with the LOCAL doc's timestamp and remember it BEFORE writing: Firestore fires
+  // our own onSnapshot immediately (pending write), and that echo must be recognized as ours —
+  // otherwise every save came back as a "remote update" and reloaded the board mid-gesture
+  const ts = data.ts || Date.now();
+  canvasPushed[id] = ts;
   try {
     const s = JSON.stringify({ items: data.items || [], ink: data.ink || [] });
     const n = Math.max(1, Math.ceil(s.length / CHUNK));
     for (let i = 1; i < n; i++) await setDoc(partRef(id, i), { j: s.slice(i * CHUNK, (i + 1) * CHUNK), updatedAt: ts });
     await setDoc(canvasRef(id), { v: 2, j: s.slice(0, CHUNK), parts: n, updatedAt: ts, updatedBy: (navigator.platform || "device") });
-    canvasPushed[id] = ts;
     const had = canvasParts[id] || 1;
     canvasParts[id] = n;
     for (let i = n; i < had; i++) { try { await deleteDoc(partRef(id, i)); } catch (e) {} }
@@ -10330,7 +10370,7 @@ window.cloudOpenCanvas = async function (id) {
   } catch (e) { if (window.console) console.error("cloud canvas open:", e); }
   if (!canvasSubs[id]) {
     canvasSubs[id] = onSnapshot(canvasRef(id), (snap) => {
-      if (!snap.exists()) return;
+      if (!snap.exists() || snap.metadata.hasPendingWrites) return;   // a local write, not another device
       const d = snap.data();
       if (!isCanvasDoc(d)) return;
       if ((d.updatedAt || 0) === canvasPushed[id]) return;
@@ -10407,9 +10447,9 @@ function sameStore(a, b) {
 async function pushLocal() {
   if (!user || pendingRemote) return;
   const ts = Date.now();
+  lastPushedTs = ts;   // before the write — the local snapshot echo fires before setDoc resolves
   try {
     await setDoc(ref, { store: localStore(), updatedAt: ts, updatedBy: (navigator.platform || "device") });
-    lastPushedTs = ts;
     try { localStorage.setItem(TS_KEY, String(ts)); } catch (e) {}
     setBadge("☁ " + shortName() + " · saved", "good");
   } catch (e) {
@@ -10512,7 +10552,7 @@ async function onSignedIn(u) {
   if (!snapBound) {
     snapBound = true;
     onSnapshot(ref, (snap) => {
-      if (applying || !snap.exists()) return;
+      if (applying || !snap.exists() || snap.metadata.hasPendingWrites) return;
       const d = snap.data();
       if (!d || !d.store) return;
       if ((d.updatedAt || 0) === lastPushedTs) return;      // our own write echoed back
