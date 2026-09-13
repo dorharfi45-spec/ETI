@@ -580,6 +580,35 @@
   .mb-card .nb-thumb { height: 90px; background: var(--bg); border-radius: 6px; overflow: hidden; }
   .lw-group { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 10px 2px 4px; }
 
+  /* ---- ETI management ---- */
+  .lib-bar { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 4px 0 6px; padding: 6px 10px; border-radius: 10px; background: var(--surface-1); border: 1px solid var(--border); }
+  .lb-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .lb-row b { font-size: .88rem; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 2px; }
+  .lb-row .mp-lvl { margin: 0; }
+  .lb-row button { border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); border-radius: 7px; padding: 4px 9px; font-size: .8rem; }
+  .lb-row button:hover { color: var(--accent); border-color: var(--accent); }
+  .lb-row button.danger:hover, .lib-menu button.danger:hover, .tool-btn.danger:hover { color: #dc2626; border-color: #dc2626; }
+  .lib-dots { border: none; background: transparent; color: var(--text-muted); font-size: 1rem; line-height: 1; padding: 2px 7px; margin-left: 6px; border-radius: 6px; vertical-align: middle; font-weight: 700; }
+  .lib-dots:hover { background: var(--surface-2); color: var(--accent); }
+  .used-badge { border: 1px solid #fecdd3; background: #fff1f2; color: #be123c; font-size: .72rem; border-radius: 999px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; font-weight: 600; }
+  .card > h4 .lib-dots, .card > h4 .used-badge { float: right; margin-top: -2px; }
+  .ue-head .lib-dots { margin-left: 2px; }
+  .lib-menu { position: fixed; z-index: 7500; min-width: 210px; max-width: 320px; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 11px; box-shadow: var(--shadow); padding: 5px; display: flex; flex-direction: column; }
+  .lib-menu .lm-head { font-size: .72rem; color: var(--text-muted); font-weight: 700; padding: 5px 9px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lib-menu button { text-align: left; border: none; background: transparent; padding: 9px 10px; border-radius: 8px; font-size: .9rem; color: var(--text-primary); }
+  .lib-menu button:hover { background: var(--surface-1); color: var(--accent); }
+  .lib-menu button:disabled { opacity: .45; }
+  .lib-menu button.danger { color: #dc2626; }
+  .lib-menu hr { border: none; border-top: 1px solid var(--border); margin: 4px 2px; }
+  .eti-hidden-btn { margin: 6px 0; border: 1px dashed var(--border-strong); background: transparent; color: var(--text-muted); border-radius: 8px; padding: 6px 10px; font-size: .8rem; width: 100%; text-align: left; }
+  body:not(.top-eti) #etiHiddenBtn { display: none; }
+  .ps-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ps-topic > summary .lib-dots, .ps-sub .lib-dots { padding: 0 5px; font-size: .9rem; }
+  .save-target-bar { position: fixed; z-index: 845; top: calc(60px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); max-width: calc(100vw - 24px);
+    display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 14px; border-radius: 999px; background: #0f172a; color: #fff; font-size: .82rem; box-shadow: var(--shadow); }
+  .save-target-bar b { color: #fde047; }
+  .save-target-bar button { border: none; background: rgba(255,255,255,.15); color: #fff; border-radius: 999px; width: 24px; height: 24px; }
+
   /* ---- navigation graph ---- */
   .mp-searchrow { display: flex; gap: 6px; align-items: center; }
   .mp-searchrow .mp-search { flex: 1; min-width: 0; }
@@ -1686,6 +1715,7 @@
       <button type="submit">Add</button>
     </form>
   </div>
+  <button type="button" id="etiHiddenBtn" class="eti-hidden-btn" hidden>🙈 Hidden</button>
 
   <!-- source list for the built-in math subjects; JS moves these buttons into #etiTree -->
   <nav class="folderbar" id="folderbar" hidden>
@@ -1746,6 +1776,8 @@
 </nav>
 
 <main id="paneHost">
+
+<div id="libBar" class="lib-bar" hidden></div>
 
 <div class="topfolder on" id="topfolder-eti">
 
@@ -3068,7 +3100,11 @@
   <div class="ps-crumb" id="psCrumb"></div>
   <div class="cp-head">
     <h2 id="psTitle">–</h2>
-    <button id="psEdit" type="button" class="tool-btn">✎ Open for editing</button>
+    <span class="ps-actions">
+      <button id="psEdit" type="button" class="tool-btn">✎ Open for editing</button>
+      <button id="psRename" type="button" class="tool-btn">Rename</button>
+      <button id="psDelete" type="button" class="tool-btn danger">🗑</button>
+    </span>
   </div>
   <div id="psDoc" class="ps-doc"></div>
   <div class="sidebar-label" style="margin-top:18px">Linked assets</div>
@@ -3167,8 +3203,9 @@
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
   <div id="ppAddMenu">
   </div>
+  <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B34</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B35</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -4950,6 +4987,7 @@ function __detabaseMain() {
     });
     if (refreshers[target]) { try { refreshers[target](); } catch (e) {} }
     if (typeof libRefresh !== "undefined" && libRefresh[target]) { try { libRefresh[target](); } catch (e) {} }
+    try { renderLibBar(); } catch (e) {}
     if (location.hash !== "#" + target) history.replaceState(null, "", "#" + target);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -4963,7 +5001,7 @@ function __detabaseMain() {
     document.querySelectorAll(".folder").forEach(function (f) { f.classList.toggle("on", f.id === "folder-" + name); });
     document.querySelectorAll(".tabbar[data-folder]").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-folder") === name); });
     var m = folderMeta[name];
-    $("pageTitle").textContent = m.title;
+    $("pageTitle").textContent = (typeof editName === "function" && editName({ lvl: "s", id: "f:" + name })) || m.title;
     $("pageSubtitle").innerHTML = m.sub;
     if (!keepHash) {
       var firstBtn = document.querySelector('.tabbar[data-folder="' + name + '"] button');
@@ -5268,7 +5306,7 @@ function __detabaseMain() {
   // subject "keys" in a group:  "f:<folderId>" = built-in  |  "s:<id>" = custom
   function groupSubjectKeys(gid) {
     var keys = [];
-    builtinFolderIds().forEach(function (f) { if (effGroupOfBuiltin(f) === gid) keys.push("f:" + f); });
+    builtinFolderIds().forEach(function (f) { if (effGroupOfBuiltin(f) === gid && !isHiddenRef({ lvl: "s", id: "f:" + f })) keys.push("f:" + f); });
     store.subjects.forEach(function (s) {
       if (s.folder === "eti" && effGroupOfSubject(s) === gid) keys.push("s:" + s.id);
     });
@@ -5563,6 +5601,7 @@ function __detabaseMain() {
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
     }
+    setTimeout(function () { try { renderLibBar(); } catch (e) {} }, 0);   // after the branches below settle the open tab
     if (onNbBank) {
       renderNbBank();
       $("pageTitle").textContent = "Notebook";
@@ -5675,6 +5714,7 @@ function __detabaseMain() {
   }
   function delSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
+    if (s && s.folder === "eti") { libDelete({ lvl: "s", id: "s:" + id }); return; }   // ETI subjects cascade through the library
     if (!s || !confirm('Delete subject "' + s.name + '"?')) return;
     store.subjects = store.subjects.filter(function (x) { return x.id !== id; });
     delete store.notes[id]; saveStore();
@@ -8064,7 +8104,7 @@ function __detabaseMain() {
   function cleanText(el) {
     if (!el) return "";
     var c = el.cloneNode(true);
-    c.querySelectorAll(".num, .tnum, .stag, .pin-btn, .del-x").forEach(function (x) { x.remove(); });
+    c.querySelectorAll(".num, .tnum, .stag, .pin-btn, .del-x, .lib-dots, .used-badge").forEach(function (x) { x.remove(); });
     return c.textContent.replace(/\s+/g, " ").trim();
   }
   function buildIndex() {
@@ -8373,8 +8413,11 @@ function __detabaseMain() {
     c.querySelectorAll(".tnum, .del-x").forEach(function (x) { x.remove(); });
     return ((n ? n.textContent.trim() + " " : "") + c.textContent.replace(/\s+/g, " ").trim()).trim();
   }
+  // ETI edit layer for built-in content: renames + hides, keyed by refKey ("s|f:trig", "t|b:s2", "c|<data-el>")
+  function editName(ref) { var e = store.etiEdits || {}; return (e.names || {})[ref.lvl + "|" + ref.id] || null; }
+  function isHiddenRef(ref) { var e = store.etiEdits || {}; return !!(e.hidden || {})[ref.lvl + "|" + ref.id]; }
   function subjectName(key) {
-    if (key.slice(0, 2) === "f:") return folderButtonLabel(key.slice(2)) || key.slice(2);
+    if (key.slice(0, 2) === "f:") return editName({ lvl: "s", id: key }) || folderButtonLabel(key.slice(2)) || key.slice(2);
     var s = byId(store.subjects, key.slice(2)); return s ? s.name : "(deleted subject)";
   }
   function allSubjectKeys() {   // every ETI subject, in sidebar order (group by group)
@@ -8384,8 +8427,8 @@ function __detabaseMain() {
   }
   function builtinTabs(fid) {
     return Array.prototype.slice.call(document.querySelectorAll('.tabbar[data-folder="' + fid + '"] button[data-target]'))
-      .filter(function (b) { return !b.dataset.ut; })
-      .map(function (b) { return { id: "b:" + b.getAttribute("data-target"), name: btnLabel(b) }; });
+      .filter(function (b) { return !b.dataset.ut && !isHiddenRef({ lvl: "t", id: "b:" + b.getAttribute("data-target") }); })
+      .map(function (b) { var id = "b:" + b.getAttribute("data-target"); return { id: id, name: tabLabel(id) }; });
   }
   function libTabs(subjectKey) {
     var out = subjectKey.slice(0, 2) === "f:" ? builtinTabs(subjectKey.slice(2)) : [];
@@ -8396,7 +8439,8 @@ function __detabaseMain() {
     var seen = {}, out = [];
     Array.prototype.forEach.call(pane.querySelectorAll("[data-el]"), function (n) {
       var k = n.getAttribute("data-el"); if (seen[k]) return; seen[k] = 1;
-      out.push({ id: k, name: builtinElTitle(n) });
+      if (isHiddenRef({ lvl: "c", id: k })) return;
+      out.push({ id: k, name: cardLabel(k) });
     });
     return out;
   }
@@ -8408,13 +8452,19 @@ function __detabaseMain() {
     return store.elements.filter(function (e) { return e.card === cardId; }).map(function (e) { return { id: e.id, name: e.name }; });
   }
   function tabLabel(tabId) {
-    if (tabId.slice(0, 2) === "b:") return btnLabel(document.querySelector('.tabbar[data-folder] button[data-target="' + tabId.slice(2) + '"]')) || tabId;
+    if (tabId.slice(0, 2) === "b:") {
+      var tb = document.querySelector('.tabbar[data-folder] button[data-target="' + tabId.slice(2) + '"]');
+      var tnum = tb && tb.querySelector(".tnum");
+      var ov = editName({ lvl: "t", id: tabId });
+      return ov ? (tnum ? tnum.textContent.trim() + " " : "") + ov : ((tb && tb.dataset.orig) ? (tnum ? tnum.textContent.trim() + " " : "") + tb.dataset.orig : btnLabel(tb) || tabId);
+    }
     var t = byId(store.tabs, tabId); return t ? t.name : "(deleted tab)";
   }
   function cardLabel(cardId) {
     var c = byId(store.cards, cardId); if (c) return c.name;
+    var ov = editName({ lvl: "c", id: cardId }); if (ov) return ov;
     var n = document.querySelector('[data-el="' + cardId + '"]');
-    return n ? builtinElTitle(n) : "(deleted card)";
+    return n ? (n.dataset.origTitle || builtinElTitle(n)) : "(deleted card)";
   }
   function refName(ref) {
     if (!ref) return "";
@@ -8553,6 +8603,7 @@ function __detabaseMain() {
     });
     allTabButtons = Array.prototype.slice.call(document.querySelectorAll(".tabbar[data-folder] button"));
     Object.keys(libRefresh).forEach(function (t) { var p = $("pane-" + t); if (p && p.classList.contains("on")) libRefresh[t](); });
+    try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
     if (activeSubject) renderCustomSubjectPage();
   }
   // a custom subject's page: its tabs across the top, the open tab's cards below
@@ -8578,6 +8629,7 @@ function __detabaseMain() {
       cards.forEach(function (c) { body.appendChild(libCardBox(c)); });
       setTimeout(function () { fillAllIn(body); }, 0);   // after layout, so blocks know their width
     }
+    try { decorateCards(); renderLibBar(); } catch (e) {}
   }
   // a library doc's content arrived / changed
   function refreshLibDoc(id) {
@@ -8649,10 +8701,12 @@ function __detabaseMain() {
       det.className = "ps-topic";
       det.open = store.ui.psOpen[t.id] !== 0;
       det.innerHTML = '<summary>' + escapeHtml(t.name) + '</summary>';
+      det.querySelector("summary").appendChild(dotsBtn({ lvl: "pt", id: t.id }));
       det.addEventListener("toggle", function () { store.ui.psOpen[t.id] = det.open ? 1 : 0; saveStore(); });
       subs.forEach(function (st) {
         var lbl = document.createElement("div");
         lbl.className = "ps-sub"; lbl.textContent = st.name;
+        lbl.appendChild(dotsBtn({ lvl: "pst", id: st.id }));
         det.appendChild(lbl);
         store.ps.pages.filter(function (pg) { return pg.subtopic === st.id; }).forEach(function (pg) {
           var b = document.createElement("button");
@@ -8716,7 +8770,10 @@ function __detabaseMain() {
     document.body.appendChild(ov);
     ov.querySelector(".lw-x").addEventListener("click", closeWizard);
     wiz = { ov: ov, content: selectionContent(p) };
-    wizStepKind();
+    // a board opened from ETI's "＋ Add" already knows where its content goes
+    var tg = p.saveTarget;
+    if (tg && mgmtExists(tg)) { if (tg.lvl === "pt" || tg.lvl === "pst") wizProblem(tg); else wizMaterial(tg); }
+    else wizStepKind();
   }
   function wizFoot(foot) {
     var ft = wiz.ov.querySelector(".lw-foot");
@@ -8771,8 +8828,9 @@ function __detabaseMain() {
     body.querySelector('[data-k="m"]').addEventListener("click", wizMaterial);
     body.querySelector('[data-k="p"]').addEventListener("click", wizProblem);
   }
-  function wizMaterial() {
+  function wizMaterial(start) {
     var content = wiz.content, t = {};
+    start = start && start.lvl ? start : null;
     function stepSubject() {
       wizChoice("Subject", "Which subject does this material belong to? (e.g. Trig base)",
         allSubjectKeys().map(function (k) {
@@ -8803,7 +8861,10 @@ function __detabaseMain() {
         else startSplit({ lvl: "card", name: nn, parent: t.tab, content: content });
       }, stepTab);
     }
-    stepSubject();
+    if (start && start.lvl === "s") { t.subject = start.id; stepTab(); }
+    else if (start && start.lvl === "t") { var ps0 = refParent(start); t.tab = start.id; if (ps0) { t.subject = ps0.id; stepCard(); } else stepSubject(); }
+    else if (start && start.lvl === "c") { var pt0 = refParent(start); startSplit({ lvl: "card", existing: start.id, name: cardLabel(start.id), parent: pt0 ? pt0.id : null, content: content }); }
+    else stepSubject();
   }
   function startSplit(root) { wiz.root = root; wiz.queue = [root]; nextSplit(); }
   function nextSplit() {
@@ -9001,8 +9062,9 @@ function __detabaseMain() {
     try { renderEtiTree(); renderLibraryEti(); } catch (e) { if (window.console) console.error("library render:", e); }
     libToast("Saved " + made + " element" + (made === 1 ? "" : "s") + " to " + where);
   }
-  function wizProblem() {
+  function wizProblem(start) {
     var content = wiz.content, t = {};
+    start = start && start.lvl ? start : null;
     function stepTopic() {
       wizChoice("Topic", "Which topic is this method about?", store.ps.topics, "New topic name…", function (id, nn) {
         t.topic = id; t.topicNew = nn; stepSub();
@@ -9038,7 +9100,12 @@ function __detabaseMain() {
         libToast("Saved “" + name + "” to the problem-solving bank");
       }
     }
-    stepTopic();
+    if (start && start.lvl === "pt") { t.topic = start.id; stepSub(); }
+    else if (start && start.lvl === "pst") {
+      var sx = byId(store.ps.subtopics, start.id);
+      if (sx) { t.topic = sx.topic; t.sub = sx.id; stepName(); } else stepTopic();
+    }
+    else stepTopic();
   }
   function libToast(msg) {
     var t = document.createElement("div");
@@ -9239,6 +9306,7 @@ function __detabaseMain() {
     wireInkCapture(p);
     applyNav();
     try { prettyFractions(canvas); } catch (e) {}
+    try { renderSaveTargetBanner(); } catch (e) {}
   }
 
   // ============================================================
@@ -11146,7 +11214,8 @@ function __detabaseMain() {
     var wrap = document.createElement("div");
     nodes.forEach(function (n) {
       var c = n.cloneNode(true);
-      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls").forEach(function (x) { x.remove(); });
+      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls, .lib-dots, .used-badge").forEach(function (x) { x.remove(); });
+      c.style.display = "";
       c.querySelectorAll("details").forEach(function (d) { d.open = true; });
       if (c.tagName === "DETAILS") c.open = true;
       c.removeAttribute("id"); c.removeAttribute("data-idx"); c.removeAttribute("data-ck"); c.removeAttribute("data-el");
@@ -11201,7 +11270,9 @@ function __detabaseMain() {
       d.insertAdjacentHTML("beforeend", '<h3>' + escapeHtml(tabLabel(ref.id)) + '</h3>');
       if (ref.id.slice(0, 2) === "b:") {
         var pane = $("pane-" + ref.id.slice(2));
-        var nodes = Array.prototype.filter.call(pane ? pane.children : [], function (ch) { return !ch.matches("h2, .accordion-controls, .ue-extra"); });
+        var nodes = Array.prototype.filter.call(pane ? pane.children : [], function (ch) {
+          return !ch.matches("h2, .accordion-controls, .ue-extra") && !(ch.getAttribute("data-el") && isHiddenRef({ lvl: "c", id: ch.getAttribute("data-el") }));
+        });
         d.appendChild(cloneForAsset(nodes));
         store.cards.filter(function (c) { return c.tab === ref.id; }).forEach(function (c) { cardInto(d, c.id); });
       } else {
@@ -11216,7 +11287,11 @@ function __detabaseMain() {
   }
   function renderAssetInto(host, clip) {
     var baseW = clip.baseW || clip.w || 380;
-    var body = assetBody(clip.ref || {}, baseW);
+    var body;
+    if (clip.frozen && !refExists(clip.ref || {})) {   // its library asset was deleted: show the copy frozen at that moment
+      var tmp = document.createElement("div"); tmp.innerHTML = clip.frozen;
+      body = tmp.firstElementChild || tmp;
+    } else body = assetBody(clip.ref || {}, baseW);
     host.innerHTML = "";
     host.appendChild(body);
     function applyScale() { body.style.transform = "scale(" + ((clip.w || baseW) / baseW).toFixed(4) + ")"; }
@@ -11349,10 +11424,356 @@ function __detabaseMain() {
   }
   if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
 
-  DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return r.lvl === "p" || (refExists(r) && refKids(r).length > 0); };
+  DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return refExists(r) && (r.lvl === "p" || refKids(r).length > 0); };
+
+  // ============================================================
+  // ETI MANAGEMENT — rename / delete at every level of both banks (built-ins are renamed / HIDDEN via
+  // store.etiEdits, never removed from the DOM, so their tools keep working), "＋ Add" (opens a notebook
+  // board with the save target already chosen), and "used in problem pages".
+  // Management refs add the problem-bank levels: "pt" topic, "pst" subtopic ("p" page is shared with Mining).
+  // ============================================================
+  var MG_LV = { s: "subject", t: "tab", c: "card", e: "element", p: "problem page", pt: "topic", pst: "subtopic" };
+  function mgmtObj(ref) {
+    libEnsure();
+    if (ref.lvl === "s") return ref.id.slice(0, 2) === "s:" ? byId(store.subjects, ref.id.slice(2)) : null;
+    if (ref.lvl === "t") return byId(store.tabs, ref.id);
+    if (ref.lvl === "c") return byId(store.cards, ref.id);
+    if (ref.lvl === "e") return byId(store.elements, ref.id);
+    if (ref.lvl === "p") return psPageById(ref.id);
+    if (ref.lvl === "pt") return byId(store.ps.topics, ref.id);
+    if (ref.lvl === "pst") return byId(store.ps.subtopics, ref.id);
+    return null;
+  }
+  function mgmtExists(ref) { return ref.lvl === "pt" || ref.lvl === "pst" ? !!mgmtObj(ref) : refExists(ref); }
+  function mgmtName(ref) { return ref.lvl === "pt" || ref.lvl === "pst" ? (mgmtObj(ref) || {}).name || "" : refLabel(ref); }
+  function isBuiltinRef(ref) { return !mgmtObj(ref) && (ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c"); }
+  function usedInPages(ref) {
+    libEnsure();
+    var k = refKey(ref);
+    return store.ps.pages.filter(function (pg) { return (pg.assets || []).some(function (a) { return refKey(a) === k; }); });
+  }
+
+  // ---- apply renames / hides to the built-in DOM ----
+  function cardTitleEl(n) {
+    if (n.matches(".card")) return n.querySelector(":scope > h4");
+    if (n.matches(".subject")) return n.querySelector(":scope > summary");
+    if (n.matches(".tool")) return n.querySelector(".tool-title");
+    if (n.matches("h3")) return n;
+    return null;
+  }
+  function applyEtiEdits() {
+    libEnsure();
+    store.etiEdits.names = store.etiEdits.names || {}; store.etiEdits.hidden = store.etiEdits.hidden || {};
+    folderButtons.forEach(function (b) {
+      var icon = b.querySelector(".ficon");
+      if (b.dataset.orig == null) { var cl = b.cloneNode(true); cl.querySelectorAll(".ficon").forEach(function (x) { x.remove(); }); b.dataset.orig = cl.textContent.replace(/\s+/g, " ").trim(); }
+      b.innerHTML = (icon ? icon.outerHTML : "") + escapeHtml(editName({ lvl: "s", id: "f:" + b.getAttribute("data-folder") }) || b.dataset.orig);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".tabbar[data-folder] button[data-target]:not([data-ut])"), function (b) {
+      var target = b.getAttribute("data-target"), ref = { lvl: "t", id: "b:" + target };
+      var tn = b.querySelector(".tnum");
+      if (b.dataset.orig == null) b.dataset.orig = cleanText(b);
+      b.innerHTML = (tn ? tn.outerHTML : "") + escapeHtml(editName(ref) || b.dataset.orig);
+      var hide = isHiddenRef(ref);
+      b.style.display = hide ? "none" : "";
+      var pane = $("pane-" + target);
+      if (!pane) return;
+      pane.style.display = hide ? "none" : "";
+      var h2 = pane.querySelector(":scope > h2");
+      if (h2) {
+        var num = h2.querySelector(".num");
+        if (h2.dataset.orig == null) h2.dataset.orig = cleanText(h2);
+        h2.innerHTML = (num ? num.outerHTML : "") + escapeHtml(editName(ref) || h2.dataset.orig);
+      }
+    });
+    var seen = {};
+    Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti section.pane:not(.ue-pane) [data-el]"), function (n) {
+      var key = n.getAttribute("data-el"), ref = { lvl: "c", id: key };
+      n.style.display = isHiddenRef(ref) ? "none" : "";
+      if (seen[key]) return; seen[key] = 1;
+      if (n.dataset.origTitle == null) n.dataset.origTitle = builtinElTitle(n);
+      var tEl = cardTitleEl(n); if (!tEl) return;
+      if (tEl.dataset.origHtml == null) tEl.dataset.origHtml = tEl.innerHTML;
+      var ov = editName(ref);
+      tEl.innerHTML = ov ? escapeHtml(ov) : tEl.dataset.origHtml;
+    });
+    ensureOpenTabs();
+  }
+  // an open tab that got hidden or deleted → the first visible tab of that subject
+  function ensureOpenTabs() {   // only the open subject's bar — selectTab switches panes document-wide
+    var bar = document.querySelector('.tabbar[data-folder="' + lastEtiFolder + '"]'); if (!bar) return;
+    var on = bar.querySelector("button.on"), pane = on && $("pane-" + on.getAttribute("data-target"));
+    if (!on || on.style.display === "none" || !pane) {
+      var vis = Array.prototype.filter.call(bar.querySelectorAll("button"), function (b) { return b.style.display !== "none"; })[0];
+      if (vis) selectTab(vis.getAttribute("data-target"));
+    }
+  }
+
+  // ---- ⋯ buttons, "🧩 n" badges ----
+  function dotsBtn(ref) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "lib-dots"; b.textContent = "⋯"; b.title = "manage this " + MG_LV[ref.lvl];
+    b.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); openMgmtMenu(ref, b); });
+    return b;
+  }
+  function usedBadge(ref) {
+    var n = usedInPages(ref).length; if (!n) return null;
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "used-badge"; b.textContent = "🧩 " + n; b.title = "used in " + n + " problem page" + (n === 1 ? "" : "s");
+    b.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); openUsedMenu(ref, b); });
+    return b;
+  }
+  function decorateCards() {
+    Array.prototype.slice.call(document.querySelectorAll("#paneHost .lib-dots, #paneHost .used-badge")).forEach(function (x) { if (!x.closest("#libBar")) x.remove(); });
+    var seen = {};
+    Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti section.pane:not(.ue-pane) [data-el]"), function (n) {
+      var key = n.getAttribute("data-el"); if (seen[key]) return; seen[key] = 1;
+      var ref = { lvl: "c", id: key }, host = cardTitleEl(n) || n, bd = usedBadge(ref);
+      if (bd) host.appendChild(bd);
+      host.appendChild(dotsBtn(ref));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#paneHost .ue-card"), function (d) {
+      var ref = { lvl: "c", id: d.getAttribute("data-uc") }, h = d.querySelector(":scope > h4"); if (!h) return;
+      var bd = usedBadge(ref); if (bd) h.appendChild(bd);
+      h.appendChild(dotsBtn(ref));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#paneHost .ue-block"), function (d) {
+      var ref = { lvl: "e", id: d.getAttribute("data-ue") }, h = d.querySelector(".ue-head"); if (!h) return;
+      var bd = usedBadge(ref); if (bd) h.insertBefore(bd, h.querySelector(".ue-edit"));
+      h.appendChild(dotsBtn(ref));
+    });
+  }
+
+  // ---- small popover menu ----
+  var libMenuEl = null;
+  function closeLibMenu() { if (libMenuEl) { libMenuEl.remove(); libMenuEl = null; } }
+  function libMenu(anchor, items) {
+    closeLibMenu();
+    var m = document.createElement("div");
+    m.className = "lib-menu";
+    items.forEach(function (it) {
+      if (!it) return;
+      if (it.head) { var h = document.createElement("div"); h.className = "lm-head"; h.textContent = it.head; m.appendChild(h); return; }
+      if (it.sep) { m.appendChild(document.createElement("hr")); return; }
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = it.label; if (it.danger) b.className = "danger"; if (it.disabled) b.disabled = true;
+      b.addEventListener("click", function (e) { e.stopPropagation(); closeLibMenu(); it.run(); });
+      m.appendChild(b);
+    });
+    m.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    document.body.appendChild(m);
+    libMenuEl = m;
+    var r = anchor.getBoundingClientRect(), w = m.offsetWidth, hgt = m.offsetHeight;
+    m.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w)) + "px";
+    m.style.top = (r.bottom + 4 + hgt > window.innerHeight - 8 ? Math.max(8, r.top - hgt - 4) : r.bottom + 4) + "px";
+    setTimeout(function () {
+      document.addEventListener("pointerdown", function h2(ev) { if (libMenuEl && !libMenuEl.contains(ev.target)) closeLibMenu(); document.removeEventListener("pointerdown", h2, true); }, true);
+    }, 0);
+  }
+  function openMgmtMenu(ref, anchor) {
+    var builtin = isBuiltinRef(ref), used = usedInPages(ref);
+    var addLbl = { s: "＋ Add a tab here", t: "＋ Add a card here", c: "＋ Add elements here", pt: "＋ Add a page here", pst: "＋ Add a page here" }[ref.lvl];
+    var material = ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e";
+    libMenu(anchor, [
+      { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
+      { label: "✎ Rename", run: function () { libRename(ref); } },
+      addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
+      (ref.lvl === "e" || ref.lvl === "p") ? { label: "✎ Edit content", run: function () { openDocEditor(ref.id); } } : null,
+      material ? { label: "🧩 Used in " + used.length + " problem page" + (used.length === 1 ? "" : "s"), disabled: !used.length, run: function () { openUsedMenu(ref, anchor); } } : null,
+      { sep: true },
+      { label: builtin ? "🙈 Hide from ETI" : "🗑 Delete", danger: true, run: function () { libDelete(ref); } }
+    ]);
+  }
+  function openUsedMenu(ref, anchor) {
+    libMenu(anchor, [{ head: "Used in problem pages" }].concat(usedInPages(ref).map(function (pg) {
+      return { label: "🧩 " + pg.name, run: function () { selectPsPage(pg.id); } };
+    })));
+  }
+
+  // ---- rename ----
+  function libRename(ref) {
+    libEnsure();
+    var o = mgmtObj(ref), cur = "";
+    if (o) cur = o.name;
+    else if (ref.lvl === "s") { var fb = folderButtons.filter(function (x) { return "f:" + x.getAttribute("data-folder") === ref.id; })[0]; cur = editName(ref) || (fb && fb.dataset.orig) || subjectName(ref.id); }
+    else if (ref.lvl === "t") { var tb = document.querySelector('.tabbar[data-folder] button[data-target="' + ref.id.slice(2) + '"]'); cur = editName(ref) || (tb && (tb.dataset.orig || cleanText(tb))) || ""; }
+    else if (ref.lvl === "c") cur = cardLabel(ref.id);
+    var n = prompt("Rename " + MG_LV[ref.lvl] + ":", cur);
+    if (n == null) return;
+    n = n.trim(); if (!n || n === cur) return;
+    if (o) o.name = n; else store.etiEdits.names[refKey(ref)] = n;
+    saveStore();
+    refreshAfterManage();
+  }
+
+  // ---- delete (custom) / hide (built-in) ----
+  function mgmtDescendants(ref) {
+    var out = [];
+    function walk(r) {
+      if (r.lvl === "pt") { out.push(r); store.ps.subtopics.filter(function (x) { return x.topic === r.id; }).forEach(function (x) { walk({ lvl: "pst", id: x.id }); }); return; }
+      if (r.lvl === "pst") { out.push(r); store.ps.pages.filter(function (x) { return x.subtopic === r.id; }).forEach(function (x) { out.push({ lvl: "p", id: x.id }); }); return; }
+      if (r.lvl === "p") { out.push(r); return; }
+      if (mgmtObj(r)) out.push(r);
+      refKids(r).forEach(walk);
+    }
+    walk(ref);
+    return out.filter(function (r) { return !!mgmtObj(r); });
+  }
+  function scanBoardUses(keys, skipDocs) {
+    var uses = [];
+    (store.canvases || []).concat(store.elements, store.ps.pages).forEach(function (d) {
+      if (skipDocs[d.id]) return;
+      (loadCanvas(d.id).items || []).forEach(function (it) {
+        if (it.kind === "asset" && it.ref && !it.frozen && keys[refKey(it.ref)]) uses.push({ doc: d.id, item: it });
+      });
+    });
+    return uses;
+  }
+  function libDelete(ref) {
+    libEnsure();
+    var name = mgmtName(ref), lv = MG_LV[ref.lvl];
+    if (isBuiltinRef(ref)) {
+      if (!confirm('Hide the ' + lv + ' “' + name + '” from ETI?\n\nBuilt-in content is only hidden (its tools keep working). Restore it any time from “Hidden” at the bottom of the sidebar.')) return;
+      store.etiEdits.hidden[refKey(ref)] = 1;
+      saveStore(); leaveIfGone(); refreshAfterManage();
+      libToast("Hid " + lv + " “" + name + "”");
+      return;
+    }
+    if (!mgmtObj(ref)) return;
+    var dying = mgmtDescendants(ref), keys = {}, docs = {};
+    dying.forEach(function (r) { keys[refKey(r)] = 1; if (r.lvl === "e" || r.lvl === "p") docs[r.id] = 1; });
+    var uses = scanBoardUses(keys, docs), links = 0, counts = {};
+    store.ps.pages.forEach(function (pg) { if (docs[pg.id]) return; (pg.assets || []).forEach(function (a) { if (keys[refKey(a)]) links++; }); });
+    dying.forEach(function (r) { if (refKey(r) !== refKey(ref)) counts[r.lvl] = (counts[r.lvl] || 0) + 1; });
+    var msg = "Delete the " + lv + " “" + name + "”?";
+    var inside = Object.keys(counts).map(function (l) { return counts[l] + " " + MG_LV[l] + (counts[l] === 1 ? "" : "s"); });
+    if (inside.length) msg += "\n\nThis also deletes " + inside.join(", ") + " inside it.";
+    if (uses.length) msg += "\n\nIt is used on " + uses.length + " board block" + (uses.length === 1 ? "" : "s") + " — they keep a frozen copy.";
+    if (links) msg += "\n\n" + links + " link" + (links === 1 ? "" : "s") + " from problem pages will be removed.";
+    if (!confirm(msg)) return;
+    // freeze the blocks on boards first, while their content still exists
+    var touched = {};
+    uses.forEach(function (u) {
+      try { u.item.frozen = assetBody(u.item.ref, u.item.baseW || u.item.w || 380).outerHTML; touched[u.doc] = 1; } catch (e) {}
+    });
+    Object.keys(touched).forEach(function (id) { saveCanvas(id); });
+    store.ps.pages.forEach(function (pg) { pg.assets = (pg.assets || []).filter(function (a) { return !keys[refKey(a)]; }); });
+    var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
+    dying.forEach(function (r) {
+      if (r.lvl === "s") { var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
+      else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
+      else if (r.lvl === "c") store.cards = drop(store.cards, r.id);
+      else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
+      else if (r.lvl === "p") { store.ps.pages = drop(store.ps.pages, r.id); killCanvas(r.id); }
+      else if (r.lvl === "pt") store.ps.topics = drop(store.ps.topics, r.id);
+      else if (r.lvl === "pst") store.ps.subtopics = drop(store.ps.subtopics, r.id);
+    });
+    saveStore(); leaveIfGone(); refreshAfterManage();
+    libToast("Deleted " + lv + " “" + name + "”");
+  }
+  function leaveIfGone() {
+    if (activeSubject && !byId(store.subjects, activeSubject)) activeSubject = null;
+    if (activePsPage && !psPageById(activePsPage)) activePsPage = null;
+    if (isHiddenRef({ lvl: "s", id: "f:" + lastEtiFolder })) {
+      var vis = builtinFolderIds().filter(function (f) { return !isHiddenRef({ lvl: "s", id: "f:" + f }); })[0];
+      if (vis) { lastEtiFolder = vis; activeGroup = effGroupOfBuiltin(vis); }
+    }
+  }
+  function refreshAfterManage() {
+    try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
+    renderEtiTree(); renderLibraryEti(); ensureOpenTabs(); renderPsRail(); renderHiddenBtn();
+    applyView();
+    if (etiMiningPanel) etiMiningPanel.render();
+  }
+
+  // ---- restore hidden built-ins ----
+  function renderHiddenBtn() {
+    var b = $("etiHiddenBtn"); if (!b) return;
+    var n = Object.keys((store.etiEdits || {}).hidden || {}).length;
+    b.hidden = !n; b.textContent = "🙈 Hidden (" + n + ")";
+  }
+  function openHiddenMenu(anchor) {
+    var keys = Object.keys(store.etiEdits.hidden || {});
+    libMenu(anchor, [{ head: "Hidden built-in content" }].concat(keys.map(function (k) {
+      var i = k.indexOf("|"), ref = { lvl: k.slice(0, i), id: k.slice(i + 1) };
+      var nm = ref.lvl === "s" ? subjectName(ref.id) : ref.lvl === "t" ? tabLabel(ref.id) : cardLabel(ref.id);
+      return { label: "↺ " + MG_LV[ref.lvl] + ": " + nm, run: function () { delete store.etiEdits.hidden[k]; saveStore(); refreshAfterManage(); } };
+    })));
+  }
+  if ($("etiHiddenBtn")) $("etiHiddenBtn").addEventListener("click", function () { openHiddenMenu($("etiHiddenBtn")); });
+
+  // ---- "＋ Add": a new notebook board that already knows where its content is saved ----
+  function targetLabel(ref) {
+    if (ref.lvl === "pt" || ref.lvl === "pst") {
+      var o = mgmtObj(ref), tp = ref.lvl === "pst" && o ? byId(store.ps.topics, o.topic) : null;
+      return (tp ? tp.name + " › " : "") + (o ? o.name : "");
+    }
+    var path = refPath(ref);
+    return (path ? path + " › " : "") + refLabel(ref);
+  }
+  function addAssetAt(ref) {
+    if (!mgmtExists(ref)) return;
+    var label = mgmtName(ref);
+    addPage("New in " + label);   // creates the board and opens it
+    var pg = store.canvases[store.canvases.length - 1];
+    if (pg) { pg.saveTarget = { lvl: ref.lvl, id: ref.id }; saveStore(); }
+    renderSaveTargetBanner();
+  }
+  function renderSaveTargetBanner() {
+    var bar = $("saveTargetBar"); if (!bar) return;
+    var p = curProblem(), tg = p && p.saveTarget;
+    if (!tg || !mgmtExists(tg) || !document.body.classList.contains("ink-full")) { bar.hidden = true; return; }
+    bar.hidden = false;
+    bar.querySelector("b").textContent = targetLabel(tg);
+  }
+  if ($("saveTargetBar")) $("saveTargetBar").querySelector("button").addEventListener("click", function () {
+    var p = curProblem(); if (p) { delete p.saveTarget; saveStore(); }
+    renderSaveTargetBanner();
+  });
+
+  // ---- management bar above a subject page: the open Subject and Tab ----
+  function currentEtiRefs() {
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage) return null;
+    if (activeSubject) {
+      var sid = activeSubject, tabs = store.tabs.filter(function (t) { return t.subject === "s:" + sid; });
+      var cur = byId(tabs, (store.ui.cpTab || {})[sid]) || tabs[0];
+      return { s: { lvl: "s", id: "s:" + sid }, t: cur ? { lvl: "t", id: cur.id } : null };
+    }
+    if (document.body.classList.contains("showing-builtin")) {
+      var on = document.querySelector('.tabbar[data-folder="' + lastEtiFolder + '"] button.on');
+      var tid = on ? (on.dataset.ut ? on.getAttribute("data-target") : "b:" + on.getAttribute("data-target")) : null;
+      return { s: { lvl: "s", id: "f:" + lastEtiFolder }, t: tid ? { lvl: "t", id: tid } : null };
+    }
+    return null;
+  }
+  function renderLibBar() {
+    var bar = $("libBar"); if (!bar) return;
+    var cur = currentEtiRefs();
+    bar.hidden = !cur;
+    if (!cur) return;
+    bar.innerHTML = "";
+    [cur.s, cur.t].forEach(function (ref) {
+      if (!ref) return;
+      var row = document.createElement("div");
+      row.className = "lb-row";
+      row.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ref.lvl === "s" ? "Subject" : "Tab") + '</span><b>' + escapeHtml(mgmtName(ref)) + '</b>';
+      var add = document.createElement("button"); add.type = "button"; add.textContent = ref.lvl === "s" ? "＋ Tab" : "＋ Card";
+      add.title = "write it in a new notebook board — it saves here"; add.addEventListener("click", function () { addAssetAt(ref); });
+      var ren = document.createElement("button"); ren.type = "button"; ren.textContent = "✎"; ren.title = "rename"; ren.addEventListener("click", function () { libRename(ref); });
+      var del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = isBuiltinRef(ref) ? "🙈" : "🗑"; del.title = isBuiltinRef(ref) ? "hide from ETI" : "delete";
+      del.addEventListener("click", function () { libDelete(ref); });
+      row.appendChild(add); row.appendChild(ren);
+      var bd = usedBadge(ref); if (bd) row.appendChild(bd);
+      row.appendChild(del);
+      bar.appendChild(row);
+    });
+  }
 
   // tapping anywhere else in the app (board, toolbar, Mining panel…) leaves move / use mode
   document.addEventListener("pointerdown", function (e) {
+    if (!e.target.closest) return;
     if (!e.target.closest(".clip") && !e.target.closest(".shape-pick") && !e.target.closest("#itemBar")) deselectAllClips();
   }, true);
 
@@ -11723,9 +12144,13 @@ function __detabaseMain() {
   try { tagBuiltinElements(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
   try { initSortables(); } catch (e) { if (window.console) console.error("initSortables:", e); }
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
+  try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
+  try { renderEtiTree(); renderHiddenBtn(); } catch (e) {}
   try { renderLibraryEti(); } catch (e) { if (window.console) console.error("renderLibraryEti:", e); }
   try { renderPsRail(); } catch (e) { if (window.console) console.error("renderPsRail:", e); }
   if ($("psEdit")) $("psEdit").addEventListener("click", function () { if (activePsPage) openDocEditor(activePsPage); });
+  if ($("psRename")) $("psRename").addEventListener("click", function () { if (activePsPage) libRename({ lvl: "p", id: activePsPage }); });
+  if ($("psDelete")) $("psDelete").addEventListener("click", function () { if (activePsPage) libDelete({ lvl: "p", id: activePsPage }); });
   try { buildIndex(); } catch (e) { if (window.console) console.error("buildIndex:", e); }
 
   // deep link: #<tab> (built-in), #<top-folder id>, #<custom-subject id>, or #<problem id>
