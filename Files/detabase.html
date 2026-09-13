@@ -390,19 +390,6 @@
   .nblib-chip .c-clip { color: var(--accent); font-weight: 700; }
   .nblib-chip .c-x:hover { color: #dc2626; }
 
-  /* ---- library panel: browse the raw material / method bank by subject (group>folder>topic) ---- */
-  .nblib-browse-toggle { width: 100%; text-align: left; margin-top: 8px; padding: 6px 8px; font-size: .78rem; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); }
-  .nblib-browse-toggle:hover { color: var(--accent); border-color: var(--accent); }
-  .nblib-browse { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
-  .bbt-crumb { font-size: .74rem; color: var(--text-muted); margin-bottom: 4px; }
-  .bbt-crumb-btn { border: none; background: transparent; color: var(--accent); font-size: .74rem; padding: 0; cursor: pointer; }
-  .bbt-crumb-btn:hover { text-decoration: underline; }
-  .bbt-crumb-cur { font-weight: 700; color: var(--text-secondary); }
-  .bbt-row { display: flex; align-items: center; gap: 6px; padding: 6px 7px; border-radius: 7px; font-size: .84rem; cursor: pointer; background: var(--surface-1); border: 1px solid var(--border-strong); margin-bottom: 3px; }
-  .bbt-row:hover { border-color: var(--accent); }
-  .bbt-row .bbt-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bbt-row .bbt-count { flex: 0 0 auto; font-size: .72rem; color: var(--text-muted); background: var(--surface-2); border-radius: 999px; padding: 1px 7px; }
-
   /* ---- lasso / crop selection ---- */
   .pp-canvas.lasso .ink-capture { cursor: crosshair; }
   .ink-lasso-live { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 5; opacity: .85; vector-effect: non-scaling-stroke; }
@@ -3009,18 +2996,7 @@
 <div id="plEditor" class="pl-editor" hidden></div>
 
 <div id="problemPane" hidden>
-  <div class="pp-topbar">
-    <input id="ppTitle" class="pp-title" maxlength="80" placeholder="Untitled problem">
-    <button id="ppDelete" class="cp-del">Delete</button>
-  </div>
-  <div class="pp-toolbar">
-    <div class="pp-search-wrap">
-      <input id="ppSearch" class="pp-search" placeholder="Search…">
-      <button id="ppShortBadge" type="button" class="short-badge" hidden></button>
-      <div id="ppResults" class="pp-results-drop" hidden></div>
-    </div>
-    <span class="muted" id="ppBenchCount"></span>
-  </div>
+  <div class="pp-toolbar"><span class="muted" id="ppBenchCount"></span></div>
   <div id="ppInkbar" class="ink-toolbar">
     <button type="button" id="nbLibToggle" class="tool-btn" title="library — clip in subjects, pages &amp; problem methods">📚</button>
     <button type="button" class="ink-tool" data-inktool="select" title="select — move &amp; edit shapes, graphs and clips">✋</button>
@@ -3035,7 +3011,7 @@
     <button type="button" id="ppInkClear" class="tool-btn" title="erase all handwriting">clear</button>
     <button type="button" id="ppTidy" class="tool-btn" title="auto-arrange the clipped items">▦ Tidy</button>
     <span class="ink-spacer"></span>
-    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B25</span>
+    <span id="buildTag" style="font-size:.65rem;color:var(--text-muted);align-self:center;opacity:.6;" title="build marker — tell Claude what this says">B26</span>
     <button type="button" id="inkDone" class="tool-btn" title="leave the writing page">Done</button>
   </div>
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
@@ -3048,42 +3024,13 @@
     <div class="nblib-scroll">
       <section class="nblib-sec">
         <div class="nblib-lbl">Raw materials</div>
-        <input id="libRawSearch" class="nblib-search" placeholder="Search subjects, cards &amp; pages…" autocomplete="off">
+        <input id="libRawSearch" class="nblib-search" placeholder="Search the reference…" autocomplete="off">
         <div id="libRawResults" class="nblib-results"></div>
-        <button type="button" class="nblib-browse-toggle" id="libRawBrowseToggle">📂 Browse by subject</button>
-        <div id="libRawBrowse" class="nblib-browse" hidden></div>
-        <div id="libRawList" class="nblib-list"></div>
-      </section>
-      <section class="nblib-sec">
-        <div class="nblib-lbl">Problem solving</div>
-        <input id="libProbSearch" class="nblib-search" placeholder="Search problem methods…" autocomplete="off">
-        <div id="libProbResults" class="nblib-results"></div>
-        <button type="button" class="nblib-browse-toggle" id="libProbBrowseToggle">📂 Browse by subject</button>
-        <div id="libProbBrowse" class="nblib-browse" hidden></div>
-        <div id="libProbList" class="nblib-list"></div>
       </section>
     </div>
   </div>
 </div>
 
-<button id="selClipBtn" type="button" hidden>📌 clip selection</button>
-
-<div id="bankSaveModal" class="bank-modal" hidden>
-  <div class="bank-modal-card">
-    <div class="bank-modal-head"><b>Save to bank</b><button id="bankModalClose" type="button" title="cancel">✕</button></div>
-    <div class="bank-modal-body">
-      <div class="bank-type-toggle">
-        <button data-bt="raw" type="button" class="on">Raw material</button>
-        <button data-bt="method" type="button">Problem-solving method</button>
-      </div>
-      <label class="muted">Title</label>
-      <input id="bankTitle" type="text" placeholder="Title">
-      <div id="bankNodes"></div>
-      <button id="bankAddNode" type="button" hidden>+ add another location</button>
-    </div>
-    <div class="bank-modal-foot"><button id="bankSaveBtn" type="button" class="hot">Save</button></div>
-  </div>
-</div>
 
 </main>
 
@@ -3094,12 +3041,8 @@
 <aside class="rail" id="rail">
   <div id="railProblems">
     <div class="sidebar-label">Problem solving</div>
-    <input id="problemSearch" class="rail-search" placeholder="Filter problems by name…" autocomplete="off">
-    <nav class="raillist" id="problemList"></nav>
-    <div class="add-row" id="addProblemRow">
-      <button class="add-btn" data-add="problem">+ New problem page</button>
-    </div>
-    <p class="rail-hint">A private library of problems you've worked — independent of the folders &amp; subjects. Each page has its own search over every card, plus a bench.</p>
+    <nav class="raillist" id="psRail"></nav>
+    <p class="rail-hint">The problem-solving bank — topics, subtopics and pages saved from the notebook with the lasso.</p>
   </div>
   <div id="railPages">
     <div class="sidebar-label">Notebook pages</div>
@@ -3117,7 +3060,91 @@
 </div>
 
 <script>
-(function () {
+// Canvas-doc storage (boards, and later library elements / problem pages). localStorage is only
+// ~5MB on iOS, which whole handwritten classes fill quickly, so docs live in IndexedDB. Everything
+// is read into memory BEFORE the app boots so loadCanvas() can stay synchronous. Keys starting
+// with "__" are local-only (backups) and never synced.
+window.DBX = (function () {
+  var PFX = "detabase.canvas.";
+  var mem = {}, db = null;
+  function r1(n) { return Math.round(n * 10) / 10; }
+  function compact(doc) {   // 1 decimal for coordinates, 2 for pressure — roughly halves stored ink
+    (doc.ink || []).forEach(function (s) {
+      s.pts = (s.pts || []).map(function (q) { return q.length > 2 ? [r1(q[0]), r1(q[1]), Math.round(q[2] * 100) / 100] : [r1(q[0]), r1(q[1])]; });
+    });
+    return doc;
+  }
+  function openDb() {
+    return new Promise(function (res, rej) {
+      if (!window.indexedDB) { rej(new Error("no indexedDB")); return; }
+      var rq = indexedDB.open("detabase-docs", 1);
+      rq.onupgradeneeded = function () { rq.result.createObjectStore("docs"); };
+      rq.onsuccess = function () { res(rq.result); };
+      rq.onerror = function () { rej(rq.error); };
+    });
+  }
+  function readAll() {
+    return new Promise(function (res, rej) {
+      var out = {}, t = db.transaction("docs", "readonly"), cur = t.objectStore("docs").openCursor();
+      cur.onsuccess = function () { var c = cur.result; if (c) { out[c.key] = c.value; c.continue(); } else res(out); };
+      cur.onerror = function () { rej(cur.error); };
+    });
+  }
+  function idbPut(id, doc) {
+    if (!db) return Promise.resolve();
+    return new Promise(function (res) {
+      try {
+        var t = db.transaction("docs", "readwrite");
+        t.objectStore("docs").put(doc, id);
+        t.oncomplete = res; t.onerror = t.onabort = function () { if (window.console) console.error("idb put", t.error); res(); };
+      } catch (e) { if (window.console) console.error("idb put", e); res(); }
+    });
+  }
+  function idbDel(id) {
+    if (!db) return;
+    try { db.transaction("docs", "readwrite").objectStore("docs").delete(id); } catch (e) {}
+  }
+  function lsDocs() {
+    var out = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf(PFX) === 0) { try { out[k.slice(PFX.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {} }
+    }
+    return out;
+  }
+  var ready = openDb().then(function (d) {
+    db = d;
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+    return readAll();
+  }).then(function (all) {
+    mem = all;
+    var legacy = lsDocs(), ids = Object.keys(legacy);
+    if (!ids.length) return;
+    return Promise.all(ids.map(function (id) {
+      var doc = compact(legacy[id] || {});
+      if (!mem[id] || (doc.ts || 0) > (mem[id].ts || 0)) { mem[id] = doc; return idbPut(id, doc); }
+    })).then(function () { ids.forEach(function (id) { try { localStorage.removeItem(PFX + id); } catch (e) {} }); });
+  }).catch(function (e) {
+    if (window.console) console.error("IndexedDB unavailable — falling back to localStorage", e);
+    db = null; mem = lsDocs();
+  });
+  return {
+    ready: ready,
+    get: function (id) { return mem[id] || null; },
+    put: function (id, doc) {
+      mem[id] = doc;
+      if (db) return idbPut(id, doc);
+      try { localStorage.setItem(PFX + id, JSON.stringify(doc)); } catch (e) {}
+      return Promise.resolve();
+    },
+    del: function (id) { delete mem[id]; idbDel(id); try { localStorage.removeItem(PFX + id); } catch (e) {} },
+    ids: function () { return Object.keys(mem).filter(function (k) { return k.indexOf("__") !== 0; }); },
+    compact: compact
+  };
+})();
+</script>
+<script>
+function __detabaseMain() {
   "use strict";
   var TAU = Math.PI * 2;
   var $ = function (id) { return document.getElementById(id); };
@@ -4814,12 +4841,14 @@
     coath:   { name: "Coath Inc.", icon: "🎓" }
   };
   var LS_KEY = "detabase.v1";
-  var store = { schema: 0, folders: [], groups: [], ui: {}, subjects: [], notes: {}, order: {}, problems: [], canvases: [], bank: { raw: [], methods: [] }, planner: { events: [], sessions: [], templates: [], goals: [], dayFormats: [], daySettings: { startHour: "06:00" } } };
+  var store = { schema: 3, folders: [], groups: [], ui: {}, subjects: [], notes: {}, order: {}, canvases: [], deadCanvases: [], planner: { events: [], sessions: [], templates: [], goals: [], dayFormats: [], daySettings: { startHour: "06:00" } } };
   try {
     var raw = localStorage.getItem(LS_KEY);
     if (raw) {
-      var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.problems = p.problems || []; store.canvases = p.canvases || [];
-      var bk = p.bank || {}; store.bank = { raw: bk.raw || [], methods: bk.methods || [] };
+      var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.canvases = p.canvases || [];
+      store.deadCanvases = p.deadCanvases || [];
+      if (p.problems) store.problems = p.problems;   // pre-v3 data, removed by migrateCleanStart
+      if (p.bank) store.bank = p.bank;
       var pl = p.planner || {};
       var dayFormats = pl.dayFormats || [];
       if (!pl.dayFormats && pl.dayFormat && pl.dayFormat.length) {
@@ -4865,25 +4894,30 @@
     }
   } catch (e) {}
   // ============================================================
-  // Canvas storage — a canvas's heavy data (items + ink) lives OUTSIDE
-  // the main store: local key "detabase.canvas.<id>", cloud doc "sync/canvas_<id>".
-  // The main store only carries small metadata.
+  // Canvas storage — a canvas's heavy data (items + ink) lives OUTSIDE the main store: IndexedDB
+  // via window.DBX locally, cloud doc "sync/canvas_<id>". The main store only carries metadata.
   // ============================================================
-  var CANVAS_PFX = "detabase.canvas.";
-  var canvasCache = {};                 // id -> { items:[], ink:[], ts:Number }
-  function canvasKey(id) { return CANVAS_PFX + id; }
+  var canvasCache = {};                 // id -> { items:[], ink:[], ts:Number, nav? }
   function loadCanvas(id) {
     if (canvasCache[id]) return canvasCache[id];
     var c = { items: [], ink: [], ts: 0 };
-    try {
-      var rawc = localStorage.getItem(canvasKey(id));
-      if (rawc) { var pc = JSON.parse(rawc); c.items = pc.items || []; c.ink = pc.ink || []; c.ts = pc.ts || 0; }
-    } catch (e) {}
+    var pc = window.DBX.get(id);
+    if (pc) { c.items = pc.items || []; c.ink = pc.ink || []; c.ts = pc.ts || 0; if (pc.nav) c.nav = pc.nav; }
     canvasCache[id] = c;
     return c;
   }
   function putCanvasLocal(id, c) {
-    try { localStorage.setItem(canvasKey(id), JSON.stringify({ items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() })); } catch (e) {}
+    var doc = { items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() };
+    if (c.nav) doc.nav = c.nav;   // view position is per-device: kept locally, never pushed to the cloud
+    window.DBX.put(id, doc);
+  }
+  // a deleted canvas must never be resurrected by another device's sync sweep
+  function killCanvas(id) {
+    store.deadCanvases = store.deadCanvases || [];
+    if (store.deadCanvases.indexOf(id) < 0) store.deadCanvases.push(id);
+    delete canvasCache[id];
+    window.DBX.del(id);
+    if (typeof window.cloudDeleteCanvas === "function") window.cloudDeleteCanvas(id);
   }
   var canvasSaveTimers = {};
   function saveCanvas(id) {
@@ -4899,36 +4933,33 @@
   }
   function allCanvasesObj() {
     var out = {};
-    for (var i = 0; i < localStorage.length; i++) {
-      var k = localStorage.key(i);
-      if (k && k.indexOf(CANVAS_PFX) === 0) {
-        try { out[k.slice(CANVAS_PFX.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
-      }
-    }
+    window.DBX.ids().forEach(function (id) { var d = window.DBX.get(id); if (d) out[id] = { items: d.items, ink: d.ink, ts: d.ts }; });
     // include any in-memory canvases not yet flushed
     Object.keys(canvasCache).forEach(function (id) { out[id] = { items: canvasCache[id].items, ink: canvasCache[id].ink, ts: canvasCache[id].ts }; });
     return out;
   }
   // write a bundle of canvases (from a backup / sync file) into local storage
-  function restoreCanvases(obj) {
-    if (!obj || typeof obj !== "object") return;
-    Object.keys(obj).forEach(function (id) {
-      var c = obj[id]; if (!c) return;
-      try { localStorage.setItem(canvasKey(id), JSON.stringify({ items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() })); } catch (e) {}
-    });
+  function restoreCanvases(obj) {   // resolves once every doc is written (callers reload after)
+    if (!obj || typeof obj !== "object") return Promise.resolve();
+    return Promise.all(Object.keys(obj).map(function (id) {
+      var c = obj[id]; if (!c) return null;
+      delete canvasCache[id];
+      return window.DBX.put(id, { items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() });
+    }));
   }
   // remote canvas arrived from another device (called by the Firebase module) — including the
   // echo of this SAME device's own just-saved write, which typically comes back 1-3s later.
-  // Never rebuild the canvas while something transient (a search-clip overlay, an in-place crop
-  // drag) is on top of it: renderCanvas() wipes #ppCanvas from scratch and would silently destroy
-  // whatever the user is mid-interaction with a few seconds after they started it. The data still
-  // updates in memory; the next real render (when that overlay closes) picks it up.
+  // Never rebuild the canvas the user is mid-stroke on; the data still updates in memory and the
+  // next real render picks it up.
   window.onCloudCanvas = function (id) {
+    var navKeep = canvasCache[id] && canvasCache[id].nav;
     delete canvasCache[id];
+    var fresh = loadCanvas(id);
+    if (navKeep && !fresh.nav) fresh.nav = navKeep;
     var cp = curProblem();
     if (cp && cp.id === id) {
-      cp.bench = loadCanvas(id).items;
-      if (viewingProblem && activeProblem === id && !clipModeOverlay && !inPlaceCropBusy) renderCanvas();
+      cp.bench = fresh.items;
+      if (viewingProblem && activeProblem === id && !inkDrawing) renderCanvas();
     }
   };
 
@@ -4941,10 +4972,6 @@
     var out = {};
     for (var k in store) if (store.hasOwnProperty(k)) out[k] = store[k];
     out.canvases = (store.canvases || []).map(stripBench);
-    out.problems = (store.problems || []).map(function (pr) {
-      var q = {}; for (var kk in pr) if (pr.hasOwnProperty(kk) && kk !== "bench") q[kk] = pr[kk];
-      return q;
-    });
     return out;
   }
 
@@ -4974,6 +5001,31 @@
       delete pr.bench;
     });
     store.schema = 2;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+
+  // ---- schema 3: clean start for the new two-bank library ----
+  // The old problem pages and the first-draft bank were test data (user's call). A local-only
+  // backup of both is kept (store JSON in localStorage, canvas docs under a "__" IndexedDB key that
+  // never syncs) in case anything is ever needed again. Idempotent: if another device still pushes
+  // an older store, this simply runs again on the next load.
+  (function migrateCleanStart() {
+    var hadOld = (store.problems && store.problems.length) || store.bank || (store.ui && (store.ui.rawList || store.ui.probList));
+    if (store.schema >= 3 && !hadOld) return;
+    try {
+      if (!localStorage.getItem("detabase.v1.pre-v3")) localStorage.setItem("detabase.v1.pre-v3", localStorage.getItem(LS_KEY) || "");
+    } catch (e) {}
+    var backup = {};
+    (store.problems || []).forEach(function (pr) {
+      var d = window.DBX.get(pr.id); if (d) backup[pr.id] = d;
+      killCanvas(pr.id);
+    });
+    if (Object.keys(backup).length && !window.DBX.get("__pre_v3_problems")) window.DBX.put("__pre_v3_problems", { problems: store.problems, docs: backup, ts: Date.now() });
+    delete store.problems;
+    delete store.bank;
+    if (store.ui) { delete store.ui.rawList; delete store.ui.probList; }
+    (store.canvases || []).forEach(function (pg) { delete pg.shortlist; });
+    store.schema = 3;
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
@@ -5034,20 +5086,7 @@
   function effGroupOfSubject(s) { return (s.group && groupExists(s.group)) ? s.group : "base"; }
   function groupOfBuiltin(folderId) { return effGroupOfBuiltin(folderId); }
 
-  // ============================================================
-  // Problem-solving method bank + raw material bank
-  // A "folder" here is an existing ETI subject id (builtin or custom, store.subjects);
-  // a "topic" is a freeform label (not a real DOM tab) since new class content can't create
-  // real ETI HTML tabs. Raw entries live at exactly one {group,folder,topic} address; a method
-  // can attach to several nodes, each as broad as {group} alone or as narrow as
-  // {group,folder,topic,rawId}. Browsing any node shows everything attached there, at any
-  // ancestor (broader) node, or at any descendant (narrower) node — a straightforward "is one
-  // path a prefix of the other" check, computed at render time (no cached index).
-  // ============================================================
-  // the sidebar button's own visible text (e.g. "Trig base") — NOT folderMeta[fid].title (e.g.
-  // "Trigonometry — High-School Reference", used for card-preview headers only). Those two
-  // names for the same folder can differ, which was confusing when the bank picker showed one
-  // and the real sidebar showed the other for the identical folder.
+  // a folder's visible sidebar name (e.g. "Trig base"), which can differ from folderMeta[fid].title
   function folderButtonLabel(fid) {
     var b = folderButtons.filter(function (x) { return x.getAttribute("data-folder") === fid; })[0];
     if (!b) return null;
@@ -5055,108 +5094,6 @@
     c.querySelectorAll(".ficon").forEach(function (x) { x.remove(); });
     return c.textContent.replace(/\s+/g, " ").trim();
   }
-  function bankFoldersInGroup(gid) {
-    var out = builtinFolderIds().filter(function (fid) { return effGroupOfBuiltin(fid) === gid; })
-      .map(function (fid) { return { id: fid, name: folderButtonLabel(fid) || fid }; });
-    store.subjects.filter(function (s) { return s.folder === "eti" && effGroupOfSubject(s) === gid; })
-      .forEach(function (s) { out.push({ id: s.id, name: s.name }); });
-    return out;
-  }
-  function bankFolderLabel(fid) {
-    var fb = folderButtonLabel(fid);
-    if (fb) return fb;
-    var s = store.subjects.filter(function (x) { return x.id === fid; })[0];
-    return s ? s.name : fid;
-  }
-  function bankTopicsInFolder(fid) {
-    var seen = {}, out = [];
-    (store.bank.raw || []).forEach(function (r) {
-      if (r.folder === fid && r.topic && !seen[r.topic]) { seen[r.topic] = 1; out.push(r.topic); }
-    });
-    (store.bank.methods || []).forEach(function (m) {
-      (m.nodes || []).forEach(function (n) {
-        if (n.folder === fid && n.topic && !seen[n.topic]) { seen[n.topic] = 1; out.push(n.topic); }
-      });
-    });
-    return out;
-  }
-  function bankPathOf(n) {
-    var path = [n.group];
-    if (n.folder) { path.push(n.folder); if (n.topic) { path.push(n.topic); if (n.rawId) path.push(n.rawId); } }
-    return path;
-  }
-  function bankPathsRelated(a, b) {   // true if one path is a prefix of the other (or equal)
-    var len = Math.min(a.length, b.length);
-    for (var i = 0; i < len; i++) if (a[i] !== b[i]) return false;
-    return true;
-  }
-  function bankMethodsFor(qGroup, qFolder, qTopic, qRawId) {
-    var qPath = bankPathOf({ group: qGroup, folder: qFolder, topic: qTopic, rawId: qRawId });
-    return (store.bank.methods || []).filter(function (m) {
-      return (m.nodes || []).some(function (n) { return bankPathsRelated(bankPathOf(n), qPath); });
-    });
-  }
-  function bankRawFor(qGroup, qFolder, qTopic) {
-    var qPath = [qGroup]; if (qFolder) { qPath.push(qFolder); if (qTopic) qPath.push(qTopic); }
-    return (store.bank.raw || []).filter(function (r) {
-      var rPath = [r.group]; if (r.folder) { rPath.push(r.folder); if (r.topic) rPath.push(r.topic); }
-      if (rPath.length < qPath.length) return false;
-      for (var i = 0; i < qPath.length; i++) if (rPath[i] !== qPath[i]) return false;
-      return true;
-    });
-  }
-  function bankRawById(id) { return (store.bank.raw || []).filter(function (r) { return r.id === id; })[0] || null; }
-  function bankMethodById(id) { return (store.bank.methods || []).filter(function (m) { return m.id === id; })[0] || null; }
-
-  // Saved raw material needs to actually show up when the user browses that subject normally in
-  // ETI — not just through the mining section's own browse tree — or it just feels lost. For a
-  // BUILTIN folder (which has a real .tabbar/.folder DOM), add one extra "📝 My raw material" tab
-  // that lists everything filed there, grouped by topic. Custom (store.subjects) folders don't
-  // have this DOM structure and keep using the mining-section browse tree only, for now.
-  function ensureBankPaneForFolder(fid) {
-    var bar = document.querySelector('.tabbar[data-folder="' + fid + '"]');
-    var folderEl = document.getElementById("folder-" + fid);
-    if (!bar || !folderEl) return null;
-    var target = "bank-" + fid;
-    var pane = document.getElementById("pane-" + target);
-    if (!pane) {
-      var btn = document.createElement("button");
-      btn.setAttribute("data-target", target);
-      btn.innerHTML = '<span class="tnum">📝</span>My raw material';
-      bar.appendChild(btn);
-      btn.addEventListener("click", function () { selectTab(target); });
-      allTabButtons.push(btn);
-      pane = document.createElement("section");
-      pane.className = "pane";
-      pane.id = "pane-" + target;
-      folderEl.appendChild(pane);
-    }
-    return pane;
-  }
-  function renderBankRawIntoEti() {
-    var byFolder = {};
-    (store.bank.raw || []).forEach(function (r) { (byFolder[r.folder] = byFolder[r.folder] || []).push(r); });
-    Object.keys(byFolder).forEach(function (fid) {
-      var pane = ensureBankPaneForFolder(fid);
-      if (!pane) return;
-      var byTopic = {}, order = [];
-      byFolder[fid].forEach(function (r) {
-        var t = r.topic || "General";
-        if (!byTopic[t]) { byTopic[t] = []; order.push(t); }
-        byTopic[t].push(r);
-      });
-      var html = "<h2><span class=\"num\">📝</span>My raw material</h2>";
-      order.forEach(function (t) {
-        html += "<h3>" + escapeHtml(t) + "</h3>";
-        byTopic[t].forEach(function (r) {
-          html += '<div class="card" data-idx="' + r.id + '"><h4>' + escapeHtml(r.title) + "</h4>" + r.html + "</div>";
-        });
-      });
-      pane.innerHTML = html;
-    });
-    try { buildIndex(); } catch (e) {}   // pick the new cards up for the main search too
-  }
-  try { renderBankRawIntoEti(); } catch (e) {}   // restore any previously-saved raw material on load
   function groupHasBuiltins(id) {
     return builtinFolderIds().some(function (f) { return effGroupOfBuiltin(f) === id; });
   }
@@ -5442,9 +5379,6 @@
       b.classList.toggle("on", b.getAttribute("data-subject") === activeSubject);
     });
     syncGroupButtons();
-    Array.prototype.slice.call($("problemList").children).forEach(function (b) {
-      b.classList.toggle("on", b.getAttribute("data-problem") === activeProblem);
-    });
     Array.prototype.slice.call($("pageList").children).forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-page") === activeProblem);
     });
@@ -5590,7 +5524,7 @@
     var btn = row.querySelector(".add-btn"), form = row.querySelector(".add-form");
     var kind = btn.getAttribute("data-add");
     if (kind === "problem" || kind === "page" || !form) {
-      btn.addEventListener("click", function () { kind === "page" ? addPage() : addProblem(); });   // one click → new page, rename in the title field
+      btn.addEventListener("click", function () { if (kind === "page") addPage(); });   // one click → new page
       return;
     }
     var input = form.querySelector("input");
@@ -7736,9 +7670,8 @@
       if (!confirm("Replace ALL data on this computer with the backup? This can't be undone.")) return;
       try {
         localStorage.setItem(LS_KEY, JSON.stringify(incoming));
-        if (data && data.canvases) restoreCanvases(data.canvases);
       } catch (e2) { alert("Couldn't save — storage may be full or blocked."); return; }
-      location.reload();
+      restoreCanvases(data && data.canvases).then(function () { location.reload(); });
     };
     reader.readAsText(f);
     this.value = "";
@@ -7842,10 +7775,9 @@
           if (!confirm("Load the sync file? This replaces the data on THIS device." + when)) return;
           try {
             localStorage.setItem(LS_KEY, JSON.stringify(incoming));
-            if (data && data.canvases) restoreCanvases(data.canvases);
           }
           catch (e2) { alert("Couldn't save locally — storage may be full or blocked."); return; }
-          location.reload();
+          restoreCanvases(data && data.canvases).then(function () { location.reload(); });
         });
       }).catch(function (e) { setStatus("load failed: " + (e && e.message || e), "bad"); });
     }
@@ -7973,7 +7905,8 @@
     });
   }
   function pushEntry(el, title, folder, tab, folderId, paneId, kind) {
-    var id = el.dataset.idx || ("ix" + searchIndex.length + "_" + Math.random().toString(36).slice(2, 6));
+    // stable across reloads: built-in blocks carry a data-el key (tagBuiltinElements), panes their id
+    var id = el.dataset.idx || el.dataset.el || (el.matches("section.pane") ? "pane:" + el.id.replace("pane-", "") : ("ix" + searchIndex.length + "_" + Math.random().toString(36).slice(2, 6)));
     el.dataset.idx = id;
     var full = cleanText(el);
     var e = {
@@ -7985,6 +7918,44 @@
     searchIndex.push(e);
   }
   function indexById(id) { for (var i = 0; i < searchIndex.length; i++) if (searchIndex[i].id === id) return searchIndex[i]; return null; }
+
+  // ---- stable identities for built-in library content ----
+  // Library levels on built-in content: Card = a pane (tab in the tab bar), Element = each
+  // top-level block inside it — a <details class="subject">, a .card (also inside .grid2), a .tool,
+  // or a prose run (an h3 or loose text and the siblings after it, until the next block). Every node
+  // of an element gets the same data-el="<target>:<title-slug>" (runs are NOT wrapped, so existing
+  // selectors/CSS keep matching). Title-based keys survive blocks being added or reordered in the
+  // HTML; must run before applyAllOrders() reorders anything.
+  function elSlug(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "block"; }
+  function builtinElTitle(node) {
+    if (node.matches(".subject")) return cleanText(node.querySelector(":scope > summary"));
+    if (node.matches(".card")) return cleanText(node.querySelector(":scope > h4"));
+    if (node.matches(".tool")) return cleanText(node.querySelector(".tool-title")) || "Interactive tool";
+    var t = cleanText(node);
+    return t.length > 48 ? t.slice(0, 46) + "…" : t;
+  }
+  function tagBuiltinElements() {
+    document.querySelectorAll("#topfolder-eti section.pane").forEach(function (pane) {
+      var target = pane.id.replace("pane-", ""), used = {}, runKey = null;
+      function keyFor(title) {
+        var base = target + ":" + elSlug(title), k = base, n = 2;
+        while (used[k]) k = base + "~" + (n++);
+        used[k] = 1;
+        return k;
+      }
+      Array.prototype.slice.call(pane.children).forEach(function (ch) {
+        if (ch.matches("h2, .accordion-controls")) { runKey = null; return; }
+        if (ch.matches(".grid2")) {
+          runKey = null;
+          ch.querySelectorAll(":scope > .card").forEach(function (c) { c.setAttribute("data-el", keyFor(builtinElTitle(c))); });
+          return;
+        }
+        if (ch.matches(".subject, .card, .tool")) { runKey = null; ch.setAttribute("data-el", keyFor(builtinElTitle(ch))); return; }
+        if (ch.matches("h3") || !runKey) runKey = keyFor(builtinElTitle(ch));
+        ch.setAttribute("data-el", runKey);
+      });
+    });
+  }
 
   // "what does your problem look like?" — auto-assigned by keyword rules over each card's text
   var SIT_TAGS = [
@@ -8102,30 +8073,13 @@
     });
   }
 
-  // ---- library panel (in the writing page): raw materials + problem solving ----
-  function nbLibList(which) { store.ui[which] = store.ui[which] || []; return store.ui[which]; }
-  function nbLibAdd(which, item) {
-    var l = nbLibList(which);
-    if (l.some(function (x) { return x.id === item.id; })) return;
-    l.push(item); saveStore(); renderNbLibLists();
-  }
-  function nbLibRemove(which, id) {
-    store.ui[which] = nbLibList(which).filter(function (x) { return x.id !== id; });
-    saveStore(); renderNbLibLists();
-  }
-  function nbLibClip(item) {
-    var libEl = $("nbLib"); if (libEl) libEl.classList.remove("open");
-    if (item.t === "card") startClipMode(item.id);
-    else if (item.t === "bank") {
-      var entry = item.bankType === "raw" ? bankRawById(item.id) : bankMethodById(item.id);
-      if (entry) newMergedClip(entry.html, entry.title, viewCenterPos());
-    }
-    else startClipModePage(item.id);   // notebook page or problem method — both are canvas docs
-  }
+  // ---- library panel (in the writing page) ----
+  // Interim version: search the ETI reference and drop a result straight onto the open board.
+  // Replaced by the shared Mining component (search + both banks + multi-select) in a later stage.
   function nbHitRow(title, sub, onAdd) {
     var d = document.createElement("div");
     d.className = "nblib-hit";
-    d.innerHTML = '<span class="h-t">' + escapeHtml(title) + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '') + '</span><button title="add to list">＋</button>';
+    d.innerHTML = '<span class="h-t">' + escapeHtml(title) + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '') + '</span><button title="add to this board">＋</button>';
     d.querySelector("button").addEventListener("click", onAdd);
     return d;
   }
@@ -8135,170 +8089,24 @@
     var q = ($("libRawSearch").value || "").trim();
     box.innerHTML = "";
     if (!q) return;
-    var lc = q.toLowerCase();
     runSearch(q, []).filter(function (e) { return e.kind !== "tab"; }).slice(0, 12).forEach(function (e) {
       box.appendChild(nbHitRow(e.title, (e.folder || "") + (e.tab ? " · " + e.tab : ""), function () {
-        nbLibAdd("rawList", { t: "card", id: e.id, name: e.title });
-      }));
-    });
-    (store.canvases || []).filter(function (p) { return (p.name || "").toLowerCase().indexOf(lc) >= 0; }).slice(0, 6).forEach(function (p) {
-      box.appendChild(nbHitRow(p.name || "Untitled", "notebook page", function () {
-        nbLibAdd("rawList", { t: "page", id: p.id, name: p.name || "Page" });
+        var libEl = $("nbLib"); if (libEl) libEl.classList.remove("open");
+        startClipMode(e.id);
       }));
     });
   }
-  function renderNbLibProbResults() {
-    var box = $("libProbResults"); if (!box) return;
-    var q = ($("libProbSearch").value || "").trim().toLowerCase();
-    box.innerHTML = "";
-    if (!q) return;
-    (store.problems || []).filter(function (p) { return (p.name || "").toLowerCase().indexOf(q) >= 0; }).slice(0, 14).forEach(function (p) {
-      box.appendChild(nbHitRow(p.name || "Untitled problem", "problem method", function () {
-        nbLibAdd("probList", { t: "prob", id: p.id, name: p.name || "Problem" });
-      }));
-    });
-  }
-  function nbChip(which, item) {
-    var d = document.createElement("div");
-    d.className = "nblib-chip";
-    d.innerHTML = '<span class="c-t">' + escapeHtml(item.name || "item") + '</span>' +
-      '<button class="c-clip" title="clip onto this page">clip ▸</button>' +
-      '<button class="c-x" title="remove from list">✕</button>';
-    d.querySelector(".c-clip").addEventListener("click", function () { nbLibClip(item); });
-    d.querySelector(".c-x").addEventListener("click", function () { nbLibRemove(which, item.id); });
-    return d;
-  }
-  function renderNbLibLists() {
-    var r = $("libRawList"), pr = $("libProbList");
-    if (r) { r.innerHTML = ""; nbLibList("rawList").forEach(function (it) { r.appendChild(nbChip("rawList", it)); }); }
-    if (pr) { pr.innerHTML = ""; nbLibList("probList").forEach(function (it) { pr.appendChild(nbChip("probList", it)); }); }
-  }
-  function renderNbLib() { renderNbLibRawResults(); renderNbLibProbResults(); renderNbLibLists(); }
+  function renderNbLib() { renderNbLibRawResults(); }
 
-  // ---- library panel: browse the raw material / method bank by subject ----
-  // drill-down state per side (group -> folder -> topic), rather than an always-expanded tree —
-  // matches how the user described looking things up (group, then subject, then tab, then card).
-  var bankBrowseState = { raw: {}, method: {} };
-  function bbRowHtml(label, count, lvl, key) {
-    return '<div class="bbt-row" data-lvl="' + lvl + '" data-key="' + escapeHtml(key) + '">' +
-      '<span class="bbt-name">' + escapeHtml(label) + '</span><span class="bbt-count">' + count + '</span></div>';
-  }
-  function bbCrumbHtml(side, st) {
-    var h = '<div class="bbt-crumb"><button type="button" class="bbt-crumb-btn" data-to="root">All</button>';
-    if (st.group) h += ' › <button type="button" class="bbt-crumb-btn" data-to="group">' + escapeHtml(groupName(st.group)) + '</button>';
-    if (st.folder) h += ' › <button type="button" class="bbt-crumb-btn" data-to="folder">' + escapeHtml(bankFolderLabel(st.folder)) + '</button>';
-    if (st.topic) h += ' › <span class="bbt-crumb-cur">' + escapeHtml(st.topic) + '</span>';
-    return h + '</div>';
-  }
-  function bbItemRows(side, group, folder, topic) {
-    var h = "";
-    if (side === "raw") {
-      bankRawFor(group, folder, topic).forEach(function (r) {
-        h += '<div class="nblib-hit" data-add="' + r.id + '"><span class="h-t">' + escapeHtml(r.title) + '</span><button title="add to list">＋</button></div>';
-      });
-    } else {
-      bankMethodsFor(group, folder, topic).forEach(function (m) {
-        h += '<div class="nblib-hit" data-add="' + m.id + '"><span class="h-t">' + escapeHtml(m.title) + '</span><button title="add to list">＋</button></div>';
-      });
-    }
-    return h;
-  }
-  function renderBankBrowse(side) {
-    var el = $(side === "raw" ? "libRawBrowse" : "libProbBrowse");
-    if (!el || el.hidden) return;
-    var st = bankBrowseState[side];
-    var countFor = side === "raw"
-      ? function (g, f, t) { return bankRawFor(g, f, t).length; }
-      : function (g, f, t) { return bankMethodsFor(g, f, t).length; };
-    var html = bbCrumbHtml(side, st);
-    if (!st.group) {
-      allGroupIds().forEach(function (g) {
-        var n = countFor(g);
-        if (n) html += bbRowHtml(groupName(g), n, "group", g);
-      });
-    } else if (!st.folder) {
-      bankFoldersInGroup(st.group).forEach(function (f) {
-        var n = countFor(st.group, f.id);
-        if (n) html += bbRowHtml(f.name, n, "folder", f.id);
-      });
-    } else if (!st.topic) {
-      bankTopicsInFolder(st.folder).forEach(function (t) {
-        var n = countFor(st.group, st.folder, t);
-        if (n) html += bbRowHtml(t, n, "topic", t);
-      });
-      html += bbItemRows(side, st.group, st.folder, "");   // items filed straight under the folder, no topic
-    } else {
-      html += bbItemRows(side, st.group, st.folder, st.topic);
-    }
-    el.innerHTML = html;
-    el.querySelectorAll(".bbt-crumb-btn").forEach(function (b) {
-      b.addEventListener("click", function () {
-        if (b.dataset.to === "root") bankBrowseState[side] = {};
-        else if (b.dataset.to === "group") bankBrowseState[side] = { group: st.group };
-        else if (b.dataset.to === "folder") bankBrowseState[side] = { group: st.group, folder: st.folder };
-        renderBankBrowse(side);
-      });
-    });
-    el.querySelectorAll(".bbt-row").forEach(function (row) {
-      row.addEventListener("click", function () {
-        var lvl = row.dataset.lvl, key = row.dataset.key;
-        if (lvl === "group") bankBrowseState[side] = { group: key };
-        else if (lvl === "folder") bankBrowseState[side] = { group: st.group, folder: key };
-        else if (lvl === "topic") bankBrowseState[side] = { group: st.group, folder: st.folder, topic: key };
-        renderBankBrowse(side);
-      });
-    });
-    el.querySelectorAll(".nblib-hit button").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.stopPropagation();
-        var id = btn.closest(".nblib-hit").dataset.add;
-        var entry = side === "raw" ? bankRawById(id) : bankMethodById(id);
-        if (entry) nbLibAdd(side === "raw" ? "rawList" : "probList", { t: "bank", bankType: side, id: id, name: entry.title });
-      });
-    });
-  }
-
-  // ---- rail: problem list (filterable by name) ----
-  function renderProblemList() {
-    var list = $("problemList");
-    list.innerHTML = "";
-    var box = $("problemSearch");
-    if (box) box.hidden = !store.problems.length;      // nothing to filter yet
-    var q = ((box || {}).value || "").trim().toLowerCase();
-    var shown = store.problems.filter(function (p) {
-      return !q || (p.name || "untitled").toLowerCase().indexOf(q) >= 0;
-    });
-    if (store.problems.length && !shown.length) {
-      list.innerHTML = '<div class="rr-empty">No problem matches “' + escapeHtml(q) + '”.</div>';
-    }
-    shown.forEach(function (p) {
-      var b = document.createElement("button");
-      b.setAttribute("data-problem", p.id);
-      b.classList.toggle("on", p.id === activeProblem);
-      b.innerHTML = escapeHtml(p.name || "Untitled") + '<span class="del-x" title="delete problem">✕</span>';
-      b.addEventListener("click", function (e) {
-        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delProblem(p.id); return; }
-        selectProblem(p.id);
-      });
-      list.appendChild(b);
-    });
-    if (typeof renderPageList === "function") renderPageList();
-  }
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
-  // a "canvas doc" is a problem-solving page (store.problems) OR a loose notebook page (store.canvases)
-  function canvasDocs() { return store.problems.concat(store.canvases || []); }
+  // a "canvas doc" that opens in the board editor — today only notebook pages (store.canvases)
+  function canvasDocs() { return store.canvases || []; }
   function canvasDocById(id) { return canvasDocs().filter(function (p) { return p.id === id; })[0]; }
   function isPage(id) { return (store.canvases || []).some(function (p) { return p.id === id; }); }
+  // the board that is open in the editor, or null — never creates one behind the user's back
   function curProblem() { return bindBench(canvasDocById(activeProblem)); }
+  function ensureProblem() { return curProblem(); }
 
-  function addProblem(name) {
-    var p = { id: uid("pb_"), name: (name || "").trim() || ("Problem " + (store.problems.length + 1)), statement: "", created: Date.now() };
-    store.problems.push(p);
-    bindBench(p);
-    saveStore();
-    renderProblemList();
-    selectProblem(p.id);
-  }
   function addPage(name) {
     store.canvases = store.canvases || [];
     var p = { id: uid("pg_"), kind: "page", name: (name || "").trim() || ("Page " + (store.canvases.length + 1)), created: Date.now() };
@@ -8310,26 +8118,13 @@
   }
   function delCanvasDoc(id) {
     var p = canvasDocById(id); if (!p) return;
-    var isPg = isPage(id);
     if (!confirm('Delete "' + (p.name || "Untitled") + '"?')) return;
-    store.problems = store.problems.filter(function (x) { return x.id !== id; });
     store.canvases = (store.canvases || []).filter(function (x) { return x.id !== id; });
-    delete canvasCache[id];
-    try { localStorage.removeItem(canvasKey(id)); } catch (e) {}
-    if (typeof window.cloudDeleteCanvas === "function") window.cloudDeleteCanvas(id);
+    killCanvas(id);
     saveStore();
     if (activeProblem === id) { activeProblem = null; viewingProblem = false; }
-    renderProblemList(); renderPageList();
-    if (isPg) { selectTop("notebook"); } else { selectTop("eti"); }
-  }
-  function delProblem(id) { delCanvasDoc(id); }
-  function selectProblem(id) {
-    activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "eti";
-    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
-    renderProblemList();
-    applyView();
-    history.replaceState(null, "", "#" + id);
-    if (typeof window.enterInkFull === "function") window.enterInkFull();
+    renderPageList();
+    selectTop("notebook");
   }
   function selectPage(id) {
     activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "notebook";
@@ -8361,17 +8156,6 @@
       list.appendChild(b);
     });
   }
-  function ensureProblem() {
-    var cur = curProblem();
-    if (cur) return cur;
-    var p = { id: uid("pb_"), name: "Problem " + (store.problems.length + 1), statement: "", created: Date.now() };
-    store.problems.push(p);
-    activeProblem = p.id;          // becomes the pin target, but we do NOT switch the view
-    bindBench(p);
-    saveStore();
-    renderProblemList();
-    return p;
-  }
 
   // ---- clips (board items) ----
   var zTop = 10;
@@ -8391,27 +8175,14 @@
     return { x: 16 + (n % 5) * 30, y: 16 + (n % 5) * 26 };
   }
   function benchAdd(idx, pos) {
-    var p = ensureProblem();
+    var p = curProblem(); if (!p) return;
     var dup = p.bench.filter(function (x) { return x.cardId === idx && !x.frag; })[0];
     if (dup) { dup.z = ++zTop; saveStore(); if (viewingProblem && activeProblem === p.id) renderCanvas(); return; }
     var e = indexById(idx);
     var pp = pos || nextClipPos(p);
     p.bench.push({ id: uid("cl_"), cardId: idx, title: e ? e.title : "Card", html: getCardHTML(idx),
       x: Math.round(pp.x), y: Math.round(pp.y), w: 320, h: 240, z: ++zTop, added: Date.now() });
-    shortlistRemove(idx, p);   // it graduated to the board
     saveStore();
-    renderProblemList();
-    if (viewingProblem && activeProblem === p.id) renderCanvas();
-  }
-  function benchAddFragment(html, host, pos) {
-    var p = ensureProblem();
-    var e = host && host.dataset.idx ? indexById(host.dataset.idx) : null;
-    var pp = pos || nextClipPos(p);
-    p.bench.push({ id: uid("cl_"), cardId: host ? host.dataset.idx : null, frag: true,
-      title: (e ? e.title : "Excerpt") + " — excerpt", html: html,
-      x: Math.round(pp.x), y: Math.round(pp.y), w: 300, h: 170, z: ++zTop, added: Date.now() });
-    saveStore();
-    renderProblemList();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
   function benchKeep(p, pred) {   // rebuild p.bench IN PLACE (it is a shared reference into canvasCache)
@@ -8421,42 +8192,8 @@
   }
   function clipRemove(clipId) {
     var p = curProblem(); if (!p) return;
-    var gone = p.bench.filter(function (x) { return x.id === clipId; })[0];
     benchKeep(p, function (x) { return x.id !== clipId; });
-    saveStore(); renderCanvas(); renderProblemList();
-    if (gone && gone.cardId && !isBenched(gone.cardId)) refreshCardButtons(gone.cardId);
-  }
-  function benchRemoveByCard(cardId) {
-    var p = curProblem(); if (!p) return;
-    benchKeep(p, function (x) { return !(x.cardId === cardId && !x.frag); });
-    saveStore(); renderCanvas(); renderProblemList();
-    if (!isBenched(cardId)) refreshCardButtons(cardId);
-  }
-  function refreshCardButtons(cardId) {
-    document.querySelectorAll('.pin-btn[data-idx="' + cardId + '"]').forEach(function (b) { b.classList.remove("done"); b.textContent = "📌"; });
-    document.querySelectorAll('.hit-add[data-idx="' + cardId + '"]').forEach(function (b) { b.classList.remove("on"); b.textContent = "＋ board"; });
-  }
-  function isBenched(idx) { var p = curProblem(); return !!(p && p.bench.some(function (x) { return x.cardId === idx && !x.frag; })); }
-
-  // ---- shortlist: mark candidates while still searching, before committing to the board ----
-  function shortlistOf(p) { p = p || curProblem(); if (!p) return []; if (!p.shortlist) p.shortlist = []; return p.shortlist; }
-  function isShortlisted(idx) { return shortlistOf().indexOf(idx) >= 0; }
-  function shortlistToggle(idx) {
-    var p = ensureProblem(), list = shortlistOf(p);
-    var i = list.indexOf(idx);
-    if (i >= 0) list.splice(i, 1); else list.push(idx);
-    saveStore();
-    renderDropdown();
-  }
-  function shortlistRemove(idx, p) {
-    var list = shortlistOf(p);
-    var i = list.indexOf(idx);
-    if (i >= 0) list.splice(i, 1);
-  }
-  function shortlistAllToBoard() {
-    var p = curProblem(); if (!p) return;
-    shortlistOf(p).slice().forEach(function (idx) { benchAdd(idx); });
-    renderDropdown();
+    saveStore(); renderCanvas();
   }
 
   function jumpToCard(idx) {
@@ -8466,7 +8203,6 @@
     activeGroup = groupOfBuiltin(e.folderId);
     store.ui.group = activeGroup; saveStore();
     syncGroupButtons();
-    renderProblemList();
     selectFolder(e.folderId, true);
     selectTab(e.paneId.replace("pane-", ""));
     applyView();
@@ -8481,200 +8217,12 @@
     }, 60);
   }
 
-  function addNoteClip() {
-    var p = ensureProblem();
-    var canvas = $("ppCanvas");
-    var pp = { x: (canvas.scrollLeft || 0) + 20, y: (canvas.scrollTop || 0) + 20 };
-    p.bench.push({ id: uid("cl_"), kind: "note", text: "", title: "Note",
-      x: Math.round(pp.x), y: Math.round(pp.y), w: 300, h: 170, z: ++zTop, added: Date.now() });
-    saveStore();
-    if (viewingProblem && activeProblem === p.id) { renderCanvas(); var ta = $("ppCanvas").querySelector(".clip:last-child .note-ta"); if (ta) ta.focus(); }
-  }
-
-  // ---- problem page render ----
+  // ---- board page render ----
   function renderProblemPage() {
     var p = curProblem(); if (!p) return;
     if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(p.id);
-    if (p.statement && p.statement.trim()) {   // migrate old single statement → a note clip
-      p.bench.unshift({ id: uid("cl_"), kind: "note", text: p.statement, title: "The problem",
-        x: 14, y: 14, w: 340, h: 200, z: ++zTop, added: Date.now() });
-      delete p.statement; saveStore();
-    }
     (p.bench || []).forEach(function (c) { if ((c.z || 0) > zTop) zTop = c.z; });
-    $("ppTitle").value = p.name || "";
-    $("ppSearch").value = "";
-    activeTags = []; chipFilter = ""; tagListOpen = false;
-    $("ppResults").hidden = true;
-    renderShortBadge();
     renderCanvas();
-  }
-  function hideResults() { $("ppResults").hidden = true; renderShortBadge(); }
-  function renderShortBadge() {
-    var n = shortlistOf().length;
-    var b = $("ppShortBadge");
-    b.hidden = !n || !$("ppResults").hidden;   // hide the badge while the panel itself is open
-    b.textContent = "★ " + n;
-  }
-  var activeTags = [];
-  var chipFilter = "";
-  var ppSource = "subjects";   // "subjects" (ETI cards) | "problems" (saved solutions + pages)
-  var tagListOpen = false;   // the full tag list only appears while you're using the situation search
-  function toggleDropdown(show) {
-    var box = $("ppResults");
-    if (show === undefined) show = box.hidden;
-    box.hidden = !show;
-    if (show) { renderDropdown(); renderShortBadge(); } else { renderShortBadge(); }
-  }
-  function renderDropdown() {
-    var box = $("ppResults");
-    if (box.hidden) return;
-    var q = $("ppSearch").value;
-    var hits = runSearch(q, activeTags);
-    var html = "";
-    var focusedChipFilter = document.activeElement && document.activeElement.id === "ddChipFilter";
-    var caret = focusedChipFilter ? document.activeElement.selectionStart : null;
-
-    html += '<div class="dd-source">' +
-      '<button type="button" data-src="subjects"' + (ppSource === "subjects" ? ' class="on"' : '') + '>ETI cards</button>' +
-      '<button type="button" data-src="problems"' + (ppSource === "problems" ? ' class="on"' : '') + '>My pages</button></div>';
-
-    if (ppSource === "problems") {
-      var qq = (q || "").trim().toLowerCase();
-      var mine = canvasDocs().filter(function (d) { return d.id !== activeProblem; })
-        .filter(function (d) { return !qq || (d.name || "").toLowerCase().indexOf(qq) >= 0; })
-        .sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
-      html += '<div class="dd-results">';
-      if (!mine.length) html += '<div class="pp-empty">' + (qq ? 'No page named “' + escapeHtml(q) + '”.' : 'No other pages yet — problem-solving pages and notebook pages you make show up here to clip from.') + '</div>';
-      mine.forEach(function (d) {
-        var n = (loadCanvas(d.id).items || []).length, hasInk = (loadCanvas(d.id).ink || []).length;
-        html += '<div class="pp-hit" data-page="' + d.id + '"><div class="hit-main">' +
-          '<div class="hit-title">' + escapeHtml(d.name || "Untitled") + '</div>' +
-          '<div class="hit-src">' + (isPage(d.id) ? "notebook page" : "problem") + ' · ' + n + ' item' + (n !== 1 ? "s" : "") + (hasInk ? " · handwriting" : "") + '</div></div>' +
-          '<button class="hit-open" data-page="' + d.id + '">open</button>' +
-          '<button class="hit-add" data-pageclip="' + d.id + '">＋ board</button></div>';
-      });
-      html += '</div>';
-      box.innerHTML = html;
-      box.querySelectorAll('[data-src]').forEach(function (b) { b.addEventListener("click", function () { ppSource = b.getAttribute("data-src"); renderDropdown(); }); });
-      box.querySelectorAll('[data-pageclip]').forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); hideResults(); startClipModePage(b.getAttribute("data-pageclip")); }); });
-      box.querySelectorAll('.hit-open[data-page]').forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); var id = b.getAttribute("data-page"); if (isPage(id)) selectPage(id); else selectProblem(id); }); });
-      renderShortBadge();
-      return;
-    }
-
-    html += '<div class="dd-tagbar">';
-    html += '<span class="dd-chips-label">What does your problem have?</span>';
-    if (activeTags.length) {
-      html += '<div class="dd-tag-pills">';
-      activeTags.forEach(function (id) {
-        var t = SIT_TAGS.filter(function (x) { return x.id === id; })[0];
-        html += '<span class="dd-pill">' + escapeHtml(t ? t.label : id) + '<button type="button" class="dd-pill-x" data-tag="' + id + '">✕</button></span>';
-      });
-      html += '<button type="button" id="ddTagsClear" class="dd-clear">clear all</button>';
-      html += '</div>';
-    }
-    html += '<input type="text" id="ddChipFilter" class="dd-chip-filter" placeholder="Search situations — e.g. “inequality”, “root”, “triangle”…" value="' + escapeHtml(chipFilter) + '" autocomplete="off">';
-    if (tagListOpen) {
-      html += '<div class="dd-chips" id="ddChipsList">';
-      var allTags = availableTags();
-      var shownTags = chipFilter.trim() ? allTags.filter(function (t) { return t.label.toLowerCase().indexOf(chipFilter.trim().toLowerCase()) >= 0; }) : allTags;
-      if (!shownTags.length) html += '<span class="pp-empty">no match</span>';
-      shownTags.forEach(function (t) {
-        html += '<button type="button" class="dd-chip' + (activeTags.indexOf(t.id) >= 0 ? ' on' : '') + '" data-tag="' + t.id + '">' + escapeHtml(t.label) + '</button>';
-      });
-      html += '</div><button type="button" id="ddChipsClose" class="dd-chips-close">▲ collapse</button>';
-    }
-    html += '</div>'; // /dd-tagbar
-
-    html += '<div class="dd-results">';
-    if (!q.trim() && !activeTags.length) {
-      html += '<div class="pp-empty">Type to search, or tap chips above for “what your problem looks like” — pick more than one to narrow it down.</div>';
-    } else if (!hits.length) {
-      html += '<div class="pp-empty">No card matches' + (q.trim() ? ' “' + escapeHtml(q) + '”' : '') +
-        (activeTags.length ? (q.trim() ? ' and' : '') + ' all ' + activeTags.length + ' selected chip' + (activeTags.length > 1 ? "s" : "") + (activeTags.length > 1 ? ' — try removing one.' : '.') : '.') + '</div>';
-    } else {
-      hits.forEach(function (e) {
-        var benched = isBenched(e.id), starred = isShortlisted(e.id);
-        html +=
-          '<div class="pp-hit" draggable="true" data-idx="' + e.id + '">' +
-          '<button class="hit-star' + (starred ? ' on' : '') + '" data-idx="' + e.id + '" title="shortlist">' + (starred ? "★" : "☆") + '</button>' +
-          '<div class="hit-main">' +
-          '<div class="hit-title">' + escapeHtml(e.title) + '</div>' +
-          '<div class="hit-src">' + escapeHtml(e.folder) + (e.tab ? ' · ' + escapeHtml(e.tab) : '') + '</div>' +
-          '<div class="hit-snip">' + escapeHtml(e.snip) + '…</div>' +
-          '</div>' +
-          '<button class="hit-open" data-idx="' + e.id + '">open</button>' +
-          '<button class="hit-add' + (benched ? ' on' : '') + '" data-idx="' + e.id + '">' + (benched ? '✓ on board' : '＋ board') + '</button>' +
-          '</div>';
-      });
-    }
-    html += '</div>';
-
-    var sl = shortlistOf();
-    html += '<div class="dd-shortlist"' + (sl.length ? '' : ' hidden') + '>' +
-      '<div class="dd-sl-head"><span class="dd-sl-title">★ Shortlist (' + sl.length + ')</span><button type="button" id="ddSlAll">＋ all to board</button></div>';
-    sl.forEach(function (idx) {
-      var e = indexById(idx);
-      html += '<div class="dd-sl-item" draggable="true" data-idx="' + idx + '">' +
-        '<span class="sl-t">' + escapeHtml(e ? e.title : "(removed)") + '</span>' +
-        '<button class="sl-open" data-idx="' + idx + '">open</button>' +
-        '<button class="sl-add" data-idx="' + idx + '">＋ board</button>' +
-        '<button class="sl-x" data-idx="' + idx + '">✕</button>' +
-        '</div>';
-    });
-    html += '</div>';
-
-    box.innerHTML = html;
-
-    box.querySelectorAll('[data-src]').forEach(function (b) { b.addEventListener("click", function () { ppSource = b.getAttribute("data-src"); renderDropdown(); }); });
-
-    var cf = box.querySelector("#ddChipFilter");
-    cf.addEventListener("focus", function () { if (!tagListOpen) { tagListOpen = true; renderDropdown(); } });
-    cf.addEventListener("input", function () { chipFilter = this.value; tagListOpen = true; renderDropdown(); });
-    cf.addEventListener("keydown", function (e) {
-      e.stopPropagation();
-      if (e.key === "Escape") {
-        if (this.value) { this.value = ""; chipFilter = ""; renderDropdown(); }
-        else if (tagListOpen) { tagListOpen = false; renderDropdown(); }
-        else { this.blur(); }
-      }
-    });
-    if (focusedChipFilter) { cf.focus(); if (caret != null) { try { cf.setSelectionRange(caret, caret); } catch (_) {} } }
-    var chipsClose = box.querySelector("#ddChipsClose");
-    if (chipsClose) chipsClose.addEventListener("click", function () { tagListOpen = false; renderDropdown(); });
-
-    var clearTags = box.querySelector("#ddTagsClear");
-    if (clearTags) clearTags.addEventListener("click", function (e) { e.stopPropagation(); activeTags = []; renderDropdown(); });
-    box.querySelectorAll(".dd-pill-x").forEach(function (b) {
-      b.addEventListener("click", function (e) {
-        e.stopPropagation();
-        var i = activeTags.indexOf(b.dataset.tag);
-        if (i >= 0) activeTags.splice(i, 1);
-        renderDropdown();
-      });
-    });
-    box.querySelectorAll(".dd-chip").forEach(function (c) {
-      // mousedown (not click) so the filter input never blurs while picking several chips in a row
-      c.addEventListener("mousedown", function (e) { e.preventDefault(); });
-      c.addEventListener("click", function () {
-        var i = activeTags.indexOf(c.dataset.tag);
-        if (i >= 0) activeTags.splice(i, 1); else activeTags.push(c.dataset.tag);
-        renderDropdown();
-      });
-    });
-    box.querySelectorAll(".pp-hit").forEach(function (row) {
-      var idx = row.dataset.idx;
-      row.addEventListener("dragstart", function (ev) { dragCardId = idx; try { ev.dataTransfer.setData("text/plain", idx); ev.dataTransfer.effectAllowed = "copy"; } catch (_) {} });
-    });
-    box.querySelectorAll(".hit-star").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); shortlistToggle(b.dataset.idx); }); });
-    box.querySelectorAll(".hit-open, .sl-open").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); jumpToCard(b.dataset.idx); }); });
-    box.querySelectorAll(".hit-add").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); hideResults(); startClipMode(b.dataset.idx); }); });
-    box.querySelectorAll(".sl-add").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); benchAdd(b.dataset.idx); renderDropdown(); }); });
-    box.querySelectorAll(".sl-x").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); shortlistRemove(b.dataset.idx); saveStore(); renderDropdown(); }); });
-    box.querySelectorAll(".dd-sl-item").forEach(function (row) {
-      row.addEventListener("dragstart", function (ev) { dragCardId = row.dataset.idx; try { ev.dataTransfer.setData("text/plain", row.dataset.idx); ev.dataTransfer.effectAllowed = "copy"; } catch (_) {} });
-    });
-    var slAll = $("ddSlAll"); if (slAll) slAll.addEventListener("click", function () { shortlistAllToBoard(); renderDropdown(); });
   }
 
   // ---- pan / zoom viewport for the writing page ----
@@ -8953,124 +8501,6 @@
     };
     updatePasteBtn();
   }
-  // renders the current lasso selection to static HTML for the bank (same ink-as-inline-SVG +
-  // clip-html-joining pattern as canvasSnapshotHtml, just filtered to inkSel's strokes/clips
-  // instead of the whole canvas). Copy only — never mutates the selection or the page.
-  function inkSelToHtml(p) {
-    if (!p || !inkSel) return "";
-    var c = loadCanvas(p.id), parts = [];
-    var strokes = (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) >= 0; });
-    if (strokes.length) {
-      var ox = inkSel.box.x, oy = inkSel.box.y, pd = 8;
-      var paths = strokes.map(function (s) {
-        if (!s.pts || !s.pts.length) return "";
-        var d = "M" + s.pts.map(function (q) { return (q[0] - ox + pd).toFixed(1) + " " + (q[1] - oy + pd).toFixed(1); }).join(" L");
-        return '<path d="' + d + '" fill="none" stroke="' + (s.color || "#1e293b") + '" stroke-width="' + (s.w || 3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
-      }).join("");
-      parts.push('<svg viewBox="0 0 ' + (inkSel.box.w + pd * 2).toFixed(0) + ' ' + (inkSel.box.h + pd * 2).toFixed(0) + '" style="max-width:100%;height:auto;display:block;margin:4px 0">' + paths + '</svg>');
-    }
-    (p.bench || []).filter(function (cl) { return inkSel.clips.indexOf(cl.id) >= 0; })
-      .slice().sort(function (a, b) { return (a.y || 0) - (b.y || 0) || (a.x || 0) - (b.x || 0); })
-      .forEach(function (it) {
-        if (it.kind === "note") { if (it.text && it.text.trim()) parts.push('<p>' + escapeHtml(it.text).replace(/\n/g, "<br>") + '</p>'); }
-        else if (it.kind === "graph") parts.push('<p class="muted">📈 ' + escapeHtml((it.fns || []).map(function (f) { return "y=" + f.expr; }).filter(Boolean).join(",  ")) + '</p>');
-        else if (it.kind === "shape") parts.push('<p class="muted">△ ' + escapeHtml((it.type || "shape")) + '</p>');
-        else if (it.html) parts.push('<div>' + it.html + '</div>');
-      });
-    return parts.join("");
-  }
-  // ---- save-to-bank modal: classify the current lasso selection as raw material or a method ----
-  var bankSaveState = null;   // { type:'raw'|'method', nodes:[{group,folder,topic,rawId}] }
-  function bankDefaultNode() {
-    var g = allGroupIds()[0] || "base";
-    var folders = bankFoldersInGroup(g);
-    return { group: g, folder: (folders[0] && folders[0].id) || "", topic: "", rawId: "" };
-  }
-  function openBankSaveModal() {
-    if (!inkSel) return;
-    bankSaveState = { type: "raw", nodes: [bankDefaultNode()] };
-    var m = $("bankSaveModal"); if (!m) return;
-    $("bankTitle").value = "";
-    m.hidden = false;
-    bankRenderModal();
-  }
-  function closeBankSaveModal() {
-    var m = $("bankSaveModal"); if (m) m.hidden = true;
-    bankSaveState = null;
-  }
-  function bankRenderModal() {
-    if (!bankSaveState) return;
-    var isMethod = bankSaveState.type === "method";
-    var modal = $("bankSaveModal");
-    modal.querySelectorAll(".bank-type-toggle button").forEach(function (b) {
-      b.classList.toggle("on", b.dataset.bt === bankSaveState.type);
-    });
-    $("bankAddNode").hidden = !isMethod;
-    var wrap = $("bankNodes"); wrap.innerHTML = "";
-    var groups = allGroupIds();
-    bankSaveState.nodes.forEach(function (n, i) {
-      var row = document.createElement("div"); row.className = "bank-node-row";
-      var folders = bankFoldersInGroup(n.group);
-      var rawOpts = n.topic ? bankRawFor(n.group, n.folder, n.topic) : [];
-      row.innerHTML =
-        '<div class="bn-line">' +
-        '<select class="bn-group">' + groups.map(function (g) { return '<option value="' + g + '"' + (g === n.group ? " selected" : "") + '>' + escapeHtml(groupName(g)) + '</option>'; }).join("") + '</select>' +
-        '<select class="bn-folder">' + folders.map(function (f) { return '<option value="' + f.id + '"' + (f.id === n.folder ? " selected" : "") + '>' + escapeHtml(f.name) + '</option>'; }).join("") + '</select>' +
-        '<input class="bn-topic" type="text" placeholder="Topic (optional)" list="bn-topics-' + i + '" value="' + escapeHtml(n.topic || "") + '">' +
-        (isMethod && bankSaveState.nodes.length > 1 ? '<button type="button" class="bn-remove" title="remove this location">✕</button>' : '') +
-        '</div>' +
-        '<datalist id="bn-topics-' + i + '">' + bankTopicsInFolder(n.folder).map(function (t) { return '<option value="' + escapeHtml(t) + '">'; }).join("") + '</datalist>' +
-        (isMethod && n.topic ? '<select class="bn-raw"><option value="">(applies to the whole topic)</option>' +
-          rawOpts.map(function (r) { return '<option value="' + r.id + '"' + (r.id === n.rawId ? " selected" : "") + '>' + escapeHtml(r.title) + '</option>'; }).join("") + '</select>' : '');
-      row.querySelector(".bn-group").addEventListener("change", function () {
-        n.group = this.value;
-        var fl = bankFoldersInGroup(n.group);
-        n.folder = (fl[0] && fl[0].id) || ""; n.topic = ""; n.rawId = "";
-        bankRenderModal();
-      });
-      row.querySelector(".bn-folder").addEventListener("change", function () { n.folder = this.value; n.topic = ""; n.rawId = ""; bankRenderModal(); });
-      row.querySelector(".bn-topic").addEventListener("input", function () { n.topic = this.value; n.rawId = ""; });
-      row.querySelector(".bn-topic").addEventListener("change", function () { bankRenderModal(); });   // refresh the raw-entry picker once topic settles
-      var rm = row.querySelector(".bn-remove");
-      if (rm) rm.addEventListener("click", function () { bankSaveState.nodes.splice(i, 1); bankRenderModal(); });
-      var rawSel = row.querySelector(".bn-raw");
-      if (rawSel) rawSel.addEventListener("change", function () { n.rawId = this.value; });
-      wrap.appendChild(row);
-    });
-  }
-  function bankSaveConfirm() {
-    if (!bankSaveState || !inkSel) return;
-    var p = curProblem(); if (!p) return;
-    var title = ($("bankTitle").value || "").trim() || "Untitled";
-    var html = inkSelToHtml(p);
-    if (!html.trim()) { alert("Nothing in the selection to save."); return; }
-    var nodes = bankSaveState.nodes.filter(function (n) { return n.group && n.folder; });
-    if (!nodes.length) { alert("Pick at least a group and subject."); return; }
-    if (bankSaveState.type === "raw") {
-      var n0 = nodes[0];
-      store.bank.raw.push({ id: uid("rm_"), title: title, html: html, group: n0.group, folder: n0.folder, topic: n0.topic || "", added: Date.now() });
-      try { renderBankRawIntoEti(); } catch (e) {}   // show up as a real ETI card right away, not just in the mining section
-    } else {
-      store.bank.methods.push({
-        id: uid("pm_"), title: title, html: html,
-        nodes: nodes.map(function (n) { return { group: n.group, folder: n.folder, topic: n.topic || undefined, rawId: n.rawId || undefined }; }),
-        added: Date.now()
-      });
-    }
-    saveStore();
-    closeBankSaveModal();
-    inkSelClear();   // copy, not move — the page itself is untouched; this just closes the selection toolbar
-  }
-  (function () {
-    var m = $("bankSaveModal"); if (!m) return;
-    $("bankModalClose").addEventListener("click", closeBankSaveModal);
-    m.addEventListener("pointerdown", function (e) { if (e.target === m) closeBankSaveModal(); });
-    m.querySelectorAll(".bank-type-toggle button").forEach(function (b) {
-      b.addEventListener("click", function () { if (bankSaveState) { bankSaveState.type = b.dataset.bt; bankRenderModal(); } });
-    });
-    $("bankAddNode").addEventListener("click", function () { if (bankSaveState) { bankSaveState.nodes.push(bankDefaultNode()); bankRenderModal(); } });
-    $("bankSaveBtn").addEventListener("click", bankSaveConfirm);
-  })();
   function inkSelCut(p) { inkSelCopy(p); inkSelDelete(p); }
   function inkPasteAt(cx, cy) {
     var p = curProblem(); if (!p || !inkClip) return;
@@ -9103,12 +8533,11 @@
     if (!t) {
       t = document.createElement("div");
       t.className = "ink-sel-toolbar";
-      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="bank" title="save to bank">📚</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
+      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
       host.appendChild(t);
       t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
       t.querySelector('[data-s="copy"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCopy(curProblem()); });
       t.querySelector('[data-s="cut"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCut(curProblem()); });
-      t.querySelector('[data-s="bank"]').addEventListener("click", function (e) { e.stopPropagation(); openBankSaveModal(); });
       t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
       t.querySelector('[data-s="x"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelClear(); });
     }
@@ -9385,9 +8814,12 @@
       viewingProblem = false; activeProblem = null;
       if (wasNotebook) openNotebook();
       else { activeTop = "eti"; applyView(); }
+      if (typeof window.__detabaseFlushRemote === "function") window.__detabaseFlushRemote();
     }
     window.enterInkFull = enterInkFull;
     window.exitInkFull = exitInkFull;
+    // the cloud module asks before reloading for a newer store: never while a board is open
+    window.__detabaseCanReload = function () { return !document.body.classList.contains("ink-full"); };
     var done = $("inkDone"); if (done) done.addEventListener("click", exitInkFull);
     document.addEventListener("keydown", function (e) {
       if (!document.body.classList.contains("ink-full")) return;
@@ -9422,25 +8854,12 @@
         requestAnimationFrame(function () { lib.classList.toggle("open", open); });
       });
       $("nbLibClose").addEventListener("click", function () { lib.classList.remove("open"); });
-      var rawT, probT;
+      var rawT;
       $("libRawSearch").addEventListener("input", function () { clearTimeout(rawT); rawT = setTimeout(renderNbLibRawResults, 160); });
-      $("libProbSearch").addEventListener("input", function () { clearTimeout(probT); probT = setTimeout(renderNbLibProbResults, 160); });
-      // the results box otherwise stays showing whatever was last typed even after the search
-      // bar is no longer selected — hide it on blur (delayed so a tap on a result's own "＋"
-      // button, which blurs the input first on some browsers, still gets to register its click),
-      // and restore it on refocus if there's still a query in the box.
+      // hide results on blur (delayed so a tap on a result's own "＋" still registers first),
+      // restore on refocus if there's still a query
       $("libRawSearch").addEventListener("blur", function () { setTimeout(function () { var b = $("libRawResults"); if (b) b.innerHTML = ""; }, 150); });
       $("libRawSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibRawResults(); });
-      $("libProbSearch").addEventListener("blur", function () { setTimeout(function () { var b = $("libProbResults"); if (b) b.innerHTML = ""; }, 150); });
-      $("libProbSearch").addEventListener("focus", function () { if (this.value.trim()) renderNbLibProbResults(); });
-      $("libRawBrowseToggle").addEventListener("click", function () {
-        var b = $("libRawBrowse"); b.hidden = !b.hidden;
-        if (!b.hidden) { bankBrowseState.raw = {}; renderBankBrowse("raw"); }
-      });
-      $("libProbBrowseToggle").addEventListener("click", function () {
-        var b = $("libProbBrowse"); b.hidden = !b.hidden;
-        if (!b.hidden) { bankBrowseState.method = {}; renderBankBrowse("method"); }
-      });
     }
 
   })();
@@ -9455,14 +8874,14 @@
     var p = ensureProblem(); pos = pos || nextClipPos(p);
     p.bench.push({ id: uid("sh_"), kind: "shape", fam: "tri", type: Object.keys(triItems)[0], slider: null,
       x: Math.round(pos.x), y: Math.round(pos.y), w: 240, h: 220, z: ++zTop, added: Date.now() });
-    saveStore(); renderProblemList();
+    saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
   function addGraph(pos) {
     var p = ensureProblem(); pos = pos || nextClipPos(p);
     p.bench.push({ id: uid("gr_"), kind: "graph", fns: [{ expr: "x^2", color: "#2563eb" }], view: { cx: 0, cy: 0, ppu: 32 }, showBar: true,
       x: Math.round(pos.x), y: Math.round(pos.y), w: 330, h: 290, z: ++zTop, added: Date.now() });
-    saveStore(); renderProblemList();
+    saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
 
@@ -9995,7 +9414,7 @@
     var pp = pos || nextClipPos(p);
     p.bench.push({ id: uid("cl_"), kind: "merged", frag: true, html: html, title: title || "Clip",
       x: Math.round(pp.x), y: Math.round(pp.y), w: 340, h: 260, z: ++zTop, added: Date.now() });
-    saveStore(); renderProblemList();
+    saveStore();
     if (viewingProblem && activeProblem === p.id) renderCanvas();
   }
   var clipModeOverlay = null;
@@ -10195,29 +9614,11 @@
     });
   }
 
-  // drop a search result onto the board
-  var dragCardId = null;
-  (function () {
-    var canvas = $("ppCanvas");
-    // document-level (not just the canvas) so a selected card's bar/title actually goes away
-    // the moment you tap ANYTHING else — the library panel, a toolbar button, a search field —
-    // not only when you tap empty canvas space. It was only bound to the canvas before, so
-    // moving focus elsewhere in the app left the last-selected clip's edit-mode bar stuck open.
-    document.addEventListener("pointerdown", function (e) {
-      if (!e.target.closest(".clip") && !e.target.closest(".shape-pick")) deselectAllClips();
-    }, true);
-    canvas.addEventListener("dragover", function (e) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; canvas.classList.add("dragover"); });
-    canvas.addEventListener("dragleave", function () { canvas.classList.remove("dragover"); });
-    canvas.addEventListener("drop", function (e) {
-      e.preventDefault(); canvas.classList.remove("dragover");
-      var id = dragCardId || (e.dataTransfer && e.dataTransfer.getData("text/plain"));
-      dragCardId = null;
-      if (!id || !indexById(id)) return;
-      var r = canvas.getBoundingClientRect();
-      hideResults();
-      startClipMode(id, { x: e.clientX - r.left + canvas.scrollLeft - 40, y: e.clientY - r.top + canvas.scrollTop - 12 });
-    });
-  })();
+  // a selected item's edit-mode bar goes away the moment you tap ANYTHING else in the app
+  // (document-level, not just the canvas — the library panel, a toolbar button, a search field)
+  document.addEventListener("pointerdown", function (e) {
+    if (!e.target.closest(".clip") && !e.target.closest(".shape-pick")) deselectAllClips();
+  }, true);
 
 
   $("ppTidy").addEventListener("click", function () {
@@ -10386,143 +9787,11 @@
     }, { passive: false });
   })();
 
-  $("ppTitle").addEventListener("input", function () { var p = curProblem(); if (p) { p.name = this.value; saveStore(); renderProblemList(); } });
-  $("ppSearch").addEventListener("input", function () { toggleDropdown(true); });
-  $("ppSearch").addEventListener("focus", function () { toggleDropdown(true); });
-  $("ppSearch").addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; hideResults(); this.blur(); } });
-  $("ppShortBadge").addEventListener("click", function () { $("ppSearch").focus(); toggleDropdown(true); });
-  document.addEventListener("click", function (e) {
-    if ($("problemPane").hidden || $("ppResults").hidden) return;
-    // use composedPath (captured at dispatch time), not e.target.closest — a chip/star click
-    // rebuilds #ppResults synchronously, which detaches e.target before the event finishes
-    // bubbling here, and a detached node's closest() wrongly reports "outside".
-    var path = e.composedPath ? e.composedPath() : [e.target];
-    var inside = path.some(function (n) { return n && n.nodeType === 1 && n.classList && n.classList.contains("pp-search-wrap"); });
-    if (!inside) hideResults();
-  });
-  $("ppDelete").addEventListener("click", function () { if (activeProblem) delProblem(activeProblem); });
-
-  // ============================================================
-  // MARK → NEW BLOCK  (from browsing cards, OR from clips already on the board)
-  // ============================================================
-  var selBtn = $("selClipBtn"), selKind = null, selPayload = null, selRange = null;
-  function clipObjById(id) { var p = curProblem(); return p ? p.bench.filter(function (x) { return x.id === id; })[0] : null; }
-  function nearPos(src) {
-    var p = ensureProblem();
-    return src ? { x: (src.x || 12) + 28, y: (src.y || 12) + 28 } : nextClipPos(p);
-  }
-  function newExcerptClip(html, title, cardId, src) {
-    var p = ensureProblem();
-    var pos = nearPos(src);
-    p.bench.push({ id: uid("cl_"), cardId: cardId || null, frag: true,
-      title: (title || "Excerpt") + " · excerpt", html: html,
-      x: Math.round(pos.x), y: Math.round(pos.y),
-      w: src ? Math.max(180, Math.min(src.w || 300, 340)) : 300, h: 150, z: ++zTop, added: Date.now() });
-    saveStore(); renderProblemList();
-    if (viewingProblem && activeProblem === (p.id)) renderCanvas();
-  }
-  function newNoteFromText(text, src) {
-    var p = ensureProblem();
-    var pos = nearPos(src);
-    p.bench.push({ id: uid("cl_"), kind: "note", text: text, title: "Note",
-      x: Math.round(pos.x), y: Math.round(pos.y), w: 250, h: 130, z: ++zTop, added: Date.now() });
-    saveStore(); renderProblemList();
-    if (viewingProblem && activeProblem === p.id) renderCanvas();
-  }
-  function hideSelBtn() { selBtn.hidden = true; selKind = null; selPayload = null; selRange = null; }
-  function showSelBtn(x, y, kind, payload) {
-    selKind = kind; selPayload = payload;
-    selBtn.textContent = "✂ new block";
-    selBtn.style.left = Math.max(6, Math.min(window.innerWidth - 130, x)) + "px";
-    selBtn.style.top = Math.max(6, Math.min(window.innerHeight - 40, y + 6)) + "px";
-    selBtn.hidden = false;
-  }
-  selBtn.addEventListener("mousedown", function (e) { e.preventDefault(); }); // keep the selection alive
-  selBtn.addEventListener("click", function () {
-    if (selKind === "dom" && selRange) {
-      var wrap = document.createElement("div");
-      wrap.appendChild(selRange.cloneContents());
-      wrap.querySelectorAll(".pin-btn, .del-x, .clip-resize, .clip-head").forEach(function (x) { x.remove(); });
-      var html = wrap.innerHTML.trim();
-      if (html) newExcerptClip(html, selPayload.title, selPayload.cardId, selPayload.src);
-      try { window.getSelection().removeAllRanges(); } catch (_) {}
-    } else if (selKind === "note") {
-      var src = clipObjById(selPayload.clipId);
-      var el = document.querySelector('.clip[data-clip="' + selPayload.clipId + '"] .note-ta');
-      if (el) {
-        var s = el.selectionStart, en = el.selectionEnd, piece = el.value.slice(s, en);
-        if (piece.trim()) {
-          newNoteFromText(piece, src);
-          if (src) { src.text = (el.value.slice(0, s) + el.value.slice(en)).replace(/\n{3,}/g, "\n\n"); saveStore(); }
-          renderCanvas();
-        }
-      }
-    }
-    var pn = curProblem();
-    hideSelBtn();
-    selBtn.textContent = "✓ added to " + ((pn && pn.name) || "board");
-    selBtn.hidden = false;
-    setTimeout(function () { selBtn.hidden = true; }, 1000);
-  });
-  document.addEventListener("selectionchange", function () {
-    var s = window.getSelection();
-    if (!s || s.isCollapsed || !String(s).trim()) {
-      if (selKind === "dom" && document.activeElement !== selBtn) hideSelBtn();
-      return;
-    }
-    var r = s.getRangeAt(0);
-    var node = r.commonAncestorContainer;
-    var host = (node.nodeType === 3 ? node.parentElement : node);
-    if (!host || !host.closest) { hideSelBtn(); return; }
-    var browseHost = host.closest('#topfolder-eti .card, #topfolder-eti .subject, #topfolder-eti .tool');
-    var clipEl = host.closest('#ppCanvas .clip');
-    var rect = r.getBoundingClientRect();
-    if (browseHost) {
-      var e1 = browseHost.dataset.idx ? indexById(browseHost.dataset.idx) : null;
-      selRange = r.cloneRange();
-      showSelBtn(rect.left, rect.bottom, "dom", { title: e1 ? e1.title : null, cardId: browseHost.dataset.idx || null, src: null });
-    } else if (clipEl && clipEl.querySelector(".clip-body") && clipEl.querySelector(".clip-body").contains(node)) {
-      var cobj = clipObjById(clipEl.dataset.clip);
-      selRange = r.cloneRange();
-      showSelBtn(rect.left, rect.bottom, "dom", { title: (cobj && cobj.title) || "Clip", cardId: (cobj && cobj.cardId) || null, src: cobj });
-    } else {
-      hideSelBtn();
-    }
-  });
-  document.addEventListener("scroll", hideSelBtn, true);
-
-  // ---- rail: filter the problem list by name ----
-  var pSearch = $("problemSearch");
-  if (pSearch) {
-    pSearch.addEventListener("input", renderProblemList);
-    pSearch.addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; renderProblemList(); this.blur(); } });
-  }
+  // ---- rail: filter the notebook page list by name ----
   var pgSearch = $("pageSearch");
   if (pgSearch) {
     pgSearch.addEventListener("input", renderPageList);
     pgSearch.addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; renderPageList(); this.blur(); } });
-  }
-
-  // ---- 📌 pin buttons on every card & subject ----
-  function addPinButtons() {
-    document.querySelectorAll('#topfolder-eti .card, #topfolder-eti .subject').forEach(function (el) {
-      if (el.querySelector(":scope > .pin-btn, :scope > summary > .pin-btn")) return;
-      var b = document.createElement("button");
-      b.className = "pin-btn";
-      b.type = "button";
-      b.textContent = "📌";
-      b.title = "Add to the current problem's board";
-      if (el.dataset.idx) b.setAttribute("data-idx", el.dataset.idx);
-      b.addEventListener("click", function (e) {
-        e.preventDefault(); e.stopPropagation();
-        var idx = el.dataset.idx;
-        if (!idx) return;
-        if (isBenched(idx)) { benchRemoveByCard(idx); b.classList.remove("done"); b.textContent = "📌"; }
-        else { benchAdd(idx); b.classList.add("done"); b.textContent = "✓"; }
-      });
-      if (el.matches(".card")) el.appendChild(b);
-      else { var sm = el.querySelector(":scope > summary"); if (sm) sm.appendChild(b); }
-    });
   }
 
   renderTopbar();
@@ -10698,11 +9967,10 @@
     makeSortable($("plFormatList"), { itemSel: "> .pl-tpl-item", axis: "y", keyOf: function (it) { return it.getAttribute("data-id"); }, onDrop: function (ids) { store.order.plFormats = ids; saveStore(); } });
     makeSortable($("plGoalList"), { itemSel: "> .pl-goal-group", axis: "y", keyOf: function (it) { return it.getAttribute("data-id"); }, onDrop: function (ids) { store.order.plGoals = ids; saveStore(); } });
   } catch (e) { if (window.console) console.error("planner sortables:", e); }
+  try { tagBuiltinElements(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
   try { initSortables(); } catch (e) { if (window.console) console.error("initSortables:", e); }
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
   try { buildIndex(); } catch (e) { if (window.console) console.error("buildIndex:", e); }
-  try { addPinButtons(); } catch (e) { if (window.console) console.error("addPinButtons:", e); }
-  renderProblemList();
 
   // deep link: #<tab> (built-in), #<top-folder id>, #<custom-subject id>, or #<problem id>
   function folderForTab(target) {
@@ -10715,8 +9983,6 @@
     selectTop("notebook");
   } else if (isPage(initial)) {
     selectPage(initial);
-  } else if (store.problems.some(function (p) { return p.id === initial; })) {
-    selectProblem(initial);
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
@@ -10763,7 +10029,8 @@
     requestAnimationFrame(function () { fxPending = false; prettyFractions(document.body); });
   }).observe(document.body, { childList: true, subtree: true });
   prettyFractions(document.body);
-})();
+}
+window.DBX.ready.then(__detabaseMain);
 </script>
 
 <!-- =========================================================
@@ -10775,7 +10042,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/fireba
 import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence,
          onAuthStateChanged, signInWithEmailAndPassword, signOut }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot }
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, deleteField, onSnapshot }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -10809,44 +10076,48 @@ let snapBound = false;
 let signedInDone = false;
 
 // ---- per-canvas sync (heavy items + ink, one doc each) ----
-const CANVAS_PFX = "detabase.canvas.";
+// Local copies live in IndexedDB (window.DBX). "sync/index" holds {m: {id: updatedAt}} for every
+// canvas doc, so a sign-in sweep costs ONE read plus fetches of only what actually changed — not a
+// getDoc per canvas. Ids in the store's deadCanvases tombstone list are never uploaded again.
+const indexRef = doc(db, "sync", "index");
 const canvasPushed = {};   // id -> ts we last wrote
 const canvasSubs = {};     // id -> unsubscribe
 
-function canvasLocalTs(id) {
-  try { return (JSON.parse(localStorage.getItem(CANVAS_PFX + id) || "{}").ts) || 0; } catch (e) { return 0; }
-}
+function deadIds() { const s = localStore(); return new Set(s.deadCanvases || []); }
+function canvasLocal(id) { return (window.DBX && window.DBX.get(id)) || null; }
+function canvasLocalTs(id) { const d = canvasLocal(id); return (d && d.ts) || 0; }
 function applyCanvas(id, d) {
-  try {
-    localStorage.setItem(CANVAS_PFX + id, JSON.stringify({
-      items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [], ts: d.updatedAt || Date.now()
-    }));
-  } catch (e) {}
+  const prev = canvasLocal(id);
+  const docv = { items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [], ts: d.updatedAt || Date.now() };
+  if (prev && prev.nav) docv.nav = prev.nav;
+  window.DBX.put(id, docv);
   if (typeof window.onCloudCanvas === "function") { try { window.onCloudCanvas(id); } catch (e) {} }
 }
 window.cloudSaveCanvas = async function (id, data) {
-  if (!user) return;
+  if (!user || deadIds().has(id)) return;
   const ts = Date.now();
   try {
     await setDoc(canvasRef(id), { data: { items: data.items || [], ink: data.ink || [] }, updatedAt: ts, updatedBy: (navigator.platform || "device") });
     canvasPushed[id] = ts;
+    await setDoc(indexRef, { m: { [id]: ts } }, { merge: true });
   } catch (e) { if (window.console) console.error("cloud canvas push:", e); }
 };
 window.cloudDeleteCanvas = async function (id) {
   if (canvasSubs[id]) { try { canvasSubs[id](); } catch (e) {} delete canvasSubs[id]; }
   if (!user) return;
   try { await deleteDoc(canvasRef(id)); } catch (e) {}
+  try { await updateDoc(indexRef, { ["m." + id]: deleteField() }); } catch (e) {}
 };
 window.cloudOpenCanvas = async function (id) {
-  if (!user || !id) return;
+  if (!user || !id || deadIds().has(id)) return;
+  await window.DBX.ready;
   try {
     const snap = await getDoc(canvasRef(id));
     if (snap.exists()) {
       const d = snap.data();
       if (d && d.data && (d.updatedAt || 0) > canvasLocalTs(id)) applyCanvas(id, d);
     } else if (canvasLocalTs(id) > 0) {
-      const c = JSON.parse(localStorage.getItem(CANVAS_PFX + id) || "{}");
-      window.cloudSaveCanvas(id, c);
+      window.cloudSaveCanvas(id, canvasLocal(id));
     }
   } catch (e) { if (window.console) console.error("cloud canvas open:", e); }
   if (!canvasSubs[id]) {
@@ -10860,26 +10131,43 @@ window.cloudOpenCanvas = async function (id) {
     });
   }
 };
-// sync every canvas this device knows about, both directions (runs once per sign-in)
+async function inBatches(list, size, fn) {
+  for (let i = 0; i < list.length; i += size) await Promise.all(list.slice(i, i + size).map((x) => fn(x).catch(() => {})));
+}
+// sync every canvas doc both ways, once per sign-in
 async function sweepCanvases() {
   if (!user) return;
-  const ids = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k && k.startsWith(CANVAS_PFX)) ids.push(k.slice(CANVAS_PFX.length));
-  }
-  for (const id of ids) {
-    try {
-      const local = JSON.parse(localStorage.getItem(CANVAS_PFX + id) || "{}");
+  await window.DBX.ready;
+  const dead = deadIds();
+  let remote = null;
+  try { const s = await getDoc(indexRef); remote = s.exists() ? (s.data().m || {}) : null; } catch (e) { return; }
+  const local = window.DBX.ids();
+  // tombstoned docs: remove from this device and from the cloud
+  const doomed = new Set(local.filter((id) => dead.has(id)).concat(Object.keys(remote || {}).filter((id) => dead.has(id))));
+  doomed.forEach((id) => window.DBX.del(id));
+  await inBatches(Array.from(doomed), 6, (id) => window.cloudDeleteCanvas(id));
+  const live = local.filter((id) => !dead.has(id));
+  if (remote === null) {
+    // first sweep since the index existed: compare doc by doc once, which also builds the index
+    await inBatches(live, 6, async (id) => {
+      const lts = canvasLocalTs(id);
       const snap = await getDoc(canvasRef(id));
       const rts = snap.exists() ? (snap.data().updatedAt || 0) : 0;
-      if ((local.ts || 0) > rts) {
-        await window.cloudSaveCanvas(id, local);
-      } else if (snap.exists() && rts > (local.ts || 0)) {
-        applyCanvas(id, snap.data());
+      if (lts > rts) await window.cloudSaveCanvas(id, canvasLocal(id));
+      else if (snap.exists()) {
+        if (rts > lts) applyCanvas(id, snap.data());
+        await setDoc(indexRef, { m: { [id]: rts } }, { merge: true });
       }
-    } catch (e) {}
+    });
+    return;
   }
+  await inBatches(live, 6, async (id) => {
+    const lts = canvasLocalTs(id), rts = remote[id] || 0;
+    if (lts > rts) await window.cloudSaveCanvas(id, canvasLocal(id));
+    else if (rts > lts) { const snap = await getDoc(canvasRef(id)); if (snap.exists()) applyCanvas(id, snap.data()); }
+  });
+  const missing = Object.keys(remote).filter((id) => !dead.has(id) && !canvasLocal(id));
+  await inBatches(missing, 6, async (id) => { const snap = await getDoc(canvasRef(id)); if (snap.exists()) applyCanvas(id, snap.data()); });
 }
 
 const $ = (id) => document.getElementById(id);
@@ -10899,7 +10187,7 @@ function localTs() {
 function isEmpty(s) {
   if (!s || typeof s !== "object") return true;
   const p = s.planner || {};
-  return !((s.subjects && s.subjects.length) || (s.problems && s.problems.length)
+  return !((s.subjects && s.subjects.length) || (s.canvases && s.canvases.length)
     || Object.keys(s.notes || {}).length || (p.goals && p.goals.length)
     || (p.sessions && p.sessions.length) || (p.events && p.events.length)
     || (p.templates && p.templates.length) || (p.dayFormats && p.dayFormats.length));
@@ -10909,7 +10197,7 @@ function sameStore(a, b) {
 }
 
 async function pushLocal() {
-  if (!user) return;
+  if (!user || pendingRemote) return;
   const ts = Date.now();
   try {
     await setDoc(ref, { store: localStore(), updatedAt: ts, updatedBy: (navigator.platform || "device") });
@@ -10928,7 +10216,24 @@ function schedulePush() {
 }
 window.cloudNotifyLocalChange = schedulePush;
 
+// A newer store from another device means a full reload. Never do that out from under the user
+// while they're writing on a board: hold the update (and stop pushing this device's now-stale
+// store over it) until they leave the board or the app goes to the background.
+let pendingRemote = null;
+function canReloadNow() {
+  try { return typeof window.__detabaseCanReload !== "function" || window.__detabaseCanReload(); } catch (e) { return true; }
+}
 function applyRemote(d) {
+  if (!canReloadNow()) { pendingRemote = d; setBadge("☁ update waiting", "good"); return; }
+  commitRemote(d);
+}
+window.__detabaseFlushRemote = function () {
+  if (pendingRemote && canReloadNow()) { const d = pendingRemote; pendingRemote = null; commitRemote(d); }
+};
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && pendingRemote) { const d = pendingRemote; pendingRemote = null; commitRemote(d); }
+});
+function commitRemote(d) {
   applying = true;
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(d.store));
@@ -10973,9 +10278,6 @@ async function onSignedIn(u) {
   if (signedInDone) return;
   signedInDone = true;
 
-  // get every local canvas up to the cloud BEFORE the (now bench-free) main doc is pushed
-  try { await sweepCanvases(); } catch (e) {}
-
   let remote = null;
   try { remote = (await getDoc(ref)).data() || null; }
   catch (e) { if (window.console) console.error("cloud pull:", e); setBadge("☁ offline", "bad"); }
@@ -10995,6 +10297,9 @@ async function onSignedIn(u) {
   } else if (!isEmpty(local)) {
     pushLocal(); // first upload
   }
+
+  // canvas docs sync in the background — never blocks the app or the store reconciliation above
+  sweepCanvases().catch((e) => { if (window.console) console.error("canvas sweep:", e); });
 
   if (!snapBound) {
     snapBound = true;
