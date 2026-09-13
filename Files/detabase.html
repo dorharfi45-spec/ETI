@@ -494,6 +494,68 @@
   .shape-ring { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; z-index: 4900; pointer-events: none; }
   .shape-ring circle { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 82; stroke-dashoffset: 82; animation: shapeRing .4s linear forwards; }
   @keyframes shapeRing { to { stroke-dashoffset: 0; } }
+
+  /* ---- library: static doc render, ETI element blocks, problem-solving bank ---- */
+  .doc-static { position: relative; overflow: hidden; }
+  .doc-static-inner { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .doc-static .clip { box-shadow: none; }
+  .doc-static .clip-resize { display: none !important; }
+  .doc-ink { position: absolute; left: 0; top: 0; z-index: 5; overflow: visible; pointer-events: none; }
+  .doc-empty { padding: 14px; color: var(--text-muted); font-size: .85rem; font-style: italic; }
+  .ue-block { margin: 14px 0; padding: 10px 12px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+  .ue-block.flash { box-shadow: 0 0 0 3px var(--accent); }
+  .ue-head { display: flex; align-items: center; gap: 8px; }
+  .ue-head h3 { margin: 0 0 6px; font-size: 1rem; flex: 1; border: none; padding: 0; }
+  .ue-edit { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-muted); border-radius: 7px; padding: 2px 9px; }
+  .ue-edit:hover { color: var(--accent); border-color: var(--accent); }
+  .ue-body { overflow-x: auto; }
+  .ue-extra { margin-top: 22px; padding-top: 6px; border-top: 1px dashed var(--border-strong); }
+  .cp-tabs { position: static; }
+  .cp-notes { margin-top: 22px; }
+  .cp-notes summary { cursor: pointer; font-weight: 700; color: var(--text-secondary); font-size: .85rem; }
+  .ps-topic { margin: 2px 0 6px; }
+  .ps-topic > summary { cursor: pointer; font-weight: 700; font-size: .88rem; color: var(--text-primary); padding: 4px 2px; }
+  .ps-topic .ps-sub { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin: 6px 0 3px 10px; font-weight: 700; }
+  #psRail .ps-topic button { width: 100%; margin: 0 0 4px 0; }
+  .ps-crumb { font-size: .8rem; color: var(--text-muted); margin-top: 8px; }
+  .ps-doc { margin-top: 8px; padding: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); overflow-x: auto; }
+  .ps-assets { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ps-asset { border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px; padding: 5px 12px; font-size: .84rem; color: var(--text-secondary); }
+  .ps-asset:hover { color: var(--accent); border-color: var(--accent); }
+  .ps-lvl { font-size: .65rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-right: 6px; }
+  /* save wizard */
+  .lw-overlay { position: fixed; inset: 0; z-index: 6000; background: rgba(15,23,42,.35); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .lw-box { width: min(760px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: var(--bg); border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--border-strong); }
+  .lw-head { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 1rem; }
+  .lw-head b { flex: 1; }
+  .lw-x { border: none; background: transparent; font-size: 1rem; color: var(--text-muted); }
+  .lw-body { padding: 12px 14px; overflow: auto; }
+  .lw-foot { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .lw-foot button, .lw-new button { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); font-weight: 600; }
+  .lw-foot button:disabled { opacity: .45; }
+  .lw-primary { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; }
+  .lw-hint { color: var(--text-muted); font-size: .86rem; margin: 0 0 10px; }
+  .lw-opts { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .lw-opt { text-align: left; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); font-size: .92rem; }
+  .lw-opt:hover { border-color: var(--accent); color: var(--accent); }
+  .lw-new { display: flex; gap: 8px; }
+  .lw-new input, .lw-part input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font-size: .92rem; }
+  .lw-kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lw-kinds button { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--surface-1); font-size: 1.4rem; text-align: left; }
+  .lw-kinds button b { font-size: 1rem; color: var(--text-primary); }
+  .lw-kinds button span { font-size: .8rem; color: var(--text-muted); }
+  .lw-kinds button:hover { border-color: var(--accent); }
+  .lw-prev { position: relative; margin: 0 auto 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff; overflow: hidden; }
+  .lw-prev-doc { position: absolute; inset: 0; }
+  .lw-prev-ov { position: absolute; left: 0; top: 0; touch-action: none; cursor: crosshair; }
+  .lw-parts { display: flex; flex-direction: column; gap: 6px; }
+  .lw-part { display: flex; align-items: center; gap: 8px; }
+  .lw-part button { border: 1px solid var(--border); background: var(--surface-1); border-radius: 7px; padding: 5px 9px; color: var(--text-muted); }
+  .lw-sw { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+  .lw-left { font-size: .8rem; margin: 8px 0 0; }
+  .lib-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 7000; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: .9rem; box-shadow: var(--shadow); transition: opacity .5s; }
+  .lib-toast.out { opacity: 0; }
+  @media (max-width: 560px) { .lw-kinds { grid-template-columns: 1fr; } }
   .graph-host { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
   .gw-canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; cursor: grab; background: transparent; display: block; }
   .gw-readout { position: absolute; z-index: 4; font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
@@ -2879,7 +2941,23 @@
     <button id="cpDelete" class="cp-del">Delete subject</button>
   </div>
   <p class="muted" id="cpMeta"></p>
-  <textarea id="cpNotes" placeholder="Write anything here — it's saved in this browser automatically."></textarea>
+  <nav class="tabbar cp-tabs" id="cpTabs" hidden></nav>
+  <div id="cpCardBody"></div>
+  <details id="cpNotesWrap" class="cp-notes">
+    <summary>Notes</summary>
+    <textarea id="cpNotes" placeholder="Write anything here — it's saved automatically."></textarea>
+  </details>
+</div>
+
+<div id="psPane" hidden>
+  <div class="ps-crumb" id="psCrumb"></div>
+  <div class="cp-head">
+    <h2 id="psTitle">–</h2>
+    <button id="psEdit" type="button" class="tool-btn">✎ Open for editing</button>
+  </div>
+  <div id="psDoc" class="ps-doc"></div>
+  <div class="sidebar-label" style="margin-top:18px">Linked assets</div>
+  <div id="psAssets" class="ps-assets"></div>
 </div>
 
 <div id="emptyPane" hidden>
@@ -2975,7 +3053,7 @@
   <div id="ppAddMenu">
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B29</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B30</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll">
       <section class="nblib-sec">
         <div class="nblib-lbl">Raw materials</div>
@@ -4762,6 +4840,7 @@ function __detabaseMain() {
       p.classList.toggle("on", p.id === "pane-" + target);
     });
     if (refreshers[target]) { try { refreshers[target](); } catch (e) {} }
+    if (typeof libRefresh !== "undefined" && libRefresh[target]) { try { libRefresh[target](); } catch (e) {} }
     if (location.hash !== "#" + target) history.replaceState(null, "", "#" + target);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -4802,6 +4881,10 @@ function __detabaseMain() {
     if (raw) {
       var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.canvases = p.canvases || [];
       store.deadCanvases = p.deadCanvases || [];
+      if (p.cards) store.cards = p.cards;
+      if (p.elements) store.elements = p.elements;
+      if (p.ps) store.ps = p.ps;
+      if (p.etiEdits) store.etiEdits = p.etiEdits;
       if (p.problems) store.problems = p.problems;   // pre-v3 data, removed by migrateCleanStart
       if (p.bank) store.bank = p.bank;
       var pl = p.planner || {};
@@ -4931,6 +5014,8 @@ function __detabaseMain() {
     if (cp && cp.id === id) {
       cp.bench = fresh.items;
       if (viewingProblem && activeProblem === id && !inkDrawing) renderCanvas();
+    } else {
+      try { refreshLibDoc(id); } catch (e) {}   // a library element / problem page shown in ETI
     }
   };
 
@@ -5249,7 +5334,7 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null;
     saveStore();
     renderEtiTree();
     applyView();
@@ -5333,7 +5418,8 @@ function __detabaseMain() {
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onPage = onProblem && isPage(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
-    var builtin = !onProblem && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onPs = !onProblem && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
+    var builtin = !onProblem && !onPs && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -5355,8 +5441,10 @@ function __detabaseMain() {
     });
     $("topfolder-eti").classList.toggle("on", builtin);
     $("customPane").hidden = onProblem || !activeSubject;
+    $("psPane").hidden = !onPs;
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    Array.prototype.forEach.call(document.querySelectorAll("#psRail button[data-pp]"), function (b) { b.classList.toggle("on", onPs && b.getAttribute("data-pp") === activePsPage); });
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -5376,18 +5464,26 @@ function __detabaseMain() {
         $("pageTitle").textContent = pb ? (pb.name || "Untitled page") : "Page";
         $("pageSubtitle").innerHTML = 'Notebook page — write with the pencil, clip in cards, place shapes &amp; graphs.';
       } else {
-      $("pageTitle").textContent = "Problem solving";
-      $("pageSubtitle").innerHTML = 'Working on <b>' + escapeHtml(pb ? (pb.name || "untitled") : "") + '</b> — search the whole reference and bench what you need.';
+        $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
+        $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Problem-solving page' : 'Library element';
       }
       renderProblemPage();
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (activeSubject) {
+    if (onPs) {
+      var pgx = psPageById(activePsPage);
+      $("pageTitle").textContent = pgx.name;
+      $("pageSubtitle").innerHTML = 'Problem-solving bank';
+      history.replaceState(null, "", "#" + pgx.id);
+      renderPsPane();
+    } else if (activeSubject) {
       var s = store.subjects.filter(function (x) { return x.id === activeSubject; })[0];
       $("cpTitle").textContent = s ? s.name : "–";
-      $("cpMeta").textContent = "in " + topName(activeTop) + " · notes saved automatically in this browser";
+      $("cpMeta").textContent = "in " + topName(activeTop);
       $("cpNotes").value = store.notes[activeSubject] || "";
+      var nwrap = $("cpNotesWrap"); if (nwrap) nwrap.open = !!(store.notes[activeSubject] || "").trim();
+      renderCustomSubjectPage();
       $("pageTitle").textContent = s ? s.name : "–";
       $("pageSubtitle").innerHTML = 'A custom subject in <b>' + escapeHtml(topName(activeTop)) + '</b>.';
       history.replaceState(null, "", "#" + activeSubject);
@@ -5413,7 +5509,7 @@ function __detabaseMain() {
   }
 
   function selectTop(id) {
-    activeTop = id; activeSubject = null; viewingProblem = false;
+    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null;
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
@@ -5427,7 +5523,7 @@ function __detabaseMain() {
   function selectSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null;
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
       store.ui.group = activeGroup;
@@ -5482,7 +5578,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -7906,7 +8002,7 @@ function __detabaseMain() {
     return t.length > 48 ? t.slice(0, 46) + "…" : t;
   }
   function tagBuiltinElements() {
-    document.querySelectorAll("#topfolder-eti section.pane").forEach(function (pane) {
+    document.querySelectorAll("#topfolder-eti section.pane:not(.ue-pane)").forEach(function (pane) {
       var target = pane.id.replace("pane-", ""), used = {}, runKey = null;
       function keyFor(title) {
         var base = target + ":" + elSlug(title), k = base, n = 2;
@@ -7915,6 +8011,7 @@ function __detabaseMain() {
         return k;
       }
       Array.prototype.slice.call(pane.children).forEach(function (ch) {
+        if (ch.matches(".ue-extra")) return;   // user elements appended by the library
         if (ch.matches("h2, .accordion-controls")) { runKey = null; return; }
         if (ch.matches(".grid2")) {
           runKey = null;
@@ -8070,8 +8167,8 @@ function __detabaseMain() {
   function renderNbLib() { renderNbLibRawResults(); }
 
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
-  // a "canvas doc" that opens in the board editor — today only notebook pages (store.canvases)
-  function canvasDocs() { return store.canvases || []; }
+  // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
+  function canvasDocs() { libEnsure(); return (store.canvases || []).concat(store.elements, store.ps.pages); }
   function canvasDocById(id) { return canvasDocs().filter(function (p) { return p.id === id; })[0]; }
   function isPage(id) { return (store.canvases || []).some(function (p) { return p.id === id; }); }
   // the board that is open in the editor, or null — never creates one behind the user's back
@@ -8126,6 +8223,636 @@ function __detabaseMain() {
       });
       list.appendChild(b);
     });
+  }
+
+  // ============================================================
+  // LIBRARY — the two banks
+  // Raw material:  Subject (group id) → Tab ("f:<folderId>" built-in | "s:<subjectId>" custom)
+  //   → Card ("b:<pane target>" built-in | store.cards "uc_…") → Element (built-in data-el key | store.elements "ue_…")
+  // Problem solving: store.ps = { topics[{id,name}], subtopics[{id,topic,name}], pages[{id,subtopic,name,assets[{lvl,id}],created}] }
+  // Custom Elements and problem-solving pages keep their content (items + ink) in a canvas doc with the same id.
+  // Asset refs: { lvl: "g" | "t" | "c" | "e", id }
+  // ============================================================
+  function libEnsure() {
+    store.cards = store.cards || [];
+    store.elements = store.elements || [];
+    store.ps = store.ps || {};
+    store.ps.topics = store.ps.topics || []; store.ps.subtopics = store.ps.subtopics || []; store.ps.pages = store.ps.pages || [];
+    store.etiEdits = store.etiEdits || { hidden: {}, names: {} };
+  }
+  libEnsure();
+  function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
+  function btnLabel(b) {   // "2.1 Identities"
+    if (!b) return "";
+    var n = b.querySelector(".tnum"), c = b.cloneNode(true);
+    c.querySelectorAll(".tnum, .del-x").forEach(function (x) { x.remove(); });
+    return ((n ? n.textContent.trim() + " " : "") + c.textContent.replace(/\s+/g, " ").trim()).trim();
+  }
+  function tabName(key) {
+    if (key.slice(0, 2) === "f:") return folderButtonLabel(key.slice(2)) || key.slice(2);
+    var s = byId(store.subjects, key.slice(2)); return s ? s.name : "(deleted tab)";
+  }
+  function builtinCards(fid) {
+    return Array.prototype.slice.call(document.querySelectorAll('.tabbar[data-folder="' + fid + '"] button[data-target]'))
+      .filter(function (b) { return !b.dataset.uc; })
+      .map(function (b) { return { id: "b:" + b.getAttribute("data-target"), name: btnLabel(b) }; });
+  }
+  function libCards(tabKey) {
+    var out = tabKey.slice(0, 2) === "f:" ? builtinCards(tabKey.slice(2)) : [];
+    return out.concat(store.cards.filter(function (c) { return c.tab === tabKey; }).map(function (c) { return { id: c.id, name: c.name }; }));
+  }
+  function builtinElements(target) {
+    var pane = $("pane-" + target); if (!pane) return [];
+    var seen = {}, out = [];
+    Array.prototype.forEach.call(pane.querySelectorAll("[data-el]"), function (n) {
+      var k = n.getAttribute("data-el"); if (seen[k]) return; seen[k] = 1;
+      out.push({ id: k, name: builtinElTitle(n) });
+    });
+    return out;
+  }
+  function libElements(cardId) {
+    var out = cardId.slice(0, 2) === "b:" ? builtinElements(cardId.slice(2)) : [];
+    return out.concat(store.elements.filter(function (e) { return e.card === cardId; }).map(function (e) { return { id: e.id, name: e.name }; }));
+  }
+  function refName(ref) {
+    if (!ref) return "";
+    if (ref.lvl === "g") return groupName(ref.id);
+    if (ref.lvl === "t") return tabName(ref.id);
+    if (ref.lvl === "c") {
+      if (ref.id.slice(0, 2) === "b:") return btnLabel(document.querySelector('.tabbar[data-folder] button[data-target="' + ref.id.slice(2) + '"]')) || ref.id;
+      var c = byId(store.cards, ref.id); return c ? c.name : "(deleted card)";
+    }
+    var ue = byId(store.elements, ref.id); if (ue) return ue.name;
+    var n = document.querySelector('[data-el="' + ref.id + '"]');
+    return n ? builtinElTitle(n) : "(deleted element)";
+  }
+  // board item → asset ref (items mined from the library)
+  function itemAssetRef(it) {
+    if (it.kind === "asset" && it.ref) return it.ref;
+    if (it.cardId) { var k = String(it.cardId); return k.indexOf("pane:") === 0 ? { lvl: "c", id: "b:" + k.slice(5) } : { lvl: "e", id: k }; }
+    return null;
+  }
+  function psPageById(id) { libEnsure(); return byId(store.ps.pages, id); }
+
+  // ---- static (read-only) render of a canvas doc, scaled to fit a width ----
+  function docBBox(doc) {
+    var b = [1e9, 1e9, -1e9, -1e9], any = false;
+    (doc.ink || []).forEach(function (s) { (s.pts || []).forEach(function (q) { any = true; if (q[0] < b[0]) b[0] = q[0]; if (q[1] < b[1]) b[1] = q[1]; if (q[0] > b[2]) b[2] = q[0]; if (q[1] > b[3]) b[3] = q[1]; }); });
+    (doc.items || []).forEach(function (it) { any = true; var x = it.x || 0, y = it.y || 0; b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x + (it.w || 300)); b[3] = Math.max(b[3], y + (it.h || 200)); });
+    return any ? b : null;
+  }
+  function inkSvgMarkup(ink, vb) {
+    var h = "";
+    [true, false].forEach(function (hiPass) {
+      ink.forEach(function (s) {
+        if (!!s.hi !== hiPass || !s.pts || !s.pts.length) return;
+        var pts = s.pts.length === 1 ? [s.pts[0], s.pts[0]] : s.pts;
+        h += '<path d="' + inkPathD({ pts: pts }) + '" fill="none" stroke="' + escapeHtml(s.color || "#1e293b") + '" stroke-width="' + inkWidthOf(s).toFixed(2) +
+          '" stroke-linecap="round" stroke-linejoin="round"' + (s.hi ? ' stroke-opacity="0.5"' : '') + '/>';
+      });
+    });
+    return '<svg class="doc-ink" width="' + vb[2] + '" height="' + vb[3] + '" viewBox="' + vb.join(" ") + '">' + h + '</svg>';
+  }
+  function renderDocStatic(doc, maxW) {
+    var wrap = document.createElement("div");
+    wrap.className = "doc-static";
+    doc = JSON.parse(JSON.stringify({ items: (doc && doc.items) || [], ink: (doc && doc.ink) || [] }));   // never touch live objects
+    var b = docBBox(doc);
+    if (!b) { wrap.innerHTML = '<div class="doc-empty">empty</div>'; return wrap; }
+    var pad = 10, bx = b[0] - pad, by = b[1] - pad, bw = Math.ceil(b[2] - b[0] + pad * 2), bh = Math.ceil(b[3] - b[1] + pad * 2);
+    var s = Math.min(1, (maxW || 760) / bw);
+    wrap.style.width = Math.round(bw * s) + "px"; wrap.style.height = Math.round(bh * s) + "px";
+    var inner = document.createElement("div");
+    inner.className = "doc-static-inner";
+    inner.style.width = bw + "px"; inner.style.height = bh + "px"; inner.style.transform = "scale(" + s.toFixed(4) + ")";
+    doc.items.slice().sort(function (a, c) { return (a.z || 0) - (c.z || 0); }).forEach(function (it) {
+      var el = buildItemEl(it, null);
+      el.style.left = ((it.x || 0) - bx) + "px"; el.style.top = ((it.y || 0) - by) + "px"; el.style.zIndex = 1;
+      inner.appendChild(el);
+    });
+    inner.insertAdjacentHTML("beforeend", inkSvgMarkup(doc.ink, [bx, by, bw, bh]));
+    wrap.appendChild(inner);
+    return wrap;
+  }
+
+  // ---- ETI: custom cards / elements rendered into the reference ----
+  var libRefresh = {};   // pane target → re-render its library blocks at the pane's real width
+  function libBlockWidth(host) { return (host && host.clientWidth) || ($("paneHost") && $("paneHost").clientWidth) || 760; }
+  function fillLibBlock(block) {
+    var id = block.getAttribute("data-ue"), body = block.querySelector(".ue-body");
+    var doc = canvasCache[id] || window.DBX.get(id);
+    body.innerHTML = "";
+    if (!doc) { body.innerHTML = '<div class="doc-empty">Syncing this element…</div>'; return; }
+    body.appendChild(renderDocStatic(doc, libBlockWidth(body) - 4));
+  }
+  function libElementBlock(e) {
+    var d = document.createElement("div");
+    d.className = "ue-block"; d.setAttribute("data-ue", e.id);
+    d.innerHTML = '<div class="ue-head"><h3>' + escapeHtml(e.name) + '</h3><button type="button" class="ue-edit" title="edit in the notebook">✎</button></div><div class="ue-body"></div>';
+    d.querySelector(".ue-edit").addEventListener("click", function () { openDocEditor(e.id); });
+    return d;
+  }
+  function fillAllIn(host) { Array.prototype.forEach.call(host.querySelectorAll(".ue-block"), fillLibBlock); }
+  function renderLibraryEti() {
+    libEnsure();
+    Array.prototype.slice.call(document.querySelectorAll(".tabbar[data-folder] button[data-uc]")).forEach(function (b) { b.remove(); });
+    Array.prototype.slice.call(document.querySelectorAll("section.pane.ue-pane, .ue-extra")).forEach(function (x) { x.remove(); });
+    libRefresh = {};
+    builtinFolderIds().forEach(function (fid) {
+      var bar = document.querySelector('.tabbar[data-folder="' + fid + '"]'), folder = $("folder-" + fid);
+      if (!bar || !folder) return;
+      store.cards.filter(function (c) { return c.tab === "f:" + fid; }).forEach(function (c) {
+        var b = document.createElement("button");
+        b.type = "button"; b.setAttribute("data-target", c.id); b.dataset.uc = "1"; b.textContent = c.name;
+        b.addEventListener("click", function () { selectTab(c.id); });
+        bar.appendChild(b);
+        var pane = document.createElement("section");
+        pane.className = "pane ue-pane"; pane.id = "pane-" + c.id;
+        pane.innerHTML = '<h2>' + escapeHtml(c.name) + '</h2>';
+        var els = store.elements.filter(function (e) { return e.card === c.id; });
+        if (!els.length) pane.insertAdjacentHTML("beforeend", '<p class="muted">No elements yet.</p>');
+        els.forEach(function (e) { pane.appendChild(libElementBlock(e)); });
+        folder.appendChild(pane);
+        libRefresh[c.id] = function () { fillAllIn(pane); };
+      });
+    });
+    // new elements saved under a built-in card: appended after its own content
+    var byCard = {};
+    store.elements.forEach(function (e) { if (e.card.slice(0, 2) === "b:") (byCard[e.card.slice(2)] = byCard[e.card.slice(2)] || []).push(e); });
+    Object.keys(byCard).forEach(function (target) {
+      var pane = $("pane-" + target); if (!pane) return;
+      var box = document.createElement("div"); box.className = "ue-extra";
+      byCard[target].forEach(function (e) { box.appendChild(libElementBlock(e)); });
+      pane.appendChild(box);
+      libRefresh[target] = function () { fillAllIn(box); };
+    });
+    allTabButtons = Array.prototype.slice.call(document.querySelectorAll(".tabbar[data-folder] button"));
+    Object.keys(libRefresh).forEach(function (t) { var p = $("pane-" + t); if (p && p.classList.contains("on")) libRefresh[t](); });
+    if (activeSubject) renderCustomSubjectPage();
+  }
+  function renderCustomSubjectPage() {
+    var s = byId(store.subjects, activeSubject), bar = $("cpTabs"), body = $("cpCardBody");
+    if (!s || !bar || !body) return;
+    libEnsure();
+    var cards = store.cards.filter(function (c) { return c.tab === "s:" + s.id; });
+    store.ui.cpCard = store.ui.cpCard || {};
+    var cur = byId(cards, store.ui.cpCard[s.id]) || cards[0];
+    bar.innerHTML = ""; bar.hidden = !cards.length;
+    cards.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = c.name; b.classList.toggle("on", c === cur);
+      b.addEventListener("click", function () { store.ui.cpCard[s.id] = c.id; saveStore(); renderCustomSubjectPage(); });
+      bar.appendChild(b);
+    });
+    body.innerHTML = "";
+    if (!cur) { body.innerHTML = '<p class="muted">No cards yet — select part of a notebook page with the lasso and tap 📚 to save it here.</p>'; }
+    else {
+      var els = store.elements.filter(function (e) { return e.card === cur.id; });
+      if (!els.length) body.innerHTML = '<p class="muted">No elements in this card yet.</p>';
+      els.forEach(function (e) { body.appendChild(libElementBlock(e)); });
+      setTimeout(function () { fillAllIn(body); }, 0);   // after layout, so blocks know their width
+    }
+    var nw = $("cpNotesWrap"); if (nw && (store.notes[s.id] || "").trim()) nw.open = true;
+  }
+  // a library doc's content arrived / changed
+  function refreshLibDoc(id) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ue-block[data-ue="' + id + '"]'), fillLibBlock);
+    if (activePsPage === id && !viewingProblem) renderPsPane();
+  }
+  // open any library doc (custom element / problem page) in the board editor
+  function openDocEditor(id) {
+    if (!canvasDocById(id)) return;
+    activeProblem = id; viewingProblem = true;
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
+    applyView();
+    if (typeof window.enterInkFull === "function") window.enterInkFull();
+  }
+  // navigate to where a ref lives in ETI
+  function openCardRef(cardId, then) {
+    activePsPage = null; viewingProblem = false; activeTop = "eti";
+    var c = cardId.slice(0, 2) === "b:" ? null : byId(store.cards, cardId);
+    if (c && c.tab.slice(0, 2) === "s:") {          // a card of a custom tab
+      store.ui.cpCard = store.ui.cpCard || {}; store.ui.cpCard[c.tab.slice(2)] = c.id;
+      selectSubject(c.tab.slice(2));
+    } else {                                          // a built-in pane, or a custom card inside a built-in folder
+      var target = c ? c.id : cardId.slice(2);
+      var fid = folderForTab(target); if (!fid) return;
+      activeSubject = null; lastEtiFolder = fid;
+      activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup; setGroupClosed(activeGroup, false);
+      selectFolder(fid, true); selectTab(target); applyView();
+    }
+    renderEtiTree();
+    if (then) setTimeout(then, 80);
+  }
+  function openRef(ref) {
+    if (!ref) return;
+    if (ref.lvl === "g") { selectGroup(ref.id); return; }
+    if (ref.lvl === "t") {
+      if (ref.id.slice(0, 2) === "s:") { selectSubject(ref.id.slice(2)); return; }
+      var first = libCards(ref.id)[0]; if (first) openCardRef(first.id); return;
+    }
+    if (ref.lvl === "c") { openCardRef(ref.id); return; }
+    var ue = byId(store.elements, ref.id);
+    if (ue) {
+      openCardRef(ue.card, function () {
+        var bl = document.querySelector('.ue-block[data-ue="' + ue.id + '"]');
+        if (bl) { bl.scrollIntoView({ block: "center", behavior: "smooth" }); bl.classList.add("flash"); setTimeout(function () { bl.classList.remove("flash"); }, 1200); }
+      });
+      return;
+    }
+    activePsPage = null; jumpToCard(ref.id);
+  }
+
+  // ---- problem-solving bank: right rail + page view ----
+  var activePsPage = null;
+  function renderPsRail() {
+    var nav = $("psRail"); if (!nav) return;
+    libEnsure();
+    nav.innerHTML = "";
+    if (!store.ps.topics.length) { nav.innerHTML = '<div class="rr-empty">Nothing saved yet.</div>'; return; }
+    store.ui.psOpen = store.ui.psOpen || {};
+    store.ps.topics.forEach(function (t) {
+      var subs = store.ps.subtopics.filter(function (x) { return x.topic === t.id; });
+      var det = document.createElement("details");
+      det.className = "ps-topic";
+      det.open = store.ui.psOpen[t.id] !== 0;
+      det.innerHTML = '<summary>' + escapeHtml(t.name) + '</summary>';
+      det.addEventListener("toggle", function () { store.ui.psOpen[t.id] = det.open ? 1 : 0; saveStore(); });
+      subs.forEach(function (st) {
+        var lbl = document.createElement("div");
+        lbl.className = "ps-sub"; lbl.textContent = st.name;
+        det.appendChild(lbl);
+        store.ps.pages.filter(function (pg) { return pg.subtopic === st.id; }).forEach(function (pg) {
+          var b = document.createElement("button");
+          b.type = "button"; b.setAttribute("data-pp", pg.id); b.textContent = pg.name;
+          b.classList.toggle("on", pg.id === activePsPage);
+          b.addEventListener("click", function () { selectPsPage(pg.id); });
+          det.appendChild(b);
+        });
+      });
+      nav.appendChild(det);
+    });
+  }
+  function selectPsPage(id) {
+    if (!psPageById(id)) return;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id;
+    applyView(); renderPsRail(); renderEtiTree();
+  }
+  function renderPsPane() {
+    var pg = psPageById(activePsPage); if (!pg) return;
+    var st = byId(store.ps.subtopics, pg.subtopic), tp = st && byId(store.ps.topics, st.topic);
+    $("psCrumb").textContent = (tp ? tp.name : "") + (st ? "  ›  " + st.name : "");
+    $("psTitle").textContent = pg.name;
+    var docEl = $("psDoc"); docEl.innerHTML = "";
+    var doc = canvasCache[pg.id] || window.DBX.get(pg.id);
+    if (!doc) docEl.innerHTML = '<div class="doc-empty">Syncing this page…</div>';
+    else docEl.appendChild(renderDocStatic(doc, libBlockWidth(docEl) - 4));
+    var as = $("psAssets"); as.innerHTML = "";
+    if (!(pg.assets || []).length) as.innerHTML = '<p class="muted">No assets linked — assets you mine onto a board and then save with the page are linked here.</p>';
+    (pg.assets || []).forEach(function (ref) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "ps-asset";
+      b.innerHTML = '<span class="ps-lvl">' + ({ g: "Subject", t: "Tab", c: "Card", e: "Element" }[ref.lvl] || "") + '</span>' + escapeHtml(refName(ref)) + ' ↗';
+      b.addEventListener("click", function () { openRef(ref); });
+      as.appendChild(b);
+    });
+  }
+
+  // ============================================================
+  // SAVE WIZARD — lasso selection → raw-material assets or a problem-solving page (copies; the board is untouched)
+  // ============================================================
+  var wiz = null;
+  var LV_NEXT = { subject: "tab", tab: "card", card: "element" };
+  var LV_LABEL = { subject: "Subject", tab: "Tab", card: "Card", element: "Element" };
+  var PART_COLORS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2", "#db2777", "#65a30d"];
+  function selectionContent(p) {
+    var c = loadCanvas(p.id);
+    return JSON.parse(JSON.stringify({
+      ink: (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) >= 0; }),
+      items: (p.bench || []).filter(function (it) { return inkSel.clips.indexOf(it.id) >= 0; })
+    }));
+  }
+  function closeWizard() { if (wiz && wiz.ov) wiz.ov.remove(); wiz = null; }
+  function openSaveWizard() {
+    var p = curProblem(); if (!p || !inkSel) return;
+    libEnsure();
+    closeWizard();
+    var ov = document.createElement("div");
+    ov.id = "libWiz"; ov.className = "lw-overlay";
+    ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b class="lw-title"></b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
+      '<div class="lw-body"></div><div class="lw-foot"></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector(".lw-x").addEventListener("click", closeWizard);
+    wiz = { ov: ov, content: selectionContent(p) };
+    wizStepKind();
+  }
+  function wizSet(title, bodyHtml, foot) {
+    wiz.ov.querySelector(".lw-title").textContent = title;
+    var body = wiz.ov.querySelector(".lw-body"), ft = wiz.ov.querySelector(".lw-foot");
+    body.innerHTML = bodyHtml || ""; ft.innerHTML = "";
+    (foot || []).forEach(function (f) {
+      if (!f) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = f.label; b.className = f.primary ? "lw-primary" : "";
+      if (f.disabled) b.disabled = true;
+      if (f.right) b.style.marginLeft = "auto";
+      b.addEventListener("click", f.run);
+      ft.appendChild(b);
+    });
+    return body;
+  }
+  // one level of "pick an existing node or create a new one"
+  function wizChoice(title, hint, options, newLabel, onPick, back) {
+    var body = wizSet(title, '<p class="lw-hint">' + escapeHtml(hint) + '</p><div class="lw-opts"></div>' +
+      '<div class="lw-new"><input type="text" maxlength="60" placeholder="' + escapeHtml(newLabel) + '"><button type="button" class="lw-primary">Create</button></div>',
+      [back ? { label: "‹ Back", run: back } : null]);
+    var box = body.querySelector(".lw-opts");
+    if (!options.length) box.innerHTML = '<p class="muted">None yet — create one below.</p>';
+    options.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "lw-opt"; b.textContent = o.name + "  ›";
+      b.addEventListener("click", function () { onPick(o.id, null); });
+      box.appendChild(b);
+    });
+    var inp = body.querySelector(".lw-new input");
+    function create() { var n = inp.value.trim(); if (n) onPick(null, n); else inp.focus(); }
+    body.querySelector(".lw-new button").addEventListener("click", create);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") create(); });
+    if (!options.length) setTimeout(function () { inp.focus(); }, 30);
+  }
+  function wizStepKind() {
+    var body = wizSet("Save to the library",
+      '<p class="lw-hint">What is this selection? It is copied — the page stays as it is.</p>' +
+      '<div class="lw-kinds"><button type="button" data-k="m">🧱<b>Raw material</b><span>formulas, concepts → ETI subject library</span></button>' +
+      '<button type="button" data-k="p">🧩<b>Problem-solving page</b><span>a worked method → problem-solving bank</span></button></div>');
+    body.querySelector('[data-k="m"]').addEventListener("click", wizMaterial);
+    body.querySelector('[data-k="p"]').addEventListener("click", wizProblem);
+  }
+  function wizMaterial() {
+    var content = wiz.content, t = {};
+    function stepSubject() {
+      wizChoice("Subject", "Which subject does this material belong to?", allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
+        "New subject name…", function (id, nn) {
+          if (id) { t.gid = id; stepTab(); }
+          else startSplit({ lvl: "subject", name: nn, content: content });
+        }, wizStepKind);
+    }
+    function stepTab() {
+      wizChoice("Tab", "In " + groupName(t.gid) + " — which tab (page)?", groupSubjectKeys(t.gid).map(function (k) { return { id: k, name: tabName(k) }; }),
+        "New tab name…", function (id, nn) {
+          if (id) { t.tab = id; stepCard(); }
+          else startSplit({ lvl: "tab", name: nn, parent: t.gid, content: content });
+        }, stepSubject);
+    }
+    function stepCard() {
+      wizChoice("Card", "In " + tabName(t.tab) + " — which card?", libCards(t.tab), "New card name…", function (id, nn) {
+        if (id) startSplit({ lvl: "card", existing: id, name: refName({ lvl: "c", id: id }), parent: t.tab, content: content });
+        else startSplit({ lvl: "card", name: nn, parent: t.tab, content: content });
+      }, stepTab);
+    }
+    stepSubject();
+  }
+  function startSplit(root) { wiz.root = root; wiz.queue = [root]; nextSplit(); }
+  function nextSplit() {
+    var node = wiz.queue.shift();
+    if (!node) { commitMaterial(wiz.root); return; }
+    splitScreen(node, function (parts) {
+      var lv = LV_NEXT[node.lvl];
+      node.children = parts.map(function (pt) { return { lvl: lv, name: pt.name, content: pt.content }; });
+      if (lv !== "element") wiz.queue = node.children.concat(wiz.queue);
+      nextSplit();
+    });
+  }
+  // split one node's content into named parts by lassoing them on a preview
+  function splitScreen(node, done) {
+    var lv = LV_NEXT[node.lvl], L = LV_LABEL[lv];
+    var content = node.content;
+    content.ink.forEach(function (s, i) { if (!s.id) s.id = "s" + i; });
+    content.items.forEach(function (it, i) { if (!it.id) it.id = "i" + i; });
+    var owner = {};   // object id → part index
+    var parts = [];   // { name, polys:[…] }
+    var body = wizSet("Split “" + node.name + "” into " + L.toLowerCase() + "s",
+      '<p class="lw-hint">Draw a loop around each ' + L.toLowerCase() + ' on the preview and name it. ' +
+      (lv === "element" ? 'Elements are the smallest blocks — they can’t be split later.' : 'Each ' + L.toLowerCase() + ' is split further on the next screen.') + '</p>' +
+      '<div class="lw-prev"><div class="lw-prev-doc"></div><svg class="lw-prev-ov"></svg></div>' +
+      '<div class="lw-parts"></div><p class="lw-left muted"></p>');
+    var prev = body.querySelector(".lw-prev"), docHost = body.querySelector(".lw-prev-doc"), ov = body.querySelector(".lw-prev-ov");
+    var b = docBBox(content) || [0, 0, 100, 100], pad = 10;
+    var bx = b[0] - pad, by = b[1] - pad, bw = b[2] - b[0] + pad * 2, bh = b[3] - b[1] + pad * 2;
+    var maxW = Math.max(200, (body.clientWidth || 600) - 4), maxH = Math.max(160, Math.min(window.innerHeight * 0.45, 460));
+    var s = Math.min(1.5, maxW / bw, maxH / bh);
+    docHost.appendChild(renderDocStatic(content, bw * s));
+    var st = docHost.firstChild;
+    if (st && st.classList.contains("doc-static") && bw * s > bw) {   // allow scaling up small selections
+      st.style.width = (bw * s) + "px"; st.style.height = (bh * s) + "px";
+      st.firstChild.style.transform = "scale(" + s.toFixed(4) + ")";
+    }
+    prev.style.width = (bw * s) + "px"; prev.style.height = (bh * s) + "px";
+    ov.setAttribute("width", bw * s); ov.setAttribute("height", bh * s);
+    ov.setAttribute("viewBox", bx + " " + by + " " + bw + " " + bh);
+    function toC(e) { var r = ov.getBoundingClientRect(); return [bx + (e.clientX - r.left) / s, by + (e.clientY - r.top) / s]; }
+    function total() { return content.ink.length + content.items.length; }
+    function leftCount() { return total() - Object.keys(owner).length; }
+    function drawOv(live) {
+      var h = "";
+      parts.forEach(function (pt, i) {
+        var col = PART_COLORS[i % PART_COLORS.length];
+        pt.polys.forEach(function (poly) {
+          h += '<polygon points="' + poly.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '" fill="' + col + '" fill-opacity="0.12" stroke="' + col + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
+        });
+      });
+      if (live && live.length > 1) h += '<polyline points="' + live.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '" fill="none" stroke="#475569" stroke-dasharray="' + (6 / s) + ' ' + (4 / s) + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
+      ov.innerHTML = h;
+    }
+    function membersOf(poly) {
+      var ink = content.ink.filter(function (sk) {
+        if (owner[sk.id] != null) return false;
+        var pts = sk.pts || [], hit = 0;
+        pts.forEach(function (q) { if (pointInPoly(q[0], q[1], poly)) hit++; });
+        return pts.length && hit / pts.length >= 0.4;
+      });
+      var items = content.items.filter(function (it) {
+        if (owner[it.id] != null) return false;
+        return pointInPoly((it.x || 0) + (it.w || 300) / 2, (it.y || 0) + (it.h || 200) / 2, poly);
+      });
+      return ink.map(function (x) { return x.id; }).concat(items.map(function (x) { return x.id; }));
+    }
+    function partContent(i) {
+      return {
+        ink: content.ink.filter(function (x) { return owner[x.id] === i; }),
+        items: content.items.filter(function (x) { return owner[x.id] === i; })
+      };
+    }
+    function renderParts() {
+      var box = body.querySelector(".lw-parts");
+      box.innerHTML = "";
+      parts.forEach(function (pt, i) {
+        var n = Object.keys(owner).filter(function (k) { return owner[k] === i; }).length;
+        var row = document.createElement("div");
+        row.className = "lw-part";
+        row.innerHTML = '<span class="lw-sw" style="background:' + PART_COLORS[i % PART_COLORS.length] + '"></span>' +
+          '<input type="text" maxlength="60" value="' + escapeHtml(pt.name) + '"><span class="muted">' + n + ' obj</span><button type="button" title="remove this part">✕</button>';
+        var inp = row.querySelector("input");
+        inp.addEventListener("input", function () { pt.name = inp.value; });
+        row.querySelector("button").addEventListener("click", function () {
+          Object.keys(owner).forEach(function (k) { if (owner[k] === i) delete owner[k]; else if (owner[k] > i) owner[k]--; });
+          parts.splice(i, 1); renderParts(); drawOv(); foot();
+        });
+        box.appendChild(row);
+        if (pt.fresh) { delete pt.fresh; setTimeout(function () { inp.focus(); inp.select(); }, 30); }
+      });
+      body.querySelector(".lw-left").textContent = parts.length ? (leftCount() ? leftCount() + " object(s) not in any " + L.toLowerCase() + " yet." : "Everything is assigned.") : "";
+    }
+    function finish(list) { done(list); }
+    function foot() {
+      var left = leftCount();
+      wiz.ov.querySelector(".lw-foot").innerHTML = "";
+      var btns = [
+        { label: "Cancel", run: closeWizard },
+        !parts.length ? { label: "Keep as one " + L.toLowerCase(), run: function () { finish([{ name: node.name, content: content }]); } } : null,
+        parts.length && left ? { label: "Rest → new " + L.toLowerCase(), run: function () {
+          var i = parts.length;
+          content.ink.concat(content.items).forEach(function (x) { if (owner[x.id] == null) owner[x.id] = i; });
+          parts.push({ name: L + " " + (i + 1), polys: [], fresh: true }); renderParts(); drawOv(); foot();
+        } } : null,
+        { label: "Next ›", primary: true, right: true, disabled: !parts.length, run: function () {
+          if (parts.some(function (pt) { return !pt.name.trim(); })) { alert("Give every " + L.toLowerCase() + " a name."); return; }
+          if (left && !confirm(left + " object(s) aren’t in any " + L.toLowerCase() + " and won’t be saved. Continue?")) return;
+          finish(parts.map(function (pt, i) { return { name: pt.name.trim(), content: partContent(i) }; }));
+        } }
+      ];
+      btns.forEach(function (f) {
+        if (!f) return;
+        var bt = document.createElement("button");
+        bt.type = "button"; bt.textContent = f.label; bt.className = f.primary ? "lw-primary" : "";
+        if (f.disabled) bt.disabled = true;
+        if (f.right) bt.style.marginLeft = "auto";
+        bt.addEventListener("click", f.run);
+        wiz.ov.querySelector(".lw-foot").appendChild(bt);
+      });
+    }
+    var live = null, pid = null;
+    ov.addEventListener("pointerdown", function (e) {
+      if (pid != null) return;
+      e.preventDefault(); pid = e.pointerId;
+      try { ov.setPointerCapture(pid); } catch (_) {}
+      live = [toC(e)]; drawOv(live);
+    });
+    ov.addEventListener("pointermove", function (e) {
+      if (e.pointerId !== pid) return;
+      e.preventDefault(); live.push(toC(e)); drawOv(live);
+    });
+    function up(e) {
+      if (e.pointerId !== pid) return;
+      pid = null;
+      var poly = live; live = null;
+      if (!poly || poly.length < 3) { drawOv(); return; }
+      var ids = membersOf(poly);
+      if (!ids.length) { drawOv(); return; }
+      var i = parts.length;
+      ids.forEach(function (k) { owner[k] = i; });
+      parts.push({ name: L + " " + (i + 1), polys: [poly], fresh: true });
+      renderParts(); drawOv(); foot();
+    }
+    ov.addEventListener("pointerup", up);
+    ov.addEventListener("pointercancel", up);
+    renderParts(); drawOv(); foot();
+  }
+  // content (board coords) → a canvas doc, moved to the origin, with fresh ids
+  function writeLibDoc(id, content) {
+    var b = docBBox(content) || [0, 0, 0, 0], pad = 12, dx = pad - b[0], dy = pad - b[1];
+    var c = loadCanvas(id);
+    c.ink = (content.ink || []).map(function (sk) {
+      var n = {}; for (var k in sk) n[k] = sk[k];
+      n.id = uid("ik_");
+      n.pts = (sk.pts || []).map(function (q) { return [Math.round((q[0] + dx) * 10) / 10, Math.round((q[1] + dy) * 10) / 10, q[2]]; });
+      return n;
+    });
+    c.items = (content.items || []).map(function (it) {
+      var d = JSON.parse(JSON.stringify(it));
+      d.id = uid("it_"); d.x = Math.round((it.x || 0) + dx); d.y = Math.round((it.y || 0) + dy);
+      return d;
+    });
+    saveCanvas(id);
+  }
+  function commitMaterial(root) {
+    var made = 0, where = "";
+    function mkElement(cardId, n) {
+      var id = uid("ue_");
+      store.elements.push({ id: id, card: cardId, name: n.name, created: Date.now() });
+      writeLibDoc(id, n.content); made++;
+    }
+    function mkCard(tabKey, n) {
+      var id = n.existing;
+      if (!id) { id = uid("uc_"); store.cards.push({ id: id, tab: tabKey, name: n.name, created: Date.now() }); }
+      (n.children || []).forEach(function (ch) { mkElement(id, ch); });
+      return id;
+    }
+    function mkTab(gid, n) {
+      var sub = { id: uid("s_"), folder: "eti", name: n.name, group: gid };
+      store.subjects.push(sub);
+      (n.children || []).forEach(function (ch) { mkCard("s:" + sub.id, ch); });
+    }
+    if (root.lvl === "subject") {
+      var g = { id: uid("g_"), name: root.name };
+      store.groups.push(g);
+      (root.children || []).forEach(function (ch) { mkTab(g.id, ch); });
+      where = root.name;
+    } else if (root.lvl === "tab") {
+      mkTab(root.parent, root); where = groupName(root.parent) + " › " + root.name;
+    } else {
+      mkCard(root.parent, root); where = tabName(root.parent) + " › " + root.name;
+    }
+    saveStore();
+    closeWizard();
+    try { renderEtiTree(); renderLibraryEti(); } catch (e) { if (window.console) console.error("library render:", e); }
+    libToast("Saved " + made + " element" + (made === 1 ? "" : "s") + " to " + where);
+  }
+  function wizProblem() {
+    var content = wiz.content, t = {};
+    function stepTopic() {
+      wizChoice("Topic", "Which topic is this method about?", store.ps.topics, "New topic name…", function (id, nn) {
+        t.topic = id; t.topicNew = nn; stepSub();
+      }, wizStepKind);
+    }
+    function stepSub() {
+      var subs = t.topic ? store.ps.subtopics.filter(function (x) { return x.topic === t.topic; }) : [];
+      wizChoice("Subtopic", "In " + (t.topic ? byId(store.ps.topics, t.topic).name : t.topicNew), subs, "New subtopic name…", function (id, nn) {
+        t.sub = id; t.subNew = nn; stepName();
+      }, stepTopic);
+    }
+    function stepName() {
+      var refs = [], seen = {};
+      content.items.forEach(function (it) { var r = itemAssetRef(it); if (r && !seen[r.lvl + r.id]) { seen[r.lvl + r.id] = 1; refs.push(r); } });
+      var body = wizSet("Page name",
+        '<p class="lw-hint">Everything in the selection is copied into the page; mined assets are linked both ways.</p>' +
+        '<div class="lw-new"><input type="text" maxlength="80" placeholder="Name this method…"></div>' +
+        '<p class="lw-hint">' + (refs.length ? "Linked assets: " + refs.map(function (r) { return escapeHtml(refName(r)); }).join(", ") : "No mined assets in the selection — nothing to link.") + '</p>',
+        [{ label: "‹ Back", run: stepSub }, { label: "Save page", primary: true, right: true, run: save }]);
+      var inp = body.querySelector("input");
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") save(); });
+      setTimeout(function () { inp.focus(); }, 30);
+      function save() {
+        var name = inp.value.trim(); if (!name) { inp.focus(); return; }
+        if (!t.topic) { t.topic = uid("pt_"); store.ps.topics.push({ id: t.topic, name: t.topicNew }); }
+        if (!t.sub) { t.sub = uid("ps_"); store.ps.subtopics.push({ id: t.sub, topic: t.topic, name: t.subNew }); }
+        var pg = { id: uid("pp_"), subtopic: t.sub, name: name, assets: refs, created: Date.now() };
+        store.ps.pages.push(pg);
+        writeLibDoc(pg.id, content);
+        saveStore();
+        closeWizard();
+        renderPsRail();
+        libToast("Saved “" + name + "” to the problem-solving bank");
+      }
+    }
+    stepTopic();
+  }
+  function libToast(msg) {
+    var t = document.createElement("div");
+    t.className = "lib-toast"; t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function () { t.classList.add("out"); }, 2600);
+    setTimeout(function () { t.remove(); }, 3200);
   }
 
   // ---- clips (board items) ----
@@ -8190,7 +8917,7 @@ function __detabaseMain() {
 
   function jumpToCard(idx) {
     var e = indexById(idx); if (!e) return;
-    viewingProblem = false; activeSubject = null; activeTop = "eti";
+    viewingProblem = false; activeSubject = null; activeTop = "eti"; activePsPage = null;
     lastEtiFolder = e.folderId;
     activeGroup = groupOfBuiltin(e.folderId);
     store.ui.group = activeGroup; saveStore();
@@ -8248,6 +8975,34 @@ function __detabaseMain() {
   }
   window.navLoad = navLoad;
 
+  // the DOM for one board item (no interaction wiring) — used by the board and the static renderer
+  function buildItemEl(clip, p) {
+    var kind = clip.kind || "clip";
+    var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape";
+    var isW = isShape || isGraph || isCrop;
+    var el = document.createElement("div");
+    el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "");
+    el.style.left = (clip.x || 0) + "px";
+    el.style.top = (clip.y || 0) + "px";
+    el.style.width = (clip.w || 300) + "px";
+    el.style.height = (clip.h || 200) + "px";
+    el.style.zIndex = clip.z || 1;
+    el.dataset.clip = clip.id;
+    var body;
+    if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
+    else if (isShape) body = '<div class="shape-host"></div>';
+    else if (isGraph) body = '<div class="graph-host"></div>';
+    else if (isCrop) body = '<div class="crop-host"></div>';
+    else if (isV) body = vshapeSvg(clip);
+    else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
+    // no chrome on the item itself — move mode adds the outline, corner handle and #itemBar
+    el.innerHTML = '<div class="clip-body">' + body + '</div><div class="clip-resize" title="resize"></div>';
+    if (isNote) el.querySelector(".note-ta").value = clip.text || "";
+    if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
+    if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
+    if (isCrop) renderCropWidget(el.querySelector(".crop-host"), clip);
+    return el;
+  }
   function renderCanvas() {
     var p = curProblem(); if (!p) return;
     var canvas = $("ppCanvas");
@@ -8263,30 +9018,7 @@ function __detabaseMain() {
     }
     var maxX = canvas.clientWidth || 900, maxY = canvas.clientHeight || 600;
     p.bench.forEach(function (clip) {
-      var kind = clip.kind || "clip";
-      var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape";
-      var isW = isShape || isGraph || isCrop;
-      var el = document.createElement("div");
-      el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "");
-      el.style.left = (clip.x || 0) + "px";
-      el.style.top = (clip.y || 0) + "px";
-      el.style.width = (clip.w || 300) + "px";
-      el.style.height = (clip.h || 200) + "px";
-      el.style.zIndex = clip.z || 1;
-      el.dataset.clip = clip.id;
-      var body;
-      if (isNote) body = '<textarea class="note-ta" placeholder="Type your working…"></textarea>';
-      else if (isShape) body = '<div class="shape-host"></div>';
-      else if (isGraph) body = '<div class="graph-host"></div>';
-      else if (isCrop) body = '<div class="crop-host"></div>';
-      else if (isV) body = vshapeSvg(clip);
-      else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
-      // no chrome on the item itself — move mode adds the outline, corner handle and #itemBar
-      el.innerHTML = '<div class="clip-body">' + body + '</div><div class="clip-resize" title="resize"></div>';
-      if (isNote) el.querySelector(".note-ta").value = clip.text || "";
-      if (isShape) renderShapeWidget(el.querySelector(".shape-host"), clip, p);
-      if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
-      if (isCrop) renderCropWidget(el.querySelector(".crop-host"), clip);
+      var el = buildItemEl(clip, p);
       wireClip(el, clip, p);
       view.appendChild(el);
       // keep the mode an item was in across re-renders (a move, a resize, an undo…)
@@ -8538,9 +9270,10 @@ function __detabaseMain() {
     if (!t) {
       t = document.createElement("div");
       t.className = "ink-sel-toolbar";
-      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
+      t.innerHTML = '<button data-s="lib" title="save to the library">📚</button><button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
       host.appendChild(t);
       t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+      t.querySelector('[data-s="lib"]').addEventListener("click", function (e) { e.stopPropagation(); openSaveWizard(); });
       t.querySelector('[data-s="copy"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCopy(curProblem()); });
       t.querySelector('[data-s="cut"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCut(curProblem()); });
       t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
@@ -8894,10 +9627,11 @@ function __detabaseMain() {
       inkMode = false;
       inkSel = null; inkLassoPts = null;
       $("ppCanvas").classList.remove("drawing");
-      var wasNotebook = activeTop === "notebook";
+      var wasNotebook = activeTop === "notebook", editedId = activeProblem;
       viewingProblem = false; activeProblem = null;
       if (wasNotebook) openNotebook();
       else { activeTop = "eti"; applyView(); }
+      if (editedId && !isPage(editedId)) { try { refreshLibDoc(editedId); } catch (e) {} }   // an edited library doc
       if (typeof window.__detabaseFlushRemote === "function") window.__detabaseFlushRemote();
     }
     window.enterInkFull = enterInkFull;
@@ -8907,6 +9641,7 @@ function __detabaseMain() {
     var done = $("inkDone"); if (done) done.addEventListener("click", exitInkFull);
     document.addEventListener("keydown", function (e) {
       if (!document.body.classList.contains("ink-full")) return;
+      if (wiz) { if (e.key === "Escape") closeWizard(); return; }   // the save wizard owns the keyboard
       if (e.key === "Escape") {
         var lib = $("nbLib");
         if (lib && lib.classList.contains("open")) { lib.classList.remove("open"); return; }
@@ -10180,6 +10915,9 @@ function __detabaseMain() {
   try { tagBuiltinElements(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
   try { initSortables(); } catch (e) { if (window.console) console.error("initSortables:", e); }
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
+  try { renderLibraryEti(); } catch (e) { if (window.console) console.error("renderLibraryEti:", e); }
+  try { renderPsRail(); } catch (e) { if (window.console) console.error("renderPsRail:", e); }
+  if ($("psEdit")) $("psEdit").addEventListener("click", function () { if (activePsPage) openDocEditor(activePsPage); });
   try { buildIndex(); } catch (e) { if (window.console) console.error("buildIndex:", e); }
 
   // deep link: #<tab> (built-in), #<top-folder id>, #<custom-subject id>, or #<problem id>
@@ -10193,6 +10931,8 @@ function __detabaseMain() {
     selectTop("notebook");
   } else if (isPage(initial)) {
     selectPage(initial);
+  } else if (psPageById(initial)) {
+    selectPsPage(initial);
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
