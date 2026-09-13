@@ -3053,7 +3053,7 @@
   <div id="ppAddMenu">
   </div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B30</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B31</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll">
       <section class="nblib-sec">
         <div class="nblib-lbl">Raw materials</div>
@@ -4881,6 +4881,8 @@ function __detabaseMain() {
     if (raw) {
       var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.canvases = p.canvases || [];
       store.deadCanvases = p.deadCanvases || [];
+      if (p.libv) store.libv = p.libv;
+      if (p.tabs) store.tabs = p.tabs;
       if (p.cards) store.cards = p.cards;
       if (p.elements) store.elements = p.elements;
       if (p.ps) store.ps = p.ps;
@@ -8227,41 +8229,77 @@ function __detabaseMain() {
 
   // ============================================================
   // LIBRARY — the two banks
-  // Raw material:  Subject (group id) → Tab ("f:<folderId>" built-in | "s:<subjectId>" custom)
-  //   → Card ("b:<pane target>" built-in | store.cards "uc_…") → Element (built-in data-el key | store.elements "ue_…")
-  // Problem solving: store.ps = { topics[{id,name}], subtopics[{id,topic,name}], pages[{id,subtopic,name,assets[{lvl,id}],created}] }
-  // Custom Elements and problem-solving pages keep their content (items + ink) in a canvas doc with the same id.
-  // Asset refs: { lvl: "g" | "t" | "c" | "e", id }
+  // Raw material:
+  //   Subject  "f:<folderId>" built-in (Trig base…) | "s:<id>" custom (store.subjects) — groups (Base, Calculus…) only hold subjects
+  //   Tab      "b:<pane target>" built-in (Unit circle…)  | store.tabs  "ut_…" {subject}
+  //   Card     built-in block's data-el key (the squares)   | store.cards "uc_…" {tab}
+  //   Element  store.elements "ue_…" {card} — the smallest block; its content lives in a canvas doc with the same id
+  // Problem solving: store.ps = { topics[{id,name}], subtopics[{id,topic,name}], pages[{id,subtopic,name,assets[ref],created}] }
+  //   (page content in a canvas doc with the page id)
+  // Asset refs: { lvl: "s" | "t" | "c" | "e", id }
   // ============================================================
   function libEnsure() {
+    store.tabs = store.tabs || [];
     store.cards = store.cards || [];
     store.elements = store.elements || [];
     store.ps = store.ps || {};
     store.ps.topics = store.ps.topics || []; store.ps.subtopics = store.ps.subtopics || []; store.ps.pages = store.ps.pages || [];
     store.etiEdits = store.etiEdits || { hidden: {}, names: {} };
   }
+  // B30 saved one level too high (group=subject, folder=tab, pane=card, block=element) — shift it down
+  (function migrateLibLevels() {
+    if (store.libv === 2) return;
+    libEnsure();
+    var oldCards = store.cards, oldEls = store.elements, tabId = function (id) { return id.replace(/^uc_/, "ut_"); };
+    store.tabs = oldCards.map(function (c) { return { id: tabId(c.id), subject: c.tab, name: c.name, created: c.created || Date.now() }; });
+    store.cards = oldEls.map(function (e) {
+      return { id: e.id.replace(/^ue_/, "uc_"), tab: e.card.slice(0, 2) === "b:" ? e.card : tabId(e.card), name: e.name, created: e.created || Date.now() };
+    });
+    store.elements = oldEls.map(function (e) { return { id: e.id, card: e.id.replace(/^ue_/, "uc_"), name: e.name, created: e.created || Date.now() }; });
+    store.ps.pages.forEach(function (pg) {
+      pg.assets = (pg.assets || []).map(function (r) {
+        if (r.lvl === "e" && r.id.indexOf("ue_") !== 0) return { lvl: "c", id: r.id };
+        if (r.lvl === "c") return { lvl: "t", id: r.id.slice(0, 2) === "b:" ? r.id : tabId(r.id) };
+        if (r.lvl === "t") return { lvl: "s", id: r.id };
+        return r;
+      }).filter(function (r) { return r.lvl !== "g"; });
+    });
+    if (store.ui && store.ui.cpCard) {
+      store.ui.cpTab = {};
+      Object.keys(store.ui.cpCard).forEach(function (sid) { store.ui.cpTab[sid] = tabId(store.ui.cpCard[sid]); });
+      delete store.ui.cpCard;
+    }
+    store.libv = 2;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
   libEnsure();
+
   function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
-  function btnLabel(b) {   // "2.1 Identities"
+  function btnLabel(b) {   // "2.2 Unit circle"
     if (!b) return "";
     var n = b.querySelector(".tnum"), c = b.cloneNode(true);
     c.querySelectorAll(".tnum, .del-x").forEach(function (x) { x.remove(); });
     return ((n ? n.textContent.trim() + " " : "") + c.textContent.replace(/\s+/g, " ").trim()).trim();
   }
-  function tabName(key) {
+  function subjectName(key) {
     if (key.slice(0, 2) === "f:") return folderButtonLabel(key.slice(2)) || key.slice(2);
-    var s = byId(store.subjects, key.slice(2)); return s ? s.name : "(deleted tab)";
+    var s = byId(store.subjects, key.slice(2)); return s ? s.name : "(deleted subject)";
   }
-  function builtinCards(fid) {
+  function allSubjectKeys() {   // every ETI subject, in sidebar order (group by group)
+    var out = [];
+    allGroupIds().forEach(function (g) { groupSubjectKeys(g).forEach(function (k) { out.push(k); }); });
+    return out;
+  }
+  function builtinTabs(fid) {
     return Array.prototype.slice.call(document.querySelectorAll('.tabbar[data-folder="' + fid + '"] button[data-target]'))
-      .filter(function (b) { return !b.dataset.uc; })
+      .filter(function (b) { return !b.dataset.ut; })
       .map(function (b) { return { id: "b:" + b.getAttribute("data-target"), name: btnLabel(b) }; });
   }
-  function libCards(tabKey) {
-    var out = tabKey.slice(0, 2) === "f:" ? builtinCards(tabKey.slice(2)) : [];
-    return out.concat(store.cards.filter(function (c) { return c.tab === tabKey; }).map(function (c) { return { id: c.id, name: c.name }; }));
+  function libTabs(subjectKey) {
+    var out = subjectKey.slice(0, 2) === "f:" ? builtinTabs(subjectKey.slice(2)) : [];
+    return out.concat(store.tabs.filter(function (t) { return t.subject === subjectKey; }).map(function (t) { return { id: t.id, name: t.name }; }));
   }
-  function builtinElements(target) {
+  function builtinCards(target) {   // the squares of a built-in tab: its data-el blocks
     var pane = $("pane-" + target); if (!pane) return [];
     var seen = {}, out = [];
     Array.prototype.forEach.call(pane.querySelectorAll("[data-el]"), function (n) {
@@ -8270,26 +8308,33 @@ function __detabaseMain() {
     });
     return out;
   }
+  function libCards(tabId) {
+    var out = tabId.slice(0, 2) === "b:" ? builtinCards(tabId.slice(2)) : [];
+    return out.concat(store.cards.filter(function (c) { return c.tab === tabId; }).map(function (c) { return { id: c.id, name: c.name }; }));
+  }
   function libElements(cardId) {
-    var out = cardId.slice(0, 2) === "b:" ? builtinElements(cardId.slice(2)) : [];
-    return out.concat(store.elements.filter(function (e) { return e.card === cardId; }).map(function (e) { return { id: e.id, name: e.name }; }));
+    return store.elements.filter(function (e) { return e.card === cardId; }).map(function (e) { return { id: e.id, name: e.name }; });
+  }
+  function tabLabel(tabId) {
+    if (tabId.slice(0, 2) === "b:") return btnLabel(document.querySelector('.tabbar[data-folder] button[data-target="' + tabId.slice(2) + '"]')) || tabId;
+    var t = byId(store.tabs, tabId); return t ? t.name : "(deleted tab)";
+  }
+  function cardLabel(cardId) {
+    var c = byId(store.cards, cardId); if (c) return c.name;
+    var n = document.querySelector('[data-el="' + cardId + '"]');
+    return n ? builtinElTitle(n) : "(deleted card)";
   }
   function refName(ref) {
     if (!ref) return "";
-    if (ref.lvl === "g") return groupName(ref.id);
-    if (ref.lvl === "t") return tabName(ref.id);
-    if (ref.lvl === "c") {
-      if (ref.id.slice(0, 2) === "b:") return btnLabel(document.querySelector('.tabbar[data-folder] button[data-target="' + ref.id.slice(2) + '"]')) || ref.id;
-      var c = byId(store.cards, ref.id); return c ? c.name : "(deleted card)";
-    }
-    var ue = byId(store.elements, ref.id); if (ue) return ue.name;
-    var n = document.querySelector('[data-el="' + ref.id + '"]');
-    return n ? builtinElTitle(n) : "(deleted element)";
+    if (ref.lvl === "s") return subjectName(ref.id);
+    if (ref.lvl === "t") return tabLabel(ref.id);
+    if (ref.lvl === "c") return cardLabel(ref.id);
+    var e = byId(store.elements, ref.id); return e ? e.name : "(deleted element)";
   }
-  // board item → asset ref (items mined from the library)
+  // board item → asset ref (things mined from the library)
   function itemAssetRef(it) {
     if (it.kind === "asset" && it.ref) return it.ref;
-    if (it.cardId) { var k = String(it.cardId); return k.indexOf("pane:") === 0 ? { lvl: "c", id: "b:" + k.slice(5) } : { lvl: "e", id: k }; }
+    if (it.cardId) { var k = String(it.cardId); return k.indexOf("pane:") === 0 ? { lvl: "t", id: "b:" + k.slice(5) } : { lvl: "c", id: k }; }
     return null;
   }
   function psPageById(id) { libEnsure(); return byId(store.ps.pages, id); }
@@ -8313,14 +8358,14 @@ function __detabaseMain() {
     });
     return '<svg class="doc-ink" width="' + vb[2] + '" height="' + vb[3] + '" viewBox="' + vb.join(" ") + '">' + h + '</svg>';
   }
-  function renderDocStatic(doc, maxW) {
+  function renderDocStatic(doc, maxW, maxScale) {
     var wrap = document.createElement("div");
     wrap.className = "doc-static";
     doc = JSON.parse(JSON.stringify({ items: (doc && doc.items) || [], ink: (doc && doc.ink) || [] }));   // never touch live objects
     var b = docBBox(doc);
     if (!b) { wrap.innerHTML = '<div class="doc-empty">empty</div>'; return wrap; }
     var pad = 10, bx = b[0] - pad, by = b[1] - pad, bw = Math.ceil(b[2] - b[0] + pad * 2), bh = Math.ceil(b[3] - b[1] + pad * 2);
-    var s = Math.min(1, (maxW || 760) / bw);
+    var s = Math.min(maxScale || 1, (maxW || 760) / bw);
     wrap.style.width = Math.round(bw * s) + "px"; wrap.style.height = Math.round(bh * s) + "px";
     var inner = document.createElement("div");
     inner.className = "doc-static-inner";
@@ -8335,7 +8380,7 @@ function __detabaseMain() {
     return wrap;
   }
 
-  // ---- ETI: custom cards / elements rendered into the reference ----
+  // ---- ETI: custom tabs / cards / elements rendered into the reference ----
   var libRefresh = {};   // pane target → re-render its library blocks at the pane's real width
   function libBlockWidth(host) { return (host && host.clientWidth) || ($("paneHost") && $("paneHost").clientWidth) || 760; }
   function fillLibBlock(block) {
@@ -8348,71 +8393,99 @@ function __detabaseMain() {
   function libElementBlock(e) {
     var d = document.createElement("div");
     d.className = "ue-block"; d.setAttribute("data-ue", e.id);
-    d.innerHTML = '<div class="ue-head"><h3>' + escapeHtml(e.name) + '</h3><button type="button" class="ue-edit" title="edit in the notebook">✎</button></div><div class="ue-body"></div>';
+    d.innerHTML = '<div class="ue-head"><span class="ue-name">' + escapeHtml(e.name) + '</span><button type="button" class="ue-edit" title="edit in the notebook">✎</button></div><div class="ue-body"></div>';
     d.querySelector(".ue-edit").addEventListener("click", function () { openDocEditor(e.id); });
+    return d;
+  }
+  // a custom card = a square holding its elements
+  function libCardBox(c) {
+    var d = document.createElement("div");
+    d.className = "card ue-card"; d.setAttribute("data-uc", c.id);
+    d.innerHTML = '<h4>' + escapeHtml(c.name) + '</h4>';
+    var els = store.elements.filter(function (e) { return e.card === c.id; });
+    if (!els.length) d.insertAdjacentHTML("beforeend", '<p class="muted">No elements yet.</p>');
+    els.forEach(function (e) { d.appendChild(libElementBlock(e)); });
     return d;
   }
   function fillAllIn(host) { Array.prototype.forEach.call(host.querySelectorAll(".ue-block"), fillLibBlock); }
   function renderLibraryEti() {
     libEnsure();
-    Array.prototype.slice.call(document.querySelectorAll(".tabbar[data-folder] button[data-uc]")).forEach(function (b) { b.remove(); });
+    Array.prototype.slice.call(document.querySelectorAll(".tabbar[data-folder] button[data-ut]")).forEach(function (b) { b.remove(); });
     Array.prototype.slice.call(document.querySelectorAll("section.pane.ue-pane, .ue-extra")).forEach(function (x) { x.remove(); });
     libRefresh = {};
+    function addRefresh(target, host) {
+      var prev = libRefresh[target];
+      libRefresh[target] = function () { if (prev) prev(); fillAllIn(host); };
+    }
+    // 1. custom tabs inside a built-in subject: a tab button + a pane of cards
     builtinFolderIds().forEach(function (fid) {
       var bar = document.querySelector('.tabbar[data-folder="' + fid + '"]'), folder = $("folder-" + fid);
       if (!bar || !folder) return;
-      store.cards.filter(function (c) { return c.tab === "f:" + fid; }).forEach(function (c) {
+      store.tabs.filter(function (t) { return t.subject === "f:" + fid; }).forEach(function (t) {
         var b = document.createElement("button");
-        b.type = "button"; b.setAttribute("data-target", c.id); b.dataset.uc = "1"; b.textContent = c.name;
-        b.addEventListener("click", function () { selectTab(c.id); });
+        b.type = "button"; b.setAttribute("data-target", t.id); b.dataset.ut = "1"; b.textContent = t.name;
+        b.addEventListener("click", function () { selectTab(t.id); });
         bar.appendChild(b);
         var pane = document.createElement("section");
-        pane.className = "pane ue-pane"; pane.id = "pane-" + c.id;
-        pane.innerHTML = '<h2>' + escapeHtml(c.name) + '</h2>';
-        var els = store.elements.filter(function (e) { return e.card === c.id; });
-        if (!els.length) pane.insertAdjacentHTML("beforeend", '<p class="muted">No elements yet.</p>');
-        els.forEach(function (e) { pane.appendChild(libElementBlock(e)); });
+        pane.className = "pane ue-pane"; pane.id = "pane-" + t.id;
+        pane.innerHTML = '<h2>' + escapeHtml(t.name) + '</h2>';
+        var cards = store.cards.filter(function (c) { return c.tab === t.id; });
+        if (!cards.length) pane.insertAdjacentHTML("beforeend", '<p class="muted">No cards yet.</p>');
+        cards.forEach(function (c) { pane.appendChild(libCardBox(c)); });
         folder.appendChild(pane);
-        libRefresh[c.id] = function () { fillAllIn(pane); };
+        addRefresh(t.id, pane);
       });
     });
-    // new elements saved under a built-in card: appended after its own content
-    var byCard = {};
-    store.elements.forEach(function (e) { if (e.card.slice(0, 2) === "b:") (byCard[e.card.slice(2)] = byCard[e.card.slice(2)] || []).push(e); });
-    Object.keys(byCard).forEach(function (target) {
+    // 2. custom cards saved into a built-in tab: after the tab's own content
+    var byTab = {};
+    store.cards.forEach(function (c) { if (c.tab.slice(0, 2) === "b:") (byTab[c.tab.slice(2)] = byTab[c.tab.slice(2)] || []).push(c); });
+    Object.keys(byTab).forEach(function (target) {
       var pane = $("pane-" + target); if (!pane) return;
       var box = document.createElement("div"); box.className = "ue-extra";
-      byCard[target].forEach(function (e) { box.appendChild(libElementBlock(e)); });
+      byTab[target].forEach(function (c) { box.appendChild(libCardBox(c)); });
       pane.appendChild(box);
-      libRefresh[target] = function () { fillAllIn(box); };
+      addRefresh(target, box);
+    });
+    // 3. elements saved into a built-in card: inside that square, at its bottom
+    var byCard = {};
+    store.elements.forEach(function (e) { if (!byId(store.cards, e.card)) (byCard[e.card] = byCard[e.card] || []).push(e); });
+    Object.keys(byCard).forEach(function (key) {
+      var nodes = document.querySelectorAll('[data-el="' + key + '"]'); if (!nodes.length) return;
+      var last = nodes[nodes.length - 1], box = document.createElement("div");
+      box.className = "ue-extra ue-extra-in";
+      byCard[key].forEach(function (e) { box.appendChild(libElementBlock(e)); });
+      var inside = last.matches(".card, .tool") ? last : last.matches(".subject") ? (last.querySelector(".subject-body") || last) : null;
+      if (inside) inside.appendChild(box); else last.parentNode.insertBefore(box, last.nextSibling);
+      var pane = last.closest("section.pane");
+      if (pane) addRefresh(pane.id.replace("pane-", ""), box);
     });
     allTabButtons = Array.prototype.slice.call(document.querySelectorAll(".tabbar[data-folder] button"));
     Object.keys(libRefresh).forEach(function (t) { var p = $("pane-" + t); if (p && p.classList.contains("on")) libRefresh[t](); });
     if (activeSubject) renderCustomSubjectPage();
   }
+  // a custom subject's page: its tabs across the top, the open tab's cards below
   function renderCustomSubjectPage() {
     var s = byId(store.subjects, activeSubject), bar = $("cpTabs"), body = $("cpCardBody");
     if (!s || !bar || !body) return;
     libEnsure();
-    var cards = store.cards.filter(function (c) { return c.tab === "s:" + s.id; });
-    store.ui.cpCard = store.ui.cpCard || {};
-    var cur = byId(cards, store.ui.cpCard[s.id]) || cards[0];
-    bar.innerHTML = ""; bar.hidden = !cards.length;
-    cards.forEach(function (c) {
+    var tabs = store.tabs.filter(function (t) { return t.subject === "s:" + s.id; });
+    store.ui.cpTab = store.ui.cpTab || {};
+    var cur = byId(tabs, store.ui.cpTab[s.id]) || tabs[0];
+    bar.innerHTML = ""; bar.hidden = !tabs.length;
+    tabs.forEach(function (t) {
       var b = document.createElement("button");
-      b.type = "button"; b.textContent = c.name; b.classList.toggle("on", c === cur);
-      b.addEventListener("click", function () { store.ui.cpCard[s.id] = c.id; saveStore(); renderCustomSubjectPage(); });
+      b.type = "button"; b.textContent = t.name; b.classList.toggle("on", t === cur);
+      b.addEventListener("click", function () { store.ui.cpTab[s.id] = t.id; saveStore(); renderCustomSubjectPage(); });
       bar.appendChild(b);
     });
     body.innerHTML = "";
-    if (!cur) { body.innerHTML = '<p class="muted">No cards yet — select part of a notebook page with the lasso and tap 📚 to save it here.</p>'; }
+    if (!cur) { body.innerHTML = '<p class="muted">No tabs yet — select part of a notebook page with the lasso and tap 📚 to save it here.</p>'; }
     else {
-      var els = store.elements.filter(function (e) { return e.card === cur.id; });
-      if (!els.length) body.innerHTML = '<p class="muted">No elements in this card yet.</p>';
-      els.forEach(function (e) { body.appendChild(libElementBlock(e)); });
+      var cards = store.cards.filter(function (c) { return c.tab === cur.id; });
+      if (!cards.length) body.innerHTML = '<p class="muted">No cards in this tab yet.</p>';
+      cards.forEach(function (c) { body.appendChild(libCardBox(c)); });
       setTimeout(function () { fillAllIn(body); }, 0);   // after layout, so blocks know their width
     }
-    var nw = $("cpNotesWrap"); if (nw && (store.notes[s.id] || "").trim()) nw.open = true;
   }
   // a library doc's content arrived / changed
   function refreshLibDoc(id) {
@@ -8427,15 +8500,29 @@ function __detabaseMain() {
     applyView();
     if (typeof window.enterInkFull === "function") window.enterInkFull();
   }
-  // navigate to where a ref lives in ETI
-  function openCardRef(cardId, then) {
+  // ---- navigate to where a ref lives in ETI ----
+  function flashEl(el) {
+    if (!el) return;
+    var host = el.closest && el.closest("details.subject"); if (host) host.open = true;
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
+  }
+  function openSubjectRef(key) {
+    activePsPage = null;
+    if (key.slice(0, 2) === "s:") { selectSubject(key.slice(2)); return; }
+    var fid = key.slice(2);
+    viewingProblem = false; activeTop = "eti"; activeSubject = null; lastEtiFolder = fid;
+    activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup; setGroupClosed(activeGroup, false);
+    selectFolder(fid); applyView(); renderEtiTree();
+  }
+  function openTabRef(tabId, then) {
     activePsPage = null; viewingProblem = false; activeTop = "eti";
-    var c = cardId.slice(0, 2) === "b:" ? null : byId(store.cards, cardId);
-    if (c && c.tab.slice(0, 2) === "s:") {          // a card of a custom tab
-      store.ui.cpCard = store.ui.cpCard || {}; store.ui.cpCard[c.tab.slice(2)] = c.id;
-      selectSubject(c.tab.slice(2));
-    } else {                                          // a built-in pane, or a custom card inside a built-in folder
-      var target = c ? c.id : cardId.slice(2);
+    var t = tabId.slice(0, 2) === "b:" ? null : byId(store.tabs, tabId);
+    if (t && t.subject.slice(0, 2) === "s:") {        // a tab of a custom subject
+      store.ui.cpTab = store.ui.cpTab || {}; store.ui.cpTab[t.subject.slice(2)] = t.id;
+      selectSubject(t.subject.slice(2));
+    } else {                                           // a built-in tab, or a custom tab inside a built-in subject
+      var target = t ? t.id : tabId.slice(2);
       var fid = folderForTab(target); if (!fid) return;
       activeSubject = null; lastEtiFolder = fid;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup; setGroupClosed(activeGroup, false);
@@ -8446,21 +8533,14 @@ function __detabaseMain() {
   }
   function openRef(ref) {
     if (!ref) return;
-    if (ref.lvl === "g") { selectGroup(ref.id); return; }
-    if (ref.lvl === "t") {
-      if (ref.id.slice(0, 2) === "s:") { selectSubject(ref.id.slice(2)); return; }
-      var first = libCards(ref.id)[0]; if (first) openCardRef(first.id); return;
-    }
-    if (ref.lvl === "c") { openCardRef(ref.id); return; }
-    var ue = byId(store.elements, ref.id);
-    if (ue) {
-      openCardRef(ue.card, function () {
-        var bl = document.querySelector('.ue-block[data-ue="' + ue.id + '"]');
-        if (bl) { bl.scrollIntoView({ block: "center", behavior: "smooth" }); bl.classList.add("flash"); setTimeout(function () { bl.classList.remove("flash"); }, 1200); }
-      });
-      return;
-    }
-    activePsPage = null; jumpToCard(ref.id);
+    if (ref.lvl === "s") { openSubjectRef(ref.id); return; }
+    if (ref.lvl === "t") { openTabRef(ref.id); return; }
+    var cardId = ref.id, elId = null;
+    if (ref.lvl === "e") { var e = byId(store.elements, ref.id); if (!e) return; cardId = e.card; elId = e.id; }
+    var uc = byId(store.cards, cardId);
+    function focus() { flashEl(elId ? document.querySelector('.ue-block[data-ue="' + elId + '"]') : document.querySelector(uc ? '.ue-card[data-uc="' + cardId + '"]' : '[data-el="' + cardId + '"]')); }
+    if (uc) openTabRef(uc.tab, focus);
+    else { activePsPage = null; jumpToCard(cardId); if (elId) setTimeout(focus, 120); }
   }
 
   // ---- problem-solving bank: right rail + page view ----
@@ -8512,7 +8592,7 @@ function __detabaseMain() {
     (pg.assets || []).forEach(function (ref) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "ps-asset";
-      b.innerHTML = '<span class="ps-lvl">' + ({ g: "Subject", t: "Tab", c: "Card", e: "Element" }[ref.lvl] || "") + '</span>' + escapeHtml(refName(ref)) + ' ↗';
+      b.innerHTML = '<span class="ps-lvl">' + ({ s: "Subject", t: "Tab", c: "Card", e: "Element" }[ref.lvl] || "") + '</span>' + escapeHtml(refName(ref)) + ' ↗';
       b.addEventListener("click", function () { openRef(ref); });
       as.appendChild(b);
     });
@@ -8546,10 +8626,9 @@ function __detabaseMain() {
     wiz = { ov: ov, content: selectionContent(p) };
     wizStepKind();
   }
-  function wizSet(title, bodyHtml, foot) {
-    wiz.ov.querySelector(".lw-title").textContent = title;
-    var body = wiz.ov.querySelector(".lw-body"), ft = wiz.ov.querySelector(".lw-foot");
-    body.innerHTML = bodyHtml || ""; ft.innerHTML = "";
+  function wizFoot(foot) {
+    var ft = wiz.ov.querySelector(".lw-foot");
+    ft.innerHTML = "";
     (foot || []).forEach(function (f) {
       if (!f) return;
       var b = document.createElement("button");
@@ -8559,16 +8638,28 @@ function __detabaseMain() {
       b.addEventListener("click", f.run);
       ft.appendChild(b);
     });
+  }
+  function wizSet(title, bodyHtml, foot) {
+    wiz.ov.querySelector(".lw-title").textContent = title;
+    var body = wiz.ov.querySelector(".lw-body");
+    body.innerHTML = bodyHtml || "";
+    body.scrollTop = 0;
+    wizFoot(foot);
     return body;
   }
-  // one level of "pick an existing node or create a new one"
+  // one level of "pick an existing node or create a new one"; options may carry a group label
   function wizChoice(title, hint, options, newLabel, onPick, back) {
     var body = wizSet(title, '<p class="lw-hint">' + escapeHtml(hint) + '</p><div class="lw-opts"></div>' +
       '<div class="lw-new"><input type="text" maxlength="60" placeholder="' + escapeHtml(newLabel) + '"><button type="button" class="lw-primary">Create</button></div>',
       [back ? { label: "‹ Back", run: back } : null]);
-    var box = body.querySelector(".lw-opts");
+    var box = body.querySelector(".lw-opts"), lastGroup = null;
     if (!options.length) box.innerHTML = '<p class="muted">None yet — create one below.</p>';
     options.forEach(function (o) {
+      if (o.group && o.group !== lastGroup) {
+        lastGroup = o.group;
+        var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = o.group;
+        box.appendChild(gl);
+      }
       var b = document.createElement("button");
       b.type = "button"; b.className = "lw-opt"; b.textContent = o.name + "  ›";
       b.addEventListener("click", function () { onPick(o.id, null); });
@@ -8591,22 +8682,32 @@ function __detabaseMain() {
   function wizMaterial() {
     var content = wiz.content, t = {};
     function stepSubject() {
-      wizChoice("Subject", "Which subject does this material belong to?", allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
+      wizChoice("Subject", "Which subject does this material belong to? (e.g. Trig base)",
+        allSubjectKeys().map(function (k) {
+          var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
+          return { id: k, name: subjectName(k), group: groupName(g) };
+        }),
         "New subject name…", function (id, nn) {
-          if (id) { t.gid = id; stepTab(); }
-          else startSplit({ lvl: "subject", name: nn, content: content });
+          if (id) { t.subject = id; stepTab(); }
+          else stepGroup(nn);
         }, wizStepKind);
     }
+    function stepGroup(newName) {   // a new subject has to live in one of the sidebar groups
+      wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.", allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
+        "New group name…", function (id, nn) {
+          startSplit({ lvl: "subject", name: newName, groupId: id, newGroup: nn, content: content });
+        }, stepSubject);
+    }
     function stepTab() {
-      wizChoice("Tab", "In " + groupName(t.gid) + " — which tab (page)?", groupSubjectKeys(t.gid).map(function (k) { return { id: k, name: tabName(k) }; }),
+      wizChoice("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top, e.g. Unit circle)", libTabs(t.subject),
         "New tab name…", function (id, nn) {
           if (id) { t.tab = id; stepCard(); }
-          else startSplit({ lvl: "tab", name: nn, parent: t.gid, content: content });
+          else startSplit({ lvl: "tab", name: nn, parent: t.subject, content: content });
         }, stepSubject);
     }
     function stepCard() {
-      wizChoice("Card", "In " + tabName(t.tab) + " — which card?", libCards(t.tab), "New card name…", function (id, nn) {
-        if (id) startSplit({ lvl: "card", existing: id, name: refName({ lvl: "c", id: id }), parent: t.tab, content: content });
+      wizChoice("Card", "In " + tabLabel(t.tab) + " — which card (square)?", libCards(t.tab), "New card name…", function (id, nn) {
+        if (id) startSplit({ lvl: "card", existing: id, name: cardLabel(id), parent: t.tab, content: content });
         else startSplit({ lvl: "card", name: nn, parent: t.tab, content: content });
       }, stepTab);
     }
@@ -8623,17 +8724,17 @@ function __detabaseMain() {
       nextSplit();
     });
   }
-  // split one node's content into named parts by lassoing them on a preview
+  // split one node's content into named parts by drawing loops on a preview
   function splitScreen(node, done) {
-    var lv = LV_NEXT[node.lvl], L = LV_LABEL[lv];
+    var lv = LV_NEXT[node.lvl], L = LV_LABEL[lv], l = L.toLowerCase();
     var content = node.content;
     content.ink.forEach(function (s, i) { if (!s.id) s.id = "s" + i; });
     content.items.forEach(function (it, i) { if (!it.id) it.id = "i" + i; });
     var owner = {};   // object id → part index
     var parts = [];   // { name, polys:[…] }
-    var body = wizSet("Split “" + node.name + "” into " + L.toLowerCase() + "s",
-      '<p class="lw-hint">Draw a loop around each ' + L.toLowerCase() + ' on the preview and name it. ' +
-      (lv === "element" ? 'Elements are the smallest blocks — they can’t be split later.' : 'Each ' + L.toLowerCase() + ' is split further on the next screen.') + '</p>' +
+    var body = wizSet("Split “" + node.name + "” into " + l + "s",
+      '<p class="lw-hint">Draw a loop around each ' + l + ' on the preview and name it. ' +
+      (lv === "element" ? 'Elements are the smallest blocks — they can’t be split later.' : 'Each ' + l + ' is split further on the next screen.') + '</p>' +
       '<div class="lw-prev"><div class="lw-prev-doc"></div><svg class="lw-prev-ov"></svg></div>' +
       '<div class="lw-parts"></div><p class="lw-left muted"></p>');
     var prev = body.querySelector(".lw-prev"), docHost = body.querySelector(".lw-prev-doc"), ov = body.querySelector(".lw-prev-ov");
@@ -8641,41 +8742,40 @@ function __detabaseMain() {
     var bx = b[0] - pad, by = b[1] - pad, bw = b[2] - b[0] + pad * 2, bh = b[3] - b[1] + pad * 2;
     var maxW = Math.max(200, (body.clientWidth || 600) - 4), maxH = Math.max(160, Math.min(window.innerHeight * 0.45, 460));
     var s = Math.min(1.5, maxW / bw, maxH / bh);
-    docHost.appendChild(renderDocStatic(content, bw * s));
-    var st = docHost.firstChild;
-    if (st && st.classList.contains("doc-static") && bw * s > bw) {   // allow scaling up small selections
-      st.style.width = (bw * s) + "px"; st.style.height = (bh * s) + "px";
-      st.firstChild.style.transform = "scale(" + s.toFixed(4) + ")";
-    }
+    docHost.appendChild(renderDocStatic(content, bw * s, 1.5));
     prev.style.width = (bw * s) + "px"; prev.style.height = (bh * s) + "px";
     ov.setAttribute("width", bw * s); ov.setAttribute("height", bh * s);
     ov.setAttribute("viewBox", bx + " " + by + " " + bw + " " + bh);
-    function toC(e) { var r = ov.getBoundingClientRect(); return [bx + (e.clientX - r.left) / s, by + (e.clientY - r.top) / s]; }
+    function toC(e) { var r = prev.getBoundingClientRect(); return [bx + (e.clientX - r.left) / s, by + (e.clientY - r.top) / s]; }
     function total() { return content.ink.length + content.items.length; }
     function leftCount() { return total() - Object.keys(owner).length; }
-    function drawOv(live) {
+    function polyPts(poly) { return poly.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "); }
+    var liveEl = null;
+    function drawOv() {
       var h = "";
       parts.forEach(function (pt, i) {
         var col = PART_COLORS[i % PART_COLORS.length];
         pt.polys.forEach(function (poly) {
-          h += '<polygon points="' + poly.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '" fill="' + col + '" fill-opacity="0.12" stroke="' + col + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
+          h += '<polygon points="' + polyPts(poly) + '" fill="' + col + '" fill-opacity="0.12" stroke="' + col + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
         });
       });
-      if (live && live.length > 1) h += '<polyline points="' + live.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '" fill="none" stroke="#475569" stroke-dasharray="' + (6 / s) + ' ' + (4 / s) + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
+      h += '<polyline class="lw-live" fill="none" stroke="#475569" stroke-dasharray="' + (6 / s).toFixed(1) + ' ' + (4 / s).toFixed(1) + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
       ov.innerHTML = h;
+      liveEl = ov.querySelector(".lw-live");
     }
     function membersOf(poly) {
-      var ink = content.ink.filter(function (sk) {
-        if (owner[sk.id] != null) return false;
+      var ids = [];
+      content.ink.forEach(function (sk) {
+        if (owner[sk.id] != null) return;
         var pts = sk.pts || [], hit = 0;
         pts.forEach(function (q) { if (pointInPoly(q[0], q[1], poly)) hit++; });
-        return pts.length && hit / pts.length >= 0.4;
+        if (pts.length && hit / pts.length >= 0.4) ids.push(sk.id);
       });
-      var items = content.items.filter(function (it) {
-        if (owner[it.id] != null) return false;
-        return pointInPoly((it.x || 0) + (it.w || 300) / 2, (it.y || 0) + (it.h || 200) / 2, poly);
+      content.items.forEach(function (it) {
+        if (owner[it.id] != null) return;
+        if (pointInPoly((it.x || 0) + (it.w || 300) / 2, (it.y || 0) + (it.h || 200) / 2, poly)) ids.push(it.id);
       });
-      return ink.map(function (x) { return x.id; }).concat(items.map(function (x) { return x.id; }));
+      return ids;
     }
     function partContent(i) {
       return {
@@ -8701,61 +8801,60 @@ function __detabaseMain() {
         box.appendChild(row);
         if (pt.fresh) { delete pt.fresh; setTimeout(function () { inp.focus(); inp.select(); }, 30); }
       });
-      body.querySelector(".lw-left").textContent = parts.length ? (leftCount() ? leftCount() + " object(s) not in any " + L.toLowerCase() + " yet." : "Everything is assigned.") : "";
+      body.querySelector(".lw-left").textContent = parts.length ? (leftCount() ? leftCount() + " object(s) not in any " + l + " yet." : "Everything is assigned.") : "";
     }
-    function finish(list) { done(list); }
     function foot() {
       var left = leftCount();
-      wiz.ov.querySelector(".lw-foot").innerHTML = "";
-      var btns = [
+      wizFoot([
         { label: "Cancel", run: closeWizard },
-        !parts.length ? { label: "Keep as one " + L.toLowerCase(), run: function () { finish([{ name: node.name, content: content }]); } } : null,
-        parts.length && left ? { label: "Rest → new " + L.toLowerCase(), run: function () {
+        !parts.length ? { label: "Keep as one " + l, run: function () { done([{ name: node.name, content: content }]); } } : null,
+        parts.length && left ? { label: "Rest → new " + l, run: function () {
           var i = parts.length;
           content.ink.concat(content.items).forEach(function (x) { if (owner[x.id] == null) owner[x.id] = i; });
           parts.push({ name: L + " " + (i + 1), polys: [], fresh: true }); renderParts(); drawOv(); foot();
         } } : null,
         { label: "Next ›", primary: true, right: true, disabled: !parts.length, run: function () {
-          if (parts.some(function (pt) { return !pt.name.trim(); })) { alert("Give every " + L.toLowerCase() + " a name."); return; }
-          if (left && !confirm(left + " object(s) aren’t in any " + L.toLowerCase() + " and won’t be saved. Continue?")) return;
-          finish(parts.map(function (pt, i) { return { name: pt.name.trim(), content: partContent(i) }; }));
+          if (parts.some(function (pt) { return !pt.name.trim(); })) { alert("Give every " + l + " a name."); return; }
+          if (left && !confirm(left + " object(s) aren’t in any " + l + " and won’t be saved. Continue?")) return;
+          done(parts.map(function (pt, i) { return { name: pt.name.trim(), content: partContent(i) }; }));
         } }
-      ];
-      btns.forEach(function (f) {
-        if (!f) return;
-        var bt = document.createElement("button");
-        bt.type = "button"; bt.textContent = f.label; bt.className = f.primary ? "lw-primary" : "";
-        if (f.disabled) bt.disabled = true;
-        if (f.right) bt.style.marginLeft = "auto";
-        bt.addEventListener("click", f.run);
-        wiz.ov.querySelector(".lw-foot").appendChild(bt);
-      });
+      ]);
     }
-    var live = null, pid = null;
-    ov.addEventListener("pointerdown", function (e) {
+    // drawing a loop: pointer events on the preview box. iOS must never turn this touch into a
+    // scroll of the wizard — touch-action:none on the box AND a non-passive touchmove preventDefault.
+    var live = null, pid = null, raf = 0;
+    function paintLive() { raf = 0; if (liveEl && live) liveEl.setAttribute("points", polyPts(live)); }
+    prev.addEventListener("touchstart", function (e) { e.preventDefault(); }, { passive: false });
+    prev.addEventListener("touchmove", function (e) { e.preventDefault(); }, { passive: false });
+    prev.addEventListener("pointerdown", function (e) {
       if (pid != null) return;
       e.preventDefault(); pid = e.pointerId;
-      try { ov.setPointerCapture(pid); } catch (_) {}
-      live = [toC(e)]; drawOv(live);
+      try { prev.setPointerCapture(pid); } catch (_) {}
+      live = [toC(e)]; paintLive();
     });
-    ov.addEventListener("pointermove", function (e) {
+    prev.addEventListener("pointermove", function (e) {
       if (e.pointerId !== pid) return;
-      e.preventDefault(); live.push(toC(e)); drawOv(live);
+      e.preventDefault();
+      var q = toC(e), last = live[live.length - 1];
+      if (Math.hypot(q[0] - last[0], q[1] - last[1]) * s < 2) return;
+      live.push(q);
+      if (!raf) raf = requestAnimationFrame(paintLive);
     });
     function up(e) {
       if (e.pointerId !== pid) return;
       pid = null;
       var poly = live; live = null;
-      if (!poly || poly.length < 3) { drawOv(); return; }
+      if (liveEl) liveEl.setAttribute("points", "");
+      if (!poly || poly.length < 3) return;
       var ids = membersOf(poly);
-      if (!ids.length) { drawOv(); return; }
+      if (!ids.length) return;
       var i = parts.length;
       ids.forEach(function (k) { owner[k] = i; });
       parts.push({ name: L + " " + (i + 1), polys: [poly], fresh: true });
       renderParts(); drawOv(); foot();
     }
-    ov.addEventListener("pointerup", up);
-    ov.addEventListener("pointercancel", up);
+    prev.addEventListener("pointerup", up);
+    prev.addEventListener("pointercancel", up);
     renderParts(); drawOv(); foot();
   }
   // content (board coords) → a canvas doc, moved to the origin, with fresh ids
@@ -8782,26 +8881,28 @@ function __detabaseMain() {
       store.elements.push({ id: id, card: cardId, name: n.name, created: Date.now() });
       writeLibDoc(id, n.content); made++;
     }
-    function mkCard(tabKey, n) {
+    function mkCard(tabId, n) {
       var id = n.existing;
-      if (!id) { id = uid("uc_"); store.cards.push({ id: id, tab: tabKey, name: n.name, created: Date.now() }); }
+      if (!id) { id = uid("uc_"); store.cards.push({ id: id, tab: tabId, name: n.name, created: Date.now() }); }
       (n.children || []).forEach(function (ch) { mkElement(id, ch); });
-      return id;
     }
-    function mkTab(gid, n) {
-      var sub = { id: uid("s_"), folder: "eti", name: n.name, group: gid };
-      store.subjects.push(sub);
-      (n.children || []).forEach(function (ch) { mkCard("s:" + sub.id, ch); });
+    function mkTab(subjectKey, n) {
+      var id = uid("ut_");
+      store.tabs.push({ id: id, subject: subjectKey, name: n.name, created: Date.now() });
+      (n.children || []).forEach(function (ch) { mkCard(id, ch); });
     }
     if (root.lvl === "subject") {
-      var g = { id: uid("g_"), name: root.name };
-      store.groups.push(g);
-      (root.children || []).forEach(function (ch) { mkTab(g.id, ch); });
-      where = root.name;
+      var gid = root.groupId;
+      if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: root.newGroup }); }
+      var sub = { id: uid("s_"), folder: "eti", name: root.name, group: gid };
+      store.subjects.push(sub);
+      setGroupClosed(gid, false);
+      (root.children || []).forEach(function (ch) { mkTab("s:" + sub.id, ch); });
+      where = groupName(gid) + " › " + root.name;
     } else if (root.lvl === "tab") {
-      mkTab(root.parent, root); where = groupName(root.parent) + " › " + root.name;
+      mkTab(root.parent, root); where = subjectName(root.parent) + " › " + root.name;
     } else {
-      mkCard(root.parent, root); where = tabName(root.parent) + " › " + root.name;
+      mkCard(root.parent, root); where = tabLabel(root.parent) + " › " + root.name;
     }
     saveStore();
     closeWizard();
@@ -9190,30 +9291,53 @@ function __detabaseMain() {
     if (inkSel && xy[0] >= inkSel.box.x && xy[0] <= inkSel.box.x + inkSel.box.w &&
         xy[1] >= inkSel.box.y && xy[1] <= inkSel.box.y + inkSel.box.h) {
       inkSnapshot(p);
-      lassoDrag = { mode: "move", last: xy, moved: false };
+      lassoDrag = { mode: "move", start: xy, dx: 0, dy: 0, moved: false };
     } else {
       inkSel = null; inkLassoPts = [xy]; lassoDrag = { mode: "draw" };
       renderInk(p);
     }
   }
+  // lasso drawing / moving only touches a few DOM nodes per frame — never a full ink re-render
+  // (that made a pen lasso lag behind and look doubled / jagged on a busy page)
+  var lassoRaf = 0;
+  function lassoPaint() {
+    lassoRaf = 0;
+    var d = lassoDrag, il = $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer");
+    if (!d || !il) return;
+    if (d.mode === "draw") {
+      var pl = il.querySelector(".ink-lasso-live");
+      if (!pl) { pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); pl.setAttribute("class", "ink-lasso-live"); pl.setAttribute("fill", "none"); il.appendChild(pl); }
+      pl.setAttribute("points", (inkLassoPts || []).map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "));
+    } else {
+      var tr = "translate(" + d.dx.toFixed(1) + " " + d.dy.toFixed(1) + ")";
+      if (!d.nodes) {   // collect once per drag
+        d.nodes = Array.prototype.filter.call(il.querySelectorAll("path[data-ik]"), function (n) { return inkSel.strokes.indexOf(n.getAttribute("data-ik")) >= 0; });
+        d.marks = Array.prototype.slice.call(il.querySelectorAll(".ink-sel-lasso, .ink-sel-box"));
+        d.clipEls = inkSel.clips.map(function (id) { return $("ppView").querySelector('.clip[data-clip="' + id + '"]'); }).filter(Boolean);
+        var tb = $("ppView").querySelector(".ink-sel-toolbar"); if (tb) tb.style.visibility = "hidden";
+      }
+      d.nodes.concat(d.marks).forEach(function (n) { n.setAttribute("transform", tr); });
+      d.clipEls.forEach(function (el) { el.style.transform = "translate(" + d.dx.toFixed(1) + "px," + d.dy.toFixed(1) + "px)"; });
+    }
+  }
   function lassoTo(xy) {
     var p = curProblem(); if (!p || !lassoDrag) return;
-    if (lassoDrag.mode === "draw") { inkLassoPts.push(xy); renderInk(p); }
-    else {
-      var dx = xy[0] - lassoDrag.last[0], dy = xy[1] - lassoDrag.last[1];
-      lassoDrag.last = xy; lassoDrag.moved = true;
-      inkSelMove(p, dx, dy);
-      renderInk(p);
-      inkSel.clips.forEach(function (id) {
-        var el = $("ppView") && $("ppView").querySelector('.clip[data-clip="' + id + '"]');
-        var cl = (p.bench || []).filter(function (x) { return x.id === id; })[0];
-        if (el && cl) { el.style.left = cl.x + "px"; el.style.top = cl.y + "px"; }
-      });
+    var minStep = 2 / ((typeof navScale === "number" && navScale) || 1);
+    if (lassoDrag.mode === "draw") {
+      var last = inkLassoPts[inkLassoPts.length - 1];
+      if (last && Math.hypot(xy[0] - last[0], xy[1] - last[1]) < minStep) return;
+      inkLassoPts.push(xy);
+    } else {
+      lassoDrag.dx = xy[0] - lassoDrag.start[0]; lassoDrag.dy = xy[1] - lassoDrag.start[1];
+      lassoDrag.moved = lassoDrag.moved || Math.hypot(lassoDrag.dx, lassoDrag.dy) > 0.5;
     }
+    if (!lassoRaf) lassoRaf = requestAnimationFrame(lassoPaint);
   }
   function lassoDone() {
     var p = curProblem(); if (!p || !lassoDrag) return;
     var d = lassoDrag; lassoDrag = null;
+    if (lassoRaf) { cancelAnimationFrame(lassoRaf); lassoRaf = 0; }
+    if (d.mode === "move" && d.moved) { inkSelMove(p, d.dx, d.dy); }   // commit the drag once
     if (d.mode === "draw") {
       var pts = inkLassoPts; inkLassoPts = null;
       if (pts && pts.length >= 3) {
@@ -9485,9 +9609,7 @@ function __detabaseMain() {
       if (inkTool === "lasso") {
         if (!lassoDrag) return;
         e.preventDefault();
-        var cc = e.getCoalescedEvents && e.getCoalescedEvents();
-        var ll = (cc && cc.length) ? cc : [e];
-        ll.forEach(function (ev) { lassoTo(P(ev)); });
+        lassoTo(P(e));   // one point per event is plenty for a lasso (coalesced samples only added jitter)
         return;
       }
       if (!inkDrawing) return;
