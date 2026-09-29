@@ -3294,7 +3294,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B49</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B50</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -13452,7 +13452,7 @@ async function decodeCanvas(id, d) {
 }
 async function applyCanvas(id, d) {
   let body;
-  try { body = await decodeCanvas(id, d); } catch (e) { if (window.console) console.error("cloud canvas decode:", e); return; }
+  try { body = await decodeCanvas(id, d); } catch (e) { noteCloudErr("board decode", e, id); return; }
   const prev = canvasLocal(id);
   if (prev && (prev.ts || 0) >= (d.updatedAt || 0)) return;   // a newer local edit landed meanwhile
   const docv = { items: body.items, ink: body.ink, ts: d.updatedAt || Date.now() };
@@ -13476,7 +13476,7 @@ window.cloudSaveCanvas = async function (id, data) {
     canvasParts[id] = n;
     for (let i = n; i < had; i++) { try { await deleteDoc(partRef(id, i)); } catch (e) {} }
     await setDoc(indexRef, { m: { [id]: ts } }, { merge: true });
-  } catch (e) { if (window.console) console.error("cloud canvas push:", e); }
+  } catch (e) { noteCloudErr("board push", e, id); }
 };
 window.cloudDeleteCanvas = async function (id) {
   if (canvasSubs[id]) { try { canvasSubs[id](); } catch (e) {} delete canvasSubs[id]; }
@@ -13500,7 +13500,7 @@ window.cloudOpenCanvas = async function (id) {
     } else if (canvasLocalTs(id) > 0) {
       window.cloudSaveCanvas(id, canvasLocal(id));
     }
-  } catch (e) { if (window.console) console.error("cloud canvas open:", e); }
+  } catch (e) { noteCloudErr("board open", e, id); }
   if (!canvasSubs[id]) {
     canvasSubs[id] = onSnapshot(canvasRef(id), (snap) => {
       if (!snap.exists() || snap.metadata.hasPendingWrites) return;   // a local write, not another device
@@ -13529,7 +13529,7 @@ window.cloudPutPageImage = async function (key, rec) {
     await setDoc(pgRef(key), { v: 1, uw: rec.uw, uh: rec.uh, w: rec.w, h: rec.h,
                                j: s.slice(0, CHUNK), parts: n, updatedAt: ts });
     return true;
-  } catch (e) { if (window.console) console.error("page picture push:", e); return false; }
+  } catch (e) { noteCloudErr("page picture push", e, key + " " + Math.round((rec.url || "").length / 1024) + " KB"); return false; }
 };
 window.cloudGetPageImage = async function (key) {
   if (!user) return null;
@@ -13544,7 +13544,7 @@ window.cloudGetPageImage = async function (key) {
       s += ps.data().j;
     }
     return { url: s, uw: d.uw, uh: d.uh, w: d.w, h: d.h };
-  } catch (e) { if (window.console) console.error("page picture pull:", e); return null; }
+  } catch (e) { noteCloudErr("page picture pull", e, key); return null; }
 };
 async function inBatches(list, size, fn) {
   for (let i = 0; i < list.length; i += size) await Promise.all(list.slice(i, i + size).map((x) => fn(x).catch(() => {})));
@@ -13592,6 +13592,20 @@ function setBadge(txt, tone) {
   b.textContent = txt;
   b.style.color = tone === "bad" ? "#c0392b" : tone === "good" ? "#16a34a" : "";
 }
+// A sync failure used to be a red badge and a line in a console nobody can open on an iPad. Every
+// failure is now kept here, and tapping the badge while it is red reads them out, so a rules
+// problem or a size limit can be seen on the device it happens on.
+const cloudErrs = [];
+function noteCloudErr(what, e, extra) {
+  const code = (e && (e.code || e.name)) || "";
+  const msg = (e && e.message) || String(e || "");
+  cloudErrs.push(what + ": " + (code ? code + " — " : "") + msg + (extra ? " (" + extra + ")" : ""));
+  while (cloudErrs.length > 8) cloudErrs.shift();
+  window.__cloudErrs = cloudErrs;
+  if (window.console) console.error("cloud " + what + ":", e, extra || "");
+  return code;
+}
+window.cloudLastErrors = function () { return cloudErrs.slice(); };
 function localStore() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch (e) { return {}; }
 }
@@ -13615,13 +13629,18 @@ async function pushLocal() {
   if (!user || pendingRemote) return;
   const ts = Date.now();
   lastPushedTs = ts;   // before the write — the local snapshot echo fires before setDoc resolves
+  const s = localStore();
+  let size = 0;
+  try { size = JSON.stringify(s).length; } catch (e) {}
   try {
-    await setDoc(ref, { store: localStore(), updatedAt: ts, updatedBy: (navigator.platform || "device") });
+    await setDoc(ref, { store: s, updatedAt: ts, updatedBy: (navigator.platform || "device") });
     try { localStorage.setItem(TS_KEY, String(ts)); } catch (e) {}
     setBadge("☁ " + shortName() + " · saved", "good");
   } catch (e) {
-    setBadge("☁ save failed", "bad");
-    if (window.console) console.error("cloud push:", e);
+    // a Firestore document is capped at 1 MiB, so the size goes in the report: it is the one
+    // failure the error code alone does not explain
+    const code = noteCloudErr("main push", e, Math.round(size / 1024) + " KB");
+    setBadge("☁ save failed" + (code ? " · " + code.replace(/^.*\//, "") : "") + " — tap", "bad");
   }
 }
 function schedulePush() {
@@ -13695,7 +13714,7 @@ async function onSignedIn(u) {
 
   let remote = null;
   try { remote = (await getDoc(ref)).data() || null; }
-  catch (e) { if (window.console) console.error("cloud pull:", e); setBadge("☁ offline", "bad"); }
+  catch (e) { noteCloudErr("first pull", e); setBadge("☁ offline — tap", "bad"); }
 
   const local = localStore();
   if (remote && remote.store) {
@@ -13753,6 +13772,11 @@ document.addEventListener("click", (e) => {
   const t = e.target;
   if (!t) return;
   if (t.id === "cloudBadge" && !user) showSignin();
+  // signed in and something went wrong: tapping the badge says what, on the device it happened on
+  if (t.id === "cloudBadge" && user && cloudErrs.length) {
+    alert("Sync trouble (newest last):\n\n" + cloudErrs.join("\n\n") +
+      "\n\nIf this says permission-denied, the Firestore rules do not allow one of the documents the app writes.");
+  }
   if (t.id === "cloudSigninClose") hideSignin();
 });
 document.addEventListener("contextmenu", (e) => {
