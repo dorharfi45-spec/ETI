@@ -368,7 +368,9 @@
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
   /* ---- cutting parts out of a page ---- */
   .pv-bar .tool-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-  #pdfView.cutting .pv-page { touch-action: none; cursor: crosshair; }
+  #pdfView.cutting .pv-page { cursor: crosshair; }
+  /* only when "finger" is on does a touch draw instead of scrolling the page */
+  #pdfView.cutting.finger .pv-page { touch-action: none; }
   #pdfView.cutting .pv-scroll { background: var(--surface-3, var(--surface-2)); }
   .pv-box { position: absolute; border: 2px solid var(--accent); border-radius: 3px;
     background: color-mix(in srgb, var(--accent) 12%, transparent); box-sizing: border-box; }
@@ -3212,6 +3214,7 @@
   <div id="pvScroll" class="pv-scroll"></div>
   <div id="pvCutBar" class="pv-cutbar" hidden>
     <span id="pvCutCount"></span>
+    <button type="button" id="pvCutFinger" class="tool-btn" title="off: the pencil draws boxes and your finger scrolls · on: your finger draws too">✋ Finger draws</button>
     <span class="pv-spacer"></span>
     <button type="button" id="pvCutClear" class="tool-btn">Clear</button>
     <button type="button" id="pvCutSave" class="tool-btn primary">Save to library →</button>
@@ -3295,7 +3298,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B44</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B45</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8857,14 +8860,14 @@ function __detabaseMain() {
   function pdfCutOn() { return !!pdfCut; }
   function pdfCutToggle() {
     if (pdfCut) { pdfCutEnd(); return; }
-    pdfCut = { boxes: [] };
+    pdfCut = { boxes: [], finger: false };
     $("pdfView").classList.add("cutting");
     $("pvCutBtn").classList.add("on");
     pdfCutBar();
   }
   function pdfCutEnd() {
     pdfCut = null;
-    $("pdfView").classList.remove("cutting");
+    $("pdfView").classList.remove("cutting", "finger");
     $("pvCutBtn").classList.remove("on");
     Array.prototype.forEach.call(document.querySelectorAll(".pv-box"), function (b) { b.remove(); });
     pdfCutBar();
@@ -8874,7 +8877,9 @@ function __detabaseMain() {
     bar.hidden = !pdfCut;
     if (!pdfCut) return;
     var n = pdfCut.boxes.length;
-    $("pvCutCount").textContent = n ? (n + (n === 1 ? " part marked" : " parts marked")) : "Drag a box around each part you want to keep.";
+    $("pvCutCount").textContent = n ? (n + (n === 1 ? " part marked" : " parts marked"))
+      : (pdfCut.finger ? "Drag a box around each part — your finger draws, so scroll with the bar or the zoom buttons."
+                       : "Drag a box around each part with the pencil. Your finger still scrolls and pinches.");
     $("pvCutSave").disabled = !n;
   }
   function pdfSlotUnits(d) {   // page size in PDF units, learned when the page was drawn
@@ -8917,6 +8922,8 @@ function __detabaseMain() {
   }
   function pdfCutPointer(e) {
     if (!pdfCut || !pdfView) return;
+    // a finger is for reading — it scrolls and pinches as usual, and only draws when you ask it to
+    if (e.pointerType === "touch" && !pdfCut.finger) return;
     if (e.target.closest && e.target.closest(".pv-box-x")) return;
     var d = e.target.closest ? e.target.closest(".pv-page") : null;
     if (!d) return;
@@ -9008,10 +9015,10 @@ function __detabaseMain() {
     document.body.appendChild(ov);
     ov.querySelector(".lw-x").addEventListener("click", closeWizard);
     wiz = { ov: ov, pdf: { id: pdfView.id, boxes: pdfCut.boxes.slice() } };
-    wizMaterialPdf();
+    wizStepKind();   // same first question as the lasso save: material or problem-solving page
   }
-  // Same Subject -> Tab -> Card chooser as the lasso wizard, but marked boxes are already the
-  // parts, so there is nothing to split: every box becomes one Element under the card.
+  // Same wizard as the lasso save, marked boxes standing in for the lasso: pick what kind of
+  // thing this is, file it at whatever level you like, and split it down to elements on the way.
   function wizMaterialPdf() {
     var t = {};
     function stepSubject() {
@@ -9021,79 +9028,118 @@ function __detabaseMain() {
           return { id: k, name: subjectName(k), group: groupName(g) };
         }),
         "New subject name…", function (id, nn) {
-          if (id) { t.subject = id; t.newSubject = null; stepTab(); }
+          if (id) { t.subject = id; stepTab(); }
           else stepGroup(nn);
-        }, null);
+        }, wizStepKind);
     }
-    function stepGroup(newName) {
+    function stepGroup(newName) {   // a new subject has to live in one of the sidebar groups
       wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.",
         allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
         "New group name…", function (id, nn) {
-          t.subject = null; t.newSubject = newName; t.groupId = id; t.newGroup = nn;
-          stepTab();
+          startPdfSplit({ lvl: "subject", name: newName, groupId: id, newGroup: nn });
         }, stepSubject);
     }
     function stepTab() {
-      var where = t.subject ? subjectName(t.subject) : t.newSubject;
-      wizChoice("Tab", "In " + where + " — which tab? (the buttons across the top, e.g. Unit circle)",
-        t.subject ? libTabs(t.subject) : [],
-        "New tab name…", function (id, nn) {
-          if (id) { t.tab = id; t.newTab = null; stepCard(); }
-          else { t.tab = null; t.newTab = nn; stepCard(); }
+      wizChoice("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top, e.g. Unit circle)",
+        libTabs(t.subject), "New tab name…", function (id, nn) {
+          if (id) { t.tab = id; stepCard(); }
+          else startPdfSplit({ lvl: "tab", name: nn, parent: t.subject });
         }, stepSubject);
     }
     function stepCard() {
-      var where = t.tab ? tabLabel(t.tab) : t.newTab;
-      wizChoice("Card", "In " + where + " — which card (square) do these parts belong to?",
-        t.tab ? libCards(t.tab) : [],
+      wizChoice("Card", "In " + tabLabel(t.tab) + " — which card (square)?", libCards(t.tab),
         "New card name…", function (id, nn) {
-          t.card = id; t.newCard = nn;
-          pdfNameStep(t);
+          if (id) startPdfSplit({ lvl: "card", existing: id, name: cardLabel(id), parent: t.tab });
+          else startPdfSplit({ lvl: "card", name: nn, parent: t.tab });
         }, stepTab);
     }
     stepSubject();
   }
-  function pdfNameStep(t) {
-    var boxes = wiz.pdf.boxes;
+  // walk down from the level that was chosen: group the boxes into the level below, then group
+  // each of those, until every box is an element with a name — the same shape the lasso wizard
+  // builds, so the very same commit code creates the subjects, tabs, cards and elements
+  function startPdfSplit(root) {
+    root.boxes = wiz.pdf.boxes.slice();
+    wiz.root = root; wiz.queue = [root];
+    nextPdfSplit();
+  }
+  function nextPdfSplit() {
+    var node = wiz.queue.shift();
+    if (!node) {
+      commitMaterial(wiz.root);
+      if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); }
+      return;
+    }
+    var lv = LV_NEXT[node.lvl];
+    pdfGroupStep(node, lv, function (children) {
+      node.children = children;
+      if (lv !== "element") wiz.queue = children.concat(wiz.queue);
+      nextPdfSplit();
+    });
+  }
+  // one screen: every box of this node gets a name. At element level that name IS the element;
+  // above it, boxes that share a name end up in the same card / tab.
+  function pdfGroupStep(node, lv, done) {
+    var L = LV_LABEL[lv], boxes = node.boxes;
+    var leaf = lv === "element";
     var rows = boxes.map(function (b, i) {
       return '<div class="lw-part">' +
         (b.thumb ? '<img src="' + b.thumb + '" alt="">' : '<div class="lw-pg">no preview</div>') +
-        '<input type="text" maxlength="60" value="" placeholder="Part ' + (i + 1) + '">' +
+        '<input type="text" maxlength="60" value="" placeholder="' + (leaf ? "Part " + (i + 1) : L + " 1") + '">' +
         '<span class="lw-pg">p.' + b.page + '</span></div>';
     }).join("");
-    var body = wizSet("Name the parts", '<p class="lw-hint">Each box becomes one element in ' +
-      escapeHtml(t.card ? cardLabel(t.card) : (t.newCard || "the card")) + '. Give them names you will search for later.</p>' +
-      '<div class="lw-parts">' + rows + '</div>',
-      [{ label: "‹ Back", run: wizMaterialPdf },
-       { label: "Save", primary: true, right: true, run: function () {
-          var names = Array.prototype.map.call(body.querySelectorAll(".lw-part input"), function (inp, i) {
-            return (inp.value || "").trim() || ("Part " + (i + 1));
+    var body = wizSet(leaf ? "Name the parts" : "Split “" + (node.name || L) + "” into " + L.toLowerCase() + "s",
+      '<p class="lw-hint">' + (leaf
+        ? "Each box becomes one element. Give them names you will search for later."
+        : "Which " + L.toLowerCase() + " does each part belong to? Parts you give the same name to end up in the same " + L.toLowerCase() + ".") +
+      '</p><div class="lw-parts">' + rows + '</div>',
+      [{ label: "‹ Back", run: function () { wiz.queue = []; wizMaterialPdf(); } },
+       { label: leaf ? "Save" : "Next ›", primary: true, right: true, run: function () {
+          var inputs = Array.prototype.slice.call(body.querySelectorAll(".lw-part input"));
+          var names = inputs.map(function (inp, i) { return (inp.value || "").trim() || (leaf ? "Part " + (i + 1) : L + " 1"); });
+          if (leaf) {
+            done(boxes.map(function (b, i) {
+              return { lvl: "element", name: names[i], content: { pdf: { pdfId: wiz.pdf.id, page: b.page, rect: b.rect } } };
+            }));
+            return;
+          }
+          var order = [], byName = {};
+          names.forEach(function (n, i) {
+            var k = n.toLowerCase();
+            if (!byName[k]) { byName[k] = { lvl: lv, name: n, boxes: [] }; order.push(byName[k]); }
+            byName[k].boxes.push(boxes[i]);
           });
-          commitPdfMaterial(t, names);
+          done(order);
         } }]);
-    var first = body.querySelector(".lw-part input");
-    if (first) setTimeout(function () { first.focus(); }, 30);
-  }
-  // build the same node tree the lasso wizard commits, so there is one place that creates
-  // subjects, tabs, cards and elements — only the content of a leaf is different
-  function commitPdfMaterial(t, names) {
-    var pdfId = wiz.pdf.id, boxes = wiz.pdf.boxes;
-    var leaves = boxes.map(function (b, i) {
-      return { lvl: "element", name: names[i], content: { pdf: { pdfId: pdfId, page: b.page, rect: b.rect } } };
+    // typing a name once is enough — the rows below follow it until you change one
+    var inputs = Array.prototype.slice.call(body.querySelectorAll(".lw-part input"));
+    if (!leaf) inputs.forEach(function (inp, i) {
+      inp.addEventListener("input", function () {
+        for (var j = i + 1; j < inputs.length; j++) {
+          if (inputs[j].dataset.touched) break;
+          inputs[j].value = inp.value;
+        }
+      });
+      inp.addEventListener("focus", function () { inp.dataset.touched = "1"; });
     });
-    var card = { lvl: "card", name: t.newCard, existing: t.card || null, children: leaves };
-    var root;
-    if (t.newSubject) {
-      root = { lvl: "subject", name: t.newSubject, groupId: t.groupId, newGroup: t.newGroup,
-               children: [{ lvl: "tab", name: t.newTab, children: [card] }] };
-    } else if (t.newTab) {
-      root = { lvl: "tab", name: t.newTab, parent: t.subject, children: [card] };
-    } else {
-      card.parent = t.tab; root = card;
-    }
-    commitMaterial(root);
-    pdfCut.boxes = [];
-    pdfDrawBoxes(); pdfCutBar();
+    if (inputs[0]) setTimeout(function () { inputs[0].focus(); }, 30);
+  }
+  // a problem-solving page made of cut-out parts: the boxes become items in the page, stacked
+  // down it, and from there it is the same page the lasso wizard saves
+  function pdfBoxesToContent(boxes) {
+    var K = 96 / 72, y = 12, items = [];
+    boxes.forEach(function (b, i) {
+      var w = Math.round(b.rect.w * K), h = Math.round(b.rect.h * K);
+      items.push({ id: uid("it_"), kind: "pdf", pdfId: wiz.pdf.id, page: b.page,
+                   rect: { x: b.rect.x, y: b.rect.y, w: b.rect.w, h: b.rect.h },
+                   x: 12, y: y, w: w, h: h, z: i + 1 });
+      y += h + 16;
+    });
+    return { ink: [], items: items };
+  }
+  function wizProblemPdf() {
+    wiz.content = pdfBoxesToContent(wiz.pdf.boxes);
+    wizProblem();
   }
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
   // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
@@ -9611,12 +9657,15 @@ function __detabaseMain() {
     if (!options.length) setTimeout(function () { inp.focus(); }, 30);
   }
   function wizStepKind() {
+    var pdf = !!(wiz && wiz.pdf), n = pdf ? wiz.pdf.boxes.length : 0;
     var body = wizSet("Save to the library",
-      '<p class="lw-hint">What is this selection? It is copied — the page stays as it is.</p>' +
+      '<p class="lw-hint">' + (pdf
+        ? (n + (n === 1 ? " part" : " parts") + " cut out of the PDF. What are they? The PDF itself is not touched.")
+        : "What is this selection? It is copied — the page stays as it is.") + '</p>' +
       '<div class="lw-kinds"><button type="button" data-k="m">🧱<b>Raw material</b><span>formulas, concepts → ETI subject library</span></button>' +
       '<button type="button" data-k="p">🧩<b>Problem-solving page</b><span>a worked method → problem-solving bank</span></button></div>');
-    body.querySelector('[data-k="m"]').addEventListener("click", wizMaterial);
-    body.querySelector('[data-k="p"]').addEventListener("click", wizProblem);
+    body.querySelector('[data-k="m"]').addEventListener("click", function () { if (wiz.pdf) wizMaterialPdf(); else wizMaterial(); });
+    body.querySelector('[data-k="p"]').addEventListener("click", function () { if (wiz.pdf) wizProblemPdf(); else wizProblem(); });
   }
   function wizMaterial(start) {
     var content = wiz.content, t = {};
@@ -9899,6 +9948,7 @@ function __detabaseMain() {
         saveStore();
         closeWizard();
         renderPsRail();
+        if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); }   // the marks did their job
         libToast("Saved “" + name + "” to the problem-solving bank");
       }
     }
@@ -12755,6 +12805,13 @@ function __detabaseMain() {
   if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.25); });
   if ($("pvFit")) $("pvFit").addEventListener("click", function () { pdfZoom(0); });
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
+  if ($("pvCutFinger")) $("pvCutFinger").addEventListener("click", function () {
+    if (!pdfCut) return;
+    pdfCut.finger = !pdfCut.finger;
+    this.classList.toggle("on", pdfCut.finger);
+    $("pdfView").classList.toggle("finger", pdfCut.finger);
+    pdfCutBar();
+  });
   if ($("pvCutClear")) $("pvCutClear").addEventListener("click", function () { if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); } });
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
   if ($("pvScroll")) $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
