@@ -366,6 +366,38 @@
   .pv-page canvas { display: block; width: 100%; height: 100%; border-radius: 2px; }
   .pv-page .pv-num { position: absolute; left: -2px; top: -2px; font-size: .62rem; color: var(--text-muted);
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
+  /* ---- cutting parts out of a page ---- */
+  .pv-bar .tool-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #pdfView.cutting .pv-page { touch-action: none; cursor: crosshair; }
+  #pdfView.cutting .pv-scroll { background: var(--surface-3, var(--surface-2)); }
+  .pv-box { position: absolute; border: 2px solid var(--accent); border-radius: 3px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent); box-sizing: border-box; }
+  .pv-box .pv-box-n { position: absolute; left: -1px; top: -1px; font-size: .68rem; font-weight: 700; color: #fff;
+    background: var(--accent); border-radius: 3px 0 4px 0; padding: 1px 6px; }
+  .pv-box .pv-box-x { position: absolute; right: -11px; top: -11px; width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-muted);
+    font-size: .8rem; line-height: 1; cursor: pointer; padding: 0; }
+  .pv-box.draft { border-style: dashed; }
+  .pv-cutbar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-top: 1px solid var(--border);
+    background: var(--surface-1); flex: 0 0 auto; }
+  .pv-cutbar[hidden] { display: none; }
+  .pv-cutbar .tool-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #pvCutCount { font-size: .85rem; color: var(--text-muted); }
+
+  /* the naming step: one row per box */
+  .lw-parts { display: flex; flex-direction: column; gap: 10px; }
+  .lw-part { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
+  .lw-part img { width: 116px; height: 78px; object-fit: contain; background: #fff; border: 1px solid var(--border); border-radius: 6px; }
+  .lw-part input { flex: 1 1 auto; min-width: 0; padding: 8px 10px; border-radius: 8px; font: inherit;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); }
+  .lw-part .lw-pg { font-size: .7rem; color: var(--text-muted); white-space: nowrap; }
+
+  /* a cut-out region shown as an item (board, ETI, previews — all the same renderer) */
+  .clip.pdfclip .clip-body { padding: 0; }
+  .pdf-host { width: 100%; height: 100%; display: block; background: #fff; }
+  .pdf-host canvas, .pdf-host img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .pdf-host .pdf-missing { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;
+    font-size: .74rem; color: var(--text-muted); text-align: center; padding: 6px; box-sizing: border-box; }
   .nb-bank-search { width: 100%; max-width: 420px; box-sizing: border-box; margin-bottom: 16px;
     padding: 8px 12px; border-radius: 9px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font: inherit; }
   .nb-bank-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
@@ -3165,7 +3197,6 @@
   <div id="nbPdfGrid" class="nb-bank-grid"></div>
   <div id="nbBankGrid" class="nb-bank-grid" hidden></div>
 </div>
-
 <!-- full-screen PDF reader: continuous scroll, pages rendered only as they come into view -->
 <div id="pdfView" hidden>
   <div class="pv-bar">
@@ -3173,11 +3204,18 @@
     <b id="pvTitle"></b>
     <span id="pvPages" class="pv-count"></span>
     <span class="pv-spacer"></span>
+    <button type="button" id="pvCutBtn" class="tool-btn" title="drag a box around each part you want to keep">✂ Cut parts</button>
     <button type="button" id="pvOut" class="tool-btn" title="zoom out">－</button>
     <button type="button" id="pvFit" class="tool-btn" title="fit the width">Fit</button>
     <button type="button" id="pvIn" class="tool-btn" title="zoom in">＋</button>
   </div>
   <div id="pvScroll" class="pv-scroll"></div>
+  <div id="pvCutBar" class="pv-cutbar" hidden>
+    <span id="pvCutCount"></span>
+    <span class="pv-spacer"></span>
+    <button type="button" id="pvCutClear" class="tool-btn">Clear</button>
+    <button type="button" id="pvCutSave" class="tool-btn primary">Save to library →</button>
+  </div>
 </div>
 
 <div id="topfolder-planner" hidden>
@@ -3257,7 +3295,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B43</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B44</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -5395,6 +5433,26 @@ function __detabaseMain() {
     if (store.ui) { delete store.ui.rawList; delete store.ui.probList; }
     (store.canvases || []).forEach(function (pg) { delete pg.shortlist; });
     store.schema = 3;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+
+  // Schema 4 — the clean start for the PDF way of working. Everything the library and the
+  // problem bank held was built by hand-writing into the app; from here the material comes in
+  // as PDFs. The metadata is backed up whole to localStorage first, and the documents
+  // themselves are left in IndexedDB untouched, so nothing is actually destroyed — the old
+  // library can be read back out of "detabase.v1.pre-pdf" if it is ever wanted.
+  (function migratePdfStart() {
+    if (store.schema >= 4) return;
+    var had = (store.tabs && store.tabs.length) || (store.cards && store.cards.length) ||
+              (store.elements && store.elements.length) || (store.ps && store.ps.pages && store.ps.pages.length);
+    try {
+      if (had && !localStorage.getItem("detabase.v1.pre-pdf")) localStorage.setItem("detabase.v1.pre-pdf", localStorage.getItem(LS_KEY) || "");
+    } catch (e) {}
+    store.tabs = []; store.cards = []; store.elements = [];
+    store.ps = { topics: [], subtopics: [], pages: [] };
+    store.etiEdits = { names: {}, hidden: {} };
+    store.subjects = (store.subjects || []).filter(function (s) { return s.folder !== "eti"; });
+    store.schema = 4;
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
@@ -8745,7 +8803,9 @@ function __detabaseMain() {
       var vp = page.getViewport({ scale: 1 });
       d.style.width = Math.round(W) + "px";
       d.style.height = Math.round(W * vp.height / vp.width) + "px";
+      d._uw = vp.width; d._uh = vp.height;   // the page size in PDF units, for turning boxes into coordinates
       pdfRemeasureSoon();   // this page may not be the same shape as page 1
+      if (pdfCut) pdfDrawBoxes();
     }).catch(function () { d._drawnAt = null; });
   }
   function pdfDropSlot(d) {
@@ -8770,9 +8830,11 @@ function __detabaseMain() {
     });
     pdfMeasure();
     scroll.scrollTop = anchor * scroll.scrollHeight;   // stay where you were reading
+    if (pdfCut) pdfDrawBoxes();   // the marks live in page units, so they just re-place themselves
     pdfSweep();
   }
   function closePdf() {
+    if (pdfCut) pdfCutEnd();
     if (pdfView) {
       clearTimeout(pdfView.mt);
       pdfView.slots.forEach(pdfDropSlot);
@@ -8785,6 +8847,254 @@ function __detabaseMain() {
     renderStorageNote();
   }
 
+
+  // ---- cutting parts out of a page --------------------------------------------------
+  // Drag a box around each part you want to keep. A box is stored in PDF page units, not
+  // screen pixels, so it means the same thing at any zoom and on any device — and the part
+  // stays a reference into the file rather than a picture, which is what lets it be redrawn
+  // sharp at any size later.
+  var pdfCut = null;   // { boxes: [{ page, rect:{x,y,w,h}, thumb }] }
+  function pdfCutOn() { return !!pdfCut; }
+  function pdfCutToggle() {
+    if (pdfCut) { pdfCutEnd(); return; }
+    pdfCut = { boxes: [] };
+    $("pdfView").classList.add("cutting");
+    $("pvCutBtn").classList.add("on");
+    pdfCutBar();
+  }
+  function pdfCutEnd() {
+    pdfCut = null;
+    $("pdfView").classList.remove("cutting");
+    $("pvCutBtn").classList.remove("on");
+    Array.prototype.forEach.call(document.querySelectorAll(".pv-box"), function (b) { b.remove(); });
+    pdfCutBar();
+  }
+  function pdfCutBar() {
+    var bar = $("pvCutBar"); if (!bar) return;
+    bar.hidden = !pdfCut;
+    if (!pdfCut) return;
+    var n = pdfCut.boxes.length;
+    $("pvCutCount").textContent = n ? (n + (n === 1 ? " part marked" : " parts marked")) : "Drag a box around each part you want to keep.";
+    $("pvCutSave").disabled = !n;
+  }
+  function pdfSlotUnits(d) {   // page size in PDF units, learned when the page was drawn
+    return d && d._uw ? { w: d._uw, h: d._uh } : null;
+  }
+  // a small picture of the box, snipped from the page already on screen — free, and it makes
+  // the naming step show what you actually marked
+  function pdfBoxThumb(d, px) {
+    var cv = d.querySelector("canvas"); if (!cv || !cv.width) return "";
+    var k = cv.width / d.offsetWidth;
+    var w = Math.max(1, Math.round(px.w * k)), h = Math.max(1, Math.round(px.h * k));
+    var out = document.createElement("canvas");
+    var lim = 300, s = Math.min(1, lim / Math.max(w, h));
+    out.width = Math.max(1, Math.round(w * s)); out.height = Math.max(1, Math.round(h * s));
+    var g = out.getContext("2d");
+    g.fillStyle = "#fff"; g.fillRect(0, 0, out.width, out.height);
+    try {
+      g.drawImage(cv, Math.round(px.x * k), Math.round(px.y * k), w, h, 0, 0, out.width, out.height);
+      return out.toDataURL("image/jpeg", 0.7);
+    } catch (e) { return ""; }
+  }
+  function pdfDrawBoxes() {
+    Array.prototype.forEach.call(document.querySelectorAll(".pv-box:not(.draft)"), function (b) { b.remove(); });
+    if (!pdfCut || !pdfView) return;
+    pdfCut.boxes.forEach(function (b, i) {
+      var d = pdfView.slots[b.page - 1]; if (!d) return;
+      var u = pdfSlotUnits(d); if (!u) return;
+      var k = d.offsetWidth / u.w;
+      var el = document.createElement("div");
+      el.className = "pv-box";
+      el.style.left = (b.rect.x * k) + "px"; el.style.top = (b.rect.y * k) + "px";
+      el.style.width = (b.rect.w * k) + "px"; el.style.height = (b.rect.h * k) + "px";
+      el.innerHTML = '<span class="pv-box-n">' + (i + 1) + '</span><button type="button" class="pv-box-x" title="remove">✕</button>';
+      el.querySelector(".pv-box-x").addEventListener("click", function (e) {
+        e.stopPropagation(); e.preventDefault();
+        pdfCut.boxes.splice(i, 1); pdfDrawBoxes(); pdfCutBar();
+      });
+      d.appendChild(el);
+    });
+  }
+  function pdfCutPointer(e) {
+    if (!pdfCut || !pdfView) return;
+    if (e.target.closest && e.target.closest(".pv-box-x")) return;
+    var d = e.target.closest ? e.target.closest(".pv-page") : null;
+    if (!d) return;
+    var u = pdfSlotUnits(d); if (!u) return;          // page not drawn yet — nothing to cut
+    e.preventDefault();
+    var r = d.getBoundingClientRect();
+    var x0 = e.clientX - r.left, y0 = e.clientY - r.top;
+    var draft = document.createElement("div");
+    draft.className = "pv-box draft";
+    d.appendChild(draft);
+    function place(ev) {
+      var x1 = Math.max(0, Math.min(r.width, ev.clientX - r.left));
+      var y1 = Math.max(0, Math.min(r.height, ev.clientY - r.top));
+      var px = { x: Math.min(x0, x1), y: Math.min(y0, y1), w: Math.abs(x1 - x0), h: Math.abs(y1 - y0) };
+      draft.style.left = px.x + "px"; draft.style.top = px.y + "px";
+      draft.style.width = px.w + "px"; draft.style.height = px.h + "px";
+      return px;
+    }
+    var px = place(e);
+    function move(ev) { ev.preventDefault(); px = place(ev); }
+    function up() {
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
+      document.removeEventListener("pointercancel", up);
+      if (px.w < 12 || px.h < 12) { draft.remove(); return; }   // a tap, not a box
+      var k = u.w / d.offsetWidth;                              // screen px -> PDF units
+      var thumb = pdfBoxThumb(d, px);
+      draft.remove();
+      pdfCut.boxes.push({
+        page: +d.getAttribute("data-page"),
+        rect: { x: +(px.x * k).toFixed(2), y: +(px.y * k).toFixed(2), w: +(px.w * k).toFixed(2), h: +(px.h * k).toFixed(2) },
+        thumb: thumb
+      });
+      pdfDrawBoxes(); pdfCutBar();
+    }
+    document.addEventListener("pointermove", move, { passive: false });
+    document.addEventListener("pointerup", up);
+    document.addEventListener("pointercancel", up);
+  }
+
+  // ---- rendering a cut-out region, wherever it is shown ------------------------------
+  // One item kind, {kind:"pdf", pdfId, page, rect}, drawn by one function — so a part looks
+  // the same in ETI, on a board, in a preview or in the mining panel, and is redrawn at the
+  // size it is actually being shown at instead of being stored as a picture.
+  var pdfRegionCache = {};   // "pdfId|page|x,y,w,h|width" -> dataURL
+  function pdfRegionKey(it, w) { return it.pdfId + "|" + it.page + "|" + [it.rect.x, it.rect.y, it.rect.w, it.rect.h].join(",") + "|" + Math.round(w); }
+  function renderPdfInto(host, clip) {
+    if (!host) return;
+    var w = Math.max(40, clip.w || 200), h = Math.max(30, clip.h || 140);
+    var key = pdfRegionKey(clip, w);
+    if (pdfRegionCache[key]) { host.innerHTML = '<img alt="">'; host.firstChild.src = pdfRegionCache[key]; return; }
+    host.innerHTML = '<div class="pdf-missing">…</div>';
+    pdfOpen(clip.pdfId).then(function (doc) {
+      return doc.getPage(clip.page).then(function (page) {
+        var dpr = Math.min(3, window.devicePixelRatio || 1);
+        var scale = (w / clip.rect.w) * dpr;
+        var vp = page.getViewport({ scale: scale });
+        var cv = document.createElement("canvas");
+        cv.width = Math.max(1, Math.round(clip.rect.w * scale));
+        cv.height = Math.max(1, Math.round(clip.rect.h * scale));
+        var g = cv.getContext("2d", { alpha: false });
+        g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+        return page.render({
+          canvasContext: g, viewport: vp,
+          transform: [1, 0, 0, 1, -clip.rect.x * scale, -clip.rect.y * scale]   // slide the page so the region lands at 0,0
+        }).promise.then(function () {
+          var url = "";
+          try { url = cv.toDataURL("image/jpeg", 0.86); } catch (e) {}
+          if (url) pdfRegionCache[key] = url;
+          host.innerHTML = '<img alt="">';
+          host.firstChild.src = url;
+        });
+      });
+    }).catch(function () {
+      var p = pdfById(clip.pdfId);
+      host.innerHTML = '<div class="pdf-missing">' + escapeHtml(p ? ("“" + (p.name || "PDF") + "” is not on this device") : "the PDF this came from is gone") + '</div>';
+    });
+  }
+
+  // ---- from marked boxes to library assets -------------------------------------------
+  function pdfCutSave() {
+    if (!pdfCut || !pdfCut.boxes.length || !pdfView) return;
+    libEnsure();
+    closeWizard();
+    var ov = document.createElement("div");
+    ov.id = "libWiz"; ov.className = "lw-overlay";
+    ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b class="lw-title"></b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
+      '<div class="lw-body"></div><div class="lw-foot"></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector(".lw-x").addEventListener("click", closeWizard);
+    wiz = { ov: ov, pdf: { id: pdfView.id, boxes: pdfCut.boxes.slice() } };
+    wizMaterialPdf();
+  }
+  // Same Subject -> Tab -> Card chooser as the lasso wizard, but marked boxes are already the
+  // parts, so there is nothing to split: every box becomes one Element under the card.
+  function wizMaterialPdf() {
+    var t = {};
+    function stepSubject() {
+      wizChoice("Subject", "Which subject does this material belong to? (e.g. Trig base)",
+        allSubjectKeys().map(function (k) {
+          var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
+          return { id: k, name: subjectName(k), group: groupName(g) };
+        }),
+        "New subject name…", function (id, nn) {
+          if (id) { t.subject = id; t.newSubject = null; stepTab(); }
+          else stepGroup(nn);
+        }, null);
+    }
+    function stepGroup(newName) {
+      wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.",
+        allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
+        "New group name…", function (id, nn) {
+          t.subject = null; t.newSubject = newName; t.groupId = id; t.newGroup = nn;
+          stepTab();
+        }, stepSubject);
+    }
+    function stepTab() {
+      var where = t.subject ? subjectName(t.subject) : t.newSubject;
+      wizChoice("Tab", "In " + where + " — which tab? (the buttons across the top, e.g. Unit circle)",
+        t.subject ? libTabs(t.subject) : [],
+        "New tab name…", function (id, nn) {
+          if (id) { t.tab = id; t.newTab = null; stepCard(); }
+          else { t.tab = null; t.newTab = nn; stepCard(); }
+        }, stepSubject);
+    }
+    function stepCard() {
+      var where = t.tab ? tabLabel(t.tab) : t.newTab;
+      wizChoice("Card", "In " + where + " — which card (square) do these parts belong to?",
+        t.tab ? libCards(t.tab) : [],
+        "New card name…", function (id, nn) {
+          t.card = id; t.newCard = nn;
+          pdfNameStep(t);
+        }, stepTab);
+    }
+    stepSubject();
+  }
+  function pdfNameStep(t) {
+    var boxes = wiz.pdf.boxes;
+    var rows = boxes.map(function (b, i) {
+      return '<div class="lw-part">' +
+        (b.thumb ? '<img src="' + b.thumb + '" alt="">' : '<div class="lw-pg">no preview</div>') +
+        '<input type="text" maxlength="60" value="" placeholder="Part ' + (i + 1) + '">' +
+        '<span class="lw-pg">p.' + b.page + '</span></div>';
+    }).join("");
+    var body = wizSet("Name the parts", '<p class="lw-hint">Each box becomes one element in ' +
+      escapeHtml(t.card ? cardLabel(t.card) : (t.newCard || "the card")) + '. Give them names you will search for later.</p>' +
+      '<div class="lw-parts">' + rows + '</div>',
+      [{ label: "‹ Back", run: wizMaterialPdf },
+       { label: "Save", primary: true, right: true, run: function () {
+          var names = Array.prototype.map.call(body.querySelectorAll(".lw-part input"), function (inp, i) {
+            return (inp.value || "").trim() || ("Part " + (i + 1));
+          });
+          commitPdfMaterial(t, names);
+        } }]);
+    var first = body.querySelector(".lw-part input");
+    if (first) setTimeout(function () { first.focus(); }, 30);
+  }
+  // build the same node tree the lasso wizard commits, so there is one place that creates
+  // subjects, tabs, cards and elements — only the content of a leaf is different
+  function commitPdfMaterial(t, names) {
+    var pdfId = wiz.pdf.id, boxes = wiz.pdf.boxes;
+    var leaves = boxes.map(function (b, i) {
+      return { lvl: "element", name: names[i], content: { pdf: { pdfId: pdfId, page: b.page, rect: b.rect } } };
+    });
+    var card = { lvl: "card", name: t.newCard, existing: t.card || null, children: leaves };
+    var root;
+    if (t.newSubject) {
+      root = { lvl: "subject", name: t.newSubject, groupId: t.groupId, newGroup: t.newGroup,
+               children: [{ lvl: "tab", name: t.newTab, children: [card] }] };
+    } else if (t.newTab) {
+      root = { lvl: "tab", name: t.newTab, parent: t.subject, children: [card] };
+    } else {
+      card.parent = t.tab; root = card;
+    }
+    commitMaterial(root);
+    pdfCut.boxes = [];
+    pdfDrawBoxes(); pdfCutBar();
+  }
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
   // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
   function canvasDocs() { libEnsure(); return (store.canvases || []).concat(store.elements, store.ps.pages); }
@@ -9492,6 +9802,18 @@ function __detabaseMain() {
   }
   // content (board coords) → a canvas doc, moved to the origin, with fresh ids
   function writeLibDoc(id, content) {
+    // a part cut out of a PDF is one item that points back into the file — no ink, no copy of
+    // the picture, so it can be redrawn at whatever size it is shown at
+    if (content && content.pdf) {
+      var r = content.pdf.rect, K = 96 / 72;   // PDF units are 1/72", so this is its real size on screen
+      var cp = loadCanvas(id);
+      cp.ink = [];
+      cp.items = [{ id: uid("it_"), kind: "pdf", pdfId: content.pdf.pdfId, page: content.pdf.page,
+                    rect: { x: r.x, y: r.y, w: r.w, h: r.h },
+                    x: 12, y: 12, w: Math.round(r.w * K), h: Math.round(r.h * K), z: 1 }];
+      saveCanvas(id);
+      return;
+    }
     var b = docBBox(content) || [0, 0, 0, 0], pad = 12, dx = pad - b[0], dy = pad - b[1];
     var c = loadCanvas(id);
     c.ink = (content.ink || []).map(function (sk) {
@@ -9761,10 +10083,10 @@ function __detabaseMain() {
   // the DOM for one board item (no interaction wiring) — used by the board and the static renderer
   function buildItemEl(clip, p) {
     var kind = clip.kind || "clip";
-    var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape", isA = kind === "asset";
+    var isNote = kind === "note", isShape = kind === "shape", isGraph = kind === "graph", isCrop = kind === "crop", isV = kind === "vshape", isA = kind === "asset", isPdf = kind === "pdf";
     var isW = isShape || isGraph || isCrop;
     var el = document.createElement("div");
-    el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "") + (isA ? " asset lvl-" + ((clip.ref || {}).lvl || "") : "");
+    el.className = "clip" + (clip.frag ? " frag" : "") + (isNote ? " note" : "") + (isShape ? " shape" : "") + (isGraph ? " graph" : "") + (isCrop ? " crop" : "") + (isW ? " widget" : "") + (isV ? " vshape" : "") + (isA ? " asset lvl-" + ((clip.ref || {}).lvl || "") : "") + (isPdf ? " pdfclip" : "");
     el.style.left = (clip.x || 0) + "px";
     el.style.top = (clip.y || 0) + "px";
     el.style.width = (clip.w || 300) + "px";
@@ -9778,6 +10100,7 @@ function __detabaseMain() {
     else if (isCrop) body = '<div class="crop-host"></div>';
     else if (isV) body = vshapeSvg(clip);
     else if (isA) body = '<div class="asset-host"></div>';
+    else if (isPdf) body = '<div class="pdf-host"></div>';
     else { body = clip.html || (clip.cardId ? (getCardHTML(clip.cardId) || "(source card no longer available)") : ""); if (clip.html == null) clip.html = body; }
     // no chrome on the item itself — move mode adds the outline, corner handle and #itemBar
     el.innerHTML = '<div class="clip-body">' + body + '</div><div class="clip-resize" title="resize"></div>';
@@ -9786,6 +10109,7 @@ function __detabaseMain() {
     if (isGraph) renderGraphWidget(el.querySelector(".graph-host"), clip, p);
     if (isCrop) renderCropWidget(el.querySelector(".crop-host"), clip);
     if (isA) { try { renderAssetInto(el.querySelector(".asset-host"), clip); } catch (e) { if (window.console) console.error("asset render:", e); } }
+    if (isPdf) { try { renderPdfInto(el.querySelector(".pdf-host"), clip); } catch (e) { if (window.console) console.error("pdf render:", e); } }
     return el;
   }
   function renderCanvas() {
@@ -12430,6 +12754,10 @@ function __detabaseMain() {
   if ($("pvIn")) $("pvIn").addEventListener("click", function () { pdfZoom(1.25); });
   if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.25); });
   if ($("pvFit")) $("pvFit").addEventListener("click", function () { pdfZoom(0); });
+  if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
+  if ($("pvCutClear")) $("pvCutClear").addEventListener("click", function () { if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); } });
+  if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
+  if ($("pvScroll")) $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
   if ($("pvScroll")) {
     var pvT = null;
     $("pvScroll").addEventListener("scroll", function () {
