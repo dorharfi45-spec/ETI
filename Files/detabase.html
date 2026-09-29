@@ -3206,7 +3206,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B36</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B37</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -3321,6 +3321,20 @@ window.DBX = (function () {
     ids: function () { return Object.keys(mem).filter(function (k) { return k.indexOf("__") !== 0; }); },
     compact: compact
   };
+})();
+</script>
+<script>
+/* ============================================================================
+   perfect-freehand v1.2.2 — https://github.com/steveruizok/perfect-freehand
+   MIT License · Copyright (c) 2021 Stephen Ruiz Ltd
+   Vendored here (the published dist/cjs build, unmodified) so the notebook keeps
+   working with no network at all. Exposed as window.PF = { getStroke, ... }.
+   ============================================================================ */
+window.PF = (function () {
+  var exports = {};
+var pe=Object.defineProperty;var ge=e=>pe(e,"__esModule",{value:!0});var de=(e,t)=>{ge(e);for(var s in t)pe(e,s,{get:t[s],enumerable:!0})};de(exports,{default:()=>ve,getStroke:()=>ne,getStrokeOutlinePoints:()=>te,getStrokePoints:()=>re});function $(e,t,s,x=h=>h){return e*x(.5-t*(.5-s))}function ce(e){return[-e[0],-e[1]]}function l(e,t){return[e[0]+t[0],e[1]+t[1]]}function a(e,t){return[e[0]-t[0],e[1]-t[1]]}function b(e,t){return[e[0]*t,e[1]*t]}function xe(e,t){return[e[0]/t,e[1]/t]}function R(e){return[e[1],-e[0]]}function B(e,t){return e[0]*t[0]+e[1]*t[1]}function me(e,t){return e[0]===t[0]&&e[1]===t[1]}function Se(e){return Math.hypot(e[0],e[1])}function Pe(e){return e[0]*e[0]+e[1]*e[1]}function A(e,t){return Pe(a(e,t))}function G(e){return xe(e,Se(e))}function ae(e,t){return Math.hypot(e[1]-t[1],e[0]-t[0])}function L(e,t,s){let x=Math.sin(s),h=Math.cos(s),y=e[0]-t[0],n=e[1]-t[1],f=y*h-n*x,d=y*x+n*h;return[f+t[0],d+t[1]]}function K(e,t,s){return l(e,b(a(t,e),s))}function ee(e,t,s){return l(e,b(t,s))}var{min:C,PI:ke}=Math,le=.275,V=ke+1e-4;function te(e,t={}){let{size:s=16,smoothing:x=.5,thinning:h=.5,simulatePressure:y=!0,easing:n=r=>r,start:f={},end:d={},last:D=!1}=t,{cap:S=!0,easing:j=r=>r*(2-r)}=f,{cap:q=!0,easing:c=r=>--r*r*r+1}=d;if(e.length===0||s<=0)return[];let p=e[e.length-1].runningLength,g=f.taper===!1?0:f.taper===!0?Math.max(s,p):f.taper,T=d.taper===!1?0:d.taper===!0?Math.max(s,p):d.taper,oe=Math.pow(s*x,2),_=[],M=[],H=e.slice(0,10).reduce((r,i)=>{let o=i.pressure;if(y){let u=C(1,i.distance/s),W=C(1,1-u);o=C(1,r+(W-r)*(u*le))}return(r+o)/2},e[0].pressure),m=$(s,h,e[e.length-1].pressure,n),U,X=e[0].vector,z=e[0].point,F=z,O=z,E=F,J=!1;for(let r=0;r<e.length;r++){let{pressure:i}=e[r],{point:o,vector:u,distance:W,runningLength:I}=e[r];if(r<e.length-1&&p-I<3)continue;if(h){if(y){let v=C(1,W/s),Z=C(1,1-v);i=C(1,H+(Z-H)*(v*le))}m=$(s,h,i,n)}else m=s/2;U===void 0&&(U=m);let fe=I<g?j(I/g):1,be=p-I<T?c((p-I)/T):1;m=Math.max(.01,m*Math.min(fe,be));let se=(r<e.length-1?e[r+1]:e[r]).vector,Y=r<e.length-1?B(u,se):1,he=B(u,X)<0&&!J,ue=Y!==null&&Y<0;if(he||ue){let v=b(R(X),m);for(let Z=1/13,w=0;w<=1;w+=Z)O=L(a(o,v),o,V*w),_.push(O),E=L(l(o,v),o,V*-w),M.push(E);z=O,F=E,ue&&(J=!0);continue}if(J=!1,r===e.length-1){let v=b(R(u),m);_.push(a(o,v)),M.push(l(o,v));continue}let ie=b(R(K(se,u,Y)),m);O=a(o,ie),(r<=1||A(z,O)>oe)&&(_.push(O),z=O),E=l(o,ie),(r<=1||A(F,E)>oe)&&(M.push(E),F=E),H=i,X=u}let P=e[0].point.slice(0,2),k=e.length>1?e[e.length-1].point.slice(0,2):l(e[0].point,[1,1]),Q=[],N=[];if(e.length===1){if(!(g||T)||D){let r=ee(P,G(R(a(P,k))),-(U||m)),i=[];for(let o=1/13,u=o;u<=1;u+=o)i.push(L(r,P,V*2*u));return i}}else{if(!(g||T&&e.length===1))if(S)for(let i=1/13,o=i;o<=1;o+=i){let u=L(M[0],P,V*o);Q.push(u)}else{let i=a(_[0],M[0]),o=b(i,.5),u=b(i,.51);Q.push(a(P,o),a(P,u),l(P,u),l(P,o))}let r=R(ce(e[e.length-1].vector));if(T||g&&e.length===1)N.push(k);else if(q){let i=ee(k,r,m);for(let o=1/29,u=o;u<1;u+=o)N.push(L(i,k,V*3*u))}else N.push(l(k,b(r,m)),l(k,b(r,m*.99)),a(k,b(r,m*.99)),a(k,b(r,m)))}return _.concat(N,M.reverse(),Q)}function re(e,t={}){var q;let{streamline:s=.5,size:x=16,last:h=!1}=t;if(e.length===0)return[];let y=.15+(1-s)*.85,n=Array.isArray(e[0])?e:e.map(({x:c,y:p,pressure:g=.5})=>[c,p,g]);if(n.length===2){let c=n[1];n=n.slice(0,-1);for(let p=1;p<5;p++)n.push(K(n[0],c,p/4))}n.length===1&&(n=[...n,[...l(n[0],[1,1]),...n[0].slice(2)]]);let f=[{point:[n[0][0],n[0][1]],pressure:n[0][2]>=0?n[0][2]:.25,vector:[1,1],distance:0,runningLength:0}],d=!1,D=0,S=f[0],j=n.length-1;for(let c=1;c<n.length;c++){let p=h&&c===j?n[c].slice(0,2):K(S.point,n[c],y);if(me(S.point,p))continue;let g=ae(p,S.point);if(D+=g,c<j&&!d){if(D<x)continue;d=!0}S={point:p,pressure:n[c][2]>=0?n[c][2]:.5,vector:G(a(S.point,p)),distance:g,runningLength:D},f.push(S)}return f[0].vector=((q=f[1])==null?void 0:q.vector)||[0,0],f}function ne(e,t={}){return te(re(e,t),t)}var ve=ne;
+
+  return exports;
 })();
 </script>
 <script>
@@ -8253,11 +8267,8 @@ function __detabaseMain() {
     items.forEach(function (it) {
       g += '<rect x="' + (it.x || 0) + '" y="' + (it.y || 0) + '" width="' + (it.w || 200) + '" height="' + (it.h || 140) + '" rx="6" fill="rgba(37,99,235,.10)" stroke="rgba(37,99,235,.45)" stroke-width="2"/>';
     });
-    ink.forEach(function (s) {
-      if (!s.pts || s.pts.length < 2) return;
-      var d = "M" + s.pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L");
-      g += '<path d="' + d + '" fill="none" stroke="' + (s.color || "#1e293b") + '" stroke-width="' + ((s.w || 3) * 1.5) + '" stroke-linecap="round" stroke-linejoin="round"/>';
-    });
+    ink.forEach(function (s) { if (s.hi) g += inkPathMarkup(s, ""); });      // same outlines as the board,
+    ink.forEach(function (s) { if (!s.hi) g += inkPathMarkup(s, ""); });     // just scaled down (highlighter first)
     return '<svg viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">' + g + '</svg>';
   }
   function renderNbBank() {
@@ -8491,13 +8502,8 @@ function __detabaseMain() {
   }
   function inkSvgMarkup(ink, vb) {
     var h = "";
-    [true, false].forEach(function (hiPass) {
-      ink.forEach(function (s) {
-        if (!!s.hi !== hiPass || !s.pts || !s.pts.length) return;
-        var pts = s.pts.length === 1 ? [s.pts[0], s.pts[0]] : s.pts;
-        h += '<path d="' + inkPathD({ pts: pts }) + '" fill="none" stroke="' + escapeHtml(s.color || "#1e293b") + '" stroke-width="' + inkWidthOf(s).toFixed(2) +
-          '" stroke-linecap="round" stroke-linejoin="round"' + (s.hi ? ' stroke-opacity="0.5"' : '') + '/>';
-      });
+    [true, false].forEach(function (hiPass) {   // highlighter below pen ink
+      (ink || []).forEach(function (s) { if (!!s.hi === hiPass) h += inkPathMarkup(s, ""); });
     });
     return '<svg class="doc-ink" width="' + vb[2] + '" height="' + vb[3] + '" viewBox="' + vb.join(" ") + '">' + h + '</svg>';
   }
@@ -9385,6 +9391,15 @@ function __detabaseMain() {
     (p.bench || []).forEach(function (cl) { if (clips.indexOf(cl.id) < 0) return; var r = { x: cl.x || 0, y: cl.y || 0, w: cl.w || 300, h: cl.h || 200 }; b[0] = Math.min(b[0], r.x); b[1] = Math.min(b[1], r.y); b[2] = Math.max(b[2], r.x + r.w); b[3] = Math.max(b[3], r.y + r.h); });
     return { strokes: strokes, clips: clips, box: { x: b[0], y: b[1], w: b[2] - b[0], h: b[3] - b[1] } };
   }
+  // copy a stroke (optionally offset by dx/dy) keeping every field that decides how it is drawn —
+  // highlighter flag and pressure source included, which the old copies quietly dropped
+  function inkCloneStroke(s, dx, dy, withId) {
+    var n = { color: s.color, w: s.w, pts: (s.pts || []).map(function (q) { return [q[0] + dx, q[1] + dy, q[2]]; }) };
+    if (s.hi) n.hi = true;
+    if (s.sp != null) n.sp = s.sp;
+    if (withId) n.id = uid("ik_");
+    return n;
+  }
   function inkSelClear() {
     inkSel = null; inkLassoPts = null; lassoDrag = null;
     var t = $("ppView") && $("ppView").querySelector(".ink-sel-toolbar");
@@ -9425,7 +9440,7 @@ function __detabaseMain() {
     var D = 20, ns = [], nc = [];
     c.ink.slice().forEach(function (s) {
       if (inkSel.strokes.indexOf(s.id) < 0) return;
-      var d = { id: uid("ik_"), color: s.color, w: s.w, pts: (s.pts || []).map(function (q) { return [q[0] + D, q[1] + D, q[2]]; }) };
+      var d = inkCloneStroke(s, D, D, true);
       c.ink.push(d); ns.push(d.id);
     });
     p.bench.slice().forEach(function (cl) {
@@ -9519,7 +9534,7 @@ function __detabaseMain() {
     inkClip = {
       w: inkSel.box.w, h: inkSel.box.h,
       strokes: (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) >= 0; })
-        .map(function (s) { return { color: s.color, w: s.w, pts: (s.pts || []).map(function (q) { return [q[0] - ox, q[1] - oy, q[2]]; }) }; }),
+        .map(function (s) { return inkCloneStroke(s, -ox, -oy, false); }),
       clips: (p.bench || []).filter(function (cl) { return inkSel.clips.indexOf(cl.id) >= 0; })
         .map(function (cl) { var dd = JSON.parse(JSON.stringify(cl)); dd.x = (cl.x || 0) - ox; dd.y = (cl.y || 0) - oy; delete dd.id; delete dd.z; return dd; })
     };
@@ -9533,7 +9548,7 @@ function __detabaseMain() {
     var c = loadCanvas(p.id); c.ink = c.ink || [];
     var ns = [], nc = [];
     inkClip.strokes.forEach(function (s) {
-      var dd = { id: uid("ik_"), color: s.color, w: s.w, pts: s.pts.map(function (q) { return [q[0] + cx, q[1] + cy, q[2]]; }) };
+      var dd = inkCloneStroke(s, cx, cy, true);
       c.ink.push(dd); ns.push(dd.id);
     });
     inkClip.clips.forEach(function (cl) {
@@ -9573,39 +9588,81 @@ function __detabaseMain() {
     t.style.top = Math.max(2, inkSel.box.y) + "px";
   }
 
-  function inkStrokeWidth(s) {
-    if (s.hi) return Math.max(6, s.w || 16);   // highlighter: flat, uniform width
-    var pr = 0, n = 0;
-    (s.pts || []).forEach(function (q) { if (q[2] != null) { pr += q[2]; n++; } });
-    var f = n ? (0.55 + 0.9 * (pr / n)) : 1;
-    return Math.max(0.6, (s.w || 3) * f);
+  // ---- STROKE GEOMETRY — one renderer for every stroke in the app -----------------
+  // A stroke is drawn as a FILLED outline (perfect-freehand, vendored above), not as a
+  // stroked polyline: the edge follows pen pressure, so it tapers like real ink. The
+  // stored data is unchanged (pts = [x, y, pressure]), so old handwriting simply gets
+  // the new look. Every renderer — board, static ETI view, thumbnails, previews — goes
+  // through inkOutlineD(), so a stroke can never look different in two places.
+  var INK_SMOOTH = 0.52;     // corner rounding
+  var INK_THIN = 0.5;        // how much pressure changes the width
+  var INK_STREAM = 0.2;      // input smoothing; kept low so the ink stays under the pen tip
+  function inkSize(s) { return s.hi ? Math.max(6, s.w || 16) : Math.max(0.6, s.w || 3); }
+  // does this stroke carry real pressure? pen strokes are marked sp:0 when written; for
+  // anything older, flat pressure means it came from a mouse/finger and speed looks better
+  function inkSimulate(s) {
+    if (s.sp != null) return !!s.sp;
+    var pts = s.pts || [];
+    if (pts.length < 2) return true;
+    for (var i = 1; i < pts.length; i++) if (pts[i][2] !== pts[0][2]) return false;
+    return true;
   }
-  function inkPathD(s) {
-    if (!s.pts || !s.pts.length) return "";
-    var d = "M" + s.pts[0][0].toFixed(1) + " " + s.pts[0][1].toFixed(1);
-    for (var i = 1; i < s.pts.length; i++) d += " L" + s.pts[i][0].toFixed(1) + " " + s.pts[i][1].toFixed(1);
+  function inkPfOpts(s, last) {
+    return {
+      size: inkSize(s),
+      smoothing: INK_SMOOTH,
+      streamline: INK_STREAM,
+      thinning: s.hi ? 0 : INK_THIN,                       // highlighter: flat, uniform width
+      simulatePressure: s.hi ? false : inkSimulate(s),
+      start: { cap: true, taper: 0 },
+      end: { cap: true, taper: 0 },
+      last: !!last
+    };
+  }
+  // outline points -> a closed path, each corner rounded by a quadratic through midpoints
+  function inkOutlinePathD(o) {
+    var n = o && o.length; if (!n) return "";
+    var d = ["M", o[0][0].toFixed(2), o[0][1].toFixed(2), "Q"];
+    for (var i = 0; i < n; i++) {
+      var a = o[i], b = o[(i + 1) % n];
+      d.push(a[0].toFixed(2), a[1].toFixed(2), ((a[0] + b[0]) / 2).toFixed(2), ((a[1] + b[1]) / 2).toFixed(2));
+    }
+    d.push("Z");
+    return d.join(" ");
+  }
+  function inkBuildD(s, last) {
+    var pts = s.pts || [];
+    if (!pts.length) return "";
+    var pf = window.PF && window.PF.getStroke;
+    if (!pf) return "";
+    return inkOutlinePathD(pf(pts, inkPfOpts(s, last)));
+  }
+  // committed strokes never change shape, so each one keeps its path string (non-enumerable,
+  // so it is never saved, cloned or copied by the undo snapshots / move code)
+  function inkOutlineD(s) {
+    if (s._d != null) return s._d;
+    var d = inkBuildD(s, true);
+    try { Object.defineProperty(s, "_d", { value: d, enumerable: false, configurable: true, writable: true }); }
+    catch (e) { return d; }
     return d;
   }
-  // new strokes carry their width (fw), fixed early in the stroke, so it never shifts while writing
-  // and the committed stroke looks exactly like the live one
-  function inkWidthOf(s) { return s.fw != null ? s.fw : inkStrokeWidth(s); }
+  function inkUncache(s) { try { delete s._d; delete s._bb; } catch (e) {} }
+  // one <path> for a stroke, in whatever coordinate space the caller renders in
+  function inkPathMarkup(s, attrs) {
+    var d = inkOutlineD(s);
+    if (!d) return "";
+    return '<path ' + (attrs || "") + ' d="' + d + '" fill="' + escapeHtml(s.color || (s.hi ? "#fde047" : "#1e293b")) +
+      '"' + (s.hi ? ' fill-opacity="0.5"' : '') + '/>';
+  }
   function renderInk(p) {
     var il = $("ppCanvas") && $("ppCanvas").querySelector(".ink-layer");
     if (!il) return;
     var ink = loadCanvas(p.id).ink || [];
     var h = "";
     // highlighter first, so pen ink stays readable on top
-    ink.forEach(function (s) {
-      if (!s.hi) return;
-      h += '<path data-ik="' + s.id + '" d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#fde047") +
-        '" stroke-width="' + inkWidthOf(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>';
-    });
-    ink.forEach(function (s) {
-      if (s.hi) return;
-      h += '<path data-ik="' + s.id + '" d="' + inkPathD(s) + '" fill="none" stroke="' + (s.color || "#1e293b") +
-        '" stroke-width="' + inkWidthOf(s).toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round"/>';
-    });
-    h += '<path class="ink-live" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    ink.forEach(function (s) { if (s.hi) h += inkPathMarkup(s, 'data-ik="' + s.id + '"'); });
+    ink.forEach(function (s) { if (!s.hi) h += inkPathMarkup(s, 'data-ik="' + s.id + '"'); });
+    h += '<path class="ink-live" fill="none"/>';
     if (inkLassoPts && inkLassoPts.length > 1)
       h += '<polyline class="ink-lasso-live" fill="none" points="' + inkLassoPts.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '"/>';
     if (inkSel) {
@@ -9662,41 +9719,42 @@ function __detabaseMain() {
       var xy = ppContentXY(e.clientX, e.clientY, strokeRect);
       return [Math.round(xy[0] * 10) / 10, Math.round(xy[1] * 10) / 10, Math.round(pr * 100) / 100];
     }
-    var liveD = "", liveN = 0;   // live path string, grown one segment at a time (not rebuilt per move)
-    var FW_SAMPLES = 6;           // width follows pressure for the first few samples, then stays fixed
-    function liveWidth() {
-      if (inkCur.hi) return Math.max(6, inkCur.w);
-      var pr = 0, n = Math.min(inkCur.pts.length, FW_SAMPLES);
-      for (var i = 0; i < n; i++) pr += inkCur.pts[i][2];
-      return Math.max(0.6, inkCur.w * (0.55 + 0.9 * (pr / (n || 1))));
-    }
-    function liveDraw(full) {
+    // ---- the live stroke -------------------------------------------------------------
+    // perfect-freehand builds the outline from the whole point list (a new sample changes
+    // the shape of the ones before it), so the live path is rebuilt on every move event.
+    // One event = one rebuild = one DOM write, which is what the old incremental code did
+    // per frame anyway; the ink layer itself is never re-rendered while writing.
+    function liveDraw() {
       if (!inkCur || !inkLive) return;
-      var pts = inkCur.pts;
-      if (full || liveN === 0 || liveN > pts.length) {
-        liveD = inkPathD(inkCur); liveN = pts.length;
-        inkLive.setAttribute("stroke", inkCur.color);
-        inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.5" : "1");
-      } else {
-        for (; liveN < pts.length; liveN++) liveD += " L" + pts[liveN][0].toFixed(1) + " " + pts[liveN][1].toFixed(1);
-      }
-      inkLive.setAttribute("d", liveD);
-      if (inkCur.fw == null) {
-        inkLive.setAttribute("stroke-width", liveWidth().toFixed(2));
-        if (pts.length >= FW_SAMPLES) inkCur.fw = +liveWidth().toFixed(2);
-      }
+      inkLive.setAttribute("stroke", "none");
+      inkLive.setAttribute("fill", inkCur.color);
+      inkLive.setAttribute("fill-opacity", inkCur.hi ? "0.5" : "1");
+      inkLive.setAttribute("d", inkBuildD(inkCur, false));
+    }
+    // a recognized shape is previewed as a thin outline, so the same element switches
+    // from filled ink to a stroked path while the pen rests
+    function liveShape(rec) {
+      if (!inkCur || !inkLive) return;
+      inkLive.setAttribute("fill", "none");
+      inkLive.setAttribute("stroke", inkCur.color);
+      inkLive.setAttribute("stroke-width", inkSize(inkCur).toFixed(2));
+      inkLive.setAttribute("stroke-opacity", inkCur.hi ? "0.5" : "1");
+      inkLive.setAttribute("stroke-linecap", "round");
+      inkLive.setAttribute("stroke-linejoin", "round");
+      inkLive.setAttribute("d", recPathD(rec));
     }
     // commit a finished stroke by adding ONE <path> (highlighter below pen ink) instead of re-rendering the layer
     function appendStrokePath(s) {
       var il = inkLive && inkLive.parentNode; if (!il) return false;
+      var d = inkOutlineD(s); if (!d) return false;
       var el = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      el.setAttribute("data-ik", s.id); el.setAttribute("d", inkPathD(s)); el.setAttribute("fill", "none");
-      el.setAttribute("stroke", s.color); el.setAttribute("stroke-width", inkWidthOf(s).toFixed(2));
-      el.setAttribute("stroke-linecap", "round"); el.setAttribute("stroke-linejoin", "round");
+      el.setAttribute("data-ik", s.id);
+      el.setAttribute("d", d);
+      el.setAttribute("fill", s.color || (s.hi ? "#fde047" : "#1e293b"));
       if (s.hi) {
-        el.setAttribute("stroke-opacity", "0.5");
+        el.setAttribute("fill-opacity", "0.5");
         var firstPen = null, kids = il.querySelectorAll("path[data-ik]");
-        for (var i = 0; i < kids.length; i++) if (kids[i].getAttribute("stroke-opacity") !== "0.5") { firstPen = kids[i]; break; }
+        for (var i = 0; i < kids.length; i++) if (kids[i].getAttribute("fill-opacity") !== "0.5") { firstPen = kids[i]; break; }
         il.insertBefore(el, firstPen || inkLive);
       } else il.insertBefore(el, inkLive);
       inkLive.setAttribute("d", "");
@@ -9732,7 +9790,7 @@ function __detabaseMain() {
           var rec = recognizeShape(inkCur.pts);
           if (!rec || (inkCur.hi && rec.shape !== "line")) return;
           snapped = rec;
-          inkLive.setAttribute("d", recPathD(rec));
+          liveShape(rec);
         }, 250);
       }, 150);
     }
@@ -9762,9 +9820,10 @@ function __detabaseMain() {
       if (e.pointerType === "pen") toggleT = setTimeout(function () { toggleT = null; if (inkDrawing && penMoved < 10 && !erasedAny) longPressToggle(); }, 500);
       if (inkTool === "erase") { if (inkEraseAt(p, d0)) { erasedAny = true; cancelToggle(); } return; }
       var hi = inkTool === "highlight";
-      inkCur = { id: uid("ik_"), color: hi ? inkHiColor : inkColor, w: hi ? Math.max(10, inkW * 3) : inkW, pts: [d0] };
+      // sp = "simulate pressure": a pen reports real pressure, a mouse / finger does not,
+      // so for those the outline is thinned by speed instead (perfect-freehand does it)
+      inkCur = { id: uid("ik_"), color: hi ? inkHiColor : inkColor, w: hi ? Math.max(10, inkW * 3) : inkW, pts: [d0], sp: e.pointerType === "pen" ? 0 : 1 };
       if (hi) inkCur.hi = true;
-      liveN = 0;
       liveDraw();
     });
     ic.addEventListener("pointermove", function (e) {
@@ -9798,7 +9857,7 @@ function __detabaseMain() {
         if (snapped) { if (snapped.shape === "line") snapped.pts[1] = [xy[0], xy[1]]; }   // drag a snapped line's end
         else inkCur.pts.push(xy);
       });
-      if (snapped) { if (sawRealMove) inkLive.setAttribute("d", recPathD(snapped)); return; }
+      if (snapped) { if (sawRealMove) liveShape(snapped); return; }
       if (sawRealMove) armShapeHold();
       liveDraw();
     });
@@ -9829,24 +9888,23 @@ function __detabaseMain() {
       if (rec && inkCur && inkCur.hi) {   // straight highlight: stays ink
         inkCur.pts = [rec.pts[0].concat(0.5), rec.pts[1].concat(0.5)];
       } else if (rec && inkCur) {         // recognized shape → vector item
-        var sw = inkCur.fw != null ? inkCur.fw : liveWidth();
+        var sw = inkSize(inkCur);
         if (inkLive) inkLive.setAttribute("d", "");
         p.bench.push(makeVShape(rec, inkCur.color, sw));
-        inkCur = null; liveN = 0; strokeRect = null; penDownT = 0;
+        inkCur = null; strokeRect = null; penDownT = 0;
         saveStore(); renderCanvas();
         return;
       }
       if (inkTool === "erase") {
         if (erasedAny) saveCanvas(p.id); else undoDrop(p);   // an erase that removed something is undoable
       } else if (inkCur && inkCur.pts.length > 1) {
-        if (inkCur.fw == null) inkCur.fw = +liveWidth().toFixed(2);
         var c = loadCanvas(p.id); c.ink = c.ink || []; c.ink.push(inkCur); saveCanvas(p.id);
         if (!appendStrokePath(inkCur)) renderInk(p);
       } else {
         undoDrop(p);   // nothing drawn — drop the snapshot
         if (inkLive) inkLive.setAttribute("d", "");
       }
-      inkCur = null; liveN = 0; strokeRect = null;
+      inkCur = null; strokeRect = null;
       penDownT = 0;
     }
     ic.addEventListener("pointerup", end);
@@ -10581,12 +10639,9 @@ function __detabaseMain() {
       var mnX = 1e9, mnY = 1e9, mxX = -1e9, mxY = -1e9;
       ink.forEach(function (s) { (s.pts || []).forEach(function (q) { mnX = Math.min(mnX, q[0]); mnY = Math.min(mnY, q[1]); mxX = Math.max(mxX, q[0]); mxY = Math.max(mxY, q[1]); }); });
       var pd = 12, w = (mxX - mnX + pd * 2) || 1, h = (mxY - mnY + pd * 2) || 1;
-      var paths = ink.map(function (s) {
-        if (!s.pts || !s.pts.length) return "";
-        var d = "M" + s.pts.map(function (q) { return (q[0] - mnX + pd).toFixed(1) + " " + (q[1] - mnY + pd).toFixed(1); }).join(" L");
-        return '<path d="' + d + '" fill="none" stroke="' + (s.color || "#1e293b") + '" stroke-width="' + (s.w || 3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
-      }).join("");
-      parts.push('<svg viewBox="0 0 ' + w.toFixed(0) + ' ' + h.toFixed(0) + '" style="max-width:100%;height:auto;display:block;margin:4px 0">' + paths + '</svg>');
+      var paths = ink.map(function (s) { return inkPathMarkup(s, ""); }).join("");
+      parts.push('<svg viewBox="0 0 ' + w.toFixed(0) + ' ' + h.toFixed(0) + '" style="max-width:100%;height:auto;display:block;margin:4px 0">' +
+        '<g transform="translate(' + (pd - mnX).toFixed(1) + ' ' + (pd - mnY).toFixed(1) + ')">' + paths + '</g></svg>');
     }
     (c.items || []).slice().sort(function (a, b) { return (a.y || 0) - (b.y || 0) || (a.x || 0) - (b.x || 0); }).forEach(function (it) {
       if (it.kind === "note") { if (it.text && it.text.trim()) parts.push('<p>' + escapeHtml(it.text).replace(/\n/g, "<br>") + '</p>'); }
