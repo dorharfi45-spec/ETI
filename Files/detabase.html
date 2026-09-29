@@ -368,9 +368,7 @@
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
   /* ---- cutting parts out of a page ---- */
   .pv-bar .tool-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-  #pdfView.cutting .pv-page { cursor: crosshair; }
-  /* only when "finger" is on does a touch draw instead of scrolling the page */
-  #pdfView.cutting.finger .pv-page { touch-action: none; }
+  #pdfView.cutting .pv-page { cursor: crosshair; touch-action: none; }
   #pdfView.cutting .pv-scroll { background: var(--surface-3, var(--surface-2)); }
   .pv-box { position: absolute; border: 2px solid var(--accent); border-radius: 3px;
     background: color-mix(in srgb, var(--accent) 12%, transparent); box-sizing: border-box; }
@@ -3214,7 +3212,6 @@
   <div id="pvScroll" class="pv-scroll"></div>
   <div id="pvCutBar" class="pv-cutbar" hidden>
     <span id="pvCutCount"></span>
-    <button type="button" id="pvCutFinger" class="tool-btn" title="off: the pencil draws boxes and your finger scrolls · on: your finger draws too">✋ Finger draws</button>
     <span class="pv-spacer"></span>
     <button type="button" id="pvCutClear" class="tool-btn">Clear</button>
     <button type="button" id="pvCutSave" class="tool-btn primary">Save to library →</button>
@@ -3298,7 +3295,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B45</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B46</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8860,14 +8857,15 @@ function __detabaseMain() {
   function pdfCutOn() { return !!pdfCut; }
   function pdfCutToggle() {
     if (pdfCut) { pdfCutEnd(); return; }
-    pdfCut = { boxes: [], finger: false };
+    pdfCut = { boxes: [] };
     $("pdfView").classList.add("cutting");
     $("pvCutBtn").classList.add("on");
     pdfCutBar();
   }
   function pdfCutEnd() {
     pdfCut = null;
-    $("pdfView").classList.remove("cutting", "finger");
+    $("pdfView").classList.remove("cutting");
+    pdfDrag = null; pdfGest = null; pdfPts = {};
     $("pvCutBtn").classList.remove("on");
     Array.prototype.forEach.call(document.querySelectorAll(".pv-box"), function (b) { b.remove(); });
     pdfCutBar();
@@ -8877,9 +8875,8 @@ function __detabaseMain() {
     bar.hidden = !pdfCut;
     if (!pdfCut) return;
     var n = pdfCut.boxes.length;
-    $("pvCutCount").textContent = n ? (n + (n === 1 ? " part marked" : " parts marked"))
-      : (pdfCut.finger ? "Drag a box around each part — your finger draws, so scroll with the bar or the zoom buttons."
-                       : "Drag a box around each part with the pencil. Your finger still scrolls and pinches.");
+    $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") +
+      "Drag a box around each part · two fingers to move and zoom";
     $("pvCutSave").disabled = !n;
   }
   function pdfSlotUnits(d) {   // page size in PDF units, learned when the page was drawn
@@ -8920,48 +8917,88 @@ function __detabaseMain() {
       d.appendChild(el);
     });
   }
+  // While cutting, ONE finger (or the pencil) draws a box and TWO fingers move the page —
+  // the same split as the board, where a finger draws and two fingers are a gesture. The
+  // browser's own scrolling is off on the pages, so the two-finger pan and pinch are done
+  // here: a second finger cancels the box that was being drawn and takes over.
+  var pdfDrag = null, pdfGest = null, pdfPts = {};
   function pdfCutPointer(e) {
     if (!pdfCut || !pdfView) return;
-    // a finger is for reading — it scrolls and pinches as usual, and only draws when you ask it to
-    if (e.pointerType === "touch" && !pdfCut.finger) return;
     if (e.target.closest && e.target.closest(".pv-box-x")) return;
     var d = e.target.closest ? e.target.closest(".pv-page") : null;
     if (!d) return;
     var u = pdfSlotUnits(d); if (!u) return;          // page not drawn yet — nothing to cut
     e.preventDefault();
+    pdfPts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var n = Object.keys(pdfPts).length;
+    if (n === 1) { pdfDragStart(d, u, e); return; }
+    if (n === 2) pdfGestStart();
+  }
+  function pdfDragStart(d, u, e) {
     var r = d.getBoundingClientRect();
-    var x0 = e.clientX - r.left, y0 = e.clientY - r.top;
-    var draft = document.createElement("div");
-    draft.className = "pv-box draft";
-    d.appendChild(draft);
-    function place(ev) {
-      var x1 = Math.max(0, Math.min(r.width, ev.clientX - r.left));
-      var y1 = Math.max(0, Math.min(r.height, ev.clientY - r.top));
-      var px = { x: Math.min(x0, x1), y: Math.min(y0, y1), w: Math.abs(x1 - x0), h: Math.abs(y1 - y0) };
-      draft.style.left = px.x + "px"; draft.style.top = px.y + "px";
-      draft.style.width = px.w + "px"; draft.style.height = px.h + "px";
-      return px;
+    var el = document.createElement("div");
+    el.className = "pv-box draft";
+    d.appendChild(el);
+    pdfDrag = { slot: d, units: u, rect: r, x0: e.clientX - r.left, y0: e.clientY - r.top, el: el, px: null, id: e.pointerId };
+    pdfDragTo(e);
+  }
+  function pdfDragTo(e) {
+    var g = pdfDrag; if (!g) return;
+    var x1 = Math.max(0, Math.min(g.rect.width, e.clientX - g.rect.left));
+    var y1 = Math.max(0, Math.min(g.rect.height, e.clientY - g.rect.top));
+    var px = { x: Math.min(g.x0, x1), y: Math.min(g.y0, y1), w: Math.abs(x1 - g.x0), h: Math.abs(y1 - g.y0) };
+    g.el.style.left = px.x + "px"; g.el.style.top = px.y + "px";
+    g.el.style.width = px.w + "px"; g.el.style.height = px.h + "px";
+    g.px = px;
+  }
+  function pdfDragEnd(keep) {
+    var g = pdfDrag; pdfDrag = null;
+    if (!g) return;
+    g.el.remove();
+    if (!keep || !g.px || g.px.w < 12 || g.px.h < 12) return;   // a tap, or a gesture took over
+    var k = g.units.w / g.slot.offsetWidth;                     // screen px -> PDF page units
+    pdfCut.boxes.push({
+      page: +g.slot.getAttribute("data-page"),
+      rect: { x: +(g.px.x * k).toFixed(2), y: +(g.px.y * k).toFixed(2), w: +(g.px.w * k).toFixed(2), h: +(g.px.h * k).toFixed(2) },
+      thumb: pdfBoxThumb(g.slot, g.px)
+    });
+    pdfDrawBoxes(); pdfCutBar();
+  }
+  function pdfPtsInfo() {
+    var ids = Object.keys(pdfPts), a = pdfPts[ids[0]], b = pdfPts[ids[1]];
+    if (!a || !b) return null;
+    return { mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, dist: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) };
+  }
+  function pdfGestStart() {
+    pdfDragEnd(false);                 // the second finger means "move", not "mark"
+    var i = pdfPtsInfo(); if (!i) return;
+    var sc = $("pvScroll");
+    pdfGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft };
+  }
+  function pdfGestMove() {
+    var i = pdfPtsInfo(); if (!i || !pdfGest) return;
+    var sc = $("pvScroll");
+    sc.scrollTop = pdfGest.top - (i.my - pdfGest.my);
+    sc.scrollLeft = pdfGest.left - (i.mx - pdfGest.mx);
+    var k = i.dist / pdfGest.dist;     // pinch, in the same steps the zoom buttons use
+    if (k > 1.3 || k < 0.77) {
+      pdfZoom(k > 1 ? 1.25 : 1 / 1.25);
+      pdfGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft };
     }
-    var px = place(e);
-    function move(ev) { ev.preventDefault(); px = place(ev); }
-    function up() {
-      document.removeEventListener("pointermove", move);
-      document.removeEventListener("pointerup", up);
-      document.removeEventListener("pointercancel", up);
-      if (px.w < 12 || px.h < 12) { draft.remove(); return; }   // a tap, not a box
-      var k = u.w / d.offsetWidth;                              // screen px -> PDF units
-      var thumb = pdfBoxThumb(d, px);
-      draft.remove();
-      pdfCut.boxes.push({
-        page: +d.getAttribute("data-page"),
-        rect: { x: +(px.x * k).toFixed(2), y: +(px.y * k).toFixed(2), w: +(px.w * k).toFixed(2), h: +(px.h * k).toFixed(2) },
-        thumb: thumb
-      });
-      pdfDrawBoxes(); pdfCutBar();
-    }
-    document.addEventListener("pointermove", move, { passive: false });
-    document.addEventListener("pointerup", up);
-    document.addEventListener("pointercancel", up);
+  }
+  function pdfCutMove(e) {
+    if (!pdfCut || !pdfPts[e.pointerId]) return;
+    pdfPts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    e.preventDefault();
+    if (pdfGest) pdfGestMove();
+    else if (pdfDrag && pdfDrag.id === e.pointerId) pdfDragTo(e);
+  }
+  function pdfCutUp(e) {
+    if (!pdfPts[e.pointerId]) return;
+    delete pdfPts[e.pointerId];
+    var left = Object.keys(pdfPts).length;
+    if (pdfGest) { if (left < 2) { pdfGest = null; pdfPts = {}; } return; }
+    if (pdfDrag && pdfDrag.id === e.pointerId) pdfDragEnd(true);
   }
 
   // ---- rendering a cut-out region, wherever it is shown ------------------------------
@@ -12805,16 +12842,12 @@ function __detabaseMain() {
   if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.25); });
   if ($("pvFit")) $("pvFit").addEventListener("click", function () { pdfZoom(0); });
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
-  if ($("pvCutFinger")) $("pvCutFinger").addEventListener("click", function () {
-    if (!pdfCut) return;
-    pdfCut.finger = !pdfCut.finger;
-    this.classList.toggle("on", pdfCut.finger);
-    $("pdfView").classList.toggle("finger", pdfCut.finger);
-    pdfCutBar();
-  });
   if ($("pvCutClear")) $("pvCutClear").addEventListener("click", function () { if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); } });
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
   if ($("pvScroll")) $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
+  document.addEventListener("pointermove", pdfCutMove, { passive: false });
+  document.addEventListener("pointerup", pdfCutUp);
+  document.addEventListener("pointercancel", pdfCutUp);
   if ($("pvScroll")) {
     var pvT = null;
     $("pvScroll").addEventListener("scroll", function () {
