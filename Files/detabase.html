@@ -260,12 +260,15 @@
   .pp-canvas.drawing { border-style: solid; border-color: var(--accent); }
   /* the pannable / zoomable layer — everything on the page rides this transform */
   #ppView {
-    position: absolute; top: 0; left: 0; transform-origin: 0 0; will-change: transform;
+    position: absolute; top: 0; left: 0; transform-origin: 0 0;
     background-image:
       linear-gradient(var(--border) 1px, transparent 1px),
       linear-gradient(90deg, var(--border) 1px, transparent 1px);
     background-size: 26px 26px;
   }
+  /* will-change only WHILE panning/zooming: a permanent compositing layer makes iOS rasterize the
+     whole board once and stretch that bitmap, which blurs the ink and breaks thin outlines up */
+  #ppView.navmove { will-change: transform; }
   .canvas-sizer { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 
   /* ---- Apple Pencil / mouse ink layer ---- */
@@ -3206,7 +3209,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B37</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B38</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -9222,10 +9225,21 @@ function __detabaseMain() {
     navTx = Math.min(W - m, Math.max(m - navMaxX * navScale, navTx));
     navTy = Math.min(H - m, Math.max(m - navMaxY * navScale, navTy));
   }
+  // the board is only promoted to its own compositing layer while it is actually moving; the moment
+  // panning / zooming stops the promotion is dropped, so iOS re-draws the ink as vectors at the new
+  // scale instead of stretching the bitmap it had rasterized before
+  var navMoveT = null;
+  function navMoving() {
+    var v = $("ppView"); if (!v) return;
+    v.classList.add("navmove");
+    clearTimeout(navMoveT);
+    navMoveT = setTimeout(function () { navMoveT = null; var w = $("ppView"); if (w) w.classList.remove("navmove"); }, 220);
+  }
   function applyNav() {
     navClamp();
     var v = $("ppView");
     if (v) v.style.transform = "translate(" + navTx.toFixed(1) + "px," + navTy.toFixed(1) + "px) scale(" + navScale.toFixed(4) + ")";
+    navMoving();
     if (selItemId) placeItemBar();   // the item bar keeps a constant on-screen size
   }
   function navLoad(p) {
@@ -9594,9 +9608,31 @@ function __detabaseMain() {
   // stored data is unchanged (pts = [x, y, pressure]), so old handwriting simply gets
   // the new look. Every renderer — board, static ETI view, thumbnails, previews — goes
   // through inkOutlineD(), so a stroke can never look different in two places.
-  var INK_SMOOTH = 0.52;     // corner rounding
-  var INK_THIN = 0.5;        // how much pressure changes the width
+  var INK_SMOOTH = 0.55;     // corner rounding
+  var INK_THIN = 0.72;       // how much pressure changes the width
   var INK_STREAM = 0.2;      // input smoothing; kept low so the ink stays under the pen tip
+  // a pencil spends most of a sentence between roughly 0.2 and 0.6 of its pressure range, so the
+  // middle of that range is stretched (light stays light, a firm press gets clearly fatter), with a
+  // floor so the thinnest part of a stroke never falls below a pixel and starts to look dotted
+  function inkEase(t) {
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    var e = t < 0.5 ? 2 * t * t : 1 - Math.pow(2 - 2 * t, 2) / 2;
+    return 0.1 + 0.9 * e;
+  }
+  // pen pressure is noisy sample to sample; averaging it over a few neighbours keeps the edge of the
+  // stroke smooth instead of beaded. Only the pressure is touched — the points themselves never move,
+  // and the stored data is not changed, so old handwriting gets the same treatment.
+  function inkSmoothPressure(pts) {
+    var n = pts.length;
+    if (n < 4) return pts;
+    var out = new Array(n);
+    for (var i = 0; i < n; i++) {
+      var a = pts[i > 1 ? i - 2 : 0][2], b = pts[i > 0 ? i - 1 : 0][2], c = pts[i][2],
+          d = pts[i < n - 1 ? i + 1 : n - 1][2], e = pts[i < n - 2 ? i + 2 : n - 1][2];
+      out[i] = [pts[i][0], pts[i][1], (a + b + c + c + d + e) / 6];
+    }
+    return out;
+  }
   function inkSize(s) { return s.hi ? Math.max(6, s.w || 16) : Math.max(0.6, s.w || 3); }
   // does this stroke carry real pressure? pen strokes are marked sp:0 when written; for
   // anything older, flat pressure means it came from a mouse/finger and speed looks better
@@ -9614,6 +9650,7 @@ function __detabaseMain() {
       streamline: INK_STREAM,
       thinning: s.hi ? 0 : INK_THIN,                       // highlighter: flat, uniform width
       simulatePressure: s.hi ? false : inkSimulate(s),
+      easing: inkEase,
       start: { cap: true, taper: 0 },
       end: { cap: true, taper: 0 },
       last: !!last
@@ -9635,7 +9672,9 @@ function __detabaseMain() {
     if (!pts.length) return "";
     var pf = window.PF && window.PF.getStroke;
     if (!pf) return "";
-    return inkOutlinePathD(pf(pts, inkPfOpts(s, last)));
+    var opts = inkPfOpts(s, last);
+    if (!opts.simulatePressure && !s.hi) pts = inkSmoothPressure(pts);
+    return inkOutlinePathD(pf(pts, opts));
   }
   // committed strokes never change shape, so each one keeps its path string (non-enumerable,
   // so it is never saved, cloned or copied by the undo snapshots / move code)
