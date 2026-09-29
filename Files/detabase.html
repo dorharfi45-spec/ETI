@@ -362,12 +362,16 @@
   .pv-spacer { flex: 1 1 auto; }
   /* the scroller only scrolls: pinch-zoom is handled by the app, because the browser's own zoom
      magnifies the pixels a page was already drawn with instead of drawing it again */
-  .pv-scroll { flex: 1 1 auto; overflow: auto; -webkit-overflow-scrolling: touch;
-    touch-action: pan-x pan-y; background: var(--surface-2); }
+  .pv-scroll { flex: 1 1 auto; overflow: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    background: var(--surface-2); }
   /* row-wrap: at reading size one page fills the row, and as you zoom out they fall into a grid */
   .pv-pages { display: flex; flex-flow: row wrap; align-items: flex-start; align-content: flex-start;
     justify-content: center; gap: 14px; padding: 14px 0 40px; transform-origin: 0 0; }
-  .pv-page { position: relative; flex: 0 0 auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.14); border-radius: 2px; }
+  /* when a page is wider than the screen, centring would put its left edge out of reach of the
+     scroller for good — so the strip grows to its content instead and is centred by its margins */
+  .pv-pages.wide { width: max-content; flex-flow: column nowrap; align-items: flex-start; margin: 0 auto; }
+  /* a page never gets the browser's own pinch-zoom: it only magnifies pixels already drawn */
+  .pv-page { position: relative; flex: 0 0 auto; touch-action: pan-x pan-y; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.14); border-radius: 2px; }
   .pv-page canvas { display: block; width: 100%; height: 100%; border-radius: 2px; }
   .pv-page .pv-num { position: absolute; left: -2px; top: -2px; font-size: .62rem; color: var(--text-muted);
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
@@ -3294,7 +3298,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B51</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B52</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8792,10 +8796,17 @@ function __detabaseMain() {
         pages.appendChild(d);
         pdfView.slots.push(d);
       }
+      pdfFitMode();
       pdfMeasure();
       pdfSweep();
       if (pdfCut) pdfDrawMarks();
     });
+  }
+  // a page wider than the screen must not be centred, or its left edge is unreachable
+  function pdfFitMode() {
+    if (!pdfView || !pdfView.pagesEl) return;
+    var sc = $("pvScroll");
+    pdfView.pagesEl.classList.toggle("wide", pdfWidth() + 28 > (sc.clientWidth || 0));
   }
   // where every page sits, measured once, so scrolling is pure arithmetic and never
   // walks the whole document asking the browser for positions
@@ -8855,12 +8866,14 @@ function __detabaseMain() {
       d.style.width = Math.round(W) + "px";
       d.style.height = Math.round(W * ratio) + "px";
     });
+    pdfFitMode();
     pdfMeasure();
     scroll.scrollTop = anchor * scroll.scrollHeight;   // stay where you were reading
     if (pdfCut) pdfDrawMarks();   // marks live in page units, so they just re-place themselves
     pdfSweep();
   }
   function closePdf() {
+    pdfResetInput();
     if (pdfCut) pdfCutEnd();
     if (pdfView) {
       clearTimeout(pdfView.mt);
@@ -8874,42 +8887,6 @@ function __detabaseMain() {
     renderStorageNote();
   }
 
-  // ---- two fingers: pan and pinch ---------------------------------------------------
-  // The pages are scaled live during the pinch (one cheap transform) and re-drawn at the new
-  // size the moment the fingers lift, so it feels continuous but ends up sharp.
-  var pvGest = null;
-  function pvTouchInfo(t) {
-    var a = t[0], b = t[1];
-    return { mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2,
-             dist: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)) };
-  }
-  function pvTouchStart(e) {
-    if (!pdfView || !pdfView.pagesEl || e.touches.length !== 2) return;
-    pdfDrawEnd(false);                         // a second finger means move, not mark
-    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
-    var r = pdfView.pagesEl.getBoundingClientRect();
-    pvGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft,
-               ox: i.mx - r.left, oy: i.my - r.top, k: 1 };
-    pdfView.pagesEl.style.transformOrigin = pvGest.ox + "px " + pvGest.oy + "px";
-  }
-  function pvTouchMove(e) {
-    if (!pvGest || e.touches.length !== 2) return;
-    e.preventDefault();                        // we do the panning and the zooming ourselves
-    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
-    pvGest.k = i.dist / pvGest.dist;
-    pdfView.pagesEl.style.transform = "scale(" + pvGest.k.toFixed(4) + ")";
-    sc.scrollTop = pvGest.top - (i.my - pvGest.my);
-    sc.scrollLeft = pvGest.left - (i.mx - pvGest.mx);
-  }
-  function pvTouchEnd(e) {
-    if (!pvGest || e.touches.length >= 2) return;
-    var k = pvGest.k;
-    pdfView.pagesEl.style.transform = "";
-    pvGest = null;
-    if (k > 1.04 || k < 0.96) pdfZoom(k);      // now draw the pages properly at the new size
-    else pdfSweep();
-  }
-
   // ---- marking the parts you want to keep -------------------------------------------
   // Draw a loop around a part, the way the lasso works on a board — free shape, not a box.
   // A loop that touches a part you have already marked is added to it, so a part can be
@@ -8917,7 +8894,6 @@ function __detabaseMain() {
   // the same thing at any zoom and on any device, and the part stays a reference into the
   // file rather than a picture of it.
   var pdfCut = null;      // { marks: [{ page, polys:[[[x,y],…],…], rect, thumb }] }
-  var pdfDraw = null;     // the loop being drawn right now
   function pdfCutToggle() {
     if (pdfCut) { pdfCutEnd(); return; }
     pdfCut = { marks: [] };
@@ -8926,7 +8902,8 @@ function __detabaseMain() {
     pdfDrawMarks(); pdfCutBar();
   }
   function pdfCutEnd() {
-    pdfCut = null; pdfDraw = null;
+    pdfCut = null;
+    pdfResetInput();
     $("pdfView").classList.remove("cutting");
     $("pvCutBtn").classList.remove("on");
     Array.prototype.forEach.call(document.querySelectorAll(".pv-marks, .pv-mark-tag"), function (n) { n.remove(); });
@@ -9031,14 +9008,74 @@ function __detabaseMain() {
       });
     });
   }
-  // ---- drawing one loop ----
+  // ---- the reader's input layer ------------------------------------------------------
+  // Rules, and nothing else:
+  //   reading    one finger scrolls (the browser does it, with its own momentum)
+  //              two fingers pinch to zoom (ours, because the browser's zoom only magnifies
+  //              pixels that are already drawn)
+  //   cutting    one finger or the pencil draws a loop
+  //              two fingers move and zoom, and cancel the loop that was being drawn
+  // Every gesture owns its pointer through pointer capture and cleans up after itself. Nothing
+  // listens on the document, so nothing here can ever slow scrolling down anywhere else in the
+  // app, and pdfResetInput() puts the layer back to rest from any state at all.
+  var pdfDraw = null;    // the loop being drawn
+  var pvGest = null;     // the two-finger gesture
+  function pdfResetInput() {
+    if (pdfDraw) {
+      if (pdfDraw.svg) pdfDraw.svg.remove();
+      try { pdfDraw.slot.releasePointerCapture(pdfDraw.id); } catch (e) {}
+      pdfDraw = null;
+    }
+    if (pvGest) {
+      if (pdfView && pdfView.pagesEl) pdfView.pagesEl.style.transform = "";
+      pvGest = null;
+    }
+  }
+
+  // ---- two fingers: move and zoom ----
+  function pvTouchInfo(t) {
+    var a = t[0], b = t[1];
+    return { mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2,
+             dist: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)) };
+  }
+  function pvTouchStart(e) {
+    if (!pdfView || !pdfView.pagesEl) return;
+    if (e.touches.length !== 2) return;
+    if (pdfDraw) pdfResetInput();            // a second finger means move, not mark
+    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
+    var r = pdfView.pagesEl.getBoundingClientRect();
+    pvGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft,
+               k: 1, ox: i.mx - r.left, oy: i.my - r.top };
+    pdfView.pagesEl.style.transformOrigin = pvGest.ox + "px " + pvGest.oy + "px";
+  }
+  function pvTouchMove(e) {
+    if (!pvGest) return;
+    if (e.touches.length < 2) { pvTouchEnd(e); return; }
+    e.preventDefault();                      // this gesture is ours now
+    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
+    pvGest.k = i.dist / pvGest.dist;
+    pdfView.pagesEl.style.transform = "scale(" + pvGest.k.toFixed(4) + ")";
+    sc.scrollTop = pvGest.top - (i.my - pvGest.my);
+    sc.scrollLeft = pvGest.left - (i.mx - pvGest.mx);
+  }
+  function pvTouchEnd(e) {
+    if (!pvGest) return;
+    if (e && e.touches && e.touches.length >= 2) return;
+    var k = pvGest.k;
+    if (pdfView && pdfView.pagesEl) pdfView.pagesEl.style.transform = "";
+    pvGest = null;
+    if (k > 1.04 || k < 0.96) pdfZoom(k);    // draw the pages properly at the size it ended on
+    else pdfSweep();
+  }
+
+  // ---- one finger / the pencil: draw a loop ----
   function pdfCutPointer(e) {
     if (!pdfCut || !pdfView || pvGest) return;
     if (e.target.closest && e.target.closest(".pv-mark-tag")) return;
     var d = e.target.closest ? e.target.closest(".pv-page") : null;
     if (!d) return;
-    var u = pdfSlotUnits(d); if (!u) return;          // page not drawn yet — nothing to cut
-    if (pdfDraw) return;
+    var u = pdfSlotUnits(d); if (!u) return;        // page not drawn yet — nothing to cut
+    if (pdfDraw) pdfResetInput();                   // whatever was half-drawn is gone; start clean
     e.preventDefault();
     var r = d.getBoundingClientRect(), k = u.w / d.offsetWidth;
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -9048,12 +9085,24 @@ function __detabaseMain() {
     svg.innerHTML = '<polyline/>';
     d.appendChild(svg);
     pdfDraw = { slot: d, units: u, rect: r, k: k, id: e.pointerId, svg: svg, line: svg.querySelector("polyline"),
-                pts: [[(e.clientX - r.left) * k, (e.clientY - r.top) * k]] };
+                pts: [[(e.clientX - r.left) * k, (e.clientY - r.top) * k]], t: Date.now() };
+    // the page owns the pointer until it lifts, so the move and up events cannot go astray
+    try { d.setPointerCapture(e.pointerId); } catch (_) {}
+    d.addEventListener("pointermove", pdfCutMove);
+    d.addEventListener("pointerup", pdfCutUp);
+    d.addEventListener("pointercancel", pdfCutUp);
+    d.addEventListener("lostpointercapture", pdfCutUp);
+  }
+  function pdfCutOff(d) {
+    d.removeEventListener("pointermove", pdfCutMove);
+    d.removeEventListener("pointerup", pdfCutUp);
+    d.removeEventListener("pointercancel", pdfCutUp);
+    d.removeEventListener("lostpointercapture", pdfCutUp);
   }
   function pdfCutMove(e) {
-    if (!pdfDraw || pdfDraw.id !== e.pointerId) return;
-    e.preventDefault();
     var g = pdfDraw;
+    if (!g || g.id !== e.pointerId) return;
+    e.preventDefault();
     var x = Math.max(0, Math.min(g.rect.width, e.clientX - g.rect.left)) * g.k;
     var y = Math.max(0, Math.min(g.rect.height, e.clientY - g.rect.top)) * g.k;
     var last = g.pts[g.pts.length - 1];
@@ -9062,12 +9111,12 @@ function __detabaseMain() {
     g.line.setAttribute("points", g.pts.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "));
   }
   function pdfCutUp(e) {
-    if (!pdfDraw || pdfDraw.id !== e.pointerId) return;
-    pdfDrawEnd(true);
-  }
-  function pdfDrawEnd(keep) {
-    var g = pdfDraw; pdfDraw = null;
-    if (!g) return;
+    var g = pdfDraw;
+    if (!g || (e && e.pointerId != null && g.id !== e.pointerId)) return;
+    pdfCutOff(g.slot);
+    try { g.slot.releasePointerCapture(g.id); } catch (_) {}
+    var keep = !e || e.type === "pointerup" || e.type === "lostpointercapture";
+    pdfDraw = null;
     g.svg.remove();
     if (!keep || g.pts.length < 4 || polyArea(g.pts) < 90) return;   // a tap or a scribble, not a loop
     var page = +g.slot.getAttribute("data-page");
@@ -12938,18 +12987,15 @@ pdfCutDone();
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
   if ($("pvCutClear")) $("pvCutClear").addEventListener("click", pdfCutDone);
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
-  if ($("pvScroll")) $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
   if ($("pvScroll")) {
-    // two-finger pan + pinch, in reading and in cutting alike
+    // one finger draws while cutting (pointer capture keeps its move/up events on the page);
+    // two fingers always move and zoom. Nothing is bound to the document, so nothing here can
+    // slow scrolling down anywhere else in the app.
+    $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
     $("pvScroll").addEventListener("touchstart", pvTouchStart, { passive: false });
     $("pvScroll").addEventListener("touchmove", pvTouchMove, { passive: false });
     $("pvScroll").addEventListener("touchend", pvTouchEnd);
     $("pvScroll").addEventListener("touchcancel", pvTouchEnd);
-  }
-  document.addEventListener("pointermove", pdfCutMove, { passive: false });
-  document.addEventListener("pointerup", pdfCutUp);
-  document.addEventListener("pointercancel", pdfCutUp);
-  if ($("pvScroll")) {
     var pvT = null;
     $("pvScroll").addEventListener("scroll", function () {
       if (pvT) return;
