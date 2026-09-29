@@ -3294,7 +3294,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B50</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B51</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -5235,6 +5235,11 @@ function __detabaseMain() {
       if (p.elements) store.elements = p.elements;
       if (p.ps) store.ps = p.ps;
       if (p.etiEdits) store.etiEdits = p.etiEdits;
+      // a bench left in the stored metadata by an older build is a stale copy of a board's items:
+      // drop it, so the doc binds to the real one again and nothing gets pushed to the cloud
+      [store.canvases, store.elements, (store.ps || {}).pages].forEach(function (list) {
+        (list || []).forEach(function (d) { if (d && d.bench) { try { delete d.bench; } catch (e) {} } });
+      });
       if (p.problems) store.problems = p.problems;   // pre-v3 data, removed by migrateCleanStart
       if (p.bank) store.bank = p.bank;
       var pl = p.planner || {};
@@ -5362,7 +5367,7 @@ function __detabaseMain() {
     if (navKeep && !fresh.nav) fresh.nav = navKeep;
     var cp = curProblem();
     if (cp && cp.id === id) {
-      cp.bench = fresh.items;
+      setBench(cp, fresh.items);
       if (viewingProblem && activeProblem === id && !inkDrawing) renderCanvas();
     } else {
       try { refreshLibDoc(id); } catch (e) {}   // a library element / problem page shown in ETI
@@ -5377,7 +5382,15 @@ function __detabaseMain() {
   function mainSnapshot() {
     var out = {};
     for (var k in store) if (store.hasOwnProperty(k)) out[k] = store[k];
+    // belt and braces: every list a board can be opened from, in case an older build left an
+    // ordinary (enumerable) bench behind on one of them
     out.canvases = (store.canvases || []).map(stripBench);
+    out.elements = (store.elements || []).map(stripBench);
+    if (store.ps) {
+      out.ps = {};
+      for (var j in store.ps) if (store.ps.hasOwnProperty(j)) out.ps[j] = store.ps[j];
+      out.ps.pages = (store.ps.pages || []).map(stripBench);
+    }
     return out;
   }
 
@@ -9258,7 +9271,19 @@ function __detabaseMain() {
     pdfCut.marks = [];
     pdfDrawMarks(); pdfCutBar();
   }
-  function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
+  // A canvas doc's items array is hung on the doc object as .bench so the board code can work with
+  // it directly. It must NEVER become part of the stored metadata: items hold point arrays (a cut
+  // part's loops, a vector shape's outline) and graph items hold live functions, and Firestore
+  // refuses both — "nested arrays are not supported" — which is exactly how a bench that leaked
+  // into store.elements / store.ps.pages broke cloud sync with invalid-argument. Defining it
+  // non-enumerably means JSON.stringify, for..in and the snapshot can never pick it up again,
+  // whichever list the doc came from.
+  function setBench(p, items) {
+    try { Object.defineProperty(p, "bench", { value: items, enumerable: false, writable: true, configurable: true }); }
+    catch (e) { p.bench = items; }
+    return p;
+  }
+  function bindBench(p) { if (p && !Array.isArray(p.bench)) setBench(p, loadCanvas(p.id).items); return p; }
   // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
   function canvasDocs() { libEnsure(); return (store.canvases || []).concat(store.elements, store.ps.pages); }
   function canvasDocById(id) { return canvasDocs().filter(function (p) { return p.id === id; })[0]; }
@@ -10334,7 +10359,7 @@ pdfCutDone();
     var c = loadCanvas(p.id);
     c.ink = st.ink.slice();
     var items = JSON.parse(st.items);
-    p.bench = c.items; benchKeep(p, function () { return false; });
+    setBench(p, c.items); benchKeep(p, function () { return false; });
     items.forEach(function (it) { p.bench.push(it); });
     inkSel = null; inkLassoPts = null;
     saveCanvas(p.id); saveStore();
