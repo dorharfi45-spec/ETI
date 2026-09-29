@@ -360,39 +360,36 @@
   .pv-bar b { font-size: .95rem; max-width: 40vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pv-count { font-size: .78rem; color: var(--text-muted); }
   .pv-spacer { flex: 1 1 auto; }
-  .pv-scroll { flex: 1 1 auto; overflow: auto; -webkit-overflow-scrolling: touch; padding: 14px 0 40px;
-    /* row-wrap: at reading size one page fills the row, and as you zoom out they fall into a grid */
-    display: flex; flex-flow: row wrap; align-items: flex-start; align-content: flex-start;
-    justify-content: center; gap: 14px; background: var(--surface-2); }
+  /* the scroller only scrolls: pinch-zoom is handled by the app, because the browser's own zoom
+     magnifies the pixels a page was already drawn with instead of drawing it again */
+  .pv-scroll { flex: 1 1 auto; overflow: auto; -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y; background: var(--surface-2); }
+  /* row-wrap: at reading size one page fills the row, and as you zoom out they fall into a grid */
+  .pv-pages { display: flex; flex-flow: row wrap; align-items: flex-start; align-content: flex-start;
+    justify-content: center; gap: 14px; padding: 14px 0 40px; transform-origin: 0 0; }
   .pv-page { position: relative; flex: 0 0 auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.14); border-radius: 2px; }
   .pv-page canvas { display: block; width: 100%; height: 100%; border-radius: 2px; }
   .pv-page .pv-num { position: absolute; left: -2px; top: -2px; font-size: .62rem; color: var(--text-muted);
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
-  /* ---- cutting parts out of a page ---- */
+  /* ---- marking the parts to keep ---- */
   .pv-bar .tool-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   #pdfView.cutting .pv-page { cursor: crosshair; touch-action: none; }
   #pdfView.cutting .pv-scroll { background: var(--surface-3, var(--surface-2)); }
-  .pv-box { position: absolute; border: 2px solid var(--accent); border-radius: 3px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent); box-sizing: border-box; }
-  .pv-box .pv-box-n { position: absolute; left: -1px; top: -1px; font-size: .68rem; font-weight: 700; color: #fff;
-    background: var(--accent); border-radius: 3px 0 4px 0; padding: 1px 6px; }
-  .pv-box .pv-box-x { position: absolute; right: -11px; top: -11px; width: 22px; height: 22px; border-radius: 50%;
-    border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-muted);
-    font-size: .8rem; line-height: 1; cursor: pointer; padding: 0; }
-  .pv-box.draft { border-style: dashed; }
+  .pv-marks { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .pv-marks polygon { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: var(--accent);
+    stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .pv-marks.draft polyline { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4;
+    vector-effect: non-scaling-stroke; }
+  .pv-mark-tag { position: absolute; display: flex; align-items: center; gap: 2px; transform: translate(-2px, -50%); }
+  .pv-mark-tag span { font-size: .68rem; font-weight: 700; color: #fff; background: var(--accent);
+    border-radius: 4px; padding: 1px 6px; }
+  .pv-mark-tag button { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border-strong);
+    background: var(--surface-1); color: var(--text-muted); font-size: .8rem; line-height: 1; cursor: pointer; padding: 0; }
   .pv-cutbar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-top: 1px solid var(--border);
     background: var(--surface-1); flex: 0 0 auto; }
   .pv-cutbar[hidden] { display: none; }
   .pv-cutbar .tool-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  #pvCutCount { font-size: .85rem; color: var(--text-muted); }
-
-  /* the naming step: one row per box */
-  .lw-parts { display: flex; flex-direction: column; gap: 10px; }
-  .lw-part { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
-  .lw-part img { width: 116px; height: 78px; object-fit: contain; background: #fff; border: 1px solid var(--border); border-radius: 6px; }
-  .lw-part input { flex: 1 1 auto; min-width: 0; padding: 8px 10px; border-radius: 8px; font: inherit;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); }
-  .lw-part .lw-pg { font-size: .7rem; color: var(--text-muted); white-space: nowrap; }
+  #pvCutCount { font-size: .8rem; color: var(--text-muted); }
 
   /* a cut-out region shown as an item (board, ETI, previews — all the same renderer) */
   .clip.pdfclip .clip-body { padding: 0; }
@@ -3206,7 +3203,7 @@
     <b id="pvTitle"></b>
     <span id="pvPages" class="pv-count"></span>
     <span class="pv-spacer"></span>
-    <button type="button" id="pvCutBtn" class="tool-btn" title="drag a box around each part you want to keep">✂ Cut parts</button>
+    <button type="button" id="pvCutBtn" class="tool-btn" title="draw a loop around each part you want to keep">✂ Cut parts</button>
     <button type="button" id="pvOut" class="tool-btn" title="zoom out">－</button>
     <button type="button" id="pvFit" class="tool-btn" title="back to one page across the screen">Fit</button>
     <button type="button" id="pvIn" class="tool-btn" title="zoom in">＋</button>
@@ -3297,7 +3294,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B47</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B48</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8727,7 +8724,9 @@ function __detabaseMain() {
   // ---- the reader ----
   // Pages are laid out at their real shape straight away and only drawn when they come near the
   // viewport, so a 200-page file opens as fast as a 2-page one and never holds more than a
-  // handful of rendered pages in memory.
+  // handful of rendered pages in memory. Two fingers pan and pinch — the browser's own zoom is
+  // off in here, because that magnifies the pixels a page was drawn with instead of drawing it
+  // again, which is exactly what made the writing look blurry.
   function openPdf(id) {
     var p = pdfById(id); if (!p) return;
     var host = $("pdfView"), scroll = $("pvScroll");
@@ -8736,7 +8735,7 @@ function __detabaseMain() {
     scroll.innerHTML = '<p class="muted" style="padding:20px">Opening…</p>';
     host.hidden = false;
     document.body.style.overflow = "hidden";
-    pdfView = { id: id, zoom: 1, doc: null, slots: [], pos: null, mt: null };
+    pdfView = { id: id, zoom: 1, doc: null, slots: [], pos: null, mt: null, pagesEl: null };
     pdfOpen(id).then(function (doc) {
       if (!pdfView || pdfView.id !== id) return;
       pdfView.doc = doc;
@@ -8752,7 +8751,9 @@ function __detabaseMain() {
   }
   function pdfLayout() {
     var scroll = $("pvScroll"), doc = pdfView.doc;
-    scroll.innerHTML = "";
+    scroll.innerHTML = '<div class="pv-pages"></div>';
+    var pages = scroll.querySelector(".pv-pages");
+    pdfView.pagesEl = pages;
     pdfView.slots = [];
     var W = pdfWidth();
     // page 1 sets the placeholder shape; every page corrects its own once it is drawn
@@ -8765,11 +8766,12 @@ function __detabaseMain() {
         d.style.height = Math.round(W * ratio) + "px";
         d.setAttribute("data-page", i);
         d.innerHTML = '<span class="pv-num">' + i + '</span>';
-        scroll.appendChild(d);
+        pages.appendChild(d);
         pdfView.slots.push(d);
       }
       pdfMeasure();
       pdfSweep();
+      if (pdfCut) pdfDrawMarks();
     });
   }
   // where every page sits, measured once, so scrolling is pure arithmetic and never
@@ -8800,14 +8802,14 @@ function __detabaseMain() {
     d._drawnAt = W;
     var num = +d.getAttribute("data-page");
     var cv = d.querySelector("canvas");
-    if (!cv) { cv = document.createElement("canvas"); d.appendChild(cv); }
+    if (!cv) { cv = document.createElement("canvas"); d.insertBefore(cv, d.firstChild); }
     pdfRenderPage(pdfView.doc, num, W, cv).then(function (page) {
       var vp = page.getViewport({ scale: 1 });
       d.style.width = Math.round(W) + "px";
       d.style.height = Math.round(W * vp.height / vp.width) + "px";
-      d._uw = vp.width; d._uh = vp.height;   // the page size in PDF units, for turning boxes into coordinates
-      pdfRemeasureSoon();   // this page may not be the same shape as page 1
-      if (pdfCut) pdfDrawBoxes();
+      d._uw = vp.width; d._uh = vp.height;   // the page size in PDF units, for turning marks into coordinates
+      pdfRemeasureSoon();                    // this page may not be the same shape as page 1
+      if (pdfCut) pdfDrawMarks();
     }).catch(function () { d._drawnAt = null; });
   }
   function pdfDropSlot(d) {
@@ -8832,7 +8834,7 @@ function __detabaseMain() {
     });
     pdfMeasure();
     scroll.scrollTop = anchor * scroll.scrollHeight;   // stay where you were reading
-    if (pdfCut) pdfDrawBoxes();   // the marks live in page units, so they just re-place themselves
+    if (pdfCut) pdfDrawMarks();   // marks live in page units, so they just re-place themselves
     pdfSweep();
   }
   function closePdf() {
@@ -8849,169 +8851,227 @@ function __detabaseMain() {
     renderStorageNote();
   }
 
+  // ---- two fingers: pan and pinch ---------------------------------------------------
+  // The pages are scaled live during the pinch (one cheap transform) and re-drawn at the new
+  // size the moment the fingers lift, so it feels continuous but ends up sharp.
+  var pvGest = null;
+  function pvTouchInfo(t) {
+    var a = t[0], b = t[1];
+    return { mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2,
+             dist: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)) };
+  }
+  function pvTouchStart(e) {
+    if (!pdfView || !pdfView.pagesEl || e.touches.length !== 2) return;
+    pdfDrawEnd(false);                         // a second finger means move, not mark
+    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
+    var r = pdfView.pagesEl.getBoundingClientRect();
+    pvGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft,
+               ox: i.mx - r.left, oy: i.my - r.top, k: 1 };
+    pdfView.pagesEl.style.transformOrigin = pvGest.ox + "px " + pvGest.oy + "px";
+  }
+  function pvTouchMove(e) {
+    if (!pvGest || e.touches.length !== 2) return;
+    e.preventDefault();                        // we do the panning and the zooming ourselves
+    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
+    pvGest.k = i.dist / pvGest.dist;
+    pdfView.pagesEl.style.transform = "scale(" + pvGest.k.toFixed(4) + ")";
+    sc.scrollTop = pvGest.top - (i.my - pvGest.my);
+    sc.scrollLeft = pvGest.left - (i.mx - pvGest.mx);
+  }
+  function pvTouchEnd(e) {
+    if (!pvGest || e.touches.length >= 2) return;
+    var k = pvGest.k;
+    pdfView.pagesEl.style.transform = "";
+    pvGest = null;
+    if (k > 1.04 || k < 0.96) pdfZoom(k);      // now draw the pages properly at the new size
+    else pdfSweep();
+  }
 
-  // ---- cutting parts out of a page --------------------------------------------------
-  // Drag a box around each part you want to keep. A box is stored in PDF page units, not
-  // screen pixels, so it means the same thing at any zoom and on any device — and the part
-  // stays a reference into the file rather than a picture, which is what lets it be redrawn
-  // sharp at any size later.
-  var pdfCut = null;   // { boxes: [{ page, rect:{x,y,w,h}, thumb }] }
-  function pdfCutOn() { return !!pdfCut; }
+  // ---- marking the parts you want to keep -------------------------------------------
+  // Draw a loop around a part, the way the lasso works on a board — free shape, not a box.
+  // A loop that touches a part you have already marked is added to it, so a part can be
+  // extended or built out of several strokes. Marks are kept in PDF page units, so they mean
+  // the same thing at any zoom and on any device, and the part stays a reference into the
+  // file rather than a picture of it.
+  var pdfCut = null;      // { marks: [{ page, polys:[[[x,y],…],…], rect, thumb }] }
+  var pdfDraw = null;     // the loop being drawn right now
   function pdfCutToggle() {
     if (pdfCut) { pdfCutEnd(); return; }
-    pdfCut = { boxes: [] };
+    pdfCut = { marks: [] };
     $("pdfView").classList.add("cutting");
     $("pvCutBtn").classList.add("on");
-    pdfCutBar();
+    pdfDrawMarks(); pdfCutBar();
   }
   function pdfCutEnd() {
-    pdfCut = null;
+    pdfCut = null; pdfDraw = null;
     $("pdfView").classList.remove("cutting");
-    pdfDrag = null; pdfGest = null; pdfPts = {};
     $("pvCutBtn").classList.remove("on");
-    Array.prototype.forEach.call(document.querySelectorAll(".pv-box"), function (b) { b.remove(); });
+    Array.prototype.forEach.call(document.querySelectorAll(".pv-marks, .pv-mark-tag"), function (n) { n.remove(); });
     pdfCutBar();
   }
   function pdfCutBar() {
     var bar = $("pvCutBar"); if (!bar) return;
     bar.hidden = !pdfCut;
     if (!pdfCut) return;
-    var n = pdfCut.boxes.length;
+    var n = pdfCut.marks.length;
     $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") +
-      "Drag a box around each part · two fingers to move and zoom";
+      "Draw a loop around each part · two fingers to move and zoom · a loop that touches a part joins it";
     $("pvCutSave").disabled = !n;
   }
-  function pdfSlotUnits(d) {   // page size in PDF units, learned when the page was drawn
-    return d && d._uw ? { w: d._uw, h: d._uh } : null;
+  function pdfSlotUnits(d) { return d && d._uw ? { w: d._uw, h: d._uh } : null; }
+  function pdfSlotByPage(page) { return (pdfView && pdfView.slots[page - 1]) || null; }
+  function polyBBox(polys) {
+    var b = [1e9, 1e9, -1e9, -1e9];
+    polys.forEach(function (poly) {
+      poly.forEach(function (q) {
+        if (q[0] < b[0]) b[0] = q[0]; if (q[1] < b[1]) b[1] = q[1];
+        if (q[0] > b[2]) b[2] = q[0]; if (q[1] > b[3]) b[3] = q[1];
+      });
+    });
+    return { x: +b[0].toFixed(2), y: +b[1].toFixed(2), w: +(b[2] - b[0]).toFixed(2), h: +(b[3] - b[1]).toFixed(2) };
   }
-  // a small picture of the box, snipped from the page already on screen — free, and it makes
-  // the naming step show what you actually marked
-  function pdfBoxThumb(d, px) {
+  function polyArea(poly) {
+    var a = 0;
+    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) a += (poly[j][0] + poly[i][0]) * (poly[j][1] - poly[i][1]);
+    return Math.abs(a / 2);
+  }
+  // does this loop touch a mark already on the page? (a vertex inside, either way round)
+  function polysTouch(a, b) {
+    var ba = polyBBox([a]), bb = polyBBox(b);
+    if (ba.x > bb.x + bb.w || bb.x > ba.x + ba.w || ba.y > bb.y + bb.h || bb.y > ba.y + ba.h) return false;
+    var i, j;
+    for (i = 0; i < a.length; i++) for (j = 0; j < b.length; j++) if (pointInPoly(a[i][0], a[i][1], b[j])) return true;
+    for (j = 0; j < b.length; j++) for (i = 0; i < b[j].length; i++) if (pointInPoly(b[j][i][0], b[j][i][1], a)) return true;
+    return false;
+  }
+  // a small picture of the mark, snipped from the page already on screen
+  function pdfMarkThumb(d, mark) {
     var cv = d.querySelector("canvas"); if (!cv || !cv.width) return "";
-    var k = cv.width / d.offsetWidth;
-    var w = Math.max(1, Math.round(px.w * k)), h = Math.max(1, Math.round(px.h * k));
+    var u = pdfSlotUnits(d); if (!u) return "";
+    var k = cv.width / u.w;                       // page units -> canvas pixels
+    var r = mark.rect;
+    var w = Math.max(1, Math.round(r.w * k)), h = Math.max(1, Math.round(r.h * k));
     var out = document.createElement("canvas");
     var lim = 300, s = Math.min(1, lim / Math.max(w, h));
     out.width = Math.max(1, Math.round(w * s)); out.height = Math.max(1, Math.round(h * s));
     var g = out.getContext("2d");
     g.fillStyle = "#fff"; g.fillRect(0, 0, out.width, out.height);
     try {
-      g.drawImage(cv, Math.round(px.x * k), Math.round(px.y * k), w, h, 0, 0, out.width, out.height);
+      g.save();
+      g.scale(out.width / w, out.height / h);
+      var path = new Path2D();
+      mark.polys.forEach(function (poly) {
+        poly.forEach(function (q, i) {
+          var px = (q[0] - r.x) * k, py = (q[1] - r.y) * k;
+          if (i) path.lineTo(px, py); else path.moveTo(px, py);
+        });
+        path.closePath();
+      });
+      g.clip(path);
+      g.drawImage(cv, Math.round(r.x * k), Math.round(r.y * k), w, h, 0, 0, w, h);
+      g.restore();
       return out.toDataURL("image/jpeg", 0.7);
     } catch (e) { return ""; }
   }
-  function pdfDrawBoxes() {
-    Array.prototype.forEach.call(document.querySelectorAll(".pv-box:not(.draft)"), function (b) { b.remove(); });
+  function pdfDrawMarks() {
+    Array.prototype.forEach.call(document.querySelectorAll(".pv-marks, .pv-mark-tag"), function (n) { n.remove(); });
     if (!pdfCut || !pdfView) return;
-    pdfCut.boxes.forEach(function (b, i) {
-      var d = pdfView.slots[b.page - 1]; if (!d) return;
-      var u = pdfSlotUnits(d); if (!u) return;
+    var byPage = {};
+    pdfCut.marks.forEach(function (m, i) { (byPage[m.page] = byPage[m.page] || []).push({ m: m, i: i }); });
+    Object.keys(byPage).forEach(function (page) {
+      var d = pdfSlotByPage(+page), u = d && pdfSlotUnits(d);
+      if (!u) return;
       var k = d.offsetWidth / u.w;
-      var el = document.createElement("div");
-      el.className = "pv-box";
-      el.style.left = (b.rect.x * k) + "px"; el.style.top = (b.rect.y * k) + "px";
-      el.style.width = (b.rect.w * k) + "px"; el.style.height = (b.rect.h * k) + "px";
-      el.innerHTML = '<span class="pv-box-n">' + (i + 1) + '</span><button type="button" class="pv-box-x" title="remove">✕</button>';
-      el.querySelector(".pv-box-x").addEventListener("click", function (e) {
-        e.stopPropagation(); e.preventDefault();
-        pdfCut.boxes.splice(i, 1); pdfDrawBoxes(); pdfCutBar();
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "pv-marks");
+      svg.setAttribute("viewBox", "0 0 " + u.w + " " + u.h);
+      svg.setAttribute("preserveAspectRatio", "none");
+      var h = "";
+      byPage[page].forEach(function (e) {
+        e.m.polys.forEach(function (poly) {
+          h += '<polygon points="' + poly.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" ") + '"/>';
+        });
       });
-      d.appendChild(el);
+      svg.innerHTML = h;
+      d.appendChild(svg);
+      byPage[page].forEach(function (e) {
+        var tag = document.createElement("div");
+        tag.className = "pv-mark-tag";
+        tag.style.left = (e.m.rect.x * k) + "px";
+        tag.style.top = (e.m.rect.y * k) + "px";
+        tag.innerHTML = '<span>' + (e.i + 1) + '</span><button type="button" title="remove this part">✕</button>';
+        tag.querySelector("button").addEventListener("click", function (ev) {
+          ev.stopPropagation(); ev.preventDefault();
+          pdfCut.marks.splice(e.i, 1); pdfDrawMarks(); pdfCutBar();
+        });
+        d.appendChild(tag);
+      });
     });
   }
-  // While cutting, ONE finger (or the pencil) draws a box and TWO fingers move the page —
-  // the same split as the board, where a finger draws and two fingers are a gesture. The
-  // browser's own scrolling is off on the pages, so the two-finger pan and pinch are done
-  // here: a second finger cancels the box that was being drawn and takes over.
-  var pdfDrag = null, pdfGest = null, pdfPts = {};
+  // ---- drawing one loop ----
   function pdfCutPointer(e) {
-    if (!pdfCut || !pdfView) return;
-    if (e.target.closest && e.target.closest(".pv-box-x")) return;
+    if (!pdfCut || !pdfView || pvGest) return;
+    if (e.target.closest && e.target.closest(".pv-mark-tag")) return;
     var d = e.target.closest ? e.target.closest(".pv-page") : null;
     if (!d) return;
     var u = pdfSlotUnits(d); if (!u) return;          // page not drawn yet — nothing to cut
+    if (pdfDraw) return;
     e.preventDefault();
-    pdfPts[e.pointerId] = { x: e.clientX, y: e.clientY };
-    var n = Object.keys(pdfPts).length;
-    if (n === 1) { pdfDragStart(d, u, e); return; }
-    if (n === 2) pdfGestStart();
-  }
-  function pdfDragStart(d, u, e) {
-    var r = d.getBoundingClientRect();
-    var el = document.createElement("div");
-    el.className = "pv-box draft";
-    d.appendChild(el);
-    pdfDrag = { slot: d, units: u, rect: r, x0: e.clientX - r.left, y0: e.clientY - r.top, el: el, px: null, id: e.pointerId };
-    pdfDragTo(e);
-  }
-  function pdfDragTo(e) {
-    var g = pdfDrag; if (!g) return;
-    var x1 = Math.max(0, Math.min(g.rect.width, e.clientX - g.rect.left));
-    var y1 = Math.max(0, Math.min(g.rect.height, e.clientY - g.rect.top));
-    var px = { x: Math.min(g.x0, x1), y: Math.min(g.y0, y1), w: Math.abs(x1 - g.x0), h: Math.abs(y1 - g.y0) };
-    g.el.style.left = px.x + "px"; g.el.style.top = px.y + "px";
-    g.el.style.width = px.w + "px"; g.el.style.height = px.h + "px";
-    g.px = px;
-  }
-  function pdfDragEnd(keep) {
-    var g = pdfDrag; pdfDrag = null;
-    if (!g) return;
-    g.el.remove();
-    if (!keep || !g.px || g.px.w < 12 || g.px.h < 12) return;   // a tap, or a gesture took over
-    var k = g.units.w / g.slot.offsetWidth;                     // screen px -> PDF page units
-    pdfCut.boxes.push({
-      page: +g.slot.getAttribute("data-page"),
-      rect: { x: +(g.px.x * k).toFixed(2), y: +(g.px.y * k).toFixed(2), w: +(g.px.w * k).toFixed(2), h: +(g.px.h * k).toFixed(2) },
-      thumb: pdfBoxThumb(g.slot, g.px)
-    });
-    pdfDrawBoxes(); pdfCutBar();
-  }
-  function pdfPtsInfo() {
-    var ids = Object.keys(pdfPts), a = pdfPts[ids[0]], b = pdfPts[ids[1]];
-    if (!a || !b) return null;
-    return { mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, dist: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) };
-  }
-  function pdfGestStart() {
-    pdfDragEnd(false);                 // the second finger means "move", not "mark"
-    var i = pdfPtsInfo(); if (!i) return;
-    var sc = $("pvScroll");
-    pdfGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft };
-  }
-  function pdfGestMove() {
-    var i = pdfPtsInfo(); if (!i || !pdfGest) return;
-    var sc = $("pvScroll");
-    sc.scrollTop = pdfGest.top - (i.my - pdfGest.my);
-    sc.scrollLeft = pdfGest.left - (i.mx - pdfGest.mx);
-    var k = i.dist / pdfGest.dist;     // pinch, in the same steps the zoom buttons use
-    if (k > 1.3 || k < 0.77) {
-      pdfZoom(k > 1 ? 1.25 : 1 / 1.25);
-      pdfGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft };
-    }
+    var r = d.getBoundingClientRect(), k = u.w / d.offsetWidth;
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "pv-marks draft");
+    svg.setAttribute("viewBox", "0 0 " + u.w + " " + u.h);
+    svg.setAttribute("preserveAspectRatio", "none");
+    svg.innerHTML = '<polyline/>';
+    d.appendChild(svg);
+    pdfDraw = { slot: d, units: u, rect: r, k: k, id: e.pointerId, svg: svg, line: svg.querySelector("polyline"),
+                pts: [[(e.clientX - r.left) * k, (e.clientY - r.top) * k]] };
   }
   function pdfCutMove(e) {
-    if (!pdfCut || !pdfPts[e.pointerId]) return;
-    pdfPts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    if (!pdfDraw || pdfDraw.id !== e.pointerId) return;
     e.preventDefault();
-    if (pdfGest) pdfGestMove();
-    else if (pdfDrag && pdfDrag.id === e.pointerId) pdfDragTo(e);
+    var g = pdfDraw;
+    var x = Math.max(0, Math.min(g.rect.width, e.clientX - g.rect.left)) * g.k;
+    var y = Math.max(0, Math.min(g.rect.height, e.clientY - g.rect.top)) * g.k;
+    var last = g.pts[g.pts.length - 1];
+    if (Math.hypot(x - last[0], y - last[1]) < 1.2 * g.k) return;   // one point per ~1px of travel
+    g.pts.push([x, y]);
+    g.line.setAttribute("points", g.pts.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "));
   }
   function pdfCutUp(e) {
-    if (!pdfPts[e.pointerId]) return;
-    delete pdfPts[e.pointerId];
-    var left = Object.keys(pdfPts).length;
-    if (pdfGest) { if (left < 2) { pdfGest = null; pdfPts = {}; } return; }
-    if (pdfDrag && pdfDrag.id === e.pointerId) pdfDragEnd(true);
+    if (!pdfDraw || pdfDraw.id !== e.pointerId) return;
+    pdfDrawEnd(true);
+  }
+  function pdfDrawEnd(keep) {
+    var g = pdfDraw; pdfDraw = null;
+    if (!g) return;
+    g.svg.remove();
+    if (!keep || g.pts.length < 4 || polyArea(g.pts) < 90) return;   // a tap or a scribble, not a loop
+    var page = +g.slot.getAttribute("data-page");
+    var joined = null;
+    for (var i = 0; i < pdfCut.marks.length; i++) {
+      var m = pdfCut.marks[i];
+      if (m.page === page && polysTouch(g.pts, m.polys)) { joined = m; break; }
+    }
+    if (joined) joined.polys.push(g.pts);
+    else { joined = { page: page, polys: [g.pts] }; pdfCut.marks.push(joined); }
+    joined.rect = polyBBox(joined.polys);
+    joined.thumb = pdfMarkThumb(g.slot, joined);
+    pdfDrawMarks(); pdfCutBar();
   }
 
-  // ---- rendering a cut-out region, wherever it is shown ------------------------------
-  // One item kind, {kind:"pdf", pdfId, page, rect}, drawn by one function — so a part looks
-  // the same in ETI, on a board, in a preview or in the mining panel, and is redrawn at the
-  // size it is actually being shown at instead of being stored as a picture.
-  var pdfRegionCache = {};   // "pdfId|page|x,y,w,h|width" -> dataURL
-  function pdfRegionKey(it, w) { return it.pdfId + "|" + it.page + "|" + [it.rect.x, it.rect.y, it.rect.w, it.rect.h].join(",") + "|" + Math.round(w); }
+  // ---- rendering a cut-out part, wherever it is shown --------------------------------
+  // One item kind, {kind:"pdf", pdfId, page, rect, polys}, drawn by one function — so a part
+  // looks the same in ETI, on a board, in a preview or in the mining panel, and is redrawn at
+  // the size it is being shown at instead of being stored as a picture.
+  var pdfRegionCache = {};
+  function pdfRegionKey(it, w) {
+    return it.pdfId + "|" + it.page + "|" + [it.rect.x, it.rect.y, it.rect.w, it.rect.h].join(",") +
+      "|" + ((it.polys || []).length) + "|" + Math.round(w);
+  }
   function renderPdfInto(host, clip) {
     if (!host) return;
-    var w = Math.max(40, clip.w || 200), h = Math.max(30, clip.h || 140);
+    var w = Math.max(40, clip.w || 200);
     var key = pdfRegionKey(clip, w);
     if (pdfRegionCache[key]) { host.innerHTML = '<img alt="">'; host.firstChild.src = pdfRegionCache[key]; return; }
     host.innerHTML = '<div class="pdf-missing">…</div>';
@@ -9025,9 +9085,21 @@ function __detabaseMain() {
         cv.height = Math.max(1, Math.round(clip.rect.h * scale));
         var g = cv.getContext("2d", { alpha: false });
         g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+        // a part drawn with loops shows only what is inside them
+        if (clip.polys && clip.polys.length) {
+          var path = new Path2D();
+          clip.polys.forEach(function (poly) {
+            poly.forEach(function (q, i) {
+              var px = (q[0] - clip.rect.x) * scale, py = (q[1] - clip.rect.y) * scale;
+              if (i) path.lineTo(px, py); else path.moveTo(px, py);
+            });
+            path.closePath();
+          });
+          g.clip(path);
+        }
         return page.render({
           canvasContext: g, viewport: vp,
-          transform: [1, 0, 0, 1, -clip.rect.x * scale, -clip.rect.y * scale]   // slide the page so the region lands at 0,0
+          transform: [1, 0, 0, 1, -clip.rect.x * scale, -clip.rect.y * scale]   // slide the page so the part lands at 0,0
         }).promise.then(function () {
           var url = "";
           try { url = cv.toDataURL("image/jpeg", 0.86); } catch (e) {}
@@ -9042,9 +9114,24 @@ function __detabaseMain() {
     });
   }
 
-  // ---- from marked boxes to library assets -------------------------------------------
+  // ---- marked parts -> the save wizard ------------------------------------------------
+  // The marks become items on a page, and from there this is the SAME wizard the board's lasso
+  // opens: choose raw material or a problem-solving page, file it at whichever level you like,
+  // and split what you marked down to elements by drawing loops on the preview.
+  function pdfMarksToContent(marks, pdfId) {
+    var K = 96 / 72, y = 12, items = [];   // PDF units are 1/72", so this is the part's real size
+    marks.forEach(function (m, i) {
+      var w = Math.max(24, Math.round(m.rect.w * K)), h = Math.max(18, Math.round(m.rect.h * K));
+      items.push({ id: uid("it_"), kind: "pdf", pdfId: pdfId, page: m.page,
+                   rect: { x: m.rect.x, y: m.rect.y, w: m.rect.w, h: m.rect.h },
+                   polys: m.polys.map(function (poly) { return poly.map(function (q) { return [+q[0].toFixed(2), +q[1].toFixed(2)]; }); }),
+                   x: 12, y: y, w: w, h: h, z: i + 1 });
+      y += h + 18;
+    });
+    return { ink: [], items: items };
+  }
   function pdfCutSave() {
-    if (!pdfCut || !pdfCut.boxes.length || !pdfView) return;
+    if (!pdfCut || !pdfCut.marks.length || !pdfView) return;
     libEnsure();
     closeWizard();
     var ov = document.createElement("div");
@@ -9053,132 +9140,13 @@ function __detabaseMain() {
       '<div class="lw-body"></div><div class="lw-foot"></div></div>';
     document.body.appendChild(ov);
     ov.querySelector(".lw-x").addEventListener("click", closeWizard);
-    wiz = { ov: ov, pdf: { id: pdfView.id, boxes: pdfCut.boxes.slice() } };
-    wizStepKind();   // same first question as the lasso save: material or problem-solving page
+    wiz = { ov: ov, content: pdfMarksToContent(pdfCut.marks, pdfView.id), fromPdf: pdfCut.marks.length };
+    wizStepKind();
   }
-  // Same wizard as the lasso save, marked boxes standing in for the lasso: pick what kind of
-  // thing this is, file it at whatever level you like, and split it down to elements on the way.
-  function wizMaterialPdf() {
-    var t = {};
-    function stepSubject() {
-      wizChoice("Subject", "Which subject does this material belong to? (e.g. Trig base)",
-        allSubjectKeys().map(function (k) {
-          var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
-          return { id: k, name: subjectName(k), group: groupName(g) };
-        }),
-        "New subject name…", function (id, nn) {
-          if (id) { t.subject = id; stepTab(); }
-          else stepGroup(nn);
-        }, wizStepKind);
-    }
-    function stepGroup(newName) {   // a new subject has to live in one of the sidebar groups
-      wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.",
-        allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
-        "New group name…", function (id, nn) {
-          startPdfSplit({ lvl: "subject", name: newName, groupId: id, newGroup: nn });
-        }, stepSubject);
-    }
-    function stepTab() {
-      wizChoice("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top, e.g. Unit circle)",
-        libTabs(t.subject), "New tab name…", function (id, nn) {
-          if (id) { t.tab = id; stepCard(); }
-          else startPdfSplit({ lvl: "tab", name: nn, parent: t.subject });
-        }, stepSubject);
-    }
-    function stepCard() {
-      wizChoice("Card", "In " + tabLabel(t.tab) + " — which card (square)?", libCards(t.tab),
-        "New card name…", function (id, nn) {
-          if (id) startPdfSplit({ lvl: "card", existing: id, name: cardLabel(id), parent: t.tab });
-          else startPdfSplit({ lvl: "card", name: nn, parent: t.tab });
-        }, stepTab);
-    }
-    stepSubject();
-  }
-  // walk down from the level that was chosen: group the boxes into the level below, then group
-  // each of those, until every box is an element with a name — the same shape the lasso wizard
-  // builds, so the very same commit code creates the subjects, tabs, cards and elements
-  function startPdfSplit(root) {
-    root.boxes = wiz.pdf.boxes.slice();
-    wiz.root = root; wiz.queue = [root];
-    nextPdfSplit();
-  }
-  function nextPdfSplit() {
-    var node = wiz.queue.shift();
-    if (!node) {
-      commitMaterial(wiz.root);
-      if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); }
-      return;
-    }
-    var lv = LV_NEXT[node.lvl];
-    pdfGroupStep(node, lv, function (children) {
-      node.children = children;
-      if (lv !== "element") wiz.queue = children.concat(wiz.queue);
-      nextPdfSplit();
-    });
-  }
-  // one screen: every box of this node gets a name. At element level that name IS the element;
-  // above it, boxes that share a name end up in the same card / tab.
-  function pdfGroupStep(node, lv, done) {
-    var L = LV_LABEL[lv], boxes = node.boxes;
-    var leaf = lv === "element";
-    var rows = boxes.map(function (b, i) {
-      return '<div class="lw-part">' +
-        (b.thumb ? '<img src="' + b.thumb + '" alt="">' : '<div class="lw-pg">no preview</div>') +
-        '<input type="text" maxlength="60" value="" placeholder="' + (leaf ? "Part " + (i + 1) : L + " 1") + '">' +
-        '<span class="lw-pg">p.' + b.page + '</span></div>';
-    }).join("");
-    var body = wizSet(leaf ? "Name the parts" : "Split “" + (node.name || L) + "” into " + L.toLowerCase() + "s",
-      '<p class="lw-hint">' + (leaf
-        ? "Each box becomes one element. Give them names you will search for later."
-        : "Which " + L.toLowerCase() + " does each part belong to? Parts you give the same name to end up in the same " + L.toLowerCase() + ".") +
-      '</p><div class="lw-parts">' + rows + '</div>',
-      [{ label: "‹ Back", run: function () { wiz.queue = []; wizMaterialPdf(); } },
-       { label: leaf ? "Save" : "Next ›", primary: true, right: true, run: function () {
-          var inputs = Array.prototype.slice.call(body.querySelectorAll(".lw-part input"));
-          var names = inputs.map(function (inp, i) { return (inp.value || "").trim() || (leaf ? "Part " + (i + 1) : L + " 1"); });
-          if (leaf) {
-            done(boxes.map(function (b, i) {
-              return { lvl: "element", name: names[i], content: { pdf: { pdfId: wiz.pdf.id, page: b.page, rect: b.rect } } };
-            }));
-            return;
-          }
-          var order = [], byName = {};
-          names.forEach(function (n, i) {
-            var k = n.toLowerCase();
-            if (!byName[k]) { byName[k] = { lvl: lv, name: n, boxes: [] }; order.push(byName[k]); }
-            byName[k].boxes.push(boxes[i]);
-          });
-          done(order);
-        } }]);
-    // typing a name once is enough — the rows below follow it until you change one
-    var inputs = Array.prototype.slice.call(body.querySelectorAll(".lw-part input"));
-    if (!leaf) inputs.forEach(function (inp, i) {
-      inp.addEventListener("input", function () {
-        for (var j = i + 1; j < inputs.length; j++) {
-          if (inputs[j].dataset.touched) break;
-          inputs[j].value = inp.value;
-        }
-      });
-      inp.addEventListener("focus", function () { inp.dataset.touched = "1"; });
-    });
-    if (inputs[0]) setTimeout(function () { inputs[0].focus(); }, 30);
-  }
-  // a problem-solving page made of cut-out parts: the boxes become items in the page, stacked
-  // down it, and from there it is the same page the lasso wizard saves
-  function pdfBoxesToContent(boxes) {
-    var K = 96 / 72, y = 12, items = [];
-    boxes.forEach(function (b, i) {
-      var w = Math.round(b.rect.w * K), h = Math.round(b.rect.h * K);
-      items.push({ id: uid("it_"), kind: "pdf", pdfId: wiz.pdf.id, page: b.page,
-                   rect: { x: b.rect.x, y: b.rect.y, w: b.rect.w, h: b.rect.h },
-                   x: 12, y: y, w: w, h: h, z: i + 1 });
-      y += h + 16;
-    });
-    return { ink: [], items: items };
-  }
-  function wizProblemPdf() {
-    wiz.content = pdfBoxesToContent(wiz.pdf.boxes);
-    wizProblem();
+  function pdfCutDone() {   // called once the wizard has saved: the marks did their job
+    if (!pdfCut) return;
+    pdfCut.marks = [];
+    pdfDrawMarks(); pdfCutBar();
   }
   function bindBench(p) { if (p && !Array.isArray(p.bench)) p.bench = loadCanvas(p.id).items; return p; }
   // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
@@ -9696,15 +9664,15 @@ function __detabaseMain() {
     if (!options.length) setTimeout(function () { inp.focus(); }, 30);
   }
   function wizStepKind() {
-    var pdf = !!(wiz && wiz.pdf), n = pdf ? wiz.pdf.boxes.length : 0;
+    var n = (wiz && wiz.fromPdf) || 0;
     var body = wizSet("Save to the library",
-      '<p class="lw-hint">' + (pdf
-        ? (n + (n === 1 ? " part" : " parts") + " cut out of the PDF. What are they? The PDF itself is not touched.")
+      '<p class="lw-hint">' + (n
+        ? (n + (n === 1 ? " part" : " parts") + " marked on the PDF. What are they? The PDF itself is not touched.")
         : "What is this selection? It is copied — the page stays as it is.") + '</p>' +
       '<div class="lw-kinds"><button type="button" data-k="m">🧱<b>Raw material</b><span>formulas, concepts → ETI subject library</span></button>' +
       '<button type="button" data-k="p">🧩<b>Problem-solving page</b><span>a worked method → problem-solving bank</span></button></div>');
-    body.querySelector('[data-k="m"]').addEventListener("click", function () { if (wiz.pdf) wizMaterialPdf(); else wizMaterial(); });
-    body.querySelector('[data-k="p"]').addEventListener("click", function () { if (wiz.pdf) wizProblemPdf(); else wizProblem(); });
+    body.querySelector('[data-k="m"]').addEventListener("click", function () { wizMaterial(); });
+    body.querySelector('[data-k="p"]').addEventListener("click", function () { wizProblem(); });
   }
   function wizMaterial(start) {
     var content = wiz.content, t = {};
@@ -9890,18 +9858,6 @@ function __detabaseMain() {
   }
   // content (board coords) → a canvas doc, moved to the origin, with fresh ids
   function writeLibDoc(id, content) {
-    // a part cut out of a PDF is one item that points back into the file — no ink, no copy of
-    // the picture, so it can be redrawn at whatever size it is shown at
-    if (content && content.pdf) {
-      var r = content.pdf.rect, K = 96 / 72;   // PDF units are 1/72", so this is its real size on screen
-      var cp = loadCanvas(id);
-      cp.ink = [];
-      cp.items = [{ id: uid("it_"), kind: "pdf", pdfId: content.pdf.pdfId, page: content.pdf.page,
-                    rect: { x: r.x, y: r.y, w: r.w, h: r.h },
-                    x: 12, y: 12, w: Math.round(r.w * K), h: Math.round(r.h * K), z: 1 }];
-      saveCanvas(id);
-      return;
-    }
     var b = docBBox(content) || [0, 0, 0, 0], pad = 12, dx = pad - b[0], dy = pad - b[1];
     var c = loadCanvas(id);
     c.ink = (content.ink || []).map(function (sk) {
@@ -9950,6 +9906,7 @@ function __detabaseMain() {
     saveStore();
     closeWizard();
     try { renderEtiTree(); renderLibraryEti(); } catch (e) { if (window.console) console.error("library render:", e); }
+pdfCutDone();
     libToast("Saved " + made + " element" + (made === 1 ? "" : "s") + " to " + where);
   }
   function wizProblem(start) {
@@ -9987,7 +9944,7 @@ function __detabaseMain() {
         saveStore();
         closeWizard();
         renderPsRail();
-        if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); }   // the marks did their job
+        pdfCutDone();
         libToast("Saved “" + name + "” to the problem-solving bank");
       }
     }
@@ -12844,9 +12801,16 @@ function __detabaseMain() {
   if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.35); });
   if ($("pvFit")) $("pvFit").addEventListener("click", function () { pdfZoom(0); });
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
-  if ($("pvCutClear")) $("pvCutClear").addEventListener("click", function () { if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); } });
+  if ($("pvCutClear")) $("pvCutClear").addEventListener("click", pdfCutDone);
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
   if ($("pvScroll")) $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
+  if ($("pvScroll")) {
+    // two-finger pan + pinch, in reading and in cutting alike
+    $("pvScroll").addEventListener("touchstart", pvTouchStart, { passive: false });
+    $("pvScroll").addEventListener("touchmove", pvTouchMove, { passive: false });
+    $("pvScroll").addEventListener("touchend", pvTouchEnd);
+    $("pvScroll").addEventListener("touchcancel", pvTouchEnd);
+  }
   document.addEventListener("pointermove", pdfCutMove, { passive: false });
   document.addEventListener("pointerup", pdfCutUp);
   document.addEventListener("pointercancel", pdfCutUp);
