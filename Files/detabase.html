@@ -3294,7 +3294,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B48</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B49</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8653,7 +8653,7 @@ function __detabaseMain() {
       (store.pdfs || []).forEach(function (p) { live["pdf_" + p.id] = 1; });
       var cutoff = Date.now() - 5 * 60 * 1000;
       keys.forEach(function (k) {
-        if (live[k] || String(k).indexOf("pdf_") !== 0) return;
+        if (live[k] || String(k).indexOf("pdf_") !== 0) return;   // pictures of pages are NEVER swept: they are what keeps a part alive
         window.DBF.get(k).then(function (rec) {
           if (rec && (rec.added || 0) > cutoff) return;   // still being imported
           window.DBF.del(k);
@@ -8699,13 +8699,23 @@ function __detabaseMain() {
         openPdf(p.id);
       });
       grid.appendChild(card);
+      // the file is only on the device that imported it; elsewhere the shelf shows the picture of
+      // page 1 that travelled with the parts, and says the file itself is not here
       window.DBF.get("pdf_" + p.id).then(function (rec) {
         var slot = card.querySelector(".nb-busy"); if (!slot) return;
-        if (rec && rec.thumb) {
+        function show(src) {
           var img = new Image();
-          img.className = "nb-pdf-thumb"; img.alt = ""; img.src = rec.thumb;
+          img.className = "nb-pdf-thumb"; img.alt = ""; img.src = src;
           slot.replaceWith(img);
-        } else slot.textContent = "not on this device";
+        }
+        if (rec && rec.thumb) { show(rec.thumb); return; }
+        if (rec && rec.buf) { slot.textContent = "no preview"; return; }
+        slot.textContent = "…";
+        pdfPageImage(p.id, 1).then(function (pg) {
+          var sub = card.querySelector(".nb-sub");
+          if (sub) sub.textContent += " · file on another device";
+          if (pg && pg.url) show(pg.url); else slot.textContent = "not on this device";
+        });
       });
     });
   }
@@ -9057,9 +9067,71 @@ function __detabaseMain() {
     else { joined = { page: page, polys: [g.pts] }; pdfCut.marks.push(joined); }
     joined.rect = polyBBox(joined.polys);
     joined.thumb = pdfMarkThumb(g.slot, joined);
+    // keep a picture of this page on the device now, while the file is open and warm: it is what
+    // the other devices get shown, and it is uploaded when the parts are actually saved
+    pdfEnsurePageImage(pdfView.id, page, false).catch(function () {});
     pdfDrawMarks(); pdfCutBar();
   }
 
+  // ---- pictures of the pages you cut from -------------------------------------------
+  // The PDF itself stays on the device that imported it — it is the big thing, and it is only
+  // needed to cut NEW parts. What travels to the other devices is a picture of each page a part
+  // was actually cut from, so those parts can be shown anywhere. The cost is therefore
+  // proportional to what you used, not to what you imported: cut three regions out of three
+  // pages of a forty-page file and three pictures leave this device, not the file.
+  // Local record: DBF "pgimg_<pdfId>_<page>" = { url, uw, uh, w, h, pushed }
+  var PAGE_IMG_W = 1600;   // px across — enough to read handwriting at any size a part is shown
+  function pageKey(pdfId, page) { return pdfId + "_" + page; }
+  function pageImgId(pdfId, page) { return "pgimg_" + pageKey(pdfId, page); }
+  // make sure this page has a picture on this device, and (when asked) in the cloud
+  function pdfEnsurePageImage(pdfId, page, push) {
+    var id = pageImgId(pdfId, page);
+    return window.DBF.get(id).then(function (rec) {
+      if (rec && rec.url) return pdfPushPageImage(pdfId, page, rec, push);
+      return pdfOpen(pdfId).then(function (doc) {
+        return doc.getPage(page).then(function (pg) {
+          var base = pg.getViewport({ scale: 1 });
+          var scale = Math.min(3, PAGE_IMG_W / base.width);
+          var vp = pg.getViewport({ scale: scale });
+          var cv = document.createElement("canvas");
+          cv.width = Math.round(vp.width); cv.height = Math.round(vp.height);
+          var g = cv.getContext("2d", { alpha: false });
+          g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+          return pg.render({ canvasContext: g, viewport: vp }).promise.then(function () {
+            var out = { url: cv.toDataURL("image/jpeg", 0.82), uw: base.width, uh: base.height,
+                        w: cv.width, h: cv.height, added: Date.now() };
+            return window.DBF.put(id, out).then(function () { return pdfPushPageImage(pdfId, page, out, push); });
+          });
+        });
+      });
+    });
+  }
+  function pdfPushPageImage(pdfId, page, rec, push) {
+    if (!push || rec.pushed || typeof window.cloudPutPageImage !== "function") return rec;
+    window.cloudPutPageImage(pageKey(pdfId, page), rec).then(function (ok) {
+      if (!ok) return;
+      rec.pushed = true;
+      window.DBF.put(pageImgId(pdfId, page), rec);
+    });
+    return rec;
+  }
+  // the picture for this page: this device first, then the cloud (and kept once it arrives)
+  function pdfPageImage(pdfId, page) {
+    var id = pageImgId(pdfId, page);
+    return window.DBF.get(id).then(function (rec) {
+      if (rec && rec.url) return rec;
+      if (typeof window.cloudGetPageImage !== "function") return null;
+      return window.cloudGetPageImage(pageKey(pdfId, page)).then(function (r) {
+        if (!r || !r.url) return null;
+        r.added = Date.now(); r.pushed = true;
+        return window.DBF.put(id, r).then(function () { return r; });
+      });
+    }).catch(function () { return null; });
+  }
+  function pdfPagesUsedBy(marks) {
+    var pages = {}; (marks || []).forEach(function (m) { pages[m.page] = 1; });
+    return Object.keys(pages).map(Number);
+  }
   // ---- rendering a cut-out part, wherever it is shown --------------------------------
   // One item kind, {kind:"pdf", pdfId, page, rect, polys}, drawn by one function — so a part
   // looks the same in ETI, on a board, in a preview or in the mining panel, and is redrawn at
@@ -9069,49 +9141,83 @@ function __detabaseMain() {
     return it.pdfId + "|" + it.page + "|" + [it.rect.x, it.rect.y, it.rect.w, it.rect.h].join(",") +
       "|" + ((it.polys || []).length) + "|" + Math.round(w);
   }
+  // only what is inside the loops belongs to the part
+  function pdfClipPath(clip, scale) {
+    if (!clip.polys || !clip.polys.length) return null;
+    var path = new Path2D();
+    clip.polys.forEach(function (poly) {
+      poly.forEach(function (q, i) {
+        var px = (q[0] - clip.rect.x) * scale, py = (q[1] - clip.rect.y) * scale;
+        if (i) path.lineTo(px, py); else path.moveTo(px, py);
+      });
+      path.closePath();
+    });
+    return path;
+  }
+  function pdfCropCanvas(clip, scale) {
+    var cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(clip.rect.w * scale));
+    cv.height = Math.max(1, Math.round(clip.rect.h * scale));
+    var g = cv.getContext("2d", { alpha: false });
+    g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+    var path = pdfClipPath(clip, scale);
+    if (path) g.clip(path);
+    return { cv: cv, g: g };
+  }
+  // best source: the PDF itself, drawn at exactly the size this part is being shown at
+  function pdfCropFromFile(clip, w) {
+    return pdfOpen(clip.pdfId).then(function (doc) {
+      return doc.getPage(clip.page).then(function (page) {
+        var dpr = Math.min(3, window.devicePixelRatio || 1);
+        var scale = (w / clip.rect.w) * dpr;
+        var c = pdfCropCanvas(clip, scale);
+        return page.render({
+          canvasContext: c.g, viewport: page.getViewport({ scale: scale }),
+          transform: [1, 0, 0, 1, -clip.rect.x * scale, -clip.rect.y * scale]   // slide the page so the part lands at 0,0
+        }).promise.then(function () { return c.cv.toDataURL("image/jpeg", 0.86); });
+      });
+    });
+  }
+  // fallback on a device that never had the file: the picture of that page
+  function pdfCropFromPage(clip, w) {
+    return pdfPageImage(clip.pdfId, clip.page).then(function (rec) {
+      if (!rec || !rec.url) throw new Error("no page picture");
+      return new Promise(function (res, rej) {
+        var im = new Image();
+        im.onload = function () {
+          var k = rec.w / rec.uw;                        // picture pixels per page unit
+          var want = Math.min(k, (w * Math.min(3, window.devicePixelRatio || 1)) / clip.rect.w);
+          var c = pdfCropCanvas(clip, want);
+          try {
+            c.g.drawImage(im, clip.rect.x * k, clip.rect.y * k, clip.rect.w * k, clip.rect.h * k,
+                              0, 0, c.cv.width, c.cv.height);
+            res(c.cv.toDataURL("image/jpeg", 0.86));
+          } catch (e) { rej(e); }
+        };
+        im.onerror = function () { rej(new Error("page picture unreadable")); };
+        im.src = rec.url;
+      });
+    });
+  }
   function renderPdfInto(host, clip) {
     if (!host) return;
     var w = Math.max(40, clip.w || 200);
     var key = pdfRegionKey(clip, w);
     if (pdfRegionCache[key]) { host.innerHTML = '<img alt="">'; host.firstChild.src = pdfRegionCache[key]; return; }
     host.innerHTML = '<div class="pdf-missing">…</div>';
-    pdfOpen(clip.pdfId).then(function (doc) {
-      return doc.getPage(clip.page).then(function (page) {
-        var dpr = Math.min(3, window.devicePixelRatio || 1);
-        var scale = (w / clip.rect.w) * dpr;
-        var vp = page.getViewport({ scale: scale });
-        var cv = document.createElement("canvas");
-        cv.width = Math.max(1, Math.round(clip.rect.w * scale));
-        cv.height = Math.max(1, Math.round(clip.rect.h * scale));
-        var g = cv.getContext("2d", { alpha: false });
-        g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
-        // a part drawn with loops shows only what is inside them
-        if (clip.polys && clip.polys.length) {
-          var path = new Path2D();
-          clip.polys.forEach(function (poly) {
-            poly.forEach(function (q, i) {
-              var px = (q[0] - clip.rect.x) * scale, py = (q[1] - clip.rect.y) * scale;
-              if (i) path.lineTo(px, py); else path.moveTo(px, py);
-            });
-            path.closePath();
-          });
-          g.clip(path);
-        }
-        return page.render({
-          canvasContext: g, viewport: vp,
-          transform: [1, 0, 0, 1, -clip.rect.x * scale, -clip.rect.y * scale]   // slide the page so the part lands at 0,0
-        }).promise.then(function () {
-          var url = "";
-          try { url = cv.toDataURL("image/jpeg", 0.86); } catch (e) {}
-          if (url) pdfRegionCache[key] = url;
-          host.innerHTML = '<img alt="">';
-          host.firstChild.src = url;
-        });
+    pdfCropFromFile(clip, w)
+      .catch(function () { return pdfCropFromPage(clip, w); })
+      .then(function (url) {
+        if (!url) throw new Error("no image");
+        pdfRegionCache[key] = url;
+        host.innerHTML = '<img alt="">';
+        host.firstChild.src = url;
+      })
+      .catch(function () {
+        var p = pdfById(clip.pdfId);
+        host.innerHTML = '<div class="pdf-missing">' +
+          escapeHtml(p ? ("“" + (p.name || "PDF") + "” is not on this device yet") : "the PDF this came from is gone") + '</div>';
       });
-    }).catch(function () {
-      var p = pdfById(clip.pdfId);
-      host.innerHTML = '<div class="pdf-missing">' + escapeHtml(p ? ("“" + (p.name || "PDF") + "” is not on this device") : "the PDF this came from is gone") + '</div>';
-    });
   }
 
   // ---- marked parts -> the save wizard ------------------------------------------------
@@ -9145,6 +9251,10 @@ function __detabaseMain() {
   }
   function pdfCutDone() {   // called once the wizard has saved: the marks did their job
     if (!pdfCut) return;
+    var id = pdfView && pdfView.id;
+    if (id) pdfPagesUsedBy(pdfCut.marks).forEach(function (pg) {
+      pdfEnsurePageImage(id, pg, true).catch(function () {});   // now it is worth sending to the cloud
+    });
     pdfCut.marks = [];
     pdfDrawMarks(); pdfCutBar();
   }
@@ -13401,6 +13511,40 @@ window.cloudOpenCanvas = async function (id) {
       applyCanvas(id, d);
     });
   }
+};
+
+// ---- pictures of the pages parts were cut from ----------------------------------------
+// An imported PDF never leaves the device that imported it: it is the big thing, and it is only
+// needed to cut NEW parts out of. What travels is a JPEG of each page a part was actually cut
+// from, so every other device can show those parts. Same chunking as a canvas doc, because a
+// Firestore document is capped at 1 MiB.
+const pgRef = (key) => doc(db, "sync", "pdfpage_" + key);
+const pgPart = (key, n) => doc(db, "sync", "pdfpage_" + key + "__p" + n);
+window.cloudPutPageImage = async function (key, rec) {
+  if (!user || !rec || !rec.url) return false;
+  try {
+    const s = rec.url, ts = Date.now();
+    const n = Math.max(1, Math.ceil(s.length / CHUNK));
+    for (let i = 1; i < n; i++) await setDoc(pgPart(key, i), { j: s.slice(i * CHUNK, (i + 1) * CHUNK), updatedAt: ts });
+    await setDoc(pgRef(key), { v: 1, uw: rec.uw, uh: rec.uh, w: rec.w, h: rec.h,
+                               j: s.slice(0, CHUNK), parts: n, updatedAt: ts });
+    return true;
+  } catch (e) { if (window.console) console.error("page picture push:", e); return false; }
+};
+window.cloudGetPageImage = async function (key) {
+  if (!user) return null;
+  try {
+    const snap = await getDoc(pgRef(key));
+    if (!snap.exists()) return null;
+    const d = snap.data();
+    let s = d.j || "";
+    for (let i = 1; i < (d.parts || 1); i++) {
+      const ps = await getDoc(pgPart(key, i));
+      if (!ps.exists() || ps.data().updatedAt !== d.updatedAt) return null;   // still being written
+      s += ps.data().j;
+    }
+    return { url: s, uw: d.uw, uh: d.uh, w: d.w, h: d.h };
+  } catch (e) { if (window.console) console.error("page picture pull:", e); return null; }
 };
 async function inBatches(list, size, fn) {
   for (let i = 0; i < list.length; i += size) await Promise.all(list.slice(i, i + size).map((x) => fn(x).catch(() => {})));
