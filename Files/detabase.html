@@ -361,7 +361,9 @@
   .pv-count { font-size: .78rem; color: var(--text-muted); }
   .pv-spacer { flex: 1 1 auto; }
   .pv-scroll { flex: 1 1 auto; overflow: auto; -webkit-overflow-scrolling: touch; padding: 14px 0 40px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px; background: var(--surface-2); }
+    /* row-wrap: at reading size one page fills the row, and as you zoom out they fall into a grid */
+    display: flex; flex-flow: row wrap; align-items: flex-start; align-content: flex-start;
+    justify-content: center; gap: 14px; background: var(--surface-2); }
   .pv-page { position: relative; flex: 0 0 auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.14); border-radius: 2px; }
   .pv-page canvas { display: block; width: 100%; height: 100%; border-radius: 2px; }
   .pv-page .pv-num { position: absolute; left: -2px; top: -2px; font-size: .62rem; color: var(--text-muted);
@@ -3206,7 +3208,7 @@
     <span class="pv-spacer"></span>
     <button type="button" id="pvCutBtn" class="tool-btn" title="drag a box around each part you want to keep">✂ Cut parts</button>
     <button type="button" id="pvOut" class="tool-btn" title="zoom out">－</button>
-    <button type="button" id="pvFit" class="tool-btn" title="fit the width">Fit</button>
+    <button type="button" id="pvFit" class="tool-btn" title="back to one page across the screen">Fit</button>
     <button type="button" id="pvIn" class="tool-btn" title="zoom in">＋</button>
   </div>
   <div id="pvScroll" class="pv-scroll"></div>
@@ -3295,7 +3297,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B46</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B47</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8746,7 +8748,7 @@ function __detabaseMain() {
   function pdfWidth() {
     var scroll = $("pvScroll");
     var avail = Math.max(240, (scroll.clientWidth || window.innerWidth) - 28);
-    return Math.min(avail * ((pdfView && pdfView.zoom) || 1), 2400);
+    return Math.max(80, Math.min(avail * ((pdfView && pdfView.zoom) || 1), 2400));
   }
   function pdfLayout() {
     var scroll = $("pvScroll"), doc = pdfView.doc;
@@ -8820,7 +8822,7 @@ function __detabaseMain() {
     if (!pdfView || !pdfView.doc) return;
     var scroll = $("pvScroll");
     var anchor = pdfView.pos ? scroll.scrollTop / Math.max(1, scroll.scrollHeight) : 0;
-    pdfView.zoom = mult ? Math.max(0.5, Math.min(4, pdfView.zoom * mult)) : 1;
+    pdfView.zoom = mult ? Math.max(0.12, Math.min(4, pdfView.zoom * mult)) : 1;
     var W = pdfWidth();
     pdfView.slots.forEach(function (d) {
       var ratio = d.offsetHeight / (d.offsetWidth || 1);
@@ -12838,8 +12840,8 @@ function __detabaseMain() {
   if ($("nbImportPdf")) $("nbImportPdf").addEventListener("click", function () { $("nbPdfFile").click(); });
   if ($("nbPdfFile")) $("nbPdfFile").addEventListener("change", function () { importPdfFiles(this.files); this.value = ""; });
   if ($("pvBack")) $("pvBack").addEventListener("click", closePdf);
-  if ($("pvIn")) $("pvIn").addEventListener("click", function () { pdfZoom(1.25); });
-  if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.25); });
+  if ($("pvIn")) $("pvIn").addEventListener("click", function () { pdfZoom(1.35); });
+  if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.35); });
   if ($("pvFit")) $("pvFit").addEventListener("click", function () { pdfZoom(0); });
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
   if ($("pvCutClear")) $("pvCutClear").addEventListener("click", function () { if (pdfCut) { pdfCut.boxes = []; pdfDrawBoxes(); pdfCutBar(); } });
