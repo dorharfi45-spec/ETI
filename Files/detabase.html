@@ -272,7 +272,7 @@
   .canvas-sizer { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 
   /* ---- Apple Pencil / mouse ink layer ---- */
-  .ink-layer { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 4000; }
+  .ink-layer { position: absolute; top: 0; left: 0; overflow: hidden; pointer-events: none; z-index: 4000; transform-origin: 0 0; }
   .ink-capture { position: absolute; top: 0; left: 0; z-index: 4001; pointer-events: none; touch-action: none;
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .pp-canvas.drawing .ink-capture { pointer-events: auto; cursor: crosshair; }
@@ -3209,7 +3209,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B38</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B39</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -7883,6 +7883,9 @@ function __detabaseMain() {
   });
   if ($("plAllGoals")) $("plAllGoals").addEventListener("click", function () { setPlView("goals"); });
   window.addEventListener("resize", function () { if (plView === "goals" && !$("topfolder-planner").hidden) renderGoalsPage(); });
+  // the ink layer is sized to the visible canvas, so it has to be re-projected whenever that
+  // changes: rotating the iPad, the keyboard opening, entering or leaving the full-screen board
+  window.addEventListener("resize", function () { if (inkMode || !$("problemPane").hidden) { applyNav(); inkProject(); } });
   $("plDayStart").value = store.planner.daySettings.startHour || "06:00";
   if (["day", "week", "month"].indexOf(store.planner.daySettings.calMode) >= 0) plCalMode = store.planner.daySettings.calMode;
   $("plDayStart").addEventListener("input", function () { store.planner.daySettings.startHour = this.value; saveStore(); });
@@ -9225,6 +9228,37 @@ function __detabaseMain() {
     navTx = Math.min(W - m, Math.max(m - navMaxX * navScale, navTx));
     navTy = Math.min(H - m, Math.max(m - navMaxY * navScale, navTy));
   }
+  // ---- the ink layer is drawn in SCREEN space, not board space -------------------------
+  // The board is zoomed with a CSS transform on #ppView. An SVG that lives inside that
+  // transform is rasterized once at its own size (2600x2000 and up) and then stretched by
+  // the GPU, so zooming in never made the handwriting any sharper — it just magnified the
+  // pixels it already had. The ink layer therefore cancels the board transform on itself and
+  // uses a viewBox that follows the pan/zoom: its own drawing space is always the size of the
+  // visible canvas, at screen resolution, so every zoom level re-draws the outlines as vectors.
+  // Cheap, too: the rasterized area is one screenful instead of the whole board squared.
+  var inkProjT = null;
+  var INK_MARGIN = 0.5;   // half a screen of ink is kept ready on every side, so a fast pan never
+                          // slides into a blank edge while the projection waits for the gesture to end
+  function inkProject() {
+    var cv = $("ppCanvas"); if (!cv) return;
+    var il = cv.querySelector("svg.ink-layer"); if (!il) return;
+    var W = Math.max(1, cv.clientWidth || 900), H = Math.max(1, cv.clientHeight || 600);
+    var s = navScale || 1, mx = W * INK_MARGIN, my = H * INK_MARGIN;
+    var vw = W + mx * 2, vh = H + my * 2;
+    il.setAttribute("width", vw); il.setAttribute("height", vh);
+    il.setAttribute("viewBox", ((-navTx - mx) / s).toFixed(2) + " " + ((-navTy - my) / s).toFixed(2) + " " +
+      (vw / s).toFixed(2) + " " + (vh / s).toFixed(2));
+    // undo the board transform, so whatever the zoom is the layer ends up at 1:1 with the screen
+    // and the browser draws the outlines as vectors at full device resolution
+    il.style.transform = "scale(" + (1 / s).toFixed(5) + ") translate(" + (-navTx - mx).toFixed(1) + "px," + (-navTy - my).toFixed(1) + "px)";
+  }
+  // while a pinch / pan is still running the layer just rides along with the board (one GPU
+  // move, no re-render); the projection is rebuilt once the gesture settles
+  function inkProjectSoon() {
+    if (inkProjT) { clearTimeout(inkProjT); inkProjT = setTimeout(function () { inkProjT = null; inkProject(); }, 220); return; }
+    inkProject();
+    inkProjT = setTimeout(function () { inkProjT = null; inkProject(); }, 220);
+  }
   // the board is only promoted to its own compositing layer while it is actually moving; the moment
   // panning / zooming stops the promotion is dropped, so iOS re-draws the ink as vectors at the new
   // scale instead of stretching the bitmap it had rasterized before
@@ -9240,6 +9274,7 @@ function __detabaseMain() {
     var v = $("ppView");
     if (v) v.style.transform = "translate(" + navTx.toFixed(1) + "px," + navTy.toFixed(1) + "px) scale(" + navScale.toFixed(4) + ")";
     navMoving();
+    inkProjectSoon();   // the ink layer re-projects itself so zooming really re-draws it
     if (selItemId) placeItemBar();   // the item bar keeps a constant on-screen size
   }
   function navLoad(p) {
@@ -9320,7 +9355,7 @@ function __detabaseMain() {
     sizer.style.width = maxX + "px";
     sizer.style.height = maxY + "px";
     var il = canvas.querySelector(".ink-layer");
-    il.setAttribute("width", maxX); il.setAttribute("height", maxY); il.setAttribute("viewBox", "0 0 " + maxX + " " + maxY);
+    il.style.transformOrigin = "0 0";   // sized and positioned by inkProject(), in screen space
     var ic = canvas.querySelector(".ink-capture");
     ic.style.width = maxX + "px"; ic.style.height = maxY + "px";
     renderInk(p);
@@ -9714,6 +9749,7 @@ function __detabaseMain() {
     }
     il.innerHTML = h;
     inkLive = il.querySelector(".ink-live");
+    inkProject();          // keep the screen-space projection in step with the new content
     inkSelToolbar(p);
   }
   function inkSnapshot(p) {
