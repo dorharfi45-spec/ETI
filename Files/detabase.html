@@ -751,6 +751,24 @@
   .em-subject:hover { border-color: var(--accent); }
   @media (max-width: 700px) { .vine { flex-wrap: wrap; } .vine-page { max-width: 100%; } }
 
+  /* ---- a subject's own page: its concepts, and its methods as vines ---- */
+  .subj-extras { margin: 30px 0 10px; border-top: 2px solid var(--border-strong); padding-top: 16px; }
+  .se-block { margin-bottom: 18px; }
+  .se-block > summary { font-size: .9rem; font-weight: 700; color: var(--text-secondary); cursor: pointer; padding: 8px 2px; }
+  .se-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .se-head h3 { margin: 0; font-size: 1rem; }
+  .se-new { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--accent);
+    border-radius: 10px; padding: 7px 12px; font-size: .86rem; font-weight: 600; margin-left: auto; }
+  .se-concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; margin: 6px 0 4px; }
+  .se-row { display: flex; align-items: center; gap: 4px; }
+  .se-go { flex: 1; min-width: 0; text-align: left; border: 1px solid var(--border); background: var(--surface-1); border-radius: 9px; padding: 7px 10px; color: var(--text-primary); font-size: .86rem; }
+  .se-go small { display: block; font-size: .72rem; color: var(--text-muted); }
+  .se-go:hover { border-color: var(--accent); }
+  .se-used { font-size: .72rem; color: #be123c; min-width: 34px; text-align: center; }
+  .se-used.none { min-width: 34px; }
+  .se-add { border: 1px solid var(--border); background: var(--bg); border-radius: 9px; padding: 6px 9px; color: var(--text-muted); }
+  .se-add:hover { color: var(--accent); border-color: var(--accent); }
+
   /* ---- the asset picker ---- */
   .mp-searchrow { display: flex; gap: 6px; align-items: center; }
   .mp-searchrow .mp-search { flex: 1; min-width: 0; }
@@ -3205,7 +3223,7 @@
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
-    <span id="buildTag" title="build marker — tell Claude what this says">B62</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B63</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5887,7 +5905,10 @@ function __detabaseMain() {
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
     }
-    setTimeout(function () { try { renderLibBar(); } catch (e) {} }, 0);   // after the branches below settle the open tab
+    setTimeout(function () {                                              // after the branches below settle the open tab
+      try { renderLibBar(); } catch (e) {}
+      try { renderSubjectExtras(shownSubjectKey()); } catch (e) { if (window.console) console.error("subject extras:", e); }
+    }, 0);
     if (onNbBank) {
       nbTab(store.ui.nbTab || "pdfs");
       renderStorageNote();
@@ -13579,6 +13600,77 @@ pdfCutDone();
       if (pages.length > 60) vbox.insertAdjacentHTML("beforeend", '<p class="muted">…and ' + (pages.length - 60) + ' more — narrow it down.</p>');
     }
     host.querySelector(".em-subs").appendChild(subjectCardsEl());
+  }
+  // ============================================================
+  // A SUBJECT'S OWN PAGE — its material, its methods, and the vines of those methods
+  // The subject's raw material is the page you are already looking at, so this adds the two things
+  // it was missing: a flat index of the concepts in it, and its problem-solving pages drawn as vines
+  // with the very same row the main page uses (one tree, scoped — not a second one).
+  // ============================================================
+  function subjectConceptList(key) {
+    var box = document.createElement("div");
+    box.className = "se-concepts";
+    var n = 0;
+    libTabs(key).forEach(function (t) {
+      libCards(t.id).forEach(function (c) {
+        n++;
+        var ref = { lvl: "c", id: c.id };
+        var row = document.createElement("div");
+        row.className = "se-row";
+        var go = document.createElement("button");
+        go.type = "button"; go.className = "se-go";
+        go.innerHTML = '<span>' + escapeHtml(c.name) + '</span><small>' + escapeHtml(t.name) + '</small>';
+        go.addEventListener("click", function () { openRef(ref); });
+        var used = usedInPages(ref).length;
+        var badge = document.createElement("span");
+        badge.className = "se-used" + (used ? "" : " none");
+        badge.textContent = used ? "🧩 " + used : "";
+        var add = document.createElement("button");
+        add.type = "button"; add.className = "se-add"; add.textContent = "＋"; add.title = "add to a clipboard";
+        add.addEventListener("click", function () { chooseBoardAndMine([ref]); });
+        row.appendChild(go); row.appendChild(badge); row.appendChild(add);
+        box.appendChild(row);
+      });
+    });
+    if (!n) box.innerHTML = '<p class="muted">No concepts in this subject yet.</p>';
+    return { el: box, count: n };
+  }
+  function renderSubjectExtras(key) {
+    Array.prototype.forEach.call(document.querySelectorAll(".subj-extras"), function (n) { n.remove(); });
+    if (!key || !refExists({ lvl: "s", id: key })) return;
+    var host = activeSubject ? $("customPane") : $("topfolder-eti");
+    if (!host) return;
+    var sec = document.createElement("section");
+    sec.className = "subj-extras";
+    var pages = psPagesOf(key);
+    var idx = subjectConceptList(key);
+    var det = document.createElement("details");
+    det.className = "se-block";
+    det.innerHTML = '<summary>Concepts in ' + escapeHtml(subjectName(key)) + ' (' + idx.count + ')</summary>';
+    det.appendChild(idx.el);
+    sec.appendChild(det);
+    var meth = document.createElement("div");
+    meth.className = "se-block";
+    meth.innerHTML = '<div class="se-head"><h3>Problem-solving pages (' + pages.length + ')</h3></div>';
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "se-new"; add.textContent = "＋ New problem page";
+    add.addEventListener("click", function () { newProblemPage(key); });
+    meth.querySelector(".se-head").appendChild(add);
+    if (!pages.length) {
+      meth.insertAdjacentHTML("beforeend", '<p class="muted">Nothing yet. Crop a problem out of a PDF and it appears here, with the concepts it uses.</p>');
+    } else {
+      pages.slice().sort(function (a, b) { return a.name.localeCompare(b.name); })
+        .forEach(function (pg) { meth.appendChild(vineRowEl(pg)); });
+    }
+    sec.appendChild(meth);
+    host.appendChild(sec);
+  }
+  // which subject is on screen, built-in or custom
+  function shownSubjectKey() {
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage) return null;
+    if (activeSubject) return "s:" + activeSubject;
+    if (document.body.classList.contains("showing-builtin")) return "f:" + lastEtiFolder;
+    return null;
   }
   function openMiningScreen() {   // ETI's main page
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = true;
