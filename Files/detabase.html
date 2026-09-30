@@ -115,6 +115,13 @@
   .raillist button::before { content: "🧩"; font-size: .95rem; flex-shrink: 0; }
   .raillist button:hover { background: var(--surface-2); color: var(--text-primary); }
   .raillist button.on { background: var(--angle); border-color: var(--angle); color: #fff; }
+  /* ---- swipe a list row to uncover its delete button ---- */
+  .swipe-row { position: relative; touch-action: pan-y; transition: transform .16s ease; }
+  .swipe-row.sw-drag { transition: none; }
+  .swipe-row .sw-del { position: absolute; top: 0; bottom: 0; right: -86px; width: 82px;
+    display: flex; align-items: center; justify-content: center; border-radius: 0 8px 8px 0;
+    background: #c0392b; color: #fff; font-size: .78rem; font-weight: 700; letter-spacing: .02em; }
+  .swipe-row .del-x { display: none !important; }
   .raillist button .del-x { margin-left: auto; opacity: 0; font-weight: 700; padding: 0 4px; border-radius: 5px; flex-shrink: 0; }
   .raillist button:hover .del-x { opacity: .55; }
 
@@ -3305,7 +3312,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B55</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B56</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -5584,12 +5591,10 @@ function __detabaseMain() {
     btn.setAttribute("data-subject", s.id);
     btn.dataset.treekey = key;
     btn.draggable = true;
-    btn.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name) + '<span class="del-x" title="delete subject">✕</span>';
+    btn.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name);
     btn.classList.toggle("on", s.id === activeSubject);
-    btn.addEventListener("click", function (e) {
-      if (e.target.classList.contains("del-x")) { e.stopPropagation(); delSubject(s.id); return; }
-      selectSubject(s.id);
-    });
+    btn.addEventListener("click", function () { selectSubject(s.id); });
+    makeSwipeRow(btn, function () { return s.name; }, function () { delSubject(s.id); });
     return btn;
   }
 
@@ -5646,14 +5651,13 @@ function __detabaseMain() {
       head.draggable = true;
       head.innerHTML = '<span class="caret">▶</span><span class="ficon">' + groupIcon(gid) + '</span>'
         + '<span class="gname">' + escapeHtml(groupName(gid)) + '</span>'
-        + '<span class="gcount">' + keys.length + '</span>'
-        + (custom ? '<span class="del-x" title="delete group">✕</span>' : '');
-      head.addEventListener("click", function (e) {
-        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delGroup(gid); return; }
+        + '<span class="gcount">' + keys.length + '</span>';
+      head.addEventListener("click", function () {
         var closed = !isGroupClosed(gid);
         setGroupClosed(gid, closed);
         wrap.classList.toggle("open", !closed);
       });
+      if (custom) makeSwipeRow(head, function () { return groupName(gid); }, function () { delGroup(gid); });
       head.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); head.click(); }
       });
@@ -5751,7 +5755,7 @@ function __detabaseMain() {
   }
   function delGroup(id) {
     if (BUILTIN_GROUPS[id]) return;
-    if (!confirm('Delete group "' + groupName(id) + '"?  Its subjects move to Base.')) return;
+    if (!confirmDelete(groupName(id))) return;   // its subjects move to Base
     if (store.builtinGroup) Object.keys(store.builtinGroup).forEach(function (f) {
       if (store.builtinGroup[f] === id) delete store.builtinGroup[f];
     });
@@ -5796,12 +5800,10 @@ function __detabaseMain() {
       var b = document.createElement("button");
       b.setAttribute("data-subject", s.id);
       b.draggable = true;
-      b.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name) + '<span class="del-x" title="delete subject">✕</span>';
+      b.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name);
       b.classList.toggle("on", s.id === activeSubject);
-      b.addEventListener("click", function (e) {
-        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delSubject(s.id); return; }
-        selectSubject(s.id);
-      });
+      b.addEventListener("click", function () { selectSubject(s.id); });
+      makeSwipeRow(b, function () { return s.name; }, function () { delSubject(s.id); });
       list.appendChild(b);
     });
   }
@@ -5951,17 +5953,86 @@ function __detabaseMain() {
     renderSubjectList(); selectSubject(s.id);
   }
   function delFolder(id) {
-    if (!confirm('Delete folder "' + topName(id) + '" and all its subjects?')) return;
+    if (!confirmDelete(topName(id))) return;   // and all its subjects
     store.folders = store.folders.filter(function (f) { return f.id !== id; });
     store.subjects.filter(function (s) { return s.folder === id; }).forEach(function (s) { delete store.notes[s.id]; });
     store.subjects = store.subjects.filter(function (s) { return s.folder !== id; });
     saveStore(); renderTopbar();
     if (activeTop === id) selectTop("eti"); else applyView();
   }
+
+  // ---- swipe a row to the left to uncover its delete button ---------------------------
+  // No list row carries a visible ✕ any more: a row is deleted by a deliberate sideways swipe,
+  // then the button it uncovers, then a confirmation. Vertical scrolling stays the browser's
+  // (touch-action: pan-y on the row), so only a sideways drag is ours. Swiping back, tapping the
+  // row, or touching anything else puts the row back without deleting.
+  var SW_W = 86, swipeOpen = null;
+  function confirmDelete(name) {
+    return confirm("האם אתה בטוח שברצונך למחוק את '" + (name || "") + "'? לא ניתן לשחזר.");
+  }
+  function swipeClose() {
+    if (!swipeOpen) return;
+    swipeOpen.style.transform = "";
+    swipeOpen.classList.remove("sw-open");
+    swipeOpen = null;
+  }
+  function makeSwipeRow(row, nameOf, onDelete) {
+    row.classList.add("swipe-row");
+    var del = document.createElement("span");
+    del.className = "sw-del";
+    del.setAttribute("role", "button");
+    del.textContent = "Delete";
+    row.appendChild(del);
+    del.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      swipeClose();
+      if (confirmDelete(nameOf())) onDelete();
+    });
+    var st = null;
+    row.addEventListener("pointerdown", function (e) {
+      if (e.target.closest && e.target.closest(".sw-del")) return;
+      st = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, from: row.classList.contains("sw-open") ? -SW_W : 0, claimed: false };
+    });
+    row.addEventListener("pointermove", function (e) {
+      if (!st || st.id !== e.pointerId) return;
+      var dx = e.clientX - st.x, dy = e.clientY - st.y;
+      if (!st.claimed) {
+        if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy)) return;   // that is a scroll, not a swipe
+        st.claimed = true;
+        if (swipeOpen && swipeOpen !== row) swipeClose();
+        row.classList.add("sw-drag");
+        try { row.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      st.dx = Math.max(-SW_W, Math.min(0, st.from + dx));
+      row.style.transform = "translateX(" + st.dx + "px)";
+    });
+    function end(e) {
+      if (!st || (e && e.pointerId != null && st.id !== e.pointerId)) return;
+      var claimed = st.claimed, dx = st.dx;
+      st = null;
+      row.classList.remove("sw-drag");
+      if (!claimed) return;
+      var open = dx < -SW_W / 2;
+      row.style.transform = open ? "translateX(-" + SW_W + "px)" : "";
+      row.classList.toggle("sw-open", open);
+      if (open) swipeOpen = row; else if (swipeOpen === row) swipeOpen = null;
+    }
+    row.addEventListener("pointerup", end);
+    row.addEventListener("pointercancel", end);
+    row.addEventListener("lostpointercapture", end);
+    // an open row is closed by tapping it, and the tap does not also open the thing behind it
+    row.addEventListener("click", function (e) {
+      if (!row.classList.contains("sw-open")) return;
+      if (e.target.closest && e.target.closest(".sw-del")) return;
+      e.preventDefault(); e.stopPropagation();
+      swipeClose();
+    }, true);
+    return row;
+  }
   function delSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (s && s.folder === "eti") { libDelete({ lvl: "s", id: "s:" + id }); return; }   // ETI subjects cascade through the library
-    if (!s || !confirm('Delete subject "' + s.name + '"?')) return;
+    if (!s || !confirmDelete(s.name)) return;
     store.subjects = store.subjects.filter(function (x) { return x.id !== id; });
     delete store.notes[id]; saveStore();
     if (activeSubject === id) activeSubject = null;
@@ -8652,7 +8723,7 @@ function __detabaseMain() {
   }
   function delPdf(id) {
     var p = pdfById(id); if (!p) return;
-    if (!confirm('Delete "' + (p.name || "PDF") + '"?\nAnything already cut from it stays in the library.')) return;
+    if (!confirmDelete(p.name || "PDF")) return;   // anything already cut from it stays in the library
     pdfForget(id);
     store.pdfs = (store.pdfs || []).filter(function (x) { return x.id !== id; });
     window.DBF.del("pdf_" + id);
@@ -9391,7 +9462,7 @@ function __detabaseMain() {
   }
   function delCanvasDoc(id) {
     var p = canvasDocById(id); if (!p) return;
-    if (!confirm('Delete "' + (p.name || "Untitled") + '"?')) return;
+    if (!confirmDelete(p.name || "Untitled")) return;
     store.canvases = (store.canvases || []).filter(function (x) { return x.id !== id; });
     killCanvas(id);
     saveStore();
@@ -9421,11 +9492,9 @@ function __detabaseMain() {
       var b = document.createElement("button");
       b.setAttribute("data-page", p.id);
       b.classList.toggle("on", p.id === activeProblem);
-      b.innerHTML = escapeHtml(p.name || "Untitled") + '<span class="del-x" title="delete page">✕</span>';
-      b.addEventListener("click", function (e) {
-        if (e.target.classList.contains("del-x")) { e.stopPropagation(); delCanvasDoc(p.id); return; }
-        selectPage(p.id);
-      });
+      b.innerHTML = escapeHtml(p.name || "Untitled");
+      b.addEventListener("click", function () { selectPage(p.id); });
+      makeSwipeRow(b, function () { return p.name || "Untitled"; }, function () { delCanvasDoc(p.id); });
       list.appendChild(b);
     });
   }
@@ -12886,6 +12955,7 @@ pdfCutDone();
     if (inside.length) msg += "\n\nThis also deletes " + inside.join(", ") + " inside it.";
     if (uses.length) msg += "\n\nIt is used on " + uses.length + " board block" + (uses.length === 1 ? "" : "s") + " — they keep a frozen copy.";
     if (links) msg += "\n\n" + links + " link" + (links === 1 ? "" : "s") + " from problem pages will be removed.";
+    msg += "\n\nלא ניתן לשחזר.";
     if (!confirm(msg)) return;
     // freeze the blocks on boards first, while their content still exists
     var touched = {};
@@ -13020,6 +13090,12 @@ pdfCutDone();
   Array.prototype.forEach.call(document.querySelectorAll(".nb-tab"), function (b) {
     b.addEventListener("click", function () { nbTab(b.getAttribute("data-nbtab")); });
   });
+  // an open row closes itself as soon as you touch anything else
+  document.addEventListener("pointerdown", function (e) {
+    if (!swipeOpen) return;
+    if (e.target.closest && e.target.closest(".swipe-row") === swipeOpen) return;
+    swipeClose();
+  }, true);
   sweepOrphanPdfs();
   if ($("nbImportPdf")) $("nbImportPdf").addEventListener("click", function () { $("nbPdfFile").click(); });
   if ($("nbPdfFile")) $("nbPdfFile").addEventListener("change", function () { importPdfFiles(this.files); this.value = ""; });
