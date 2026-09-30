@@ -621,6 +621,13 @@
   .ps-chip-go:hover { color: var(--accent); }
   .ps-chip-x { border: 0; border-left: 1px solid var(--border); background: none; padding: 0 9px; color: var(--text-muted); font-size: .76rem; }
   .ps-chip-x:hover { color: #c0392b; background: var(--surface-2); }
+  .ps-uses { display: flex; align-items: baseline; gap: 8px; width: 100%; text-align: left; margin-top: 8px; padding: 6px 8px;
+    border: 1px solid transparent; border-radius: 8px; background: none; color: var(--text-secondary); font-size: .84rem; }
+  .ps-uses:hover { border-color: var(--border); background: var(--surface-1); }
+  .ps-uses-names { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ps-tap { cursor: pointer; }
+  .ps-tap:hover { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+  #psTitle { cursor: pointer; }
   .ps-attach { border: 1px dashed var(--border-strong); background: none; border-radius: 999px; padding: 5px 12px; font-size: .82rem; color: var(--text-secondary); }
   .ps-attach:hover { border-color: var(--accent); color: var(--accent); }
   .ps-hint { margin-top: 12px; font-size: .86rem; }
@@ -3352,7 +3359,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B60</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B61</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -10543,8 +10550,21 @@ function __detabaseMain() {
     });
   }
 
-  // ---- concepts on a page, or on one stage ----
-  function psAttach(pg, st) {
+  // ---- "Connected concepts" — ONE popup, wherever a page or a stage is tapped -----------
+  // Tapping the page header opens it for the page; tapping a stage opens it for that stage. The
+  // same component does the job in the authoring view and everywhere a vine is browsed, so there is
+  // one place that answers "what does this use?" and one place that changes the answer.
+  function psTargetOf(ref) {
+    if (!ref) return null;
+    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? { pg: pg, st: null, name: pg.name } : null; }
+    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? { pg: sx.page, st: sx.stage, name: stageName(sx.stage, sx.index) } : null; }
+    return null;
+  }
+  function psConceptsOf(ref) {
+    var t = psTargetOf(ref); if (!t) return [];
+    return (t.st ? t.st.assets : psBody(t.pg.id).assets) || [];
+  }
+  function psAttach(pg, st, then) {
     openAssetPicker({
       title: st ? "Concepts used in “" + stageName(st, psBody(pg.id).stages.indexOf(st)) + "”" : "Concepts used in “" + pg.name + "”",
       firstSubject: pg.subject,
@@ -10558,45 +10578,87 @@ function __detabaseMain() {
           have[refKey(r)] = 1; list.push({ lvl: r.lvl, id: r.id }); added++;
         });
         psSaveBody(pg); psRender();
+        if (then) then();
         libToast(added ? "Attached " + added + (added === 1 ? " concept" : " concepts") : "Already attached");
       }
     });
   }
-  function psDetach(pg, st, ref) {
+  function psDetach(pg, st, ref, then) {
     var body = psBody(pg.id);
     var list = st ? st.assets : body.assets;
     var k = refKey(ref);
     var out = (list || []).filter(function (r) { return refKey(r) !== k; });
     if (st) st.assets = out; else body.assets = out;
     psSaveBody(pg); psRender();
+    if (then) then();
   }
   // one concept: tap it to go to it in ETI, tap the ✕ to take it off
-  function psConceptChip(pg, st, ref) {
+  function psConceptChip(t, ref, editable, onChange) {
     var wrap = document.createElement("span");
     wrap.className = "ps-chip";
     var b = document.createElement("button");
     b.type = "button"; b.className = "ps-chip-go";
-    b.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ASSET_LV[ref.lvl] || "") + '</span>' + escapeHtml(refLabel(ref));
-    b.addEventListener("click", function () { openRef(ref); });
-    var x = document.createElement("button");
-    x.type = "button"; x.className = "ps-chip-x"; x.title = "take this concept off"; x.textContent = "✕";
-    x.addEventListener("click", function () { psDetach(pg, st, ref); });
-    wrap.appendChild(b); wrap.appendChild(x);
+    b.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ASSET_LV[ref.lvl] || "") + '</span>' + escapeHtml(refLabel(ref)) + ' ↗';
+    b.addEventListener("click", function () { closeConcepts(); openRef(ref); });
+    wrap.appendChild(b);
+    if (editable) {
+      var x = document.createElement("button");
+      x.type = "button"; x.className = "ps-chip-x"; x.title = "take this concept off"; x.textContent = "✕";
+      x.addEventListener("click", function () { psDetach(t.pg, t.st, ref, onChange); });
+      wrap.appendChild(x);
+    }
     return wrap;
   }
-  function psConceptRow(pg, st, label) {
-    var box = document.createElement("div");
+  // the list itself — the popup shows it, and so can anything else that wants to show a vine
+  function conceptListEl(ref, editable, onChange) {
+    var t = psTargetOf(ref), box = document.createElement("div");
     box.className = "ps-concepts";
-    var list = (st ? st.assets : psBody(pg.id).assets) || [];
-    if (label) box.insertAdjacentHTML("beforeend", '<span class="ps-clabel">' + escapeHtml(label) + '</span>');
-    list.forEach(function (ref) { box.appendChild(psConceptChip(pg, st, ref)); });
-    if (!list.length) box.insertAdjacentHTML("beforeend", '<span class="muted ps-none">none yet</span>');
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "ps-attach"; add.textContent = "🔗 Attach";
-    add.title = "attach a concept from the library";
-    add.addEventListener("click", function () { psAttach(pg, st); });
-    box.appendChild(add);
+    if (!t) return box;
+    var list = psConceptsOf(ref);
+    list.forEach(function (r) { box.appendChild(psConceptChip(t, r, editable, onChange)); });
+    if (!list.length) box.insertAdjacentHTML("beforeend", '<span class="muted ps-none">nothing attached yet</span>');
+    if (editable) {
+      var add = document.createElement("button");
+      add.type = "button"; add.className = "ps-attach"; add.textContent = "🔗 Attach a concept";
+      add.addEventListener("click", function () { psAttach(t.pg, t.st, onChange); });
+      box.appendChild(add);
+    }
     return box;
+  }
+  var conceptsBox = null;
+  function closeConcepts() { if (conceptsBox) { var b = conceptsBox; conceptsBox = null; b.close(true); } }
+  function openConceptsPopup(ref) {
+    var t = psTargetOf(ref); if (!t) return null;
+    closeConcepts();
+    var box = ovOpen("Connected concepts", { onCancel: function () { conceptsBox = null; } });
+    conceptsBox = box;
+    box.body.innerHTML = '<p class="lw-hint">' + (t.st ? "Stage" : "Problem page") + ' · <b>' + escapeHtml(t.name) + '</b></p>';
+    var host = document.createElement("div");
+    box.body.appendChild(host);
+    function draw() {
+      var t2 = psTargetOf(ref);
+      if (!t2) { closeConcepts(); return; }
+      host.innerHTML = "";
+      host.appendChild(conceptListEl(ref, true, draw));
+    }
+    draw();
+    box.buttons([
+      { label: "＋ Add to a clipboard", run: function () { closeConcepts(); chooseBoardAndMine([{ lvl: ref.lvl, id: ref.id }]); } },
+      t.st ? { label: "Open the page", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
+      { label: "Done", primary: true, right: true, run: function () { closeConcepts(); } }
+    ]);
+    return box;
+  }
+  // the one line that says what something uses, and opens the popup when tapped
+  function psUsesLine(ref, label) {
+    var list = psConceptsOf(ref);
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "ps-uses";
+    b.innerHTML = '<span class="ps-clabel">' + escapeHtml(label) + '</span>' +
+      (list.length ? '<span class="ps-uses-names">' + escapeHtml(list.map(refLabel).join(", ")) + '</span>'
+                   : '<span class="muted">nothing yet — tap to attach</span>');
+    b.addEventListener("click", function () { openConceptsPopup(ref); });
+    return b;
   }
 
   function renderPsPane() {
@@ -10612,8 +10674,10 @@ function __detabaseMain() {
     var w = libBlockWidth(docEl) - 4;
     if (body.main) {
       var main = document.createElement("div");
-      main.className = "ps-main";
+      main.className = "ps-main ps-tap";
+      main.title = "what this page uses";
       main.appendChild(psCropBlock(body.main, w - 8));
+      main.addEventListener("click", function () { openConceptsPopup({ lvl: "p", id: pg.id }); });
       docEl.appendChild(main);
     }
     body.stages.forEach(function (st, i) {
@@ -10631,8 +10695,12 @@ function __detabaseMain() {
             '<button type="button" data-a="del" class="danger" title="delete this stage">🗑</button>' +
           '</span>' +
         '</div>';
-      row.appendChild(psCropBlock(st.crop, w - 40));
-      row.appendChild(psConceptRow(pg, st, "uses"));
+      var cropEl = psCropBlock(st.crop, w - 40);
+      cropEl.classList.add("ps-tap");
+      cropEl.title = "what this stage uses";
+      cropEl.addEventListener("click", function () { openConceptsPopup({ lvl: "st", id: st.id }); });
+      row.appendChild(cropEl);
+      row.appendChild(psUsesLine({ lvl: "st", id: st.id }, "uses"));
       row.querySelector('[data-a="up"]').addEventListener("click", function () { psMoveStage(pg, i, -1); });
       row.querySelector('[data-a="down"]').addEventListener("click", function () { psMoveStage(pg, i, 1); });
       row.querySelector('[data-a="ren"]').addEventListener("click", function () { psRenameStage(pg, st, i); });
@@ -10657,7 +10725,7 @@ function __detabaseMain() {
     }
     var as = $("psAssets");
     as.innerHTML = "";
-    as.appendChild(psConceptRow(pg, null, "the page itself uses"));
+    as.appendChild(psUsesLine({ lvl: "p", id: pg.id }, "this page uses"));
     var vine = vineOf(pg.id);
     if (vine.length) {
       var v = document.createElement("p");
@@ -14381,6 +14449,7 @@ pdfCutDone();
   try { renderLibraryEti(); } catch (e) { if (window.console) console.error("renderLibraryEti:", e); }
   try { renderPsRail(); } catch (e) { if (window.console) console.error("renderPsRail:", e); }
   if ($("psNewBtn")) $("psNewBtn").addEventListener("click", function () { newProblemPage(); });
+  if ($("psTitle")) $("psTitle").addEventListener("click", function () { if (activePsPage) openConceptsPopup({ lvl: "p", id: activePsPage }); });
   if ($("psSplit")) $("psSplit").addEventListener("click", function () {
     var pg = psPageById(activePsPage); if (!pg) return;
     if (psBody(pg.id).main) psAddStages(pg); else psSetMain(pg);
