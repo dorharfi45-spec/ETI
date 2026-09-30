@@ -331,7 +331,7 @@
   #ppInkbar.full .ink-tool, #ppInkbar.full .tool-btn { flex: 0 0 auto; }
   #ppInkbar.full .ink-swatches { flex: 0 0 auto; }
   #ppInkbar .ink-spacer { flex: 1 1 8px; min-width: 8px; }
-  #nbLibToggle { flex: 0 0 auto; font-size: 1rem; }
+
   #inkDone { flex: 0 0 auto; font-weight: 700; }
 
   /* ---- long-press "add" menu (shape / graph) ---- */
@@ -439,17 +439,7 @@
   .nb-card .nb-x:hover { color: #dc2626; } .nb-card .nb-ren:hover { color: var(--accent); }
   .nb-bank-tag { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; }
 
-  /* ---- library panel inside the writing page ---- */
-  #nbLib {
-    position: fixed; top: calc(54px + env(safe-area-inset-top)); left: 0; bottom: 0; width: min(400px, 92vw); z-index: 4300;
-    background: var(--bg); border-right: 1px solid var(--border-strong); box-shadow: var(--shadow);
-    display: flex; flex-direction: column; transform: translateX(-102%); transition: transform .18s ease;
-  }
-  #nbLib.open { transform: translateX(0); }
-  .nblib-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 700; }
-  .nblib-head b { flex: 1; }
-  .nblib-head button { border: none; background: transparent; color: var(--text-muted); font-size: 1rem; cursor: pointer; }
-  .nblib-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
   .nblib-sec { padding: 10px 12px; border-bottom: 1px solid var(--border); }
   .nblib-lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
   .nblib-search { width: 100%; box-sizing: border-box; padding: 7px 10px; border-radius: 8px;
@@ -680,18 +670,7 @@
     border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--accent); font-weight: 700; font-size: .95rem; text-align: left; }
   .eti-mining-btn.on { background: var(--accent); color: #fff; }
   body:not(.top-eti) #etiMiningBtn { display: none; }
-  .eti-mining { height: calc(100vh - 190px); min-height: 480px; border: 1px solid var(--border-strong); border-radius: 14px; overflow: hidden; background: var(--bg); box-shadow: var(--shadow); margin-top: 10px; }
-  .eti-mining .mp-tabs { padding: 12px 14px 0; }
-  .eti-mining .mp-tabs button { font-size: 1rem; padding: 11px; }
-  .eti-mining .mp-searchrow { padding: 12px 14px; }
-  .eti-mining .mp-search { font-size: 1.05rem; padding: 12px 14px; }
-  .eti-mining .mp-list { padding: 4px 12px 14px; }
-  .eti-mining .mp-name { font-size: .98rem; }
-  .eti-mining .mp-row label { padding: 8px 6px; }
-  .eti-mining .mp-row input[type=checkbox] { width: 24px; height: 24px; }
-  .eti-mining .mp-head { font-size: .78rem; margin: 16px 8px 6px; }
-  .eti-mining .mp-tray { padding: 12px 14px; }
-  .eti-mining .mp-add { font-size: 1rem; padding: 10px 18px; }
+
   .mb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 6px; }
   .mb-card { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-1); text-align: left; color: var(--text-primary); font-size: .86rem; }
   .mb-card:hover { border-color: var(--accent); }
@@ -728,51 +707,57 @@
   .save-target-bar b { color: #fde047; }
   .save-target-bar button { border: none; background: rgba(255,255,255,.15); color: #fff; border-radius: 999px; width: 24px; height: 24px; }
 
-  /* ---- navigation graph ---- */
+  /* ---- ETI main page: the vines, the search, the subjects ---- */
+  .em-head { display: flex; align-items: baseline; gap: 10px; }
+  .em-head h2 { margin: 0; }
+  #buildTag { font-size: .65rem; color: var(--text-muted); opacity: .6; margin-left: auto; }
+  .eti-main { margin-top: 10px; }
+  .em-searchrow { display: flex; gap: 8px; align-items: center; }
+  .em-search { flex: 1; min-width: 0; padding: 13px 15px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font-size: 1.02rem; }
+  .em-clear { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-muted); border-radius: 10px; padding: 11px 13px; }
+  .em-narrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+  .em-nlabel { font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 700; }
+  .em-clearnarrow { border: none; background: none; color: var(--accent); font-size: .84rem; text-decoration: underline; }
+  .em-rhead { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 12px 2px 4px; }
+  .em-hit { display: flex; gap: 4px; align-items: stretch; }
+  .em-hit-main { flex: 1; min-width: 0; text-align: left; border: 1px solid var(--border); background: var(--surface-1); border-radius: 10px;
+    padding: 8px 11px; color: var(--text-primary); font-size: .9rem; margin-bottom: 4px; }
+  .em-hit-main small { display: block; font-size: .74rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .em-hit-main:hover { border-color: var(--accent); }
+  .em-hit-x { border: 1px solid var(--border); background: var(--bg); border-radius: 10px; padding: 0 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .em-hit-x:hover { color: var(--accent); border-color: var(--accent); }
+  .em-vhead { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); font-weight: 700; margin: 20px 2px 8px; }
+  /* a vine: the page, then the concepts it uses, in stage order */
+  .vine { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1); margin-bottom: 8px; }
+  .vine-page { flex: 0 0 auto; max-width: 34%; text-align: left; border: none; background: none; padding: 0; color: var(--text-primary); }
+  .vine-page b { display: block; font-size: .94rem; line-height: 1.25; }
+  .vine-page small { display: block; font-size: .72rem; color: var(--text-muted); }
+  .vine-page:hover b { color: var(--accent); }
+  .vine-chain { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .vine-arrow { color: var(--text-muted); font-size: .8rem; }
+  .vine-node { border: 1px solid var(--border-strong); background: var(--bg); border-radius: 999px; padding: 5px 12px; font-size: .84rem; color: var(--text-secondary); }
+  .vine-node:hover { border-color: var(--accent); color: var(--accent); }
+  .vine-node.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .vine-empty { font-size: .82rem; }
+  .vine-acts { display: flex; gap: 4px; flex: 0 0 auto; }
+  .vine-acts button { border: 1px solid var(--border); background: var(--bg); border-radius: 9px; padding: 6px 10px; color: var(--text-muted); }
+  .vine-acts button:hover { color: var(--accent); border-color: var(--accent); }
+  .em-subjects { margin-top: 26px; border-top: 1px solid var(--border); padding-top: 14px; }
+  .em-ghead { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 12px 2px 6px; }
+  .em-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .em-subject { text-align: left; border: 1px solid var(--border); background: var(--surface-1); border-radius: 12px; padding: 12px; color: var(--text-primary); }
+  .em-subject b { display: block; font-size: .95rem; }
+  .em-subject small { color: var(--text-muted); font-size: .76rem; }
+  .em-subject:hover { border-color: var(--accent); }
+  @media (max-width: 700px) { .vine { flex-wrap: wrap; } .vine-page { max-width: 100%; } }
+
+  /* ---- the asset picker ---- */
   .mp-searchrow { display: flex; gap: 6px; align-items: center; }
   .mp-searchrow .mp-search { flex: 1; min-width: 0; }
-  .mp-views { display: flex; border: 1px solid var(--border-strong); border-radius: 9px; overflow: hidden; flex-shrink: 0; }
-  .mp-views button { border: none; background: var(--bg); color: var(--text-muted); padding: 8px 10px; font-size: .84rem; font-weight: 600; }
-  .mp-views button.on { background: var(--accent); color: #fff; }
-  .mp-list.graph { padding: 0; overflow: hidden; }
-  .ng-viewport { position: relative; width: 100%; height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; }
-  .ng-viewport.big { overflow: hidden; touch-action: none; cursor: grab; background:
-    radial-gradient(circle, color-mix(in srgb, var(--text-muted) 22%, transparent) 1px, transparent 1.2px) 0 0 / 22px 22px; }
-  .ng-stage { position: relative; transform-origin: 0 0; }
-  .ng-viewport.big .ng-stage { position: absolute; left: 0; top: 0; }
-  .ng-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
-  .ng-edges path { fill: none; stroke: color-mix(in srgb, var(--text-muted) 55%, transparent); stroke-width: 1.6; transition: opacity .15s; }
-  .ng-edges path.hot { stroke: var(--accent); stroke-width: 3; }
-  .ng-viewport.focused .ng-edges path:not(.hot) { opacity: .12; }
-  .ng-head { position: absolute; font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 20px; }
-  .ng-head.title { font-size: .78rem; color: var(--text-secondary); }
-  .ng-node { position: absolute; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 5px 30px 5px 10px;
-    border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); box-shadow: 0 1px 2px rgba(15,23,42,.06); cursor: pointer; user-select: none; -webkit-user-select: none; transition: opacity .15s, box-shadow .15s; }
-  .ng-node .mp-lvl { align-self: flex-start; margin: 0; font-size: .56rem; }
-  .ng-name { font-size: .82rem; line-height: 1.2; color: var(--text-primary); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .ng-node.side-0 { border-left: 4px solid #e11d48; }
-  .ng-node.side-1.lvl-s { border-left: 4px solid #2563eb; } .ng-node.side-1.lvl-t { border-left: 4px solid #16a34a; }
-  .ng-node.side-1.lvl-c { border-left: 4px solid #d97706; } .ng-node.side-1.lvl-e { border-left: 4px solid #a21caf; }
-  .ng-check { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border-strong);
-    font-size: .7rem; line-height: 14px; text-align: center; color: transparent; }
-  .ng-node.sel .ng-check { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .ng-node.sel { box-shadow: 0 0 0 2px var(--accent); }
-  .ng-viewport.focused .ng-node:not(.hot) { opacity: .3; }
-  .ng-node.focus { box-shadow: 0 0 0 3px var(--accent), 0 6px 18px rgba(37,99,235,.25); }
-  .ng-viewport.big .ng-name { font-size: .9rem; }
-  .ng-preview { position: fixed; z-index: 7000; width: 372px; max-height: 60vh; overflow: auto; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: var(--shadow); }
-  .ng-pv-head { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); }
-  .ng-pv-head b { flex: 1; font-size: .9rem; }
-  .ng-pv-head button { border: none; background: transparent; color: var(--text-muted); }
-  .ng-pv-body { padding: 6px 4px; }
 
   /* ---- Mining component ---- */
-  #nbMining { overflow: hidden; }
   .mp { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-  .mp-tabs { display: flex; gap: 4px; padding: 8px 10px 0; }
-  .mp-tabs button { flex: 1; padding: 8px 6px; border-radius: 9px 9px 0 0; border: 1px solid var(--border); border-bottom: none; background: var(--surface-1); color: var(--text-muted); font-weight: 600; font-size: .86rem; }
-  .mp-tabs button.on { background: var(--bg); color: var(--accent); border-color: var(--border-strong); }
-  .mp-searchrow { padding: 8px 10px; border-top: 1px solid var(--border-strong); }
+  .mp-searchrow { padding: 8px 10px; }
   .mp-search { width: 100%; box-sizing: border-box; padding: 9px 11px; border-radius: 9px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font-size: .92rem; }
   .mp-list { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 6px 10px; -webkit-overflow-scrolling: touch; }
   .mp-head { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 12px 6px 4px; }
@@ -1828,7 +1813,7 @@
     </form>
   </div>
 
-  <button type="button" id="etiMiningBtn" class="eti-mining-btn" title="pick assets from both banks and add them to a board">⛏ Mining</button>
+  <button type="button" id="etiMiningBtn" class="eti-mining-btn" title="the vines, the search and every subject">⌂ Methods &amp; concepts</button>
   <button type="button" id="etiHiddenBtn" class="eti-hidden-btn" hidden title="built-in content you hid — tap to bring it back">🙈 Hidden</button>
   <div class="sidebar-label" id="subjectsLabel">Subjects</div>
 
@@ -3218,7 +3203,11 @@
 </div>
 
 <div id="miningPane" hidden>
-  <div id="etiMining" class="eti-mining"></div>
+  <div class="em-head">
+    <h2>Methods &amp; concepts</h2>
+    <span id="buildTag" title="build marker — tell Claude what this says">B62</span>
+  </div>
+  <div id="etiMain" class="eti-main"></div>
 </div>
 
 <div id="psPane" hidden>
@@ -3344,7 +3333,7 @@
 <div id="problemPane" hidden>
   <div class="pp-toolbar"><span class="muted" id="ppBenchCount"></span></div>
   <div id="ppInkbar" class="ink-toolbar">
-    <button type="button" id="nbLibToggle" class="tool-btn" title="Mining — add assets to this board">⛏ Mining</button>
+
     <button type="button" class="ink-tool on" data-inktool="pen" title="pen">✏️</button>
     <button type="button" class="ink-tool" data-inktool="highlight" title="highlighter">🖍️</button>
     <button type="button" class="ink-tool" data-inktool="erase" title="erase — hold the pencil still on the page (~half a second) to toggle">⌫</button>
@@ -3358,10 +3347,7 @@
   <div id="ppAddMenu">
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
-  <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B61</span><button id="nbLibClose" type="button" title="close">✕</button></div>
-    <div class="nblib-scroll" id="nbMining"></div>
-  </div>
+
 </div>
 
 
@@ -5251,6 +5237,7 @@ function __detabaseMain() {
     document.querySelectorAll(".pane").forEach(function (p) {
       p.classList.toggle("on", p.id === "pane-" + target);
     });
+    miningScreen = false;                    // a tab is open now, not the main page
     if (refreshers[target]) { try { refreshers[target](); } catch (e) {} }
     if (typeof libRefresh !== "undefined" && libRefresh[target]) { try { libRefresh[target](); } catch (e) {} }
     try { renderLibBar(); } catch (e) {}
@@ -5925,8 +5912,8 @@ function __detabaseMain() {
       return;
     }
     if (onMining) {
-      $("pageTitle").textContent = "Mining";
-      $("pageSubtitle").innerHTML = 'Pick assets from both banks and add them to a notebook board — nothing is taken out of ETI.';
+      $("pageTitle").textContent = "ETI";
+      $("pageSubtitle").innerHTML = 'Look a method up by the concepts it uses — or search a concept, a page, or what the problem has in it.';
       history.replaceState(null, "", "#mining");
       renderMiningScreen();
     } else if (onPs) {
@@ -5967,7 +5954,8 @@ function __detabaseMain() {
   }
 
   function selectTop(id) {
-    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
+    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null;
+    miningScreen = id === "eti";             // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
@@ -10336,7 +10324,7 @@ function __detabaseMain() {
   }
 
   // ---- problem-solving bank: right rail + page view ----
-  var activePsPage = null, miningScreen = false;
+  var activePsPage = null, miningScreen = true;   // ETI opens on its main page
   // pages are grouped by the subject they belong to, in sidebar order
   function renderPsRail() {
     var nav = $("psRail"); if (!nav) return;
@@ -10417,7 +10405,7 @@ function __detabaseMain() {
     host.className = "ap-host";
     box.body.appendChild(host);
     createMiningPanel(host, {
-      big: true, materialOnly: true, firstSubject: opts.firstSubject,
+      big: true, firstSubject: opts.firstSubject,
       addLabel: opts.addLabel || "Attach",
       onAdd: function (refs) { box.close(true); opts.onPick(refs); }
     });
@@ -12075,7 +12063,7 @@ pdfCutDone();
     function exitInkFull() {
       document.body.classList.remove("ink-full");
       bar.classList.remove("full", "show");
-      var lib = $("nbLib"); if (lib) { lib.classList.remove("open"); lib.hidden = true; }
+
       inkMode = false;
       inkSel = null; inkLassoPts = null;
       $("ppCanvas").classList.remove("drawing");
@@ -12095,8 +12083,6 @@ pdfCutDone();
       if (!document.body.classList.contains("ink-full")) return;
       if (wiz) { if (e.key === "Escape") closeWizard(); return; }   // the save wizard owns the keyboard
       if (e.key === "Escape") {
-        var lib = $("nbLib");
-        if (lib && lib.classList.contains("open")) { lib.classList.remove("open"); return; }
         if (inkSel) { inkSelClear(); return; }
         exitInkFull();
         return;
@@ -12115,23 +12101,6 @@ pdfCutDone();
         inkPasteAt((r.width / 2 - navTx) / navScale - inkClip.w / 2, (r.height / 2 - navTy) / navScale - inkClip.h / 2);
       }
     });
-    // ---- Mining panel (shared component: search + both banks + multi-select) ----
-    var lib = $("nbLib"), miningPanel = null;
-    if (lib) {
-      $("nbLibToggle").addEventListener("click", function () {
-        var open = !lib.classList.contains("open");
-        lib.hidden = false;
-        if (open) {
-          if (!miningPanel) miningPanel = createMiningPanel($("nbMining"), {
-            addLabel: "Add to this board",
-            onAdd: function (refs) { lib.classList.remove("open"); mineToBoard(refs); }
-          });
-          else miningPanel.render();
-        }
-        setTimeout(function () { lib.classList.toggle("open", open); }, 16);
-      });
-      $("nbLibClose").addEventListener("click", function () { lib.classList.remove("open"); });
-    }
 
   })();
 
@@ -13087,29 +13056,29 @@ pdfCutDone();
     return scored.slice(0, 50).map(function (x) { return x.en; });
   }
 
+  // The asset picker: a tree of the library with tick boxes and a tray. It is for CHOOSING assets —
+  // attaching concepts, collecting things onto a clipboard. Browsing and searching the vines is the
+  // main page's job (renderEtiMain), so there is no second tree and no second graph in here.
   function createMiningPanel(host, opts) {
     opts = opts || {};
-    var state = { tab: "m", q: "", sel: [], open: {}, view: "list", focus: null, gv: { x: 0, y: 0, s: 1 } };
+    var state = { q: "", sel: [], open: {} };
     host.innerHTML =
       '<div class="mp' + (opts.big ? ' big' : '') + '">' +
-      '<div class="mp-tabs"' + (opts.materialOnly ? ' hidden' : '') + '><button type="button" data-t="m">🧱 Material</button><button type="button" data-t="p">🧩 Problem solving</button></div>' +
-      '<div class="mp-searchrow"><input type="search" class="mp-search" placeholder="Search by name…" autocomplete="off">' +
-      '<div class="mp-views"><button type="button" data-v="list" title="list">☰</button><button type="button" data-v="graph" title="links between problem pages and assets">⟠ Graph</button></div></div>' +
+      '<div class="mp-searchrow"><input type="search" class="mp-search" placeholder="Search the library by name…" autocomplete="off"></div>' +
       '<div class="mp-list"></div>' +
       '<div class="mp-tray"><div class="mp-tray-items"></div>' +
       '<div class="mp-tray-foot"><span class="mp-count"></span><button type="button" class="mp-clear">Clear</button>' +
-      '<button type="button" class="mp-add">' + escapeHtml(opts.addLabel || "Add to board") + '</button></div></div>' +
+      '<button type="button" class="mp-add">' + escapeHtml(opts.addLabel || "Add") + '</button></div></div>' +
       '</div>';
     var list = host.querySelector(".mp-list"), search = host.querySelector(".mp-search");
+    function cssEsc(s) { return String(s).replace(/["\\]/g, "\\$&"); }
     function isSel(r) { return state.sel.some(function (x) { return refKey(x) === refKey(r); }); }
     function toggle(r) {
       if (isSel(r)) state.sel = state.sel.filter(function (x) { return refKey(x) !== refKey(r); });
       else state.sel.push({ lvl: r.lvl, id: r.id });
       renderTray();
       Array.prototype.forEach.call(host.querySelectorAll('.mp-row[data-k="' + cssEsc(refKey(r)) + '"] input'), function (cb) { cb.checked = isSel(r); });
-      Array.prototype.forEach.call(host.querySelectorAll('.ng-node[data-k="' + cssEsc(refKey(r)) + '"]'), function (n) { n.classList.toggle("sel", isSel(r)); });
     }
-    function cssEsc(s) { return String(s).replace(/["\\]/g, "\\$&"); }
     function row(ref, name, sub, depth, kids) {
       var d = document.createElement("div");
       d.className = "mp-row"; d.setAttribute("data-k", refKey(ref));
@@ -13132,229 +13101,30 @@ pdfCutDone();
       if (state.open[refKey(ref)]) kids.forEach(function (k) { addNode(k, depth + 1); });
     }
     function renderList() {
-      closePreview();
-      list.classList.toggle("graph", state.view === "graph");
-      if (state.view === "graph") { renderGraph(); return; }
       var scroll = list.scrollTop;
       list.innerHTML = "";
       var q = state.q.trim();
-      if (state.tab === "m") {
-        if (q) {
-          var hits = searchEntries(materialIndex(), q, function (en) { return (en.name + " " + refPath(en.ref)).toLowerCase(); });
-          if (!hits.length) list.appendChild(empty("No material matches “" + q + "”."));
-          hits.forEach(function (en) { list.appendChild(row(en.ref, en.name, refPath(en.ref), 0, 0)); });
-        } else {
-          // when the picker belongs to something (a problem page), its own subject comes first
-          var own = opts.firstSubject && refExists({ lvl: "s", id: opts.firstSubject }) ? opts.firstSubject : null;
-          if (own) {
-            list.appendChild(heading("This subject"));
-            if (state.open[refKey({ lvl: "s", id: own })] == null) state.open[refKey({ lvl: "s", id: own })] = 1;
-            addNode({ lvl: "s", id: own }, 0);
-          }
-          allGroupIds().forEach(function (g) {
-            var keys = groupSubjectKeys(g).filter(function (k) { return k !== own; });
-            if (!keys.length) return;
-            list.appendChild(heading(groupName(g)));
-            keys.forEach(function (k) { addNode({ lvl: "s", id: k }, 0); });
-          });
-        }
+      if (q) {
+        var hits = searchEntries(materialIndex(), q, function (en) { return (en.name + " " + refPath(en.ref)).toLowerCase(); });
+        if (!hits.length) list.appendChild(empty("Nothing in the library matches “" + q + "”."));
+        hits.forEach(function (en) { list.appendChild(row(en.ref, en.name, refPath(en.ref), 0, 0)); });
       } else {
-        libEnsure();
-        if (q) {
-          var ph = searchEntries(problemIndex(), q, function (en) { return en.hay; });
-          if (!ph.length) list.appendChild(empty("No problem page matches “" + q + "”."));
-          ph.forEach(function (en) { list.appendChild(row(en.ref, en.name, en.path + (en.assets ? " · uses " + en.assets : ""), 0, 0)); });
-        } else if (!store.ps.pages.length) {
-          list.appendChild(empty("No problem-solving pages yet."));
-        } else {
-          var pkeys = allSubjectKeys().slice(), pseen = {};
-          pkeys.forEach(function (k) { pseen[k] = 1; });
-          store.ps.pages.forEach(function (pg) { var k = pg.subject || ""; if (k && !pseen[k]) { pseen[k] = 1; pkeys.push(k); } });
-          pkeys.forEach(function (key) {
-            var pages = psPagesOf(key); if (!pages.length) return;
-            list.appendChild(heading(subjectName(key)));
-            pages.forEach(function (pg) {
-              var pref = { lvl: "p", id: pg.id }, vine = vineOf(pg.id), sts = psStages(pg.id);
-              list.appendChild(row(pref, pg.name, vine.length ? "uses " + vine.map(refName).join(", ") : "", 0, sts.length));
-              if (state.open[refKey(pref)]) sts.forEach(function (st, i) {
-                list.appendChild(row({ lvl: "st", id: st.id }, stageName(st, i), (st.assets || []).map(refName).join(", "), 1, 0));
-              });
-            });
-          });
+        // when the picker belongs to something (a problem page), its own subject comes first
+        var own = opts.firstSubject && refExists({ lvl: "s", id: opts.firstSubject }) ? opts.firstSubject : null;
+        if (own) {
+          list.appendChild(heading("This subject"));
+          if (state.open[refKey({ lvl: "s", id: own })] == null) state.open[refKey({ lvl: "s", id: own })] = 1;
+          addNode({ lvl: "s", id: own }, 0);
         }
+        allGroupIds().forEach(function (g) {
+          var keys = groupSubjectKeys(g).filter(function (k) { return k !== own; });
+          if (!keys.length) return;
+          list.appendChild(heading(groupName(g)));
+          keys.forEach(function (k) { addNode({ lvl: "s", id: k }, 0); });
+        });
       }
       list.scrollTop = scroll;
     }
-    // ---- navigation graph: problem pages (left) ↔ the assets they use (right), links from ps.pages[].assets ----
-    var preview = null;
-    function closePreview() { if (preview) { preview.remove(); preview = null; } }
-    function openPreview(ref, x, y) {
-      closePreview();
-      preview = document.createElement("div");
-      preview.className = "ng-preview";
-      preview.innerHTML = '<div class="ng-pv-head"><span class="mp-lvl lvl-' + ref.lvl + '">' + ASSET_LV[ref.lvl] + '</span><b>' + escapeHtml(refLabel(ref)) + '</b><button type="button" class="ng-pv-x">✕</button></div><div class="ng-pv-body"></div>';
-      var body = preview.querySelector(".ng-pv-body");
-      body.appendChild(assetBody(ref, 340));
-      preview.querySelector(".ng-pv-x").addEventListener("click", closePreview);
-      preview.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
-      document.body.appendChild(preview);
-      var w = 372, h = Math.min(preview.offsetHeight, window.innerHeight * 0.6);
-      preview.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x + 12)) + "px";
-      preview.style.top = Math.max(8, Math.min(window.innerHeight - h - 8, y - 20)) + "px";
-      setTimeout(function () {
-        document.addEventListener("pointerdown", function h2(ev) { if (preview && !preview.contains(ev.target)) closePreview(); document.removeEventListener("pointerdown", h2, true); }, true);
-      }, 0);
-    }
-    function renderGraph() {
-      libEnsure();
-      list.innerHTML = "";
-      var pages = store.ps.pages.filter(function (pg) { return vineOf(pg.id).some(refExists); });
-      if (!pages.length) { list.appendChild(empty("The graph links problem-solving pages to the concepts they use. Attach concepts to a page or to one of its stages and they appear here.")); return; }
-      var toks = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
-      var assetMap = {}, edges = [], pageNodes = [];
-      pages.forEach(function (pg) {
-        var pk = refKey({ lvl: "p", id: pg.id });
-        pageNodes.push({ key: pk, ref: { lvl: "p", id: pg.id }, name: pg.name, group: subjectName(pg.subject || "") });
-        vineOf(pg.id).filter(refExists).forEach(function (r) {
-          var k = refKey(r);
-          if (!assetMap[k]) assetMap[k] = { key: k, ref: r, name: refName(r), group: refPath(r) || ASSET_LV[r.lvl] };
-          edges.push([pk, k]);
-        });
-      });
-      var assetNodes = Object.keys(assetMap).map(function (k) { return assetMap[k]; });
-      if (toks.length) {   // keep what matches, plus whatever it links to
-        var direct = {}, keep = {};
-        pageNodes.concat(assetNodes).forEach(function (n) {
-          var hay = (n.name + " " + n.group).toLowerCase();
-          if (toks.every(function (t) { return hay.indexOf(t) >= 0; })) { direct[n.key] = 1; keep[n.key] = 1; }
-        });
-        edges.forEach(function (e) { if (direct[e[0]]) keep[e[1]] = 1; if (direct[e[1]]) keep[e[0]] = 1; });
-        pageNodes = pageNodes.filter(function (n) { return keep[n.key]; });
-        assetNodes = assetNodes.filter(function (n) { return keep[n.key]; });
-        edges = edges.filter(function (e) { return keep[e[0]] && keep[e[1]]; });
-        if (!pageNodes.length && !assetNodes.length) { list.appendChild(empty("Nothing in the graph matches “" + state.q.trim() + "”.")); return; }
-      }
-      var byGroup = function (a, b) { return a.group.localeCompare(b.group) || a.name.localeCompare(b.name); };
-      pageNodes.sort(byGroup); assetNodes.sort(byGroup);
-      var big = !!opts.big, pad = 16, nodeH = big ? 54 : 48, gap = 8, headH = 24;
-      var avail = (list.clientWidth || (big ? 900 : 380)) - pad * 2;
-      var colW = big ? 250 : Math.max(130, Math.floor((avail - 44) / 2)), mid = big ? Math.max(120, Math.min(320, avail - colW * 2)) : 44;
-      var xs = [pad, pad + colW + mid], pos = {}, heads = [], nodes = [];
-      [pageNodes, assetNodes].forEach(function (col, ci) {
-        var y = pad + 26, last = null;
-        heads.push({ x: xs[ci], y: pad, text: ci ? "Assets" : "Problem pages", title: true });
-        col.forEach(function (n) {
-          if (n.group !== last) { last = n.group; heads.push({ x: xs[ci], y: y, text: n.group }); y += headH; }
-          pos[n.key] = { x: xs[ci], y: y };
-          nodes.push({ n: n, x: xs[ci], y: y, side: ci });
-          y += nodeH + gap;
-        });
-        col.h = y;
-      });
-      var W = pad * 2 + colW * 2 + mid, H = Math.max(pageNodes.h || 0, assetNodes.h || 0) + pad;
-      var vp = document.createElement("div");
-      vp.className = "ng-viewport" + (big ? " big" : "");
-      var stage = document.createElement("div");
-      stage.className = "ng-stage";
-      stage.style.width = W + "px"; stage.style.height = H + "px";
-      var paths = edges.map(function (e) {
-        var a = pos[e[0]], b = pos[e[1]]; if (!a || !b) return "";
-        var x1 = a.x + colW, y1 = a.y + nodeH / 2, x2 = b.x, y2 = b.y + nodeH / 2, cx = (x2 - x1) * 0.5;
-        return '<path data-a="' + escapeHtml(e[0]) + '" data-b="' + escapeHtml(e[1]) + '" d="M' + x1 + ' ' + y1 + ' C' + (x1 + cx) + ' ' + y1 + ' ' + (x2 - cx) + ' ' + y2 + ' ' + x2 + ' ' + y2 + '"/>';
-      }).join("");
-      stage.innerHTML = '<svg class="ng-edges" width="' + W + '" height="' + H + '">' + paths + '</svg>' +
-        heads.map(function (h) { return '<div class="ng-head' + (h.title ? ' title' : '') + '" style="left:' + h.x + 'px;top:' + h.y + 'px;width:' + colW + 'px">' + escapeHtml(h.text) + '</div>'; }).join("");
-      nodes.forEach(function (it) {
-        var d = document.createElement("div");
-        d.className = "ng-node side-" + it.side + " lvl-" + it.n.ref.lvl + (isSel(it.n.ref) ? " sel" : "");
-        d.setAttribute("data-k", it.n.key);
-        d.style.left = it.x + "px"; d.style.top = it.y + "px"; d.style.width = colW + "px"; d.style.height = nodeH + "px";
-        d.innerHTML = '<span class="mp-lvl lvl-' + it.n.ref.lvl + '">' + ASSET_LV[it.n.ref.lvl] + '</span><span class="ng-name">' + escapeHtml(it.n.name) + '</span><span class="ng-check">✓</span>';
-        d._ref = it.n.ref;
-        stage.appendChild(d);
-      });
-      vp.appendChild(stage);
-      list.appendChild(vp);
-      var adj = {};
-      edges.forEach(function (e) { (adj[e[0]] = adj[e[0]] || {})[e[1]] = 1; (adj[e[1]] = adj[e[1]] || {})[e[0]] = 1; });
-      function applyFocus() {
-        var f = state.focus && pos[state.focus] ? state.focus : null;
-        vp.classList.toggle("focused", !!f);
-        Array.prototype.forEach.call(stage.querySelectorAll(".ng-node"), function (n) {
-          var k = n.getAttribute("data-k");
-          n.classList.toggle("hot", !!f && (k === f || !!(adj[f] && adj[f][k])));
-          n.classList.toggle("focus", k === f);
-        });
-        Array.prototype.forEach.call(stage.querySelectorAll(".ng-edges path"), function (p) {
-          p.classList.toggle("hot", !!f && (p.getAttribute("data-a") === f || p.getAttribute("data-b") === f));
-        });
-      }
-      function applyGV() { if (big) stage.style.transform = "translate(" + state.gv.x.toFixed(1) + "px," + state.gv.y.toFixed(1) + "px) scale(" + state.gv.s.toFixed(3) + ")"; }
-      applyGV(); applyFocus();
-      // pointer handling: tap a node = select it for adding + highlight its links; hold = preview;
-      // tap empty space = clear the highlight. The big (ETI) graph also pans with a drag and zooms with pinch / wheel.
-      var ptrs = {}, down = null, holdT = null, pinch = null;
-      vp.addEventListener("pointerdown", function (e) {
-        ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
-        var ids = Object.keys(ptrs);
-        if (ids.length === 2 && big) {
-          clearTimeout(holdT); down = null;
-          var a = ptrs[ids[0]], b = ptrs[ids[1]];
-          pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, s: state.gv.s, x: state.gv.x, y: state.gv.y, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
-          return;
-        }
-        if (ids.length > 1) return;
-        var node = e.target.closest(".ng-node");
-        down = { id: e.pointerId, x: e.clientX, y: e.clientY, node: node, gx: state.gv.x, gy: state.gv.y, moved: false };
-        if (big) { try { vp.setPointerCapture(e.pointerId); } catch (_) {} }
-        clearTimeout(holdT);
-        if (node) holdT = setTimeout(function () { if (down && !down.moved) { down.held = true; openPreview(node._ref, down.x, down.y); } }, 480);
-      });
-      vp.addEventListener("pointermove", function (e) {
-        if (!ptrs[e.pointerId]) return;
-        ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
-        if (pinch) {
-          var ids = Object.keys(ptrs); if (ids.length < 2) return;
-          var a = ptrs[ids[0]], b = ptrs[ids[1]], r = vp.getBoundingClientRect();
-          var s = Math.max(0.3, Math.min(2.5, pinch.s * (Math.hypot(a.x - b.x, a.y - b.y) || 1) / pinch.d));
-          var cx = pinch.mx - r.left, cy = pinch.my - r.top;
-          state.gv.s = s;
-          state.gv.x = cx - (cx - pinch.x) * (s / pinch.s) + ((a.x + b.x) / 2 - pinch.mx);
-          state.gv.y = cy - (cy - pinch.y) * (s / pinch.s) + ((a.y + b.y) / 2 - pinch.my);
-          applyGV(); return;
-        }
-        if (!down || e.pointerId !== down.id) return;
-        if (!down.moved && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) { down.moved = true; clearTimeout(holdT); }
-        if (down.moved && big) { state.gv.x = down.gx + (e.clientX - down.x); state.gv.y = down.gy + (e.clientY - down.y); applyGV(); }
-      });
-      function up(e) {
-        if (!ptrs[e.pointerId]) return;
-        delete ptrs[e.pointerId];
-        if (pinch) { if (Object.keys(ptrs).length < 2) pinch = null; return; }
-        if (!down || e.pointerId !== down.id) return;
-        clearTimeout(holdT);
-        var d = down; down = null;
-        if (e.type === "pointercancel" || d.moved || d.held) return;
-        if (d.node) { toggle(d.node._ref); state.focus = d.node.getAttribute("data-k"); }
-        else state.focus = null;
-        applyFocus();
-      }
-      vp.addEventListener("pointerup", up);
-      vp.addEventListener("pointercancel", up);
-      if (big) vp.addEventListener("wheel", function (e) {
-        e.preventDefault();
-        var r = vp.getBoundingClientRect(), cx = e.clientX - r.left, cy = e.clientY - r.top;
-        var s = Math.max(0.3, Math.min(2.5, state.gv.s * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
-        state.gv.x = cx - (cx - state.gv.x) * (s / state.gv.s); state.gv.y = cy - (cy - state.gv.y) * (s / state.gv.s); state.gv.s = s;
-        applyGV();
-      }, { passive: false });
-    }
-    function setView(v) {
-      state.view = v;
-      Array.prototype.forEach.call(host.querySelectorAll(".mp-views button"), function (b) { b.classList.toggle("on", b.getAttribute("data-v") === v); });
-      renderList();
-    }
-    Array.prototype.forEach.call(host.querySelectorAll(".mp-views button"), function (b) { b.addEventListener("click", function () { setView(b.getAttribute("data-v")); }); });
     function renderTray() {
       var box = host.querySelector(".mp-tray-items");
       box.innerHTML = "";
@@ -13365,18 +13135,11 @@ pdfCutDone();
         ch.querySelector("button").addEventListener("click", function () { toggle(r); });
         box.appendChild(ch);
       });
-      host.querySelector(".mp-count").textContent = state.sel.length ? state.sel.length + " selected" : "Tick items to add them";
+      host.querySelector(".mp-count").textContent = state.sel.length ? state.sel.length + " selected" : "Tick what you want";
       host.querySelector(".mp-add").disabled = !state.sel.length;
       host.querySelector(".mp-clear").hidden = !state.sel.length;
       host.querySelector(".mp-tray").classList.toggle("has", !!state.sel.length);
     }
-    function setTab(t) {
-      state.tab = t;
-      Array.prototype.forEach.call(host.querySelectorAll(".mp-tabs button"), function (b) { b.classList.toggle("on", b.getAttribute("data-t") === t); });
-      search.placeholder = t === "m" ? "Search material by name…" : "Search pages, tags, concepts…";
-      renderList();
-    }
-    Array.prototype.forEach.call(host.querySelectorAll(".mp-tabs button"), function (b) { b.addEventListener("click", function () { setTab(b.getAttribute("data-t")); }); });
     var st;
     search.addEventListener("input", function () { clearTimeout(st); st = setTimeout(function () { state.q = search.value; renderList(); }, 140); });
     host.querySelector(".mp-clear").addEventListener("click", function () { state.sel = []; renderTray(); renderList(); });
@@ -13386,7 +13149,7 @@ pdfCutDone();
       state.sel = []; renderTray(); renderList();
       if (opts.onAdd) opts.onAdd(refs);
     });
-    setTab("m"); setView("list"); renderTray();
+    renderList(); renderTray();
     return {
       render: function () { renderList(); renderTray(); },
       clear: function () { state.sel = []; renderTray(); renderList(); },
@@ -13582,16 +13345,246 @@ pdfCutDone();
     saveStore();
     selectGroupOnBoard(p, [], kids.map(function (it) { return it.id; }));
   };
-  // ---- ETI's Mining screen: the same component, full size; the target board is chosen on add ----
-  var etiMiningPanel = null;
-  function openMiningScreen() {
+  // ============================================================
+  // ETI'S MAIN PAGE — the vines, the search, and the subjects, in one place
+  // This is the ONLY mining / tree surface in the app. A vine is drawn as what it is: the problem
+  // page, then the concepts it uses in stage order. Tapping a concept narrows the view to the vines
+  // that use it, and tapping another narrows again — which is how you look a method up by what it
+  // needs rather than by what it is called.
+  // ============================================================
+  var mainQ = "", mainNarrow = [], mainTag = null;
+  function entryRef(e) {   // a search-index entry → a library ref
+    if (!e || !e.id) return null;
+    return e.id.indexOf("pane:") === 0 ? { lvl: "t", id: "b:" + e.id.slice(5) } : { lvl: "c", id: e.id };
+  }
+  function narrowHas(ref) { var k = refKey(ref); return mainNarrow.some(function (r) { return refKey(r) === k; }); }
+  function narrowAdd(ref) {
+    if (narrowHas(ref)) return;
+    mainNarrow.push({ lvl: ref.lvl, id: ref.id });
+    mainQ = "";            // the concept is the question now; the words that found it are not
+    renderEtiMain();
+  }
+  function narrowDrop(ref) {
+    var k = refKey(ref);
+    mainNarrow = mainNarrow.filter(function (r) { return refKey(r) !== k; });
+    renderEtiMain();
+  }
+  function narrowClear() { mainNarrow = []; mainTag = null; renderEtiMain(); }
+  // the vines on show: narrowed by the concepts picked, then by the tag, then by the words typed
+  function mainVines() {
+    libEnsure();
+    var pages = mainNarrow.length ? vinesContaining(mainNarrow) : store.ps.pages.slice();
+    if (mainTag) {
+      var want = {};
+      searchIndex.forEach(function (e) {
+        if (e.tags.indexOf(mainTag) < 0) return;
+        var r = entryRef(e); if (r) want[refKey(r)] = 1;
+      });
+      pages = pages.filter(function (pg) { return vineOf(pg.id).some(function (r) { return want[refKey(r)]; }); });
+    }
+    var q = mainQ.trim().toLowerCase();
+    if (q) {
+      var toks = q.split(/\s+/).filter(Boolean);
+      pages = pages.filter(function (pg) {
+        var hay = [pg.name, subjectName(pg.subject || ""), (pg.tags || []).join(" "), vineOf(pg.id).map(refName).join(" ")].join(" ").toLowerCase();
+        return toks.every(function (t) { return hay.indexOf(t) >= 0; });
+      });
+    }
+    return pages;
+  }
+  // one vine: the page, then its concepts in order
+  function vineRowEl(pg) {
+    var row = document.createElement("div");
+    row.className = "vine";
+    var head = document.createElement("button");
+    head.type = "button"; head.className = "vine-page";
+    head.innerHTML = '<b>' + escapeHtml(pg.name) + '</b><small>' + escapeHtml(subjectName(pg.subject || "")) +
+      ((pg.tags || []).length ? " · " + escapeHtml(pg.tags.join(" · ")) : "") + '</small>';
+    head.addEventListener("click", function () { selectPsPage(pg.id); });
+    row.appendChild(head);
+    var chain = document.createElement("div");
+    chain.className = "vine-chain";
+    var vine = vineOf(pg.id);
+    if (!vine.length) chain.innerHTML = '<span class="muted vine-empty">no concepts attached yet</span>';
+    vine.forEach(function (ref, i) {
+      if (i) chain.insertAdjacentHTML("beforeend", '<span class="vine-arrow">→</span>');
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "vine-node lvl-" + ref.lvl + (narrowHas(ref) ? " on" : "");
+      b.textContent = refName(ref);
+      b.title = narrowHas(ref) ? "already narrowing by this" : "show only methods that use this";
+      b.addEventListener("click", function () { narrowAdd(ref); });
+      chain.appendChild(b);
+    });
+    row.appendChild(chain);
+    var acts = document.createElement("div");
+    acts.className = "vine-acts";
+    var add = document.createElement("button");
+    add.type = "button"; add.title = "add this page to a clipboard"; add.textContent = "＋";
+    add.addEventListener("click", function () { chooseBoardAndMine([{ lvl: "p", id: pg.id }]); });
+    var info = document.createElement("button");
+    info.type = "button"; info.title = "connected concepts"; info.textContent = "🔗";
+    info.addEventListener("click", function () { openConceptsPopup({ lvl: "p", id: pg.id }); });
+    acts.appendChild(info); acts.appendChild(add);
+    row.appendChild(acts);
+    return row;
+  }
+  function mainResultsEl() {
+    var q = mainQ.trim();
+    var box = document.createElement("div");
+    box.className = "em-results";
+    if (!q) return box;
+    function section(title) { box.insertAdjacentHTML("beforeend", '<div class="em-rhead">' + escapeHtml(title) + '</div>'); }
+    function hitRow(label, sub, onMain, extra) {
+      var row = document.createElement("div");
+      row.className = "em-hit";
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "em-hit-main";
+      b.innerHTML = '<span>' + escapeHtml(label) + '</span>' + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '');
+      b.addEventListener("click", onMain);
+      row.appendChild(b);
+      (extra || []).forEach(function (x) {
+        var e = document.createElement("button");
+        e.type = "button"; e.className = "em-hit-x"; e.textContent = x.label; e.title = x.title || "";
+        e.addEventListener("click", x.run);
+        row.appendChild(e);
+      });
+      box.appendChild(row);
+    }
+    var concepts = searchEntries(materialIndex(), q, function (en) { return (en.name + " " + refPath(en.ref)).toLowerCase(); }).slice(0, 8);
+    if (concepts.length) {
+      section("Concepts");
+      concepts.forEach(function (en) {
+        hitRow(en.name, refPath(en.ref), function () { narrowAdd(en.ref); }, [
+          { label: "↗", title: "go to it in ETI", run: function () { openRef(en.ref); } },
+          { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
+        ]);
+      });
+    }
+    var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).slice(0, 8);
+    if (pages.length) {
+      section("Problem pages");
+      pages.forEach(function (en) {
+        hitRow(en.name, en.path + (en.assets ? " · uses " + en.assets : ""), function () { selectPsPage(en.ref.id); }, [
+          { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
+        ]);
+      });
+    }
+    // situations: the tag search, matched against everything ETI holds
+    var ql = q.toLowerCase();
+    var tags = availableTags().filter(function (t) { return t.label.toLowerCase().indexOf(ql) >= 0 || t.id.indexOf(ql) >= 0; }).slice(0, 6);
+    if (tags.length) {
+      section("The problem has…");
+      tags.forEach(function (t) {
+        hitRow(t.label, mainTag === t.id ? "filtering by this" : "", function () {
+          mainTag = mainTag === t.id ? null : t.id;
+          renderEtiMain();
+        });
+      });
+    }
+    if (!concepts.length && !pages.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
+    return box;
+  }
+  function subjectCardsEl() {
+    var box = document.createElement("div");
+    box.className = "em-subjects";
+    allGroupIds().forEach(function (g) {
+      var keys = groupSubjectKeys(g); if (!keys.length) return;
+      box.insertAdjacentHTML("beforeend", '<div class="em-ghead">' + escapeHtml(groupName(g)) + '</div>');
+      var grid = document.createElement("div");
+      grid.className = "em-grid";
+      keys.forEach(function (k) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "em-subject";
+        var nPages = psPagesOf(k).length, nTabs = libTabs(k).length;
+        b.innerHTML = '<b>' + escapeHtml(subjectName(k)) + '</b><small>' + nTabs + (nTabs === 1 ? " tab" : " tabs") +
+          " · " + nPages + (nPages === 1 ? " page" : " pages") + '</small>';
+        b.addEventListener("click", function () { openSubjectRef(k); });
+        grid.appendChild(b);
+      });
+      box.appendChild(grid);
+    });
+    return box;
+  }
+  function renderEtiMain() {
+    var host = $("etiMain"); if (!host) return;
+    libEnsure();
+    host.innerHTML =
+      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search concepts, problem pages, or what the problem has in it…" autocomplete="off">' +
+      '<button type="button" class="em-clear" title="clear">✕</button></div>' +
+      '<div class="em-narrow"></div><div class="em-res"></div>' +
+      '<div class="em-vines"></div><div class="em-subs"></div>';
+    var input = host.querySelector(".em-search");
+    input.value = mainQ;
+    var st;
+    input.addEventListener("input", function () {
+      clearTimeout(st);
+      st = setTimeout(function () { mainQ = input.value; renderEtiMain(); }, 160);
+    });
+    host.querySelector(".em-clear").addEventListener("click", function () { mainQ = ""; renderEtiMain(); });
+    // what we are narrowing by
+    var nb = host.querySelector(".em-narrow");
+    if (mainNarrow.length || mainTag) {
+      nb.insertAdjacentHTML("beforeend", '<span class="em-nlabel">Methods that use</span>');
+      mainNarrow.forEach(function (ref) {
+        var chip = document.createElement("span");
+        chip.className = "ps-chip";
+        chip.innerHTML = '<span class="ps-chip-go">' + escapeHtml(refName(ref)) + '</span>';
+        var x = document.createElement("button");
+        x.type = "button"; x.className = "ps-chip-x"; x.textContent = "✕"; x.title = "stop narrowing by this";
+        x.addEventListener("click", function () { narrowDrop(ref); });
+        chip.appendChild(x);
+        nb.appendChild(chip);
+      });
+      if (mainTag) {
+        var t = SIT_TAGS.filter(function (x) { return x.id === mainTag; })[0];
+        var tc = document.createElement("span");
+        tc.className = "ps-chip";
+        tc.innerHTML = '<span class="ps-chip-go">with ' + escapeHtml(t ? t.label : mainTag) + '</span>';
+        var tx = document.createElement("button");
+        tx.type = "button"; tx.className = "ps-chip-x"; tx.textContent = "✕";
+        tx.addEventListener("click", function () { mainTag = null; renderEtiMain(); });
+        tc.appendChild(tx);
+        nb.appendChild(tc);
+      }
+      if (mainNarrow.length) {
+        var addAll = document.createElement("button");
+        addAll.type = "button"; addAll.className = "ps-attach";
+        addAll.textContent = "＋ Add these to a clipboard";
+        addAll.addEventListener("click", function () { chooseBoardAndMine(mainNarrow.slice()); });
+        nb.appendChild(addAll);
+      }
+      var clr = document.createElement("button");
+      clr.type = "button"; clr.className = "em-clearnarrow"; clr.textContent = "Start over";
+      clr.addEventListener("click", narrowClear);
+      nb.appendChild(clr);
+    }
+    host.querySelector(".em-res").appendChild(mainResultsEl());
+    var vbox = host.querySelector(".em-vines");
+    var pages = mainVines();
+    var total = (store.ps.pages || []).length;
+    vbox.insertAdjacentHTML("beforeend", '<div class="em-vhead">' +
+      (mainNarrow.length || mainTag || mainQ.trim()
+        ? escapeHtml(pages.length + (pages.length === 1 ? " method" : " methods") + " of " + total)
+        : escapeHtml(total ? "All " + total + (total === 1 ? " method" : " methods") : "Methods")) + '</div>');
+    if (!total) {
+      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No problem-solving pages yet. Crop one out of a PDF with “+ New problem page”, split it into stages, and attach the concepts it uses — then they show up here as vines.</p>');
+    } else if (!pages.length) {
+      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No method uses all of those together. Take one off to widen the search.</p>');
+    } else {
+      pages.sort(function (a, b) {
+        return subjectName(a.subject || "").localeCompare(subjectName(b.subject || "")) || a.name.localeCompare(b.name);
+      });
+      pages.slice(0, 60).forEach(function (pg) { vbox.appendChild(vineRowEl(pg)); });
+      if (pages.length > 60) vbox.insertAdjacentHTML("beforeend", '<p class="muted">…and ' + (pages.length - 60) + ' more — narrow it down.</p>');
+    }
+    host.querySelector(".em-subs").appendChild(subjectCardsEl());
+  }
+  function openMiningScreen() {   // ETI's main page
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = true;
     applyView(); renderEtiTree();
   }
-  function renderMiningScreen() {
-    if (!etiMiningPanel) etiMiningPanel = createMiningPanel($("etiMining"), { big: true, addLabel: "Add to a board…", onAdd: chooseBoardAndMine });
-    else etiMiningPanel.render();
-  }
+  function renderMiningScreen() { renderEtiMain(); }
   function chooseBoardAndMine(refs) {
     var ov = document.createElement("div");
     ov.className = "lw-overlay";
@@ -13601,7 +13594,7 @@ pdfCutDone();
     document.body.appendChild(ov);
     function close() { ov.remove(); }
     function go(openBoard) { close(); openBoard(); mineToBoard(refs); libToast("Added " + refs.length + " asset" + (refs.length === 1 ? "" : "s") + " — drag them into place"); }
-    ov.querySelector(".lw-x").addEventListener("click", function () { close(); if (etiMiningPanel) etiMiningPanel.select(refs); });   // cancel keeps the selection
+    ov.querySelector(".lw-x").addEventListener("click", function () { close(); });
     var inp = ov.querySelector(".lw-new input");
     function makeNew() { var n = inp.value.trim(); go(function () { addPage(n); }); }
     ov.querySelector(".lw-new button").addEventListener("click", makeNew);
@@ -13876,7 +13869,7 @@ pdfCutDone();
     try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
     renderEtiTree(); renderLibraryEti(); ensureOpenTabs(); renderPsRail(); renderHiddenBtn();
     applyView();
-    if (etiMiningPanel) etiMiningPanel.render();
+    if (miningScreen) { try { renderEtiMain(); } catch (e) {} }
   }
 
   // ---- restore hidden built-ins ----
