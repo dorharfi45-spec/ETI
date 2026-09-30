@@ -3298,7 +3298,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B52</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B53</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -9028,6 +9028,7 @@ function __detabaseMain() {
     }
     if (pvGest) {
       if (pdfView && pdfView.pagesEl) pdfView.pagesEl.style.transform = "";
+      if ($("pvScroll")) $("pvScroll").removeEventListener("touchmove", pvTouchMove);
       pvGest = null;
     }
   }
@@ -9047,6 +9048,9 @@ function __detabaseMain() {
     pvGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft,
                k: 1, ox: i.mx - r.left, oy: i.my - r.top };
     pdfView.pagesEl.style.transformOrigin = pvGest.ox + "px " + pvGest.oy + "px";
+    // the move handler has to block the browser's own panning, so it is only attached while two
+    // fingers are really down — one-finger scrolling then never waits for this code at all
+    $("pvScroll").addEventListener("touchmove", pvTouchMove, { passive: false });
   }
   function pvTouchMove(e) {
     if (!pvGest) return;
@@ -9064,6 +9068,7 @@ function __detabaseMain() {
     var k = pvGest.k;
     if (pdfView && pdfView.pagesEl) pdfView.pagesEl.style.transform = "";
     pvGest = null;
+    if ($("pvScroll")) $("pvScroll").removeEventListener("touchmove", pvTouchMove);
     if (k > 1.04 || k < 0.96) pdfZoom(k);    // draw the pages properly at the size it ended on
     else pdfSweep();
   }
@@ -11975,12 +11980,14 @@ pdfCutDone();
         el.removeEventListener("pointermove", mv);
         el.removeEventListener("pointerup", up);
         el.removeEventListener("pointercancel", up);
+        el.removeEventListener("lostpointercapture", up);
         if (moved) saveStore(); else undoDrop(p);
       }
       function up(ev) { if (ev.pointerId === pid) finish(); }
       el.addEventListener("pointermove", mv);
       el.addEventListener("pointerup", up);
       el.addEventListener("pointercancel", up);
+      el.addEventListener("lostpointercapture", up);   // iOS can take a gesture away without a pointerup
     });
 
     var ta = el.querySelector(".note-ta");
@@ -12012,11 +12019,13 @@ pdfCutDone();
         rz.removeEventListener("pointermove", mv);
         rz.removeEventListener("pointerup", up);
         rz.removeEventListener("pointercancel", up);
+        rz.removeEventListener("lostpointercapture", up);
         if (moved) saveStore(); else undoDrop(p);
       }
       rz.addEventListener("pointermove", mv);
       rz.addEventListener("pointerup", up);
       rz.addEventListener("pointercancel", up);
+      rz.addEventListener("lostpointercapture", up);
     });
   }
 
@@ -12984,6 +12993,43 @@ pdfCutDone();
   if ($("pvIn")) $("pvIn").addEventListener("click", function () { pdfZoom(1.35); });
   if ($("pvOut")) $("pvOut").addEventListener("click", function () { pdfZoom(1 / 1.35); });
   if ($("pvFit")) $("pvFit").addEventListener("click", function () { pdfZoom(0); });
+
+  // ---- interaction watchdog ----------------------------------------------------------
+  // Every stuck-feeling bug in this app has had the same shape: a gesture kept its state after the
+  // fingers were gone, because the lift was never reported (iOS cancels a touch whenever it takes
+  // a gesture over). The symptoms are taps that need several goes, a tool that will not start, and
+  // — because boardBusy() reads these same flags — remote updates that queue up for ever.
+  // So: no gesture state may outlive its pointers. This notices when the screen has been untouched
+  // for three seconds while something still claims to be in progress, and puts it back to rest.
+  var ptrDown = 0, ptrGone = 0, ptrLast = 0;
+  document.addEventListener("pointerdown", function () { ptrDown++; ptrLast = Date.now(); }, true);
+  function ptrRelease() { ptrDown = Math.max(0, ptrDown - 1); ptrLast = Date.now(); if (!ptrDown) ptrGone = ptrLast; }
+  document.addEventListener("pointerup", ptrRelease, true);
+  document.addEventListener("pointercancel", ptrRelease, true);
+  function interactionCheck() {
+    var now = Date.now();
+    // even the count can be lied to: if no pointer event at all has arrived for a while, the
+    // fingers are long gone, and the grace period counts from the last thing we actually heard
+    if (ptrDown && ptrLast && now - ptrLast > 4000) { ptrDown = 0; ptrGone = ptrLast; }
+    if (ptrDown || !ptrGone || now - ptrGone < 3000) return;
+    var fixed = [];
+    if (itemGesture) { itemGesture = false; fixed.push("item drag"); }
+    if (lassoDrag) { lassoDrag = null; fixed.push("lasso"); }
+    if (inkDrawing) { inkDrawing = false; inkCur = null; fixed.push("stroke"); }
+    if (pdfDraw || pvGest) { pdfResetInput(); fixed.push("pdf gesture"); }
+    if (!fixed.length) return;
+    ptrGone = 0;
+    if (window.console) console.warn("gesture state cleared after " + fixed.join(" + ") + " was left behind");
+  }
+  setInterval(interactionCheck, 2000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) interactionCheck(); });
+  // what the app thinks is going on — for reading back from a device with no console
+  window.__detabaseState = function () {
+    return { pointersDown: ptrDown, itemDrag: itemGesture, lasso: !!lassoDrag, stroke: inkDrawing,
+             useMode: useItemId || null, selection: !!inkSel, boardBusy: boardBusy(),
+             pdfCutting: !!pdfCut, pdfLoop: !!pdfDraw, pdfPinch: !!pvGest,
+             storeKB: Math.round((localStorage.getItem(LS_KEY) || "").length / 1024) };
+  };
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
   if ($("pvCutClear")) $("pvCutClear").addEventListener("click", pdfCutDone);
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
@@ -12992,8 +13038,7 @@ pdfCutDone();
     // two fingers always move and zoom. Nothing is bound to the document, so nothing here can
     // slow scrolling down anywhere else in the app.
     $("pvScroll").addEventListener("pointerdown", pdfCutPointer);
-    $("pvScroll").addEventListener("touchstart", pvTouchStart, { passive: false });
-    $("pvScroll").addEventListener("touchmove", pvTouchMove, { passive: false });
+    $("pvScroll").addEventListener("touchstart", pvTouchStart, { passive: true });
     $("pvScroll").addEventListener("touchend", pvTouchEnd);
     $("pvScroll").addEventListener("touchcancel", pvTouchEnd);
     var pvT = null;
@@ -13049,6 +13094,13 @@ pdfCutDone();
 
     var pts = {}, g = null, moved = false, lpT = null, lpAt = null, lassoId = null, lassoPend = null;
     function ids() { return Object.keys(pts); }
+    // a finger whose lift was never reported must not haunt the next gesture: any point that has
+    // not been heard from for three seconds is dropped before a new one is taken
+    function prunePts() {
+      var now = Date.now();
+      ids().forEach(function (k) { if (now - (pts[k].t || 0) > 3000) delete pts[k]; });
+      if (!ids().length) g = null;
+    }
     // ---- multi-finger tap recognizer: counts EVERY finger on the board (over items too), from the
     // first finger down until the last one lifts. A "tap" = short, no finger travelled; its size is
     // the MAX number of fingers seen (lifting 3 fingers passes through 2, so we never judge mid-lift).
@@ -13056,6 +13108,7 @@ pdfCutDone();
     var tap = null, lastTap = { n: 0, t: 0, streak: false }, tapClip = null;
     var TAP_MS = 320, TAP_GAP = 450, STREAK_GAP = 800, TAP_SLOP = 14;
     function tapDown(e) {
+      if (tap && Date.now() - tap.t0 > 4000) tap = null;   // a tap whose fingers never lifted is not a tap
       if (!tap) tap = { t0: Date.now(), max: 0, live: {}, moved: false, cancelled: false };
       tap.live[e.pointerId] = { x: e.clientX, y: e.clientY };
       tap.max = Math.max(tap.max, Object.keys(tap.live).length);
@@ -13114,6 +13167,7 @@ pdfCutDone();
     cv.addEventListener("pointerdown", function (e) {
       if (e.pointerType !== "touch") return;
       if (!document.body.classList.contains("ink-full")) return;
+      prunePts();   // drop any point whose lift was never reported
       if (inkDrawing) return;
       // a finger reaches whatever item is visually underneath — e.target here is usually
       // .ink-capture (it sits on top so the pencil can draw over items), so hit-test by point.
@@ -13127,7 +13181,7 @@ pdfCutDone();
       // opens the add menu, like in every other tool; a second finger turns it into pan / pinch
       if (lassoPend) {
         clearTimeout(lpT); lpT = null;
-        pts[lassoPend.id] = { x: lassoPend.x, y: lassoPend.y };
+        pts[lassoPend.id] = { x: lassoPend.x, y: lassoPend.y, t: Date.now() };
         lassoPend = null;
       } else if (!underClip && inkTool === "lasso" && ids().length === 0 && lassoId == null) {
         lassoPend = { id: e.pointerId, x: e.clientX, y: e.clientY };
@@ -13137,7 +13191,7 @@ pdfCutDone();
         }, 480);
         return;
       }
-      pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+      pts[e.pointerId] = { x: e.clientX, y: e.clientY, t: Date.now() };
       moved = false;
       clearTimeout(lpT); lpT = null;
       if (ids().length === 1 && !underClip) {
@@ -13161,7 +13215,7 @@ pdfCutDone();
       }
       if (lassoId === e.pointerId) { e.preventDefault(); lassoTo(ppContentXY(e.clientX, e.clientY)); return; }
       if (!pts[e.pointerId]) return;
-      pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+      pts[e.pointerId] = { x: e.clientX, y: e.clientY, t: Date.now() };
       if (lpAt && Math.hypot(e.clientX - lpAt.x, e.clientY - lpAt.y) > 9) { moved = true; clearTimeout(lpT); lpT = null; }
       e.preventDefault();
       update();
