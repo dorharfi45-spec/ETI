@@ -115,12 +115,16 @@
   .raillist button::before { content: "🧩"; font-size: .95rem; flex-shrink: 0; }
   .raillist button:hover { background: var(--surface-2); color: var(--text-primary); }
   .raillist button.on { background: var(--angle); border-color: var(--angle); color: #fff; }
-  /* ---- swipe a list row to uncover its delete button ---- */
-  .swipe-row { position: relative; touch-action: pan-y; transition: transform .16s ease; }
-  .swipe-row.sw-drag { transition: none; }
-  .swipe-row .sw-del { position: absolute; top: 0; bottom: 0; right: -86px; width: 82px;
-    display: flex; align-items: center; justify-content: center; border-radius: 0 8px 8px 0;
-    background: #c0392b; color: #fff; font-size: .78rem; font-weight: 700; letter-spacing: .02em; }
+  /* ---- swipe a list row to uncover its delete button ----
+     The button lives inside the row and the row clips it, so it is nowhere to be seen until a
+     swipe pulls it out from under the right edge — and it goes back under on the way out. */
+  .swipe-row { position: relative; overflow: hidden; touch-action: pan-y; }
+  .swipe-row .sw-del { position: absolute; top: 0; bottom: 0; right: 0; width: 84px;
+    display: flex; align-items: center; justify-content: center;
+    background: #c0392b; color: #fff; font-size: .78rem; font-weight: 700; letter-spacing: .02em;
+    transform: translateX(calc(100% + 2px)); transition: transform .16s ease; }   /* the 2px keeps rounding from showing an edge */
+  .swipe-row.sw-drag .sw-del { transition: none; }
+  .swipe-row.sw-open .sw-del { transform: translateX(0); }
   .swipe-row .del-x { display: none !important; }
   .raillist button .del-x { margin-left: auto; opacity: 0; font-weight: 700; padding: 0 4px; border-radius: 5px; flex-shrink: 0; }
   .raillist button:hover .del-x { opacity: .55; }
@@ -3312,7 +3316,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B56</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B57</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -5963,18 +5967,22 @@ function __detabaseMain() {
 
   // ---- swipe a row to the left to uncover its delete button ---------------------------
   // No list row carries a visible ✕ any more: a row is deleted by a deliberate sideways swipe,
-  // then the button it uncovers, then a confirmation. Vertical scrolling stays the browser's
-  // (touch-action: pan-y on the row), so only a sideways drag is ours. Swiping back, tapping the
-  // row, or touching anything else puts the row back without deleting.
-  var SW_W = 86, swipeOpen = null;
+  // then the button it uncovers, then a confirmation. The button sits inside the row, pushed just
+  // past its right edge and clipped by it, so nothing shows until the swipe pulls it out — and the
+  // swipe pulls it back under on the way out. Vertical scrolling stays the browser's
+  // (touch-action: pan-y), so only a clearly sideways drag is ours.
+  var SW_W = 84, swipeOpen = null;
   function confirmDelete(name) {
     return confirm("האם אתה בטוח שברצונך למחוק את '" + (name || "") + "'? לא ניתן לשחזר.");
   }
+  function swipeSet(row, dx) {   // dx runs from 0 (hidden) to -SW_W (fully out)
+    if (row._swDel) row._swDel.style.transform = "translateX(" + (SW_W + dx) + "px)";
+  }
   function swipeClose() {
     if (!swipeOpen) return;
-    swipeOpen.style.transform = "";
-    swipeOpen.classList.remove("sw-open");
-    swipeOpen = null;
+    var row = swipeOpen; swipeOpen = null;
+    row.classList.remove("sw-open", "sw-drag");
+    if (row._swDel) row._swDel.style.transform = "";   // back to the stylesheet: out of sight
   }
   function makeSwipeRow(row, nameOf, onDelete) {
     row.classList.add("swipe-row");
@@ -5983,15 +5991,18 @@ function __detabaseMain() {
     del.setAttribute("role", "button");
     del.textContent = "Delete";
     row.appendChild(del);
+    row._swDel = del;
     del.addEventListener("click", function (e) {
       e.preventDefault(); e.stopPropagation();
+      var name = nameOf();
       swipeClose();
-      if (confirmDelete(nameOf())) onDelete();
+      if (confirmDelete(name)) onDelete();
     });
     var st = null;
     row.addEventListener("pointerdown", function (e) {
       if (e.target.closest && e.target.closest(".sw-del")) return;
-      st = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, from: row.classList.contains("sw-open") ? -SW_W : 0, claimed: false };
+      st = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0,
+             from: row.classList.contains("sw-open") ? -SW_W : 0, claimed: false };
     });
     row.addEventListener("pointermove", function (e) {
       if (!st || st.id !== e.pointerId) return;
@@ -6004,7 +6015,7 @@ function __detabaseMain() {
         try { row.setPointerCapture(e.pointerId); } catch (_) {}
       }
       st.dx = Math.max(-SW_W, Math.min(0, st.from + dx));
-      row.style.transform = "translateX(" + st.dx + "px)";
+      swipeSet(row, st.dx);
     });
     function end(e) {
       if (!st || (e && e.pointerId != null && st.id !== e.pointerId)) return;
@@ -6012,15 +6023,20 @@ function __detabaseMain() {
       st = null;
       row.classList.remove("sw-drag");
       if (!claimed) return;
-      var open = dx < -SW_W / 2;
-      row.style.transform = open ? "translateX(-" + SW_W + "px)" : "";
-      row.classList.toggle("sw-open", open);
-      if (open) swipeOpen = row; else if (swipeOpen === row) swipeOpen = null;
+      if (dx < -SW_W / 2) {
+        row.classList.add("sw-open");
+        del.style.transform = "";        // the open rule takes it from here
+        swipeOpen = row;
+      } else {
+        row.classList.remove("sw-open");
+        del.style.transform = "";        // and the closed rule tucks it back under
+        if (swipeOpen === row) swipeOpen = null;
+      }
     }
     row.addEventListener("pointerup", end);
     row.addEventListener("pointercancel", end);
     row.addEventListener("lostpointercapture", end);
-    // an open row is closed by tapping it, and the tap does not also open the thing behind it
+    // an open row is closed by tapping it, and that tap does not reach what is behind it
     row.addEventListener("click", function (e) {
       if (!row.classList.contains("sw-open")) return;
       if (e.target.closest && e.target.closest(".sw-del")) return;
