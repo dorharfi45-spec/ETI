@@ -377,7 +377,10 @@
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
   /* ---- marking the parts to keep ---- */
   .pv-bar .tool-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  /* with a pencil in the house the finger keeps scrolling while cutting; without one it has to
+     draw, or there would be no way to mark anything at all */
   #pdfView.cutting .pv-page { cursor: crosshair; touch-action: none; }
+  #pdfView.cutting.pen .pv-page { touch-action: pan-x pan-y; }
   #pdfView.cutting .pv-scroll { background: var(--surface-3, var(--surface-2)); }
   .pv-marks { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
   .pv-marks polygon { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: var(--accent);
@@ -888,7 +891,12 @@
     font-size: .85rem;
     font-family: inherit;
     transition: background .12s, border-color .12s;
+    /* without this, iOS waits ~300ms on every tap in case it is the start of a double-tap zoom —
+       which is exactly what made every button in the app feel slow to answer */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
+  input, select, textarea, label, summary, a { touch-action: manipulation; }
   button:hover { background: var(--surface-2); }
   button.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 
@@ -3298,7 +3306,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B53</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B54</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8898,6 +8906,7 @@ function __detabaseMain() {
     if (pdfCut) { pdfCutEnd(); return; }
     pdfCut = { marks: [] };
     $("pdfView").classList.add("cutting");
+    pdfPenClass();
     $("pvCutBtn").classList.add("on");
     pdfDrawMarks(); pdfCutBar();
   }
@@ -8915,7 +8924,8 @@ function __detabaseMain() {
     if (!pdfCut) return;
     var n = pdfCut.marks.length;
     $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") +
-      "Draw a loop around each part · two fingers to move and zoom · a loop that touches a part joins it";
+      (penSeen ? "Draw a loop with the pencil · your finger scrolls · two fingers zoom"
+               : "Draw a loop around each part · two fingers to move and zoom");
     $("pvCutSave").disabled = !n;
   }
   function pdfSlotUnits(d) { return d && d._uw ? { w: d._uw, h: d._uh } : null; }
@@ -9076,6 +9086,8 @@ function __detabaseMain() {
   // ---- one finger / the pencil: draw a loop ----
   function pdfCutPointer(e) {
     if (!pdfCut || !pdfView || pvGest) return;
+    // the pencil draws; the finger is for reading, unless this device has no pencil
+    if (e.pointerType === "touch" && penSeen) return;
     if (e.target.closest && e.target.closest(".pv-mark-tag")) return;
     var d = e.target.closest ? e.target.closest(".pv-page") : null;
     if (!d) return;
@@ -13002,7 +13014,22 @@ pdfCutDone();
   // So: no gesture state may outlive its pointers. This notices when the screen has been untouched
   // for three seconds while something still claims to be in progress, and puts it back to rest.
   var ptrDown = 0, ptrGone = 0, ptrLast = 0;
-  document.addEventListener("pointerdown", function () { ptrDown++; ptrLast = Date.now(); }, true);
+  // Has this device ever been written on with a pencil? If it has, the finger is left free to
+  // scroll while cutting and only the pencil draws loops. If it never has, the finger must draw,
+  // or there would be no way to mark anything at all. Remembered, so it holds from the first
+  // moment of the next session.
+  var penSeen = !!(store.ui && store.ui.penSeen);
+  document.addEventListener("pointerdown", function (e) {
+    ptrDown++; ptrLast = Date.now();
+    if (e.pointerType === "pen" && !penSeen) {
+      penSeen = true;
+      store.ui.penSeen = 1; saveStore();
+      pdfPenClass(); pdfCutBar();
+    }
+  }, true);
+  function pdfPenClass() {
+    var v = $("pdfView"); if (v) v.classList.toggle("pen", penSeen);
+  }
   function ptrRelease() { ptrDown = Math.max(0, ptrDown - 1); ptrLast = Date.now(); if (!ptrDown) ptrGone = ptrLast; }
   document.addEventListener("pointerup", ptrRelease, true);
   document.addEventListener("pointercancel", ptrRelease, true);
