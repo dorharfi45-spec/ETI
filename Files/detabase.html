@@ -599,6 +599,13 @@
   .ps-assets { display: flex; flex-wrap: wrap; gap: 6px; }
   .ps-asset { border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px; padding: 5px 12px; font-size: .84rem; color: var(--text-secondary); }
   .ps-asset:hover { color: var(--accent); border-color: var(--accent); }
+  /* a problem page: the main crop, then its stages in order */
+  .ps-crop { display: block; }
+  .ps-crop img { display: block; max-width: 100%; border-radius: 8px; }
+  .ps-stage { margin-top: 12px; padding: 10px; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-1); }
+  .ps-stage-head { font-size: .82rem; color: var(--text-secondary); margin-bottom: 6px; }
+  .ps-stage-assets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .asset-stage { font-size: .72rem; color: var(--text-muted); margin: 8px 0 4px; }
   .ps-lvl { font-size: .65rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-right: 6px; }
   /* save wizard */
   .lw-overlay { position: fixed; inset: 0; z-index: 6000; background: rgba(15,23,42,.35); display: flex; align-items: center; justify-content: center; padding: 16px; }
@@ -750,6 +757,7 @@
   .mp-lvl.lvl-s { background: #dbeafe; color: #1d4ed8; } .mp-lvl.lvl-t { background: #dcfce7; color: #15803d; }
   .mp-lvl.lvl-c { background: #fef3c7; color: #b45309; } .mp-lvl.lvl-e { background: #fae8ff; color: #a21caf; }
   .mp-lvl.lvl-p { background: #ffe4e6; color: #be123c; }
+  .mp-lvl.lvl-st { background: #e0e7ff; color: #4338ca; }
   .mp-tray { border-top: 1px solid var(--border-strong); padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: var(--surface-1); }
   .mp-tray-items { display: flex; flex-wrap: wrap; gap: 4px; max-height: 22vh; overflow-y: auto; }
   .mp-tray.has .mp-tray-items { margin-bottom: 8px; }
@@ -3316,7 +3324,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B57</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B58</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -3332,7 +3340,7 @@
   <div id="railProblems">
     <div class="sidebar-label">Problem solving</div>
     <nav class="raillist" id="psRail"></nav>
-    <p class="rail-hint">The problem-solving bank — topics, subtopics and pages saved from the notebook with the lasso.</p>
+    <p class="rail-hint">Problem-solving pages, grouped by the subject they belong to.</p>
   </div>
   <div id="railPages">
     <div class="sidebar-label">Notebook pages</div>
@@ -5317,7 +5325,7 @@ function __detabaseMain() {
     if (canvasCache[id]) return canvasCache[id];
     var c = { items: [], ink: [], ts: 0 };
     var pc = window.DBX.get(id);
-    if (pc) { c.items = pc.items || []; c.ink = pc.ink || []; c.ts = pc.ts || 0; if (pc.nav) c.nav = pc.nav; }
+    if (pc) { c.items = pc.items || []; c.ink = pc.ink || []; c.ts = pc.ts || 0; if (pc.nav) c.nav = pc.nav; if (pc.ps) c.ps = pc.ps; }
     canvasCache[id] = c;
     return c;
   }
@@ -5326,6 +5334,9 @@ function __detabaseMain() {
     // which made the whole put fail. Strokes are plain data already (and are never mutated in place).
     var doc = { items: JSON.parse(JSON.stringify(c.items || [])), ink: c.ink || [], ts: c.ts || Date.now() };
     if (c.nav) doc.nav = c.nav;   // view position is per-device: kept locally, never pushed to the cloud
+    // a problem-solving page's body: its main crop and its stages. It lives HERE, not in the store's
+    // metadata, because a crop carries polys — nested arrays, which sync/main refuses outright.
+    if (c.ps) doc.ps = JSON.parse(JSON.stringify(c.ps));
     window.DBX.put(id, doc);
   }
   // a deleted canvas must never be resurrected by another device's sync sweep
@@ -5345,14 +5356,14 @@ function __detabaseMain() {
     if (canvasSaveTimers[id]) clearTimeout(canvasSaveTimers[id]);
     canvasSaveTimers[id] = setTimeout(function () {
       canvasSaveTimers[id] = null;
-      if (typeof window.cloudSaveCanvas === "function") window.cloudSaveCanvas(id, { items: c.items, ink: c.ink, ts: c.ts });
+      if (typeof window.cloudSaveCanvas === "function") window.cloudSaveCanvas(id, { items: c.items, ink: c.ink, ps: c.ps, ts: c.ts });
     }, 1200);
   }
   function allCanvasesObj() {
     var out = {};
-    window.DBX.ids().forEach(function (id) { var d = window.DBX.get(id); if (d) out[id] = { items: d.items, ink: d.ink, ts: d.ts }; });
+    window.DBX.ids().forEach(function (id) { var d = window.DBX.get(id); if (d) out[id] = { items: d.items, ink: d.ink, ps: d.ps, ts: d.ts }; });
     // include any in-memory canvases not yet flushed
-    Object.keys(canvasCache).forEach(function (id) { out[id] = { items: canvasCache[id].items, ink: canvasCache[id].ink, ts: canvasCache[id].ts }; });
+    Object.keys(canvasCache).forEach(function (id) { out[id] = { items: canvasCache[id].items, ink: canvasCache[id].ink, ps: canvasCache[id].ps, ts: canvasCache[id].ts }; });
     return out;
   }
   // write a bundle of canvases (from a backup / sync file) into local storage
@@ -5361,7 +5372,7 @@ function __detabaseMain() {
     return Promise.all(Object.keys(obj).map(function (id) {
       var c = obj[id]; if (!c) return null;
       delete canvasCache[id];
-      return window.DBX.put(id, { items: c.items || [], ink: c.ink || [], ts: c.ts || Date.now() });
+      return window.DBX.put(id, { items: c.items || [], ink: c.ink || [], ps: c.ps, ts: c.ts || Date.now() });
     }));
   }
   // remote canvas arrived from another device (called by the Firebase module) — including the
@@ -5387,6 +5398,7 @@ function __detabaseMain() {
     delete canvasCache[id];
     var fresh = loadCanvas(id);
     if (navKeep && !fresh.nav) fresh.nav = navKeep;
+    try { var pgx = psPageById(id); if (pgx) psSyncCache(pgx); } catch (e) {}   // the vine cache follows the body
     var cp = curProblem();
     if (cp && cp.id === id) {
       setBench(cp, fresh.items);
@@ -5483,7 +5495,7 @@ function __detabaseMain() {
       if (had && !localStorage.getItem("detabase.v1.pre-pdf")) localStorage.setItem("detabase.v1.pre-pdf", localStorage.getItem(LS_KEY) || "");
     } catch (e) {}
     store.tabs = []; store.cards = []; store.elements = [];
-    store.ps = { topics: [], subtopics: [], pages: [] };
+    store.ps = { pages: [] };
     store.etiEdits = { names: {}, hidden: {} };
     store.subjects = (store.subjects || []).filter(function (s) { return s.folder !== "eti"; });
     store.schema = 4;
@@ -9522,16 +9534,17 @@ function __detabaseMain() {
   //   Tab      "b:<pane target>" built-in (Unit circle…)  | store.tabs  "ut_…" {subject}
   //   Card     built-in block's data-el key (the squares)   | store.cards "uc_…" {tab}
   //   Element  store.elements "ue_…" {card} — the smallest block; its content lives in a canvas doc with the same id
-  // Problem solving: store.ps = { topics[{id,name}], subtopics[{id,topic,name}], pages[{id,subtopic,name,assets[ref],created}] }
-  //   (page content in a canvas doc with the page id)
-  // Asset refs: { lvl: "s" | "t" | "c" | "e", id }
+  // Problem solving: store.ps = { pages[{id, subject, name, tags[], assets[ref], created, legacy?}] }
+  //   A page belongs to ONE subject. Its BODY — main crop, stages, attached assets — lives in the
+  //   page's canvas doc (see psBody); pages[].assets is only a flat search cache of that body.
+  // Asset refs: { lvl: "s" | "t" | "c" | "e" | "p" | "st", id }   ("p" a page, "st" one of its stages)
   // ============================================================
   function libEnsure() {
     store.tabs = store.tabs || [];
     store.cards = store.cards || [];
     store.elements = store.elements || [];
     store.ps = store.ps || {};
-    store.ps.topics = store.ps.topics || []; store.ps.subtopics = store.ps.subtopics || []; store.ps.pages = store.ps.pages || [];
+    store.ps.pages = store.ps.pages || [];
     store.etiEdits = store.etiEdits || { hidden: {}, names: {} };
   }
   // B30 saved one level too high (group=subject, folder=tab, pane=card, block=element) — shift it down
@@ -9561,6 +9574,48 @@ function __detabaseMain() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
   libEnsure();
+
+  // ---- schema 5: problem-solving pages move under their Subject ----
+  // Topics and subtopics are gone. A page belongs to exactly one subject: the old topic name becomes
+  // that subject (or matches one that already exists), and the old subtopic name survives as a tag so
+  // tag search can still find it. A page that was written by hand keeps its canvas doc and is marked
+  // legacy — its content is shown under the crops, so nothing is thrown away. The whole store is
+  // backed up to localStorage first, exactly as the earlier schema changes did.
+  (function migrateVines() {
+    if (store.schema >= 5) return;
+    var ps = store.ps || {};
+    var hadOld = (ps.topics && ps.topics.length) || (ps.subtopics && ps.subtopics.length) ||
+                 (ps.pages || []).some(function (pg) { return pg.subtopic; });
+    try {
+      if (hadOld && !localStorage.getItem("detabase.v1.pre-vines")) localStorage.setItem("detabase.v1.pre-vines", localStorage.getItem(LS_KEY) || "");
+    } catch (e) {}
+    function subjectKeyNamed(name) {
+      var want = String(name || "").trim().toLowerCase(), hit = null;
+      allSubjectKeys().forEach(function (k) { if (!hit && subjectName(k).trim().toLowerCase() === want) hit = k; });
+      if (hit) return hit;
+      var s = { id: uid("s_"), folder: "eti", name: String(name || "").trim() || "Unfiled", group: "base" };
+      store.subjects.push(s);
+      return "s:" + s.id;
+    }
+    var unfiled = null;
+    (ps.pages || []).forEach(function (pg) {
+      if (pg.subject) return;
+      var st = byId(ps.subtopics || [], pg.subtopic || ""), tp = st && byId(ps.topics || [], st.topic);
+      pg.subject = tp ? subjectKeyNamed(tp.name) : (unfiled = unfiled || subjectKeyNamed("Unfiled"));
+      pg.tags = (pg.tags || []).slice();
+      if (st && st.name && pg.tags.indexOf(st.name) < 0) pg.tags.push(st.name);
+      delete pg.subtopic;
+      var b = psBody(pg.id);                       // the links it already had become page-level assets
+      b.assets = (pg.assets || []).map(function (r) { return { lvl: r.lvl, id: r.id }; });
+      pg.legacy = 1;                               // its doc holds hand-written content, not crops
+      psSyncCache(pg);
+      saveCanvas(pg.id);
+    });
+    delete store.ps.topics;
+    delete store.ps.subtopics;
+    store.schema = 5;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
 
   function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function btnLabel(b) {   // "2.2 Unit circle"
@@ -9627,6 +9682,8 @@ function __detabaseMain() {
     if (ref.lvl === "s") return subjectName(ref.id);
     if (ref.lvl === "t") return tabLabel(ref.id);
     if (ref.lvl === "c") return cardLabel(ref.id);
+    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? pg.name : "(deleted page)"; }
+    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? stageName(sx.stage, sx.index) : "(deleted stage)"; }
     var e = byId(store.elements, ref.id); return e ? e.name : "(deleted element)";
   }
   // board item → asset ref (things mined from the library)
@@ -9635,7 +9692,85 @@ function __detabaseMain() {
     if (it.cardId) { var k = String(it.cardId); return k.indexOf("pane:") === 0 ? { lvl: "t", id: "b:" + k.slice(5) } : { lvl: "c", id: k }; }
     return null;
   }
+  // ---- problem-solving pages: subject, crops, stages, vine ------------------------------
+  // A page is a main crop plus an ordered, flat list of stages; stages cannot be split further.
+  // The body lives in the page's canvas doc because crops carry polys, and nested arrays are exactly
+  // what sync/main refuses. store.ps.pages[].assets mirrors the body's refs as a flat search cache,
+  // so the vine tree and search still work on a device whose docs have not arrived yet.
+  //   body = { main: <clip>|null, stages: [ { id, name, crop: <clip>, assets: [ref] } ], assets: [ref] }
+  // The VINE is derived, never stored: page-level assets first, then each stage's, in stage order.
   function psPageById(id) { libEnsure(); return byId(store.ps.pages, id); }
+  function psBody(id) {
+    var c = loadCanvas(id);
+    if (!c.ps) c.ps = { main: null, stages: [], assets: [] };
+    if (!c.ps.stages) c.ps.stages = [];
+    if (!c.ps.assets) c.ps.assets = [];
+    return c.ps;
+  }
+  function psStages(id) { return psBody(id).stages; }
+  function psStageById(stId) {
+    libEnsure();
+    var pages = store.ps.pages;
+    for (var i = 0; i < pages.length; i++) {
+      var sts = psBody(pages[i].id).stages;
+      for (var j = 0; j < sts.length; j++) if (sts[j].id === stId) return { page: pages[i], stage: sts[j], index: j };
+    }
+    return null;
+  }
+  function stageName(st, i) { return (st && st.name) || ("Stage " + ((i || 0) + 1)); }
+  // has this page's body reached this device yet? (a page synced from another device arrives as
+  // metadata first and its doc a moment later — until then the flat cache is all there is)
+  function psDocPresent(id) {
+    var c = canvasCache[id];
+    if (c && (c.ps || (c.items || []).length || (c.ink || []).length)) return true;
+    return !!window.DBX.get(id);
+  }
+  function vineOf(id) {
+    if (!psDocPresent(id)) {   // fall back to the cache, so search still finds it
+      var pgc = psPageById(id);
+      return ((pgc && pgc.assets) || []).map(function (r) { return { lvl: r.lvl, id: r.id }; });
+    }
+    var b = psBody(id), out = [], seen = {};
+    function add(r) {
+      if (!r || !r.lvl) return;
+      var k = refKey(r); if (seen[k]) return;
+      seen[k] = 1; out.push({ lvl: r.lvl, id: r.id });
+    }
+    (b.assets || []).forEach(add);
+    (b.stages || []).forEach(function (st) { (st.assets || []).forEach(add); });
+    return out;
+  }
+  function vineKeys(id) { var m = {}; vineOf(id).forEach(function (r) { m[refKey(r)] = 1; }); return m; }
+  // every page whose vine holds ALL of these refs — order and position do not matter
+  function vinesContaining(refs) {
+    libEnsure();
+    var want = (refs || []).map(refKey);
+    if (!want.length) return [];
+    return store.ps.pages.filter(function (pg) {
+      var k = vineKeys(pg.id);
+      for (var i = 0; i < want.length; i++) if (!k[want[i]]) return false;
+      return true;
+    });
+  }
+  function psSyncCache(pg) { if (pg && psDocPresent(pg.id)) pg.assets = vineOf(pg.id); }
+  function psSaveBody(pg) {
+    if (!pg) return;
+    psSyncCache(pg);
+    saveCanvas(pg.id);
+    saveStore();
+  }
+  function psPagesOf(subjectKey) { libEnsure(); return store.ps.pages.filter(function (pg) { return pg.subject === subjectKey; }); }
+  // every asset reference to something that has just been deleted, out of every page body
+  function psStripRefs(keys) {
+    libEnsure();
+    store.ps.pages.forEach(function (pg) {
+      var b = psBody(pg.id), hit = false;
+      function keep(list) { return (list || []).filter(function (r) { if (keys[refKey(r)]) { hit = true; return false; } return true; }); }
+      b.assets = keep(b.assets);
+      (b.stages || []).forEach(function (st) { st.assets = keep(st.assets); });
+      if (hit) { psSyncCache(pg); saveCanvas(pg.id); }
+    });
+  }
 
   // ---- static (read-only) render of a canvas doc, scaled to fit a width ----
   function docBBox(doc) {
@@ -9828,6 +9963,8 @@ function __detabaseMain() {
   }
   function openRef(ref) {
     if (!ref) return;
+    if (ref.lvl === "p") { selectPsPage(ref.id); return; }
+    if (ref.lvl === "st") { var sx = psStageById(ref.id); if (sx) selectPsPage(sx.page.id); return; }
     if (ref.lvl === "s") { openSubjectRef(ref.id); return; }
     if (ref.lvl === "t") { openTabRef(ref.id); return; }
     var cardId = ref.id, elId = null;
@@ -9840,32 +9977,30 @@ function __detabaseMain() {
 
   // ---- problem-solving bank: right rail + page view ----
   var activePsPage = null, miningScreen = false;
+  // pages are grouped by the subject they belong to, in sidebar order
   function renderPsRail() {
     var nav = $("psRail"); if (!nav) return;
     libEnsure();
     nav.innerHTML = "";
-    if (!store.ps.topics.length) { nav.innerHTML = '<div class="rr-empty">Nothing saved yet.</div>'; return; }
+    if (!store.ps.pages.length) { nav.innerHTML = '<div class="rr-empty">Nothing saved yet.</div>'; return; }
     store.ui.psOpen = store.ui.psOpen || {};
-    store.ps.topics.forEach(function (t) {
-      var subs = store.ps.subtopics.filter(function (x) { return x.topic === t.id; });
+    var keys = allSubjectKeys().slice(), seen = {};
+    keys.forEach(function (k) { seen[k] = 1; });
+    store.ps.pages.forEach(function (pg) { var k = pg.subject || ""; if (k && !seen[k]) { seen[k] = 1; keys.push(k); } });
+    keys.forEach(function (key) {
+      var pages = psPagesOf(key); if (!pages.length) return;
       var det = document.createElement("details");
       det.className = "ps-topic";
-      det.open = store.ui.psOpen[t.id] !== 0;
-      det.innerHTML = '<summary>' + escapeHtml(t.name) + '</summary>';
-      det.querySelector("summary").appendChild(dotsBtn({ lvl: "pt", id: t.id }));
-      det.addEventListener("toggle", function () { store.ui.psOpen[t.id] = det.open ? 1 : 0; saveStore(); });
-      subs.forEach(function (st) {
-        var lbl = document.createElement("div");
-        lbl.className = "ps-sub"; lbl.textContent = st.name;
-        lbl.appendChild(dotsBtn({ lvl: "pst", id: st.id }));
-        det.appendChild(lbl);
-        store.ps.pages.filter(function (pg) { return pg.subtopic === st.id; }).forEach(function (pg) {
-          var b = document.createElement("button");
-          b.type = "button"; b.setAttribute("data-pp", pg.id); b.textContent = pg.name;
-          b.classList.toggle("on", pg.id === activePsPage);
-          b.addEventListener("click", function () { selectPsPage(pg.id); });
-          det.appendChild(b);
-        });
+      det.open = store.ui.psOpen[key] !== 0;
+      det.innerHTML = '<summary>' + escapeHtml(subjectName(key)) + '</summary>';
+      det.querySelector("summary").appendChild(dotsBtn({ lvl: "s", id: key }));
+      det.addEventListener("toggle", function () { store.ui.psOpen[key] = det.open ? 1 : 0; saveStore(); });
+      pages.forEach(function (pg) {
+        var b = document.createElement("button");
+        b.type = "button"; b.setAttribute("data-pp", pg.id); b.textContent = pg.name;
+        b.classList.toggle("on", pg.id === activePsPage);
+        b.addEventListener("click", function () { selectPsPage(pg.id); });
+        det.appendChild(b);
       });
       nav.appendChild(det);
     });
@@ -9875,24 +10010,51 @@ function __detabaseMain() {
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; miningScreen = false;
     applyView(); renderPsRail(); renderEtiTree();
   }
+  // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
+  function psCropBlock(clip, w) {
+    var host = document.createElement("div");
+    host.className = "ps-crop";
+    if (!clip) { host.innerHTML = '<div class="doc-empty">no crop</div>'; return host; }
+    var c = {}; for (var k in clip) if (clip.hasOwnProperty(k)) c[k] = clip[k];
+    c.w = Math.max(80, w);
+    renderPdfInto(host, c);
+    return host;
+  }
+  function psAssetBtn(ref) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "ps-asset";
+    b.innerHTML = '<span class="ps-lvl">' + (ASSET_LV[ref.lvl] || "") + '</span>' + escapeHtml(refLabel(ref)) + ' ↗';
+    b.addEventListener("click", function () { openRef(ref); });
+    return b;
+  }
   function renderPsPane() {
     var pg = psPageById(activePsPage); if (!pg) return;
-    var st = byId(store.ps.subtopics, pg.subtopic), tp = st && byId(store.ps.topics, st.topic);
-    $("psCrumb").textContent = (tp ? tp.name : "") + (st ? "  ›  " + st.name : "");
+    var tags = (pg.tags || []).filter(Boolean);
+    $("psCrumb").textContent = subjectName(pg.subject || "") + (tags.length ? "  ›  " + tags.join(" · ") : "");
     $("psTitle").textContent = pg.name;
     var docEl = $("psDoc"); docEl.innerHTML = "";
-    var doc = canvasCache[pg.id] || window.DBX.get(pg.id);
-    if (!doc) docEl.innerHTML = '<div class="doc-empty">Syncing this page…</div>';
-    else docEl.appendChild(renderDocStatic(doc, libBlockWidth(docEl) - 4));
-    var as = $("psAssets"); as.innerHTML = "";
-    if (!(pg.assets || []).length) as.innerHTML = '<p class="muted">No assets linked — assets you mine onto a board and then save with the page are linked here.</p>';
-    (pg.assets || []).forEach(function (ref) {
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "ps-asset";
-      b.innerHTML = '<span class="ps-lvl">' + ({ s: "Subject", t: "Tab", c: "Card", e: "Element" }[ref.lvl] || "") + '</span>' + escapeHtml(refName(ref)) + ' ↗';
-      b.addEventListener("click", function () { openRef(ref); });
-      as.appendChild(b);
+    var body = psBody(pg.id), w = libBlockWidth(docEl) - 4;
+    if (body.main) docEl.appendChild(psCropBlock(body.main, w));
+    (body.stages || []).forEach(function (st, i) {
+      var row = document.createElement("div");
+      row.className = "ps-stage";
+      row.innerHTML = '<div class="ps-stage-head"><b>' + escapeHtml(stageName(st, i)) + '</b></div>';
+      row.appendChild(psCropBlock(st.crop, w - 20));
+      var links = document.createElement("div");
+      links.className = "ps-stage-assets";
+      (st.assets || []).forEach(function (r) { links.appendChild(psAssetBtn(r)); });
+      row.appendChild(links);
+      docEl.appendChild(row);
     });
+    if (!body.main && !(body.stages || []).length) {   // a page written by hand, before the crop tool
+      var doc = canvasCache[pg.id] || window.DBX.get(pg.id);
+      if (!doc) docEl.innerHTML = '<div class="doc-empty">Syncing this page…</div>';
+      else docEl.appendChild(renderDocStatic(doc, w));
+    }
+    var as = $("psAssets"); as.innerHTML = "";
+    var vine = vineOf(pg.id);
+    if (!vine.length) as.innerHTML = '<p class="muted">No concepts attached yet.</p>';
+    vine.forEach(function (ref) { as.appendChild(psAssetBtn(ref)); });
   }
 
   // ============================================================
@@ -9923,7 +10085,7 @@ function __detabaseMain() {
     wiz = { ov: ov, content: selectionContent(p) };
     // a board opened from ETI's "＋ Add" already knows where its content goes
     var tg = p.saveTarget;
-    if (tg && mgmtExists(tg)) { if (tg.lvl === "pt" || tg.lvl === "pst") wizProblem(tg); else wizMaterial(tg); }
+    if (tg && mgmtExists(tg)) { if (tg.ps) wizProblem(tg); else wizMaterial(tg); }
     else wizStepKind();
   }
   function wizFoot(foot) {
@@ -10217,51 +10379,61 @@ function __detabaseMain() {
 pdfCutDone();
     libToast("Saved " + made + " element" + (made === 1 ? "" : "s") + " to " + where);
   }
+  // A problem page belongs to one subject. (The lasso route stays until the crop tool replaces it.)
   function wizProblem(start) {
     var content = wiz.content, t = {};
-    start = start && start.lvl ? start : null;
-    function stepTopic() {
-      wizChoice("Topic", "Which topic is this method about?", store.ps.topics, "New topic name…", function (id, nn) {
-        t.topic = id; t.topicNew = nn; stepSub();
+    start = start && start.lvl === "s" ? start : null;
+    function subjectOptions() {
+      return allSubjectKeys().map(function (k) {
+        var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
+        return { id: k, name: subjectName(k), group: groupName(g) };
+      });
+    }
+    function stepSubject() {
+      wizChoice("Subject", "Which subject is this method for?", subjectOptions(), "New subject name…", function (id, nn) {
+        if (id) { t.subject = id; stepName(); } else stepGroup(nn);
       }, wizStepKind);
     }
-    function stepSub() {
-      var subs = t.topic ? store.ps.subtopics.filter(function (x) { return x.topic === t.topic; }) : [];
-      wizChoice("Subtopic", "In " + (t.topic ? byId(store.ps.topics, t.topic).name : t.topicNew), subs, "New subtopic name…", function (id, nn) {
-        t.sub = id; t.subNew = nn; stepName();
-      }, stepTopic);
+    function stepGroup(newName) {   // a new subject has to live in one of the sidebar groups
+      wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.",
+        allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }), "New group name…", function (id, nn) {
+          var gid = id;
+          if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: nn }); }
+          var sub = { id: uid("s_"), folder: "eti", name: newName, group: gid };
+          store.subjects.push(sub);
+          setGroupClosed(gid, false);
+          t.subject = "s:" + sub.id;
+          stepName();
+        }, stepSubject);
     }
     function stepName() {
       var refs = [], seen = {};
       content.items.forEach(function (it) { var r = itemAssetRef(it); if (r && r.lvl !== "p" && !seen[r.lvl + r.id]) { seen[r.lvl + r.id] = 1; refs.push(r); } });
       var body = wizSet("Page name",
-        '<p class="lw-hint">Everything in the selection is copied into the page; mined assets are linked both ways.</p>' +
+        '<p class="lw-hint">The page is filed under <b>' + escapeHtml(subjectName(t.subject)) + '</b>. Everything in the selection is copied into it; mined assets become the concepts it uses.</p>' +
         '<div class="lw-new"><input type="text" maxlength="80" placeholder="Name this method…"></div>' +
-        '<p class="lw-hint">' + (refs.length ? "Linked assets: " + refs.map(function (r) { return escapeHtml(refName(r)); }).join(", ") : "No mined assets in the selection — nothing to link.") + '</p>',
-        [{ label: "‹ Back", run: stepSub }, { label: "Save page", primary: true, right: true, run: save }]);
+        '<p class="lw-hint">' + (refs.length ? "Concepts: " + refs.map(function (r) { return escapeHtml(refName(r)); }).join(", ") : "No mined assets in the selection — attach concepts from the page itself.") + '</p>',
+        [{ label: "‹ Back", run: start ? wizStepKind : stepSubject }, { label: "Save page", primary: true, right: true, run: save }]);
       var inp = body.querySelector("input");
       inp.addEventListener("keydown", function (e) { if (e.key === "Enter") save(); });
       setTimeout(function () { inp.focus(); }, 30);
       function save() {
         var name = inp.value.trim(); if (!name) { inp.focus(); return; }
-        if (!t.topic) { t.topic = uid("pt_"); store.ps.topics.push({ id: t.topic, name: t.topicNew }); }
-        if (!t.sub) { t.sub = uid("ps_"); store.ps.subtopics.push({ id: t.sub, topic: t.topic, name: t.subNew }); }
-        var pg = { id: uid("pp_"), subtopic: t.sub, name: name, assets: refs, created: Date.now() };
+        var pg = { id: uid("pp_"), subject: t.subject, name: name, tags: [], assets: [], created: Date.now(), legacy: 1 };
         store.ps.pages.push(pg);
         writeLibDoc(pg.id, content);
+        psBody(pg.id).assets = refs.map(function (r) { return { lvl: r.lvl, id: r.id }; });
+        psSyncCache(pg);
+        saveCanvas(pg.id);
         saveStore();
         closeWizard();
-        renderPsRail();
+        renderPsRail(); renderEtiTree();
         pdfCutDone();
-        libToast("Saved “" + name + "” to the problem-solving bank");
+        libToast("Saved “" + name + "” to " + subjectName(t.subject));
       }
     }
-    if (start && start.lvl === "pt") { t.topic = start.id; stepSub(); }
-    else if (start && start.lvl === "pst") {
-      var sx = byId(store.ps.subtopics, start.id);
-      if (sx) { t.topic = sx.topic; t.sub = sx.id; stepName(); } else stepTopic();
-    }
-    else stepTopic();
+    if (start) { t.subject = start.id; stepName(); }
+    else stepSubject();
   }
   function libToast(msg) {
     var t = document.createElement("div");
@@ -12155,23 +12327,27 @@ pdfCutDone();
   // from its canvas docs). Decompose replaces it by the level below. Adding never touches ETI.
   // Extra ref level "p" = a problem-solving page.
   // ============================================================
-  var ASSET_LV = { s: "Subject", t: "Tab", c: "Card", e: "Element", p: "Problem page" };
+  var ASSET_LV = { s: "Subject", t: "Tab", c: "Card", e: "Element", p: "Problem page", st: "Stage" };
   function refKey(r) { return r.lvl + "|" + r.id; }
   function refExists(ref) {
     if (ref.lvl === "p") return !!psPageById(ref.id);
+    if (ref.lvl === "st") return !!psStageById(ref.id);
     if (ref.lvl === "e") return !!byId(store.elements, ref.id);
     if (ref.lvl === "c") return !!byId(store.cards, ref.id) || !!document.querySelector('[data-el="' + ref.id + '"]');
     if (ref.lvl === "t") return ref.id.slice(0, 2) === "b:" ? !!$("pane-" + ref.id.slice(2)) : !!byId(store.tabs, ref.id);
     return ref.id.slice(0, 2) === "f:" ? builtinFolderIds().indexOf(ref.id.slice(2)) >= 0 : !!byId(store.subjects, ref.id.slice(2));
   }
-  function refLabel(ref) { return ref.lvl === "p" ? ((psPageById(ref.id) || {}).name || "(deleted page)") : refName(ref); }
+  function refLabel(ref) { return refName(ref); }
   function refKids(ref) {
     if (ref.lvl === "s") return libTabs(ref.id).map(function (x) { return { lvl: "t", id: x.id }; });
     if (ref.lvl === "t") return libCards(ref.id).map(function (x) { return { lvl: "c", id: x.id }; });
     if (ref.lvl === "c") return libElements(ref.id).map(function (x) { return { lvl: "e", id: x.id }; });
+    if (ref.lvl === "p") return psStages(ref.id).map(function (x) { return { lvl: "st", id: x.id }; });
     return [];
   }
   function refParent(ref) {
+    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? { lvl: "p", id: sx.page.id } : null; }
+    if (ref.lvl === "p") { var pp = psPageById(ref.id); return pp && pp.subject ? { lvl: "s", id: pp.subject } : null; }
     if (ref.lvl === "e") { var e = byId(store.elements, ref.id); return e ? { lvl: "c", id: e.card } : null; }
     if (ref.lvl === "c") {
       var c = byId(store.cards, ref.id);
@@ -12209,10 +12385,10 @@ pdfCutDone();
   function problemIndex() {
     libEnsure();
     return store.ps.pages.map(function (pg) {
-      var st = byId(store.ps.subtopics, pg.subtopic), tp = st && byId(store.ps.topics, st.topic);
-      var assetNames = (pg.assets || []).map(refName).join(" ");
-      return { ref: { lvl: "p", id: pg.id }, name: pg.name, path: (tp ? tp.name : "") + (st ? " › " + st.name : ""),
-        hay: [pg.name, st && st.name, tp && tp.name, assetNames].join(" ").toLowerCase(), assets: assetNames };
+      var tags = (pg.tags || []).filter(Boolean), subj = subjectName(pg.subject || "");
+      var assetNames = vineOf(pg.id).map(refName).join(" ");
+      return { ref: { lvl: "p", id: pg.id }, name: pg.name, path: subj + (tags.length ? " › " + tags.join(" · ") : ""),
+        hay: [pg.name, subj, tags.join(" "), assetNames].join(" ").toLowerCase(), assets: assetNames };
     });
   }
   function searchEntries(list, q, hayOf) {
@@ -12302,15 +12478,20 @@ pdfCutDone();
           var ph = searchEntries(problemIndex(), q, function (en) { return en.hay; });
           if (!ph.length) list.appendChild(empty("No problem page matches “" + q + "”."));
           ph.forEach(function (en) { list.appendChild(row(en.ref, en.name, en.path + (en.assets ? " · uses " + en.assets : ""), 0, 0)); });
-        } else if (!store.ps.topics.length) {
-          list.appendChild(empty("No problem-solving pages yet — save one from a board with the lasso and 📚."));
+        } else if (!store.ps.pages.length) {
+          list.appendChild(empty("No problem-solving pages yet."));
         } else {
-          store.ps.topics.forEach(function (tp) {
-            list.appendChild(heading(tp.name));
-            store.ps.subtopics.filter(function (st) { return st.topic === tp.id; }).forEach(function (st) {
-              var sh = document.createElement("div"); sh.className = "mp-sub"; sh.textContent = st.name; list.appendChild(sh);
-              store.ps.pages.filter(function (pg) { return pg.subtopic === st.id; }).forEach(function (pg) {
-                list.appendChild(row({ lvl: "p", id: pg.id }, pg.name, (pg.assets || []).length ? "uses " + pg.assets.map(refName).join(", ") : "", 1, 0));
+          var pkeys = allSubjectKeys().slice(), pseen = {};
+          pkeys.forEach(function (k) { pseen[k] = 1; });
+          store.ps.pages.forEach(function (pg) { var k = pg.subject || ""; if (k && !pseen[k]) { pseen[k] = 1; pkeys.push(k); } });
+          pkeys.forEach(function (key) {
+            var pages = psPagesOf(key); if (!pages.length) return;
+            list.appendChild(heading(subjectName(key)));
+            pages.forEach(function (pg) {
+              var pref = { lvl: "p", id: pg.id }, vine = vineOf(pg.id), sts = psStages(pg.id);
+              list.appendChild(row(pref, pg.name, vine.length ? "uses " + vine.map(refName).join(", ") : "", 0, sts.length));
+              if (state.open[refKey(pref)]) sts.forEach(function (st, i) {
+                list.appendChild(row({ lvl: "st", id: st.id }, stageName(st, i), (st.assets || []).map(refName).join(", "), 1, 0));
               });
             });
           });
@@ -12341,15 +12522,14 @@ pdfCutDone();
     function renderGraph() {
       libEnsure();
       list.innerHTML = "";
-      var pages = store.ps.pages.filter(function (pg) { return (pg.assets || []).some(refExists); });
-      if (!pages.length) { list.appendChild(empty("The graph links problem-solving pages to the assets they use. Mine assets onto a board, write the method next to them and save it as a problem page with the lasso and 📚.")); return; }
+      var pages = store.ps.pages.filter(function (pg) { return vineOf(pg.id).some(refExists); });
+      if (!pages.length) { list.appendChild(empty("The graph links problem-solving pages to the concepts they use. Attach concepts to a page or to one of its stages and they appear here.")); return; }
       var toks = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
       var assetMap = {}, edges = [], pageNodes = [];
       pages.forEach(function (pg) {
-        var st = byId(store.ps.subtopics, pg.subtopic), tp = st && byId(store.ps.topics, st.topic);
         var pk = refKey({ lvl: "p", id: pg.id });
-        pageNodes.push({ key: pk, ref: { lvl: "p", id: pg.id }, name: pg.name, group: (tp ? tp.name : "") + (st ? " › " + st.name : "") });
-        pg.assets.filter(refExists).forEach(function (r) {
+        pageNodes.push({ key: pk, ref: { lvl: "p", id: pg.id }, name: pg.name, group: subjectName(pg.subject || "") });
+        vineOf(pg.id).filter(refExists).forEach(function (r) {
           var k = refKey(r);
           if (!assetMap[k]) assetMap[k] = { key: k, ref: r, name: refName(r), group: refPath(r) || ASSET_LV[r.lvl] };
           edges.push([pk, k]);
@@ -12507,7 +12687,7 @@ pdfCutDone();
     function setTab(t) {
       state.tab = t;
       Array.prototype.forEach.call(host.querySelectorAll(".mp-tabs button"), function (b) { b.classList.toggle("on", b.getAttribute("data-t") === t); });
-      search.placeholder = t === "m" ? "Search material by name…" : "Search pages, topics, linked assets…";
+      search.placeholder = t === "m" ? "Search material by name…" : "Search pages, tags, concepts…";
       renderList();
     }
     Array.prototype.forEach.call(host.querySelectorAll(".mp-tabs button"), function (b) { b.addEventListener("click", function () { setTab(b.getAttribute("data-t")); }); });
@@ -12580,9 +12760,18 @@ pdfCutDone();
     if (ref.lvl === "e") {
       d.appendChild(docStaticFor(ref.id, baseW - 8));
     } else if (ref.lvl === "p") {
-      var pg = psPageById(ref.id);
+      var pg = psPageById(ref.id), pb = psBody(pg.id);
       d.insertAdjacentHTML("beforeend", '<h4>🧩 ' + escapeHtml(pg.name) + '</h4>');
-      d.appendChild(docStaticFor(pg.id, inner));
+      if (pb.main) d.appendChild(psCropBlock(pb.main, inner));
+      (pb.stages || []).forEach(function (st, i) {
+        d.insertAdjacentHTML("beforeend", '<div class="asset-stage">' + escapeHtml(stageName(st, i)) + '</div>');
+        d.appendChild(psCropBlock(st.crop, inner - 10));
+      });
+      if (!pb.main && !(pb.stages || []).length) d.appendChild(docStaticFor(pg.id, inner));
+    } else if (ref.lvl === "st") {
+      var sx = psStageById(ref.id);
+      d.insertAdjacentHTML("beforeend", '<h4>' + escapeHtml(sx ? stageName(sx.stage, sx.index) : "Stage") + '</h4>');
+      if (sx) d.appendChild(psCropBlock(sx.stage.crop, inner));
     } else if (ref.lvl === "c") {
       cardInto(d, ref.id);
     } else if (ref.lvl === "t") {
@@ -12632,6 +12821,8 @@ pdfCutDone();
     return h;
   }
   function assetBaseW(ref) {
+    if (ref.lvl === "st") return 380;
+    if (ref.lvl === "p" && psBody(ref.id).main) return 420;
     if (ref.lvl === "e" || ref.lvl === "p") {
       var doc = canvasCache[ref.id] || window.DBX.get(ref.id), b = doc && docBBox(doc);
       var w = b ? b[2] - b[0] + 20 : 320;
@@ -12749,9 +12940,9 @@ pdfCutDone();
   // ETI MANAGEMENT — rename / delete at every level of both banks (built-ins are renamed / HIDDEN via
   // store.etiEdits, never removed from the DOM, so their tools keep working), "＋ Add" (opens a notebook
   // board with the save target already chosen), and "used in problem pages".
-  // Management refs add the problem-bank levels: "pt" topic, "pst" subtopic ("p" page is shared with Mining).
+  // Management refs cover every level of one library: subject, tab, card, element, problem page, stage.
   // ============================================================
-  var MG_LV = { s: "subject", t: "tab", c: "card", e: "element", p: "problem page", pt: "topic", pst: "subtopic" };
+  var MG_LV = { s: "subject", t: "tab", c: "card", e: "element", p: "problem page", st: "stage" };
   function mgmtObj(ref) {
     libEnsure();
     if (ref.lvl === "s") return ref.id.slice(0, 2) === "s:" ? byId(store.subjects, ref.id.slice(2)) : null;
@@ -12759,18 +12950,13 @@ pdfCutDone();
     if (ref.lvl === "c") return byId(store.cards, ref.id);
     if (ref.lvl === "e") return byId(store.elements, ref.id);
     if (ref.lvl === "p") return psPageById(ref.id);
-    if (ref.lvl === "pt") return byId(store.ps.topics, ref.id);
-    if (ref.lvl === "pst") return byId(store.ps.subtopics, ref.id);
+    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? sx.stage : null; }
     return null;
   }
-  function mgmtExists(ref) { return ref.lvl === "pt" || ref.lvl === "pst" ? !!mgmtObj(ref) : refExists(ref); }
-  function mgmtName(ref) { return ref.lvl === "pt" || ref.lvl === "pst" ? (mgmtObj(ref) || {}).name || "" : refLabel(ref); }
+  function mgmtExists(ref) { return refExists(ref); }
+  function mgmtName(ref) { return refLabel(ref); }
   function isBuiltinRef(ref) { return !mgmtObj(ref) && (ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c"); }
-  function usedInPages(ref) {
-    libEnsure();
-    var k = refKey(ref);
-    return store.ps.pages.filter(function (pg) { return (pg.assets || []).some(function (a) { return refKey(a) === k; }); });
-  }
+  function usedInPages(ref) { return vinesContaining([ref]); }
 
   // ---- apply renames / hides to the built-in DOM ----
   function cardTitleEl(n) {
@@ -12893,12 +13079,13 @@ pdfCutDone();
   }
   function openMgmtMenu(ref, anchor) {
     var builtin = isBuiltinRef(ref), used = usedInPages(ref);
-    var addLbl = { s: "＋ Add a tab here", t: "＋ Add a card here", c: "＋ Add elements here", pt: "＋ Add a page here", pst: "＋ Add a page here" }[ref.lvl];
+    var addLbl = { s: "＋ Add a tab here", t: "＋ Add a card here", c: "＋ Add elements here" }[ref.lvl];
     var material = ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e";
     libMenu(anchor, [
       { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
       { label: "✎ Rename", run: function () { libRename(ref); } },
       addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
+      ref.lvl === "s" ? { label: "🧩 New problem page here", run: function () { addAssetAt({ lvl: "s", id: ref.id, ps: 1 }); } } : null,
       (ref.lvl === "e" || ref.lvl === "p") ? { label: "✎ Edit content", run: function () { openDocEditor(ref.id); } } : null,
       material ? { label: "🧩 Used in " + used.length + " problem page" + (used.length === 1 ? "" : "s"), disabled: !used.length, run: function () { openUsedMenu(ref, anchor); } } : null,
       { sep: true },
@@ -12923,6 +13110,7 @@ pdfCutDone();
     if (n == null) return;
     n = n.trim(); if (!n || n === cur) return;
     if (o) o.name = n; else store.etiEdits.names[refKey(ref)] = n;
+    if (ref.lvl === "st") { var sp = psStageById(ref.id); if (sp) psSaveBody(sp.page); }   // a stage lives in the page's doc
     saveStore();
     refreshAfterManage();
   }
@@ -12931,11 +13119,10 @@ pdfCutDone();
   function mgmtDescendants(ref) {
     var out = [];
     function walk(r) {
-      if (r.lvl === "pt") { out.push(r); store.ps.subtopics.filter(function (x) { return x.topic === r.id; }).forEach(function (x) { walk({ lvl: "pst", id: x.id }); }); return; }
-      if (r.lvl === "pst") { out.push(r); store.ps.pages.filter(function (x) { return x.subtopic === r.id; }).forEach(function (x) { out.push({ lvl: "p", id: x.id }); }); return; }
-      if (r.lvl === "p") { out.push(r); return; }
+      if (r.lvl === "p") { out.push(r); refKids(r).forEach(function (x) { out.push(x); }); return; }   // a page takes its stages with it
       if (mgmtObj(r)) out.push(r);
       refKids(r).forEach(walk);
+      if (r.lvl === "s") psPagesOf(r.id).forEach(function (pg) { walk({ lvl: "p", id: pg.id }); });     // a subject owns its problem pages too
     }
     walk(ref);
     return out.filter(function (r) { return !!mgmtObj(r); });
@@ -12964,7 +13151,7 @@ pdfCutDone();
     var dying = mgmtDescendants(ref), keys = {}, docs = {};
     dying.forEach(function (r) { keys[refKey(r)] = 1; if (r.lvl === "e" || r.lvl === "p") docs[r.id] = 1; });
     var uses = scanBoardUses(keys, docs), links = 0, counts = {};
-    store.ps.pages.forEach(function (pg) { if (docs[pg.id]) return; (pg.assets || []).forEach(function (a) { if (keys[refKey(a)]) links++; }); });
+    store.ps.pages.forEach(function (pg) { if (docs[pg.id]) return; vineOf(pg.id).forEach(function (a) { if (keys[refKey(a)]) links++; }); });
     dying.forEach(function (r) { if (refKey(r) !== refKey(ref)) counts[r.lvl] = (counts[r.lvl] || 0) + 1; });
     var msg = "Delete the " + lv + " “" + name + "”?";
     var inside = Object.keys(counts).map(function (l) { return counts[l] + " " + MG_LV[l] + (counts[l] === 1 ? "" : "s"); });
@@ -12979,7 +13166,7 @@ pdfCutDone();
       try { u.item.frozen = assetBody(u.item.ref, u.item.baseW || u.item.w || 380).outerHTML; touched[u.doc] = 1; } catch (e) {}
     });
     Object.keys(touched).forEach(function (id) { saveCanvas(id); });
-    store.ps.pages.forEach(function (pg) { pg.assets = (pg.assets || []).filter(function (a) { return !keys[refKey(a)]; }); });
+    psStripRefs(keys);
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
       if (r.lvl === "s") { var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
@@ -12987,8 +13174,6 @@ pdfCutDone();
       else if (r.lvl === "c") store.cards = drop(store.cards, r.id);
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
       else if (r.lvl === "p") { store.ps.pages = drop(store.ps.pages, r.id); killCanvas(r.id); }
-      else if (r.lvl === "pt") store.ps.topics = drop(store.ps.topics, r.id);
-      else if (r.lvl === "pst") store.ps.subtopics = drop(store.ps.subtopics, r.id);
     });
     saveStore(); leaveIfGone(); refreshAfterManage();
     libToast("Deleted " + lv + " “" + name + "”");
@@ -13026,19 +13211,15 @@ pdfCutDone();
 
   // ---- "＋ Add": a new notebook board that already knows where its content is saved ----
   function targetLabel(ref) {
-    if (ref.lvl === "pt" || ref.lvl === "pst") {
-      var o = mgmtObj(ref), tp = ref.lvl === "pst" && o ? byId(store.ps.topics, o.topic) : null;
-      return (tp ? tp.name + " › " : "") + (o ? o.name : "");
-    }
     var path = refPath(ref);
-    return (path ? path + " › " : "") + refLabel(ref);
+    return (path ? path + " › " : "") + refLabel(ref) + (ref.ps ? "  ·  new problem page" : "");
   }
   function addAssetAt(ref) {
     if (!mgmtExists(ref)) return;
     var label = mgmtName(ref);
     addPage("New in " + label);   // creates the board and opens it
     var pg = store.canvases[store.canvases.length - 1];
-    if (pg) { pg.saveTarget = { lvl: ref.lvl, id: ref.id }; saveStore(); }
+    if (pg) { pg.saveTarget = { lvl: ref.lvl, id: ref.id }; if (ref.ps) pg.saveTarget.ps = 1; saveStore(); }
     renderSaveTargetBanner();
   }
   function renderSaveTargetBanner() {
@@ -13164,6 +13345,13 @@ pdfCutDone();
   }
   setInterval(interactionCheck, 2000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) interactionCheck(); });
+  // the vine of a page, and which pages use a given set of concepts — readable from a device with
+  // no console, and the same query the search narrowing is built on
+  window.__vines = {
+    of: function (id) { return vineOf(id).map(function (r) { return refKey(r) + " · " + refName(r); }); },
+    containing: function (refs) { return vinesContaining(refs).map(function (pg) { return pg.name; }); },
+    pages: function () { return store.ps.pages.map(function (pg) { return { id: pg.id, name: pg.name, subject: subjectName(pg.subject || ""), tags: pg.tags || [], stages: psStages(pg.id).length }; }); }
+  };
   // what the app thinks is going on — for reading back from a device with no console
   window.__detabaseState = function () {
     return { pointersDown: ptrDown, itemDrag: itemGesture, lasso: !!lassoDrag, stroke: inkDrawing,
@@ -13704,7 +13892,7 @@ const partRef = (id, n) => doc(db, "sync", "canvas_" + id + "__p" + n);
 const canvasParts = {};  // id -> part count we last saw/wrote (to clean up leftovers)
 function isCanvasDoc(d) { return !!d && (d.v === 2 ? typeof d.j === "string" : !!d.data); }
 async function decodeCanvas(id, d) {
-  if (d.v !== 2) return { items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [] };
+  if (d.v !== 2) return { items: (d.data && d.data.items) || [], ink: (d.data && d.data.ink) || [], ps: null };
   let s = d.j;
   const n = d.parts || 1;
   for (let i = 1; i < n; i++) {
@@ -13714,7 +13902,7 @@ async function decodeCanvas(id, d) {
   }
   canvasParts[id] = n;
   const o = JSON.parse(s);
-  return { items: o.items || [], ink: o.ink || [] };
+  return { items: o.items || [], ink: o.ink || [], ps: o.ps || null };
 }
 async function applyCanvas(id, d) {
   let body;
@@ -13722,6 +13910,7 @@ async function applyCanvas(id, d) {
   const prev = canvasLocal(id);
   if (prev && (prev.ts || 0) >= (d.updatedAt || 0)) return;   // a newer local edit landed meanwhile
   const docv = { items: body.items, ink: body.ink, ts: d.updatedAt || Date.now() };
+  if (body.ps) docv.ps = body.ps;                 // a problem page's crops and stages
   if (prev && prev.nav) docv.nav = prev.nav;
   window.DBX.put(id, docv);
   if (typeof window.onCloudCanvas === "function") { try { window.onCloudCanvas(id); } catch (e) {} }
@@ -13734,7 +13923,7 @@ window.cloudSaveCanvas = async function (id, data) {
   const ts = data.ts || Date.now();
   canvasPushed[id] = ts;
   try {
-    const s = JSON.stringify({ items: data.items || [], ink: data.ink || [] });
+    const s = JSON.stringify({ items: data.items || [], ink: data.ink || [], ps: data.ps || null });
     const n = Math.max(1, Math.ceil(s.length / CHUNK));
     for (let i = 1; i < n; i++) await setDoc(partRef(id, i), { j: s.slice(i * CHUNK, (i + 1) * CHUNK), updatedAt: ts });
     await setDoc(canvasRef(id), { v: 2, j: s.slice(0, CHUNK), parts: n, updatedAt: ts, updatedBy: (navigator.platform || "device") });
