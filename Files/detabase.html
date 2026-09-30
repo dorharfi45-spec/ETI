@@ -632,6 +632,12 @@
   .lw-prev { position: relative; margin: 0 auto 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff; overflow: hidden; }
   .lw-prev-doc { position: absolute; inset: 0; }
   .lw-prev-ov { position: absolute; left: 0; top: 0; touch-action: none; cursor: crosshair; }
+  /* the crop tool: a crop shown large, with loops drawn on top of it */
+  /* the crop box keeps one size: naming a part must never make the picture jump under the pencil */
+  .lw-box.wide { width: min(1100px, 100%); height: min(92vh, 920px); }
+  .cc-prev { touch-action: none; }
+  .cc-img { display: block; background: #fff; }
+  .lw-prev-ov .cc-old { fill: #64748b; fill-opacity: .14; stroke: #64748b; stroke-dasharray: 5 4; }
   .lw-parts { display: flex; flex-direction: column; gap: 6px; }
   .lw-part { display: flex; align-items: center; gap: 8px; }
   .lw-part button { border: 1px solid var(--border); background: var(--surface-1); border-radius: 7px; padding: 5px 9px; color: var(--text-muted); }
@@ -3217,11 +3223,11 @@
       <button type="button" class="nb-tab on" data-nbtab="pdfs">📄 PDFs</button>
       <button type="button" class="nb-tab" data-nbtab="pages">✏️ Boards</button>
     </div>
-    <button id="nbImportPdf" type="button" class="tool-btn">＋ Import PDF</button>
+    <button id="nbImportPdf" type="button" class="tool-btn">＋ Import PDF or picture</button>
     <button id="nbNewPage" type="button" class="tool-btn" hidden>＋ New board</button>
     <span id="nbStorage" class="nb-storage" title="how much room the app is using on this device"></span>
   </div>
-  <input type="file" id="nbPdfFile" accept="application/pdf,.pdf" multiple hidden>
+  <input type="file" id="nbPdfFile" accept="application/pdf,.pdf,image/*" multiple hidden>
   <input id="nbBankSearch" class="nb-bank-search" placeholder="Filter by name…" autocomplete="off">
   <div id="nbPdfGrid" class="nb-bank-grid"></div>
   <div id="nbBankGrid" class="nb-bank-grid" hidden></div>
@@ -3324,7 +3330,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B58</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B59</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8706,47 +8712,49 @@ function __detabaseMain() {
   }
 
   // ---- importing ----
+  // PDFs and pictures come in through the same door: a picture is wrapped in a one-page PDF first
+  // (importOneImage), so from here on there is only one kind of document in the app.
   function importPdfFiles(files) {
     var lib = pdfReady();
     if (!lib) { alert("The PDF engine did not load."); return; }
-    var list = Array.prototype.slice.call(files || []).filter(function (f) { return /\.pdf$/i.test(f.name) || f.type === "application/pdf"; });
+    var list = Array.prototype.slice.call(files || []).filter(function (f) {
+      return /\.pdf$/i.test(f.name || "") || f.type === "application/pdf" || isImageFile(f);
+    });
     if (!list.length) return;
     store.pdfs = store.pdfs || [];
     var grid = $("nbPdfGrid");
     if (grid) grid.insertAdjacentHTML("afterbegin", '<div class="nb-card" id="pdfImporting"><div class="nb-busy">Reading ' + escapeHtml(list[0].name) + '…</div></div>');
     var chain = Promise.resolve();
-    list.forEach(function (f) { chain = chain.then(function () { return importOnePdf(f); }); });
+    list.forEach(function (f) { chain = chain.then(function () { return isImageFile(f) ? importOneImage(f) : importOnePdf(f); }); });
     chain.then(function () {
       var b = $("pdfImporting"); if (b) b.remove();
       saveStore(); renderPdfShelf(); renderStorageNote();
     }).catch(function (e) {
       var b = $("pdfImporting"); if (b) b.remove();
-      alert("Could not import that PDF: " + (e && e.message ? e.message : e));
+      alert("Could not import that file: " + (e && e.message ? e.message : e));
       renderPdfShelf();
     });
   }
-  function importOnePdf(file) {
+  // one document into the shelf: its own record, its bytes in DBF, and a small picture of page 1 so
+  // the shelf never has to open every file just to show itself
+  function importPdfBuffer(buf, name) {
     var lib = pdfReady();
-    return file.arrayBuffer().then(function (buf) {
-      return lib.getDocument({ data: new Uint8Array(buf).slice() }).promise.then(function (doc) {
-        var rec = {
-          id: uid("pdf_"),
-          name: file.name.replace(/\.pdf$/i, "").trim() || "PDF",
-          pages: doc.numPages,
-          size: buf.byteLength,
-          added: Date.now()
-        };
-        // a small picture of page 1, so the shelf never has to open every file to show itself
-        var cv = document.createElement("canvas");
-        return pdfRenderPage(doc, 1, 260, cv).then(function () {
-          var thumb = "";
-          try { thumb = cv.toDataURL("image/jpeg", 0.72); } catch (e) {}
-          try { doc.destroy(); } catch (e) {}
-          return window.DBF.put("pdf_" + rec.id, {
-            id: rec.id, name: rec.name, size: rec.size, pages: rec.pages, added: rec.added, buf: buf, thumb: thumb
-          }).then(function () { store.pdfs.push(rec); });
-        });
+    return lib.getDocument({ data: new Uint8Array(buf).slice() }).promise.then(function (doc) {
+      var rec = { id: uid("pdf_"), name: name || "PDF", pages: doc.numPages, size: buf.byteLength, added: Date.now() };
+      var cv = document.createElement("canvas");
+      return pdfRenderPage(doc, 1, 260, cv).then(function () {
+        var thumb = "";
+        try { thumb = cv.toDataURL("image/jpeg", 0.72); } catch (e) {}
+        try { doc.destroy(); } catch (e) {}
+        return window.DBF.put("pdf_" + rec.id, {
+          id: rec.id, name: rec.name, size: rec.size, pages: rec.pages, added: rec.added, buf: buf, thumb: thumb
+        }).then(function () { store.pdfs.push(rec); });
       });
+    });
+  }
+  function importOnePdf(file) {
+    return file.arrayBuffer().then(function (buf) {
+      return importPdfBuffer(buf, file.name.replace(/\.pdf$/i, "").trim() || "PDF");
     });
   }
   function delPdf(id) {
@@ -9000,30 +9008,44 @@ function __detabaseMain() {
   // the same thing at any zoom and on any device, and the part stays a reference into the
   // file rather than a picture of it.
   var pdfCut = null;      // { marks: [{ page, polys:[[[x,y],…],…], rect, thumb }] }
-  function pdfCutToggle() {
-    if (pdfCut) { pdfCutEnd(); return; }
-    pdfCut = { marks: [] };
+  // One cutting session, whether it is the reader's own "Cut parts" (no mission: the marks go to the
+  // save wizard) or the crop tool asking for a region on somebody's behalf (a mission).
+  function cutSessionStart(mission) {
+    pdfCut = { marks: [], mission: mission || null };
     $("pdfView").classList.add("cutting");
+    $("pvCutBtn").classList.toggle("on", !mission);
+    $("pvCutBtn").hidden = !!mission;     // on a mission this reader has one job; there is no way out of it
     pdfPenClass();
-    $("pvCutBtn").classList.add("on");
     pdfDrawMarks(); pdfCutBar();
   }
+  function pdfCutToggle() {
+    if (pdfCut) { pdfCutEnd(); return; }
+    cutSessionStart(null);
+  }
   function pdfCutEnd() {
+    var mission = pdfCut && pdfCut.mission;
     pdfCut = null;
     pdfResetInput();
     $("pdfView").classList.remove("cutting");
     $("pvCutBtn").classList.remove("on");
+    $("pvCutBtn").hidden = false;
     Array.prototype.forEach.call(document.querySelectorAll(".pv-marks, .pv-mark-tag"), function (n) { n.remove(); });
     pdfCutBar();
+    if (mission && mission.onCancel) mission.onCancel();   // left without finishing the job
   }
   function pdfCutBar() {
     var bar = $("pvCutBar"); if (!bar) return;
     bar.hidden = !pdfCut;
     if (!pdfCut) return;
-    var n = pdfCut.marks.length;
-    $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") +
-      (penSeen ? "Draw a loop with the pencil · one finger moves the page · two fingers zoom"
-               : "Draw a loop around each part · two fingers to move and zoom");
+    var n = pdfCut.marks.length, mission = pdfCut.mission;
+    var how = penSeen ? "Draw a loop with the pencil · one finger moves the page · two fingers zoom"
+                      : "Draw a loop around it · two fingers to move and zoom";
+    if (mission && !mission.multi) {
+      $("pvCutCount").textContent = n ? "Marked — draw again to change it, or carry on below" : (mission.hint || how);
+    } else {
+      $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") + how;
+    }
+    $("pvCutSave").textContent = (mission && mission.saveLabel) || "Save to library →";
     $("pvCutSave").disabled = !n;
   }
   function pdfSlotUnits(d) { return d && d._uw ? { w: d._uw, h: d._uh } : null; }
@@ -9258,6 +9280,7 @@ function __detabaseMain() {
     g.svg.remove();
     if (!keep || g.pts.length < 4 || polyArea(g.pts) < 90) return;   // a tap or a scribble, not a loop
     var page = +g.slot.getAttribute("data-page");
+    if (pdfCut.mission && !pdfCut.mission.multi) pdfCut.marks = [];   // one region wanted: a new loop replaces it
     var joined = null;
     for (var i = 0; i < pdfCut.marks.length; i++) {
       var m = pdfCut.marks[i];
@@ -9438,6 +9461,19 @@ function __detabaseMain() {
   }
   function pdfCutSave() {
     if (!pdfCut || !pdfCut.marks.length || !pdfView) return;
+    var mission = pdfCut.mission;
+    if (mission) {                       // the crop tool asked for this: hand the clips back
+      var pdfId = pdfView.id;
+      var clips = pdfCut.marks.map(function (m) { return markToClip(m, pdfId); });
+      var pages = pdfPagesUsedBy(pdfCut.marks);
+      pdfCut.mission = null;             // finished, so closing the reader is not a cancel
+      pdfCutEnd();
+      closePdf();
+      // the picture of every page cut from goes to the cloud now: it is what the other devices draw
+      pages.forEach(function (pg) { pdfEnsurePageImage(pdfId, pg, true).catch(function () {}); });
+      mission.onDone(mission.multi ? clips : clips[0]);
+      return;
+    }
     libEnsure();
     closeWizard();
     var ov = document.createElement("div");
@@ -9458,6 +9494,300 @@ function __detabaseMain() {
     pdfCut.marks = [];
     pdfDrawMarks(); pdfCutBar();
   }
+  // ============================================================
+  // THE CROP TOOL — one way to cut a picture out of something, used everywhere
+  //   mode 1  cropFromPdf     open a document and draw a loop around what you want
+  //   mode 2  cropInsideCrop  take a crop you already have and draw loops inside it, for its parts
+  // Both hand back CLIPS — { kind:"pdf", pdfId, page, rect:{x,y,w,h}, polys } in PDF page units — so a
+  // crop means the same thing at any zoom and on any device, and stays a reference into the file
+  // instead of a picture of it. The reader's own "Cut parts" is mode 1 with several regions allowed,
+  // so there is one piece of cutting code in the app and not two.
+  // A picture from Photos is wrapped in a one-page PDF on the way in (imageToPdfBytes), which is why
+  // nothing below ever has to know whether a page came from a PDF or from a photograph.
+  // ============================================================
+
+  // ---- the small overlay every step of the tool uses ----
+  function ovOpen(title, opts) {
+    opts = opts || {};
+    var ov = document.createElement("div");
+    ov.className = "lw-overlay";
+    ov.innerHTML = '<div class="lw-box' + (opts.wide ? " wide" : "") + '"><div class="lw-head"><b class="lw-title"></b>' +
+      '<button type="button" class="lw-x" title="close">✕</button></div><div class="lw-body"></div><div class="lw-foot"></div></div>';
+    document.body.appendChild(ov);
+    var closed = false;
+    var api = {
+      ov: ov, body: ov.querySelector(".lw-body"), foot: ov.querySelector(".lw-foot"),
+      // close(true) means this step finished; close() means the user backed out
+      close: function (quiet) {
+        if (closed) return;
+        closed = true;
+        ov.remove();
+        if (!quiet && opts.onCancel) opts.onCancel();
+      },
+      setTitle: function (t) { ov.querySelector(".lw-title").textContent = t; },
+      buttons: function (list) {
+        api.foot.innerHTML = "";
+        (list || []).forEach(function (f) {
+          if (!f) return;
+          var b = document.createElement("button");
+          b.type = "button"; b.textContent = f.label;
+          if (f.primary) b.className = "lw-primary";
+          if (f.disabled) b.disabled = true;
+          if (f.right) b.style.marginLeft = "auto";
+          b.addEventListener("click", f.run);
+          api.foot.appendChild(b);
+        });
+      }
+    };
+    api.setTitle(title);
+    ov.querySelector(".lw-x").addEventListener("click", function () { api.close(); });
+    return api;
+  }
+  function askName(title, hint, initial, onOk, onCancel) {
+    var box = ovOpen(title, { onCancel: onCancel });
+    box.body.innerHTML = '<p class="lw-hint">' + escapeHtml(hint || "") + '</p><div class="lw-new"><input type="text" maxlength="80"></div>';
+    var inp = box.body.querySelector("input");
+    inp.value = initial || "";
+    function ok() { var v = inp.value.trim(); if (!v) { inp.focus(); return; } box.close(true); onOk(v); }
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }, { label: "Save", primary: true, right: true, run: ok }]);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") ok(); });
+    setTimeout(function () { inp.focus(); inp.select(); }, 30);
+    return box;
+  }
+  // which document — with the same pictures the shelf shows, including for a file that lives on
+  // another device (there the page picture the cloud carries stands in for it)
+  function pickPdf(title, onPick, onCancel) {
+    var box = ovOpen(title || "Pick a document", { onCancel: onCancel });
+    var list = (store.pdfs || []).slice().sort(function (a, b) { return (b.added || 0) - (a.added || 0); });
+    if (!list.length) {
+      box.body.innerHTML = '<p class="muted">Nothing to cut from yet — bring a PDF or a picture in from the Notebook first.</p>';
+      box.buttons([{ label: "Close", run: function () { box.close(); } }]);
+      return box;
+    }
+    box.body.innerHTML = '<p class="lw-hint">Which document is it in?</p><div class="mb-grid"></div>';
+    var grid = box.body.querySelector(".mb-grid");
+    list.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "mb-card";
+      b.innerHTML = '<div class="nb-thumb"><span class="muted">…</span></div><span>' + escapeHtml(p.name || "PDF") + '</span>';
+      b.addEventListener("click", function () { box.close(true); onPick(p.id); });
+      grid.appendChild(b);
+      var slot = b.querySelector(".nb-thumb");
+      function show(src) { slot.innerHTML = '<img alt="">'; slot.firstChild.src = src; }
+      window.DBF.get("pdf_" + p.id).then(function (rec) {
+        if (rec && rec.thumb) { show(rec.thumb); return null; }
+        return pdfPageImage(p.id, 1).then(function (pg) {
+          if (pg && pg.url) show(pg.url);
+          else slot.innerHTML = '<span class="muted">not on this device</span>';
+        });
+      }).catch(function () { slot.innerHTML = '<span class="muted">no preview</span>'; });
+    });
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+    return box;
+  }
+
+  // ---- mode 1: draw a loop on a page of a document ----
+  function markToClip(m, pdfId) {
+    return { kind: "pdf", pdfId: pdfId, page: m.page,
+             rect: { x: m.rect.x, y: m.rect.y, w: m.rect.w, h: m.rect.h },
+             polys: (m.polys || []).map(function (poly) { return poly.map(function (q) { return [+q[0].toFixed(2), +q[1].toFixed(2)]; }); }) };
+  }
+  // opts: { pdfId?, title, hint, saveLabel, multi, onDone(clip | clips), onCancel }
+  function cropFromPdf(opts) {
+    opts = opts || {};
+    if (!opts.pdfId) {
+      pickPdf(opts.title, function (id) {
+        var o = {}; for (var k in opts) if (opts.hasOwnProperty(k)) o[k] = opts[k];
+        o.pdfId = id;
+        cropFromPdf(o);
+      }, opts.onCancel);
+      return;
+    }
+    openPdf(opts.pdfId);
+    cutSessionStart(opts);
+  }
+
+  // ---- mode 2: draw loops inside a crop you already have ----
+  // The crop is shown at a comfortable size and everything drawn is converted straight back into
+  // page units, so a part of a crop is an ordinary clip into the same page — never a crop of a crop.
+  // opts: { clip, title, hint, saveLabel, existing:[{name,polys}], nameFor(i), onDone([{name,clip}]), onCancel }
+  function cropInsideCrop(opts) {
+    var clip = opts.clip, R = clip && clip.rect;
+    if (!R) return null;
+    var box = ovOpen(opts.title || "Split this into parts", { wide: true, onCancel: opts.onCancel });
+    box.body.innerHTML = '<p class="lw-hint cc-hint">' + escapeHtml(opts.hint || "Draw a loop around each part.") + '</p>' +
+      '<div class="lw-prev cc-prev"><img class="cc-img" alt=""><svg class="lw-prev-ov"></svg></div>' +
+      '<div class="lw-parts"></div>';
+    var prev = box.body.querySelector(".cc-prev"), img = box.body.querySelector(".cc-img"), ov = box.body.querySelector(".lw-prev-ov");
+    var maxW = Math.max(240, (box.body.clientWidth || 700) - 8);
+    var maxH = Math.max(200, Math.round(window.innerHeight * 0.5));
+    var s = Math.min(maxW / R.w, maxH / R.h);        // display pixels per page unit
+    var W = Math.round(R.w * s), H = Math.round(R.h * s);
+    prev.style.width = W + "px"; prev.style.height = H + "px";
+    img.style.width = W + "px"; img.style.height = H + "px";
+    ov.setAttribute("width", W); ov.setAttribute("height", H);
+    ov.setAttribute("viewBox", R.x + " " + R.y + " " + R.w + " " + R.h);
+    ov.setAttribute("preserveAspectRatio", "none");
+    var key = pdfRegionKey(clip, W);
+    if (pdfRegionCache[key]) img.src = pdfRegionCache[key];
+    else pdfCropFromFile(clip, W)
+      .catch(function () { return pdfCropFromPage(clip, W); })
+      .then(function (url) { if (!url) throw new Error("no image"); pdfRegionCache[key] = url; img.src = url; })
+      .catch(function () {
+        box.body.querySelector(".cc-hint").textContent = "The document this came from is not on this device, so it cannot be split here.";
+      });
+
+    var old = (opts.existing || []).filter(function (e) { return e && e.polys && e.polys.length; });
+    var parts = [];                 // { name, poly }
+    var live = null, pid = null, raf = 0, liveEl = null;
+    function pts(poly) { return poly.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "); }
+    function drawOv() {
+      var sw = (2 / s).toFixed(2), h = "";
+      old.forEach(function (e) {
+        e.polys.forEach(function (poly) { h += '<polygon class="cc-old" points="' + pts(poly) + '" stroke-width="' + sw + '"/>'; });
+      });
+      parts.forEach(function (pt, i) {
+        var col = PART_COLORS[i % PART_COLORS.length];
+        h += '<polygon points="' + pts(pt.poly) + '" fill="' + col + '" fill-opacity="0.14" stroke="' + col + '" stroke-width="' + sw + '"/>';
+      });
+      h += '<polyline class="cc-live" fill="none" stroke="#475569" stroke-dasharray="' + (6 / s).toFixed(1) + ' ' + (4 / s).toFixed(1) + '" stroke-width="' + sw + '"/>';
+      ov.innerHTML = h;
+      liveEl = ov.querySelector(".cc-live");
+    }
+    function renderParts() {
+      var listEl = box.body.querySelector(".lw-parts");
+      listEl.innerHTML = "";
+      if (old.length) {
+        var note = document.createElement("p");
+        note.className = "lw-hint";
+        note.textContent = old.length + (old.length === 1 ? " part is" : " parts are") + " marked already (grey) — draw the new ones.";
+        listEl.appendChild(note);
+      }
+      parts.forEach(function (pt, i) {
+        var row = document.createElement("div");
+        row.className = "lw-part";
+        row.innerHTML = '<span class="lw-sw" style="background:' + PART_COLORS[i % PART_COLORS.length] + '"></span>' +
+          '<input type="text" maxlength="60"><button type="button" title="remove this part">✕</button>';
+        var inp = row.querySelector("input");
+        inp.value = pt.name;
+        inp.addEventListener("input", function () { pt.name = inp.value; });
+        row.querySelector("button").addEventListener("click", function () { parts.splice(i, 1); renderParts(); drawOv(); foot(); });
+        listEl.appendChild(row);
+        if (pt.fresh) { delete pt.fresh; setTimeout(function () { inp.focus(); inp.select(); }, 30); }
+      });
+    }
+    function foot() {
+      box.buttons([
+        { label: "Cancel", run: function () { box.close(); } },
+        { label: (opts.saveLabel || "Save") + (parts.length ? " (" + parts.length + ")" : ""), primary: true, right: true, disabled: !parts.length,
+          run: function () {
+            if (parts.some(function (pt) { return !pt.name.trim(); })) { alert("Give every part a name."); return; }
+            var out = parts.map(function (pt) {
+              var poly = pt.poly.map(function (q) { return [+q[0].toFixed(2), +q[1].toFixed(2)]; });
+              return { name: pt.name.trim(), clip: { kind: "pdf", pdfId: clip.pdfId, page: clip.page, rect: polyBBox([poly]), polys: [poly] } };
+            });
+            box.close(true);
+            opts.onDone(out);
+          } }
+      ]);
+    }
+    // the loop is drawn straight on the picture: iOS must not turn that touch into a scroll of the
+    // overlay, so the box takes no touch action of its own and every move is claimed here
+    function toU(e) {
+      var r = img.getBoundingClientRect();
+      var x = R.x + (e.clientX - r.left) / (r.width || 1) * R.w;
+      var y = R.y + (e.clientY - r.top) / (r.height || 1) * R.h;
+      return [Math.max(R.x, Math.min(R.x + R.w, x)), Math.max(R.y, Math.min(R.y + R.h, y))];
+    }
+    function paintLive() { raf = 0; if (liveEl && live) liveEl.setAttribute("points", pts(live)); }
+    prev.addEventListener("touchstart", function (e) { e.preventDefault(); }, { passive: false });
+    prev.addEventListener("touchmove", function (e) { e.preventDefault(); }, { passive: false });
+    prev.addEventListener("pointerdown", function (e) {
+      if (pid != null) return;
+      e.preventDefault(); pid = e.pointerId;
+      try { prev.setPointerCapture(pid); } catch (_) {}
+      live = [toU(e)]; paintLive();
+    });
+    prev.addEventListener("pointermove", function (e) {
+      if (e.pointerId !== pid) return;
+      e.preventDefault();
+      var q = toU(e), last = live[live.length - 1];
+      if (Math.hypot(q[0] - last[0], q[1] - last[1]) * s < 2) return;
+      live.push(q);
+      if (!raf) raf = requestAnimationFrame(paintLive);
+    });
+    function up(e) {
+      if (e.pointerId !== pid) return;
+      pid = null;
+      var poly = live; live = null;
+      if (liveEl) liveEl.setAttribute("points", "");
+      if (!poly || poly.length < 4 || polyArea(poly) < (R.w * R.h) / 4000) return;   // a tap, not a loop
+      parts.push({ name: opts.nameFor ? opts.nameFor(old.length + parts.length) : "Part " + (old.length + parts.length + 1),
+                   poly: poly, fresh: true });
+      renderParts(); drawOv(); foot();
+    }
+    prev.addEventListener("pointerup", up);
+    prev.addEventListener("pointercancel", up);
+    renderParts(); drawOv(); foot();
+    return box;
+  }
+
+  // ---- a picture from Photos becomes a one-page PDF on the way in ----
+  // Wrapping the image, rather than teaching the reader about images, means the shelf, the reader,
+  // the crop tool, the page pictures and the cloud all keep working on exactly one kind of document.
+  // A JPEG needs no re-encoding to sit inside a PDF: DCTDecode IS jpeg, so the bytes go straight in.
+  function imageToPdfBytes(jpeg, pxW, pxH) {
+    var W = +(pxW * 0.75).toFixed(2), H = +(pxH * 0.75).toFixed(2);   // image pixels at 96dpi -> points
+    var chunks = [], len = 0, off = [];
+    function raw(u8) { chunks.push(u8); len += u8.length; }
+    function txt(s) { var a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 255; raw(a); }
+    function obj(n, s) { off[n] = len; txt(n + " 0 obj\n" + s + "\nendobj\n"); }
+    txt("%PDF-1.4\n");
+    obj(1, "<</Type/Catalog/Pages 2 0 R>>");
+    obj(2, "<</Type/Pages/Kids[3 0 R]/Count 1>>");
+    obj(3, "<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + W + " " + H + "]/Resources<</XObject<</Im0 4 0 R>>>>/Contents 5 0 R>>");
+    off[4] = len;
+    txt("4 0 obj\n<</Type/XObject/Subtype/Image/Width " + pxW + "/Height " + pxH +
+        "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length " + jpeg.length + ">>\nstream\n");
+    raw(jpeg);
+    txt("\nendstream\nendobj\n");
+    var content = "q " + W + " 0 0 " + H + " 0 0 cm /Im0 Do Q\n";
+    obj(5, "<</Length " + content.length + ">>\nstream\n" + content + "endstream");
+    var xref = len, s = "xref\n0 6\n0000000000 65535 f \n";
+    for (var i = 1; i <= 5; i++) s += ("0000000000" + off[i]).slice(-10) + " 00000 n \n";
+    txt(s + "trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n" + xref + "\n%%EOF\n");
+    var out = new Uint8Array(len), p = 0;
+    chunks.forEach(function (c) { out.set(c, p); p += c.length; });
+    return out;
+  }
+  function isImageFile(f) {
+    return (f.type || "").indexOf("image/") === 0 || /\.(png|jpe?g|heic|heif|webp|gif|bmp)$/i.test(f.name || "");
+  }
+  function importOneImage(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        URL.revokeObjectURL(url);
+        var lim = 2400, k = Math.min(1, lim / Math.max(im.naturalWidth || 1, im.naturalHeight || 1));
+        var w = Math.max(1, Math.round((im.naturalWidth || 1) * k)), h = Math.max(1, Math.round((im.naturalHeight || 1) * k));
+        var cv = document.createElement("canvas");
+        cv.width = w; cv.height = h;
+        var g = cv.getContext("2d", { alpha: false });
+        g.fillStyle = "#fff"; g.fillRect(0, 0, w, h);
+        g.drawImage(im, 0, 0, w, h);
+        var dataUrl;
+        try { dataUrl = cv.toDataURL("image/jpeg", 0.9); } catch (e) { rej(e); return; }
+        var bin = atob(dataUrl.slice(dataUrl.indexOf(",") + 1)), jpeg = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) jpeg[i] = bin.charCodeAt(i) & 255;
+        res(imageToPdfBytes(jpeg, w, h));
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); rej(new Error("this picture could not be read")); };
+      im.src = url;
+    }).then(function (bytes) {
+      return importPdfBuffer(bytes.buffer, (file.name || "Picture").replace(/\.[a-z0-9]+$/i, "").trim() || "Picture");
+    });
+  }
+
   // A canvas doc's items array is hung on the doc object as .bench so the board code can work with
   // it directly. It must NEVER become part of the stored metadata: items hold point arrays (a cut
   // part's loops, a vector shape's outline) and graph items hold live functions, and Firestore
@@ -13352,6 +13682,8 @@ pdfCutDone();
     containing: function (refs) { return vinesContaining(refs).map(function (pg) { return pg.name; }); },
     pages: function () { return store.ps.pages.map(function (pg) { return { id: pg.id, name: pg.name, subject: subjectName(pg.subject || ""), tags: pg.tags || [], stages: psStages(pg.id).length }; }); }
   };
+  // the crop tool, for driving it from a device with no console
+  window.__crop = { fromPdf: cropFromPdf, inside: cropInsideCrop, pick: pickPdf };
   // what the app thinks is going on — for reading back from a device with no console
   window.__detabaseState = function () {
     return { pointersDown: ptrDown, itemDrag: itemGesture, lasso: !!lassoDrag, stroke: inkDrawing,
