@@ -351,7 +351,7 @@
   /* ---- notebook bank (the main Notebook screen = a library of pages) ---- */
   .nb-bank-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .nb-bank-head h2 { margin: 0; border: none; padding: 0; }
-  /* PDFs / boards switch */
+  /* PDFs / clipboards switch */
   .nb-tabs { display: inline-flex; gap: 4px; background: var(--surface-2); padding: 3px; border-radius: 11px; border: 1px solid var(--border); }
   .nb-tab { border: none; background: transparent; color: var(--text-muted); font: inherit; font-size: .88rem;
     padding: 6px 13px; border-radius: 8px; cursor: pointer; }
@@ -702,10 +702,8 @@
   body:not(.top-eti) #etiHiddenBtn { display: none; }
   .ps-actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .ps-topic > summary .lib-dots, .ps-sub .lib-dots { padding: 0 5px; font-size: .9rem; }
-  .save-target-bar { position: fixed; z-index: 845; top: calc(60px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); max-width: calc(100vw - 24px);
-    display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 14px; border-radius: 999px; background: #0f172a; color: #fff; font-size: .82rem; box-shadow: var(--shadow); }
-  .save-target-bar b { color: #fde047; }
-  .save-target-bar button { border: none; background: rgba(255,255,255,.15); color: #fff; border-radius: 999px; width: 24px; height: 24px; }
+  .ta-body { width: 100%; box-sizing: border-box; margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-strong);
+    background: var(--bg); color: var(--text-primary); font: inherit; font-size: .95rem; resize: vertical; }
 
   /* ---- ETI main page: the vines, the search, the subjects ---- */
   .em-head { display: flex; align-items: baseline; gap: 10px; }
@@ -1818,7 +1816,7 @@
 <aside class="sidebar">
   <div class="sidebar-label">Folders</div>
   <nav class="topbar" id="topbar">
-    <button data-top="notebook"><span class="ficon">📓</span>Notebook</button>
+    <button data-top="notebook"><span class="ficon">📓</span>Clipboards</button>
     <button data-top="eti" class="on"><span class="ficon">📚</span>ETI</button>
     <button data-top="planner"><span class="ficon">🗓️</span>Planner</button>
     <button data-top="coath"><span class="ficon">🎓</span>Coath Inc.</button>
@@ -3223,7 +3221,7 @@
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
-    <span id="buildTag" title="build marker — tell Claude what this says">B63</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B64</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3257,10 +3255,10 @@
     <h2>Notebook</h2>
     <div class="nb-tabs">
       <button type="button" class="nb-tab on" data-nbtab="pdfs">📄 PDFs</button>
-      <button type="button" class="nb-tab" data-nbtab="pages">✏️ Boards</button>
+      <button type="button" class="nb-tab" data-nbtab="pages">✏️ Clipboards</button>
     </div>
     <button id="nbImportPdf" type="button" class="tool-btn">＋ Import PDF or picture</button>
-    <button id="nbNewPage" type="button" class="tool-btn" hidden>＋ New board</button>
+    <button id="nbNewPage" type="button" class="tool-btn" hidden>＋ New clipboard</button>
     <span id="nbStorage" class="nb-storage" title="how much room the app is using on this device"></span>
   </div>
   <input type="file" id="nbPdfFile" accept="application/pdf,.pdf,image/*" multiple hidden>
@@ -3364,7 +3362,7 @@
   <div id="ppCanvas" class="pp-canvas"><div id="ppView"><div class="canvas-sizer"></div></div></div>
   <div id="ppAddMenu">
   </div>
-  <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
+
 
 </div>
 
@@ -3378,16 +3376,15 @@
 <aside class="rail" id="rail">
   <div id="railProblems">
     <div class="sidebar-label">Problem solving</div>
-    <nav class="raillist" id="psRail"></nav>
     <div class="add-row"><button class="add-btn" id="psNewBtn">+ New problem page</button></div>
-    <p class="rail-hint">Problem-solving pages, grouped by the subject they belong to. A page is a crop of the problem, split into the stages you solve it in.</p>
+    <p class="rail-hint">Every method lives on ETI's main page, as a vine of the concepts it uses. This is just the quick way to start a new one.</p>
   </div>
   <div id="railPages">
-    <div class="sidebar-label">Notebook pages</div>
+    <div class="sidebar-label">Clipboards</div>
     <input id="pageSearch" class="rail-search" placeholder="Filter pages by name…" autocomplete="off">
     <nav class="raillist" id="pageList"></nav>
     <div class="add-row" id="addPageRow">
-      <button class="add-btn" data-add="page">+ New page</button>
+      <button class="add-btn" data-add="page">+ New clipboard</button>
     </div>
     <p class="rail-hint">Loose practice pages — write with the pencil, place shapes and graphs, clip in cards. Each page is its own canvas.</p>
   </div>
@@ -5912,8 +5909,8 @@ function __detabaseMain() {
     if (onNbBank) {
       nbTab(store.ui.nbTab || "pdfs");
       renderStorageNote();
-      $("pageTitle").textContent = "Notebook";
-      $("pageSubtitle").innerHTML = "PDFs you brought in from Notability, and the boards you build from them.";
+      $("pageTitle").textContent = "Clipboards";
+      $("pageSubtitle").innerHTML = "PDFs and pictures you brought in, and the clipboards you collect things onto.";
       history.replaceState(null, "", "#notebook");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -5923,7 +5920,7 @@ function __detabaseMain() {
       var pb = curProblem();
       if (onPage) {
         $("pageTitle").textContent = pb ? (pb.name || "Untitled page") : "Page";
-        $("pageSubtitle").innerHTML = 'Notebook page — write with the pencil, clip in cards, place shapes &amp; graphs.';
+        $("pageSubtitle").innerHTML = 'A clipboard — collect concepts and stages onto it, and write around them with the pencil.';
       } else {
         $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
         $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Problem-solving page' : 'Library element';
@@ -8657,7 +8654,7 @@ function __detabaseMain() {
     var q = ((box || {}).value || "").trim().toLowerCase();
     var pages = store.canvases.filter(function (p) { return !q || (p.name || "untitled").toLowerCase().indexOf(q) >= 0; });
     grid.innerHTML = "";
-    if (!store.canvases.length) { grid.innerHTML = '<p class="muted">No pages yet — tap “＋ New page”.</p>'; return; }
+    if (!store.canvases.length) { grid.innerHTML = '<p class="muted">No clipboards yet — tap “＋ New clipboard”.</p>'; return; }
     if (!pages.length) { grid.innerHTML = '<p class="muted">No page matches “' + escapeHtml(q) + '”.</p>'; return; }
     var recentId = (store.ui.lastPage && isPage(store.ui.lastPage)) ? store.ui.lastPage : null;
     var ordered = pages.slice().sort(function (a, b) {
@@ -8897,7 +8894,7 @@ function __detabaseMain() {
     $("nbBankGrid").hidden = pdfs;
     $("nbImportPdf").hidden = !pdfs;
     $("nbNewPage").hidden = pdfs;
-    var s = $("nbBankSearch"); if (s) s.placeholder = pdfs ? "Filter PDFs by name…" : "Filter boards by name…";
+    var s = $("nbBankSearch"); if (s) s.placeholder = pdfs ? "Filter PDFs by name…" : "Filter clipboards by name…";
     if (pdfs) renderPdfShelf(); else renderNbBank();
   }
 
@@ -9052,14 +9049,20 @@ function __detabaseMain() {
   function cutSessionStart(mission) {
     pdfCut = { marks: [], mission: mission || null };
     $("pdfView").classList.add("cutting");
-    $("pvCutBtn").classList.toggle("on", !mission);
-    $("pvCutBtn").hidden = !!mission;     // on a mission this reader has one job; there is no way out of it
+    var own = !mission || mission.own;    // the reader's own Cut parts, rather than a job for somebody else
+    $("pvCutBtn").classList.toggle("on", own);
+    $("pvCutBtn").hidden = !own;          // on somebody else's job this reader has one thing to do
     pdfPenClass();
     pdfDrawMarks(); pdfCutBar();
   }
+  // the reader's own button: cut concepts straight into the library, and stay open to cut more
   function pdfCutToggle() {
     if (pdfCut) { pdfCutEnd(); return; }
-    cutSessionStart(null);
+    cutSessionStart({
+      own: true, keepOpen: true, multi: true,
+      saveLabel: "Save to the library →",
+      onDone: function (clips) { fileClipsAsConcepts(clips, null); }
+    });
   }
   function pdfCutEnd() {
     var mission = pdfCut && pdfCut.mission;
@@ -9482,57 +9485,23 @@ function __detabaseMain() {
       });
   }
 
-  // ---- marked parts -> the save wizard ------------------------------------------------
-  // The marks become items on a page, and from there this is the SAME wizard the board's lasso
-  // opens: choose raw material or a problem-solving page, file it at whichever level you like,
-  // and split what you marked down to elements by drawing loops on the preview.
-  function pdfMarksToContent(marks, pdfId) {
-    var K = 96 / 72, y = 12, items = [];   // PDF units are 1/72", so this is the part's real size
-    marks.forEach(function (m, i) {
-      var w = Math.max(24, Math.round(m.rect.w * K)), h = Math.max(18, Math.round(m.rect.h * K));
-      items.push({ id: uid("it_"), kind: "pdf", pdfId: pdfId, page: m.page,
-                   rect: { x: m.rect.x, y: m.rect.y, w: m.rect.w, h: m.rect.h },
-                   polys: m.polys.map(function (poly) { return poly.map(function (q) { return [+q[0].toFixed(2), +q[1].toFixed(2)]; }); }),
-                   x: 12, y: y, w: w, h: h, z: i + 1 });
-      y += h + 18;
-    });
-    return { ink: [], items: items };
-  }
+  // ---- the cut regions go where the session's job says ---------------------------------
   function pdfCutSave() {
     if (!pdfCut || !pdfCut.marks.length || !pdfView) return;
     var mission = pdfCut.mission;
-    if (mission) {                       // the crop tool asked for this: hand the clips back
-      var pdfId = pdfView.id;
-      var clips = pdfCut.marks.map(function (m) { return markToClip(m, pdfId); });
-      var pages = pdfPagesUsedBy(pdfCut.marks);
-      pdfCut.mission = null;             // finished, so closing the reader is not a cancel
-      pdfCutEnd();
-      closePdf();
-      // the picture of every page cut from goes to the cloud now: it is what the other devices draw
-      pages.forEach(function (pg) { pdfEnsurePageImage(pdfId, pg, true).catch(function () {}); });
-      mission.onDone(mission.multi ? clips : clips[0]);
-      return;
-    }
-    libEnsure();
-    closeWizard();
-    var ov = document.createElement("div");
-    ov.id = "libWiz"; ov.className = "lw-overlay";
-    ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b class="lw-title"></b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
-      '<div class="lw-body"></div><div class="lw-foot"></div></div>';
-    document.body.appendChild(ov);
-    ov.querySelector(".lw-x").addEventListener("click", closeWizard);
-    wiz = { ov: ov, content: pdfMarksToContent(pdfCut.marks, pdfView.id), fromPdf: pdfCut.marks.length };
-    wizStepKind();
+    if (!mission) { pdfCutEnd(); return; }
+    var pdfId = pdfView.id;
+    var clips = pdfCut.marks.map(function (m) { return markToClip(m, pdfId); });
+    var pages = pdfPagesUsedBy(pdfCut.marks);
+    pdfCut.mission = null;               // finished, so closing the reader is not a cancel
+    pdfCutEnd();
+    if (!mission.keepOpen) closePdf();
+    // the picture of every page cut from goes to the cloud now: it is what the other devices draw
+    pages.forEach(function (pg) { pdfEnsurePageImage(pdfId, pg, true).catch(function () {}); });
+    mission.onDone(mission.multi ? clips : clips[0]);
+    if (mission.keepOpen && pdfView) cutSessionStart(mission);   // carry on cutting where you left off
   }
-  function pdfCutDone() {   // called once the wizard has saved: the marks did their job
-    if (!pdfCut) return;
-    var id = pdfView && pdfView.id;
-    if (id) pdfPagesUsedBy(pdfCut.marks).forEach(function (pg) {
-      pdfEnsurePageImage(id, pg, true).catch(function () {});   // now it is worth sending to the cloud
-    });
-    pdfCut.marks = [];
-    pdfDrawMarks(); pdfCutBar();
-  }
+
   // ============================================================
   // THE CROP TOOL — one way to cut a picture out of something, used everywhere
   //   mode 1  cropFromPdf     open a document and draw a loop around what you want
@@ -9850,7 +9819,7 @@ function __detabaseMain() {
 
   function addPage(name) {
     store.canvases = store.canvases || [];
-    var p = { id: uid("pg_"), kind: "page", name: (name || "").trim() || ("Page " + (store.canvases.length + 1)), created: Date.now() };
+    var p = { id: uid("pg_"), kind: "page", name: (name || "").trim() || ("Clipboard " + (store.canvases.length + 1)), created: Date.now() };
     store.canvases.push(p);
     bindBench(p);
     saveStore();
@@ -10744,275 +10713,7 @@ function __detabaseMain() {
     }
   }
 
-  // ============================================================
-  // SAVE WIZARD — lasso selection → raw-material assets or a problem-solving page (copies; the board is untouched)
-  // ============================================================
-  var wiz = null;
-  var LV_NEXT = { subject: "tab", tab: "card", card: "element" };
-  var LV_LABEL = { subject: "Subject", tab: "Tab", card: "Card", element: "Element" };
   var PART_COLORS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2", "#db2777", "#65a30d"];
-  function selectionContent(p) {
-    var c = loadCanvas(p.id);
-    return JSON.parse(JSON.stringify({
-      ink: (c.ink || []).filter(function (s) { return inkSel.strokes.indexOf(s.id) >= 0; }),
-      items: (p.bench || []).filter(function (it) { return inkSel.clips.indexOf(it.id) >= 0; })
-    }));
-  }
-  function closeWizard() { if (wiz && wiz.ov) wiz.ov.remove(); wiz = null; }
-  function openSaveWizard() {
-    var p = curProblem(); if (!p || !inkSel) return;
-    libEnsure();
-    closeWizard();
-    var ov = document.createElement("div");
-    ov.id = "libWiz"; ov.className = "lw-overlay";
-    ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b class="lw-title"></b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
-      '<div class="lw-body"></div><div class="lw-foot"></div></div>';
-    document.body.appendChild(ov);
-    ov.querySelector(".lw-x").addEventListener("click", closeWizard);
-    wiz = { ov: ov, content: selectionContent(p) };
-    // a board opened from ETI's "＋ Add" already knows where its content goes
-    var tg = p.saveTarget;
-    if (tg && mgmtExists(tg)) { if (tg.ps) wizProblem(tg); else wizMaterial(tg); }
-    else wizStepKind();
-  }
-  function wizFoot(foot) {
-    var ft = wiz.ov.querySelector(".lw-foot");
-    ft.innerHTML = "";
-    (foot || []).forEach(function (f) {
-      if (!f) return;
-      var b = document.createElement("button");
-      b.type = "button"; b.textContent = f.label; b.className = f.primary ? "lw-primary" : "";
-      if (f.disabled) b.disabled = true;
-      if (f.right) b.style.marginLeft = "auto";
-      b.addEventListener("click", f.run);
-      ft.appendChild(b);
-    });
-  }
-  function wizSet(title, bodyHtml, foot) {
-    wiz.ov.querySelector(".lw-title").textContent = title;
-    var body = wiz.ov.querySelector(".lw-body");
-    body.innerHTML = bodyHtml || "";
-    body.scrollTop = 0;
-    wizFoot(foot);
-    return body;
-  }
-  // one level of "pick an existing node or create a new one"; options may carry a group label
-  function wizChoice(title, hint, options, newLabel, onPick, back) {
-    var body = wizSet(title, '<p class="lw-hint">' + escapeHtml(hint) + '</p><div class="lw-opts"></div>' +
-      '<div class="lw-new"><input type="text" maxlength="60" placeholder="' + escapeHtml(newLabel) + '"><button type="button" class="lw-primary">Create</button></div>',
-      [back ? { label: "‹ Back", run: back } : null]);
-    var box = body.querySelector(".lw-opts"), lastGroup = null;
-    if (!options.length) box.innerHTML = '<p class="muted">None yet — create one below.</p>';
-    options.forEach(function (o) {
-      if (o.group && o.group !== lastGroup) {
-        lastGroup = o.group;
-        var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = o.group;
-        box.appendChild(gl);
-      }
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "lw-opt"; b.textContent = o.name + "  ›";
-      b.addEventListener("click", function () { onPick(o.id, null); });
-      box.appendChild(b);
-    });
-    var inp = body.querySelector(".lw-new input");
-    function create() { var n = inp.value.trim(); if (n) onPick(null, n); else inp.focus(); }
-    body.querySelector(".lw-new button").addEventListener("click", create);
-    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") create(); });
-    if (!options.length) setTimeout(function () { inp.focus(); }, 30);
-  }
-  function wizStepKind() {
-    var n = (wiz && wiz.fromPdf) || 0;
-    var body = wizSet("Save to the library",
-      '<p class="lw-hint">' + (n
-        ? (n + (n === 1 ? " part" : " parts") + " marked on the PDF. What are they? The PDF itself is not touched.")
-        : "What is this selection? It is copied — the page stays as it is.") + '</p>' +
-      '<div class="lw-kinds"><button type="button" data-k="m">🧱<b>Raw material</b><span>formulas, concepts → ETI subject library</span></button>' +
-      '<button type="button" data-k="p">🧩<b>Problem-solving page</b><span>a worked method → problem-solving bank</span></button></div>');
-    body.querySelector('[data-k="m"]').addEventListener("click", function () { wizMaterial(); });
-    body.querySelector('[data-k="p"]').addEventListener("click", function () { wizProblem(); });
-  }
-  function wizMaterial(start) {
-    var content = wiz.content, t = {};
-    start = start && start.lvl ? start : null;
-    function stepSubject() {
-      wizChoice("Subject", "Which subject does this material belong to? (e.g. Trig base)",
-        allSubjectKeys().map(function (k) {
-          var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
-          return { id: k, name: subjectName(k), group: groupName(g) };
-        }),
-        "New subject name…", function (id, nn) {
-          if (id) { t.subject = id; stepTab(); }
-          else stepGroup(nn);
-        }, wizStepKind);
-    }
-    function stepGroup(newName) {   // a new subject has to live in one of the sidebar groups
-      wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.", allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }),
-        "New group name…", function (id, nn) {
-          startSplit({ lvl: "subject", name: newName, groupId: id, newGroup: nn, content: content });
-        }, stepSubject);
-    }
-    function stepTab() {
-      wizChoice("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top, e.g. Unit circle)", libTabs(t.subject),
-        "New tab name…", function (id, nn) {
-          if (id) { t.tab = id; stepCard(); }
-          else startSplit({ lvl: "tab", name: nn, parent: t.subject, content: content });
-        }, stepSubject);
-    }
-    function stepCard() {
-      wizChoice("Card", "In " + tabLabel(t.tab) + " — which card (square)?", libCards(t.tab), "New card name…", function (id, nn) {
-        if (id) startSplit({ lvl: "card", existing: id, name: cardLabel(id), parent: t.tab, content: content });
-        else startSplit({ lvl: "card", name: nn, parent: t.tab, content: content });
-      }, stepTab);
-    }
-    if (start && start.lvl === "s") { t.subject = start.id; stepTab(); }
-    else if (start && start.lvl === "t") { var ps0 = refParent(start); t.tab = start.id; if (ps0) { t.subject = ps0.id; stepCard(); } else stepSubject(); }
-    else if (start && start.lvl === "c") { var pt0 = refParent(start); startSplit({ lvl: "card", existing: start.id, name: cardLabel(start.id), parent: pt0 ? pt0.id : null, content: content }); }
-    else stepSubject();
-  }
-  function startSplit(root) { wiz.root = root; wiz.queue = [root]; nextSplit(); }
-  function nextSplit() {
-    var node = wiz.queue.shift();
-    if (!node) { commitMaterial(wiz.root); return; }
-    splitScreen(node, function (parts) {
-      var lv = LV_NEXT[node.lvl];
-      node.children = parts.map(function (pt) { return { lvl: lv, name: pt.name, content: pt.content }; });
-      if (lv !== "element") wiz.queue = node.children.concat(wiz.queue);
-      nextSplit();
-    });
-  }
-  // split one node's content into named parts by drawing loops on a preview
-  function splitScreen(node, done) {
-    var lv = LV_NEXT[node.lvl], L = LV_LABEL[lv], l = L.toLowerCase();
-    var content = node.content;
-    content.ink.forEach(function (s, i) { if (!s.id) s.id = "s" + i; });
-    content.items.forEach(function (it, i) { if (!it.id) it.id = "i" + i; });
-    var owner = {};   // object id → part index
-    var parts = [];   // { name, polys:[…] }
-    var body = wizSet("Split “" + node.name + "” into " + l + "s",
-      '<p class="lw-hint">Draw a loop around each ' + l + ' on the preview and name it. ' +
-      (lv === "element" ? 'Elements are the smallest blocks — they can’t be split later.' : 'Each ' + l + ' is split further on the next screen.') + '</p>' +
-      '<div class="lw-prev"><div class="lw-prev-doc"></div><svg class="lw-prev-ov"></svg></div>' +
-      '<div class="lw-parts"></div><p class="lw-left muted"></p>');
-    var prev = body.querySelector(".lw-prev"), docHost = body.querySelector(".lw-prev-doc"), ov = body.querySelector(".lw-prev-ov");
-    var b = docBBox(content) || [0, 0, 100, 100], pad = 10;
-    var bx = b[0] - pad, by = b[1] - pad, bw = b[2] - b[0] + pad * 2, bh = b[3] - b[1] + pad * 2;
-    var maxW = Math.max(200, (body.clientWidth || 600) - 4), maxH = Math.max(160, Math.min(window.innerHeight * 0.45, 460));
-    var s = Math.min(1.5, maxW / bw, maxH / bh);
-    docHost.appendChild(renderDocStatic(content, bw * s, 1.5));
-    prev.style.width = (bw * s) + "px"; prev.style.height = (bh * s) + "px";
-    ov.setAttribute("width", bw * s); ov.setAttribute("height", bh * s);
-    ov.setAttribute("viewBox", bx + " " + by + " " + bw + " " + bh);
-    function toC(e) { var r = prev.getBoundingClientRect(); return [bx + (e.clientX - r.left) / s, by + (e.clientY - r.top) / s]; }
-    function total() { return content.ink.length + content.items.length; }
-    function leftCount() { return total() - Object.keys(owner).length; }
-    function polyPts(poly) { return poly.map(function (q) { return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" "); }
-    var liveEl = null;
-    function drawOv() {
-      var h = "";
-      parts.forEach(function (pt, i) {
-        var col = PART_COLORS[i % PART_COLORS.length];
-        pt.polys.forEach(function (poly) {
-          h += '<polygon points="' + polyPts(poly) + '" fill="' + col + '" fill-opacity="0.12" stroke="' + col + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
-        });
-      });
-      h += '<polyline class="lw-live" fill="none" stroke="#475569" stroke-dasharray="' + (6 / s).toFixed(1) + ' ' + (4 / s).toFixed(1) + '" stroke-width="' + (2 / s).toFixed(2) + '"/>';
-      ov.innerHTML = h;
-      liveEl = ov.querySelector(".lw-live");
-    }
-    function membersOf(poly) {
-      var ids = [];
-      content.ink.forEach(function (sk) {
-        if (owner[sk.id] != null) return;
-        var pts = sk.pts || [], hit = 0;
-        pts.forEach(function (q) { if (pointInPoly(q[0], q[1], poly)) hit++; });
-        if (pts.length && hit / pts.length >= 0.4) ids.push(sk.id);
-      });
-      content.items.forEach(function (it) {
-        if (owner[it.id] != null) return;
-        if (pointInPoly((it.x || 0) + (it.w || 300) / 2, (it.y || 0) + (it.h || 200) / 2, poly)) ids.push(it.id);
-      });
-      return ids;
-    }
-    function partContent(i) {
-      return {
-        ink: content.ink.filter(function (x) { return owner[x.id] === i; }),
-        items: content.items.filter(function (x) { return owner[x.id] === i; })
-      };
-    }
-    function renderParts() {
-      var box = body.querySelector(".lw-parts");
-      box.innerHTML = "";
-      parts.forEach(function (pt, i) {
-        var n = Object.keys(owner).filter(function (k) { return owner[k] === i; }).length;
-        var row = document.createElement("div");
-        row.className = "lw-part";
-        row.innerHTML = '<span class="lw-sw" style="background:' + PART_COLORS[i % PART_COLORS.length] + '"></span>' +
-          '<input type="text" maxlength="60" value="' + escapeHtml(pt.name) + '"><span class="muted">' + n + ' obj</span><button type="button" title="remove this part">✕</button>';
-        var inp = row.querySelector("input");
-        inp.addEventListener("input", function () { pt.name = inp.value; });
-        row.querySelector("button").addEventListener("click", function () {
-          Object.keys(owner).forEach(function (k) { if (owner[k] === i) delete owner[k]; else if (owner[k] > i) owner[k]--; });
-          parts.splice(i, 1); renderParts(); drawOv(); foot();
-        });
-        box.appendChild(row);
-        if (pt.fresh) { delete pt.fresh; setTimeout(function () { inp.focus(); inp.select(); }, 30); }
-      });
-      body.querySelector(".lw-left").textContent = parts.length ? (leftCount() ? leftCount() + " object(s) not in any " + l + " yet." : "Everything is assigned.") : "";
-    }
-    function foot() {
-      var left = leftCount();
-      wizFoot([
-        { label: "Cancel", run: closeWizard },
-        !parts.length ? { label: "Keep as one " + l, run: function () { done([{ name: node.name, content: content }]); } } : null,
-        parts.length && left ? { label: "Rest → new " + l, run: function () {
-          var i = parts.length;
-          content.ink.concat(content.items).forEach(function (x) { if (owner[x.id] == null) owner[x.id] = i; });
-          parts.push({ name: L + " " + (i + 1), polys: [], fresh: true }); renderParts(); drawOv(); foot();
-        } } : null,
-        { label: "Next ›", primary: true, right: true, disabled: !parts.length, run: function () {
-          if (parts.some(function (pt) { return !pt.name.trim(); })) { alert("Give every " + l + " a name."); return; }
-          if (left && !confirm(left + " object(s) aren’t in any " + l + " and won’t be saved. Continue?")) return;
-          done(parts.map(function (pt, i) { return { name: pt.name.trim(), content: partContent(i) }; }));
-        } }
-      ]);
-    }
-    // drawing a loop: pointer events on the preview box. iOS must never turn this touch into a
-    // scroll of the wizard — touch-action:none on the box AND a non-passive touchmove preventDefault.
-    var live = null, pid = null, raf = 0;
-    function paintLive() { raf = 0; if (liveEl && live) liveEl.setAttribute("points", polyPts(live)); }
-    prev.addEventListener("touchstart", function (e) { e.preventDefault(); }, { passive: false });
-    prev.addEventListener("touchmove", function (e) { e.preventDefault(); }, { passive: false });
-    prev.addEventListener("pointerdown", function (e) {
-      if (pid != null) return;
-      e.preventDefault(); pid = e.pointerId;
-      try { prev.setPointerCapture(pid); } catch (_) {}
-      live = [toC(e)]; paintLive();
-    });
-    prev.addEventListener("pointermove", function (e) {
-      if (e.pointerId !== pid) return;
-      e.preventDefault();
-      var q = toC(e), last = live[live.length - 1];
-      if (Math.hypot(q[0] - last[0], q[1] - last[1]) * s < 2) return;
-      live.push(q);
-      if (!raf) raf = requestAnimationFrame(paintLive);
-    });
-    function up(e) {
-      if (e.pointerId !== pid) return;
-      pid = null;
-      var poly = live; live = null;
-      if (liveEl) liveEl.setAttribute("points", "");
-      if (!poly || poly.length < 3) return;
-      var ids = membersOf(poly);
-      if (!ids.length) return;
-      var i = parts.length;
-      ids.forEach(function (k) { owner[k] = i; });
-      parts.push({ name: L + " " + (i + 1), polys: [poly], fresh: true });
-      renderParts(); drawOv(); foot();
-    }
-    prev.addEventListener("pointerup", up);
-    prev.addEventListener("pointercancel", up);
-    renderParts(); drawOv(); foot();
-  }
   // content (board coords) → a canvas doc, moved to the origin, with fresh ids
   function writeLibDoc(id, content) {
     var b = docBBox(content) || [0, 0, 0, 0], pad = 12, dx = pad - b[0], dy = pad - b[1];
@@ -11030,97 +10731,186 @@ function __detabaseMain() {
     });
     saveCanvas(id);
   }
-  function commitMaterial(root) {
-    var made = 0, where = "";
-    function mkElement(cardId, n) {
-      var id = uid("ue_");
-      store.elements.push({ id: id, card: cardId, name: n.name, created: Date.now() });
-      writeLibDoc(id, n.content); made++;
-    }
-    function mkCard(tabId, n) {
-      var id = n.existing;
-      if (!id) { id = uid("uc_"); store.cards.push({ id: id, tab: tabId, name: n.name, created: Date.now() }); }
-      (n.children || []).forEach(function (ch) { mkElement(id, ch); });
-    }
-    function mkTab(subjectKey, n) {
-      var id = uid("ut_");
-      store.tabs.push({ id: id, subject: subjectKey, name: n.name, created: Date.now() });
-      (n.children || []).forEach(function (ch) { mkCard(id, ch); });
-    }
-    if (root.lvl === "subject") {
-      var gid = root.groupId;
-      if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: root.newGroup }); }
-      var sub = { id: uid("s_"), folder: "eti", name: root.name, group: gid };
-      store.subjects.push(sub);
-      setGroupClosed(gid, false);
-      (root.children || []).forEach(function (ch) { mkTab("s:" + sub.id, ch); });
-      where = groupName(gid) + " › " + root.name;
-    } else if (root.lvl === "tab") {
-      mkTab(root.parent, root); where = subjectName(root.parent) + " › " + root.name;
-    } else {
-      mkCard(root.parent, root); where = tabLabel(root.parent) + " › " + root.name;
-    }
-    saveStore();
-    closeWizard();
+
+  // ============================================================
+  // MAKING RAW MATERIAL — a crop out of a document, or a typed block
+  // The library's smallest piece, an Element, is a crop: cut it out of a PDF (or a picture) and file
+  // it under Subject › Tab › Card. Nothing is hand-drawn into the library any more, which is why the
+  // lasso's old save wizard is gone; a one-line definition with no document behind it can still be
+  // typed instead.
+  // ============================================================
+  // everything that shows the library, after something was added to it
+  function libRefreshAll() {
     try { renderEtiTree(); renderLibraryEti(); } catch (e) { if (window.console) console.error("library render:", e); }
-pdfCutDone();
-    libToast("Saved " + made + " element" + (made === 1 ? "" : "s") + " to " + where);
+    try { renderSubjectExtras(shownSubjectKey()); } catch (e) {}
+    try { if (miningScreen) renderEtiMain(); } catch (e) {}
   }
-  // A problem page belongs to one subject. (The lasso route stays until the crop tool replaces it.)
-  function wizProblem(start) {
-    var content = wiz.content, t = {};
-    start = start && start.lvl === "s" ? start : null;
-    function subjectOptions() {
-      return allSubjectKeys().map(function (k) {
+  // "pick one, or make a new one" — the step the destination is built out of
+  function pickOrNew(title, hint, options, newLabel, onPick, onCancel) {
+    var box = ovOpen(title, { onCancel: onCancel });
+    box.body.innerHTML = '<p class="lw-hint">' + escapeHtml(hint) + '</p><div class="lw-opts"></div>' +
+      '<div class="lw-new"><input type="text" maxlength="60" placeholder="' + escapeHtml(newLabel) + '"><button type="button" class="lw-primary">Create</button></div>';
+    var list = box.body.querySelector(".lw-opts");
+    if (!options.length) list.innerHTML = '<p class="muted">None yet — make one below.</p>';
+    var lastG = null;
+    options.forEach(function (o) {
+      if (o.group && o.group !== lastG) {
+        lastG = o.group;
+        var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = o.group;
+        list.appendChild(gl);
+      }
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "lw-opt"; b.textContent = o.name + "  ›";
+      b.addEventListener("click", function () { box.close(true); onPick(o.id, null); });
+      list.appendChild(b);
+    });
+    var inp = box.body.querySelector(".lw-new input");
+    function create() { var n = inp.value.trim(); if (!n) { inp.focus(); return; } box.close(true); onPick(null, n); }
+    box.body.querySelector(".lw-new button").addEventListener("click", create);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") create(); });
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+    if (!options.length) setTimeout(function () { inp.focus(); }, 30);
+    return box;
+  }
+  // where does this material go? always resolves to a CARD, creating whatever is missing on the way
+  function pickLibTarget(start, onCard) {
+    libEnsure();
+    var t = {};
+    function stepSubject() {
+      pickOrNew("Subject", "Which subject does this belong to?", allSubjectKeys().map(function (k) {
         var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
         return { id: k, name: subjectName(k), group: groupName(g) };
+      }), "New subject name…", function (id, nn) {
+        if (id) { t.subject = id; stepTab(); return; }
+        pickOrNew("Where to put “" + nn + "”", "Pick the sidebar group for the new subject.",
+          allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }), "New group name…", function (gid, gnn) {
+            if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: gnn }); }
+            var sub = { id: uid("s_"), folder: "eti", name: nn, group: gid };
+            store.subjects.push(sub);
+            setGroupClosed(gid, false);
+            t.subject = "s:" + sub.id;
+            stepTab();
+          });
       });
     }
-    function stepSubject() {
-      wizChoice("Subject", "Which subject is this method for?", subjectOptions(), "New subject name…", function (id, nn) {
-        if (id) { t.subject = id; stepName(); } else stepGroup(nn);
-      }, wizStepKind);
+    function stepTab() {
+      pickOrNew("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top)", libTabs(t.subject), "New tab name…", function (id, nn) {
+        if (id) t.tab = id;
+        else { t.tab = uid("ut_"); store.tabs.push({ id: t.tab, subject: t.subject, name: nn, created: Date.now() }); }
+        stepCard();
+      });
     }
-    function stepGroup(newName) {   // a new subject has to live in one of the sidebar groups
-      wizChoice("Where to put “" + newName + "”", "Pick the sidebar group for the new subject.",
-        allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }), "New group name…", function (id, nn) {
-          var gid = id;
-          if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: nn }); }
-          var sub = { id: uid("s_"), folder: "eti", name: newName, group: gid };
-          store.subjects.push(sub);
-          setGroupClosed(gid, false);
-          t.subject = "s:" + sub.id;
-          stepName();
-        }, stepSubject);
-    }
-    function stepName() {
-      var refs = [], seen = {};
-      content.items.forEach(function (it) { var r = itemAssetRef(it); if (r && r.lvl !== "p" && !seen[r.lvl + r.id]) { seen[r.lvl + r.id] = 1; refs.push(r); } });
-      var body = wizSet("Page name",
-        '<p class="lw-hint">The page is filed under <b>' + escapeHtml(subjectName(t.subject)) + '</b>. Everything in the selection is copied into it; mined assets become the concepts it uses.</p>' +
-        '<div class="lw-new"><input type="text" maxlength="80" placeholder="Name this method…"></div>' +
-        '<p class="lw-hint">' + (refs.length ? "Concepts: " + refs.map(function (r) { return escapeHtml(refName(r)); }).join(", ") : "No mined assets in the selection — attach concepts from the page itself.") + '</p>',
-        [{ label: "‹ Back", run: start ? wizStepKind : stepSubject }, { label: "Save page", primary: true, right: true, run: save }]);
-      var inp = body.querySelector("input");
-      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") save(); });
-      setTimeout(function () { inp.focus(); }, 30);
-      function save() {
-        var name = inp.value.trim(); if (!name) { inp.focus(); return; }
-        var pg = { id: uid("pp_"), subject: t.subject, name: name, tags: [], assets: [], created: Date.now(), legacy: 1 };
-        store.ps.pages.push(pg);
-        writeLibDoc(pg.id, content);
-        psBody(pg.id).assets = refs.map(function (r) { return { lvl: r.lvl, id: r.id }; });
-        psSyncCache(pg);
-        saveCanvas(pg.id);
+    function stepCard() {
+      pickOrNew("Card", "In " + tabLabel(t.tab) + " — which card?", libCards(t.tab), "New card name…", function (id, nn) {
+        if (id) t.card = id;
+        else { t.card = uid("uc_"); store.cards.push({ id: t.card, tab: t.tab, name: nn, created: Date.now() }); }
         saveStore();
-        closeWizard();
-        renderPsRail(); renderEtiTree();
-        pdfCutDone();
-        libToast("Saved “" + name + "” to " + subjectName(t.subject));
-      }
+        onCard(t.card);
+      });
     }
-    if (start) { t.subject = start.id; stepName(); }
-    else stepSubject();
+    if (start && start.lvl === "c") { onCard(start.id); return; }
+    if (start && start.lvl === "t") { t.tab = start.id; stepCard(); return; }
+    if (start && start.lvl === "s") { t.subject = start.id; stepTab(); return; }
+    stepSubject();
+  }
+  // a crop, as the single item of its own canvas doc — an element IS its crop
+  function clipToItem(clip) {
+    var K = 96 / 72;   // PDF units are 1/72", so this is the crop at its real size on screen
+    return { id: uid("it_"), kind: "pdf", pdfId: clip.pdfId, page: clip.page,
+             rect: { x: clip.rect.x, y: clip.rect.y, w: clip.rect.w, h: clip.rect.h }, polys: clip.polys,
+             x: 12, y: 12, w: Math.max(24, Math.round(clip.rect.w * K)), h: Math.max(18, Math.round(clip.rect.h * K)), z: 1 };
+  }
+  // name each piece, then file them as elements of one card
+  function nameAndFile(parts, cardId, done) {
+    var box = ovOpen(parts.length === 1 ? "Name it" : "Name the " + parts.length + " pieces");
+    box.body.innerHTML = '<p class="lw-hint">They are filed in <b>' + escapeHtml(cardLabel(cardId)) +
+      '</b>. Each one becomes a concept of its own, so name it the way you would look it up.</p><div class="lw-parts"></div>';
+    var listEl = box.body.querySelector(".lw-parts");
+    parts.forEach(function (p, i) {
+      var row = document.createElement("div");
+      row.className = "lw-part";
+      row.innerHTML = '<span class="lw-sw" style="background:' + PART_COLORS[i % PART_COLORS.length] + '"></span><input type="text" maxlength="60">';
+      var inp = row.querySelector("input");
+      inp.value = p.name || "";
+      inp.addEventListener("input", function () { p.name = inp.value; });
+      listEl.appendChild(row);
+      if (!i) setTimeout(function () { inp.focus(); inp.select(); }, 30);
+    });
+    box.buttons([
+      { label: "Cancel", run: function () { box.close(); } },
+      { label: "Save", primary: true, right: true, run: function () {
+        if (parts.some(function (p) { return !(p.name || "").trim(); })) { alert("Give every piece a name."); return; }
+        var made = [];
+        parts.forEach(function (p) {
+          var id = uid("ue_");
+          store.elements.push({ id: id, card: cardId, name: p.name.trim(), created: Date.now() });
+          writeLibDoc(id, p.content);
+          made.push(id);
+        });
+        saveStore();
+        box.close(true);
+        libRefreshAll();
+        libToast("Saved " + made.length + (made.length === 1 ? " concept to " : " concepts to ") + cardLabel(cardId));
+        if (done) done(made);
+      } }
+    ]);
+    return box;
+  }
+  // the whole path: crop → (split) → destination → names
+  function newAssetsAt(startRef) {
+    cropFromPdf({
+      title: "Crop the concept",
+      hint: "Draw a loop around it. Several loops if there are several concepts on the page.",
+      saveLabel: "Use these →",
+      multi: true,
+      onDone: function (clips) { fileClipsAsConcepts(clips, startRef); }
+    });
+  }
+  function fileClipsAsConcepts(clips, startRef) {
+    if (!clips || !clips.length) return;
+    pickLibTarget(startRef, function (cardId) {
+      nameAndFile(clips.map(function (c, i) {
+        return { name: "", content: { ink: [], items: [clipToItem(c)] } };
+      }), cardId);
+    });
+  }
+  // no document behind it: type the concept instead
+  function newTypedAsset(startRef) {
+    var box = ovOpen("Type a concept");
+    box.body.innerHTML = '<p class="lw-hint">For something with no document behind it — a definition, a rule, a reminder.</p>' +
+      '<div class="lw-new"><input type="text" maxlength="60" placeholder="Name it…"></div>' +
+      '<textarea class="ta-body" rows="6" placeholder="Write it here…"></textarea>';
+    var name = box.body.querySelector("input"), body = box.body.querySelector(".ta-body");
+    setTimeout(function () { name.focus(); }, 30);
+    box.buttons([
+      { label: "Cancel", run: function () { box.close(); } },
+      { label: "Save", primary: true, right: true, run: function () {
+        var n = name.value.trim();
+        if (!n) { name.focus(); return; }
+        box.close(true);
+        pickLibTarget(startRef, function (cardId) {
+          var id = uid("ue_");
+          store.elements.push({ id: id, card: cardId, name: n, created: Date.now() });
+          writeLibDoc(id, { ink: [], items: [{ id: uid("it_"), kind: "note", text: body.value, x: 12, y: 12, w: 360, h: 180, z: 1 }] });
+          saveStore();
+          libRefreshAll();
+          libToast("Saved “" + n + "” to " + cardLabel(cardId));
+        });
+      } }
+    ]);
+    return box;
+  }
+  // what the ⋯ menu's "＋ Add…" now does: crop, or type
+  function addAssetAt(ref) {
+    if (!mgmtExists(ref)) return;
+    var box = ovOpen("Add to " + mgmtName(ref));
+    box.body.innerHTML = '<p class="lw-hint">Where does the new material come from?</p>' +
+      '<div class="lw-kinds"><button type="button" data-k="crop">✂<b>Crop it out of a document</b><span>a PDF from Notability, or a picture</span></button>' +
+      '<button type="button" data-k="type">⌨<b>Type it</b><span>a definition or rule with no document behind it</span></button></div>';
+    box.body.querySelector('[data-k="crop"]').addEventListener("click", function () { box.close(true); newAssetsAt(ref); });
+    box.body.querySelector('[data-k="type"]').addEventListener("click", function () { box.close(true); newTypedAsset(ref); });
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+    return box;
   }
   function libToast(msg) {
     var t = document.createElement("div");
@@ -11366,7 +11156,7 @@ pdfCutDone();
     wireInkCapture(p);
     applyNav();
     try { prettyFractions(canvas); } catch (e) {}
-    try { renderSaveTargetBanner(); } catch (e) {}
+
   }
 
   // ============================================================
@@ -11625,10 +11415,10 @@ pdfCutDone();
     if (!t) {
       t = document.createElement("div");
       t.className = "ink-sel-toolbar";
-      t.innerHTML = '<button data-s="lib" title="save to the library">📚</button><button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
+      t.innerHTML = '<button data-s="copy" title="copy">⧉</button><button data-s="cut" title="cut">✂</button><button data-s="del" title="delete">🗑</button><button data-s="x" title="deselect">✕</button>';
       host.appendChild(t);
       t.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
-      t.querySelector('[data-s="lib"]').addEventListener("click", function (e) { e.stopPropagation(); openSaveWizard(); });
+
       t.querySelector('[data-s="copy"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCopy(curProblem()); });
       t.querySelector('[data-s="cut"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelCut(curProblem()); });
       t.querySelector('[data-s="del"]').addEventListener("click", function (e) { e.stopPropagation(); inkSelDelete(curProblem()); });
@@ -12102,7 +11892,7 @@ pdfCutDone();
     var done = $("inkDone"); if (done) done.addEventListener("click", exitInkFull);
     document.addEventListener("keydown", function (e) {
       if (!document.body.classList.contains("ink-full")) return;
-      if (wiz) { if (e.key === "Escape") closeWizard(); return; }   // the save wizard owns the keyboard
+
       if (e.key === "Escape") {
         if (inkSel) { inkSelClear(); return; }
         exitInkFull();
@@ -13681,8 +13471,8 @@ pdfCutDone();
     var ov = document.createElement("div");
     ov.className = "lw-overlay";
     ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b>Add ' + refs.length + ' asset' + (refs.length === 1 ? '' : 's') + ' to…</b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
-      '<div class="lw-body"><div class="lw-new"><input type="text" maxlength="60" placeholder="New board name…"><button type="button" class="lw-primary">＋ New board</button></div>' +
-      '<div class="lw-group" style="margin-top:14px">Existing boards</div><div class="mb-grid"></div></div></div>';
+      '<div class="lw-body"><div class="lw-new"><input type="text" maxlength="60" placeholder="New clipboard name…"><button type="button" class="lw-primary">＋ New clipboard</button></div>' +
+      '<div class="lw-group" style="margin-top:14px">Existing clipboards</div><div class="mb-grid"></div></div></div>';
     document.body.appendChild(ov);
     function close() { ov.remove(); }
     function go(openBoard) { close(); openBoard(); mineToBoard(refs); libToast("Added " + refs.length + " asset" + (refs.length === 1 ? "" : "s") + " — drag them into place"); }
@@ -13694,7 +13484,7 @@ pdfCutDone();
     var grid = ov.querySelector(".mb-grid"), pages = (store.canvases || []).slice();
     var recent = store.ui.lastPage;
     pages.sort(function (a, b) { if (a.id === recent) return -1; if (b.id === recent) return 1; return (b.created || 0) - (a.created || 0); });
-    if (!pages.length) grid.innerHTML = '<p class="muted">No boards yet — create one above.</p>';
+    if (!pages.length) grid.innerHTML = '<p class="muted">No clipboards yet — create one above.</p>';
     pages.forEach(function (pg) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "mb-card";
@@ -13980,30 +13770,9 @@ pdfCutDone();
   }
   if ($("etiHiddenBtn")) $("etiHiddenBtn").addEventListener("click", function () { openHiddenMenu($("etiHiddenBtn")); });
 
-  // ---- "＋ Add": a new notebook board that already knows where its content is saved ----
-  function targetLabel(ref) {
-    var path = refPath(ref);
-    return (path ? path + " › " : "") + refLabel(ref) + (ref.ps ? "  ·  new problem page" : "");
-  }
-  function addAssetAt(ref) {
-    if (!mgmtExists(ref)) return;
-    var label = mgmtName(ref);
-    addPage("New in " + label);   // creates the board and opens it
-    var pg = store.canvases[store.canvases.length - 1];
-    if (pg) { pg.saveTarget = { lvl: ref.lvl, id: ref.id }; if (ref.ps) pg.saveTarget.ps = 1; saveStore(); }
-    renderSaveTargetBanner();
-  }
-  function renderSaveTargetBanner() {
-    var bar = $("saveTargetBar"); if (!bar) return;
-    var p = curProblem(), tg = p && p.saveTarget;
-    if (!tg || !mgmtExists(tg) || !document.body.classList.contains("ink-full")) { bar.hidden = true; return; }
-    bar.hidden = false;
-    bar.querySelector("b").textContent = targetLabel(tg);
-  }
-  if ($("saveTargetBar")) $("saveTargetBar").querySelector("button").addEventListener("click", function () {
-    var p = curProblem(); if (p) { delete p.saveTarget; saveStore(); }
-    renderSaveTargetBanner();
-  });
+
+
+
 
   // ---- management bar above a subject page: the open Subject and Tab ----
   function currentEtiRefs() {
@@ -14032,7 +13801,7 @@ pdfCutDone();
       row.className = "lb-row";
       row.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ref.lvl === "s" ? "Subject" : "Tab") + '</span><b>' + escapeHtml(mgmtName(ref)) + '</b>';
       var add = document.createElement("button"); add.type = "button"; add.textContent = ref.lvl === "s" ? "＋ Tab" : "＋ Card";
-      add.title = "write it in a new notebook board — it saves here"; add.addEventListener("click", function () { addAssetAt(ref); });
+      add.title = "crop it out of a document, or type it"; add.addEventListener("click", function () { addAssetAt(ref); });
       var ren = document.createElement("button"); ren.type = "button"; ren.textContent = "✎"; ren.title = "rename"; ren.addEventListener("click", function () { libRename(ref); });
       var del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = isBuiltinRef(ref) ? "🙈" : "🗑"; del.title = isBuiltinRef(ref) ? "hide from ETI" : "delete";
       del.addEventListener("click", function () { libDelete(ref); });
@@ -14133,7 +13902,11 @@ pdfCutDone();
              storeKB: Math.round((localStorage.getItem(LS_KEY) || "").length / 1024) };
   };
   if ($("pvCutBtn")) $("pvCutBtn").addEventListener("click", pdfCutToggle);
-  if ($("pvCutClear")) $("pvCutClear").addEventListener("click", pdfCutDone);
+  if ($("pvCutClear")) $("pvCutClear").addEventListener("click", function () {
+    if (!pdfCut) return;
+    pdfCut.marks = [];
+    pdfDrawMarks(); pdfCutBar();
+  });
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
   if ($("pvScroll")) {
     // one finger draws while cutting (pointer capture keeps its move/up events on the page);
