@@ -377,10 +377,9 @@
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 0 0 6px 0; padding: 1px 6px; }
   /* ---- marking the parts to keep ---- */
   .pv-bar .tool-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-  /* with a pencil in the house the finger keeps scrolling while cutting; without one it has to
-     draw, or there would be no way to mark anything at all */
+  /* while cutting, the page does no scrolling of its own: the app moves it for fingers, so the
+     pencil can draw without the browser stealing the gesture (touch-action cannot tell them apart) */
   #pdfView.cutting .pv-page { cursor: crosshair; touch-action: none; }
-  #pdfView.cutting.pen .pv-page { touch-action: pan-x pan-y; }
   #pdfView.cutting .pv-scroll { background: var(--surface-3, var(--surface-2)); }
   .pv-marks { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
   .pv-marks polygon { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: var(--accent);
@@ -3306,7 +3305,7 @@
   </div>
   <div id="saveTargetBar" class="save-target-bar" hidden><span>📚 Saving into <b></b> — lasso your writing, then tap 📚</span><button type="button" title="stop saving into this">✕</button></div>
   <div id="nbLib" hidden>
-    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B54</span><button id="nbLibClose" type="button" title="close">✕</button></div>
+    <div class="nblib-head"><b>Mining</b><span id="buildTag" style="font-size:.65rem;color:var(--text-muted);opacity:.6;margin-left:auto;margin-right:8px;" title="build marker — tell Claude what this says">B55</span><button id="nbLibClose" type="button" title="close">✕</button></div>
     <div class="nblib-scroll" id="nbMining"></div>
   </div>
 </div>
@@ -8924,7 +8923,7 @@ function __detabaseMain() {
     if (!pdfCut) return;
     var n = pdfCut.marks.length;
     $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") +
-      (penSeen ? "Draw a loop with the pencil · your finger scrolls · two fingers zoom"
+      (penSeen ? "Draw a loop with the pencil · one finger moves the page · two fingers zoom"
                : "Draw a loop around each part · two fingers to move and zoom");
     $("pvCutSave").disabled = !n;
   }
@@ -9029,7 +9028,6 @@ function __detabaseMain() {
   // listens on the document, so nothing here can ever slow scrolling down anywhere else in the
   // app, and pdfResetInput() puts the layer back to rest from any state at all.
   var pdfDraw = null;    // the loop being drawn
-  var pvGest = null;     // the two-finger gesture
   function pdfResetInput() {
     if (pdfDraw) {
       if (pdfDraw.svg) pdfDraw.svg.remove();
@@ -9043,43 +9041,67 @@ function __detabaseMain() {
     }
   }
 
-  // ---- two fingers: move and zoom ----
+  // ---- moving the page with fingers ---------------------------------------------------
+  // touch-action cannot tell a pencil from a finger — it governs the element, whatever is touching
+  // it — so leaving the page scrollable let the PENCIL scroll too, and nothing could be marked.
+  // While cutting, the page therefore does no scrolling of its own and this does the moving, the
+  // same arrangement the board has always used: the pencil draws, fingers move the page.
+  //   reading            two fingers pinch; one finger is the browser's own scrolling
+  //   cutting, pencil    one finger moves, two fingers move and zoom
+  //   cutting, no pencil one finger draws, so two fingers are needed to move
+  // A finger that lands while the pencil is drawing is a palm: it is ignored outright.
+  var pvGest = null;
   function pvTouchInfo(t) {
+    if (t.length < 2) return { mx: t[0].clientX, my: t[0].clientY, dist: 0, n: 1 };
     var a = t[0], b = t[1];
     return { mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2,
-             dist: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)) };
+             dist: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)), n: 2 };
+  }
+  function pvBase(i) {
+    var sc = $("pvScroll");
+    return { mx: i.mx, my: i.my, dist: i.dist, n: i.n, top: sc.scrollTop, left: sc.scrollLeft };
   }
   function pvTouchStart(e) {
     if (!pdfView || !pdfView.pagesEl) return;
-    if (e.touches.length !== 2) return;
-    if (pdfDraw) pdfResetInput();            // a second finger means move, not mark
-    var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
-    var r = pdfView.pagesEl.getBoundingClientRect();
-    pvGest = { mx: i.mx, my: i.my, dist: i.dist, top: sc.scrollTop, left: sc.scrollLeft,
-               k: 1, ox: i.mx - r.left, oy: i.my - r.top };
-    pdfView.pagesEl.style.transformOrigin = pvGest.ox + "px " + pvGest.oy + "px";
-    // the move handler has to block the browser's own panning, so it is only attached while two
-    // fingers are really down — one-finger scrolling then never waits for this code at all
+    if (pdfDraw) return;                       // the pencil is drawing: every finger is a palm
+    var n = e.touches.length;
+    var fingerMoves = !!(pdfCut && penSeen);   // in cut mode with a pencil the page cannot scroll itself
+    if (n < 2 && !fingerMoves) return;         // otherwise one finger belongs to the browser (or draws)
+    var i = pvTouchInfo(e.touches), r = pdfView.pagesEl.getBoundingClientRect();
+    pvGest = pvBase(i);
+    pvGest.k = 1;
+    pdfView.pagesEl.style.transformOrigin = (i.mx - r.left) + "px " + (i.my - r.top) + "px";
     $("pvScroll").addEventListener("touchmove", pvTouchMove, { passive: false });
   }
   function pvTouchMove(e) {
     if (!pvGest) return;
-    if (e.touches.length < 2) { pvTouchEnd(e); return; }
-    e.preventDefault();                      // this gesture is ours now
+    if (!e.touches.length) { pvTouchEnd(e); return; }
+    e.preventDefault();                        // this gesture is ours now
     var sc = $("pvScroll"), i = pvTouchInfo(e.touches);
-    pvGest.k = i.dist / pvGest.dist;
-    pdfView.pagesEl.style.transform = "scale(" + pvGest.k.toFixed(4) + ")";
+    if (i.n !== pvGest.n) {                    // a finger joined or left: carry on from here
+      var k = pvGest.k;
+      pvGest = pvBase(i); pvGest.k = k;
+      return;
+    }
+    if (i.n === 2 && pvGest.dist) {
+      pvGest.k = i.dist / pvGest.dist;
+      pdfView.pagesEl.style.transform = "scale(" + pvGest.k.toFixed(4) + ")";
+    }
     sc.scrollTop = pvGest.top - (i.my - pvGest.my);
     sc.scrollLeft = pvGest.left - (i.mx - pvGest.mx);
   }
   function pvTouchEnd(e) {
     if (!pvGest) return;
-    if (e && e.touches && e.touches.length >= 2) return;
+    if (e && e.touches && e.touches.length) {  // one of several fingers lifted — keep going
+      var k = pvGest.k;
+      pvGest = pvBase(pvTouchInfo(e.touches)); pvGest.k = k;
+      return;
+    }
     var k = pvGest.k;
     if (pdfView && pdfView.pagesEl) pdfView.pagesEl.style.transform = "";
     pvGest = null;
     if ($("pvScroll")) $("pvScroll").removeEventListener("touchmove", pvTouchMove);
-    if (k > 1.04 || k < 0.96) pdfZoom(k);    // draw the pages properly at the size it ended on
+    if (k > 1.04 || k < 0.96) pdfZoom(k);      // draw the pages properly at the size it ended on
     else pdfSweep();
   }
 
