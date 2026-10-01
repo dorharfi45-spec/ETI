@@ -657,6 +657,21 @@
   .eti-hidden-btn { margin: -4px 0 10px; border: 1px dashed var(--border-strong); background: var(--surface-1); color: var(--text-secondary); border-radius: 10px; padding: 8px 12px; font-size: .86rem; font-weight: 600; width: 100%; text-align: left; }
   body:not(.top-eti) #etiHiddenBtn { display: none; }
   .ps-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  /* saving a cut part as a method: the review step */
+  .md-top { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  .md-crop { flex: 0 0 auto; max-width: 260px; border: 1px solid var(--border); border-radius: var(--r-md); padding: 6px; background: #fff; }
+  .md-fields { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 6px; }
+  .md-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin-top: 4px; }
+  .md-subject { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .md-subject b { font-size: .98rem; }
+  .md-sec { margin-top: 18px; }
+  .md-sechead { font-size: .8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+  .md-sechead .muted { font-weight: 400; }
+  .md-stage { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-md); padding: 10px; margin-bottom: 10px; background: var(--surface-1); }
+  .md-stage-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .md-stage-head input { flex: 1; min-width: 0; min-height: 40px; padding: 0 10px; border-radius: var(--r-sm); border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font: inherit; }
+  .md-num { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: .8rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .md-mv { min-height: 40px; padding: 0 12px; }
   .ta-body { width: 100%; box-sizing: border-box; margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-strong);
     background: var(--bg); color: var(--text-primary); font: inherit; font-size: .95rem; resize: vertical; }
 
@@ -3197,7 +3212,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B66</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B67</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3260,6 +3275,7 @@
     <span id="pvCutCount"></span>
     <span class="pv-spacer"></span>
     <button type="button" id="pvCutClear" class="tool-btn">Clear</button>
+    <button type="button" id="pvCutMethod" class="tool-btn" hidden>Save as a method →</button>
     <button type="button" id="pvCutSave" class="tool-btn primary">Save to library →</button>
   </div>
 </div>
@@ -5230,6 +5246,7 @@ function __detabaseMain() {
     document.querySelectorAll(".folder").forEach(function (f) { f.classList.toggle("on", f.id === "folder-" + name); });
     document.querySelectorAll(".tabbar[data-folder]").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-folder") === name); });
     var m = folderMeta[name];
+    if (typeof noteSubject === "function") noteSubject("f:" + name);
     $("pageTitle").textContent = (typeof editName === "function" && editName({ lvl: "s", id: "f:" + name })) || m.title;
     $("pageSubtitle").innerHTML = m.sub;
     if (!keepHash) {
@@ -5944,6 +5961,7 @@ function __detabaseMain() {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
     activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; miningScreen = false;
+    if (s.folder === "eti") noteSubject("s:" + id);
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
       store.ui.group = activeGroup;
@@ -9012,9 +9030,12 @@ function __detabaseMain() {
   function pdfCutToggle() {
     if (pdfCut) { pdfCutEnd(); return; }
     cutSessionStart({
-      own: true, keepOpen: true, multi: true,
-      saveLabel: "Save to the library →",
-      onDone: function (clips) { fileClipsAsConcepts(clips, null); }
+      own: true, multi: true,
+      saveLabel: "Save to library →",
+      onDone: function (clips, kind, cb) {
+        if (kind === "method") saveClipAsMethod(clips[0], cb);
+        else fileClipsAsConcepts(clips, null, cb);
+      }
     });
   }
   function pdfCutEnd() {
@@ -9035,13 +9056,19 @@ function __detabaseMain() {
     var n = pdfCut.marks.length, mission = pdfCut.mission;
     var how = penSeen ? "Draw a loop with the pencil · one finger moves the page · two fingers zoom"
                       : "Draw a loop around it · two fingers to move and zoom";
+    var own = !!(mission && mission.own);
     if (mission && !mission.multi) {
       $("pvCutCount").textContent = n ? "Marked — draw again to change it, or carry on below" : (mission.hint || how);
+    } else if (own && n > 1) {
+      $("pvCutCount").textContent = n + " parts marked · save them as concepts, or mark just one to save it as a method";
     } else {
       $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") + how;
     }
     $("pvCutSave").textContent = (mission && mission.saveLabel) || "Save to library →";
     $("pvCutSave").disabled = !n;
+    // the reader's own Cut parts can also make a method — out of exactly one cut part
+    var mb = $("pvCutMethod");
+    if (mb) { mb.hidden = !own; mb.disabled = n !== 1; }
   }
   function pdfSlotUnits(d) { return d && d._uw ? { w: d._uw, h: d._uh } : null; }
   function pdfSlotByPage(page) { return (pdfView && pdfView.slots[page - 1]) || null; }
@@ -9439,20 +9466,34 @@ function __detabaseMain() {
   }
 
   // ---- the cut regions go where the session's job says ---------------------------------
-  function pdfCutSave() {
+  // kind: "concept" (the default) or "method" — only the reader's own Cut parts offers the choice
+  function pdfCutSave(kind) {
     if (!pdfCut || !pdfCut.marks.length || !pdfView) return;
     var mission = pdfCut.mission;
     if (!mission) { pdfCutEnd(); return; }
     var pdfId = pdfView.id;
     var clips = pdfCut.marks.map(function (m) { return markToClip(m, pdfId); });
     var pages = pdfPagesUsedBy(pdfCut.marks);
+    // the picture of every page cut from goes to the cloud once it is used: it is what other devices draw
+    function pushPages() { pages.forEach(function (pg) { pdfEnsurePageImage(pdfId, pg, true).catch(function () {}); }); }
+    if (mission.own) {
+      // Nothing is cleared until the save has actually happened: backing out of any step that
+      // follows leaves the marks exactly where they were, ready to save another way.
+      var session = pdfCut;
+      mission.onDone(clips, kind === "method" ? "method" : "concept", {
+        saved: function () {
+          pushPages();
+          if (pdfCut === session) { pdfCut.marks = []; pdfDrawMarks(); pdfCutBar(); }
+        },
+        cancelled: function () {}
+      });
+      return;
+    }
     pdfCut.mission = null;               // finished, so closing the reader is not a cancel
     pdfCutEnd();
-    if (!mission.keepOpen) closePdf();
-    // the picture of every page cut from goes to the cloud now: it is what the other devices draw
-    pages.forEach(function (pg) { pdfEnsurePageImage(pdfId, pg, true).catch(function () {}); });
+    closePdf();
+    pushPages();
     mission.onDone(mission.multi ? clips : clips[0]);
-    if (mission.keepOpen && pdfView) cutSessionStart(mission);   // carry on cutting where you left off
   }
 
   // ============================================================
@@ -9640,7 +9681,9 @@ function __detabaseMain() {
     function foot() {
       box.buttons([
         { label: "Cancel", run: function () { box.close(); } },
-        { label: (opts.saveLabel || "Save") + (parts.length ? " (" + parts.length + ")" : ""), primary: true, right: true, disabled: !parts.length,
+        { label: !parts.length && opts.allowEmpty ? (opts.emptyLabel || opts.saveLabel || "Save")
+                 : (opts.saveLabel || "Save") + (parts.length ? " (" + parts.length + ")" : ""),
+          primary: true, right: true, disabled: !parts.length && !opts.allowEmpty,
           run: function () {
             if (parts.some(function (pt) { return !pt.name.trim(); })) { alert("Give every part a name."); return; }
             var out = parts.map(function (pt) {
@@ -10274,22 +10317,30 @@ function __detabaseMain() {
   // ============================================================
   function psRender() { if (activePsPage) renderPsPane(); }
   // which subject — the same grouping the sidebar shows
+  // the subject you last worked in — the picker offers it first, since that is usually the answer
+  function lastSubjectKey() {
+    var k = store.ui && store.ui.lastSubject;
+    return k && refExists({ lvl: "s", id: k }) ? k : null;
+  }
+  function noteSubject(k) { if (k && store.ui) store.ui.lastSubject = k; }   // kept with the next save
   function pickSubject(title, hint, onPick, onCancel) {
     var box = ovOpen(title || "Which subject?", { onCancel: onCancel });
     box.body.innerHTML = '<p class="lw-hint">' + escapeHtml(hint || "") + '</p><div class="lw-opts"></div>';
-    var list = box.body.querySelector(".lw-opts"), lastG = null;
-    allSubjectKeys().forEach(function (k) {
-      var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
-      var gn = groupName(g);
-      if (gn !== lastG) {
-        lastG = gn;
-        var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = gn;
-        list.appendChild(gl);
-      }
+    var list = box.body.querySelector(".lw-opts"), lastG = null, last = lastSubjectKey();
+    function opt(k) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "lw-opt"; b.textContent = subjectName(k) + "  ›";
-      b.addEventListener("click", function () { box.close(true); onPick(k); });
+      b.addEventListener("click", function () { box.close(true); noteSubject(k); onPick(k); });
       list.appendChild(b);
+    }
+    function head(txt) { var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = txt; list.appendChild(gl); }
+    if (last) { head("Last used"); opt(last); }
+    allSubjectKeys().forEach(function (k) {
+      if (k === last) return;
+      var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
+      var gn = groupName(g);
+      if (gn !== lastG) { lastG = gn; head(gn); }
+      opt(k);
     });
     box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
     return box;
@@ -10477,38 +10528,50 @@ function __detabaseMain() {
     psSaveBody(pg); psRender();
     if (then) then();
   }
-  // one concept: tap it to go to it in ETI, tap the ✕ to take it off
-  function psConceptChip(t, ref, editable, onChange) {
-    var wrap = document.createElement("span");
-    wrap.className = "ps-chip";
-    var b = document.createElement("button");
-    b.type = "button"; b.className = "ps-chip-go";
-    b.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ASSET_LV[ref.lvl] || "") + '</span>' + escapeHtml(refLabel(ref)) + ' ↗';
-    b.addEventListener("click", function () { closeConcepts(); openRef(ref); });
-    wrap.appendChild(b);
-    if (editable) {
-      var x = document.createElement("button");
-      x.type = "button"; x.className = "ps-chip-x"; x.title = "take this concept off"; x.textContent = "✕";
-      x.addEventListener("click", function () { psDetach(t.pg, t.st, ref, onChange); });
-      wrap.appendChild(x);
-    }
-    return wrap;
-  }
-  // the list itself — the popup shows it, and so can anything else that wants to show a vine
-  function conceptListEl(ref, editable, onChange) {
-    var t = psTargetOf(ref), box = document.createElement("div");
+  // The chips of a concept list — the ONE piece every "what does this use?" list is drawn with:
+  // a saved method or stage (conceptListEl, the Connected concepts popup) and a method still being
+  // put together from the clipboard (its review step). Tap a chip to go to the concept, ✕ to take it off.
+  //   opts: { onRemove(ref), onAttach(), noJump }
+  function conceptChipsEl(list, opts) {
+    opts = opts || {};
+    var box = document.createElement("div");
     box.className = "ps-concepts";
-    if (!t) return box;
-    var list = psConceptsOf(ref);
-    list.forEach(function (r) { box.appendChild(psConceptChip(t, r, editable, onChange)); });
-    if (!list.length) box.insertAdjacentHTML("beforeend", '<span class="muted ps-none">nothing attached yet</span>');
-    if (editable) {
+    (list || []).forEach(function (ref) {
+      var wrap = document.createElement("span");
+      wrap.className = "ps-chip";
+      var b = document.createElement(opts.noJump ? "span" : "button");
+      if (!opts.noJump) {
+        b.type = "button";
+        b.addEventListener("click", function () { closeConcepts(); openRef(ref); });
+      }
+      b.className = "ps-chip-go";
+      b.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ASSET_LV[ref.lvl] || "") + '</span>' + escapeHtml(refLabel(ref)) + (opts.noJump ? "" : " ↗");
+      wrap.appendChild(b);
+      if (opts.onRemove) {
+        var x = document.createElement("button");
+        x.type = "button"; x.className = "ps-chip-x"; x.title = "take this concept off"; x.textContent = "✕";
+        x.addEventListener("click", function () { opts.onRemove(ref); });
+        wrap.appendChild(x);
+      }
+      box.appendChild(wrap);
+    });
+    if (!(list || []).length) box.insertAdjacentHTML("beforeend", '<span class="muted ps-none">nothing attached yet</span>');
+    if (opts.onAttach) {
       var add = document.createElement("button");
       add.type = "button"; add.className = "ps-attach"; add.textContent = "🔗 Attach a concept";
-      add.addEventListener("click", function () { psAttach(t.pg, t.st, onChange); });
+      add.addEventListener("click", opts.onAttach);
       box.appendChild(add);
     }
     return box;
+  }
+  // the list for a saved method or stage — the popup shows it, and so can anything else that wants to
+  function conceptListEl(ref, editable, onChange) {
+    var t = psTargetOf(ref);
+    if (!t) return conceptChipsEl([], {});
+    return conceptChipsEl(psConceptsOf(ref), editable ? {
+      onRemove: function (r) { psDetach(t.pg, t.st, r, onChange); },
+      onAttach: function () { psAttach(t.pg, t.st, onChange); }
+    } : {});
   }
   var conceptsBox = null;
   function closeConcepts() { if (conceptsBox) { var b = conceptsBox; conceptsBox = null; b.close(true); } }
@@ -10680,7 +10743,8 @@ function __detabaseMain() {
     return box;
   }
   // where does this material go? always resolves to a CARD, creating whatever is missing on the way
-  function pickLibTarget(start, onCard) {
+  // onCancel fires if any step is backed out of, so whoever started this can put things back
+  function pickLibTarget(start, onCard, onCancel) {
     libEnsure();
     var t = {};
     function stepSubject() {
@@ -10688,7 +10752,7 @@ function __detabaseMain() {
         var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
         return { id: k, name: subjectName(k), group: groupName(g) };
       }), "New subject name…", function (id, nn) {
-        if (id) { t.subject = id; stepTab(); return; }
+        if (id) { t.subject = id; noteSubject(id); stepTab(); return; }
         pickOrNew("Where to put “" + nn + "”", "Pick the sidebar group for the new subject.",
           allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }), "New group name…", function (gid, gnn) {
             if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: gnn }); }
@@ -10696,16 +10760,17 @@ function __detabaseMain() {
             store.subjects.push(sub);
             setGroupClosed(gid, false);
             t.subject = "s:" + sub.id;
+            noteSubject(t.subject);
             stepTab();
-          });
-      });
+          }, onCancel);
+      }, onCancel);
     }
     function stepTab() {
       pickOrNew("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top)", libTabs(t.subject), "New tab name…", function (id, nn) {
         if (id) t.tab = id;
         else { t.tab = uid("ut_"); store.tabs.push({ id: t.tab, subject: t.subject, name: nn, created: Date.now() }); }
         stepCard();
-      });
+      }, onCancel);
     }
     function stepCard() {
       pickOrNew("Card", "In " + tabLabel(t.tab) + " — which card?", libCards(t.tab), "New card name…", function (id, nn) {
@@ -10713,7 +10778,7 @@ function __detabaseMain() {
         else { t.card = uid("uc_"); store.cards.push({ id: t.card, tab: t.tab, name: nn, created: Date.now() }); }
         saveStore();
         onCard(t.card);
-      });
+      }, onCancel);
     }
     if (start && start.lvl === "c") { onCard(start.id); return; }
     if (start && start.lvl === "t") { t.tab = start.id; stepCard(); return; }
@@ -10728,8 +10793,8 @@ function __detabaseMain() {
              x: 12, y: 12, w: Math.max(24, Math.round(clip.rect.w * K)), h: Math.max(18, Math.round(clip.rect.h * K)), z: 1 };
   }
   // name each piece, then file them as elements of one card
-  function nameAndFile(parts, cardId, done) {
-    var box = ovOpen(parts.length === 1 ? "Name it" : "Name the " + parts.length + " pieces");
+  function nameAndFile(parts, cardId, done, onCancel) {
+    var box = ovOpen(parts.length === 1 ? "Name it" : "Name the " + parts.length + " pieces", { onCancel: onCancel });
     box.body.innerHTML = '<p class="lw-hint">They are filed in <b>' + escapeHtml(cardLabel(cardId)) +
       '</b>. Each one becomes a concept of its own, so name it the way you would look it up.</p><div class="lw-parts"></div>';
     var listEl = box.body.querySelector(".lw-parts");
@@ -10773,13 +10838,131 @@ function __detabaseMain() {
       onDone: function (clips) { fileClipsAsConcepts(clips, startRef); }
     });
   }
-  function fileClipsAsConcepts(clips, startRef) {
+  // cb (optional): { saved(), cancelled() } — the reader keeps its marks until saved() is called
+  function fileClipsAsConcepts(clips, startRef, cb) {
+    cb = cb || {};
     if (!clips || !clips.length) return;
+    function cancelled() { if (cb.cancelled) cb.cancelled(); }
     pickLibTarget(startRef, function (cardId) {
-      nameAndFile(clips.map(function (c, i) {
+      nameAndFile(clips.map(function (c) {
         return { name: "", content: { ink: [], items: [clipToItem(c)] } };
-      }), cardId);
-    });
+      }), cardId, function () { if (cb.saved) cb.saved(); }, cancelled);
+    }, cancelled);
+  }
+  // ---- a cut part, saved as a method — from the clipboard's reader -----------------------
+  // The same steps as "＋ New method", in the same order and with the same pieces: the name, the
+  // subject picker, the stage cutter (cropInsideCrop) and the concept picker. Nothing is written
+  // until the last step's Save, so backing out anywhere leaves no half-made method behind — and the
+  // reader keeps its marks, so the cut part is not lost either. Stages are optional: a method can be
+  // saved whole and split later from the method itself.
+  //   cb: { saved(), cancelled() } from the reader
+  function saveClipAsMethod(clip, cb) {
+    cb = cb || {};
+    function cancelled() { if (cb.cancelled) cb.cancelled(); }
+    var draft = { name: "", subject: null, clip: clip, stages: [], assets: [] };
+    askName("Name this method", "Every method needs a name. You can change it whenever you like.", "", function (name) {
+      draft.name = name;
+      pickSubject("Which subject?", "Which subject is this method for?", function (k) {
+        draft.subject = k;
+        cropInsideCrop({
+          clip: clip,
+          title: "Split “" + name + "” into stages",
+          hint: "Draw a loop around each stage, in the order you would solve them. A stage cannot be split again. " +
+                "No stages is fine too — it can be split later.",
+          saveLabel: "Next", allowEmpty: true, emptyLabel: "Next — no stages",
+          nameFor: function (i) { return "Stage " + (i + 1); },
+          onDone: function (parts) {
+            draft.stages = parts.map(function (p) { return { id: uid("st_"), name: p.name, crop: p.clip, assets: [] }; });
+            reviewMethodDraft(draft, cb);
+          },
+          onCancel: cancelled
+        });
+      }, cancelled);
+    }, cancelled);
+  }
+  // the last step: everything at a glance, the concepts (optional), the stage order, then Save
+  function reviewMethodDraft(draft, cb) {
+    var box = ovOpen("Save as a method", { wide: true, onCancel: function () { if (cb.cancelled) cb.cancelled(); } });
+    function addRefs(list, refs) {
+      var have = {};
+      list.forEach(function (r) { have[refKey(r)] = 1; });
+      refs.forEach(function (r) { if (!have[refKey(r)]) { have[refKey(r)] = 1; list.push({ lvl: r.lvl, id: r.id }); } });
+    }
+    function chips(list, setList, title) {
+      return conceptChipsEl(list, {
+        noJump: true,   // jumping to ETI would walk away from a method that is not saved yet
+        onRemove: function (r) { setList(list.filter(function (x) { return refKey(x) !== refKey(r); })); draw(); },
+        onAttach: function () {
+          openAssetPicker({ title: title, firstSubject: draft.subject, onPick: function (refs) { addRefs(list, refs); draw(); } });
+        }
+      });
+    }
+    function draw() {
+      var b = box.body;
+      b.innerHTML =
+        '<div class="md-top"><div class="md-crop"></div><div class="md-fields">' +
+          '<label class="md-label">Name</label><div class="lw-new"><input type="text" maxlength="80" class="md-name"></div>' +
+          '<label class="md-label">Subject</label><div class="md-subject"><b></b><button type="button" class="btn-quiet md-change">Change</button></div>' +
+        '</div></div>' +
+        '<div class="md-sec"><div class="md-sechead">This method uses <span class="muted">— optional, and can be done later</span></div><div class="md-uses"></div></div>' +
+        '<div class="md-sec"><div class="md-sechead">Stages</div><div class="md-stages"></div></div>';
+      b.querySelector(".md-crop").appendChild(psCropBlock(draft.clip, 240));
+      var nameIn = b.querySelector(".md-name");
+      nameIn.value = draft.name;
+      nameIn.addEventListener("input", function () { draft.name = nameIn.value; });
+      b.querySelector(".md-subject b").textContent = subjectName(draft.subject);
+      b.querySelector(".md-change").addEventListener("click", function () {
+        pickSubject("Which subject?", "Which subject is this method for?", function (k) { draft.subject = k; draw(); });
+      });
+      b.querySelector(".md-uses").appendChild(chips(draft.assets, function (l) { draft.assets = l; }, "Concepts used in “" + (draft.name || "this method") + "”"));
+      var sts = b.querySelector(".md-stages");
+      if (!draft.stages.length) sts.innerHTML = '<p class="muted">No stages — it is saved whole, and can be split into stages later from the method itself.</p>';
+      draft.stages.forEach(function (st, i) {
+        var row = document.createElement("div");
+        row.className = "md-stage";
+        row.innerHTML = '<div class="md-stage-head"><span class="md-num">' + (i + 1) + '</span><input type="text" maxlength="60">' +
+          '<button type="button" class="btn-quiet md-mv" data-d="-1" title="move up"' + (i ? '' : ' disabled') + '>▲</button>' +
+          '<button type="button" class="btn-quiet md-mv" data-d="1" title="move down"' + (i < draft.stages.length - 1 ? '' : ' disabled') + '>▼</button></div>';
+        var inp = row.querySelector("input");
+        inp.value = st.name;
+        inp.addEventListener("input", function () { st.name = inp.value; });
+        Array.prototype.forEach.call(row.querySelectorAll(".md-mv"), function (mv) {
+          mv.addEventListener("click", function () {
+            var j = i + (+mv.getAttribute("data-d"));
+            if (j < 0 || j >= draft.stages.length) return;
+            var tmp = draft.stages[i]; draft.stages[i] = draft.stages[j]; draft.stages[j] = tmp;
+            draw();
+          });
+        });
+        row.appendChild(psCropBlock(st.crop, 220));
+        row.appendChild(chips(st.assets, function (l) { st.assets = l; }, "Concepts used in “" + (st.name || "this stage") + "”"));
+        sts.appendChild(row);
+      });
+    }
+    function save() {
+      var name = (draft.name || "").trim();
+      if (!name) { alert("A method needs a name."); return; }
+      if (draft.stages.some(function (st) { return !(st.name || "").trim(); })) { alert("Give every stage a name."); return; }
+      libEnsure();
+      // exactly what "＋ New method" makes: the page, its crop, then its stages and concepts
+      var pg = { id: uid("pp_"), subject: draft.subject, name: name, tags: [], assets: [], created: Date.now() };
+      store.ps.pages.push(pg);
+      var body = psBody(pg.id);
+      body.main = draft.clip;
+      body.stages = draft.stages.map(function (st) { return { id: st.id, name: st.name.trim(), crop: st.crop, assets: st.assets }; });
+      body.assets = draft.assets;
+      psSaveBody(pg);
+      box.close(true);
+      libRefreshAll();
+      if (cb.saved) cb.saved();
+      libToast("Saved the method “" + name + "” to " + subjectName(pg.subject));
+    }
+    draw();
+    box.buttons([
+      { label: "Cancel", run: function () { box.close(); } },
+      { label: "Save method", primary: true, right: true, run: save }
+    ]);
+    return box;
   }
   // no document behind it: type the concept instead
   function newTypedAsset(startRef) {
@@ -13814,7 +13997,8 @@ function __detabaseMain() {
     pdfCut.marks = [];
     pdfDrawMarks(); pdfCutBar();
   });
-  if ($("pvCutSave")) $("pvCutSave").addEventListener("click", pdfCutSave);
+  if ($("pvCutSave")) $("pvCutSave").addEventListener("click", function () { pdfCutSave("concept"); });
+  if ($("pvCutMethod")) $("pvCutMethod").addEventListener("click", function () { pdfCutSave("method"); });
   if ($("pvScroll")) {
     // one finger draws while cutting (pointer capture keeps its move/up events on the page);
     // two fingers always move and zoom. Nothing is bound to the document, so nothing here can
