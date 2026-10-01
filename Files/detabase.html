@@ -3197,7 +3197,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B65</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B66</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3215,7 +3215,7 @@
     </span>
   </div>
   <div id="psDoc" class="ps-doc"></div>
-  <div class="sidebar-label" style="margin-top:18px">Linked assets</div>
+  <div class="sidebar-label" style="margin-top:18px">Concepts</div>
   <div id="psAssets" class="ps-assets"></div>
 </div>
 
@@ -5880,7 +5880,7 @@ function __detabaseMain() {
         $("pageSubtitle").innerHTML = 'A clipboard — collect concepts and stages onto it, and write around them with the pencil.';
       } else {
         $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
-        $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Problem-solving page' : 'Library element';
+        $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Method' : 'Library element';
       }
       renderProblemPage();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -5888,13 +5888,13 @@ function __detabaseMain() {
     }
     if (onMining) {
       $("pageTitle").textContent = "ETI";
-      $("pageSubtitle").innerHTML = 'Look a method up by the concepts it uses — or search a concept, a page, or what the problem has in it.';
+      $("pageSubtitle").innerHTML = 'Look a method up by the concepts it uses — or search for a method, a concept, or what a method involves.';
       history.replaceState(null, "", "#mining");
       renderMiningScreen();
     } else if (onPs) {
       var pgx = psPageById(activePsPage);
       $("pageTitle").textContent = pgx.name;
-      $("pageSubtitle").innerHTML = 'Problem-solving bank';
+      $("pageSubtitle").innerHTML = 'Method · ' + escapeHtml(subjectName(pgx.subject || ""));
       history.replaceState(null, "", "#" + pgx.id);
       renderPsPane();
     } else if (activeSubject) {
@@ -6088,14 +6088,11 @@ function __detabaseMain() {
     });
   });
 
-  // "+ Folder" / "+ Subject" inline forms  ·  "+ Problem" creates immediately
+  // "+ Folder" / "+ Group" / "+ Subject" inline forms
   document.querySelectorAll(".add-row").forEach(function (row) {
     var btn = row.querySelector(".add-btn"), form = row.querySelector(".add-form");
     var kind = btn.getAttribute("data-add");
-    if (kind === "problem" || kind === "page" || !form) {
-      btn.addEventListener("click", function () { if (kind === "page") addPage(); });   // one click → new page
-      return;
-    }
+    if (!form) return;
     var input = form.querySelector("input");
     btn.addEventListener("click", function () { form.hidden = false; btn.hidden = true; input.value = ""; input.focus(); });
     function close() { form.hidden = true; btn.hidden = false; }
@@ -9806,7 +9803,10 @@ function __detabaseMain() {
   //   Tab      "b:<pane target>" built-in (Unit circle…)  | store.tabs  "ut_…" {subject}
   //   Card     built-in block's data-el key (the squares)   | store.cards "uc_…" {tab}
   //   Element  store.elements "ue_…" {card} — the smallest block; its content lives in a canvas doc with the same id
-  // Problem solving: store.ps = { pages[{id, subject, name, tags[], assets[ref], created, legacy?}] }
+  // Methods (called "problem solving" internally — the storage keys, the "ps"/"p"/"st" names and the
+  // pp_/st_ ids keep their old spelling so every method already saved loads exactly as before;
+  // everything the user SEES says "method"):
+  //   store.ps = { pages[{id, subject, name, tags[], assets[ref], created, legacy?}] }
   //   A page belongs to ONE subject. Its BODY — main crop, stages, attached assets — lives in the
   //   page's canvas doc (see psBody); pages[].assets is only a flat search cache of that body.
   // Asset refs: { lvl: "s" | "t" | "c" | "e" | "p" | "st", id }   ("p" a page, "st" one of its stages)
@@ -9954,7 +9954,7 @@ function __detabaseMain() {
     if (ref.lvl === "s") return subjectName(ref.id);
     if (ref.lvl === "t") return tabLabel(ref.id);
     if (ref.lvl === "c") return cardLabel(ref.id);
-    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? pg.name : "(deleted page)"; }
+    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? pg.name : "(deleted method)"; }
     if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? stageName(sx.stage, sx.index) : "(deleted stage)"; }
     var e = byId(store.elements, ref.id); return e ? e.name : "(deleted element)";
   }
@@ -10314,15 +10314,15 @@ function __detabaseMain() {
   function newProblemPage(subjectKey) {
     libEnsure();
     if (!subjectKey) {
-      pickSubject("New problem page", "Which subject is this method for?", function (k) { newProblemPage(k); });
+      pickSubject("New method", "Which subject is this method for?", function (k) { newProblemPage(k); });
       return;
     }
     cropFromPdf({
-      title: "Crop the problem",
-      hint: "Draw a loop around the whole problem — that becomes the page.",
+      title: "Crop the method",
+      hint: "Draw a loop around the whole thing — that becomes the method.",
       saveLabel: "Use this →",
       onDone: function (clip) {
-        askName("Name this page", "Every page needs a name. You can change it whenever you like.", "", function (name) {
+        askName("Name this method", "Every method needs a name. You can change it whenever you like.", "", function (name) {
           var pg = { id: uid("pp_"), subject: subjectKey, name: name, tags: [], assets: [], created: Date.now() };
           store.ps.pages.push(pg);
           psBody(pg.id).main = clip;
@@ -10337,8 +10337,8 @@ function __detabaseMain() {
   // a page written by hand, before the crop tool existed, can still be given a crop
   function psSetMain(pg) {
     cropFromPdf({
-      title: "Crop the problem",
-      hint: "Draw a loop around the whole problem.",
+      title: "Crop the method",
+      hint: "Draw a loop around the whole thing.",
       saveLabel: "Use this →",
       onDone: function (clip) {
         psBody(pg.id).main = clip;
@@ -10517,7 +10517,7 @@ function __detabaseMain() {
     closeConcepts();
     var box = ovOpen("Connected concepts", { onCancel: function () { conceptsBox = null; } });
     conceptsBox = box;
-    box.body.innerHTML = '<p class="lw-hint">' + (t.st ? "Stage" : "Problem page") + ' · <b>' + escapeHtml(t.name) + '</b></p>';
+    box.body.innerHTML = '<p class="lw-hint">' + (t.st ? "Stage" : "Method") + ' · <b>' + escapeHtml(t.name) + '</b></p>';
     var host = document.createElement("div");
     box.body.appendChild(host);
     function draw() {
@@ -10529,7 +10529,7 @@ function __detabaseMain() {
     draw();
     box.buttons([
       { label: "＋ Add to a clipboard", run: function () { closeConcepts(); chooseBoardAndMine([{ lvl: ref.lvl, id: ref.id }]); } },
-      t.st ? { label: "Open the page", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
+      t.st ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
       { label: "Done", primary: true, right: true, run: function () { closeConcepts(); } }
     ]);
     return box;
@@ -10553,14 +10553,14 @@ function __detabaseMain() {
     $("psTitle").textContent = pg.name;
     var body = psBody(pg.id), legacy = !body.main && !body.stages.length;
     if ($("psEdit")) $("psEdit").hidden = !legacy;           // only a hand-written page opens in the board editor
-    if ($("psSplit")) $("psSplit").textContent = body.main ? "✂ Split into stages" : "✂ Crop a problem";
+    if ($("psSplit")) $("psSplit").textContent = body.main ? "✂ Split into stages" : "✂ Crop it from a document";
     var docEl = $("psDoc");
     docEl.innerHTML = "";
     var w = libBlockWidth(docEl) - 4;
     if (body.main) {
       var main = document.createElement("div");
       main.className = "ps-main ps-tap";
-      main.title = "what this page uses";
+      main.title = "what this method uses";
       main.appendChild(psCropBlock(body.main, w - 8));
       main.addEventListener("click", function () { openConceptsPopup({ lvl: "p", id: pg.id }); });
       docEl.appendChild(main);
@@ -10600,17 +10600,17 @@ function __detabaseMain() {
     // tool keeps everything it had, and giving it a crop must never hide what was already on it.
     var doc = canvasCache[pg.id] || window.DBX.get(pg.id);
     if (doc && (((doc.ink || []).length) || ((doc.items || []).length))) {
-      if (!legacy) docEl.insertAdjacentHTML("beforeend", '<p class="muted ps-hint">Written by hand on this page:</p>');
+      if (!legacy) docEl.insertAdjacentHTML("beforeend", '<p class="muted ps-hint">Written by hand:</p>');
       docEl.appendChild(renderDocStatic(doc, w));
     }
     if (legacy) {
       docEl.insertAdjacentHTML("beforeend", doc
-        ? '<p class="muted ps-hint">Tap “✂ Crop a problem” to cut this problem out of a document, and it can be split into stages like any other page.</p>'
-        : '<div class="doc-empty">Syncing this page…</div>');
+        ? '<p class="muted ps-hint">Tap “✂ Crop it from a document” to give this method a crop — then it can be split into stages like any other.</p>'
+        : '<div class="doc-empty">Syncing this method…</div>');
     }
     var as = $("psAssets");
     as.innerHTML = "";
-    as.appendChild(psUsesLine({ lvl: "p", id: pg.id }, "this page uses"));
+    as.appendChild(psUsesLine({ lvl: "p", id: pg.id }, "this method uses"));
     var vine = vineOf(pg.id);
     if (vine.length) {
       var v = document.createElement("p");
@@ -12692,7 +12692,7 @@ function __detabaseMain() {
   // from its canvas docs). Decompose replaces it by the level below. Adding never touches ETI.
   // Extra ref level "p" = a problem-solving page.
   // ============================================================
-  var ASSET_LV = { s: "Subject", t: "Tab", c: "Card", e: "Element", p: "Problem page", st: "Stage" };
+  var ASSET_LV = { s: "Subject", t: "Tab", c: "Card", e: "Element", p: "Method", st: "Stage" };
   function refKey(r) { return r.lvl + "|" + r.id; }
   function refExists(ref) {
     if (ref.lvl === "p") return !!psPageById(ref.id);
@@ -13138,7 +13138,7 @@ function __detabaseMain() {
     var acts = document.createElement("div");
     acts.className = "vine-acts";
     var add = document.createElement("button");
-    add.type = "button"; add.title = "add this page to a clipboard"; add.textContent = "＋";
+    add.type = "button"; add.title = "add this method to a clipboard"; add.textContent = "＋";
     add.addEventListener("click", function () { chooseBoardAndMine([{ lvl: "p", id: pg.id }]); });
     var info = document.createElement("button");
     info.type = "button"; info.title = "connected concepts"; info.textContent = "🔗";
@@ -13181,7 +13181,7 @@ function __detabaseMain() {
     }
     var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).slice(0, 8);
     if (pages.length) {
-      section("Problem pages");
+      section("Methods");
       pages.forEach(function (en) {
         hitRow(en.name, en.path + (en.assets ? " · uses " + en.assets : ""), function () { selectPsPage(en.ref.id); }, [
           { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
@@ -13192,7 +13192,7 @@ function __detabaseMain() {
     var ql = q.toLowerCase();
     var tags = availableTags().filter(function (t) { return t.label.toLowerCase().indexOf(ql) >= 0 || t.id.indexOf(ql) >= 0; }).slice(0, 6);
     if (tags.length) {
-      section("The problem has…");
+      section("Involves…");
       tags.forEach(function (t) {
         hitRow(t.label, mainTag === t.id ? "filtering by this" : "", function () {
           mainTag = mainTag === t.id ? null : t.id;
@@ -13228,7 +13228,7 @@ function __detabaseMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
     host.innerHTML =
-      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search concepts, problem pages, or what the problem has in it…" autocomplete="off">' +
+      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search methods, concepts, or what a method involves…" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
       '<div class="em-narrow"></div><div class="em-res"></div>' +
       '<div class="em-vines"></div><div class="em-subs"></div>';
@@ -13286,7 +13286,7 @@ function __detabaseMain() {
         ? escapeHtml(pages.length + (pages.length === 1 ? " method" : " methods") + " of " + total)
         : escapeHtml(total ? "All " + total + (total === 1 ? " method" : " methods") : "Methods")) + '</div>');
     if (!total) {
-      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No problem-solving pages yet. Crop one out of a PDF with “+ New problem page”, split it into stages, and attach the concepts it uses — then they show up here as vines.</p>');
+      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No methods yet. Tap “＋ New method”, crop it out of a PDF, split it into stages and attach the concepts it uses — it shows up here as a vine.</p>');
     } else if (!pages.length) {
       vbox.insertAdjacentHTML("beforeend", '<p class="muted">No method uses all of those together. Take one off to widen the search.</p>');
     } else {
@@ -13348,13 +13348,13 @@ function __detabaseMain() {
     sec.appendChild(det);
     var meth = document.createElement("div");
     meth.className = "se-block";
-    meth.innerHTML = '<div class="se-head"><h3>Problem-solving pages (' + pages.length + ')</h3></div>';
+    meth.innerHTML = '<div class="se-head"><h3>Methods (' + pages.length + ')</h3></div>';
     var add = document.createElement("button");
-    add.type = "button"; add.className = "se-new"; add.textContent = "＋ New problem page";
+    add.type = "button"; add.className = "se-new"; add.textContent = "＋ New method";
     add.addEventListener("click", function () { newProblemPage(key); });
     meth.querySelector(".se-head").appendChild(add);
     if (!pages.length) {
-      meth.insertAdjacentHTML("beforeend", '<p class="muted">Nothing yet. Crop a problem out of a PDF and it appears here, with the concepts it uses.</p>');
+      meth.insertAdjacentHTML("beforeend", '<p class="muted">No methods yet. Crop one out of a PDF and it appears here, with the concepts it uses.</p>');
     } else {
       pages.slice().sort(function (a, b) { return a.name.localeCompare(b.name); })
         .forEach(function (pg) { meth.appendChild(vineRowEl(pg)); });
@@ -13410,7 +13410,7 @@ function __detabaseMain() {
   // board with the save target already chosen), and "used in problem pages".
   // Management refs cover every level of one library: subject, tab, card, element, problem page, stage.
   // ============================================================
-  var MG_LV = { s: "subject", t: "tab", c: "card", e: "element", p: "problem page", st: "stage" };
+  var MG_LV = { s: "subject", t: "tab", c: "card", e: "element", p: "method", st: "stage" };
   function mgmtObj(ref) {
     libEnsure();
     if (ref.lvl === "s") return ref.id.slice(0, 2) === "s:" ? byId(store.subjects, ref.id.slice(2)) : null;
@@ -13493,7 +13493,7 @@ function __detabaseMain() {
   function usedBadge(ref) {
     var n = usedInPages(ref).length; if (!n) return null;
     var b = document.createElement("button");
-    b.type = "button"; b.className = "used-badge"; b.textContent = "🧩 " + n; b.title = "used in " + n + " problem page" + (n === 1 ? "" : "s");
+    b.type = "button"; b.className = "used-badge"; b.textContent = "🧩 " + n; b.title = "used in " + n + " method" + (n === 1 ? "" : "s");
     b.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
     b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); openUsedMenu(ref, b); });
     return b;
@@ -13553,15 +13553,15 @@ function __detabaseMain() {
       { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
       { label: "✎ Rename", run: function () { libRename(ref); } },
       addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
-      ref.lvl === "s" ? { label: "🧩 New problem page here", run: function () { newProblemPage(ref.id); } } : null,
+      ref.lvl === "s" ? { label: "🧩 New method here", run: function () { newProblemPage(ref.id); } } : null,
       (ref.lvl === "e" || ref.lvl === "p") ? { label: "✎ Edit content", run: function () { openDocEditor(ref.id); } } : null,
-      material ? { label: "🧩 Used in " + used.length + " problem page" + (used.length === 1 ? "" : "s"), disabled: !used.length, run: function () { openUsedMenu(ref, anchor); } } : null,
+      material ? { label: "🧩 Used in " + used.length + " method" + (used.length === 1 ? "" : "s"), disabled: !used.length, run: function () { openUsedMenu(ref, anchor); } } : null,
       { sep: true },
       { label: builtin ? "🙈 Hide from ETI" : "🗑 Delete", danger: true, run: function () { libDelete(ref); } }
     ]);
   }
   function openUsedMenu(ref, anchor) {
-    libMenu(anchor, [{ head: "Used in problem pages" }].concat(usedInPages(ref).map(function (pg) {
+    libMenu(anchor, [{ head: "Used in methods" }].concat(usedInPages(ref).map(function (pg) {
       return { label: "🧩 " + pg.name, run: function () { selectPsPage(pg.id); } };
     })));
   }
@@ -13625,7 +13625,7 @@ function __detabaseMain() {
     var inside = Object.keys(counts).map(function (l) { return counts[l] + " " + MG_LV[l] + (counts[l] === 1 ? "" : "s"); });
     if (inside.length) msg += "\n\nThis also deletes " + inside.join(", ") + " inside it.";
     if (uses.length) msg += "\n\nIt is used on " + uses.length + " board block" + (uses.length === 1 ? "" : "s") + " — they keep a frozen copy.";
-    if (links) msg += "\n\n" + links + " link" + (links === 1 ? "" : "s") + " from problem pages will be removed.";
+    if (links) msg += "\n\n" + links + " link" + (links === 1 ? "" : "s") + " from methods will be removed.";
     msg += "\n\nלא ניתן לשחזר.";
     if (!confirm(msg)) return;
     // freeze the blocks on boards first, while their content still exists
