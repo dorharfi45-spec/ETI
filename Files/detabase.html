@@ -742,35 +742,36 @@
 
   @media (max-width: 700px) { .vine { flex-wrap: wrap; } .vine-page { max-width: 100%; } }
 
-  /* ---- a subject's own page: Methods | Concepts, side by side ---- */
-  .subj-extras { margin: 14px 0 6px; }
-  .se-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-  .se-col { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg);
-    background: var(--surface-1); overflow: hidden; }
-  .se-colhead { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
-  .se-colhead h3 { margin: 0; font-size: 1.02rem; flex: 1; min-width: 0; white-space: nowrap; text-transform: none; letter-spacing: normal; }
-  .se-count { display: inline-block; min-width: 24px; padding: 1px 8px; margin-left: 4px; border-radius: 999px; background: var(--surface-2);
+  /* ---- a subject's own page: concepts in the main column, methods in a column on the right ---- */
+  /* the content becomes two columns: everything it holds stays on the left; the side panel takes the right */
+  @media (min-width: 1000px) {
+    body.subject-page .content { display: grid; grid-template-columns: minmax(0, 1fr) clamp(270px, 26%, 360px); column-gap: 22px; align-items: start; }
+    body.subject-page .content > * { grid-column: 1; }
+    body.subject-page .content > .subj-side { grid-column: 2; grid-row: 1 / span 40; position: sticky; top: 14px; align-self: start; }
+    body.subject-page .subj-side .side-list { max-height: calc(100vh - 150px); }
+  }
+  .subj-side { display: flex; flex-direction: column; gap: 14px; margin: 14px 0 6px; min-width: 0; }
+  .side-box { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1); overflow: hidden; }
+  .side-head { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .side-head h3 { margin: 0; font-size: 1.02rem; flex: 1; min-width: 0; white-space: nowrap; text-transform: none; letter-spacing: normal; }
+  .side-count { display: inline-block; min-width: 24px; padding: 1px 8px; margin-left: 4px; border-radius: 999px; background: var(--surface-2);
     color: var(--text-muted); font-size: .78rem; font-weight: 700; text-align: center; vertical-align: 2px; }
-  .se-action { flex-shrink: 0; }
-  /* each list scrolls on its own, so one long column never pushes the other down */
-  .se-list { max-height: min(46vh, 460px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .se-empty { padding: 18px 10px; text-align: center; color: var(--text-muted); font-size: .9rem; line-height: 1.5; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .se-empty b { color: var(--text-secondary); }
-  .se-row { display: flex; align-items: center; gap: 6px; }
-  .se-go { flex: 1; min-width: 0; min-height: var(--tap); text-align: left; border: 1px solid var(--border); background: var(--bg); border-radius: var(--r-md);
-    padding: 7px 12px; color: var(--text-primary); font-size: .9rem; cursor: pointer; }
-  .se-go span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
-  .se-go small { display: block; font-size: .74rem; color: var(--text-muted); }
-  .se-go:hover { border-color: var(--accent); }
-  .se-used { font-size: .74rem; color: var(--text-muted); min-width: 34px; text-align: center; flex-shrink: 0; }
-  .se-used:empty { display: none; }   /* no reserved gap when a concept is not used yet */
-  .se-add { min-width: var(--tap); min-height: var(--tap); border: 1px solid var(--border); background: var(--bg); border-radius: var(--r-md); color: var(--text-muted); font-size: 1.05rem; flex-shrink: 0; cursor: pointer; }
-  .se-add:hover { color: var(--accent); border-color: var(--accent); }
+  .side-action { flex-shrink: 0; padding: 0 12px; }
+  .side-list { max-height: 340px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .side-empty { padding: 16px 8px; text-align: center; color: var(--text-muted); font-size: .88rem; line-height: 1.5; }
+  .side-empty b { color: var(--text-secondary); display: block; margin-bottom: 4px; }
+  /* the concepts' own row, right above their tabs */
+  .subj-tools { display: flex; align-items: center; gap: 12px; margin: 14px 0 0; }
+  .subj-tools-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--text-muted); flex: 1; }
+  #customPane .subj-tools { margin-top: 6px; }
   /* a vine in a narrow column: the method's name on top, its concepts underneath */
   .vine.compact { flex-wrap: wrap; margin-bottom: 0; background: var(--bg); }
-  .vine.compact .vine-page { max-width: none; flex: 1 1 60%; }
+  .vine.compact { gap: 8px; padding: 10px; }
+  .vine.compact .vine-page { max-width: none; flex: 1 1 0; min-width: 0; }
+  .vine.compact .vine-page b { overflow-wrap: anywhere; }
+  .vine.compact .vine-acts { flex: 0 0 auto; gap: 4px; }
+  .vine.compact .vine-acts button { min-width: 40px; min-height: 40px; }
   .vine.compact .vine-chain { flex: 1 1 100%; order: 3; }
-  @media (max-width: 640px) { .se-cols { grid-template-columns: minmax(0, 1fr); } }
 
 
   /* ==== ETI, one look: every ETI screen, dialog and popup draws from the rules below ====
@@ -797,7 +798,7 @@
   .vine { gap: 12px; }
   .vine-page { min-height: var(--tap); display: flex; flex-direction: column; justify-content: center; cursor: pointer; }
   .vine-node { min-height: 40px; padding: 0 14px; cursor: pointer; transition: border-color .12s, color .12s, background .12s; }
-  .vine-node:active, .em-hit-main:active, .se-go:active, .lw-opt:active { transform: translateY(1px); }
+  .vine-node:active, .em-hit-main:active, .lw-opt:active { transform: translateY(1px); }
   .vine-acts { gap: 6px; }
   .vine-acts button { min-width: var(--tap); min-height: var(--tap); border-radius: var(--r-md); font-size: 1rem; cursor: pointer; }
   .em-hit-main { min-height: var(--tap); border-radius: var(--r-md); cursor: pointer; }
@@ -3316,7 +3317,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B70</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B71</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -10875,7 +10876,11 @@ function __detabaseMain() {
       }, onCancel);
     }
     function stepTab() {
-      pickOrNew("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top)", libTabs(t.subject), "New tab name…", function (id, nn) {
+      // the tab that is open is offered first: that is usually where a new concept belongs
+      var tabs = libTabs(t.subject), open = start && start.tab, first = open ? tabs.filter(function (x) { return x.id === open; }) : [];
+      if (first.length) tabs = first.map(function (x) { return { id: x.id, name: x.name, group: "The tab you are on" }; })
+        .concat(tabs.filter(function (x) { return x.id !== open; }).map(function (x) { return { id: x.id, name: x.name, group: "Other tabs" }; }));
+      pickOrNew("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top)", tabs, "New tab name…", function (id, nn) {
         if (id) t.tab = id;
         else { t.tab = uid("ut_"); store.tabs.push({ id: t.tab, subject: t.subject, name: nn, created: Date.now() }); }
         stepCard();
@@ -13571,86 +13576,58 @@ function __detabaseMain() {
 
   }
   // ============================================================
-  // A SUBJECT'S OWN PAGE — its Methods and its Concepts, side by side
-  // Two columns at the top of the subject, each with its own header, its own action and its own
-  // scrolling, so a long list on one side never pushes the other down. The Methods column draws
-  // each method with the very same vine row the main page uses (one tree, scoped — not a second
-  // one). Below the columns the subject's reference material carries on as before.
+  // A SUBJECT'S OWN PAGE — its concepts on the left, its methods on the right
+  // The concepts ARE the subject's raw material — its tabs and what is in them — so they are shown
+  // once, in the main column, with "＋ Add concept" sitting right above their tabs. The Methods panel
+  // is a column of its own on the right, with its own scrolling, drawing each method with the very
+  // same vine row the main page uses (one tree, scoped — not a second one).
   // ============================================================
-  function subjectConceptRows(key) {
-    var rows = [];
-    libTabs(key).forEach(function (t) {
-      libCards(t.id).forEach(function (c) {
-        var ref = { lvl: "c", id: c.id };
-        var row = document.createElement("div");
-        row.className = "se-row";
-        var go = document.createElement("button");
-        go.type = "button"; go.className = "se-go";
-        go.innerHTML = '<span>' + escapeHtml(c.name) + '</span><small>' + escapeHtml(t.name) + '</small>';
-        go.addEventListener("click", function () { openRef(ref); });
-        var used = usedInPages(ref).length;
-        var badge = document.createElement("span");
-        badge.className = "se-used";
-        badge.textContent = used ? "🧩 " + used : "";
-        badge.title = used ? "used in " + used + " method" + (used === 1 ? "" : "s") : "";
-        var add = document.createElement("button");
-        add.type = "button"; add.className = "se-add"; add.textContent = "＋"; add.title = "add to a clipboard";
-        add.addEventListener("click", function () { chooseBoardAndMine([ref]); });
-        row.appendChild(go); row.appendChild(badge); row.appendChild(add);
-        rows.push(row);
-      });
-    });
-    return rows;
-  }
-  // one column: a header with its count and its action, then a list that scrolls on its own
-  function subjectColumn(title, count, actionLabel, action, fillList, emptyHtml) {
-    var col = document.createElement("section");
-    col.className = "se-col";
-    col.innerHTML = '<header class="se-colhead"><h3>' + escapeHtml(title) + ' <span class="se-count">' + count + '</span></h3></header><div class="se-list"></div>';
-    var btn = document.createElement("button");
-    btn.type = "button"; btn.className = "btn-primary se-action"; btn.textContent = actionLabel;
-    btn.addEventListener("click", action);
-    col.querySelector(".se-colhead").appendChild(btn);
-    var list = col.querySelector(".se-list");
-    if (count) fillList(list);
-    else {
-      list.innerHTML = '<div class="se-empty">' + emptyHtml + '</div>';
-      var again = document.createElement("button");
-      again.type = "button"; again.className = "btn-quiet"; again.textContent = actionLabel;
-      again.addEventListener("click", action);
-      list.querySelector(".se-empty").appendChild(again);
-    }
-    return col;
-  }
-  function renderSubjectExtras(key) {
-    Array.prototype.forEach.call(document.querySelectorAll(".subj-extras"), function (n) { n.remove(); });
-    if (!key || !refExists({ lvl: "s", id: key })) return;
-    // where the subject's page starts: under the custom subject's title, or just above a built-in
-    // subject's tab bar
-    var anchor = null, host = null;
-    if (activeSubject) { host = $("customPane"); anchor = $("cpTabs"); }
-    else {
-      anchor = document.querySelector('.tabbar[data-folder="' + key.slice(2) + '"]');
-      host = anchor && anchor.parentNode;
-    }
-    if (!host) return;
-    var sec = document.createElement("div");
-    sec.className = "subj-extras";
+  function subjectMethodsPanel(key) {
     var pages = psPagesOf(key).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
-    var conceptRows = subjectConceptRows(key);
-    var cols = document.createElement("div");
-    cols.className = "se-cols";
-    cols.appendChild(subjectColumn("Methods", pages.length, "＋ New method",
-      function () { newProblemPage(key); },
-      function (list) { pages.forEach(function (pg) { var r = vineRowEl(pg); r.classList.add("compact"); list.appendChild(r); }); },
-      "<b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses."));
-    cols.appendChild(subjectColumn("Concepts", conceptRows.length, "＋ Add concept",
-      function () { addAssetAt({ lvl: "s", id: key }); },
-      function (list) { conceptRows.forEach(function (r) { list.appendChild(r); }); },
-      "<b>No concepts yet.</b> Crop them out of your notes, or type one in."));
-    sec.appendChild(cols);
-    if (anchor && anchor.parentNode === host) host.insertBefore(sec, anchor);
-    else host.appendChild(sec);
+    var box = document.createElement("section");
+    box.className = "side-box";
+    box.innerHTML = '<header class="side-head"><h3>Methods <span class="side-count">' + pages.length + '</span></h3></header><div class="side-list"></div>';
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "btn-primary side-action"; add.textContent = "＋ New method";
+    add.addEventListener("click", function () { newProblemPage(key); });
+    box.querySelector(".side-head").appendChild(add);
+    var list = box.querySelector(".side-list");
+    if (!pages.length) {
+      list.innerHTML = '<div class="side-empty"><b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses.</div>';
+    } else {
+      pages.forEach(function (pg) { var r = vineRowEl(pg); r.classList.add("compact"); list.appendChild(r); });
+    }
+    return box;
+  }
+  // the tab that is open on this subject's page, if any — new concepts are offered it first
+  function shownTabId() { var cur = currentEtiRefs(); return cur && cur.t ? cur.t.id : null; }
+  function renderSubjectExtras(key) {
+    Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-tools"), function (n) { n.remove(); });
+    var on = !!key && refExists({ lvl: "s", id: key });
+    document.body.classList.toggle("subject-page", on);
+    if (!on) return;
+    var content = document.querySelector(".content");
+    // the right-hand column
+    var side = document.createElement("aside");
+    side.className = "subj-side";
+    side.appendChild(subjectMethodsPanel(key));
+    content.insertBefore(side, content.firstChild);
+    // the concepts' own row, right above their tabs
+    var tools = document.createElement("div");
+    tools.className = "subj-tools";
+    tools.innerHTML = '<span class="subj-tools-label">Concepts</span>';
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "btn-primary"; add.textContent = "＋ Add concept";
+    add.title = "crop it out of a document, or type it";
+    add.addEventListener("click", function () { addAssetAt({ lvl: "s", id: key, tab: shownTabId() }); });
+    tools.appendChild(add);
+    if (activeSubject) {
+      var cp = $("customPane");
+      cp.insertBefore(tools, $("cpTabs"));
+    } else {
+      var bar = document.querySelector('.tabbar[data-folder="' + key.slice(2) + '"]');
+      if (bar) bar.parentNode.insertBefore(tools, bar);
+    }
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
@@ -13997,12 +13974,11 @@ function __detabaseMain() {
       var row = document.createElement("div");
       row.className = "lb-row";
       row.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ref.lvl === "s" ? "Subject" : "Tab") + '</span><b>' + escapeHtml(mgmtName(ref)) + '</b>';
-      var add = document.createElement("button"); add.type = "button"; add.textContent = ref.lvl === "s" ? "＋ Tab" : "＋ Card";
-      add.title = "crop it out of a document, or type it"; add.addEventListener("click", function () { addAssetAt(ref); });
+      // adding lives in one place now — "＋ Add concept", right above the tabs
       var ren = document.createElement("button"); ren.type = "button"; ren.textContent = "✎"; ren.title = "rename"; ren.addEventListener("click", function () { libRename(ref); });
       var del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = isBuiltinRef(ref) ? "🙈" : "🗑"; del.title = isBuiltinRef(ref) ? "hide from ETI" : "delete";
       del.addEventListener("click", function () { libDelete(ref); });
-      row.appendChild(add); row.appendChild(ren);
+      row.appendChild(ren);
       var bd = usedBadge(ref); if (bd) row.appendChild(bd);
       row.appendChild(del);
       bar.appendChild(row);
