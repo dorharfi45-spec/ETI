@@ -61,60 +61,24 @@
   }
   .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
 
-  /* ---- three-column layout: subjects · content · problem rail ---- */
+  /* ---- two-column layout: the sidebar, then the content ---- */
   .layout { display: flex; gap: 26px; align-items: flex-start; flex-wrap: wrap; }
   .sidebar { order: 1; }
   .content { order: 2; flex: 1; min-width: 0; }
-  .rail    { order: 3; }
   .sidebar {
     width: 176px; flex-shrink: 0;
     position: sticky; top: 14px;
   }
-  .rail {
-    width: 194px; flex-shrink: 0;
-    position: sticky; top: 14px;
-  }
-  body:not(.top-eti):not(.top-notebook) .rail { display: none; }
-  body:not(.top-notebook) #railPages { display: none; }
-  body.top-notebook #railProblems { display: none; }
   .sidebar-label {
     font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
     font-weight: 700; color: var(--text-muted);
     padding: 0 4px 8px;
   }
-  .rail-hint { font-size: .74rem; color: var(--text-muted); line-height: 1.5; margin: 12px 4px 0; }
-  /* narrow: the rail moves up between sidebar and content, laid out horizontally */
-  @media (max-width: 1080px) {
-    .rail { order: 2; position: static; width: 100%; }
-    .content { order: 3; }
-    .rail .raillist { flex-direction: row; flex-wrap: wrap; }
-    .rail .raillist button { width: auto; }
-    .rail-hint { display: none; }
-  }
   @media (max-width: 760px) {
     .layout { flex-direction: column; gap: 12px; }
-    .sidebar, .rail { position: static; width: auto; }
+    .sidebar { position: static; width: auto; }
     .sidebar-label { display: none; }
   }
-
-  /* ---- problem-solving rail ---- */
-  .rail-search {
-    width: 100%; box-sizing: border-box; font-family: inherit; font-size: .84rem;
-    padding: 8px 11px; border-radius: 9px; margin-bottom: 8px;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary);
-  }
-  .rail-search:focus { outline: none; border-color: var(--accent); }
-  .rr-empty { font-size: .78rem; color: var(--text-muted); padding: 4px 2px; }
-
-  .raillist { display: flex; flex-direction: column; gap: 5px; }
-  .raillist button {
-    display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
-    padding: 9px 12px; border-radius: 9px; font-size: .88rem; font-weight: 650;
-    background: var(--surface-1); border: 1px solid var(--border); color: var(--text-secondary);
-  }
-  .raillist button::before { content: "🧩"; font-size: .95rem; flex-shrink: 0; }
-  .raillist button:hover { background: var(--surface-2); color: var(--text-primary); }
-  .raillist button.on { background: var(--angle); border-color: var(--angle); color: #fff; }
   /* ---- swipe a list row to uncover its delete button ----
      The button lives inside the row and the row clips it, so it is nowhere to be seen until a
      swipe pulls it out from under the right edge — and it goes back under on the way out. */
@@ -126,8 +90,7 @@
   .swipe-row.sw-drag .sw-del { transition: none; }
   .swipe-row.sw-open .sw-del { transform: translateX(0); }
   .swipe-row .del-x { display: none !important; }
-  .raillist button .del-x { margin-left: auto; opacity: 0; font-weight: 700; padding: 0 4px; border-radius: 5px; flex-shrink: 0; }
-  .raillist button:hover .del-x { opacity: .55; }
+
 
   /* ---- problem page ---- */
   #problemPane { position: relative; }
@@ -305,12 +268,11 @@
   /* ---- fullscreen writing page (pen FAB → distraction-free canvas) ---- */
   /* the small inline canvas is gone — a page/problem always opens the full-page writing view */
   .pp-topbar, .pp-toolbar { display: none !important; }
-  body.top-notebook #rail { display: none !important; }
+
   body.ink-full { overflow: hidden; }
   body.ink-full header.page,
   body.ink-full #dataBar,
-  body.ink-full .sidebar,
-  body.ink-full #rail { display: none !important; }
+  body.ink-full .sidebar { display: none !important; }
   body.ink-full #problemPane {
     position: fixed; inset: 0; z-index: 800; margin: 0;
     background: var(--surface-1); display: block;
@@ -580,15 +542,9 @@
   .cp-tabs { position: static; }
   .cp-notes { margin-top: 22px; }
   .cp-notes summary { cursor: pointer; font-weight: 700; color: var(--text-secondary); font-size: .85rem; }
-  .ps-topic { margin: 2px 0 6px; }
-  .ps-topic > summary { cursor: pointer; font-weight: 700; font-size: .88rem; color: var(--text-primary); padding: 4px 2px; }
-  .ps-topic .ps-sub { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin: 6px 0 3px 10px; font-weight: 700; }
-  #psRail .ps-topic button { width: 100%; margin: 0 0 4px 0; }
   .ps-crumb { font-size: .8rem; color: var(--text-muted); margin-top: 8px; }
   .ps-doc { margin-top: 8px; padding: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); overflow-x: auto; }
   .ps-assets { display: flex; flex-wrap: wrap; gap: 6px; }
-  .ps-asset { border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px; padding: 5px 12px; font-size: .84rem; color: var(--text-secondary); }
-  .ps-asset:hover { color: var(--accent); border-color: var(--accent); }
   /* a problem page: the main crop, then its stages in order */
   .ps-crop { display: block; }
   .ps-crop img { display: block; max-width: 100%; border-radius: 8px; }
@@ -701,12 +657,31 @@
   .eti-hidden-btn { margin: -4px 0 10px; border: 1px dashed var(--border-strong); background: var(--surface-1); color: var(--text-secondary); border-radius: 10px; padding: 8px 12px; font-size: .86rem; font-weight: 600; width: 100%; text-align: left; }
   body:not(.top-eti) #etiHiddenBtn { display: none; }
   .ps-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-  .ps-topic > summary .lib-dots, .ps-sub .lib-dots { padding: 0 5px; font-size: .9rem; }
   .ta-body { width: 100%; box-sizing: border-box; margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-strong);
     background: var(--bg); color: var(--text-primary); font: inherit; font-size: .95rem; resize: vertical; }
 
+  /* ---- ETI: one set of sizes and controls, used by every ETI screen ----
+     Spacing runs 4·8·12·16·24, corners 8·12·16, and anything you tap is at least 44px tall. */
+  :root { --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --tap: 44px; --danger: #dc2626; --on-accent: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --danger: #f87171; --on-accent: #0b1220; } }
+  .btn-primary, .btn-quiet, .btn-danger {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--tap);
+    padding: 0 16px; border-radius: var(--r-md); font: inherit; font-size: .92rem; font-weight: 650; cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s, transform .06s; white-space: nowrap; }
+  .btn-primary { border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { filter: brightness(1.07); }
+  .btn-quiet { border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); }
+  .btn-quiet:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { border: 1px solid color-mix(in srgb, var(--danger) 55%, transparent); background: transparent; color: var(--danger); }
+  .btn-danger:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .btn-primary:active, .btn-quiet:active, .btn-danger:active { transform: translateY(1px); }
+  .btn-primary:disabled, .btn-quiet:disabled { opacity: .45; cursor: default; transform: none; filter: none; }
+  .ps-back { border: none; background: none; color: var(--accent); font: inherit; font-size: .88rem; font-weight: 600;
+    min-height: 36px; padding: 0 2px; cursor: pointer; }
+  .ps-back:hover { text-decoration: underline; }
+
   /* ---- ETI main page: the vines, the search, the subjects ---- */
-  .em-head { display: flex; align-items: baseline; gap: 10px; }
+  .em-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .em-head h2 { margin: 0; }
   #buildTag { font-size: .65rem; color: var(--text-muted); opacity: .6; margin-left: auto; }
   .eti-main { margin-top: 10px; }
@@ -3221,12 +3196,14 @@
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
-    <span id="buildTag" title="build marker — tell Claude what this says">B64</span>
+    <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
+    <span id="buildTag" title="build marker — tell Claude what this says">B65</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
 
 <div id="psPane" hidden>
+  <button type="button" id="psBack" class="ps-back">‹ Methods &amp; concepts</button>
   <div class="ps-crumb" id="psCrumb"></div>
   <div class="cp-head">
     <h2 id="psTitle">–</h2>
@@ -3373,22 +3350,6 @@
 
 </div><!-- /content -->
 
-<aside class="rail" id="rail">
-  <div id="railProblems">
-    <div class="sidebar-label">Problem solving</div>
-    <div class="add-row"><button class="add-btn" id="psNewBtn">+ New problem page</button></div>
-    <p class="rail-hint">Every method lives on ETI's main page, as a vine of the concepts it uses. This is just the quick way to start a new one.</p>
-  </div>
-  <div id="railPages">
-    <div class="sidebar-label">Clipboards</div>
-    <input id="pageSearch" class="rail-search" placeholder="Filter pages by name…" autocomplete="off">
-    <nav class="raillist" id="pageList"></nav>
-    <div class="add-row" id="addPageRow">
-      <button class="add-btn" data-add="page">+ New clipboard</button>
-    </div>
-    <p class="rail-hint">Loose practice pages — write with the pencil, place shapes and graphs, clip in cards. Each page is its own canvas.</p>
-  </div>
-</aside>
 
 </div><!-- /layout -->
 
@@ -5887,17 +5848,13 @@ function __detabaseMain() {
       b.classList.toggle("on", b.getAttribute("data-subject") === activeSubject);
     });
     syncGroupButtons();
-    Array.prototype.slice.call($("pageList").children).forEach(function (b) {
-      b.classList.toggle("on", b.getAttribute("data-page") === activeProblem);
-    });
     $("topfolder-eti").classList.toggle("on", builtin);
     $("customPane").hidden = onProblem || onMining || !activeSubject;
     $("psPane").hidden = !onPs;
     $("miningPane").hidden = !onMining;
-    if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining);
+    if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
     $("emptyPane").hidden = onProblem || onPs || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
-    Array.prototype.forEach.call(document.querySelectorAll("#psRail button[data-pp]"), function (b) { b.classList.toggle("on", onPs && b.getAttribute("data-pp") === activePsPage); });
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -5981,7 +5938,6 @@ function __detabaseMain() {
   function openNotebook() {
     store.canvases = store.canvases || [];
     activeTop = "notebook"; activeSubject = null; viewingProblem = false; activeProblem = null;
-    renderPageList();
     applyView();
   }
   function selectSubject(id) {
@@ -8678,7 +8634,7 @@ function __detabaseMain() {
         if (e.target.closest(".nb-ren")) {
           e.stopPropagation();
           var n = prompt("Rename page:", p.name || "");
-          if (n && n.trim()) { p.name = n.trim(); saveStore(); renderNbBank(); renderPageList(); }
+          if (n && n.trim()) { p.name = n.trim(); saveStore(); renderNbBank(); }
           return;
         }
         selectPage(p.id);
@@ -9823,7 +9779,6 @@ function __detabaseMain() {
     store.canvases.push(p);
     bindBench(p);
     saveStore();
-    renderPageList();
     selectPage(p.id);
   }
   function delCanvasDoc(id) {
@@ -9833,36 +9788,15 @@ function __detabaseMain() {
     killCanvas(id);
     saveStore();
     if (activeProblem === id) { activeProblem = null; viewingProblem = false; }
-    renderPageList();
     selectTop("notebook");
   }
   function selectPage(id) {
     activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "notebook";
     store.ui.lastPage = id; saveStore();
     if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
-    renderPageList();
     applyView();
     history.replaceState(null, "", "#" + id);
     if (typeof window.enterInkFull === "function") window.enterInkFull();
-  }
-  function renderPageList() {
-    var list = $("pageList"); if (!list) return;
-    list.innerHTML = "";
-    var pages = store.canvases || [];
-    var box = $("pageSearch");
-    if (box) box.hidden = !pages.length;
-    var q = ((box || {}).value || "").trim().toLowerCase();
-    var shown = pages.filter(function (p) { return !q || (p.name || "untitled").toLowerCase().indexOf(q) >= 0; });
-    if (pages.length && !shown.length) list.innerHTML = '<div class="rr-empty">No page matches “' + escapeHtml(q) + '”.</div>';
-    shown.forEach(function (p) {
-      var b = document.createElement("button");
-      b.setAttribute("data-page", p.id);
-      b.classList.toggle("on", p.id === activeProblem);
-      b.innerHTML = escapeHtml(p.name || "Untitled");
-      b.addEventListener("click", function () { selectPage(p.id); });
-      makeSwipeRow(b, function () { return p.name || "Untitled"; }, function () { delCanvasDoc(p.id); });
-      list.appendChild(b);
-    });
   }
 
   // ============================================================
@@ -10315,38 +10249,11 @@ function __detabaseMain() {
 
   // ---- problem-solving bank: right rail + page view ----
   var activePsPage = null, miningScreen = true;   // ETI opens on its main page
-  // pages are grouped by the subject they belong to, in sidebar order
-  function renderPsRail() {
-    var nav = $("psRail"); if (!nav) return;
-    libEnsure();
-    nav.innerHTML = "";
-    if (!store.ps.pages.length) { nav.innerHTML = '<div class="rr-empty">Nothing saved yet.</div>'; return; }
-    store.ui.psOpen = store.ui.psOpen || {};
-    var keys = allSubjectKeys().slice(), seen = {};
-    keys.forEach(function (k) { seen[k] = 1; });
-    store.ps.pages.forEach(function (pg) { var k = pg.subject || ""; if (k && !seen[k]) { seen[k] = 1; keys.push(k); } });
-    keys.forEach(function (key) {
-      var pages = psPagesOf(key); if (!pages.length) return;
-      var det = document.createElement("details");
-      det.className = "ps-topic";
-      det.open = store.ui.psOpen[key] !== 0;
-      det.innerHTML = '<summary>' + escapeHtml(subjectName(key)) + '</summary>';
-      det.querySelector("summary").appendChild(dotsBtn({ lvl: "s", id: key }));
-      det.addEventListener("toggle", function () { store.ui.psOpen[key] = det.open ? 1 : 0; saveStore(); });
-      pages.forEach(function (pg) {
-        var b = document.createElement("button");
-        b.type = "button"; b.setAttribute("data-pp", pg.id); b.textContent = pg.name;
-        b.classList.toggle("on", pg.id === activePsPage);
-        b.addEventListener("click", function () { selectPsPage(pg.id); });
-        det.appendChild(b);
-      });
-      nav.appendChild(det);
-    });
-  }
+
   function selectPsPage(id) {
     if (!psPageById(id)) return;
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; miningScreen = false;
-    applyView(); renderPsRail(); renderEtiTree();
+    applyView(); renderEtiTree();
   }
   // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
   function psCropBlock(clip, w) {
@@ -10365,7 +10272,7 @@ function __detabaseMain() {
   // you would solve it in, and attach the concepts the page — or one single stage — uses. Stages are
   // one level deep on purpose: a stage cannot be split again.
   // ============================================================
-  function psRender() { if (activePsPage) { renderPsPane(); renderPsRail(); } }
+  function psRender() { if (activePsPage) renderPsPane(); }
   // which subject — the same grouping the sidebar shows
   function pickSubject(title, hint, onPick, onCancel) {
     var box = ovOpen(title || "Which subject?", { onCancel: onCancel });
@@ -10420,7 +10327,7 @@ function __detabaseMain() {
           store.ps.pages.push(pg);
           psBody(pg.id).main = clip;
           psSaveBody(pg);
-          renderPsRail(); renderEtiTree();
+          renderEtiTree();
           selectPsPage(pg.id);
           libToast("Created “" + name + "” in " + subjectName(subjectKey));
         });
@@ -13749,7 +13656,7 @@ function __detabaseMain() {
   }
   function refreshAfterManage() {
     try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
-    renderEtiTree(); renderLibraryEti(); ensureOpenTabs(); renderPsRail(); renderHiddenBtn();
+    renderEtiTree(); renderLibraryEti(); ensureOpenTabs(); renderHiddenBtn();
     applyView();
     if (miningScreen) { try { renderEtiMain(); } catch (e) {} }
   }
@@ -14119,13 +14026,6 @@ function __detabaseMain() {
     }, { passive: false });
   })();
 
-  // ---- rail: filter the notebook page list by name ----
-  var pgSearch = $("pageSearch");
-  if (pgSearch) {
-    pgSearch.addEventListener("input", renderPageList);
-    pgSearch.addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; renderPageList(); this.blur(); } });
-  }
-
   renderTopbar();
   if (store.ui && store.ui.group && groupExists(store.ui.group)) activeGroup = store.ui.group;
   renderGroupbar();
@@ -14305,8 +14205,8 @@ function __detabaseMain() {
   try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
   try { renderEtiTree(); renderHiddenBtn(); } catch (e) {}
   try { renderLibraryEti(); } catch (e) { if (window.console) console.error("renderLibraryEti:", e); }
-  try { renderPsRail(); } catch (e) { if (window.console) console.error("renderPsRail:", e); }
   if ($("psNewBtn")) $("psNewBtn").addEventListener("click", function () { newProblemPage(); });
+  if ($("psBack")) $("psBack").addEventListener("click", openMiningScreen);
   if ($("psTitle")) $("psTitle").addEventListener("click", function () { if (activePsPage) openConceptsPopup({ lvl: "p", id: activePsPage }); });
   if ($("psSplit")) $("psSplit").addEventListener("click", function () {
     var pg = psPageById(activePsPage); if (!pg) return;
