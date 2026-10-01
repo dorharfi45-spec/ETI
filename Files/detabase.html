@@ -739,23 +739,35 @@
 
   @media (max-width: 700px) { .vine { flex-wrap: wrap; } .vine-page { max-width: 100%; } }
 
-  /* ---- a subject's own page: its concepts, and its methods as vines ---- */
-  .subj-extras { margin: 30px 0 10px; border-top: 2px solid var(--border-strong); padding-top: 16px; }
-  .se-block { margin-bottom: 18px; }
-  .se-block > summary { font-size: .9rem; font-weight: 700; color: var(--text-secondary); cursor: pointer; padding: 8px 2px; }
-  .se-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
-  .se-head h3 { margin: 0; font-size: 1rem; }
-  .se-new { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--accent);
-    border-radius: 10px; padding: 7px 12px; font-size: .86rem; font-weight: 600; margin-left: auto; }
-  .se-concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; margin: 6px 0 4px; }
-  .se-row { display: flex; align-items: center; gap: 4px; }
-  .se-go { flex: 1; min-width: 0; text-align: left; border: 1px solid var(--border); background: var(--surface-1); border-radius: 9px; padding: 7px 10px; color: var(--text-primary); font-size: .86rem; }
-  .se-go small { display: block; font-size: .72rem; color: var(--text-muted); }
+  /* ---- a subject's own page: Methods | Concepts, side by side ---- */
+  .subj-extras { margin: 14px 0 6px; }
+  .se-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .se-col { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg);
+    background: var(--surface-1); overflow: hidden; }
+  .se-colhead { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .se-colhead h3 { margin: 0; font-size: 1.02rem; flex: 1; min-width: 0; white-space: nowrap; text-transform: none; letter-spacing: normal; }
+  .se-count { display: inline-block; min-width: 24px; padding: 1px 8px; margin-left: 4px; border-radius: 999px; background: var(--surface-2);
+    color: var(--text-muted); font-size: .78rem; font-weight: 700; text-align: center; vertical-align: 2px; }
+  .se-action { flex-shrink: 0; }
+  /* each list scrolls on its own, so one long column never pushes the other down */
+  .se-list { max-height: min(46vh, 460px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .se-empty { padding: 18px 10px; text-align: center; color: var(--text-muted); font-size: .9rem; line-height: 1.5; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .se-empty b { color: var(--text-secondary); }
+  .se-row { display: flex; align-items: center; gap: 6px; }
+  .se-go { flex: 1; min-width: 0; min-height: var(--tap); text-align: left; border: 1px solid var(--border); background: var(--bg); border-radius: var(--r-md);
+    padding: 7px 12px; color: var(--text-primary); font-size: .9rem; cursor: pointer; }
+  .se-go span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+  .se-go small { display: block; font-size: .74rem; color: var(--text-muted); }
   .se-go:hover { border-color: var(--accent); }
-  .se-used { font-size: .72rem; color: #be123c; min-width: 34px; text-align: center; }
-  .se-used.none { min-width: 34px; }
-  .se-add { border: 1px solid var(--border); background: var(--bg); border-radius: 9px; padding: 6px 9px; color: var(--text-muted); }
+  .se-used { font-size: .74rem; color: var(--text-muted); min-width: 34px; text-align: center; flex-shrink: 0; }
+  .se-used:empty { display: none; }   /* no reserved gap when a concept is not used yet */
+  .se-add { min-width: var(--tap); min-height: var(--tap); border: 1px solid var(--border); background: var(--bg); border-radius: var(--r-md); color: var(--text-muted); font-size: 1.05rem; flex-shrink: 0; cursor: pointer; }
   .se-add:hover { color: var(--accent); border-color: var(--accent); }
+  /* a vine in a narrow column: the method's name on top, its concepts underneath */
+  .vine.compact { flex-wrap: wrap; margin-bottom: 0; background: var(--bg); }
+  .vine.compact .vine-page { max-width: none; flex: 1 1 60%; }
+  .vine.compact .vine-chain { flex: 1 1 100%; order: 3; }
+  @media (max-width: 640px) { .se-cols { grid-template-columns: minmax(0, 1fr); } }
 
   /* ---- the asset picker ---- */
   .mp-searchrow { display: flex; gap: 6px; align-items: center; }
@@ -3212,7 +3224,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B68</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B69</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -13462,18 +13474,16 @@ function __detabaseMain() {
 
   }
   // ============================================================
-  // A SUBJECT'S OWN PAGE — its material, its methods, and the vines of those methods
-  // The subject's raw material is the page you are already looking at, so this adds the two things
-  // it was missing: a flat index of the concepts in it, and its problem-solving pages drawn as vines
-  // with the very same row the main page uses (one tree, scoped — not a second one).
+  // A SUBJECT'S OWN PAGE — its Methods and its Concepts, side by side
+  // Two columns at the top of the subject, each with its own header, its own action and its own
+  // scrolling, so a long list on one side never pushes the other down. The Methods column draws
+  // each method with the very same vine row the main page uses (one tree, scoped — not a second
+  // one). Below the columns the subject's reference material carries on as before.
   // ============================================================
-  function subjectConceptList(key) {
-    var box = document.createElement("div");
-    box.className = "se-concepts";
-    var n = 0;
+  function subjectConceptRows(key) {
+    var rows = [];
     libTabs(key).forEach(function (t) {
       libCards(t.id).forEach(function (c) {
-        n++;
         var ref = { lvl: "c", id: c.id };
         var row = document.createElement("div");
         row.className = "se-row";
@@ -13483,47 +13493,67 @@ function __detabaseMain() {
         go.addEventListener("click", function () { openRef(ref); });
         var used = usedInPages(ref).length;
         var badge = document.createElement("span");
-        badge.className = "se-used" + (used ? "" : " none");
+        badge.className = "se-used";
         badge.textContent = used ? "🧩 " + used : "";
+        badge.title = used ? "used in " + used + " method" + (used === 1 ? "" : "s") : "";
         var add = document.createElement("button");
         add.type = "button"; add.className = "se-add"; add.textContent = "＋"; add.title = "add to a clipboard";
         add.addEventListener("click", function () { chooseBoardAndMine([ref]); });
         row.appendChild(go); row.appendChild(badge); row.appendChild(add);
-        box.appendChild(row);
+        rows.push(row);
       });
     });
-    if (!n) box.innerHTML = '<p class="muted">No concepts in this subject yet.</p>';
-    return { el: box, count: n };
+    return rows;
+  }
+  // one column: a header with its count and its action, then a list that scrolls on its own
+  function subjectColumn(title, count, actionLabel, action, fillList, emptyHtml) {
+    var col = document.createElement("section");
+    col.className = "se-col";
+    col.innerHTML = '<header class="se-colhead"><h3>' + escapeHtml(title) + ' <span class="se-count">' + count + '</span></h3></header><div class="se-list"></div>';
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "btn-primary se-action"; btn.textContent = actionLabel;
+    btn.addEventListener("click", action);
+    col.querySelector(".se-colhead").appendChild(btn);
+    var list = col.querySelector(".se-list");
+    if (count) fillList(list);
+    else {
+      list.innerHTML = '<div class="se-empty">' + emptyHtml + '</div>';
+      var again = document.createElement("button");
+      again.type = "button"; again.className = "btn-quiet"; again.textContent = actionLabel;
+      again.addEventListener("click", action);
+      list.querySelector(".se-empty").appendChild(again);
+    }
+    return col;
   }
   function renderSubjectExtras(key) {
     Array.prototype.forEach.call(document.querySelectorAll(".subj-extras"), function (n) { n.remove(); });
     if (!key || !refExists({ lvl: "s", id: key })) return;
-    var host = activeSubject ? $("customPane") : $("topfolder-eti");
-    if (!host) return;
-    var sec = document.createElement("section");
-    sec.className = "subj-extras";
-    var pages = psPagesOf(key);
-    var idx = subjectConceptList(key);
-    var det = document.createElement("details");
-    det.className = "se-block";
-    det.innerHTML = '<summary>Concepts in ' + escapeHtml(subjectName(key)) + ' (' + idx.count + ')</summary>';
-    det.appendChild(idx.el);
-    sec.appendChild(det);
-    var meth = document.createElement("div");
-    meth.className = "se-block";
-    meth.innerHTML = '<div class="se-head"><h3>Methods (' + pages.length + ')</h3></div>';
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "se-new"; add.textContent = "＋ New method";
-    add.addEventListener("click", function () { newProblemPage(key); });
-    meth.querySelector(".se-head").appendChild(add);
-    if (!pages.length) {
-      meth.insertAdjacentHTML("beforeend", '<p class="muted">No methods yet. Crop one out of a PDF and it appears here, with the concepts it uses.</p>');
-    } else {
-      pages.slice().sort(function (a, b) { return a.name.localeCompare(b.name); })
-        .forEach(function (pg) { meth.appendChild(vineRowEl(pg)); });
+    // where the subject's page starts: under the custom subject's title, or just above a built-in
+    // subject's tab bar
+    var anchor = null, host = null;
+    if (activeSubject) { host = $("customPane"); anchor = $("cpTabs"); }
+    else {
+      anchor = document.querySelector('.tabbar[data-folder="' + key.slice(2) + '"]');
+      host = anchor && anchor.parentNode;
     }
-    sec.appendChild(meth);
-    host.appendChild(sec);
+    if (!host) return;
+    var sec = document.createElement("div");
+    sec.className = "subj-extras";
+    var pages = psPagesOf(key).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+    var conceptRows = subjectConceptRows(key);
+    var cols = document.createElement("div");
+    cols.className = "se-cols";
+    cols.appendChild(subjectColumn("Methods", pages.length, "＋ New method",
+      function () { newProblemPage(key); },
+      function (list) { pages.forEach(function (pg) { var r = vineRowEl(pg); r.classList.add("compact"); list.appendChild(r); }); },
+      "<b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses."));
+    cols.appendChild(subjectColumn("Concepts", conceptRows.length, "＋ Add concept",
+      function () { addAssetAt({ lvl: "s", id: key }); },
+      function (list) { conceptRows.forEach(function (r) { list.appendChild(r); }); },
+      "<b>No concepts yet.</b> Crop them out of your notes, or type one in."));
+    sec.appendChild(cols);
+    if (anchor && anchor.parentNode === host) host.insertBefore(sec, anchor);
+    else host.appendChild(sec);
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
@@ -14407,6 +14437,8 @@ function __detabaseMain() {
     activeGroup = groupOfBuiltin(initFolder);
     setGroupClosed(activeGroup, false);
     selectTop("eti");
+    miningScreen = false;   // a link to a tab opens that tab — ETI's main page is only the default
+    applyView();
     selectTab(initial);
   } else if (groupExists(initial)) {
     selectGroup(initial);
