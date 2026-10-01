@@ -52,6 +52,9 @@
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  /* "hidden" always wins — several components set display:flex/grid, which used to override it and
+     leave empty bars and grids on screen that the code believed were gone */
+  [hidden] { display: none !important; }
   body {
     background: var(--bg);
     color: var(--text-primary);
@@ -769,6 +772,104 @@
   .vine.compact .vine-chain { flex: 1 1 100%; order: 3; }
   @media (max-width: 640px) { .se-cols { grid-template-columns: minmax(0, 1fr); } }
 
+
+  /* ==== ETI, one look: every ETI screen, dialog and popup draws from the rules below ====
+     Sizes come from the tokens at the top of the ETI block (--r-*, --tap). Primary actions are the
+     accent fill, everyday actions the quiet outline, destructive ones the red outline; anything
+     you tap is at least about 44px. */
+  /* headings in ETI's own screens do not take the reference sections' top rule */
+  .em-head h2, #psPane .cp-head h2 { border-top: 0; padding-top: 0; margin: 0; }
+  /* level chips and badges: tinted, so they read in both themes instead of glowing in dark mode */
+  body .mp-lvl { background: color-mix(in srgb, var(--text-muted) 18%, transparent); color: var(--text-secondary); }
+  body .mp-lvl.lvl-s  { background: color-mix(in srgb, #2563eb 18%, transparent); color: color-mix(in srgb, #2563eb 72%, var(--text-primary)); }
+  body .mp-lvl.lvl-t  { background: color-mix(in srgb, #16a34a 18%, transparent); color: color-mix(in srgb, #16a34a 72%, var(--text-primary)); }
+  body .mp-lvl.lvl-c  { background: color-mix(in srgb, #d97706 20%, transparent); color: color-mix(in srgb, #d97706 72%, var(--text-primary)); }
+  body .mp-lvl.lvl-e  { background: color-mix(in srgb, #a21caf 18%, transparent); color: color-mix(in srgb, #a21caf 72%, var(--text-primary)); }
+  body .mp-lvl.lvl-p  { background: color-mix(in srgb, #e11d48 18%, transparent); color: color-mix(in srgb, #e11d48 72%, var(--text-primary)); }
+  body .mp-lvl.lvl-st { background: color-mix(in srgb, #4f46e5 18%, transparent); color: color-mix(in srgb, #4f46e5 72%, var(--text-primary)); }
+  .used-badge { background: color-mix(in srgb, #e11d48 12%, transparent); border-color: color-mix(in srgb, #e11d48 35%, transparent);
+    color: color-mix(in srgb, #e11d48 75%, var(--text-primary)); }
+  /* accent fills carry text that reads on them in either theme */
+  .lw-primary { color: var(--on-accent) !important; }
+  .eti-mining-btn.on, .pv-bar .tool-btn.on, .pv-cutbar .tool-btn.primary { color: var(--on-accent); }
+
+  /* ---- the main page ---- */
+  .vine { gap: 12px; }
+  .vine-page { min-height: var(--tap); display: flex; flex-direction: column; justify-content: center; cursor: pointer; }
+  .vine-node { min-height: 40px; padding: 0 14px; cursor: pointer; transition: border-color .12s, color .12s, background .12s; }
+  .vine-node:active, .em-hit-main:active, .se-go:active, .lw-opt:active { transform: translateY(1px); }
+  .vine-acts { gap: 6px; }
+  .vine-acts button { min-width: var(--tap); min-height: var(--tap); border-radius: var(--r-md); font-size: 1rem; cursor: pointer; }
+  .em-hit-main { min-height: var(--tap); border-radius: var(--r-md); cursor: pointer; }
+  .em-hit-x { min-width: var(--tap); border-radius: var(--r-md); cursor: pointer; }
+  .em-clear { min-width: var(--tap); min-height: var(--tap); border-radius: var(--r-md); }
+  .em-search { border-radius: var(--r-md); min-height: 50px; }
+  .em-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .em-clearnarrow { min-height: 40px; padding: 0 6px; }
+  .em-vhead { margin-top: 22px; }
+
+  /* ---- a method's page ---- */
+  #psPane .cp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
+  #psPane .cp-head h2 { font-size: 1.45rem; flex: 1 1 260px; min-width: 0; }
+  #psPane .ps-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  #psTitle:hover { color: var(--accent); }
+  .ps-crumb { margin: 2px 0 12px; }
+  .ps-crumb:empty { display: none; }
+  .ps-doc { border-radius: var(--r-lg); padding: 12px; }
+  .ps-stage { border-radius: var(--r-md); padding: 12px; }
+  .ps-stage-head b { font-size: .95rem; color: var(--text-primary); }
+  .ps-grip { min-width: 40px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-sm); }
+  .ps-grip:hover { background: var(--surface-2); }
+  .ps-stage-btns { gap: 6px; }
+  .ps-stage-btns button { min-width: 40px; min-height: 40px; border-radius: var(--r-sm); cursor: pointer; }
+  .ps-stage-btns button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .ps-stage-btns button.danger { border-color: color-mix(in srgb, var(--danger) 45%, transparent); color: var(--danger); margin-left: 6px; }
+  .ps-stage-btns button.danger:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .ps-uses { min-height: var(--tap); align-items: center; border-radius: var(--r-md); cursor: pointer; }
+  .ps-chip { min-height: 40px; }
+  .ps-chip-go { padding: 0 8px 0 12px; cursor: pointer; }
+  .ps-chip-x { min-width: 40px; cursor: pointer; }
+  .ps-chip-x:hover { color: #fff; background: var(--danger); }
+  .ps-attach { min-height: 40px; padding: 0 16px; cursor: pointer; }
+
+  /* ---- dialogs and popups: one shape, easy to close, never past the screen ---- */
+  .lw-overlay { background: color-mix(in srgb, #0f172a 45%, transparent); }
+  .lw-box { border-radius: var(--r-lg); }
+  .lw-head { min-height: 58px; padding: 8px 8px 8px 18px; font-size: 1.05rem; }
+  .lw-x { min-width: var(--tap); min-height: var(--tap); border-radius: var(--r-md); font-size: 1.05rem; cursor: pointer; }
+  .lw-x:hover { background: var(--surface-2); color: var(--text-primary); }
+  .lw-body { padding: 16px 18px; }
+  .lw-foot { padding: 12px 18px; gap: 10px; }
+  .lw-foot button, .lw-new button { min-height: var(--tap); padding: 0 18px; border-radius: var(--r-md); font-size: .92rem; cursor: pointer; }
+  .lw-foot button:hover:not(:disabled), .lw-new button:hover { border-color: var(--accent); }
+  .lw-opt { min-height: var(--tap); border-radius: var(--r-md); cursor: pointer; }
+  .lw-new input, .lw-part input { min-height: var(--tap); border-radius: var(--r-md); padding: 0 12px; }
+  .lw-new input:focus, .lw-part input:focus, .md-stage-head input:focus, .ta-body:focus { outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .lw-part button { min-width: 40px; min-height: 40px; border-radius: var(--r-sm); }
+  .lw-kinds button { border-radius: var(--r-lg); cursor: pointer; }
+  .lib-menu { border-radius: var(--r-md); }
+  .lib-menu button { min-height: var(--tap); border-radius: var(--r-sm); }
+  .lib-toast { border: 1px solid color-mix(in srgb, #fff 18%, transparent); border-radius: var(--r-md); padding: 12px 18px; }
+
+  /* ---- the bar above a subject: its actions ---- */
+  .lb-row button { min-height: 40px; min-width: 40px; border-radius: var(--r-sm); cursor: pointer; }
+  .lb-row button.danger { border-color: color-mix(in srgb, var(--danger) 45%, transparent); color: var(--danger); }
+  .lb-row button.danger:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .lib-dots { min-height: 36px; min-width: 40px; }
+
+  /* ---- the sidebar's way into Methods & concepts, and its add links ---- */
+  .eti-mining-btn { min-height: var(--tap); border-radius: var(--r-md); cursor: pointer; }
+  .sidebar .add-btn { min-height: 40px; }
+
+  /* ---- the clipboard's reader: the cut bar is where the work is saved ---- */
+  .pv-cutbar .tool-btn { min-height: var(--tap); padding: 0 16px; border-radius: var(--r-md); font-size: .88rem; }
+  .pv-cutbar .tool-btn:disabled { opacity: .45; }
+  .pv-bar .tool-btn { min-height: 40px; min-width: 40px; border-radius: var(--r-md); }
+  /* a mark's ✕: a real target with a ring of space, without hiding the page under it */
+  .pv-mark-tag button { width: 34px; height: 34px; font-size: .85rem; }
+  .pv-mark-tag button:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+
   /* ---- the asset picker ---- */
   .mp-searchrow { display: flex; gap: 6px; align-items: center; }
   .mp-searchrow .mp-search { flex: 1; min-width: 0; }
@@ -1177,13 +1278,7 @@
   .topbar button:hover .del-x { opacity: .6; }
 
   /* ---- custom subject notes pane ---- */
-  #customPane .cp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  #customPane h2 { border: none; padding: 0; margin: 8px 0 4px; }
-  .cp-del {
-    font-size: .8rem; padding: 6px 12px; border-radius: 8px;
-    background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted);
-  }
-  .cp-del:hover { color: var(--sin); border-color: var(--sin); }
+
   #cpNotes {
     width: 100%; min-height: 340px; margin-top: 12px;
     font-family: inherit; font-size: 1rem; line-height: 1.7;
@@ -3207,11 +3302,8 @@
 </div><!-- /topfolder-eti -->
 
 <div id="customPane" hidden>
-  <div class="cp-head">
-    <h2 id="cpTitle">–</h2>
-    <button id="cpDelete" class="cp-del">Delete subject</button>
-  </div>
-  <p class="muted" id="cpMeta"></p>
+
+
   <nav class="tabbar cp-tabs" id="cpTabs" hidden></nav>
   <div id="cpCardBody"></div>
   <details id="cpNotesWrap" class="cp-notes">
@@ -3224,7 +3316,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B69</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B70</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3235,10 +3327,10 @@
   <div class="cp-head">
     <h2 id="psTitle">–</h2>
     <span class="ps-actions">
-      <button id="psSplit" type="button" class="tool-btn primary">✂ Split into stages</button>
-      <button id="psEdit" type="button" class="tool-btn">✎ Open for editing</button>
-      <button id="psRename" type="button" class="tool-btn">Rename</button>
-      <button id="psDelete" type="button" class="tool-btn danger">🗑</button>
+      <button id="psSplit" type="button" class="btn-primary">✂ Split into stages</button>
+      <button id="psEdit" type="button" class="btn-quiet">✎ Open for editing</button>
+      <button id="psRename" type="button" class="btn-quiet">✎ Rename</button>
+      <button id="psDelete" type="button" class="btn-danger">🗑 Delete</button>
     </span>
   </div>
   <div id="psDoc" class="ps-doc"></div>
@@ -5625,7 +5717,8 @@ function __detabaseMain() {
       b.draggable = true;
       b.style.display = "";
       b.dataset.treekey = key;
-      b.classList.toggle("on", activeTop === "eti" && !activeSubject && !viewingProblem && lastEtiFolder === fid);
+      // selected only while that subject is what is on screen — not on the main page or a method
+      b.classList.toggle("on", activeTop === "eti" && !activeSubject && !viewingProblem && !miningScreen && !activePsPage && lastEtiFolder === fid);
       return b;
     }
     var sid = key.slice(2);
@@ -5922,14 +6015,14 @@ function __detabaseMain() {
       renderMiningScreen();
     } else if (onPs) {
       var pgx = psPageById(activePsPage);
-      $("pageTitle").textContent = pgx.name;
-      $("pageSubtitle").innerHTML = 'Method · ' + escapeHtml(subjectName(pgx.subject || ""));
+      $("pageTitle").textContent = "Methods & concepts";   // the section; the method's own name heads the page below
+      $("pageSubtitle").innerHTML = 'A method in <b>' + escapeHtml(subjectName(pgx.subject || "")) + '</b>';
       history.replaceState(null, "", "#" + pgx.id);
       renderPsPane();
     } else if (activeSubject) {
       var s = store.subjects.filter(function (x) { return x.id === activeSubject; })[0];
-      $("cpTitle").textContent = s ? s.name : "–";
-      $("cpMeta").textContent = "in " + topName(activeTop);
+
+
       $("cpNotes").value = store.notes[activeSubject] || "";
       var nwrap = $("cpNotesWrap"); if (nwrap) nwrap.open = !!(store.notes[activeSubject] || "").trim();
       renderCustomSubjectPage();
@@ -6098,7 +6191,7 @@ function __detabaseMain() {
   $("cpNotes").addEventListener("input", function () {
     if (activeSubject) { store.notes[activeSubject] = this.value; saveStore(); }
   });
-  $("cpDelete").addEventListener("click", function () { if (activeSubject) delSubject(activeSubject); });
+
 
 
   // built-in top-folder buttons
@@ -10316,7 +10409,10 @@ function __detabaseMain() {
     host.className = "ps-crop";
     if (!clip) { host.innerHTML = '<div class="doc-empty">no crop</div>'; return host; }
     var c = {}; for (var k in clip) if (clip.hasOwnProperty(k)) c[k] = clip[k];
-    c.w = Math.max(80, w);
+    // never more than 1.6× the crop's real size (PDF units are 1/72"): a small stage blown up to the
+    // full width dominates the page and blurs handwriting
+    var natural = clip.rect && clip.rect.w ? clip.rect.w * (96 / 72) * 1.6 : w;
+    c.w = Math.max(80, Math.min(w, natural));
     renderPdfInto(host, c);
     return host;
   }
@@ -10604,7 +10700,8 @@ function __detabaseMain() {
     draw();
     box.buttons([
       { label: "＋ Add to a clipboard", run: function () { closeConcepts(); chooseBoardAndMine([{ lvl: ref.lvl, id: ref.id }]); } },
-      t.st ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
+      // a stage's popup can take you to its method — unless that method is already what is on screen
+      t.st && !(activePsPage === t.pg.id && !miningScreen) ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
       { label: "Done", primary: true, right: true, run: function () { closeConcepts(); } }
     ]);
     return box;
@@ -10624,7 +10721,7 @@ function __detabaseMain() {
   function renderPsPane() {
     var pg = psPageById(activePsPage); if (!pg) return;
     var tags = (pg.tags || []).filter(Boolean);
-    $("psCrumb").textContent = subjectName(pg.subject || "") + (tags.length ? "  ›  " + tags.join(" · ") : "");
+    $("psCrumb").textContent = tags.join(" · ");   // the subject is in the page subtitle; tags, if any, here
     $("psTitle").textContent = pg.name;
     var body = psBody(pg.id), legacy = !body.main && !body.stages.length;
     if ($("psEdit")) $("psEdit").hidden = !legacy;           // only a hand-written page opens in the board editor
