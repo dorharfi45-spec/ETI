@@ -559,7 +559,7 @@
   .ps-crop img { display: block; max-width: 100%; border-radius: 8px; }
   .ps-main { padding: 4px; }
   .ps-stage { margin-top: 12px; padding: 10px; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-1); }
-  .ps-stage.ps-dragging { opacity: .65; box-shadow: var(--shadow); }
+
   .ps-stage-head { display: flex; align-items: center; gap: 8px; font-size: .86rem; color: var(--text-secondary); margin-bottom: 6px; }
   .ps-grip { cursor: grab; touch-action: none; color: var(--text-muted); padding: 2px 4px; font-size: 1.05rem; }
   .ps-stage-btns { display: flex; gap: 4px; margin-left: auto; }
@@ -745,14 +745,20 @@
   /* ---- a subject's own page: concepts in the main column, methods in a column on the right ---- */
   /* the content becomes two columns: everything it holds stays on the left; the side panel takes the right */
   @media (min-width: 1000px) {
-    body.subject-page .content { display: grid; grid-template-columns: minmax(0, 1fr) clamp(270px, 26%, 360px); column-gap: 22px; align-items: start; }
+    /* concepts take a little over 60%, methods the rest — wide enough to read a vine at a glance */
+    body.subject-page .content { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr); column-gap: 22px; align-items: start; }
     body.subject-page .content > * { grid-column: 1; }
-    body.subject-page .content > .subj-side { grid-column: 2; grid-row: 1 / span 40; position: sticky; top: 14px; align-self: start; }
-    body.subject-page .subj-side .side-list { max-height: calc(100vh - 150px); }
+    /* the Methods column is as long as the concepts beside it (its rows are set from the script) */
+    body.subject-page .content > .subj-side { grid-column: 2; align-self: stretch; }
+    body.subject-page .content > .subj-sums, body.subject-page .content > .page-foot { grid-column: 1 / -1; }
+    body.subject-page .subj-side .side-full { height: 100%; }
+    body.subject-page .subj-side .side-sticky { position: sticky; top: 14px; }
+    body.subject-page .subj-side .side-list { max-height: calc(100vh - 110px); }
   }
   .subj-side { display: flex; flex-direction: column; gap: 14px; margin: 14px 0 6px; min-width: 0; }
-  .side-box { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1); overflow: hidden; }
-  .side-head { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .side-box { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1); }
+  .side-head { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; border-bottom: 1px solid var(--border); background: var(--bg);
+    border-radius: var(--r-lg) var(--r-lg) 0 0; }
   .side-head h3 { margin: 0; font-size: 1.02rem; flex: 1; min-width: 0; white-space: nowrap; text-transform: none; letter-spacing: normal; }
   .side-count { display: inline-block; min-width: 24px; padding: 1px 8px; margin-left: 4px; border-radius: 999px; background: var(--surface-2);
     color: var(--text-muted); font-size: .78rem; font-weight: 700; text-align: center; vertical-align: 2px; }
@@ -761,11 +767,30 @@
   .side-empty { padding: 16px 8px; text-align: center; color: var(--text-muted); font-size: .88rem; line-height: 1.5; }
   .side-empty b { color: var(--text-secondary); display: block; margin-bottom: 4px; }
   /* ---- summaries: the side panel's list, picking, and a summary's own page ---- */
-  .sum-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: var(--tap); width: 100%; text-align: left;
-    padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); cursor: pointer; font: inherit; }
-  .sum-row b { font-size: .92rem; }
-  .sum-row small { font-size: .74rem; color: var(--text-muted); }
-  .sum-row:hover { border-color: var(--accent); }
+  /* the Summaries section: a row of its own under the concepts and the methods */
+  .subj-sums { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .sums-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .sums-head h3 { margin: 0; font-size: 1.15rem; flex: 1; text-transform: none; letter-spacing: normal; }
+  .sums-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .sums-empty { grid-column: 1 / -1; border: 1px dashed var(--border-strong); border-radius: var(--r-lg); }
+  .sum-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-height: 84px; text-align: left; padding: 12px 14px;
+    border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-md); background: var(--surface-1);
+    color: var(--text-primary); cursor: pointer; font: inherit; }
+  .sum-card b { font-size: .98rem; }
+  .sum-card small { font-size: .76rem; color: var(--text-muted); }
+  .sum-card-preview { font-size: .8rem; color: var(--text-secondary); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .sum-card:hover { border-color: var(--accent); }
+  .sum-card:active { transform: translateY(1px); }
+  /* dragging to reorder: the list folds to its titles, the held row lifts, a line marks where it lands */
+  .sum-item, .ps-stage { position: relative; }
+  .reordering .sum-item-body, .reordering .ps-stage > .ps-crop, .reordering .ps-stage > .ps-uses { display: none; }
+  .reordering .sum-item-head, .reordering .ps-stage-head { margin-bottom: 0; }
+  .ps-dragging { z-index: 60; opacity: .97; box-shadow: 0 14px 34px rgba(0, 0, 0, .28); outline: 2px solid var(--accent); outline-offset: 1px; }
+  .ps-dragging .ps-grip { cursor: grabbing; color: var(--accent); }
+  .drop-before::before, .reordering.drop-end > :last-child::after { content: ""; position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: var(--accent); }
+  .drop-before::before { top: -9px; }
+  .reordering.drop-end > :last-child::after { bottom: -9px; }
+  .reordering { user-select: none; -webkit-user-select: none; }
   /* picking: the whole concept block is the target, ringed when it is in */
   .pick-host { position: relative; }
   .pick-ov { position: absolute; inset: 0; z-index: 15;   /* above a card's content, below the sticky tab bar (20) */ border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: var(--r-md);
@@ -3364,7 +3389,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B72</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B73</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3529,7 +3554,7 @@
 
 </main>
 
-<p class="muted" style="margin-top:40px;">Generated from the <span class="mono">ETI/Math/base</span> notes — Trig, Basic Algebra, Geometry, Powers &amp; Logs, and Precalc. Fully offline &amp; self-contained.</p>
+<p class="muted page-foot" style="margin-top:40px;">Generated from the <span class="mono">ETI/Math/base</span> notes — Trig, Basic Algebra, Geometry, Powers &amp; Logs, and Precalc. Fully offline &amp; self-contained.</p>
 
 </div><!-- /content -->
 
@@ -10621,43 +10646,70 @@ function __detabaseMain() {
     var tmp = sts[i]; sts[i] = sts[j]; sts[j] = tmp;
     psSaveBody(pg); psRender();
   }
-  // Drag a row by its grip to reorder a list — stages of a method, items of a summary. iPadOS never
-  // fires HTML5 drag events, which is why this is pointer events and a grip of its own. Rows are the
-  // list's children that share the dragged row's first class; onDrop gets them in their new order.
+  // Drag a row by its grip to reorder a list — stages of a method, items of a summary.
+  // The row is NEVER moved in the page while the finger is down: moving the element that holds the
+  // pointer makes iPadOS drop the capture, which ended every drag after its first step. Instead it
+  // slides under the finger (a transform), a line shows where it will land, and the order is only
+  // rebuilt on release. While dragging, the list folds down to its titles so every place is in reach,
+  // and the page scrolls by itself near the top and bottom edges. (iPadOS never fires HTML5 drag
+  // events, hence pointer events and a grip of its own.) onDrop gets the rows in their new order.
   function dragReorder(row, grip, onDrop) {
     if (!grip) return;
-    var cls = row.classList[0], st = null;
+    var cls = row.classList[0];
     grip.addEventListener("pointerdown", function (e) {
+      if (e.button > 0) return;
       e.preventDefault();
       var listEl = row.parentNode;
-      function rows() { return Array.prototype.filter.call(listEl.children, function (n) { return n.classList.contains(cls); }); }
-      st = { id: e.pointerId };
+      var all = Array.prototype.filter.call(listEl.children, function (n) { return n.classList.contains(cls); });
+      var others = all.filter(function (n) { return n !== row; });
+      // fold the list to its titles, keeping the dragged row where the finger is
+      var before = row.getBoundingClientRect().top;
+      listEl.classList.add("reordering");
+      window.scrollBy(0, row.getBoundingClientRect().top - before);
       row.classList.add("ps-dragging");
+      var st = { id: e.pointerId, y0: e.clientY, sy0: window.scrollY, y: e.clientY, at: all.indexOf(row), done: false };
       try { grip.setPointerCapture(e.pointerId); } catch (_) {}
-      function move(ev) {
-        if (!st || ev.pointerId !== st.id) return;
-        var all = rows();
-        for (var i = 0; i < all.length; i++) {
-          if (all[i] === row) continue;
-          var r = all[i].getBoundingClientRect(), mid = r.top + r.height / 2;
-          if (ev.clientY < mid && all[i].compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING) { listEl.insertBefore(row, all[i]); break; }
-          if (ev.clientY > mid && all[i].compareDocumentPosition(row) & Node.DOCUMENT_POSITION_PRECEDING) { listEl.insertBefore(row, all[i].nextSibling); break; }
-        }
+      function place() {
+        row.style.transform = "translateY(" + (st.y - st.y0 + (window.scrollY - st.sy0)).toFixed(1) + "px)";
+        var idx = 0;   // it lands after every other row whose middle is above the finger
+        others.forEach(function (n) { var r = n.getBoundingClientRect(); if (r.top + r.height / 2 < st.y) idx++; });
+        st.at = idx;
+        others.forEach(function (n, i) { n.classList.toggle("drop-before", i === idx); });
+        listEl.classList.toggle("drop-end", idx === others.length);
       }
-      function up(ev) {
-        if (!st || (ev.pointerId != null && ev.pointerId !== st.id)) return;
-        st = null;
-        row.classList.remove("ps-dragging");
+      var edgeT = setInterval(function () {
+        var edge = 80, v = st.y < edge ? -16 : st.y > window.innerHeight - edge ? 16 : 0;
+        if (v) { window.scrollBy(0, v); place(); }
+      }, 30);
+      function move(ev) {
+        if (ev.pointerId !== st.id) return;
+        ev.preventDefault();
+        st.y = ev.clientY;
+        place();
+      }
+      function end(ev) {
+        if (st.done || (ev && ev.pointerId != null && ev.pointerId !== st.id)) return;
+        st.done = true;
+        clearInterval(edgeT);
         grip.removeEventListener("pointermove", move);
-        grip.removeEventListener("pointerup", up);
-        grip.removeEventListener("pointercancel", up);
-        grip.removeEventListener("lostpointercapture", up);
-        onDrop(rows());   // the DOM is the new order
+        grip.removeEventListener("pointerup", end);
+        grip.removeEventListener("pointercancel", end);
+        grip.removeEventListener("lostpointercapture", end);
+        try { grip.releasePointerCapture(st.id); } catch (_) {}
+        row.style.transform = "";
+        row.classList.remove("ps-dragging");
+        others.forEach(function (n) { n.classList.remove("drop-before"); });
+        listEl.classList.remove("reordering", "drop-end");
+        if (ev && ev.type === "pointercancel") { onDrop(all); return; }   // interrupted: nothing moves
+        var order = others.slice();
+        order.splice(st.at, 0, row);
+        onDrop(order);
       }
       grip.addEventListener("pointermove", move);
-      grip.addEventListener("pointerup", up);
-      grip.addEventListener("pointercancel", up);
-      grip.addEventListener("lostpointercapture", up);
+      grip.addEventListener("pointerup", end);
+      grip.addEventListener("pointercancel", end);
+      grip.addEventListener("lostpointercapture", end);
+      place();
     });
   }
   // order matters to the vine, so a method's stages can be dragged into order
@@ -13668,8 +13720,9 @@ function __detabaseMain() {
   function subjectMethodsPanel(key) {
     var pages = psPagesOf(key).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
     var box = document.createElement("section");
-    box.className = "side-box";
-    box.innerHTML = '<header class="side-head"><h3>Methods <span class="side-count">' + pages.length + '</span></h3></header><div class="side-list"></div>';
+    box.className = "side-box side-full";
+    // the box runs the length of the concepts; what is in it stays in view while they scroll by
+    box.innerHTML = '<div class="side-sticky"><header class="side-head"><h3>Methods <span class="side-count">' + pages.length + '</span></h3></header><div class="side-list"></div></div>';
     var add = document.createElement("button");
     add.type = "button"; add.className = "btn-primary side-action"; add.textContent = "＋ New method";
     add.addEventListener("click", function () { newProblemPage(key); });
@@ -13685,18 +13738,24 @@ function __detabaseMain() {
   // the tab that is open on this subject's page, if any — new concepts are offered it first
   function shownTabId() { var cur = currentEtiRefs(); return cur && cur.t ? cur.t.id : null; }
   function renderSubjectExtras(key) {
-    Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-tools"), function (n) { n.remove(); });
+    Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-tools, .subj-sums"), function (n) { n.remove(); });
     var on = !!key && refExists({ lvl: "s", id: key });
     document.body.classList.toggle("subject-page", on);
     if (sumPick && sumPick.key !== key) sumPickEnd();   // picking belongs to the subject it started on
     if (!on) return;
     var content = document.querySelector(".content");
-    // the right-hand column: its methods and its summaries — or, while picking, the stages to tick
+    // the right-hand column: its methods — or, while picking, the stages to tick
     var side = document.createElement("aside");
     side.className = "subj-side";
-    if (sumPick) side.appendChild(subjectPickPanel(key));
-    else { side.appendChild(subjectMethodsPanel(key)); side.appendChild(subjectSummariesPanel(key)); }
+    side.appendChild(sumPick ? subjectPickPanel(key) : subjectMethodsPanel(key));
     content.insertBefore(side, content.firstChild);
+    // the summaries: a section of their own, under both columns
+    var sums = null;
+    if (!sumPick) {
+      sums = subjectSummariesSection(key);
+      var foot = content.querySelector(":scope > .page-foot");
+      if (foot) content.insertBefore(sums, foot); else content.appendChild(sums);
+    }
     // the concepts' own row, right above their tabs
     var tools = document.createElement("div");
     tools.className = "subj-tools";
@@ -13714,6 +13773,16 @@ function __detabaseMain() {
       if (bar) bar.parentNode.insertBefore(tools, bar);
     }
     if (sumPick) { tools.hidden = true; sumPickPaint(); }   // no adding while picking
+    // the Methods column runs the whole length of the concepts beside it: it spans exactly the rows
+    // the left column takes, so the summaries section lands under both
+    var stop = sums || content.querySelector(":scope > .page-foot");
+    var span = 0;
+    Array.prototype.some.call(content.children, function (n) {
+      if (n === stop) return true;
+      if (n !== side && getComputedStyle(n).display !== "none") span++;
+      return false;
+    });
+    side.style.gridRow = "1 / span " + Math.max(1, span);
   }
   // ============================================================
   // SUMMARIES — a subject's own revision sheet
@@ -13772,34 +13841,36 @@ function __detabaseMain() {
     return hit;
   }
 
-  // ---- the side panel's Summaries box ----
-  function subjectSummariesPanel(key) {
+  // ---- the Summaries section: its own row under the concepts and the methods ----
+  function subjectSummariesSection(key) {
     var list = summariesOf(key).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
-    var box = document.createElement("section");
-    box.className = "side-box";
-    box.innerHTML = '<header class="side-head"><h3>Summaries <span class="side-count">' + list.length + '</span></h3></header><div class="side-list"></div>';
+    var sec = document.createElement("section");
+    sec.className = "subj-sums";
+    sec.innerHTML = '<header class="sums-head"><h3>Summaries <span class="side-count">' + list.length + '</span></h3></header><div class="sums-grid"></div>';
     var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-quiet side-action"; add.textContent = "📝 New summary";
+    add.type = "button"; add.className = "btn-primary"; add.textContent = "📝 New summary";
     add.addEventListener("click", function () { sumPickStart(key, null); });
-    box.querySelector(".side-head").appendChild(add);
-    var el = box.querySelector(".side-list");
+    sec.querySelector(".sums-head").appendChild(add);
+    var grid = sec.querySelector(".sums-grid");
     if (!list.length) {
-      el.innerHTML = '<div class="side-empty"><b>No summaries yet.</b> Pick concepts and method stages, and it lays them out in order.</div>';
+      grid.innerHTML = '<div class="side-empty sums-empty"><b>No summaries yet.</b> Pick concepts and method stages from this subject, and it lays them out in order — then change the order however you like.</div>';
     }
     list.forEach(function (sm) {
       var b = document.createElement("button");
-      b.type = "button"; b.className = "sum-row";
-      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + sm.items.length + (sm.items.length === 1 ? " item" : " items") + '</small>';
+      b.type = "button"; b.className = "sum-card";
+      var preview = sm.items.slice(0, 3).map(function (r) { return refLabel(r); }).join(" · ") + (sm.items.length > 3 ? " …" : "");
+      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + sm.items.length + (sm.items.length === 1 ? " item" : " items") + '</small>' +
+        (preview ? '<span class="sum-card-preview">' + escapeHtml(preview) + '</span>' : '');
       b.addEventListener("click", function () { openSummary(sm.id); });
-      el.appendChild(b);
+      grid.appendChild(b);
     });
-    return box;
+    return sec;
   }
   // while picking, the methods column lists every stage to tick (a method with no stages, whole)
   function subjectPickPanel(key) {
     var box = document.createElement("section");
-    box.className = "side-box";
-    box.innerHTML = '<header class="side-head"><h3>Method stages</h3></header><div class="side-list"></div>';
+    box.className = "side-box side-full";
+    box.innerHTML = '<div class="side-sticky"><header class="side-head"><h3>Method stages</h3></header><div class="side-list"></div></div>';
     var el = box.querySelector(".side-list");
     var pages = psPagesOf(key).slice().sort(byName);
     if (!pages.length) el.innerHTML = '<div class="side-empty">This subject has no methods yet — pick from its concepts.</div>';
