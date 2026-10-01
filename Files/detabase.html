@@ -60,6 +60,12 @@
     -webkit-text-size-adjust: 100%;
   }
   .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  /* ETI takes the width: the right-hand column is gone, so the content gets up to ~1600px beside the
+     sidebar. Running text inside it keeps a comfortable line length (below); the vines use it all. */
+  body.top-eti .wrap { max-width: 1860px; }
+  body.top-eti section.pane > p, body.top-eti section.pane > ul, body.top-eti section.pane > ol,
+  body.top-eti .card p, body.top-eti .card li { max-width: 78ch; }
+  body.top-eti #psPane .ps-doc, body.top-eti #psPane .ps-assets { max-width: 1180px; }
 
   /* ---- two-column layout: the sidebar, then the content ---- */
   .layout { display: flex; gap: 26px; align-items: flex-start; flex-wrap: wrap; }
@@ -730,13 +736,7 @@
   .vine-acts { display: flex; gap: 4px; flex: 0 0 auto; }
   .vine-acts button { border: 1px solid var(--border); background: var(--bg); border-radius: 9px; padding: 6px 10px; color: var(--text-muted); }
   .vine-acts button:hover { color: var(--accent); border-color: var(--accent); }
-  .em-subjects { margin-top: 26px; border-top: 1px solid var(--border); padding-top: 14px; }
-  .em-ghead { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 12px 2px 6px; }
-  .em-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-  .em-subject { text-align: left; border: 1px solid var(--border); background: var(--surface-1); border-radius: 12px; padding: 12px; color: var(--text-primary); }
-  .em-subject b { display: block; font-size: .95rem; }
-  .em-subject small { color: var(--text-muted); font-size: .76rem; }
-  .em-subject:hover { border-color: var(--accent); }
+
   @media (max-width: 700px) { .vine { flex-wrap: wrap; } .vine-page { max-width: 100%; } }
 
   /* ---- a subject's own page: its concepts, and its methods as vines ---- */
@@ -3212,7 +3212,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B67</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B68</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -13386,27 +13386,7 @@ function __detabaseMain() {
     if (!concepts.length && !pages.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
     return box;
   }
-  function subjectCardsEl() {
-    var box = document.createElement("div");
-    box.className = "em-subjects";
-    allGroupIds().forEach(function (g) {
-      var keys = groupSubjectKeys(g); if (!keys.length) return;
-      box.insertAdjacentHTML("beforeend", '<div class="em-ghead">' + escapeHtml(groupName(g)) + '</div>');
-      var grid = document.createElement("div");
-      grid.className = "em-grid";
-      keys.forEach(function (k) {
-        var b = document.createElement("button");
-        b.type = "button"; b.className = "em-subject";
-        var nPages = psPagesOf(k).length, nTabs = libTabs(k).length;
-        b.innerHTML = '<b>' + escapeHtml(subjectName(k)) + '</b><small>' + nTabs + (nTabs === 1 ? " tab" : " tabs") +
-          " · " + nPages + (nPages === 1 ? " page" : " pages") + '</small>';
-        b.addEventListener("click", function () { openSubjectRef(k); });
-        grid.appendChild(b);
-      });
-      box.appendChild(grid);
-    });
-    return box;
-  }
+
   function renderEtiMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
@@ -13414,7 +13394,7 @@ function __detabaseMain() {
       '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search methods, concepts, or what a method involves…" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
       '<div class="em-narrow"></div><div class="em-res"></div>' +
-      '<div class="em-vines"></div><div class="em-subs"></div>';
+      '<div class="em-vines"></div>';
     var input = host.querySelector(".em-search");
     input.value = mainQ;
     var st;
@@ -13479,7 +13459,7 @@ function __detabaseMain() {
       pages.slice(0, 60).forEach(function (pg) { vbox.appendChild(vineRowEl(pg)); });
       if (pages.length > 60) vbox.insertAdjacentHTML("beforeend", '<p class="muted">…and ' + (pages.length - 60) + ' more — narrow it down.</p>');
     }
-    host.querySelector(".em-subs").appendChild(subjectCardsEl());
+
   }
   // ============================================================
   // A SUBJECT'S OWN PAGE — its material, its methods, and the vines of those methods
