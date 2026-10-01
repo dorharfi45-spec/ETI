@@ -881,6 +881,50 @@
   .em-clearnarrow { min-height: 40px; padding: 0 6px; }
   .em-vhead { margin-top: 22px; }
 
+  /* ---- the concept tree: concepts as circles, rings around them, methods as blue vines ---- */
+  .em-tree { position: relative; margin-top: 12px; height: clamp(380px, 64vh, 780px); border: 1px solid var(--border);
+    border-radius: var(--r-lg); background: var(--surface-1); overflow: hidden; }
+  .ct-svg { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none;
+    -webkit-touch-callout: none; cursor: grab; }
+  .ct-svg:active { cursor: grabbing; }
+  .ct-svg circle, .ct-svg path { vector-effect: non-scaling-stroke; }
+  .ct-ring { stroke: var(--border-strong); stroke-width: 1; cursor: zoom-in; transition: opacity .2s; }
+  .ct-ring.lvl-s { fill: color-mix(in srgb, var(--accent) 6%, var(--bg)); stroke-width: 1.6; }
+  .ct-ring.lvl-t { fill: color-mix(in srgb, var(--accent) 4%, var(--surface-2)); }
+  .ct-ring.lvl-c { fill: var(--bg); }
+  .ct-ring.empty { stroke-dasharray: 4 3; cursor: pointer; }
+  .ct-ring.used { stroke: color-mix(in srgb, var(--accent) 60%, var(--border-strong)); }
+  .ct-ring:hover { stroke: var(--accent); }
+  .ct-leaf { fill: var(--bg); stroke: var(--text-muted); stroke-width: 1.3; cursor: pointer; transition: opacity .2s; }
+  .ct-leaf.used { fill: color-mix(in srgb, var(--accent) 24%, var(--bg)); stroke: var(--accent); }
+  .ct-leaf:hover { stroke: var(--accent); stroke-width: 2.6; }
+  .ct-vine { fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; opacity: .88; transition: opacity .2s; }
+  .ct-vine.hot { stroke-width: 5.5; opacity: 1; }
+  .ct-dot { pointer-events: none; }
+  .ct-vhit { fill: none; stroke: transparent; stroke-width: 22; pointer-events: stroke; cursor: pointer; }
+  .ct-lbl, .ct-vlbl { pointer-events: none; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3.5px * var(--ctu, 1));
+    stroke-linejoin: round; text-anchor: middle; font-family: inherit; }
+  .ct-lbl { fill: var(--text-secondary); }
+  .ct-lbl.lvl-s { font-size: calc(14px * var(--ctu, 1)); font-weight: 700; fill: var(--text-primary); letter-spacing: .01em; }
+  .ct-lbl.lvl-t { font-size: calc(12px * var(--ctu, 1)); font-weight: 600; }
+  .ct-lbl.lvl-c { font-size: calc(11px * var(--ctu, 1)); }
+  .ct-lbl.leaf { font-size: calc(10.5px * var(--ctu, 1)); fill: var(--text-primary); }
+  /* a method's name rides on its vine when only a few are on show, or when the mouse is on it */
+  .ct-vlbl { display: none; font-size: calc(11.5px * var(--ctu, 1)); font-weight: 700; pointer-events: auto; cursor: pointer; }
+  .ct-svg.few .ct-vlbl:not(.off), .ct-vlbl.hot { display: inline; }
+  /* the search: what it leaves out steps back */
+  .ct-svg .dim { opacity: .25; }
+  .ct-svg .off { opacity: .07; }
+  .ct-lbl.leaf.dim { display: none; }
+  .ct-vhit.off, .ct-vlbl.off { display: none; }
+  .ct-ring.hit { stroke: var(--accent); stroke-width: 2.6; }
+  .ct-leaf.hit { stroke: var(--accent); stroke-width: 3; fill: color-mix(in srgb, var(--accent) 36%, var(--bg)); }
+  .ct-ctrl { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .ct-ctrl button { width: var(--tap); height: var(--tap); border-radius: var(--r-md); border: 1px solid var(--border);
+    background: var(--bg); color: var(--text-secondary); font-size: 1.15rem; box-shadow: var(--shadow); cursor: pointer; }
+  .ct-ctrl button:hover { color: var(--accent); border-color: var(--accent); }
+  .ct-hint { position: absolute; left: 12px; bottom: 9px; right: 64px; font-size: .74rem; color: var(--text-muted); pointer-events: none; }
+
   /* ---- a method's page ---- */
   #psPane .cp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
   #psPane .cp-head h2 { font-size: 1.45rem; flex: 1 1 260px; min-width: 0; }
@@ -3389,7 +3433,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B73</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B74</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -13636,13 +13680,437 @@ function __detabaseMain() {
     return box;
   }
 
+  // ============================================================
+  // THE CONCEPT TREE — the main page's map of the library
+  // A concept is a circle. A card is a ring around its concepts, a tab a ring around its cards and a
+  // subject a ring around its tabs (a built-in card has no pieces of its own, so it is its own
+  // smallest circle). A method is a blue vine running through the circles it uses, in stage order.
+  // Tap a circle to open it, a ring to zoom into it, a vine to open its method; hold a circle to see
+  // only the methods that use it. The search above drives the tree too: whatever the filters leave
+  // out steps back, and the view flies to what is left.
+  // ============================================================
+  var ctView = null, ctSig = null, ctPreView = null, ctFocus = null, ctEls = null, ctAnim = null;
+  // what the view was fitted to, while it is still fitted to it: the box keeps it fitted when the
+  // page changes size, until a hand moves the view
+  var ctAuto = null;
+  var CT_LEAF = 11;
+  var CT_GAP = { c: 3, t: 6, s: 10, root: 34 };    // between the circles a ring holds
+  var CT_PAD = { c: 5, t: 10, s: 18, root: 0 };    // inside a ring, around what it holds
+  var CT_BLUES = ["#2563eb", "#0284c7", "#1d4ed8", "#0ea5e9", "#4f46e5", "#0369a1"];
+  var CT_BLUES_DARK = ["#60a5fa", "#38bdf8", "#93c5fd", "#7dd3fc", "#818cf8", "#3b82f6"];
+  function ctF(n) { return (+n).toFixed(1); }
+  // the library as nested circles, laid out
+  function ctBuild() {
+    libEnsure();
+    var nodes = {}, uses = {};
+    store.ps.pages.forEach(function (pg) { vineOf(pg.id).forEach(function (r) { var k = refKey(r); uses[k] = (uses[k] || 0) + 1; }); });
+    function node(ref, name, kids) {
+      var n = { ref: ref, key: refKey(ref), name: name, kids: kids || [], x: 0, y: 0, r: 0, uses: uses[refKey(ref)] || 0 };
+      n.kids.forEach(function (c) { c.parent = n; });
+      nodes[n.key] = n;
+      return n;
+    }
+    // every concept the same size, so the map does not shift about as methods come and go
+    function leaf(ref, name) { var n = node(ref, name); n.leaf = true; n.r = CT_LEAF; return n; }
+    var subjects = allSubjectKeys().map(function (sk) {
+      return node({ lvl: "s", id: sk }, subjectName(sk), libTabs(sk).map(function (t) {
+        return node({ lvl: "t", id: t.id }, t.name, libCards(t.id).map(function (c) {
+          var ref = { lvl: "c", id: c.id };
+          if (!byId(store.cards, c.id)) return leaf(ref, c.name);
+          return node(ref, c.name, libElements(c.id).map(function (e) { return leaf({ lvl: "e", id: e.id }, e.name); }));
+        }));
+      }));
+    });
+    var root = node({ lvl: "root", id: "" }, "", subjects);
+    ctPack(root);
+    (function place(n, x, y) { n.x += x; n.y += y; n.kids.forEach(function (c) { place(c, n.x, n.y); }); })(root, 0, 0);
+    return { root: root, nodes: nodes };
+  }
+  // the circles a ring holds, biggest first, each as close to the middle as it fits; then the
+  // smallest ring around them all (kids end up relative to their ring's centre)
+  function ctPack(n) {
+    if (n.leaf) return;
+    n.kids.forEach(ctPack);
+    var lvl = n.ref.lvl;
+    if (!n.kids.length) { n.r = CT_LEAF + 4; n.empty = true; return; }
+    var gap = CT_GAP[lvl], placed = [];
+    n.kids.slice().sort(function (a, b) { return b.r - a.r; }).forEach(function (c) {
+      if (!placed.length) { c.x = 0; c.y = 0; placed.push(c); return; }
+      var best = null;
+      function consider(x, y) {
+        var d = x * x + y * y;
+        if (best && d >= best.d) return;
+        for (var i = 0; i < placed.length; i++) {
+          var p = placed[i];
+          if (Math.hypot(p.x - x, p.y - y) < p.r + c.r + gap - 0.01) return;
+        }
+        best = { x: x, y: y, d: d };
+      }
+      placed.forEach(function (a, i) {
+        var ra = a.r + c.r + gap;
+        for (var s = 0; s < 12; s++) consider(a.x + Math.cos(s * Math.PI / 6) * ra, a.y + Math.sin(s * Math.PI / 6) * ra);
+        for (var j = i + 1; j < placed.length; j++) {   // touching two at once: the snug spots
+          var b = placed[j], rb = b.r + c.r + gap, dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy);
+          if (!d || d > ra + rb || d < Math.abs(ra - rb)) continue;
+          var l = (ra * ra - rb * rb + d * d) / (2 * d), h = Math.sqrt(Math.max(0, ra * ra - l * l));
+          var mx = a.x + dx * l / d, my = a.y + dy * l / d;
+          consider(mx + dy * h / d, my - dx * h / d);
+          consider(mx - dy * h / d, my + dx * h / d);
+        }
+      });
+      if (!best) {   // never expected, but never stuck: past everything on the right
+        var far = 0; placed.forEach(function (p) { far = Math.max(far, p.x + p.r); });
+        best = { x: far + gap + c.r, y: 0 };
+      }
+      c.x = best.x; c.y = best.y; placed.push(c);
+    });
+    // the smallest enclosing ring, found by walking towards whichever circle sticks out furthest
+    var cx = 0, cy = 0;
+    for (var it = 1; it <= 80; it++) {
+      var far = null, fd = -1;
+      placed.forEach(function (p) { var d = Math.hypot(p.x - cx, p.y - cy) + p.r; if (d > fd) { fd = d; far = p; } });
+      var dx = far.x - cx, dy = far.y - cy, dd = Math.hypot(dx, dy) || 1;
+      cx += (far.x + dx / dd * far.r - cx) / (it + 1);
+      cy += (far.y + dy / dd * far.r - cy) / (it + 1);
+    }
+    var R = 0;
+    placed.forEach(function (p) { p.x -= cx; p.y -= cy; R = Math.max(R, Math.hypot(p.x, p.y) + p.r); });
+    n.r = R + CT_PAD[lvl];
+  }
+  function ctSegKey(a, b) { return a.key < b.key ? a.key + "~" + b.key : b.key + "~" + a.key; }
+  // every method as a path through its circles; a ring is met at its edge, on the side the vine
+  // comes from, and a method that uses a single concept wraps it in a bud
+  function ctVines(model, dark) {
+    var pal = dark ? CT_BLUES_DARK : CT_BLUES, out = [], segUse = {}, segAt = {}, buds = {};
+    store.ps.pages.forEach(function (pg) {
+      var an = [];
+      vineOf(pg.id).forEach(function (r) { var n = model.nodes[refKey(r)]; if (n && an.indexOf(n) < 0) an.push(n); });
+      if (an.length) out.push({ pg: pg, an: an });
+    });
+    out.forEach(function (v) {
+      v.segs = [];
+      for (var i = 1; i < v.an.length; i++) { var k = ctSegKey(v.an[i - 1], v.an[i]); segUse[k] = (segUse[k] || 0) + 1; v.segs.push(k); }
+    });
+    out.forEach(function (v) {
+      var h = 0;
+      for (var q = 0; q < v.pg.id.length; q++) h = (h * 31 + v.pg.id.charCodeAt(q)) | 0;
+      v.color = pal[Math.abs(h) % pal.length];
+      v.ends = [];
+      if (v.an.length === 1) {
+        var n0 = v.an[0], b = buds[n0.key] = (buds[n0.key] || 0) + 1, R = n0.r + 2 + b * 4;
+        v.d = "M" + ctF(n0.x - R) + " " + ctF(n0.y) + "a" + ctF(R) + " " + ctF(R) + " 0 1 0 " + ctF(2 * R) + " 0" +
+              "a" + ctF(R) + " " + ctF(R) + " 0 1 0 " + ctF(-2 * R) + " 0";
+        v.mid = [n0.x, n0.y - R];
+        v.box = [n0.x - R, n0.y - R, n0.x + R, n0.y + R];
+        return;
+      }
+      var pts = v.an.map(function (n, i) {
+        if (n.leaf || n.empty) return [n.x, n.y];
+        var o = v.an[i - 1] || v.an[i + 1], dx = o.x - n.x, dy = o.y - n.y, d = Math.hypot(dx, dy) || 1;
+        var p = [n.x + dx / d * n.r, n.y + dy / d * n.r];
+        v.ends.push(p);
+        return p;
+      });
+      var d = "M" + ctF(pts[0][0]) + " " + ctF(pts[0][1]), mids = [], box = [1e9, 1e9, -1e9, -1e9];
+      pts.forEach(function (p) { box[0] = Math.min(box[0], p[0]); box[1] = Math.min(box[1], p[1]); box[2] = Math.max(box[2], p[0]); box[3] = Math.max(box[3], p[1]); });
+      for (var i = 1; i < pts.length; i++) {
+        var a = pts[i - 1], c = pts[i], k = v.segs[i - 1], n = segUse[k], j = segAt[k] = (segAt[k] || 0) + 1;
+        // a stretch several vines share gets a lane for each, and the lanes keep their side whichever
+        // way a vine runs it; a stretch of its own just sways, like a vine
+        var flip = v.an[i - 1].key > v.an[i].key ? -1 : 1;
+        var dx = c[0] - a[0], dy = c[1] - a[1], len = Math.hypot(dx, dy) || 1;
+        var px = -dy / len * flip, py = dx / len * flip;
+        var off = n > 1 ? (j - 1 - (n - 1) / 2) * 10 : (i % 2 ? 1 : -1) * flip * Math.min(36, len * 0.14);
+        var qx = (a[0] + c[0]) / 2 + px * off * 2, qy = (a[1] + c[1]) / 2 + py * off * 2;
+        d += "Q" + ctF(qx) + " " + ctF(qy) + " " + ctF(c[0]) + " " + ctF(c[1]);
+        mids.push([(a[0] + 2 * qx + c[0]) / 4, (a[1] + 2 * qy + c[1]) / 4]);
+      }
+      v.d = d;
+      v.mid = mids[Math.floor((mids.length - 1) / 2)];
+      v.box = box;
+    });
+    return out;
+  }
+  // what the search leaves standing; null when nothing is being searched
+  function ctMark(model, pages) {
+    if (!(mainQ.trim() || mainNarrow.length || mainTag)) return null;
+    var hit = {}, lit = {}, vis = {};
+    pages.forEach(function (pg) { vis[pg.id] = 1; vineOf(pg.id).forEach(function (r) { lit[refKey(r)] = 1; }); });
+    mainNarrow.forEach(function (r) { hit[refKey(r)] = 1; });
+    if (mainTag) searchIndex.forEach(function (e) { if (e.tags.indexOf(mainTag) >= 0) { var r = entryRef(e); if (r) hit[refKey(r)] = 1; } });
+    var toks = mainQ.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    // the words, matched against a circle's name and the rings around it; the outermost match is
+    // the one marked, and everything inside it comes along
+    if (toks.length) (function walk(n, path) {
+      var here = n.ref.lvl === "root" ? "" : (path + " " + n.name).toLowerCase();
+      if (here && toks.every(function (t) { return here.indexOf(t) >= 0; })) { hit[n.key] = 1; return; }
+      n.kids.forEach(function (c) { walk(c, here); });
+    })(model.root, "");
+    (function mark(n, inside) {
+      n.hit = !!hit[n.key];
+      n.lit = inside || n.hit || !!lit[n.key];
+      var any = n.lit;
+      n.kids.forEach(function (c) { if (mark(c, inside || n.hit)) any = true; });
+      n.any = any;
+      return any;
+    })(model.root, false);
+    return { vis: vis };
+  }
+  function ctBoxOf(list) {
+    var b = [1e9, 1e9, -1e9, -1e9];
+    list.forEach(function (n) { b[0] = Math.min(b[0], n.x - n.r); b[1] = Math.min(b[1], n.y - n.r); b[2] = Math.max(b[2], n.x + n.r); b[3] = Math.max(b[3], n.y + n.r); });
+    return b[0] < b[2] ? b : null;
+  }
+  function ctUnion(a, b) { return !a ? b : !b ? a : [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }
+  // ---- the view: centre + zoom, kept across re-renders so typing never throws it away ----
+  function ctSize() { var s = ctEls && ctEls.svg; return s ? [s.clientWidth, s.clientHeight] : [0, 0]; }
+  function ctAllK() {
+    var sz = ctSize(), b = ctEls.allBox;
+    return Math.min(sz[0] / (b[2] - b[0]), sz[1] / (b[3] - b[1])) * 0.92;
+  }
+  function ctClampK(k) { return Math.max(ctAllK() * 0.5, Math.min(8, k)); }
+  function ctFitTo(b, maxK) {
+    var sz = ctSize(), w = Math.max(1, b[2] - b[0]), h = Math.max(1, b[3] - b[1]);
+    var k = Math.min(sz[0] / w, sz[1] / h) * 0.86;
+    return { cx: (b[0] + b[2]) / 2, cy: (b[1] + b[3]) / 2, k: ctClampK(Math.min(maxK || 8, k)) };
+  }
+  function ctApply() {
+    var E = ctEls; if (!E || !ctView) return;
+    var sz = ctSize();
+    E.world.setAttribute("transform", "translate(" + ctF(sz[0] / 2 - ctView.cx * ctView.k) + " " + ctF(sz[1] / 2 - ctView.cy * ctView.k) + ") scale(" + ctView.k.toFixed(5) + ")");
+    E.svg.style.setProperty("--ctu", (1 / ctView.k).toFixed(5));
+    if (!E.lblQueued) { E.lblQueued = true; requestAnimationFrame(function () { E.lblQueued = false; ctLabels(E); }); }
+  }
+  function ctStop() { if (ctAnim) { cancelAnimationFrame(ctAnim); ctAnim = null; } }
+  function ctFly(to) {
+    ctStop();
+    var from = ctView, t0 = null;
+    if (!from) { ctView = to; ctApply(); return; }
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var t = Math.min(1, (now - t0) / 380), e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      // zoom eases in log space, so a big zoom does not lurch at the start
+      ctView = { cx: from.cx + (to.cx - from.cx) * e, cy: from.cy + (to.cy - from.cy) * e,
+                 k: Math.exp(Math.log(from.k) + (Math.log(to.k) - Math.log(from.k)) * e) };
+      ctApply();
+      ctAnim = t < 1 ? requestAnimationFrame(step) : null;
+    }
+    ctAnim = requestAnimationFrame(step);
+  }
+  // names come and go with the zoom: a name shows once its circle is big enough on screen to own it
+  function ctLabels(E) {
+    if (!E || !ctView || E !== ctEls) return;
+    var k = ctView.k;
+    E.labels.forEach(function (L) {
+      var sr = L.r * k, show, room;
+      if (L.leaf) { show = sr >= 14 || (L.hit && sr >= 4); room = L.hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
+      else { show = sr >= (L.lvl === "s" ? 34 : 46); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
+      if (show) {
+        var max = Math.max(3, Math.floor(room / (L.lvl === "s" ? 8.4 : 6.6)));
+        var txt = L.full.length > max ? L.full.slice(0, max - 1) + "…" : L.full;
+        if (L.el.textContent !== txt) L.el.textContent = txt;
+      }
+      L.el.style.display = show ? "" : "none";
+    });
+  }
+  function ctHitAt(x, y) {
+    var t = document.elementFromPoint(x, y);
+    t = t && t.closest && t.closest("[data-k], [data-v]");
+    if (!t || !ctEls || !ctEls.svg.contains(t)) return null;
+    if (t.hasAttribute("data-v")) return { vine: t.getAttribute("data-v") };
+    return ctEls.model.nodes[t.getAttribute("data-k")] || null;
+  }
+  function ctTap(x, y) {
+    var h = ctHitAt(x, y);
+    if (!h) return;
+    if (h.vine) { selectPsPage(h.vine); return; }
+    var n = h;
+    // a circle too small to aim at is a ring tap: zoom in first
+    if (n.leaf && n.r * ctView.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
+    if (n.leaf || n.empty) { openRef(n.ref); return; }
+    var to = ctFitTo(ctBoxOf([n]), 3.4);   // never so close that a concept fills the screen
+    // a second tap on the ring already filling the view opens it
+    if (ctFocus === n.key && Math.abs(ctView.k - to.k) / to.k < 0.2 && Math.hypot(ctView.cx - to.cx, ctView.cy - to.cy) * ctView.k < 40) { openRef(n.ref); return; }
+    ctFocus = n.key; ctAuto = { box: ctBoxOf([n]), maxK: 3.4 };
+    ctFly(to);
+  }
+  function ctWire(E) {
+    var svg = E.svg, P = {}, pinch = null, pan = null, holdT = null;
+    function local(e) { var r = svg.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+    function ids() { return Object.keys(P); }
+    function startPan(id) { pan = { id: String(id), xy: P[id], cx: ctView.cx, cy: ctView.cy, moved: 0, t: Date.now(), held: false }; }
+    svg.addEventListener("pointerdown", function (e) {
+      if (e.button > 0 || !ctView) return;
+      e.preventDefault();
+      try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+      ctStop();
+      P[e.pointerId] = local(e);
+      clearTimeout(holdT);
+      if (ids().length === 1) {
+        startPan(e.pointerId);
+        var h = ctHitAt(e.clientX, e.clientY), p0 = pan;
+        if (h && !h.vine && h.leaf) holdT = setTimeout(function () {
+          if (pan !== p0 || p0.moved >= 8) return;
+          p0.held = true;
+          narrowAdd(h.ref);
+        }, 550);
+      } else {
+        var k = ids(), a = P[k[0]], b = P[k[1]];
+        pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, mid: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], v: { cx: ctView.cx, cy: ctView.cy, k: ctView.k } };
+        pan = null;
+      }
+    });
+    svg.addEventListener("pointermove", function (e) {
+      if (!P[e.pointerId]) return;
+      e.preventDefault();
+      P[e.pointerId] = local(e);
+      var k = ids(), sz = ctSize();
+      if (pinch && k.length >= 2) {
+        var a = P[k[0]], b = P[k[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        var nk = ctClampK(pinch.v.k * d / pinch.d);
+        // the spot that was under the fingers stays under them
+        var wx = pinch.v.cx + (pinch.mid[0] - sz[0] / 2) / pinch.v.k, wy = pinch.v.cy + (pinch.mid[1] - sz[1] / 2) / pinch.v.k;
+        ctView = { cx: wx - (mid[0] - sz[0] / 2) / nk, cy: wy - (mid[1] - sz[1] / 2) / nk, k: nk };
+        ctFocus = null; ctAuto = null;
+        ctApply();
+      } else if (pan && pan.id === String(e.pointerId)) {
+        var dx = P[e.pointerId][0] - pan.xy[0], dy = P[e.pointerId][1] - pan.xy[1];
+        pan.moved = Math.max(pan.moved, Math.hypot(dx, dy));
+        if (pan.moved < 6) return;
+        clearTimeout(holdT);
+        ctView = { cx: pan.cx - dx / ctView.k, cy: pan.cy - dy / ctView.k, k: ctView.k };
+        ctFocus = null; ctAuto = null;
+        ctApply();
+      }
+    });
+    function end(e) {
+      if (!P[e.pointerId]) return;
+      delete P[e.pointerId];
+      var k = ids();
+      if (k.length < 2) pinch = null;
+      if (k.length === 1) { startPan(k[0]); pan.moved = 99; return; }   // a pinch that lifts one finger carries on as a pan
+      clearTimeout(holdT);
+      var p = pan; pan = null;
+      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < 8 && !p.held && Date.now() - p.t < 700) ctTap(e.clientX, e.clientY);
+    }
+    svg.addEventListener("pointerup", end);
+    svg.addEventListener("pointercancel", end);
+    svg.addEventListener("lostpointercapture", end);
+    // desktop: a pinch on the trackpad (or ctrl + wheel) zooms; a plain wheel still scrolls the page
+    svg.addEventListener("wheel", function (e) {
+      if (!(e.ctrlKey || e.metaKey) || !ctView) return;
+      e.preventDefault();
+      var xy = local(e), sz = ctSize(), nk = ctClampK(ctView.k * Math.exp(-e.deltaY * 0.01));
+      var wx = ctView.cx + (xy[0] - sz[0] / 2) / ctView.k, wy = ctView.cy + (xy[1] - sz[1] / 2) / ctView.k;
+      ctStop();
+      ctView = { cx: wx - (xy[0] - sz[0] / 2) / nk, cy: wy - (xy[1] - sz[1] / 2) / nk, k: nk };
+      ctFocus = null; ctAuto = null;
+      ctApply();
+    }, { passive: false });
+    // desktop: a vine under the mouse stands out, with its name
+    function hot(id, on) {
+      Array.prototype.forEach.call(svg.querySelectorAll('[data-vv="' + id + '"]'), function (n) { n.classList.toggle("hot", on); });
+    }
+    svg.addEventListener("mouseover", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), true); });
+    svg.addEventListener("mouseout", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), false); });
+    E.box.querySelector(".ct-ctrl").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-z]"); if (!b || !ctView) return;
+      var z = b.getAttribute("data-z");
+      ctFocus = null;
+      if (z === "all") { ctAuto = { box: null }; ctFly(ctFitTo(E.allBox)); return; }
+      ctAuto = null;
+      ctFly({ cx: ctView.cx, cy: ctView.cy, k: ctClampK(ctView.k * (z === "in" ? 1.6 : 1 / 1.6)) });
+    });
+  }
+  function ctRender(box, pages) {
+    if (ctEls && ctEls.ro) ctEls.ro.disconnect();
+    var model = ctBuild();
+    var dark = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+    var vines = ctVines(model, dark);
+    var marks = ctMark(model, pages);
+    var NS = "http://www.w3.org/2000/svg";
+    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings"></g><g class="ct-hits"></g>' +
+      '<g class="ct-leaves"></g><g class="ct-vines"></g><g class="ct-lbls"></g></g></svg>' +
+      '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
+      '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
+      '<div class="ct-hint">Tap a circle to open it · a ring to zoom in · a blue vine to open its method · hold a circle for the methods that use it</div>';
+    var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
+    var gRings = world.querySelector(".ct-rings"), gHits = world.querySelector(".ct-hits"), gLeaves = world.querySelector(".ct-leaves"),
+        gVines = world.querySelector(".ct-vines"), gLbls = world.querySelector(".ct-lbls");
+    function el(tag, attrs, parent) {
+      var n = document.createElementNS(NS, tag);
+      for (var a in attrs) n.setAttribute(a, attrs[a]);
+      parent.appendChild(n);
+      return n;
+    }
+    var labels = [], focusBox = null;
+    (function walk(n) {
+      if (n.ref.lvl !== "root") {
+        var cls = n.leaf ? "ct-leaf" : "ct-ring lvl-" + n.ref.lvl + (n.empty ? " empty" : "");
+        if (n.uses) cls += " used";
+        if (marks) cls += n.hit ? " hit" : (n.leaf ? n.lit : n.any) ? "" : " dim";
+        var c = el("circle", { cx: ctF(n.x), cy: ctF(n.y), r: ctF(n.r), "class": cls, "data-k": n.key }, n.leaf ? gLeaves : gRings);
+        el("title", {}, c).textContent = n.name;
+        // a ring that is the only one in its parent shares its top edge, so its name goes under the parent's
+        var only = 0;
+        for (var p = n; p.parent && p.parent.ref.lvl !== "root" && p.parent.kids.length === 1; p = p.parent) only++;
+        var t = el("text", { x: ctF(n.x), y: ctF(n.leaf ? n.y + n.r : n.y - n.r), dy: n.leaf ? "1em" : (1.25 + only * 1.4) + "em",
+          "class": "ct-lbl " + (n.leaf ? "leaf" : "lvl-" + n.ref.lvl) + (marks && !(n.leaf ? n.lit : n.any) ? " dim" : "") }, gLbls);
+        labels.push({ el: t, r: n.r, leaf: !!n.leaf, lvl: n.ref.lvl, full: n.name, hit: !!(marks && n.hit) });
+        if (marks && (n.hit || (n.leaf && n.lit))) focusBox = ctUnion(focusBox, ctBoxOf([n]));
+      }
+      n.kids.forEach(walk);
+    })(model.root);
+    var live = 0;
+    vines.forEach(function (v) {
+      var off = marks && !marks.vis[v.pg.id];
+      if (!off) live++;
+      if (marks && !off) focusBox = ctUnion(focusBox, v.box);
+      var hit = el("path", { d: v.d, "class": "ct-vhit" + (off ? " off" : ""), "data-v": v.pg.id }, gHits);
+      el("title", {}, hit).textContent = v.pg.name;
+      el("path", { d: v.d, "class": "ct-vine" + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gVines);
+      v.ends.forEach(function (p) { el("circle", { cx: ctF(p[0]), cy: ctF(p[1]), r: "3.4", fill: v.color, "class": "ct-dot" + (off ? " off" : ""), "data-vv": v.pg.id }, gVines); });
+      var lb = el("text", { x: ctF(v.mid[0]), y: ctF(v.mid[1]), dy: "-0.55em", fill: v.color, "class": "ct-vlbl" + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gLbls);
+      lb.textContent = v.pg.name;
+    });
+    svg.classList.toggle("few", live > 0 && live <= 8);
+    var E = ctEls = { box: box, svg: svg, world: world, labels: labels, model: model,
+      allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
+    ctWire(E);
+    // where to look: the whole tree the first time; what the search left, when it changes; and back
+    // to where you were, once the search is cleared
+    var sig = JSON.stringify([mainQ.trim().toLowerCase(), mainNarrow.map(refKey), mainTag]);
+    var want = null;
+    if (sig !== ctSig) {
+      if (marks) { if (!ctPreView && ctSig !== null && ctView) ctPreView = ctAuto ? { auto: ctAuto } : { view: ctView }; want = focusBox ? { box: focusBox, maxK: 3 } : null; }
+      else { want = ctPreView ? (ctPreView.auto || ctPreView) : { box: null }; ctPreView = null; }
+      ctFocus = null;
+    }
+    if (!ctView) want = { box: null };
+    ctSig = sig;
+    function look() {
+      if (!ctSize()[0] || !ctSize()[1]) return false;   // not on screen yet
+      if (want) {
+        var to = want.view || ctFitTo(want.box || E.allBox, want.maxK);
+        ctAuto = want.view ? null : want;
+        want = null;
+        if (ctView) ctFly(to); else { ctView = to; ctApply(); }
+      } else if (ctAuto && !ctAnim) {
+        ctView = ctFitTo(ctAuto.box || E.allBox, ctAuto.maxK);
+        ctApply();
+      } else ctApply();
+      return true;
+    }
+    look();
+    if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === ctEls) look(); }); E.ro.observe(svg); }
+  }
   function renderEtiMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
     host.innerHTML =
       '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search methods, concepts, or what a method involves…" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
-      '<div class="em-narrow"></div><div class="em-res"></div>' +
+      '<div class="em-narrow"></div><div class="em-tree"></div><div class="em-res"></div>' +
       '<div class="em-vines"></div>';
     var input = host.querySelector(".em-search");
     input.value = mainQ;
@@ -13689,9 +14157,10 @@ function __detabaseMain() {
       clr.addEventListener("click", narrowClear);
       nb.appendChild(clr);
     }
+    var pages = mainVines();
+    ctRender(host.querySelector(".em-tree"), pages);
     host.querySelector(".em-res").appendChild(mainResultsEl());
     var vbox = host.querySelector(".em-vines");
-    var pages = mainVines();
     var total = (store.ps.pages || []).length;
     vbox.insertAdjacentHTML("beforeend", '<div class="em-vhead">' +
       (mainNarrow.length || mainTag || mainQ.trim()
