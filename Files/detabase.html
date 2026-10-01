@@ -760,6 +760,53 @@
   .side-list { max-height: 340px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .side-empty { padding: 16px 8px; text-align: center; color: var(--text-muted); font-size: .88rem; line-height: 1.5; }
   .side-empty b { color: var(--text-secondary); display: block; margin-bottom: 4px; }
+  /* ---- summaries: the side panel's list, picking, and a summary's own page ---- */
+  .sum-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: var(--tap); width: 100%; text-align: left;
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); cursor: pointer; font: inherit; }
+  .sum-row b { font-size: .92rem; }
+  .sum-row small { font-size: .74rem; color: var(--text-muted); }
+  .sum-row:hover { border-color: var(--accent); }
+  /* picking: the whole concept block is the target, ringed when it is in */
+  .pick-host { position: relative; }
+  .pick-ov { position: absolute; inset: 0; z-index: 15;   /* above a card's content, below the sticky tab bar (20) */ border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--accent) 4%, transparent); cursor: pointer; padding: 0; }
+  .pick-ov:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .pick-ov.on { border-style: solid; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .pick-badge { position: absolute; top: 8px; right: 8px; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-secondary); font-size: .8rem; font-weight: 700; box-shadow: var(--shadow); }
+  .pick-badge::before { content: "＋ Add"; }
+  .pick-ov.on .pick-badge { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .pick-ov.on .pick-badge::before { content: "✓ In"; }
+  body.sum-picking .lib-dots, body.sum-picking .used-badge, body.sum-picking #libBar { visibility: hidden; }
+  .pick-group { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; color: var(--text-muted); margin: 8px 4px 0; }
+  .pick-row { display: flex; align-items: center; gap: 10px; min-height: var(--tap); width: 100%; text-align: left; padding: 0 12px; font: inherit; font-size: .9rem;
+    border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); cursor: pointer; }
+  .pick-row:hover { border-color: var(--accent); }
+  .pick-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border-strong); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .8rem; }
+  .pick-row.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); }
+  .pick-row.on .pick-box { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .pick-row.on .pick-box::before { content: "✓"; }
+  /* the tray while picking */
+  .sum-tray { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 5000; display: flex; align-items: center; gap: 10px;
+    max-width: calc(100vw - 24px); padding: 10px 10px 10px 18px; border-radius: var(--r-lg); background: var(--bg); border: 1px solid var(--border-strong); box-shadow: var(--shadow); }
+  .sum-tray-text { font-size: .9rem; color: var(--text-secondary); }
+  @media (max-width: 640px) { .sum-tray { flex-wrap: wrap; justify-content: flex-end; } .sum-tray-text { flex: 1 1 100%; } }
+  body.sum-picking { padding-bottom: 90px; }
+  /* a summary's own page */
+  #sumPane .cp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
+  #sumPane .cp-head h2 { font-size: 1.45rem; flex: 1 1 260px; min-width: 0; border-top: 0; padding-top: 0; margin: 0; cursor: pointer; }
+  #sumPane .cp-head h2:hover { color: var(--accent); }
+  #sumPane .ps-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sum-hint { font-size: .84rem; margin: 6px 0 12px; }
+  .sum-list { display: flex; flex-direction: column; gap: 12px; max-width: 980px; }
+  .sum-item { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-md); background: var(--surface-1); padding: 10px 12px; }
+  .sum-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .sum-item-name { flex: 1; min-width: 0; min-height: 40px; text-align: left; border: none; background: none; padding: 0 4px; font: inherit; font-size: .95rem; font-weight: 650;
+    color: var(--text-primary); cursor: pointer; }
+  .sum-item-name small { display: block; font-size: .74rem; font-weight: 400; color: var(--text-muted); }
+  .sum-item-name:hover { color: var(--accent); }
+  .sum-item-body { overflow-x: auto; }
+  .sum-item-body .asset-body { max-width: 100%; }
   /* the concepts' own row, right above their tabs */
   .subj-tools { display: flex; align-items: center; gap: 12px; margin: 14px 0 0; }
   .subj-tools-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--text-muted); flex: 1; }
@@ -3317,7 +3364,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B71</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B72</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3337,6 +3384,21 @@
   <div id="psDoc" class="ps-doc"></div>
   <div class="sidebar-label" style="margin-top:18px">Concepts</div>
   <div id="psAssets" class="ps-assets"></div>
+</div>
+
+<div id="sumPane" hidden>
+  <button type="button" id="sumBack" class="ps-back">‹ Subject</button>
+  <div class="cp-head sum-head">
+    <h2 id="sumTitle">–</h2>
+    <span class="ps-actions">
+      <button id="sumMore" type="button" class="btn-quiet">＋ Add more</button>
+      <button id="sumClip" type="button" class="btn-quiet">📋 Add to a clipboard</button>
+      <button id="sumRename" type="button" class="btn-quiet">✎ Rename</button>
+      <button id="sumDelete" type="button" class="btn-danger">🗑 Delete</button>
+    </span>
+  </div>
+  <p class="muted sum-hint">Drag ⠿ or use ▲▼ to change the order. Tap a title to go to it.</p>
+  <div id="sumList" class="sum-list"></div>
 </div>
 
 <div id="emptyPane" hidden>
@@ -5337,6 +5399,7 @@ function __detabaseMain() {
     miningScreen = false;                    // a tab is open now, not the main page
     if (refreshers[target]) { try { refreshers[target](); } catch (e) {} }
     if (typeof libRefresh !== "undefined" && libRefresh[target]) { try { libRefresh[target](); } catch (e) {} }
+    if (sumPick) { try { sumPickPaint(); } catch (e) {} }   // a tab's own blocks are rebuilt: mark them again
     try { renderLibBar(); } catch (e) {}
     if (location.hash !== "#" + target) history.replaceState(null, "", "#" + target);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -5386,6 +5449,7 @@ function __detabaseMain() {
       if (p.elements) store.elements = p.elements;
       if (p.ps) store.ps = p.ps;
       if (p.etiEdits) store.etiEdits = p.etiEdits;
+      if (p.summaries) store.summaries = p.summaries;
       // a bench left in the stored metadata by an older build is a stale copy of a board's items:
       // drop it, so the doc binds to the real one again and nothing gets pushed to the cloud
       [store.canvases, store.elements, (store.ps || {}).pages].forEach(function (list) {
@@ -5870,7 +5934,7 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; miningScreen = false;
     saveStore();
     renderEtiTree();
     applyView();
@@ -5952,9 +6016,10 @@ function __detabaseMain() {
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onPage = onProblem && isPage(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
-    var onMining = !onProblem && activeTop === "eti" && miningScreen;
-    var onPs = !onProblem && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
-    var builtin = !onProblem && !onPs && !onMining && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
+    var onMining = !onProblem && !onSum && activeTop === "eti" && miningScreen;
+    var onPs = !onProblem && !onSum && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
+    var builtin = !onProblem && !onSum && !onPs && !onMining && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -5972,12 +6037,13 @@ function __detabaseMain() {
     });
     syncGroupButtons();
     $("topfolder-eti").classList.toggle("on", builtin);
-    $("customPane").hidden = onProblem || onMining || !activeSubject;
+    $("customPane").hidden = onProblem || onMining || onSum || !activeSubject;
     $("psPane").hidden = !onPs;
+    $("sumPane").hidden = !onSum;
     $("miningPane").hidden = !onMining;
     if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -6014,6 +6080,12 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = 'Look a method up by the concepts it uses — or search for a method, a concept, or what a method involves.';
       history.replaceState(null, "", "#mining");
       renderMiningScreen();
+    } else if (onSum) {
+      var smx = summaryById(activeSummary);
+      $("pageTitle").textContent = subjectName(smx.subject);
+      $("pageSubtitle").innerHTML = 'Summary · ' + smx.items.length + (smx.items.length === 1 ? ' item' : ' items');
+      history.replaceState(null, "", "#" + smx.id);
+      renderSumPane();
     } else if (onPs) {
       var pgx = psPageById(activePsPage);
       $("pageTitle").textContent = "Methods & concepts";   // the section; the method's own name heads the page below
@@ -6052,7 +6124,7 @@ function __detabaseMain() {
   }
 
   function selectTop(id) {
-    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null;
+    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null;
     miningScreen = id === "eti";             // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
@@ -6066,7 +6138,7 @@ function __detabaseMain() {
   function selectSubject(id) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; miningScreen = false;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; miningScreen = false;
     if (s.folder === "eti") noteSubject("s:" + id);
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
@@ -6204,7 +6276,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; miningScreen = false;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -10359,7 +10431,7 @@ function __detabaseMain() {
     el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
   }
   function openSubjectRef(key) {
-    activePsPage = null; miningScreen = false;
+    activePsPage = null; activeSummary = null; miningScreen = false;
     if (key.slice(0, 2) === "s:") { selectSubject(key.slice(2)); return; }
     var fid = key.slice(2);
     viewingProblem = false; activeTop = "eti"; activeSubject = null; lastEtiFolder = fid;
@@ -10367,7 +10439,7 @@ function __detabaseMain() {
     selectFolder(fid); applyView(); renderEtiTree();
   }
   function openTabRef(tabId, then) {
-    activePsPage = null; miningScreen = false; viewingProblem = false; activeTop = "eti";
+    activePsPage = null; activeSummary = null; miningScreen = false; viewingProblem = false; activeTop = "eti";
     var t = tabId.slice(0, 2) === "b:" ? null : byId(store.tabs, tabId);
     if (t && t.subject.slice(0, 2) === "s:") {        // a tab of a custom subject
       store.ui.cpTab = store.ui.cpTab || {}; store.ui.cpTab[t.subject.slice(2)] = t.id;
@@ -10393,7 +10465,7 @@ function __detabaseMain() {
     var uc = byId(store.cards, cardId);
     function focus() { flashEl(elId ? document.querySelector('.ue-block[data-ue="' + elId + '"]') : document.querySelector(uc ? '.ue-card[data-uc="' + cardId + '"]' : '[data-el="' + cardId + '"]')); }
     if (uc) openTabRef(uc.tab, focus);
-    else { activePsPage = null; miningScreen = false; jumpToCard(cardId); if (elId) setTimeout(focus, 120); }
+    else { activePsPage = null; activeSummary = null; miningScreen = false; jumpToCard(cardId); if (elId) setTimeout(focus, 120); }
   }
 
   // ---- problem-solving bank: right rail + page view ----
@@ -10401,7 +10473,7 @@ function __detabaseMain() {
 
   function selectPsPage(id) {
     if (!psPageById(id)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; miningScreen = false;
     applyView(); renderEtiTree();
   }
   // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
@@ -10539,6 +10611,8 @@ function __detabaseMain() {
     if (!confirmDelete(stageName(st, i))) return;
     var body = psBody(pg.id);
     body.stages = body.stages.filter(function (x) { return x !== st; });
+    var gone = {}; gone[refKey({ lvl: "st", id: st.id })] = 1;
+    sumStripRefs(gone);   // a deleted stage leaves the summaries it was in
     psSaveBody(pg); psRender();
   }
   function psMoveStage(pg, i, dir) {
@@ -10547,25 +10621,27 @@ function __detabaseMain() {
     var tmp = sts[i]; sts[i] = sts[j]; sts[j] = tmp;
     psSaveBody(pg); psRender();
   }
-  // order matters to the vine, so the order can be dragged. iPadOS never fires HTML5 drag events,
-  // which is why this is done with pointer events and a grip of its own.
-  function psStageDrag(row, pg) {
-    var grip = row.querySelector(".ps-grip"); if (!grip) return;
-    var st = null;
+  // Drag a row by its grip to reorder a list — stages of a method, items of a summary. iPadOS never
+  // fires HTML5 drag events, which is why this is pointer events and a grip of its own. Rows are the
+  // list's children that share the dragged row's first class; onDrop gets them in their new order.
+  function dragReorder(row, grip, onDrop) {
+    if (!grip) return;
+    var cls = row.classList[0], st = null;
     grip.addEventListener("pointerdown", function (e) {
       e.preventDefault();
       var listEl = row.parentNode;
-      st = { id: e.pointerId, y: e.clientY };
+      function rows() { return Array.prototype.filter.call(listEl.children, function (n) { return n.classList.contains(cls); }); }
+      st = { id: e.pointerId };
       row.classList.add("ps-dragging");
       try { grip.setPointerCapture(e.pointerId); } catch (_) {}
       function move(ev) {
         if (!st || ev.pointerId !== st.id) return;
-        var rows = Array.prototype.filter.call(listEl.children, function (n) { return n.classList.contains("ps-stage"); });
-        for (var i = 0; i < rows.length; i++) {
-          if (rows[i] === row) continue;
-          var r = rows[i].getBoundingClientRect(), mid = r.top + r.height / 2;
-          if (ev.clientY < mid && rows[i].compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING) { listEl.insertBefore(row, rows[i]); break; }
-          if (ev.clientY > mid && rows[i].compareDocumentPosition(row) & Node.DOCUMENT_POSITION_PRECEDING) { listEl.insertBefore(row, rows[i].nextSibling); break; }
+        var all = rows();
+        for (var i = 0; i < all.length; i++) {
+          if (all[i] === row) continue;
+          var r = all[i].getBoundingClientRect(), mid = r.top + r.height / 2;
+          if (ev.clientY < mid && all[i].compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING) { listEl.insertBefore(row, all[i]); break; }
+          if (ev.clientY > mid && all[i].compareDocumentPosition(row) & Node.DOCUMENT_POSITION_PRECEDING) { listEl.insertBefore(row, all[i].nextSibling); break; }
         }
       }
       function up(ev) {
@@ -10576,22 +10652,26 @@ function __detabaseMain() {
         grip.removeEventListener("pointerup", up);
         grip.removeEventListener("pointercancel", up);
         grip.removeEventListener("lostpointercapture", up);
-        // the DOM is the new order: rewrite the body to match it
-        var ids = Array.prototype.filter.call(row.parentNode.children, function (n) { return n.classList.contains("ps-stage"); })
-          .map(function (n) { return n.getAttribute("data-st"); });
-        var body = psBody(pg.id), was = body.stages.slice();
-        var next = ids.map(function (id) { return was.filter(function (x) { return x.id === id; })[0]; }).filter(Boolean);
-        if (next.length === was.length) {
-          var changed = next.some(function (x, i) { return x !== was[i]; });
-          body.stages = next;
-          if (changed) { psSaveBody(pg); libToast("Stage order saved"); }
-        }
-        psRender();
+        onDrop(rows());   // the DOM is the new order
       }
       grip.addEventListener("pointermove", move);
       grip.addEventListener("pointerup", up);
       grip.addEventListener("pointercancel", up);
       grip.addEventListener("lostpointercapture", up);
+    });
+  }
+  // order matters to the vine, so a method's stages can be dragged into order
+  function psStageDrag(row, pg) {
+    dragReorder(row, row.querySelector(".ps-grip"), function (rows) {
+      var ids = rows.map(function (n) { return n.getAttribute("data-st"); });
+      var body = psBody(pg.id), was = body.stages.slice();
+      var next = ids.map(function (id) { return was.filter(function (x) { return x.id === id; })[0]; }).filter(Boolean);
+      if (next.length === was.length) {
+        var changed = next.some(function (x, i) { return x !== was[i]; });
+        body.stages = next;
+        if (changed) { psSaveBody(pg); libToast("Stage order saved"); }
+      }
+      psRender();
     });
   }
 
@@ -11186,7 +11266,7 @@ function __detabaseMain() {
 
   function jumpToCard(idx) {
     var e = indexById(idx); if (!e) return;
-    viewingProblem = false; activeSubject = null; activeTop = "eti"; activePsPage = null; miningScreen = false;
+    viewingProblem = false; activeSubject = null; activeTop = "eti"; activePsPage = null; activeSummary = null; miningScreen = false;
     lastEtiFolder = e.folderId;
     activeGroup = groupOfBuiltin(e.folderId);
     store.ui.group = activeGroup; saveStore();
@@ -13177,7 +13257,8 @@ function __detabaseMain() {
     var wrap = document.createElement("div");
     nodes.forEach(function (n) {
       var c = n.cloneNode(true);
-      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls, .lib-dots, .used-badge").forEach(function (x) { x.remove(); });
+      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls, .lib-dots, .used-badge, .pick-ov").forEach(function (x) { x.remove(); });
+      c.classList.remove("pick-host", "picked");
       c.style.display = "";
       c.querySelectorAll("details").forEach(function (d) { d.open = true; });
       if (c.tagName === "DETAILS") c.open = true;
@@ -13319,11 +13400,13 @@ function __detabaseMain() {
     inkSel = b[0] < 1e9 ? { strokes: strokeIds, clips: clipIds, box: { x: b[0] - 6, y: b[1] - 6, w: b[2] - b[0] + 12, h: b[3] - b[1] + 12 }, lasso: null } : null;
     renderCanvas();
   }
-  function mineToBoard(refs) {
+  // opts.column: one under another, in the given order (a summary), rather than in rows
+  function mineToBoard(refs, opts) {
     var p = curProblem(); if (!p || !refs.length) return;
     inkSnapshot(p);
     var cv = $("ppCanvas"), z = navScale || 1;
     var x0 = Math.max(0, (40 - navTx) / z), y0 = Math.max(0, (40 - navTy) / z), rowW = Math.max(320, ((cv.clientWidth || 900) - 80) / z);
+    if (opts && opts.column) rowW = 1;
     var items = refs.map(makeAssetItem);
     layoutBlocks(items, x0, y0, rowW);
     items.forEach(function (it) { p.bench.push(it); });
@@ -13605,12 +13688,14 @@ function __detabaseMain() {
     Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-tools"), function (n) { n.remove(); });
     var on = !!key && refExists({ lvl: "s", id: key });
     document.body.classList.toggle("subject-page", on);
+    if (sumPick && sumPick.key !== key) sumPickEnd();   // picking belongs to the subject it started on
     if (!on) return;
     var content = document.querySelector(".content");
-    // the right-hand column
+    // the right-hand column: its methods and its summaries — or, while picking, the stages to tick
     var side = document.createElement("aside");
     side.className = "subj-side";
-    side.appendChild(subjectMethodsPanel(key));
+    if (sumPick) side.appendChild(subjectPickPanel(key));
+    else { side.appendChild(subjectMethodsPanel(key)); side.appendChild(subjectSummariesPanel(key)); }
     content.insertBefore(side, content.firstChild);
     // the concepts' own row, right above their tabs
     var tools = document.createElement("div");
@@ -13628,20 +13713,310 @@ function __detabaseMain() {
       var bar = document.querySelector('.tabbar[data-folder="' + key.slice(2) + '"]');
       if (bar) bar.parentNode.insertBefore(tools, bar);
     }
+    if (sumPick) { tools.hidden = true; sumPickPaint(); }   // no adding while picking
+  }
+  // ============================================================
+  // SUMMARIES — a subject's own revision sheet
+  // Pick concepts from the subject's material and stages from its methods; Create lays them out in
+  // the subject's own order — tab by tab, card by card, then each method's stages in solving order —
+  // and the order can then be changed by hand. A summary is a list of references, like everything
+  // else in the library, so it always shows the current version of what it points at.
+  //   store.summaries = [{ id, subject, name, items: [ref], created }]   (flat refs: safe in sync/main)
+  // ============================================================
+  var activeSummary = null;
+  var sumPick = null;    // while picking: { key, picked: { refKey: ref }, editing: summaryId | null }
+  function sumEnsure() { store.summaries = store.summaries || []; return store.summaries; }
+  function summaryById(id) { return id ? byId(sumEnsure(), id) : null; }
+  function summariesOf(key) { return sumEnsure().filter(function (s) { return s.subject === key; }); }
+  function byName(a, b) { return a.name.localeCompare(b.name); }
+  // every concept of the subject (tab by tab, card by card, a custom card's elements after it), then
+  // every method as the side panel lists them, each followed by its stages in solving order
+  function subjectOrder(key) {
+    var out = [];
+    libTabs(key).forEach(function (t) {
+      libCards(t.id).forEach(function (c) {
+        out.push({ lvl: "c", id: c.id });
+        libElements(c.id).forEach(function (e) { out.push({ lvl: "e", id: e.id }); });
+      });
+    });
+    psPagesOf(key).slice().sort(byName).forEach(function (pg) {
+      out.push({ lvl: "p", id: pg.id });
+      psStages(pg.id).forEach(function (st) { out.push({ lvl: "st", id: st.id }); });
+    });
+    return out;
+  }
+  function inSubjectOrder(key, refs) {
+    var want = {};
+    refs.forEach(function (r) { want[refKey(r)] = 1; });
+    var ordered = subjectOrder(key).filter(function (r) { return want[refKey(r)]; });
+    var seen = {};
+    ordered.forEach(function (r) { seen[refKey(r)] = 1; });
+    refs.forEach(function (r) { if (!seen[refKey(r)]) ordered.push(r); });   // anything from outside goes last
+    // a whole card already shows its elements, and a whole method its stages: never show them twice
+    var have = {};
+    ordered.forEach(function (r) { have[refKey(r)] = 1; });
+    return ordered.filter(function (r) {
+      if (r.lvl !== "e" && r.lvl !== "st") return true;
+      var par = refParent(r);
+      return !(par && have[refKey(par)]);
+    });
+  }
+  // when something is deleted from the library, it leaves every summary too
+  function sumStripRefs(keys) {
+    var hit = false;
+    sumEnsure().forEach(function (sm) {
+      var n = sm.items.length;
+      sm.items = sm.items.filter(function (r) { return !keys[refKey(r)]; });
+      if (sm.items.length !== n) hit = true;
+    });
+    return hit;
+  }
+
+  // ---- the side panel's Summaries box ----
+  function subjectSummariesPanel(key) {
+    var list = summariesOf(key).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
+    var box = document.createElement("section");
+    box.className = "side-box";
+    box.innerHTML = '<header class="side-head"><h3>Summaries <span class="side-count">' + list.length + '</span></h3></header><div class="side-list"></div>';
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "btn-quiet side-action"; add.textContent = "📝 New summary";
+    add.addEventListener("click", function () { sumPickStart(key, null); });
+    box.querySelector(".side-head").appendChild(add);
+    var el = box.querySelector(".side-list");
+    if (!list.length) {
+      el.innerHTML = '<div class="side-empty"><b>No summaries yet.</b> Pick concepts and method stages, and it lays them out in order.</div>';
+    }
+    list.forEach(function (sm) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sum-row";
+      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + sm.items.length + (sm.items.length === 1 ? " item" : " items") + '</small>';
+      b.addEventListener("click", function () { openSummary(sm.id); });
+      el.appendChild(b);
+    });
+    return box;
+  }
+  // while picking, the methods column lists every stage to tick (a method with no stages, whole)
+  function subjectPickPanel(key) {
+    var box = document.createElement("section");
+    box.className = "side-box";
+    box.innerHTML = '<header class="side-head"><h3>Method stages</h3></header><div class="side-list"></div>';
+    var el = box.querySelector(".side-list");
+    var pages = psPagesOf(key).slice().sort(byName);
+    if (!pages.length) el.innerHTML = '<div class="side-empty">This subject has no methods yet — pick from its concepts.</div>';
+    pages.forEach(function (pg) {
+      var sts = psStages(pg.id);
+      var grp = document.createElement("div");
+      grp.className = "pick-group";
+      grp.textContent = pg.name;
+      el.appendChild(grp);
+      (sts.length ? sts.map(function (st, i) { return { ref: { lvl: "st", id: st.id }, name: stageName(st, i) }; })
+                  : [{ ref: { lvl: "p", id: pg.id }, name: "The whole method" }]).forEach(function (it) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "pick-row"; b.setAttribute("data-k", refKey(it.ref));
+        b.innerHTML = '<span class="pick-box"></span><span>' + escapeHtml(it.name) + '</span>';
+        b.addEventListener("click", function () { sumPickToggle(it.ref); });
+        el.appendChild(b);
+      });
+    });
+    return box;
+  }
+
+  // ---- picking ----
+  function sumPickStart(key, editing) {
+    var sm = editing ? summaryById(editing) : null;
+    sumPick = { key: key, picked: {}, editing: sm ? sm.id : null };
+    if (sm) sm.items.forEach(function (r) { sumPick.picked[refKey(r)] = { lvl: r.lvl, id: r.id }; });
+    if (shownSubjectKey() === key) renderSubjectExtras(key);
+    else openSubjectRef(key);      // its page renders, and paints the pick marks as it does
+  }
+  // the marks on the concepts themselves: the whole block is the target, so it is easy to hit
+  function sumPickScope() {
+    if (!sumPick) return null;
+    return activeSubject ? $("customPane") : $("folder-" + sumPick.key.slice(2));
+  }
+  function sumPickPaint() {
+    if (!sumPick) return;
+    document.body.classList.add("sum-picking");
+    var scope = sumPickScope(); if (!scope) return;
+    var blocks = [];
+    Array.prototype.forEach.call(scope.querySelectorAll("[data-el]"), function (n) {
+      if (n.closest(".ue-card, .ue-block")) return;
+      blocks.push({ node: n, ref: { lvl: "c", id: n.getAttribute("data-el") } });
+    });
+    Array.prototype.forEach.call(scope.querySelectorAll(".ue-card[data-uc]"), function (n) { blocks.push({ node: n, ref: { lvl: "c", id: n.getAttribute("data-uc") } }); });
+    Array.prototype.forEach.call(scope.querySelectorAll(".ue-block[data-ue]"), function (n) { blocks.push({ node: n, ref: { lvl: "e", id: n.getAttribute("data-ue") } }); });
+    blocks.forEach(function (b) {
+      if (b.node.querySelector(":scope > .pick-ov")) return;
+      b.node.classList.add("pick-host");
+      var ov = document.createElement("button");
+      ov.type = "button"; ov.className = "pick-ov"; ov.setAttribute("data-k", refKey(b.ref));
+      ov.innerHTML = '<span class="pick-badge"></span>';
+      ov.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); sumPickToggle(b.ref); });
+      b.node.appendChild(ov);
+    });
+    sumPickSync();
+  }
+  function sumPickToggle(ref) {
+    if (!sumPick) return;
+    var k = refKey(ref);
+    if (sumPick.picked[k]) delete sumPick.picked[k];
+    else sumPick.picked[k] = { lvl: ref.lvl, id: ref.id };
+    sumPickSync();
+  }
+  // every mark, list row and the tray reflect what is picked
+  function sumPickSync() {
+    if (!sumPick) return;
+    Array.prototype.forEach.call(document.querySelectorAll(".pick-ov, .pick-row"), function (n) {
+      var on = !!sumPick.picked[n.getAttribute("data-k")];
+      n.classList.toggle("on", on);
+      var host = n.classList.contains("pick-ov") ? n.parentNode : null;
+      if (host) host.classList.toggle("picked", on);
+    });
+    var tray = $("sumTray");
+    if (!tray) {
+      tray = document.createElement("div");
+      tray.id = "sumTray"; tray.className = "sum-tray";
+      tray.innerHTML = '<span class="sum-tray-text"></span><button type="button" class="btn-quiet" data-a="x">Cancel</button><button type="button" class="btn-primary" data-a="go"></button>';
+      tray.querySelector('[data-a="x"]').addEventListener("click", function () { var k = sumPick && sumPick.key, ed = sumPick && sumPick.editing; sumPickEnd(); if (ed) openSummary(ed); else if (k) renderSubjectExtras(k); });
+      tray.querySelector('[data-a="go"]').addEventListener("click", sumPickCommit);
+      document.body.appendChild(tray);
+    }
+    var n = Object.keys(sumPick.picked).length;
+    tray.querySelector(".sum-tray-text").innerHTML = '<b>' + (sumPick.editing ? "Editing a summary" : "New summary") + '</b> · ' +
+      (n ? n + " picked" : "tap concepts and method stages to pick them");
+    var go = tray.querySelector('[data-a="go"]');
+    go.textContent = sumPick.editing ? "Update summary" : "Create summary";
+    go.disabled = !n;
+  }
+  function sumPickEnd() {
+    sumPick = null;
+    document.body.classList.remove("sum-picking");
+    Array.prototype.forEach.call(document.querySelectorAll(".pick-ov"), function (n) { n.remove(); });
+    Array.prototype.forEach.call(document.querySelectorAll(".pick-host"), function (n) { n.classList.remove("pick-host", "picked"); });
+    var tray = $("sumTray"); if (tray) tray.remove();
+  }
+  function sumPickCommit() {
+    if (!sumPick) return;
+    var key = sumPick.key, refs = Object.keys(sumPick.picked).map(function (k) { return sumPick.picked[k]; });
+    if (!refs.length) return;
+    sumEnsure();
+    if (sumPick.editing) {
+      var sm = summaryById(sumPick.editing);
+      if (sm) {
+        // what was already there keeps the order you gave it; anything new joins at the end, in order
+        var kept = sm.items.filter(function (r) { return sumPick.picked[refKey(r)]; });
+        var keptKeys = {};
+        kept.forEach(function (r) { keptKeys[refKey(r)] = 1; });
+        var added = inSubjectOrder(key, refs.filter(function (r) { return !keptKeys[refKey(r)]; }));
+        sm.items = kept.concat(added);
+        saveStore();
+        sumPickEnd();
+        openSummary(sm.id);
+        libToast("Summary updated");
+        return;
+      }
+    }
+    askName("Name this summary", "It is laid out in the subject's own order — you can change that afterwards.", "Summary of " + subjectName(key), function (name) {
+      var sm2 = { id: uid("sm_"), subject: key, name: name, items: inSubjectOrder(key, refs), created: Date.now() };
+      store.summaries.push(sm2);
+      saveStore();
+      sumPickEnd();
+      openSummary(sm2.id);
+      libToast("Created “" + name + "” — " + sm2.items.length + (sm2.items.length === 1 ? " item" : " items"));
+    });
+  }
+
+  // ---- a summary's own page ----
+  function openSummary(id) {
+    var sm = summaryById(id); if (!sm) return;
+    if (sumPick) sumPickEnd();
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = false;
+    activeSummary = id;
+    if (sm.subject.slice(0, 2) === "f:") lastEtiFolder = sm.subject.slice(2);   // its subject stays selected
+    applyView(); renderEtiTree();
+  }
+  function sumMove(sm, i, dir) {
+    var j = i + dir;
+    if (j < 0 || j >= sm.items.length) return;
+    var t = sm.items[i]; sm.items[i] = sm.items[j]; sm.items[j] = t;
+    saveStore(); renderSumPane();
+  }
+  function renderSumPane() {
+    var sm = summaryById(activeSummary); if (!sm) return;
+    $("sumBack").textContent = "‹ " + subjectName(sm.subject);
+    $("sumTitle").textContent = sm.name;
+    $("pageSubtitle").innerHTML = 'Summary · ' + sm.items.length + (sm.items.length === 1 ? ' item' : ' items');
+    var list = $("sumList");
+    list.innerHTML = "";
+    if (!sm.items.length) {
+      list.innerHTML = '<div class="side-empty"><b>This summary is empty.</b> Tap “＋ Add more” to pick concepts and method stages.</div>';
+      return;
+    }
+    var w = Math.max(260, Math.min(900, libBlockWidth(list) - 30));
+    sm.items.forEach(function (ref, i) {
+      var row = document.createElement("div");
+      row.className = "sum-item";
+      row.setAttribute("data-k", refKey(ref));
+      var par = refParent(ref);
+      row.innerHTML =
+        '<div class="sum-item-head">' +
+          '<span class="ps-grip" title="drag to change the order">⠿</span><span class="md-num">' + (i + 1) + '</span>' +
+          '<button type="button" class="sum-item-name"><span class="mp-lvl lvl-' + ref.lvl + '">' + (ASSET_LV[ref.lvl] || "") + '</span>' +
+            escapeHtml(refLabel(ref)) + (par ? '<small>' + escapeHtml(refName(par)) + '</small>' : '') + '</button>' +
+          '<span class="ps-stage-btns">' +
+            '<button type="button" data-a="up" title="move up"' + (i ? '' : ' disabled') + '>▲</button>' +
+            '<button type="button" data-a="down" title="move down"' + (i < sm.items.length - 1 ? '' : ' disabled') + '>▼</button>' +
+            '<button type="button" data-a="del" class="danger" title="take it out of this summary">✕</button>' +
+          '</span>' +
+        '</div>';
+      var body = document.createElement("div");
+      body.className = "sum-item-body";
+      body.appendChild(assetBody(ref, w));
+      try { prettyFractions(body); } catch (e) {}
+      row.appendChild(body);
+      row.querySelector(".sum-item-name").addEventListener("click", function () { openRef(ref); });
+      row.querySelector('[data-a="up"]').addEventListener("click", function () { sumMove(sm, i, -1); });
+      row.querySelector('[data-a="down"]').addEventListener("click", function () { sumMove(sm, i, 1); });
+      row.querySelector('[data-a="del"]').addEventListener("click", function () {
+        sm.items = sm.items.filter(function (r) { return refKey(r) !== refKey(ref); });
+        saveStore(); renderSumPane();
+      });
+      list.appendChild(row);
+      dragReorder(row, row.querySelector(".ps-grip"), function (rows) {
+        var order = rows.map(function (n) { return n.getAttribute("data-k"); });
+        var was = sm.items.slice();
+        sm.items = order.map(function (k) { return was.filter(function (r) { return refKey(r) === k; })[0]; }).filter(Boolean);
+        if (sm.items.length !== was.length) sm.items = was;   // never lose an item to a bad drag
+        saveStore(); renderSumPane();
+      });
+    });
+  }
+  function sumRename() {
+    var sm = summaryById(activeSummary); if (!sm) return;
+    askName("Rename summary", "", sm.name, function (n) { sm.name = n; saveStore(); applyView(); });
+  }
+  function sumDelete() {
+    var sm = summaryById(activeSummary); if (!sm) return;
+    if (!confirmDelete(sm.name)) return;
+    store.summaries = sumEnsure().filter(function (x) { return x.id !== sm.id; });
+    activeSummary = null;
+    saveStore();
+    openSubjectRef(sm.subject);
+    libToast("Deleted “" + sm.name + "”");
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
-    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage) return null;
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary) return null;
     if (activeSubject) return "s:" + activeSubject;
     if (document.body.classList.contains("showing-builtin")) return "f:" + lastEtiFolder;
     return null;
   }
   function openMiningScreen() {   // ETI's main page
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; miningScreen = true;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; miningScreen = true;
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() { renderEtiMain(); }
-  function chooseBoardAndMine(refs) {
+  function chooseBoardAndMine(refs, opts) {
     var ov = document.createElement("div");
     ov.className = "lw-overlay";
     ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b>Add ' + refs.length + ' asset' + (refs.length === 1 ? '' : 's') + ' to…</b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
@@ -13649,7 +14024,7 @@ function __detabaseMain() {
       '<div class="lw-group" style="margin-top:14px">Existing clipboards</div><div class="mb-grid"></div></div></div>';
     document.body.appendChild(ov);
     function close() { ov.remove(); }
-    function go(openBoard) { close(); openBoard(); mineToBoard(refs); libToast("Added " + refs.length + " asset" + (refs.length === 1 ? "" : "s") + " — drag them into place"); }
+    function go(openBoard) { close(); openBoard(); mineToBoard(refs, opts); libToast("Added " + refs.length + " asset" + (refs.length === 1 ? "" : "s") + " — drag them into place"); }
     ov.querySelector(".lw-x").addEventListener("click", function () { close(); });
     var inp = ov.querySelector(".lw-new input");
     function makeNew() { var n = inp.value.trim(); go(function () { addPage(n); }); }
@@ -13902,9 +14277,10 @@ function __detabaseMain() {
     });
     Object.keys(touched).forEach(function (id) { saveCanvas(id); });
     psStripRefs(keys);
+    sumStripRefs(keys);   // and from every summary that used them
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
-      if (r.lvl === "s") { var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
+      if (r.lvl === "s") { store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
       else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
       else if (r.lvl === "c") store.cards = drop(store.cards, r.id);
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
@@ -13916,6 +14292,7 @@ function __detabaseMain() {
   function leaveIfGone() {
     if (activeSubject && !byId(store.subjects, activeSubject)) activeSubject = null;
     if (activePsPage && !psPageById(activePsPage)) activePsPage = null;
+    if (activeSummary && !summaryById(activeSummary)) activeSummary = null;
     if (isHiddenRef({ lvl: "s", id: "f:" + lastEtiFolder })) {
       var vis = builtinFolderIds().filter(function (f) { return !isHiddenRef({ lvl: "s", id: "f:" + f }); })[0];
       if (vis) { lastEtiFolder = vis; activeGroup = effGroupOfBuiltin(vis); }
@@ -13950,7 +14327,7 @@ function __detabaseMain() {
 
   // ---- management bar above a subject page: the open Subject and Tab ----
   function currentEtiRefs() {
-    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage) return null;
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary) return null;
     if (activeSubject) {
       var sid = activeSubject, tabs = store.tabs.filter(function (t) { return t.subject === "s:" + sid; });
       var cur = byId(tabs, (store.ui.cpTab || {})[sid]) || tabs[0];
@@ -14474,6 +14851,15 @@ function __detabaseMain() {
   try { renderLibraryEti(); } catch (e) { if (window.console) console.error("renderLibraryEti:", e); }
   if ($("psNewBtn")) $("psNewBtn").addEventListener("click", function () { newProblemPage(); });
   if ($("psBack")) $("psBack").addEventListener("click", openMiningScreen);
+  if ($("sumBack")) $("sumBack").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) openSubjectRef(sm.subject); });
+  if ($("sumTitle")) $("sumTitle").addEventListener("click", sumRename);
+  if ($("sumRename")) $("sumRename").addEventListener("click", sumRename);
+  if ($("sumDelete")) $("sumDelete").addEventListener("click", sumDelete);
+  if ($("sumMore")) $("sumMore").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) sumPickStart(sm.subject, sm.id); });
+  if ($("sumClip")) $("sumClip").addEventListener("click", function () {
+    var sm = summaryById(activeSummary); if (!sm || !sm.items.length) return;
+    chooseBoardAndMine(sm.items.slice(), { column: true });   // one under another, in the summary's order
+  });
   if ($("psTitle")) $("psTitle").addEventListener("click", function () { if (activePsPage) openConceptsPopup({ lvl: "p", id: activePsPage }); });
   if ($("psSplit")) $("psSplit").addEventListener("click", function () {
     var pg = psPageById(activePsPage); if (!pg) return;
@@ -14499,6 +14885,8 @@ function __detabaseMain() {
     openMiningScreen();
   } else if (psPageById(initial)) {
     selectPsPage(initial);
+  } else if (summaryById(initial)) {
+    openSummary(initial);
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
