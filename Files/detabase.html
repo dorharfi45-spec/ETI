@@ -3452,7 +3452,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B76</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B77</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -11407,15 +11407,19 @@ function __detabaseMain() {
   }
   // where does this material go? always resolves to a CARD, creating whatever is missing on the way
   // onCancel fires if any step is backed out of, so whoever started this can put things back
-  function pickLibTarget(start, onCard, onCancel) {
+  //   opts: { upTo: "s" | "t" | "c" (default) — the level picked, title: what the steps are headed with }
+  function pickLibTarget(start, onCard, onCancel, opts) {
     libEnsure();
-    var t = {};
+    opts = opts || {};
+    var upTo = opts.upTo || "c", t = {};
+    function head(step) { return opts.title ? opts.title + " · " + step : step; }
+    function done(id) { saveStore(); onCard(id); }
     function stepSubject() {
-      pickOrNew("Subject", "Which subject does this belong to?", allSubjectKeys().map(function (k) {
+      pickOrNew(head("Subject"), "Which subject does this belong to?", allSubjectKeys().map(function (k) {
         var g = k.slice(0, 2) === "f:" ? effGroupOfBuiltin(k.slice(2)) : effGroupOfSubject(byId(store.subjects, k.slice(2)) || {});
         return { id: k, name: subjectName(k), group: groupName(g) };
       }), "New subject name…", function (id, nn) {
-        if (id) { t.subject = id; noteSubject(id); stepTab(); return; }
+        if (id) { t.subject = id; noteSubject(id); if (upTo === "s") done(id); else stepTab(); return; }
         pickOrNew("Where to put “" + nn + "”", "Pick the sidebar group for the new subject.",
           allGroupIds().map(function (g) { return { id: g, name: groupName(g) }; }), "New group name…", function (gid, gnn) {
             if (!gid) { gid = uid("g_"); store.groups.push({ id: gid, name: gnn }); }
@@ -11424,7 +11428,7 @@ function __detabaseMain() {
             setGroupClosed(gid, false);
             t.subject = "s:" + sub.id;
             noteSubject(t.subject);
-            stepTab();
+            if (upTo === "s") done(t.subject); else stepTab();
           }, onCancel);
       }, onCancel);
     }
@@ -11433,24 +11437,34 @@ function __detabaseMain() {
       var tabs = libTabs(t.subject), open = start && start.tab, first = open ? tabs.filter(function (x) { return x.id === open; }) : [];
       if (first.length) tabs = first.map(function (x) { return { id: x.id, name: x.name, group: "The tab you are on" }; })
         .concat(tabs.filter(function (x) { return x.id !== open; }).map(function (x) { return { id: x.id, name: x.name, group: "Other tabs" }; }));
-      pickOrNew("Tab", "In " + subjectName(t.subject) + " — which tab? (the buttons across the top)", tabs, "New tab name…", function (id, nn) {
+      pickOrNew(head("Tab"), "In " + subjectName(t.subject) + " — which tab?", tabs, "New tab name…", function (id, nn) {
         if (id) t.tab = id;
-        else { t.tab = uid("ut_"); store.tabs.push({ id: t.tab, subject: t.subject, name: nn, created: Date.now() }); }
-        stepCard();
+        else { t.tab = uid("ut_"); store.tabs.push({ id: t.tab, subject: t.subject, name: nn, created: Date.now() }); libMove({ lvl: "t", id: t.tab }, t.subject, null); }
+        if (upTo === "t") done(t.tab); else stepCard();
       }, onCancel);
     }
     function stepCard() {
-      pickOrNew("Card", "In " + tabLabel(t.tab) + " — which card?", libCards(t.tab), "New card name…", function (id, nn) {
+      pickOrNew(head("Card"), "In " + tabLabel(t.tab) + " — which card?", libCards(t.tab), "New card name…", function (id, nn) {
         if (id) t.card = id;
-        else { t.card = uid("uc_"); store.cards.push({ id: t.card, tab: t.tab, name: nn, created: Date.now() }); }
-        saveStore();
-        onCard(t.card);
+        else { t.card = uid("uc_"); store.cards.push({ id: t.card, tab: t.tab, name: nn, created: Date.now() }); libMove({ lvl: "c", id: t.card }, t.tab, null); }
+        done(t.card);
       }, onCancel);
     }
     if (start && start.lvl === "c") { onCard(start.id); return; }
     if (start && start.lvl === "t") { t.tab = start.id; stepCard(); return; }
     if (start && start.lvl === "s") { t.subject = start.id; stepTab(); return; }
     stepSubject();
+  }
+  // a tab to another subject, a card to another tab, an element to another card — without dragging
+  function libMoveTo(ref) {
+    var name = refName(ref), up = PARENT_LVL[ref.lvl];
+    if (!up || !libPlace(ref)) return;
+    pickLibTarget(null, function (pid) {
+      libMoved("Moved “" + name + "” to " + refName({ lvl: up, id: pid }), function () {
+        if (libPlace(ref).p === pid) return false;   // it is there already
+        libMove(ref, pid, null);
+      });
+    }, null, { upTo: up, title: "Move “" + name + "” to" });
   }
   // a crop, as the single item of its own canvas doc — an element IS its crop
   function clipToItem(clip) {
@@ -15035,6 +15049,7 @@ function __detabaseMain() {
     libMenu(anchor, [
       { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
       { label: "✎ Rename", run: function () { libRename(ref); } },
+      (ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e") ? { label: "↪ Move to…", run: function () { libMoveTo(ref); } } : null,
       addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
       ref.lvl === "s" ? { label: "🧩 New method here", run: function () { newProblemPage(ref.id); } } : null,
       (ref.lvl === "e" || ref.lvl === "p") ? { label: "✎ Edit content", run: function () { openDocEditor(ref.id); } } : null,
