@@ -165,7 +165,6 @@
   .pp-hit button { padding: 5px 10px; font-size: .78rem; border-radius: 7px; flex-shrink: 0; }
   .pp-hit .hit-add { background: var(--accent); border-color: var(--accent); color: #fff; }
   .pp-hit .hit-add.on { background: var(--tan); border-color: var(--tan); }
-  .pp-hit[draggable="true"] { cursor: grab; }
   .pp-hit .hit-star {
     font-size: .95rem; padding: 2px 6px; align-self: flex-start;
     border: 1px solid var(--border); background: var(--bg); color: var(--text-muted);
@@ -629,6 +628,8 @@
   .lw-left { font-size: .8rem; margin: 8px 0 0; }
   .lib-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 7000; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: .9rem; box-shadow: var(--shadow); transition: opacity .5s; }
   .lib-toast.out { opacity: 0; }
+  .lib-toast.act { display: flex; align-items: center; gap: 14px; pointer-events: auto; padding-right: 8px; }
+  .lib-toast-act { min-height: 40px; padding: 0 14px; border: 0; border-radius: var(--r-sm); background: color-mix(in srgb, #fff 16%, transparent); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
   @media (max-width: 560px) { .lw-kinds { grid-template-columns: 1fr; } }
 
   /* ---- ETI Mining screen: same component, bigger ---- */
@@ -786,12 +787,17 @@
   .sum-item, .ps-stage { position: relative; }
   .reordering .sum-item-body, .reordering .ps-stage > .ps-crop, .reordering .ps-stage > .ps-uses { display: none; }
   .reordering .sum-item-head, .reordering .ps-stage-head { margin-bottom: 0; }
-  .ps-dragging { z-index: 60; opacity: .97; box-shadow: 0 14px 34px rgba(0, 0, 0, .28); outline: 2px solid var(--accent); outline-offset: 1px; }
-  .ps-dragging .ps-grip { cursor: grabbing; color: var(--accent); }
-  .drop-before::before, .reordering.drop-end > :last-child::after { content: ""; position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: var(--accent); }
-  .drop-before::before { top: -9px; }
-  .reordering.drop-end > :last-child::after { bottom: -9px; }
-  .reordering { user-select: none; -webkit-user-select: none; }
+  /* ---- dragging (one engine): the lifted copy, the gap where it lands, a target that will take it ---- */
+  .dnd-ghost { position: fixed; left: 0; top: 0; z-index: 9000; pointer-events: none; max-height: 168px; overflow: hidden; transform-origin: 0 0;
+    border-radius: var(--r-md); background: var(--bg); box-shadow: 0 18px 44px rgba(15, 23, 42, .3); outline: 2px solid var(--accent); opacity: .97; }
+  .dnd-ghost > * { margin: 0 !important; max-width: 100%; }
+  .dnd-ph { box-sizing: border-box; margin: 6px 0; border: 2px dashed color-mix(in srgb, var(--accent) 60%, transparent); border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .sp-cards > .dnd-ph { grid-column: 1 / -1; margin: 16px 0; }
+  .dnd-hot { outline: 2px solid var(--accent) !important; outline-offset: 2px; background: color-mix(in srgb, var(--accent) 10%, var(--bg)) !important; }
+  body.dnd-active, body.dnd-active * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
+  .dnd-handle, .sp-tab-head, .ue-head, .tree-ghead, .tree-kids > button, #topbar > button, .ps-stage-head, .sum-item-head, .pl-tpl-item, .pl-goal-group, .pl-fmt-block-row {
+    -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
   /* picking: the whole concept block is the target, ringed when it is in */
   .pick-host { position: relative; }
   .pick-ov { position: absolute; inset: 0; z-index: 15;   /* above a card's content, below the sticky tab bar (20) */ border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: var(--r-md);
@@ -1341,14 +1347,14 @@
   .tree-ghead .del-x { opacity: 0; font-weight: 700; padding: 0 4px; border-radius: 5px; flex-shrink: 0; }
   .tree-ghead:hover .del-x { opacity: .5; }
   .tree-ghead .del-x:hover { opacity: 1; background: rgba(0,0,0,.15); }
-  .tree-ghead.drop-hot { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); background: var(--surface-2); }
+  .tree-ghead.dnd-hot { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); background: var(--surface-2); }
   .tree-kids {
     padding: 6px 0 8px 14px; margin-left: 5px;
     border-left: 1px solid var(--border);
     display: flex; flex-direction: column; gap: 5px;
   }
   .tree-group:not(.open) > .tree-kids { display: none; }
-  .tree-kids.drop-hot { border-left-color: var(--accent); }
+  .tree-kids.dnd-hot { border-left-color: var(--accent); }
   .tree-kids .add-btn { padding: 6px 12px; font-size: .8rem; }
   .tree-empty { font-size: .74rem; color: var(--text-muted); padding: 2px 4px 4px; }
   @media (max-width: 760px) {
@@ -1424,13 +1430,8 @@
   }
 
   /* ---- drag-to-rearrange ---- */
-  #topbar > button, #customSubjectList > button, .tree-kids > button[draggable="true"] { cursor: grab; }
+  #topbar > button, #customSubjectList > button, .tree-kids > button[data-treekey], .tree-ghead, .sp-tab-head, .ue-head { cursor: grab; }
   #topbar > button:active, #customSubjectList > button:active, .tree-kids > button:active { cursor: grabbing; }
-  .tree-ghead[draggable="true"]:active { cursor: grabbing; }
-  .subject > summary[draggable="true"] { cursor: grab; }
-  .grid2 > .card > h4[draggable="true"] { cursor: grab; }
-  .drag-ghost { opacity: .35; }
-  .drag-ghost.subject, .drag-ghost.card { border-color: var(--accent); }
 
   /* ---- collapsible subject containers ---- */
   .subject {
@@ -1571,7 +1572,6 @@
   .pl-all-goals-btn { margin-top: 10px; width: 100%; font-size: .76rem; font-weight: 650; color: var(--text-secondary); background: transparent; border: 1px dashed var(--border-strong); border-radius: 9px; padding: 7px 8px; cursor: pointer; }
   .pl-all-goals-btn:hover { color: var(--accent); border-color: var(--accent); }
   .pl-goal-group { display: flex; flex-direction: column; gap: 6px; }
-  .pl-goal-group.drag-ghost { opacity: .4; }
   .pl-goal-card {
     border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1);
     padding: 10px 11px; cursor: pointer;
@@ -1994,7 +1994,7 @@
   .pl-fmt-kind { flex-shrink: 0; font-size: .8rem; width: 14px; text-align: center; }
   .pl-fmt-kind.event { color: var(--angle); }
   .pl-fmt-kind.session { color: var(--accent); }
-  .pl-fmt-block-row[draggable="true"] { cursor: grab; }
+  .pl-fmt-block-row { cursor: grab; }
   .fb-time-preview { flex-shrink: 0; width: 54px; font-size: .74rem; color: var(--text-muted); text-align: right; }
   .fb-type { flex-shrink: 0; max-width: 90px; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pl-fmt-addrow { display: flex; gap: 8px; margin-top: 6px; }
@@ -3452,7 +3452,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B75.1</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B76</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5831,9 +5831,9 @@ function __detabaseMain() {
       var fid = key.slice(2);
       var b = folderButtons.filter(function (x) { return x.getAttribute("data-folder") === fid; })[0];
       if (!b) return null;
-      b.draggable = true;
       b.style.display = "";
       b.dataset.treekey = key;
+      spTabInto(b, key);
       // selected only while that subject is what is on screen — not on the main page or a method
       b.classList.toggle("on", activeTop === "eti" && !activeSubject && !viewingProblem && !miningScreen && !activePsPage && lastEtiFolder === fid);
       return b;
@@ -5844,7 +5844,7 @@ function __detabaseMain() {
     var btn = document.createElement("button");
     btn.setAttribute("data-subject", s.id);
     btn.dataset.treekey = key;
-    btn.draggable = true;
+    spTabInto(btn, key);
     btn.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name);
     btn.classList.toggle("on", s.id === activeSubject);
     btn.addEventListener("click", function () { selectSubject(s.id); });
@@ -5852,39 +5852,26 @@ function __detabaseMain() {
     return btn;
   }
 
-  var treeDrag = null;
-  function clearDropHot() {
-    Array.prototype.slice.call(document.querySelectorAll(".drop-hot")).forEach(function (el) { el.classList.remove("drop-hot"); });
+  // a tab dropped on a subject in the sidebar moves to that subject, at the end
+  function spTabInto(btn, key) {
+    dndInto(btn, { accepts: ["tab"], canDrop: function (drag) { var pl = libPlace({ lvl: "t", id: drag.id }); return !!pl && pl.p !== key; },
+      onDrop: function (drag) { libMoved("Moved “" + tabLabel(drag.id) + "” to " + subjectName(key), function () { libMove({ lvl: "t", id: drag.id }, key, null); }); } });
   }
-  function assignSubjectToGroup(key, gid) {
-    if (!groupExists(gid)) return;
-    if (key.slice(0, 2) === "f:") {
-      store.builtinGroup = store.builtinGroup || {};
-      store.builtinGroup[key.slice(2)] = gid;
-    } else {
-      var s = store.subjects.filter(function (x) { return x.id === key.slice(2); })[0];
-      if (s) s.group = gid;
-    }
+  // a subject into a group, at `index` among its subjects (the end when null)
+  function subjectToGroup(key, gid, index) {
+    if (!groupExists(gid)) return false;
+    if (key.slice(0, 2) === "f:") { store.builtinGroup = store.builtinGroup || {}; store.builtinGroup[key.slice(2)] = gid; }
+    else { var s = byId(store.subjects, key.slice(2)); if (s) s.group = gid; }
     store.order.etiKids = store.order.etiKids || {};
     everyGroupId().forEach(function (id) {
       if (store.order.etiKids[id]) store.order.etiKids[id] = store.order.etiKids[id].filter(function (k) { return k !== key; });
     });
-    store.order.etiKids[gid] = groupSubjectKeys(gid).filter(function (k) { return k !== key; }).concat([key]);
+    var keys = groupSubjectKeys(gid).filter(function (k) { return k !== key; });
+    if (index == null || index > keys.length) index = keys.length;
+    keys.splice(index, 0, key);
+    store.order.etiKids[gid] = keys;
     setGroupClosed(gid, false);
-    saveStore();
-    if (!activeSubject && key === "f:" + lastEtiFolder) { activeGroup = gid; store.ui.group = gid; }
-    if (activeSubject && key === "s:" + activeSubject) { activeGroup = gid; store.ui.group = gid; }
-    saveStore();
-    renderEtiTree();
-    applyView();
-  }
-  function reorderGroups(draggedId, beforeId) {
-    var ids = allGroupIds().filter(function (i) { return i !== draggedId; });
-    var at = ids.indexOf(beforeId);
-    if (at < 0) ids.push(draggedId); else ids.splice(at, 0, draggedId);
-    store.order.etiGroups = ids;
-    saveStore();
-    renderEtiTree();
+    if ((!activeSubject && key === "f:" + lastEtiFolder) || (activeSubject && key === "s:" + activeSubject)) { activeGroup = gid; store.ui.group = gid; }
   }
 
   function renderEtiTree() {
@@ -5902,7 +5889,6 @@ function __detabaseMain() {
       head.className = "tree-ghead" + (gid === activeGroup ? " on" : "");
       head.setAttribute("role", "button");
       head.tabIndex = 0;
-      head.draggable = true;
       head.innerHTML = '<span class="caret">▶</span><span class="ficon">' + groupIcon(gid) + '</span>'
         + '<span class="gname">' + escapeHtml(groupName(gid)) + '</span>'
         + '<span class="gcount">' + keys.length + '</span>';
@@ -5915,12 +5901,7 @@ function __detabaseMain() {
       head.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); head.click(); }
       });
-      head.addEventListener("dragstart", function (e) {
-        treeDrag = { type: "group", id: gid };
-        try { e.dataTransfer.setData("text/plain", "group:" + gid); } catch (_) {}
-        e.dataTransfer.effectAllowed = "move";
-      });
-      head.addEventListener("dragend", function () { treeDrag = null; clearDropHot(); });
+      dndInto(head, { accepts: ["subject"], onDrop: function (drag) { libMoved("Moved “" + subjectName(drag.id) + "” to " + groupName(gid), function () { return subjectToGroup(drag.id, gid, null); }); } });
       wrap.appendChild(head);
 
       var kids = document.createElement("div");
@@ -5942,40 +5923,21 @@ function __detabaseMain() {
       });
       kids.appendChild(add);
 
-      [head, kids].forEach(function (zone) {
-        zone.addEventListener("dragover", function (e) {
-          if (!treeDrag) return;
-          if (treeDrag.type === "group" && treeDrag.id === gid) return;
-          e.preventDefault();
-          e.dataTransfer.dropEffect = "move";
-          zone.classList.add("drop-hot");
-        });
-        zone.addEventListener("dragleave", function () { zone.classList.remove("drop-hot"); });
-        zone.addEventListener("drop", function (e) {
-          e.preventDefault(); e.stopPropagation();
-          zone.classList.remove("drop-hot");
-          if (!treeDrag) return;
-          if (treeDrag.type === "group") { if (treeDrag.id !== gid) reorderGroups(treeDrag.id, gid); }
-          else if (treeDrag.type === "subject") { assignSubjectToGroup(treeDrag.key, gid); }
-          treeDrag = null;
-        });
-      });
+      dndList(kids, { type: "subject", item: "button[data-treekey]", id: function (el) { return el.dataset.treekey; },
+        onDrop: function (drag, index) { libMoved("Moved “" + subjectName(drag.id) + "”", function () { return subjectToGroup(drag.id, gid, index); }); } });
 
       wrap.appendChild(kids);
       tree.appendChild(wrap);
     });
 
-    Array.prototype.slice.call(tree.querySelectorAll('.tree-kids > button[data-treekey]')).forEach(function (b) {
-      if (b._treeDnd) return;         // built-in button nodes are reused across renders
-      b._treeDnd = 1;
-      b.addEventListener("dragstart", function (e) {
-        treeDrag = { type: "subject", key: b.dataset.treekey };
-        try { e.dataTransfer.setData("text/plain", b.dataset.treekey); } catch (_) {}
-        e.dataTransfer.effectAllowed = "move";
-        b.classList.add("drag-ghost");
-      });
-      b.addEventListener("dragend", function () { b.classList.remove("drag-ghost"); treeDrag = null; clearDropHot(); });
-    });
+    dndList(tree, { type: "group", item: ".tree-group", handle: ".tree-ghead", id: function (el) { return el.dataset.group; },
+      onDrop: function (drag, index) {
+        libMoved("Moved the group “" + groupName(drag.id) + "”", function () {
+          var ids = allGroupIds().filter(function (x) { return x !== drag.id; });
+          ids.splice(index, 0, drag.id);
+          store.order.etiGroups = ids;
+        });
+      } });
   }
   // keep old call sites working
   function renderGroupbar() { renderEtiTree(); }
@@ -6035,7 +5997,6 @@ function __detabaseMain() {
       var b = document.createElement("button");
       b.setAttribute("data-top", f.id);
       b.setAttribute("data-custom", "1");
-      b.draggable = true;
       b.innerHTML = '<span class="ficon">📁</span>' + escapeHtml(f.name) + '<span class="del-x" title="delete folder">✕</span>';
       b.addEventListener("click", function (e) {
         if (e.target.classList.contains("del-x")) { e.stopPropagation(); delFolder(f.id); return; }
@@ -6053,7 +6014,6 @@ function __detabaseMain() {
     subjectsFor(activeTop).forEach(function (s) {
       var b = document.createElement("button");
       b.setAttribute("data-subject", s.id);
-      b.draggable = true;
       b.innerHTML = '<span class="ficon">📄</span>' + escapeHtml(s.name);
       b.classList.toggle("on", s.id === activeSubject);
       b.addEventListener("click", function () { selectSubject(s.id); });
@@ -6268,6 +6228,7 @@ function __detabaseMain() {
              from: row.classList.contains("sw-open") ? -SW_W : 0, claimed: false };
     });
     row.addEventListener("pointermove", function (e) {
+      if (dndCur) { st = null; return; }       // the row was lifted to be dragged, not swiped
       if (!st || st.id !== e.pointerId) return;
       var dx = e.clientX - st.x, dy = e.clientY - st.y;
       if (!st.claimed) {
@@ -7102,7 +7063,7 @@ function __detabaseMain() {
     if (!store.planner.templates.length) { box.innerHTML = '<div class="pl-empty-hint">No session types yet.</div>'; return; }
     var html = "";
     store.planner.templates.forEach(function (t) {
-      html += '<div class="pl-tpl-item" draggable="true" data-id="' + t.id + '">' +
+      html += '<div class="pl-tpl-item" data-id="' + t.id + '">' +
         '<span class="pl-swatch" style="background:' + (t.color || "var(--accent)") + '"></span>' +
         '<span class="pl-t-name">' + escapeHtml(t.title) + '</span>' +
         '<span class="pl-tpl-actions">' +
@@ -7212,7 +7173,7 @@ function __detabaseMain() {
     if (!store.planner.dayFormats.length) { box.innerHTML = '<div class="pl-empty-hint">No day formats yet.</div>'; return; }
     var html = "";
     store.planner.dayFormats.forEach(function (f) {
-      html += '<div class="pl-tpl-item" draggable="true" data-id="' + f.id + '">' +
+      html += '<div class="pl-tpl-item" data-id="' + f.id + '">' +
         '<span class="pl-t-name">' + escapeHtml(f.title) + '</span>' +
         '<span class="pl-tpl-actions">' +
         '<button type="button" class="pl-fmt-apply" data-id="' + f.id + '" title="apply to selected day">＋</button>' +
@@ -7645,7 +7606,7 @@ function __detabaseMain() {
         return (p && goalMode(p) === "long")
           ? '<span class="plg-dot" style="background:' + (p.color || "var(--accent)") + '" title="' + escapeHtml(p.title) + '"></span>' : '';
       }).join('');
-      html += '<div class="pl-goal-group" draggable="true" data-id="' + g.id + '">' + goalCardHtml(g, { tags: tags }) + '</div>';
+      html += '<div class="pl-goal-group" data-id="' + g.id + '">' + goalCardHtml(g, { tags: tags }) + '</div>';
     });
 
     box.innerHTML = html;
@@ -7796,7 +7757,7 @@ function __detabaseMain() {
     var html = "";
     blocks.forEach(function (b) {
       if (b.kind === "event") {
-        html += '<div class="pl-fmt-block-row" draggable="true" data-id="' + b.id + '">' +
+        html += '<div class="pl-fmt-block-row" data-id="' + b.id + '">' +
           '<span class="pl-fmt-kind event">◆</span>' +
           '<input type="text" class="fb-title" placeholder="Title" value="' + escapeHtml(b.title || "") + '">' +
           '<input type="time" class="fb-time" value="' + (b.time || "09:00") + '">' +
@@ -7804,7 +7765,7 @@ function __detabaseMain() {
       } else {
         var dayTag = cursor >= 1440 ? (' +' + Math.floor(cursor / 1440) + 'd') : '';
         var tyName = b.templateId ? ((store.planner.templates.filter(function (x) { return x.id === b.templateId; })[0] || {}).title || "") : "";
-        html += '<div class="pl-fmt-block-row" draggable="true" data-id="' + b.id + '">' +
+        html += '<div class="pl-fmt-block-row" data-id="' + b.id + '">' +
           '<span class="pl-fmt-kind session">▮</span>' +
           '<span class="fb-time-preview" title="computed start once applied">' + minToTime(cursor) + dayTag + '</span>' +
           (tyName ? '<span class="fb-type" title="session type">' + escapeHtml(tyName) + '</span>' : '') +
@@ -10605,6 +10566,8 @@ function __detabaseMain() {
       var home = BI.tabs[c.origin].pane;
       c.nodes.forEach(function (n) {
         Array.prototype.forEach.call(n.querySelectorAll(".ue-extra"), function (x) { x.remove(); });
+        Array.prototype.forEach.call(n.querySelectorAll(".dnd-handle"), function (x) { x.classList.remove("dnd-handle"); });
+        n.classList.remove("dnd-handle");
         home.appendChild(n);
       });
     });
@@ -10615,6 +10578,8 @@ function __detabaseMain() {
       var box = libCardBox(uc);
       box.classList.add("sp-card");
       box.setAttribute("data-card", uc.id);
+      box.querySelector(":scope > h4").classList.add("dnd-handle");
+      spElementsDnd(box, uc.id);
       return box;
     }
     var c = BI.cards[ref.id];
@@ -10622,6 +10587,7 @@ function __detabaseMain() {
     slot.className = "sp-card bi" + (c.compact ? " compact" : "");
     slot.setAttribute("data-card", ref.id);
     c.nodes.forEach(function (n) { slot.appendChild(n); });
+    (cardTitleEl(c.nodes[0]) || c.nodes[0]).classList.add("dnd-handle");
     // elements saved into a built-in card: inside it, at its bottom
     var els = libElements(ref.id);
     if (els.length) {
@@ -10631,8 +10597,18 @@ function __detabaseMain() {
       var last = c.nodes[c.nodes.length - 1];
       var inside = last.matches(".card, .tool") ? last : last.matches(".subject") ? (last.querySelector(".subject-body") || last) : null;
       (inside || slot).appendChild(extra);
+      spElementsDnd(extra, ref.id);
     }
+    // an element dropped anywhere on the card goes in at its end
+    dndInto(slot, { accepts: ["element"], onDrop: function (drag) { elementTo(drag, ref.id, null); } });
     return slot;
+  }
+  function elementTo(drag, cardId, index) {
+    libMoved("Moved “" + refName({ lvl: "e", id: drag.id }) + "” to " + cardLabel(cardId), function () { libMove({ lvl: "e", id: drag.id }, cardId, index); });
+  }
+  function spElementsDnd(listEl, cardId) {
+    dndList(listEl, { type: "element", item: ".ue-block", handle: ".ue-head", id: function (el) { return el.getAttribute("data-ue"); },
+      onDrop: function (drag, index) { elementTo(drag, cardId, index); } });
   }
   function spTabEl(tref) {
     var closed = !!(store.ui.spClosed || {})[tref.id];
@@ -10654,7 +10630,12 @@ function __detabaseMain() {
       renderSubjectPage();
     });
     var list = sec.querySelector(".sp-cards");
+    function cardTo(drag, index) { libMoved("Moved “" + cardLabel(drag.id) + "” to " + tabLabel(tref.id), function () { libMove({ lvl: "c", id: drag.id }, tref.id, index); }); }
+    dndInto(head, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, null); } });   // onto the tab's title: at its end
     if (closed) return sec;            // a closed tab's blocks stay in the library
+    dndList(list, { type: "card", item: ".sp-card", axis: "grid", id: function (el) { return el.getAttribute("data-card"); },
+      handle: function (slot, t) { var h = t.closest(".dnd-handle"); return !!h && h.closest(".sp-card") === slot; },
+      onDrop: cardTo });
     if (!cards.length) list.innerHTML = '<p class="muted sp-empty">No cards in this tab yet.</p>';
     cards.forEach(function (c) { list.appendChild(spCardEl(c)); });
     return sec;
@@ -10680,6 +10661,8 @@ function __detabaseMain() {
     var tabs = libKids(sref);
     if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No tabs yet — tap “＋ Add concept” to crop the first one out of a document.</p>';
     tabs.forEach(function (t) { body.appendChild(spTabEl(t)); });
+    dndList(body, { type: "tab", item: ".sp-tab", handle: ".sp-tab-head", id: function (el) { return el.getAttribute("data-tab"); },
+      onDrop: function (drag, index) { libMoved("Moved “" + tabLabel(drag.id) + "”", function () { libMove({ lvl: "t", id: drag.id }, key, index); }); } });
     host.appendChild(body);
     // a custom subject's notes, under its material, while it has any
     if (key.slice(0, 2) === "s:") {
@@ -10921,85 +10904,248 @@ function __detabaseMain() {
     var tmp = sts[i]; sts[i] = sts[j]; sts[j] = tmp;
     psSaveBody(pg); psRender();
   }
-  // Drag a row by its grip to reorder a list — stages of a method, items of a summary.
-  // The row is NEVER moved in the page while the finger is down: moving the element that holds the
-  // pointer makes iPadOS drop the capture, which ended every drag after its first step. Instead it
-  // slides under the finger (a transform), a line shows where it will land, and the order is only
-  // rebuilt on release. While dragging, the list folds down to its titles so every place is in reach,
-  // and the page scrolls by itself near the top and bottom edges. (iPadOS never fires HTML5 drag
-  // events, hence pointer events and a grip of its own.) onDrop gets the rows in their new order.
-  function dragReorder(row, grip, onDrop) {
-    if (!grip) return;
-    var cls = row.classList[0];
-    grip.addEventListener("pointerdown", function (e) {
-      if (e.button > 0) return;
-      e.preventDefault();
-      var listEl = row.parentNode;
-      var all = Array.prototype.filter.call(listEl.children, function (n) { return n.classList.contains(cls); });
-      var others = all.filter(function (n) { return n !== row; });
-      // fold the list to its titles, keeping the dragged row where the finger is
-      var before = row.getBoundingClientRect().top;
-      listEl.classList.add("reordering");
-      window.scrollBy(0, row.getBoundingClientRect().top - before);
-      row.classList.add("ps-dragging");
-      var st = { id: e.pointerId, y0: e.clientY, sy0: window.scrollY, y: e.clientY, at: all.indexOf(row), done: false };
-      try { grip.setPointerCapture(e.pointerId); } catch (_) {}
-      function place() {
-        row.style.transform = "translateY(" + (st.y - st.y0 + (window.scrollY - st.sy0)).toFixed(1) + "px)";
-        var idx = 0;   // it lands after every other row whose middle is above the finger
-        others.forEach(function (n) { var r = n.getBoundingClientRect(); if (r.top + r.height / 2 < st.y) idx++; });
-        st.at = idx;
-        others.forEach(function (n, i) { n.classList.toggle("drop-before", i === idx); });
-        listEl.classList.toggle("drop-end", idx === others.length);
-      }
-      var edgeT = setInterval(function () {
-        var edge = 80, v = st.y < edge ? -16 : st.y > window.innerHeight - edge ? 16 : 0;
-        if (v) { window.scrollBy(0, v); place(); }
-      }, 30);
-      function move(ev) {
-        if (ev.pointerId !== st.id) return;
-        ev.preventDefault();
-        st.y = ev.clientY;
-        place();
-      }
-      function end(ev) {
-        if (st.done || (ev && ev.pointerId != null && ev.pointerId !== st.id)) return;
-        st.done = true;
-        clearInterval(edgeT);
-        grip.removeEventListener("pointermove", move);
-        grip.removeEventListener("pointerup", end);
-        grip.removeEventListener("pointercancel", end);
-        grip.removeEventListener("lostpointercapture", end);
-        try { grip.releasePointerCapture(st.id); } catch (_) {}
-        row.style.transform = "";
-        row.classList.remove("ps-dragging");
-        others.forEach(function (n) { n.classList.remove("drop-before"); });
-        listEl.classList.remove("reordering", "drop-end");
-        if (ev && ev.type === "pointercancel") { onDrop(all); return; }   // interrupted: nothing moves
-        var order = others.slice();
-        order.splice(st.at, 0, row);
-        onDrop(order);
-      }
-      grip.addEventListener("pointermove", move);
-      grip.addEventListener("pointerup", end);
-      grip.addEventListener("pointercancel", end);
-      grip.addEventListener("lostpointercapture", end);
-      place();
+  // ============================================================
+  // DRAG — one engine for every list in the app (touch, pencil and mouse alike)
+  // A long press (450 ms) on an item's handle lifts it; moving before that is an ordinary scroll or
+  // click, and a quick tap still does what a tap does. A list may also give its items a grip (⠿),
+  // which lifts at once. While lifted: a floating copy follows the pointer, the item's own place
+  // closes up, a gap opens where it would land, and lists scroll by themselves near their edges.
+  // Dropping on a list puts it there; dropping on a target (a closed tab, a card, a subject in the
+  // sidebar) puts it inside, at the end. Anywhere else, Escape, or a cancelled touch: it snaps back.
+  //
+  //   dndList(container, { type, item, handle?, grip?, accepts?, axis?, fold?, ghost?, id?, onDrop(drag, index, list) })
+  //     type     what this list's items are ("tab", "card", …) — what a drag from here carries
+  //     item     selector for the container's direct children that are items
+  //     handle   selector, or function (itemEl, targetEl) → bool: where a long press lifts it (default: anywhere)
+  //     grip     selector of a grip that lifts at once
+  //     accepts  types that may be dropped here (default [type])
+  //     axis     "y" (default), "x" or "grid" — how the landing place is read
+  //     fold     a class put on the list while dragging (long items fold to their titles)
+  //   dndInto(el, { accepts, onDrop(drag) })
+  //   drag = { type, id, el, list }
+  // Nothing is ever moved while the finger is down: the item is only hidden (moving the element a
+  // touch started on makes iPadOS drop the touch), and the change happens on release.
+  // ============================================================
+  var DND_HOLD = 450, DND_SLOP = 8, DND_EDGE = 64;
+  var dndPend = null, dndCur = null;
+  function dndList(container, opts) {
+    if (!container) return;
+    opts.accepts = opts.accepts || [opts.type];
+    opts.axis = opts.axis || "y";
+    container.__dndList = opts;
+    container.classList.add("dnd-list");
+  }
+  function dndInto(el, opts) {
+    if (!el) return;
+    el.__dndInto = opts;
+  }
+  function dndItemsOf(container, skip) {
+    var o = container.__dndList;
+    return Array.prototype.filter.call(container.children, function (n) {
+      return n !== skip && !n.classList.contains("dnd-ph") && n.matches(o.item) && n.style.display !== "none";
     });
   }
-  // order matters to the vine, so a method's stages can be dragged into order
-  function psStageDrag(row, pg) {
-    dragReorder(row, row.querySelector(".ps-grip"), function (rows) {
-      var ids = rows.map(function (n) { return n.getAttribute("data-st"); });
-      var body = psBody(pg.id), was = body.stages.slice();
-      var next = ids.map(function (id) { return was.filter(function (x) { return x.id === id; })[0]; }).filter(Boolean);
-      if (next.length === was.length) {
-        var changed = next.some(function (x, i) { return x !== was[i]; });
-        body.stages = next;
-        if (changed) { psSaveBody(pg); libToast("Stage order saved"); }
+  // the item a pointerdown would lift, and whether it lifts at once (grip) or on a long press
+  function dndFind(target) {
+    if (!target || !target.closest || target.closest("input, textarea, select, [contenteditable=true], .lib-dots, .used-badge, .no-drag")) return null;
+    for (var n = target; n && n !== document.body; n = n.parentNode) {
+      var list = n.parentNode && n.parentNode.__dndList;
+      if (!list || !n.matches || !n.matches(list.item)) continue;
+      if (list.grip) { var g = target.closest(list.grip); if (g && n.contains(g)) return { el: n, list: n.parentNode, now: true }; }
+      var h = list.handle;
+      var ok = !h ? true : typeof h === "function" ? h(n, target) : !!(target.closest(h) && n.contains(target.closest(h)));
+      if (ok && list.longPress !== false) return { el: n, list: n.parentNode, now: false };
+    }
+    return null;
+  }
+  document.addEventListener("pointerdown", function (e) {
+    if (dndCur || dndPend || (e.pointerType === "mouse" && e.button !== 0)) return;
+    var f = dndFind(e.target); if (!f) return;
+    dndPend = { f: f, id: e.pointerId, x: e.clientX, y: e.clientY, type: e.pointerType };
+    if (f.now) { e.preventDefault(); dndStart(e.clientX, e.clientY); return; }
+    dndPend.t = setTimeout(function () { if (dndPend) dndStart(dndPend.x, dndPend.y); }, DND_HOLD);
+  });
+  function dndPendEnd() { if (dndPend) { clearTimeout(dndPend.t); dndPend = null; } }
+  document.addEventListener("pointermove", function (e) {
+    if (dndCur) { if (e.pointerId === dndCur.pid) { e.preventDefault(); dndMove(e.clientX, e.clientY); } return; }
+    if (dndPend && e.pointerId === dndPend.id && Math.hypot(e.clientX - dndPend.x, e.clientY - dndPend.y) > DND_SLOP) dndPendEnd();   // a scroll, not a hold
+  }, { passive: false });
+  document.addEventListener("pointerup", function (e) {
+    if (dndCur && e.pointerId === dndCur.pid) { dndEnd(true); return; }
+    if (dndPend && e.pointerId === dndPend.id) dndPendEnd();
+  });
+  document.addEventListener("pointercancel", function (e) {
+    if (dndPend && e.pointerId === dndPend.id) dndPendEnd();
+    // a touch the browser gave up on may still be followed by its touch events — keep going on those
+    if (dndCur && e.pointerId === dndCur.pid && dndCur.ptype !== "touch") dndEnd(false);
+  });
+  // the touch itself: the page must not scroll under a lifted item, and its end is the drop
+  document.addEventListener("touchmove", function (e) {
+    if (!dndCur) return;
+    e.preventDefault();
+    var t = e.touches[0]; if (t) dndMove(t.clientX, t.clientY);
+  }, { passive: false });
+  document.addEventListener("touchend", function (e) { if (dndCur && dndCur.ptype === "touch" && !e.touches.length) dndEnd(true); });
+  document.addEventListener("touchcancel", function () { if (dndCur && dndCur.ptype === "touch") dndEnd(false); });
+  document.addEventListener("contextmenu", function (e) { if (dndPend || dndCur) e.preventDefault(); }, true);
+  document.addEventListener("keydown", function (e) { if (dndCur && e.key === "Escape") { e.preventDefault(); dndEnd(false); } });
+  function dndStart(x, y) {
+    var p = dndPend; dndPendEnd();
+    var el = p.f.el, list = p.f.list, o = list.__dndList;
+    var r = el.getBoundingClientRect();
+    var drag = { type: o.type, id: o.id ? o.id(el) : el.getAttribute("data-id"), el: el, list: list };
+    // the floating copy: the item, or just its title when the item is tall
+    var src = o.ghost ? o.ghost(el) : (r.height > 150 ? (el.querySelector(o.handleSel || "h4, header, .sp-tab-head, .ue-head") || el) : el);
+    var g = src.cloneNode(true);
+    g.removeAttribute("id");
+    Array.prototype.forEach.call(g.querySelectorAll("[id]"), function (n) { n.removeAttribute("id"); });
+    var gw = Math.min(r.width, 520);
+    var wrap = document.createElement("div");
+    wrap.className = "dnd-ghost";
+    wrap.style.width = gw + "px";
+    wrap.appendChild(g);
+    document.body.appendChild(wrap);
+    var ph = document.createElement("div");
+    ph.className = "dnd-ph";
+    ph.style.height = Math.max(36, Math.min(r.height, 72)) + "px";
+    if (o.axis === "x") { ph.style.width = Math.max(40, Math.min(r.width, 160)) + "px"; ph.style.height = r.height + "px"; }
+    dndCur = { drag: drag, pid: p.id, ptype: p.type, x: x, y: y, dx: Math.min(x - r.left, gw - 20), dy: Math.min(y - r.top, 40),
+               ghost: wrap, ph: ph, target: null, index: -1, hot: null, origin: dndItemsOf(list, null).indexOf(el) };
+    if (o.fold) list.classList.add(o.fold);
+    document.body.classList.add("dnd-active");
+    try { window.getSelection().removeAllRanges(); } catch (_) {}
+    el.classList.add("dnd-src");
+    el.style.display = "none";            // its place closes up; it is only hidden, never moved
+    if (o.fold) {                        // folded titles: keep the gap under the finger
+      list.insertBefore(ph, dndItemsOf(list, el)[dndCur.origin] || null);
+      window.scrollBy(0, ph.getBoundingClientRect().top - (y - 20));
+    }
+    dndCur.scrollT = setInterval(dndAutoScroll, 16);
+    dndMove(x, y);
+  }
+  function dndAccepts(o, drag) { return o.accepts.indexOf(drag.type) >= 0 && (!o.canDrop || o.canDrop(drag)); }
+  function dndMove(x, y) {
+    var c = dndCur; if (!c) return;
+    c.x = x; c.y = y;
+    c.ghost.style.transform = "translate(" + (x - c.dx) + "px," + (y - c.dy) + "px) scale(1.03)";
+    var hit = document.elementFromPoint(x, y), list = null, into = null;
+    for (var n = hit; n && n !== document; n = n.parentNode) {
+      if (n === c.drag.el) break;
+      if (n.__dndInto && dndAccepts(n.__dndInto, c.drag)) { into = n; break; }
+      if (n.__dndList && dndAccepts(n.__dndList, c.drag)) { list = n; break; }
+    }
+    if (c.hot !== into) { if (c.hot) c.hot.classList.remove("dnd-hot"); c.hot = into; if (into) into.classList.add("dnd-hot"); }
+    if (into || !list) { if (c.ph.parentNode) c.ph.remove(); c.target = into; c.index = -1; return; }
+    var o = list.__dndList, items = dndItemsOf(list, c.drag.el), idx = items.length;
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i].getBoundingClientRect();
+      var before = o.axis === "x" ? x < r.left + r.width / 2
+        : o.axis === "grid" ? (y < r.top || (y <= r.bottom && x < r.left + r.width / 2))
+        : y < r.top + r.height / 2;
+      if (before) { idx = i; break; }
+    }
+    c.target = list;
+    if (c.index === idx && c.ph.parentNode === list) return;
+    c.index = idx;
+    var ref = items[idx] || null;
+    if (!ref) { var last = items[items.length - 1]; ref = last ? last.nextSibling : null; }
+    list.insertBefore(c.ph, ref);
+  }
+  // near the edge of the scrolling list under the pointer — or of the window — keep scrolling
+  function dndAutoScroll() {
+    var c = dndCur; if (!c) return;
+    var v = function (pos, lo, hi) { return pos < lo + DND_EDGE ? -Math.ceil((lo + DND_EDGE - pos) / 4) : pos > hi - DND_EDGE ? Math.ceil((pos - hi + DND_EDGE) / 4) : 0; };
+    var moved = false;
+    for (var n = document.elementFromPoint(c.x, c.y); n && n !== document.body && n !== document.documentElement; n = n.parentNode) {
+      if (n.scrollHeight > n.clientHeight + 2 && /(auto|scroll)/.test(getComputedStyle(n).overflowY)) {
+        var r = n.getBoundingClientRect(), d = v(c.y, r.top, r.bottom);
+        if (d) { var before = n.scrollTop; n.scrollTop += d; moved = n.scrollTop !== before; }
+        break;
       }
-      psRender();
+    }
+    if (!moved) { var w = v(c.y, 0, window.innerHeight); if (w) { var b = window.scrollY; window.scrollBy(0, w); moved = window.scrollY !== b; } }
+    if (moved) dndMove(c.x, c.y);
+  }
+  // after a drag, the click the release would make is not a tap
+  function dndEatClick(x, y) {
+    function eat(e) {
+      if (Math.hypot(e.clientX - x, e.clientY - y) > 30) return;   // only the click the release itself makes
+      e.stopPropagation(); e.preventDefault();
+      window.removeEventListener("click", eat, true);
+    }
+    window.addEventListener("click", eat, true);
+    setTimeout(function () { window.removeEventListener("click", eat, true); }, 400);
+  }
+  function dndEnd(drop) {
+    var c = dndCur; if (!c) return;
+    dndCur = null;
+    clearInterval(c.scrollT);
+    var o = c.drag.list.__dndList;
+    if (o.fold) c.drag.list.classList.remove(o.fold);
+    c.ghost.remove();
+    if (c.ph.parentNode) c.ph.remove();
+    if (c.hot) c.hot.classList.remove("dnd-hot");
+    c.drag.el.style.display = "";
+    c.drag.el.classList.remove("dnd-src");
+    document.body.classList.remove("dnd-active");
+    dndEatClick(c.x, c.y);
+    if (!drop || !c.target) return;
+    try {
+      if (c.target.__dndInto) c.target.__dndInto.onDrop(c.drag);
+      else {
+        if (c.target === c.drag.list && c.index === c.origin) return;    // put back where it was
+        c.target.__dndList.onDrop(c.drag, c.index, c.target);
+      }
+    } catch (e) { if (window.console) console.error("drop:", e); }
+  }
+
+  // ---- undo: what a move changed, put back ----
+  // Every move touches only the library's shape, so a copy of those parts of the store is the undo.
+  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "examples", "order", "subjects", "builtinGroup", "summaries"];
+  function shapeSnap() {
+    var s = {};
+    UNDO_KEYS.forEach(function (k) { s[k] = store[k] === undefined ? undefined : JSON.stringify(store[k]); });
+    s.pages = JSON.stringify((store.ps.pages || []).map(function (pg) { return { id: pg.id, subject: pg.subject, folder: pg.folder, order: pg.order }; }));
+    return s;
+  }
+  function shapeRestore(s) {
+    UNDO_KEYS.forEach(function (k) { if (s[k] === undefined) delete store[k]; else store[k] = JSON.parse(s[k]); });
+    JSON.parse(s.pages).forEach(function (x) {
+      var pg = psPageById(x.id); if (!pg) return;
+      pg.subject = x.subject;
+      if (x.folder === undefined) delete pg.folder; else pg.folder = x.folder;
+      if (x.order === undefined) delete pg.order; else pg.order = x.order;
     });
+  }
+  // do a move, save, redraw, and offer it back
+  function libMoved(label, fn) {
+    var before = shapeSnap();
+    if (fn() === false) return;
+    saveStore();
+    libAfterMove();
+    libToast(label, { label: "Undo", run: function () { shapeRestore(before); saveStore(); libAfterMove(); } });
+  }
+  function libAfterMove() {
+    try { applyEtiEdits(); } catch (e) {}
+    renderEtiTree();
+    if (spShown()) renderSubjectPage();
+    try { renderSubjectExtras(shownSubjectKey()); } catch (e) {}
+    if (miningScreen) { try { renderEtiMain(); } catch (e) {} }
+    if (activePsPage && !viewingProblem) { try { renderPsPane(); } catch (e) {} }
+    if (activeSummary) { try { renderSumPane(); } catch (e) {} }
+  }
+  // a method's stages: their order is the vine's order
+  function psStagesDnd(docEl, pg) {
+    dndList(docEl, { type: "stage", item: ".ps-stage", grip: ".ps-grip", handle: ".ps-stage-head", fold: "reordering",
+      id: function (el) { return el.getAttribute("data-st"); },
+      onDrop: function (drag, index) {
+        var body = psBody(pg.id), was = body.stages.slice();
+        var st = was.filter(function (x) { return x.id === drag.id; })[0]; if (!st) return;
+        var next = was.filter(function (x) { return x !== st; });
+        next.splice(index, 0, st);
+        body.stages = next; psSaveBody(pg); psRender();
+        libToast("Stage order saved", { label: "Undo", run: function () { psBody(pg.id).stages = was; psSaveBody(pg); psRender(); } });
+      } });
   }
 
   // ---- "Connected concepts" — ONE popup, wherever a page or a stage is tapped -----------
@@ -11171,8 +11317,8 @@ function __detabaseMain() {
       row.querySelector('[data-a="ren"]').addEventListener("click", function () { psRenameStage(pg, st, i); });
       row.querySelector('[data-a="del"]').addEventListener("click", function () { psDeleteStage(pg, st, i); });
       docEl.appendChild(row);
-      psStageDrag(row, pg);
     });
+    psStagesDnd(docEl, pg);
     if (body.main && !body.stages.length) {
       docEl.insertAdjacentHTML("beforeend", '<p class="muted ps-hint">Not split into stages yet — tap “✂ Split into stages” and draw a loop around each step.</p>');
     }
@@ -11523,12 +11669,21 @@ function __detabaseMain() {
     box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
     return box;
   }
-  function libToast(msg) {
+  function libToast(msg, action) {
+    Array.prototype.forEach.call(document.querySelectorAll(".lib-toast.act"), function (x) { x.remove(); });   // one Undo at a time
     var t = document.createElement("div");
-    t.className = "lib-toast"; t.textContent = msg;
+    t.className = "lib-toast" + (action ? " act" : "");
+    t.textContent = msg;
+    if (action) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "lib-toast-act"; b.textContent = action.label;
+      b.addEventListener("click", function () { t.remove(); action.run(); });
+      t.appendChild(b);
+    }
     document.body.appendChild(t);
-    setTimeout(function () { t.classList.add("out"); }, 2600);
-    setTimeout(function () { t.remove(); }, 3200);
+    var life = action ? 6000 : 2600;
+    setTimeout(function () { t.classList.add("out"); }, life);
+    setTimeout(function () { t.remove(); }, life + 600);
   }
 
   // ---- clips (board items) ----
@@ -14700,14 +14855,13 @@ function __detabaseMain() {
         saveStore(); renderSumPane();
       });
       list.appendChild(row);
-      dragReorder(row, row.querySelector(".ps-grip"), function (rows) {
-        var order = rows.map(function (n) { return n.getAttribute("data-k"); });
-        var was = sm.items.slice();
-        sm.items = order.map(function (k) { return was.filter(function (r) { return refKey(r) === k; })[0]; }).filter(Boolean);
-        if (sm.items.length !== was.length) sm.items = was;   // never lose an item to a bad drag
-        saveStore(); renderSumPane();
-      });
     });
+    dndList(list, { type: "sumitem", item: ".sum-item", grip: ".ps-grip", handle: ".sum-item-head", fold: "reordering",
+      id: function (el) { return el.getAttribute("data-k"); },
+      onDrop: function (drag, index) {
+        var it = sm.items.filter(function (r) { return refKey(r) === drag.id; })[0]; if (!it) return;
+        libMoved("Summary order saved", function () { var rest = sm.items.filter(function (r) { return r !== it; }); rest.splice(index, 0, it); sm.items = rest; });
+      } });
   }
   function sumRename() {
     var sm = summaryById(activeSummary); if (!sm) return;
@@ -15376,57 +15530,22 @@ function __detabaseMain() {
     items.forEach(function (it) { container.appendChild(it); });
   }
 
+  // a list whose items are the page's own elements: moved in place on the drop, then saved by key
+  //   opt: { itemSel, handleSel, axis: "x" | "y" | "grid", keyOf, onDrop(keys) }
   function makeSortable(container, opt) {
-    // opt: { itemSel, handleSel, axis:'x'|'y', keyOf, onDrop }
-    var dragEl = null;
-    var bareItem = opt.itemSel.replace(/^>\s*/, "");
-    var sel = opt.itemSel.charAt(0) === ">" ? ":scope > " + bareItem : opt.itemSel;
-    function items() { return Array.prototype.slice.call(container.querySelectorAll(sel)); }
-    container.addEventListener("dragstart", function (e) {
-      if (opt.handleSel && !e.target.closest(opt.handleSel)) return;
-      var it = e.target.closest(bareItem);
-      if (!it || it.parentNode !== container) return;
-      dragEl = it;
-      e.dataTransfer.effectAllowed = "move";
-      try { e.dataTransfer.setData("text/plain", opt.keyOf(it)); } catch (_) {}
-      setTimeout(function () { it.classList.add("drag-ghost"); }, 0);
-    });
-    container.addEventListener("dragover", function (e) {
-      if (!dragEl) return;
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-      var sibs = items().filter(function (it) { return it !== dragEl; });
-      var next = null;
-      for (var i = 0; i < sibs.length; i++) {
-        var r = sibs[i].getBoundingClientRect();
-        if (opt.axis === "grid") {
-          var cy = r.top + r.height / 2, cx = r.left + r.width / 2;
-          if (e.clientY < cy - 10 || (Math.abs(e.clientY - cy) <= r.height / 2 && e.clientX < cx)) { next = sibs[i]; break; }
-        } else {
-          var mid = opt.axis === "x" ? r.left + r.width / 2 : r.top + r.height / 2;
-          var m = opt.axis === "x" ? e.clientX : e.clientY;
-          if (m < mid) { next = sibs[i]; break; }
-        }
-      }
-      if (next) container.insertBefore(dragEl, next);
-      else container.appendChild(dragEl);
-    });
-    function finish() {
-      if (!dragEl) return;
-      dragEl.classList.remove("drag-ghost");
-      dragEl = null;
-      try { opt.onDrop(items().map(opt.keyOf)); } catch (_) {}
-    }
-    container.addEventListener("drop", function (e) { e.preventDefault(); finish(); });
-    container.addEventListener("dragend", finish);
+    if (!container) return;
+    dndList(container, { type: "sort:" + (container.id || "list"), item: opt.itemSel.replace(/^>\s*/, ""), handle: opt.handleSel,
+      axis: opt.axis === "x" ? "x" : opt.axis === "grid" ? "grid" : "y",
+      onDrop: function (drag, index, list) {
+        var items = dndItemsOf(list, drag.el);
+        list.insertBefore(drag.el, items[index] || (items.length ? items[items.length - 1].nextSibling : null));
+        try { opt.onDrop(dndItemsOf(list, null).map(opt.keyOf)); } catch (e) { if (window.console) console.error("sort:", e); }
+      } });
   }
 
   function ord(k) { store.order[k] = store.order[k] || {}; return store.order[k]; }
 
   function initSortables() {
-    // draggable flags on the static sidebar lists
-    document.querySelectorAll('#topbar > button, #folderbar > button')
-      .forEach(function (b) { b.draggable = true; });
 
     // 1 · top-level folders
     makeSortable($("topbar"), {
