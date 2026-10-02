@@ -744,20 +744,6 @@
 
   @media (max-width: 700px) { .vine { flex-wrap: wrap; } .vine-page { max-width: 100%; } }
 
-  /* ---- a subject's own page: concepts in the main column, methods in a column on the right ---- */
-  /* the content becomes two columns: everything it holds stays on the left; the side panel takes the right */
-  @media (min-width: 1000px) {
-    /* concepts take a little over 60%, methods the rest — wide enough to read a vine at a glance */
-    body.subject-page .content { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr); column-gap: 22px; align-items: start; }
-    body.subject-page .content > * { grid-column: 1; }
-    /* the Methods column is as long as the concepts beside it (its rows are set from the script) */
-    body.subject-page .content > .subj-side { grid-column: 2; align-self: stretch; }
-    body.subject-page .content > .subj-sums, body.subject-page .content > .page-foot { grid-column: 1 / -1; }
-    body.subject-page .subj-side .side-full { height: 100%; }
-    body.subject-page .subj-side .side-sticky { position: sticky; top: 14px; }
-    body.subject-page .subj-side .side-list { max-height: calc(100vh - 110px); }
-  }
-  .subj-side { display: flex; flex-direction: column; gap: 14px; margin: 14px 0 6px; min-width: 0; }
   .side-box { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1); }
   .side-head { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; border-bottom: 1px solid var(--border); background: var(--bg);
     border-radius: var(--r-lg) var(--r-lg) 0 0; }
@@ -879,6 +865,75 @@
   .mf-empty { font-size: .82rem; color: var(--text-muted); padding: 8px 6px; }
   .mf-body > .vine { margin-bottom: 0; }
   .mf-head .lib-dots, .vine-acts .lib-dots { position: static; }
+  /* ---- a subject's page: the header — views, filters, adding ---- */
+  .sp-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .sp-seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: var(--r-md); overflow: hidden; background: var(--surface-1); }
+  .sp-seg button { min-height: var(--tap); padding: 0 18px; border: 0; background: none; font: inherit; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+  .sp-seg button + button { border-left: 1px solid var(--border-strong); }
+  .sp-seg button.on { background: var(--accent); color: var(--on-accent); }
+  .sp-filter-btn { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 16px; border: 1px solid var(--border-strong); border-radius: var(--r-md);
+    background: var(--bg); font: inherit; font-weight: 600; color: var(--text-primary); cursor: pointer; }
+  .sp-filter-btn:hover { border-color: var(--accent); }
+  .sp-badge { min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: .78rem; text-align: center; }
+  .sp-adds { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px; }
+  .sp-adds button { min-height: var(--tap); }
+  .sp-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+  .sp-chips:empty { display: none; }
+  /* Separate: three boxes, each scrolling on its own; stacked on a narrow screen */
+  .sp-sep { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; align-items: start; }
+  @media (max-width: 760px) { .sp-sep { grid-template-columns: minmax(0, 1fr); } }
+  .sp-box .side-head { flex-wrap: wrap; }
+  .sp-box-list { max-height: calc(100vh - 170px); min-height: 180px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .sc-tabs { display: flex; flex-direction: column; gap: 6px; }
+  .sc-tabgroup { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); }
+  .sc-tab, .sc-card, .sc-el { display: flex; align-items: center; gap: 4px; padding-right: 4px; }
+  .sc-go { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 10px; border: 0; background: none;
+    font: inherit; text-align: left; color: var(--text-primary); cursor: pointer; }
+  .sc-tab .sc-go { font-weight: 700; }
+  .sc-tab .caret { font-size: .72rem; color: var(--text-muted); transition: transform .15s; }
+  .sc-tabgroup:not(.closed) .sc-tab .caret { transform: rotate(90deg); }
+  .sc-tabgroup.closed .sc-cards { display: none; }
+  .sc-cards { border-top: 1px solid var(--border); padding: 4px 0; }
+  .sc-card .sc-go { padding-left: 24px; font-size: .92rem; }
+  .sc-card .sc-go::before { content: "▢"; color: var(--text-muted); font-size: .8rem; }
+  .sc-el .sc-go { min-height: 38px; padding-left: 44px; font-size: .84rem; color: var(--text-secondary); }
+  .sc-el .sc-go::before { content: "•"; color: var(--text-muted); }
+  .sc-name { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.25; }
+  .sp-box .side-head { gap: 6px; padding: 8px 8px 8px 12px; }
+  .sp-box .side-head h3 { white-space: normal; min-width: 6.2em; }
+  .sp-box .side-action.icon { min-width: 40px; min-height: 40px; padding: 0 8px; font-size: 1.05rem; }
+  @media (max-width: 1100px) { .sp-box-list { padding: 6px; } .sc-go { padding: 0 6px; } .sc-card .sc-go { padding-left: 12px; } .sc-el .sc-go { padding-left: 24px; } .sp-box .vine { padding: 8px; } }
+  .sc-go:hover .sc-name { color: var(--accent); }
+  .sc-tab .lib-dots, .sc-card .lib-dots, .sc-el .lib-dots, .sc-card .used-badge { position: static; flex-shrink: 0; }
+  /* Merged: each card, then what is connected to it */
+  .mg-card { grid-column: 1 / -1; min-width: 0; }
+  .mg-card.compact { grid-column: auto; }
+  .mg-links { display: flex; flex-direction: column; gap: 6px; margin: -6px 0 16px 12px; padding: 6px 0 4px 12px; border-left: 3px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  .sp-tab-body > .mg-links { margin: 12px 0 4px; }
+  .mg-label { margin: 6px 0 2px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+  .mg-title { display: flex; align-items: center; gap: 8px; min-height: var(--tap); margin: 10px 0; padding: 0 6px 0 12px; border: 1px solid var(--border);
+    border-radius: var(--r-md); background: var(--surface-1); font-weight: 600; }
+  .mg-title .lib-dots { position: static; margin-left: auto; }
+  .ex-grid.mini { grid-template-columns: repeat(auto-fill, minmax(160px, 220px)); }
+  .sp-where { flex-basis: 100%; font-size: .72rem; color: var(--text-muted); }
+  .sp-section { margin-top: 22px; }
+  .sp-pickbox { margin-top: 14px; }
+  .sp-pickbox .side-list { max-height: 280px; }
+  /* the filter panel */
+  .spf-sec { margin-bottom: 16px; }
+  .spf-tab { display: flex; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); padding: 2px 0; }
+  .spf-row { display: flex; align-items: center; gap: 10px; min-height: var(--tap); padding: 0 8px; border: 0; background: none; font: inherit; color: var(--text-primary); text-align: left; cursor: pointer; }
+  .spf-row.tab { flex: 1; font-weight: 700; }
+  .spf-row.card { flex-basis: 100%; padding-left: 38px; font-size: .92rem; }
+  .spf-row:disabled { opacity: .55; cursor: default; }
+  .spf-box { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 22px; height: 22px; border: 2px solid var(--border-strong);
+    border-radius: 6px; font-size: .8rem; font-weight: 900; color: var(--on-accent); }
+  .spf-box.on { background: var(--accent); border-color: var(--accent); }
+  .spf-box.on::after { content: "✓"; }
+  .spf-box.some { background: color-mix(in srgb, var(--accent) 55%, var(--bg)); border-color: var(--accent); }
+  .spf-box.some::after { content: "–"; }
+  .spf-more { min-height: var(--tap); padding: 0 10px; border: 0; background: none; font: inherit; font-size: .84rem; color: var(--accent); cursor: pointer; }
+  .sp-view .lw-body .sp-card { max-width: 100%; }
   /* ---- a subject's page: its tabs as sections, each holding its cards ---- */
   .sp-body { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
   .sp-tab { border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); min-width: 0; }
@@ -3500,7 +3555,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B80</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B81</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6114,7 +6169,8 @@ function __detabaseMain() {
     }
     setTimeout(function () {                                              // after the branches below settle the open tab
       try { renderLibBar(); } catch (e) {}
-      try { renderSubjectExtras(shownSubjectKey()); } catch (e) { if (window.console) console.error("subject extras:", e); }
+      var sk = shownSubjectKey();
+      if (sumPick && sumPick.key !== sk) sumPickEnd();   // picking belongs to the subject it started on
     }, 0);
     if (onNbBank) {
       nbTab(store.ui.nbTab || "pdfs");
@@ -10606,27 +10662,38 @@ function __detabaseMain() {
   }
   function fillAllIn(host) { Array.prototype.forEach.call(host.querySelectorAll(".ue-block"), fillLibBlock); }
   // ============================================================
-  // A SUBJECT'S PAGE — one page for every subject, built-in or custom
-  // The subject's tabs, in their saved order, each a section holding its cards. A built-in card is
-  // the HTML block itself, moved (never copied) out of the hidden library into its place here, so
-  // every tool in it keeps working; before the page is rebuilt each block goes back to where it came
-  // from. A custom card is drawn from its elements.
+  // A SUBJECT'S PAGE — one page for every subject, built-in or custom, in two views
+  //   Separate: three boxes side by side — Concepts | Methods | Examples — each scrolling on its own
+  //   Merged:   tab by tab, card by card — the card's concepts, then its methods, then its examples
+  // A built-in card is the HTML block itself, moved (never copied) out of the hidden library into
+  // its place, so every tool in it keeps working; before anything is rebuilt each block goes back.
+  // Filters are the subject's tabs and cards (and, in Merged, the three kinds). A method or example
+  // disappears only when every card it is connected to is filtered out; one connected to no card at
+  // all sits in "Not linked to a card", which can be switched off. View and filters are kept per subject.
+  //   store.ui.sp[key] = { view: "merged" | "separate", off: { <tab or card id>: 1 }, hide: { c, m, x }, noUnlinked }
   // ============================================================
   function spShown() { var p = $("subjectPage"); return !!p && !p.hidden; }
-  // every built-in block back into the hidden library, and the user elements added inside it out
-  function spPark() {
+  // every built-in block inside `host` back into the hidden library, and the user elements added inside it out
+  function spPark(host) {
     biEnsure();
-    var host = $("subjectPage"); if (!host) return;
+    host = host || $("subjectPage"); if (!host) return;
     Array.prototype.forEach.call(host.querySelectorAll(".sp-card.bi"), function (slot) {
       var c = BI.cards[slot.getAttribute("data-card")]; if (!c) return;
       var home = BI.tabs[c.origin].pane;
       c.nodes.forEach(function (n) {
+        if (n.parentNode !== slot) return;      // it has been placed somewhere newer since
         Array.prototype.forEach.call(n.querySelectorAll(".ue-extra"), function (x) { x.remove(); });
         Array.prototype.forEach.call(n.querySelectorAll(".dnd-handle"), function (x) { x.classList.remove("dnd-handle"); });
         n.classList.remove("dnd-handle");
         home.appendChild(n);
       });
     });
+  }
+  // the tools in the blocks just placed draw themselves at their real size
+  function spRefreshTools(host) {
+    var origins = {};
+    Array.prototype.forEach.call(host.querySelectorAll(".sp-card.bi"), function (s) { var c = BI.cards[s.getAttribute("data-card")]; if (c) origins[c.origin] = 1; });
+    setTimeout(function () { Object.keys(origins).forEach(function (t) { if (refreshers[t]) { try { refreshers[t](); } catch (e) {} } }); }, 0);
   }
   function spCardEl(ref) {
     var uc = byId(store.cards, ref.id);
@@ -10666,15 +10733,233 @@ function __detabaseMain() {
     dndList(listEl, { type: "element", item: ".ue-block", handle: ".ue-head", id: function (el) { return el.getAttribute("data-ue"); },
       onDrop: function (drag, index) { elementTo(drag, cardId, index); } });
   }
-  function spTabEl(tref) {
+  function cardTo(drag, tabId, index) {
+    libMoved("Moved “" + cardLabel(drag.id) + "” to " + tabLabel(tabId), function () { libMove({ lvl: "c", id: drag.id }, tabId, index); });
+  }
+  function tabTo(drag, key, index) {
+    libMoved("Moved “" + tabLabel(drag.id) + "”", function () { libMove({ lvl: "t", id: drag.id }, key, index); });
+  }
+  // a card on its own, full size — opened from the Separate view's rows
+  function spViewCard(cardId, elId) {
+    var ref = { lvl: "c", id: cardId }; if (!refExists(ref)) return;
+    var slot = null;
+    var box = ovOpen(cardLabel(cardId), { wide: true, onCancel: function () { if (slot) spPark(box.body); } });
+    box.ov.classList.add("sp-view");
+    slot = spCardEl(ref);
+    box.body.appendChild(slot);
+    fillAllIn(slot);
+    spRefreshTools(box.body);
+    if (elId) setTimeout(function () { flashEl(slot.querySelector('.ue-block[data-ue="' + elId + '"]')); }, 120);
+    box.buttons([
+      { label: "↗ Show it in Merged", run: function () { box.close(); spSetView(libSubjectOf(ref), "merged"); jumpToCard(cardId, elId); } },
+      { label: "Close", primary: true, right: true, run: function () { box.close(); } }
+    ]);
+  }
+
+  // ---- state: view and filters, per subject ----
+  function spState(key) {
+    store.ui.sp = store.ui.sp || {};
+    var s = store.ui.sp[key] = store.ui.sp[key] || {};
+    if (s.view !== "separate") s.view = "merged";
+    s.off = s.off || {}; s.hide = s.hide || {};
+    return s;
+  }
+  function spSetView(key, view) { if (!key) return; spState(key).view = view; saveStore(); }
+  function spTabState(st, tabId) {           // "on" | "some" | "off"
+    if (st.off[tabId]) return "off";
+    var cs = libKids({ lvl: "t", id: tabId }); if (!cs.length) return "on";
+    var n = cs.filter(function (c) { return st.off[c.id]; }).length;
+    return !n ? "on" : n === cs.length ? "off" : "some";
+  }
+  function spCardOn(st, cref) { var pl = libPlace(cref); return !!pl && !st.off[pl.p] && !st.off[cref.id]; }
+  // is something a method or an example is connected to still on screen? A card or tab of another
+  // subject is not this page's to filter, so it always counts.
+  function spLinkOn(st, key, ref) {
+    if (libSubjectOf(ref) !== key) return true;
+    return ref.lvl === "t" ? spTabState(st, ref.id) !== "off" : spCardOn(st, ref);
+  }
+  function spSetTab(st, tabId, on) {
+    libKids({ lvl: "t", id: tabId }).forEach(function (c) { delete st.off[c.id]; });
+    if (on) delete st.off[tabId]; else st.off[tabId] = 1;
+  }
+  function spSetCard(st, tabId, cardId, on) {
+    var cs = libKids({ lvl: "t", id: tabId });
+    if (st.off[tabId]) {                     // the tab was off: now just this card is on
+      if (!on) return;
+      delete st.off[tabId];
+      cs.forEach(function (c) { if (c.id === cardId) delete st.off[c.id]; else st.off[c.id] = 1; });
+      return;
+    }
+    if (on) delete st.off[cardId]; else st.off[cardId] = 1;
+    if (cs.length && cs.every(function (c) { return st.off[c.id]; })) spSetTab(st, tabId, false);
+  }
+  // what is filtered, as chips: { label, clear() }
+  function spChips(key, st) {
+    var out = [];
+    libKids({ lvl: "s", id: key }).forEach(function (t) {
+      var ts = spTabState(st, t.id);
+      if (ts === "off") out.push({ label: tabLabel(t.id), clear: function () { spSetTab(st, t.id, true); } });
+      else if (ts === "some") libKids(t).forEach(function (c) {
+        if (st.off[c.id]) out.push({ label: cardLabel(c.id), clear: function () { delete st.off[c.id]; } });
+      });
+    });
+    var kinds = { c: "concepts", m: "methods", x: "examples" };
+    if (st.view === "merged") Object.keys(kinds).forEach(function (k) { if (st.hide[k]) out.push({ label: "no " + kinds[k], clear: function () { delete st.hide[k]; } }); });
+    if (st.noUnlinked) out.push({ label: "nothing that is not linked to a card", clear: function () { delete st.noUnlinked; } });
+    return out;
+  }
+  // the methods and examples this page shows: its own, and other subjects' that are connected to
+  // one of its cards — each with what it is connected to
+  function spItems(key, st) {
+    function item(kind, obj, links) {
+      var here = links.filter(function (r) { return libSubjectOf(r) === key; });
+      return { kind: kind, obj: obj, links: links, here: here, own: obj.subject === key };
+    }
+    function shown(it) {
+      if (!it.links.length) return it.own && !st.noUnlinked;
+      // one of this subject's own: hidden only when every card it is connected to is filtered out (a card of
+      // another subject is never filtered here); another subject's: shown by its cards here, so hidden with them
+      return (it.own ? it.links : it.here).some(function (r) { return spLinkOn(st, key, r); });
+    }
+    return {
+      methods: store.ps.pages.map(function (pg) { return item("m", pg, methodCards(pg.id).map(function (x) { return x.ref; })); }).filter(shown),
+      examples: exEnsure().map(function (ex) { return item("x", ex, exampleCards(ex)); }).filter(shown)
+    };
+  }
+  // "also in …" / "from …": where else a method or example is connected
+  function spWhere(it, key, here) {
+    var bits = [];
+    if (!it.own) bits.push("from " + subjectName(it.obj.subject));
+    var others = it.links.filter(function (r) { return !here || refKey(r) !== refKey(here); });
+    if (here && others.length) bits.push("also in " + others.map(refName).join(", "));
+    return bits.join(" · ");
+  }
+  function spItemEl(it, key, here) {
+    var el = it.kind === "m" ? methodRowEl(it.obj) : exThumbEl(it.obj);
+    var w = spWhere(it, key, here);
+    if (w) {
+      var hint = document.createElement("div");
+      hint.className = "sp-where"; hint.textContent = w;
+      (it.kind === "m" ? el.querySelector(".vine-chain") : el.querySelector(".ex-cap")).appendChild(hint);
+    }
+    return el;
+  }
+
+  // ---- the header: views, filters, adding ----
+  function spHeadEl(key, st) {
+    var head = document.createElement("div");
+    head.className = "sp-head";
+    var nf = spChips(key, st).length;
+    head.innerHTML = '<div class="sp-seg" role="tablist"><button type="button" data-v="separate">Separate</button><button type="button" data-v="merged">Merged</button></div>' +
+      '<button type="button" class="sp-filter-btn">Filters' + (nf ? ' <span class="sp-badge">' + nf + '</span>' : '') + '</button>' +
+      '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="c">＋ Concept</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button>' +
+      '<button type="button" class="btn-quiet" data-a="x">＋ Example</button></span>';
+    Array.prototype.forEach.call(head.querySelectorAll(".sp-seg button"), function (b) {
+      var on = b.getAttribute("data-v") === st.view;
+      b.classList.toggle("on", on); b.setAttribute("aria-selected", on);
+      b.addEventListener("click", function () { spSetView(key, b.getAttribute("data-v")); renderSubjectPage(); });
+    });
+    head.querySelector(".sp-filter-btn").addEventListener("click", function () { spFilters(key); });
+    head.querySelector('[data-a="c"]').addEventListener("click", function () { addAssetAt({ lvl: "s", id: key }); });
+    head.querySelector('[data-a="m"]').addEventListener("click", function () { newProblemPage(key); });
+    head.querySelector('[data-a="x"]').addEventListener("click", function () { newExample(key); });
+    return head;
+  }
+  function spChipsEl(key, st) {
+    var chips = spChips(key, st);
+    var row = document.createElement("div");
+    row.className = "sp-chips";
+    if (!chips.length) return row;
+    row.insertAdjacentHTML("beforeend", '<span class="em-nlabel">Hidden</span>');
+    chips.forEach(function (c) {
+      var chip = document.createElement("span");
+      chip.className = "ps-chip";
+      chip.innerHTML = '<span class="ps-chip-go"></span>';
+      chip.firstChild.textContent = c.label;
+      var x = document.createElement("button");
+      x.type = "button"; x.className = "ps-chip-x"; x.textContent = "✕"; x.title = "show it again";
+      x.addEventListener("click", function () { c.clear(); saveStore(); renderSubjectPage(); });
+      chip.appendChild(x);
+      row.appendChild(chip);
+    });
+    var all = document.createElement("button");
+    all.type = "button"; all.className = "em-clearnarrow"; all.textContent = "Show all";
+    all.addEventListener("click", function () { var s = spState(key); s.off = {}; s.hide = {}; delete s.noUnlinked; saveStore(); renderSubjectPage(); });
+    row.appendChild(all);
+    return row;
+  }
+  // the filter panel: the subject's tabs, each with its cards, as checkboxes (a tab with only some
+  // of its cards on shows a partial mark); the "not linked" group; in Merged, the three kinds
+  function spFilters(key) {
+    var st = spState(key);
+    var box = ovOpen("Filters · " + subjectName(key), { wide: true });
+    box.ov.classList.add("sp-filters");
+    var open = {};
+    function changed() { saveStore(); renderSubjectPage(); draw(); }
+    function check(state, label, onClick, cls) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "spf-row " + (cls || "");
+      b.innerHTML = '<span class="spf-box ' + state + '"></span><span class="spf-name"></span>';
+      b.querySelector(".spf-name").textContent = label;
+      b.setAttribute("role", "checkbox"); b.setAttribute("aria-checked", state === "on" ? "true" : state === "some" ? "mixed" : "false");
+      b.addEventListener("click", onClick);
+      return b;
+    }
+    function draw() {
+      var b = box.body;
+      b.innerHTML = '<div class="spf-sec"><div class="md-sechead">Tabs and cards</div><div class="spf-tabs"></div></div>';
+      var tabsEl = b.querySelector(".spf-tabs");
+      libKids({ lvl: "s", id: key }).forEach(function (t) {
+        var ts = spTabState(st, t.id), cards = libKids(t);
+        var grp = document.createElement("div");
+        grp.className = "spf-tab";
+        var row = check(ts, tabLabel(t.id), function () { spSetTab(st, t.id, ts !== "on"); changed(); }, "tab");
+        grp.appendChild(row);
+        if (cards.length) {
+          var ex = document.createElement("button");
+          ex.type = "button"; ex.className = "spf-more"; ex.textContent = (open[t.id] ? "▾ " : "▸ ") + cards.length + " cards";
+          ex.addEventListener("click", function () { open[t.id] = !open[t.id]; draw(); });
+          grp.appendChild(ex);
+        }
+        if (open[t.id]) cards.forEach(function (c) {
+          var on = spCardOn(st, c);
+          grp.appendChild(check(on ? "on" : "off", cardLabel(c.id), function () { spSetCard(st, t.id, c.id, !on); changed(); }, "card"));
+        });
+        tabsEl.appendChild(grp);
+      });
+      var more = document.createElement("div");
+      more.className = "spf-sec";
+      more.innerHTML = '<div class="md-sechead">Methods and examples</div>';
+      more.appendChild(check(st.noUnlinked ? "off" : "on", "Show the ones not linked to a card", function () { if (st.noUnlinked) delete st.noUnlinked; else st.noUnlinked = 1; changed(); }));
+      b.appendChild(more);
+      var kinds = document.createElement("div");
+      kinds.className = "spf-sec";
+      kinds.innerHTML = '<div class="md-sechead">Show in the Merged view <span class="muted">— at least one</span></div>';
+      [["c", "Concepts"], ["m", "Methods"], ["x", "Examples"]].forEach(function (k) {
+        var on = !st.hide[k[0]];
+        var lastOn = on && ["c", "m", "x"].filter(function (z) { return !st.hide[z]; }).length === 1;
+        var r = check(on ? "on" : "off", k[1], function () { if (lastOn) return; if (on) st.hide[k[0]] = 1; else delete st.hide[k[0]]; changed(); });
+        if (lastOn) { r.disabled = true; r.title = "at least one kind stays on"; }
+        kinds.appendChild(r);
+      });
+      b.appendChild(kinds);
+    }
+    draw();
+    box.buttons([
+      { label: "Show all", run: function () { st.off = {}; st.hide = {}; delete st.noUnlinked; changed(); } },
+      { label: "Done", primary: true, right: true, run: function () { box.close(true); } }
+    ]);
+  }
+
+  // ---- Merged: tab by tab, card by card ----
+  function spTabEl(tref, key, count, fill) {
     var closed = !!(store.ui.spClosed || {})[tref.id];
-    var cards = libKids(tref);
     var sec = document.createElement("section");
     sec.className = "sp-tab" + (closed ? " closed" : "");
     sec.setAttribute("data-tab", tref.id);
     sec.innerHTML = '<header class="sp-tab-head"><button type="button" class="sp-caret" aria-expanded="' + !closed + '"><span class="caret">▸</span>' +
-      '<span class="sp-tab-title"></span><span class="side-count">' + cards.length + '</span></button></header>' +
-      '<div class="sp-tab-body"><div class="sp-cards" data-parent="' + escapeHtml(tref.id) + '"></div></div>';
+      '<span class="sp-tab-title"></span><span class="side-count">' + count + '</span></button></header>' +
+      '<div class="sp-tab-body"></div>';
     sec.querySelector(".sp-tab-title").textContent = tabLabel(tref.id);
     var head = sec.querySelector(".sp-tab-head");
     var bd = usedBadge(tref); if (bd) head.appendChild(bd);
@@ -10685,45 +10970,227 @@ function __detabaseMain() {
       saveStore();
       renderSubjectPage();
     });
-    var list = sec.querySelector(".sp-cards");
-    function cardTo(drag, index) { libMoved("Moved “" + cardLabel(drag.id) + "” to " + tabLabel(tref.id), function () { libMove({ lvl: "c", id: drag.id }, tref.id, index); }); }
-    dndInto(head, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, null); } });   // onto the tab's title: at its end
-    if (closed) return sec;            // a closed tab's blocks stay in the library
-    dndList(list, { type: "card", item: ".sp-card", axis: "grid", id: function (el) { return el.getAttribute("data-card"); },
-      handle: function (slot, t) { var h = t.closest(".dnd-handle"); return !!h && h.closest(".sp-card") === slot; },
-      onDrop: cardTo });
-    if (!cards.length) list.innerHTML = '<p class="muted sp-empty">No cards in this tab yet.</p>';
-    cards.forEach(function (c) { list.appendChild(spCardEl(c)); });
+    dndInto(head, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, tref.id, null); } });   // onto the tab's title: at its end
+    if (!closed) fill(sec.querySelector(".sp-tab-body"));         // a closed tab's blocks stay in the library
     return sec;
   }
+  function spLinksEl(list, key, here, label) {
+    var box = document.createElement("div");
+    box.className = "mg-links";
+    if (label) box.insertAdjacentHTML("beforeend", '<div class="mg-label">' + escapeHtml(label) + '</div>');
+    var ms = list.filter(function (it) { return it.kind === "m"; }), xs = list.filter(function (it) { return it.kind === "x"; });
+    ms.forEach(function (it) { box.appendChild(spItemEl(it, key, here)); });
+    if (xs.length) {
+      var g = document.createElement("div"); g.className = "ex-grid mini";
+      xs.forEach(function (it) { g.appendChild(spItemEl(it, key, here)); });
+      box.appendChild(g);
+    }
+    return box;
+  }
+  function spMerged(key, st, host) {
+    var items = spItems(key, st), show = { c: !st.hide.c, m: !st.hide.m, x: !st.hide.x };
+    var all = items.methods.filter(function () { return show.m; }).concat(items.examples.filter(function () { return show.x; }));
+    var at = {};
+    all.forEach(function (it) { it.here.forEach(function (r) { (at[refKey(r)] = at[refKey(r)] || []).push(it); }); });
+    var filtering = spChips(key, st).length > 0;
+    var body = document.createElement("div");
+    body.className = "sp-body";
+    var tabs = libKids({ lvl: "s", id: key });
+    if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No tabs yet — tap “＋ Concept” to crop the first one out of a document.</p>';
+    tabs.forEach(function (t) {
+      if (spTabState(st, t.id) === "off") return;
+      var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
+      var tabLinks = at[refKey(t)] || [];
+      var shown = cards.filter(function (c) { return show.c || (at[refKey(c)] || []).length; });
+      if (filtering && !shown.length && !tabLinks.length) return;
+      body.appendChild(spTabEl(t, key, shown.length, function (tb) {
+        if (tabLinks.length) tb.appendChild(spLinksEl(tabLinks, key, t, "For the whole tab"));
+        var list = document.createElement("div");
+        list.className = "sp-cards";
+        tb.appendChild(list);
+        dndList(list, { type: "card", item: ".mg-card", axis: "grid", id: function (el) { return el.getAttribute("data-card"); },
+          handle: function (it, tt) { var h = tt.closest(".dnd-handle"); return !!h && h.closest(".mg-card") === it; },
+          onDrop: function (drag, index) { cardTo(drag, t.id, index); } });
+        if (!shown.length) list.innerHTML = '<p class="muted sp-empty">' + (cards.length ? "Nothing here with these filters." : "No cards in this tab yet.") + '</p>';
+        shown.forEach(function (c) {
+          var links = at[refKey(c)] || [];
+          var wrap = document.createElement("div");
+          wrap.className = "mg-card";
+          wrap.setAttribute("data-card", c.id);
+          var slot;
+          if (show.c) slot = spCardEl(c);
+          else { slot = document.createElement("div"); slot.className = "mg-title dnd-handle"; slot.innerHTML = '<span class="mp-lvl lvl-c">Card</span> '; slot.appendChild(document.createTextNode(cardLabel(c.id))); slot.appendChild(dotsBtn(c)); }
+          if (slot.classList.contains("compact") && !links.length) wrap.classList.add("compact");
+          wrap.appendChild(slot);
+          if (links.length) wrap.appendChild(spLinksEl(links, key, c));
+          list.appendChild(wrap);
+        });
+      }));
+    });
+    dndList(body, { type: "tab", item: ".sp-tab", handle: ".sp-tab-head", id: function (el) { return el.getAttribute("data-tab"); },
+      onDrop: function (drag, index) { tabTo(drag, key, index); } });
+    host.appendChild(body);
+    // what has no card here: not linked to any, or only to other subjects' cards
+    var loose = all.filter(function (it) { return it.own && !it.links.length; });
+    var away = all.filter(function (it) { return it.own && it.links.length && !it.here.length; });
+    if (loose.length) host.appendChild(spSectionEl("Not linked to a card", loose.length, spLinksEl(loose, key, null)));
+    if (away.length) host.appendChild(spSectionEl("Linked to other subjects", away.length, spLinksEl(away, key, null)));
+  }
+  function spSectionEl(title, n, content) {
+    var sec = document.createElement("section");
+    sec.className = "sp-section";
+    sec.innerHTML = '<header class="sums-head"><h3>' + escapeHtml(title) + ' <span class="side-count">' + n + '</span></h3></header>';
+    sec.appendChild(content);
+    return sec;
+  }
+
+  // ---- Separate: three boxes ----
+  function spBoxEl(title, n, add) {
+    var box = document.createElement("section");
+    box.className = "side-box sp-box";
+    box.innerHTML = '<header class="side-head"><h3>' + escapeHtml(title) + ' <span class="side-count">' + n + '</span></h3></header><div class="sp-box-list"></div>';
+    (add || []).forEach(function (a) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = (a.primary ? "btn-primary" : "btn-quiet") + " side-action icon"; b.textContent = a.label; b.title = a.title; b.setAttribute("aria-label", a.title);
+      b.addEventListener("click", a.run);
+      box.querySelector(".side-head").appendChild(b);
+    });
+    return box;
+  }
+  function spConceptsBox(key, st) {
+    var tabs = libKids({ lvl: "s", id: key }).filter(function (t) { return spTabState(st, t.id) !== "off"; });
+    var n = 0;
+    var box = spBoxEl("Concepts", 0, [{ label: "＋", title: "New concept", primary: true, run: function () { addAssetAt({ lvl: "s", id: key }); } }]);
+    var list = box.querySelector(".sp-box-list");
+    var tl = document.createElement("div");
+    tl.className = "sc-tabs";
+    if (!tabs.length) list.innerHTML = '<div class="side-empty"><b>No concepts yet.</b> Crop them out of your notes, or type one in.</div>';
+    tabs.forEach(function (t) {
+      var closed = !!(store.ui.spClosed || {})[t.id];
+      var grp = document.createElement("div");
+      grp.className = "sc-tabgroup" + (closed ? " closed" : "");
+      grp.setAttribute("data-tab", t.id);
+      var row = document.createElement("div");
+      row.className = "sc-tab";
+      row.innerHTML = '<button type="button" class="sc-go"><span class="caret">▸</span><span class="sc-name"></span></button>';
+      row.querySelector(".sc-name").textContent = tabLabel(t.id);
+      row.querySelector(".sc-go").addEventListener("click", function () {
+        store.ui.spClosed = store.ui.spClosed || {};
+        if (closed) delete store.ui.spClosed[t.id]; else store.ui.spClosed[t.id] = 1;
+        saveStore(); renderSubjectPage();
+      });
+      row.appendChild(dotsBtn(t));
+      grp.appendChild(row);
+      dndInto(row, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, t.id, null); } });
+      var cl = document.createElement("div");
+      cl.className = "sc-cards";
+      libKids(t).filter(function (c) { return spCardOn(st, c); }).forEach(function (c) {
+        n++;
+        var cg = document.createElement("div");
+        cg.className = "sc-cardgroup";
+        cg.setAttribute("data-card", c.id);
+        var cr = document.createElement("div");
+        cr.className = "sc-card";
+        cr.innerHTML = '<button type="button" class="sc-go"><span class="sc-name"></span></button>';
+        cr.querySelector(".sc-name").textContent = cardLabel(c.id);
+        cr.querySelector(".sc-go").addEventListener("click", function () { spViewCard(c.id); });
+        var bd = usedBadge(c); if (bd) cr.appendChild(bd);
+        cr.appendChild(dotsBtn(c));
+        cg.appendChild(cr);
+        dndInto(cr, { accepts: ["element"], onDrop: function (drag) { elementTo(drag, c.id, null); } });
+        var el = document.createElement("div");
+        el.className = "sc-els";
+        libElements(c.id).forEach(function (e) {
+          var er = document.createElement("div");
+          er.className = "sc-el";
+          er.setAttribute("data-ue", e.id);
+          er.innerHTML = '<button type="button" class="sc-go"><span class="sc-name"></span></button>';
+          er.querySelector(".sc-name").textContent = e.name;
+          er.querySelector(".sc-go").addEventListener("click", function () { spViewCard(c.id, e.id); });
+          er.appendChild(dotsBtn({ lvl: "e", id: e.id }));
+          el.appendChild(er);
+        });
+        dndList(el, { type: "element", item: ".sc-el", handle: ".sc-go", id: function (x) { return x.getAttribute("data-ue"); },
+          onDrop: function (drag, index) { elementTo(drag, c.id, index); } });
+        cg.appendChild(el);
+        cl.appendChild(cg);
+      });
+      dndList(cl, { type: "card", item: ".sc-cardgroup", handle: ".sc-card .sc-go", id: function (x) { return x.getAttribute("data-card"); },
+        onDrop: function (drag, index) { cardTo(drag, t.id, index); } });
+      grp.appendChild(cl);
+      tl.appendChild(grp);
+    });
+    dndList(tl, { type: "tab", item: ".sc-tabgroup", handle: ".sc-tab .sc-go", id: function (x) { return x.getAttribute("data-tab"); },
+      onDrop: function (drag, index) { tabTo(drag, key, index); } });
+    list.appendChild(tl);
+    box.querySelector(".side-count").textContent = n;
+    return box;
+  }
+  function spMethodsBox(key, st, items) {
+    var own = items.methods.filter(function (it) { return it.own; }), away = items.methods.filter(function (it) { return !it.own; });
+    var keep = {};
+    own.forEach(function (it) { keep[it.obj.id] = 1; });
+    var box = spBoxEl("Methods", own.length + away.length, [
+      { label: "＋📁", title: "New folder", run: function () { mfCreate(key); } },
+      { label: "＋", title: "New method", primary: true, run: function () { newProblemPage(key); } }
+    ]);
+    var list = box.querySelector(".sp-box-list");
+    if (!psPagesOf(key).length && !mfOf(key).length && !away.length) list.innerHTML = '<div class="side-empty"><b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses.</div>';
+    else list.appendChild(methodsByFolderEl(key, function (pg) { return !!keep[pg.id]; }));
+    if (away.length) {
+      var g = document.createElement("section");
+      g.className = "mf-group unfiled";
+      g.innerHTML = '<header class="mf-head"><span class="mf-caret"><span class="mf-icon">↪</span><span class="mf-name">From other subjects</span><span class="side-count">' + away.length + '</span></span></header><div class="mf-body"></div>';
+      away.forEach(function (it) { g.querySelector(".mf-body").appendChild(spItemEl(it, key, null)); });
+      list.appendChild(g);
+    }
+    return box;
+  }
+  function spExamplesBox(key, st, items) {
+    var own = items.examples.filter(function (it) { return it.own; }), away = items.examples.filter(function (it) { return !it.own; });
+    var box = spBoxEl("Examples", items.examples.length, [{ label: "＋", title: "New example", primary: true, run: function () { newExample(key); } }]);
+    var list = box.querySelector(".sp-box-list");
+    var linked = own.filter(function (it) { return it.links.length; }).map(function (it) { return it.obj; });
+    var loose = own.filter(function (it) { return !it.links.length; }).map(function (it) { return it.obj; });
+    if (!items.examples.length) list.innerHTML = '<div class="side-empty"><b>No examples yet.</b> Tap “＋ Example” and crop a worked example out of a document.</div>';
+    if (linked.length) list.appendChild(examplesGridEl(key, linked));
+    function group(title, els) {
+      list.insertAdjacentHTML("beforeend", '<div class="mg-label">' + escapeHtml(title) + '</div>');
+      list.appendChild(els);
+    }
+    if (loose.length) group("Not linked to a card", examplesGridEl(key, loose));
+    if (away.length) { var g = document.createElement("div"); g.className = "ex-grid"; away.forEach(function (it) { g.appendChild(spItemEl(it, key, null)); }); group("From other subjects", g); }
+    return box;
+  }
+  function spSeparate(key, st, host) {
+    var items = spItems(key, st);
+    var grid = document.createElement("div");
+    grid.className = "sp-sep";
+    grid.appendChild(spConceptsBox(key, st));
+    grid.appendChild(spMethodsBox(key, st, items));
+    grid.appendChild(spExamplesBox(key, st, items));
+    host.appendChild(grid);
+  }
+
   function renderSubjectPage() {
     var host = $("subjectPage"); if (!host) return;
     spPark();
     var key = shownSubjectKey();
     host.innerHTML = "";
     if (!key || !refExists({ lvl: "s", id: key })) return;
-    var sref = { lvl: "s", id: key };
-    var head = document.createElement("div");
-    head.className = "subj-tools";
-    head.innerHTML = '<span class="subj-tools-label">Concepts</span>';
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-primary"; add.textContent = "＋ Add concept";
-    add.title = "crop it out of a document, or type it";
-    add.addEventListener("click", function () { addAssetAt(sref); });
-    head.appendChild(add);
-    var addX = document.createElement("button");
-    addX.type = "button"; addX.className = "btn-quiet"; addX.textContent = "＋ New example";
-    addX.addEventListener("click", function () { newExample(key); });
-    head.appendChild(addX);
-    host.appendChild(head);
-    var body = document.createElement("div");
-    body.className = "sp-body";
-    var tabs = libKids(sref);
-    if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No tabs yet — tap “＋ Add concept” to crop the first one out of a document.</p>';
-    tabs.forEach(function (t) { body.appendChild(spTabEl(t)); });
-    dndList(body, { type: "tab", item: ".sp-tab", handle: ".sp-tab-head", id: function (el) { return el.getAttribute("data-tab"); },
-      onDrop: function (drag, index) { libMoved("Moved “" + tabLabel(drag.id) + "”", function () { libMove({ lvl: "t", id: drag.id }, key, index); }); } });
-    host.appendChild(body);
+    var st = spState(key);
+    if (sumPick && sumPick.key === key) {
+      // picking for a summary: every concept, full size, to tick; the method stages in a box above
+      var pick = subjectPickPanel(key);
+      pick.classList.add("sp-pickbox");
+      host.appendChild(pick);
+      spMerged(key, { view: "merged", off: {}, hide: { m: 1, x: 1 } }, host);
+    } else {
+      host.appendChild(spHeadEl(key, st));
+      host.appendChild(spChipsEl(key, st));
+      if (st.view === "separate") spSeparate(key, st, host); else spMerged(key, st, host);
+      host.appendChild(subjectSummariesSection(key));
+    }
     // a custom subject's notes, under its material, while it has any
     if (key.slice(0, 2) === "s:") {
       var nw = $("cpNotesWrap");
@@ -10731,12 +11198,7 @@ function __detabaseMain() {
     }
     fillAllIn(host);
     try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
-    // the tools in the blocks just placed draw themselves at their real size
-    var origins = {};
-    Array.prototype.forEach.call(host.querySelectorAll(".sp-card.bi"), function (s) { var c = BI.cards[s.getAttribute("data-card")]; if (c) origins[c.origin] = 1; });
-    setTimeout(function () {
-      Object.keys(origins).forEach(function (t) { if (refreshers[t]) { try { refreshers[t](); } catch (e) {} } });
-    }, 0);
+    spRefreshTools(host);
     if (sumPick) { try { sumPickPaint(); } catch (e) {} }
   }
   // re-draw whatever shows the library, after it changed
@@ -11189,7 +11651,6 @@ function __detabaseMain() {
     try { applyEtiEdits(); } catch (e) {}
     renderEtiTree();
     if (spShown()) renderSubjectPage();
-    try { renderSubjectExtras(shownSubjectKey()); } catch (e) {}
     if (miningScreen) { try { renderEtiMain(); } catch (e) {} }
     if (activePsPage && !viewingProblem) { try { renderPsPane(); } catch (e) {} }
     if (activeSummary) { try { renderSumPane(); } catch (e) {} }
@@ -11488,7 +11949,6 @@ function __detabaseMain() {
   // everything that shows the library, after something was added to it
   function libRefreshAll() {
     try { renderEtiTree(); spRefresh(); } catch (e) { if (window.console) console.error("library render:", e); }
-    try { renderSubjectExtras(shownSubjectKey()); } catch (e) {}
     try { if (miningScreen) renderEtiMain(); } catch (e) {}
   }
   // "pick one, or make a new one" — the step the destination is built out of
@@ -14729,13 +15189,6 @@ function __detabaseMain() {
 
   }
   // ============================================================
-  // A SUBJECT'S OWN PAGE — its concepts on the left, its methods on the right
-  // The concepts ARE the subject's raw material — its tabs and what is in them — so they are shown
-  // once, in the main column, with "＋ Add concept" sitting right above their tabs. The Methods panel
-  // is a column of its own on the right, with its own scrolling, drawing each method with the very
-  // same vine row the main page uses (one tree, scoped — not a second one).
-  // ============================================================
-  // ============================================================
   // EXAMPLES — worked examples, a kind of their own
   // Not a concept and not a method: a picture cut out of a document, named, filed under a subject,
   // and connected to the cards it illustrates (and, if it is a worked example of one, to methods).
@@ -14940,15 +15393,19 @@ function __detabaseMain() {
   function examplesGridEl(key, list) {
     var grid = document.createElement("div");
     grid.className = "ex-grid";
+    var group = (list || examplesOf(key)).filter(function (x) { return x.subject === key; });
     (list || examplesOf(key)).forEach(function (ex) { grid.appendChild(exThumbEl(ex)); });
     dndList(grid, { type: "example", item: ".ex-thumb", axis: "grid", id: function (el) { return el.getAttribute("data-ex"); },
-      canDrop: function (drag) { var ex = exampleById(drag.id); return !!ex && ex.subject === key; },
+      canDrop: function (drag) { return group.some(function (x) { return x.id === drag.id; }); },
       onDrop: function (drag, index) {
         var ex = exampleById(drag.id);
         libMoved("Moved “" + ex.name + "”", function () {
-          var l = examplesOf(key).filter(function (x) { return x !== ex; });
-          l.splice(index, 0, ex);
-          l.forEach(function (x, i) { x.order = i; });
+          // the group keeps the places it had in the subject's order; only its own order changes
+          var all = examplesOf(key), slots = group.map(function (x) { return all.indexOf(x); }).sort(function (a, b) { return a - b; });
+          var mine = group.filter(function (x) { return x !== ex; });
+          mine.splice(index, 0, ex);
+          slots.forEach(function (sl, i) { all[sl] = mine[i]; });
+          all.forEach(function (x, i) { x.order = i; });
         });
       } });
     return grid;
@@ -15032,8 +15489,8 @@ function __detabaseMain() {
     r.querySelector(".vine-acts").appendChild(dots);
     return r;
   }
-  function mfGroupEl(key, f) {
-    var fid = f ? f.id : null, pages = methodsIn(key, fid);
+  function mfGroupEl(key, f, keep) {
+    var fid = f ? f.id : null, pages = methodsIn(key, fid).filter(function (pg) { return !keep || keep(pg); });
     var closed = !!(f && (store.ui.mfClosed || {})[f.id]);
     var g = document.createElement("section");
     g.className = "mf-group" + (f ? " is-folder" : " unfiled") + (closed ? " closed" : "");
@@ -15064,19 +15521,23 @@ function __detabaseMain() {
     function ours(drag) { var pg = psPageById(drag.id); return !!pg && pg.subject === key; }
     function into(drag, index) {
       var pg = psPageById(drag.id);
-      libMoved("Moved “" + pg.name + "”" + (f ? " to " + f.name : " out of its folder"), function () { methodMove(pg, fid, index); });
+      // the index counts the rows on screen; among all of the folder's methods it is before the same one
+      var vis = pages.filter(function (x) { return x !== pg; }), full = methodsIn(key, fid).filter(function (x) { return x !== pg; });
+      var at = index == null ? null : vis[index] ? full.indexOf(vis[index]) : vis.length ? full.indexOf(vis[vis.length - 1]) + 1 : full.length;
+      libMoved("Moved “" + pg.name + "”" + (f ? " to " + f.name : " out of its folder"), function () { methodMove(pg, fid, at); });
     }
     dndList(body, { type: "method", item: ".vine", handle: ".vine-page", id: function (el) { return el.getAttribute("data-pg"); }, canDrop: ours, onDrop: into });
     dndInto(head, { accepts: ["method"], canDrop: ours, onDrop: function (drag) { into(drag, null); } });
     return g;
   }
   // a subject's methods, folder by folder, unfiled last
-  function methodsByFolderEl(key) {
+  //   keep(pg): which methods are on screen (all of them when not given)
+  function methodsByFolderEl(key, keep) {
     var wrap = document.createElement("div");
     wrap.className = "mf-list";
     var folders = mfOf(key);
-    folders.forEach(function (f) { wrap.appendChild(mfGroupEl(key, f)); });
-    if (methodsIn(key, null).length || folders.length) wrap.appendChild(mfGroupEl(key, null));
+    folders.forEach(function (f) { wrap.appendChild(mfGroupEl(key, f, keep)); });
+    if (methodsIn(key, null).length || folders.length) wrap.appendChild(mfGroupEl(key, null, keep));
     dndList(wrap, { type: "mfolder", item: ".mf-group.is-folder", handle: ".mf-head", id: function (el) { return el.getAttribute("data-mf"); },
       onDrop: function (drag, index) {
         var f = mfById(drag.id); if (!f) return;
@@ -15087,59 +15548,6 @@ function __detabaseMain() {
         });
       } });
     return wrap;
-  }
-  function subjectMethodsPanel(key) {
-    var pages = psPagesOf(key).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
-    var box = document.createElement("section");
-    box.className = "side-box side-full";
-    // the box runs the length of the concepts; what is in it stays in view while they scroll by
-    box.innerHTML = '<div class="side-sticky"><header class="side-head"><h3>Methods <span class="side-count">' + pages.length + '</span></h3></header><div class="side-list"></div></div>';
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-primary side-action"; add.textContent = "＋ New method";
-    add.addEventListener("click", function () { newProblemPage(key); });
-    var addF = document.createElement("button");
-    addF.type = "button"; addF.className = "btn-quiet side-action"; addF.textContent = "＋ Folder"; addF.title = "a folder holds several methods";
-    addF.addEventListener("click", function () { mfCreate(key); });
-    box.querySelector(".side-head").appendChild(addF);
-    box.querySelector(".side-head").appendChild(add);
-    var list = box.querySelector(".side-list");
-    if (!pages.length && !mfOf(key).length) {
-      list.innerHTML = '<div class="side-empty"><b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses.</div>';
-    } else list.appendChild(methodsByFolderEl(key));
-    return box;
-  }
-  function renderSubjectExtras(key) {
-    Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-sums, .subj-exs"), function (n) { n.remove(); });
-    var on = !!key && refExists({ lvl: "s", id: key });
-    document.body.classList.toggle("subject-page", on);
-    if (sumPick && sumPick.key !== key) sumPickEnd();   // picking belongs to the subject it started on
-    if (!on) return;
-    var content = document.querySelector(".content");
-    // the right-hand column: its methods — or, while picking, the stages to tick
-    var side = document.createElement("aside");
-    side.className = "subj-side";
-    side.appendChild(sumPick ? subjectPickPanel(key) : subjectMethodsPanel(key));
-    content.insertBefore(side, content.firstChild);
-    // the summaries: a section of their own, under both columns
-    var sums = null;
-    if (!sumPick) {
-      sums = subjectSummariesSection(key);
-      var foot = content.querySelector(":scope > .page-foot");
-      if (foot) content.insertBefore(sums, foot); else content.appendChild(sums);
-      content.insertBefore(subjectExamplesSection(key), sums);
-      sums = content.querySelector(":scope > .subj-exs");
-    }
-    if (sumPick) sumPickPaint();
-    // the Methods column runs the whole length of the concepts beside it: it spans exactly the rows
-    // the left column takes, so the summaries section lands under both
-    var stop = sums || content.querySelector(":scope > .page-foot");
-    var span = 0;
-    Array.prototype.some.call(content.children, function (n) {
-      if (n === stop) return true;
-      if (n !== side && getComputedStyle(n).display !== "none") span++;
-      return false;
-    });
-    side.style.gridRow = "1 / span " + Math.max(1, span);
   }
   // ============================================================
   // SUMMARIES — a subject's own revision sheet
@@ -15198,20 +15606,6 @@ function __detabaseMain() {
     return hit;
   }
 
-  // ---- the Examples section ----
-  function subjectExamplesSection(key) {
-    var list = examplesOf(key);
-    var sec = document.createElement("section");
-    sec.className = "subj-sums subj-exs";
-    sec.innerHTML = '<header class="sums-head"><h3>Examples <span class="side-count">' + list.length + '</span></h3></header>';
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-primary"; add.textContent = "＋ New example";
-    add.addEventListener("click", function () { newExample(key); });
-    sec.querySelector(".sums-head").appendChild(add);
-    if (!list.length) sec.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty"><b>No examples yet.</b> Tap “＋ New example” and crop a worked example out of a document.</div>');
-    else sec.appendChild(examplesGridEl(key, list));
-    return sec;
-  }
   // ---- the Summaries section: its own row under the concepts and the methods ----
   function subjectSummariesSection(key) {
     var list = summariesOf(key).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
@@ -15268,7 +15662,7 @@ function __detabaseMain() {
     var sm = editing ? summaryById(editing) : null;
     sumPick = { key: key, picked: {}, editing: sm ? sm.id : null };
     if (sm) sm.items.forEach(function (r) { sumPick.picked[refKey(r)] = { lvl: r.lvl, id: r.id }; });
-    if (shownSubjectKey() === key) renderSubjectExtras(key);
+    if (shownSubjectKey() === key) renderSubjectPage();
     else openSubjectRef(key);      // its page renders, and paints the pick marks as it does
   }
   // the marks on the concepts themselves: the whole block is the target, so it is easy to hit
@@ -15319,7 +15713,7 @@ function __detabaseMain() {
       tray = document.createElement("div");
       tray.id = "sumTray"; tray.className = "sum-tray";
       tray.innerHTML = '<span class="sum-tray-text"></span><button type="button" class="btn-quiet" data-a="x">Cancel</button><button type="button" class="btn-primary" data-a="go"></button>';
-      tray.querySelector('[data-a="x"]').addEventListener("click", function () { var k = sumPick && sumPick.key, ed = sumPick && sumPick.editing; sumPickEnd(); if (ed) openSummary(ed); else if (k) renderSubjectExtras(k); });
+      tray.querySelector('[data-a="x"]').addEventListener("click", function () { var k = sumPick && sumPick.key, ed = sumPick && sumPick.editing; sumPickEnd(); if (ed) openSummary(ed); else if (k) renderSubjectPage(); });
       tray.querySelector('[data-a="go"]').addEventListener("click", sumPickCommit);
       document.body.appendChild(tray);
     }
@@ -15551,25 +15945,26 @@ function __detabaseMain() {
     return b;
   }
   function decorateCards() {
-    Array.prototype.slice.call(document.querySelectorAll("#paneHost .lib-dots, #paneHost .used-badge")).forEach(function (x) { if (!x.closest("#libBar, .sp-tab-head")) x.remove(); });
+    Array.prototype.slice.call(document.querySelectorAll("#paneHost .deco")).forEach(function (x) { x.remove(); });   // only what this put there
     var seen = {};
     Array.prototype.forEach.call(document.querySelectorAll("#subjectPage [data-el]"), function (n) {
       var key = n.getAttribute("data-el"); if (seen[key]) return; seen[key] = 1;
       var ref = { lvl: "c", id: key }, host = cardTitleEl(n) || n, bd = usedBadge(ref);
-      if (bd) host.appendChild(bd);
-      host.appendChild(dotsBtn(ref));
+      if (bd) host.appendChild(deco(bd));
+      host.appendChild(deco(dotsBtn(ref)));
     });
     Array.prototype.forEach.call(document.querySelectorAll("#paneHost .ue-card"), function (d) {
       var ref = { lvl: "c", id: d.getAttribute("data-uc") }, h = d.querySelector(":scope > h4"); if (!h) return;
-      var bd = usedBadge(ref); if (bd) h.appendChild(bd);
-      h.appendChild(dotsBtn(ref));
+      var bd = usedBadge(ref); if (bd) h.appendChild(deco(bd));
+      h.appendChild(deco(dotsBtn(ref)));
     });
     Array.prototype.forEach.call(document.querySelectorAll("#paneHost .ue-block"), function (d) {
       var ref = { lvl: "e", id: d.getAttribute("data-ue") }, h = d.querySelector(".ue-head"); if (!h) return;
-      var bd = usedBadge(ref); if (bd) h.insertBefore(bd, h.querySelector(".ue-edit"));
-      h.appendChild(dotsBtn(ref));
+      var bd = usedBadge(ref); if (bd) h.insertBefore(deco(bd), h.querySelector(".ue-edit"));
+      h.appendChild(deco(dotsBtn(ref)));
     });
   }
+  function deco(el) { el.classList.add("deco"); return el; }
 
   // ---- small popover menu ----
   var libMenuEl = null;
