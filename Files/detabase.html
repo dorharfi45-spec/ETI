@@ -3452,7 +3452,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B75</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B75.1</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -10094,7 +10094,7 @@ function __detabaseMain() {
   }
   // B30 saved one level too high (group=subject, folder=tab, pane=card, block=element) — shift it down
   (function migrateLibLevels() {
-    if (store.libv === 2) return;
+    if (store.libv >= 2) return;
     libEnsure();
     var oldCards = store.cards, oldEls = store.elements, tabId = function (id) { return id.replace(/^uc_/, "ut_"); };
     store.tabs = oldCards.map(function (c) { return { id: tabId(c.id), subject: c.tab, name: c.name, created: c.created || Date.now() }; });
@@ -10119,6 +10119,72 @@ function __detabaseMain() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
   libEnsure();
+  // ---- repair: B75 let the B30 shift above run again ----
+  // B75 raised libv to 3, and the shift above only skipped itself at exactly 2 — so every later load
+  // ran it again: cards became tabs, elements became cards, and the real tabs were dropped. Repaired
+  // here, once. The tabs, cards and elements come back from the backup taken on the load just before
+  // B75 changed anything (and the method link cache with them). Anything made after that backup is
+  // kept: its ids survived the shifts, so an element finds its card again where that can still be
+  // read, and otherwise goes into a "Recovered" card — nothing is hidden and nothing is deleted.
+  (function repairShift() {
+    if (store.libFix) return;
+    store.libFix = 1;
+    var backup = null;
+    try { backup = JSON.parse(localStorage.getItem("detabase.v1.pre-place") || "null"); } catch (e) {}
+    // a backup taken after a shift (another device can pass a shifted store on) is no good
+    if (backup && (backup.tabs || []).some(function (t) { return !/^(f|s):/.test(t.subject || ""); })) backup = null;
+    var bad = store.tabs.some(function (t) { return !/^(f|s):/.test(t.subject || ""); });
+    var lost = !store.tabs.length && backup && (backup.tabs || []).length;
+    function persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {} }
+    if (!bad && !lost) { persist(); return; }
+    try { localStorage.setItem("detabase.v1.pre-repair", localStorage.getItem(LS_KEY) || ""); } catch (e) {}
+    function strip(x, f) { var o = { id: x.id, name: x.name, created: x.created || Date.now() }; o[f] = x[f]; return o; }
+    var cardId = function (id) { return String(id).replace(/^ut_/, "uc_"); };
+    var b = backup || {};
+    var tabs = (b.tabs || []).filter(function (t) { return /^(f|s):/.test(t.subject || ""); }).map(function (t) { return strip(t, "subject"); });
+    var cards = (b.cards || []).map(function (c) { return strip(c, "tab"); });
+    var els = (b.elements || []).map(function (e) { return strip(e, "card"); });
+    // made after the backup: read what one shift made of it (a card is a "tab" now, an element's
+    // card hides in the "card" made from it)
+    var tabOf = {};
+    store.cards.forEach(function (c) { tabOf[c.id] = c.tab; });
+    if (bad) store.tabs.forEach(function (t) {
+      var id = cardId(t.id);
+      if (id.indexOf("uc_") === 0 && !byId(cards, id) && !byId(store.elements, t.id.replace(/^ut_/, "ue_")))
+        cards.push({ id: id, tab: t.subject, name: t.name, created: t.created || Date.now() });
+    });
+    store.elements.forEach(function (e) {
+      if (byId(els, e.id)) return;
+      var t = tabOf[e.card], c = t ? (t.indexOf("ut_") === 0 ? cardId(t) : t) : null;
+      els.push({ id: e.id, card: c, name: e.name, created: e.created || Date.now() });
+    });
+    // whatever lost its parent goes somewhere it can be seen
+    var rec = null, recTab = null, recCard = null;
+    function recSubject() { if (!rec) { rec = { id: uid("s_"), folder: "eti", name: "Recovered", group: "base" }; store.subjects.push(rec); } return "s:" + rec.id; }
+    function recTabId() { if (!recTab) { recTab = { id: uid("ut_"), subject: recSubject(), name: "Recovered", created: Date.now() }; tabs.push(recTab); } return recTab.id; }
+    cards.forEach(function (c) {
+      if (c.tab && (c.tab.slice(0, 2) === "b:" || byId(tabs, c.tab))) return;
+      c.tab = recTabId();
+    });
+    els.forEach(function (e) {
+      if (e.card && (byId(cards, e.card) || e.card.indexOf(":") > 0)) return;
+      if (!recCard) { recCard = { id: uid("uc_"), tab: recTabId(), name: "Recovered", created: Date.now() }; cards.push(recCard); }
+      e.card = recCard.id;
+    });
+    store.tabs = tabs; store.cards = cards; store.elements = els;
+    var bpages = {};
+    ((b.ps || {}).pages || []).forEach(function (pg) { bpages[pg.id] = pg.assets || []; });
+    store.ps.pages.forEach(function (pg) {      // the flat link cache, as it was
+      if (bpages[pg.id]) pg.assets = bpages[pg.id];
+      else pg.assets = (pg.assets || []).map(function (r) {
+        if (r.lvl === "t") return { lvl: "c", id: r.id.indexOf("ut_") === 0 ? cardId(r.id) : r.id };
+        if (r.lvl === "s" && !/^(f|s):/.test(r.id)) return { lvl: "t", id: r.id };
+        return r;
+      });
+    });
+    if (store.libv >= 3) store.libv = 2;          // the custom orders are numbered again by the placement step
+    persist();
+  })();
 
   // ---- schema 5: problem-solving pages move under their Subject ----
   // Topics and subtopics are gone. A page belongs to exactly one subject: the old topic name becomes
