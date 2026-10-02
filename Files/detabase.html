@@ -843,6 +843,25 @@
   .subj-tools { display: flex; align-items: center; gap: 12px; margin: 14px 0 0; }
   .subj-tools-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--text-muted); flex: 1; }
   #customPane .subj-tools { margin-top: 6px; }
+  /* ---- examples: amber, everywhere ---- */
+  .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .ex-thumb { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); overflow: hidden; cursor: pointer; }
+  .ex-thumb:hover { border-color: #d97706; }
+  .ex-pic { height: 132px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--surface-1); padding: 6px; }
+  .ex-pic .ps-crop, .ex-pic img { max-width: 100%; max-height: 120px; }
+  .ex-cap { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 6px 6px 8px 10px; }
+  .ex-cap b { flex: 1; min-width: 0; font-size: .88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ex-cap .vine-nocard { flex-basis: 100%; }
+  .ex-cap .lib-dots { position: static; }
+  .ex-badge, body .mp-lvl.lvl-x { font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; border-radius: 6px; padding: 2px 6px;
+    color: color-mix(in srgb, #d97706 78%, var(--text-primary)); background: color-mix(in srgb, #f59e0b 20%, transparent); }
+  .ex-view .ex-big { display: flex; justify-content: center; margin: 4px 0 14px; overflow: auto; }
+  .ex-sub { margin: 0 0 6px; }
+  .ex-links .md-sec { margin-top: 10px; }
+  .ct-ex { fill: #f59e0b; stroke: #b45309; stroke-width: 1.2; cursor: pointer; }
+  .ct-ex.unlinked { fill: none; stroke-dasharray: 3 3; }
+  .ct-exline { stroke: #d97706; stroke-width: 1.4; stroke-dasharray: 2 3; fill: none; pointer-events: none; }
+  .ct-lbl.ex { fill: #b45309; }
   /* ---- method folders ---- */
   .mf-list { display: flex; flex-direction: column; gap: 8px; }
   .mf-group { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); min-width: 0; }
@@ -3481,7 +3500,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B79</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B80</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3503,6 +3522,8 @@
   <div id="psAssets" class="ps-assets"></div>
   <div class="sidebar-label" style="margin-top:18px">Cards</div>
   <div id="psCards" class="ps-assets"></div>
+  <div class="sidebar-label" style="margin-top:18px">Examples</div>
+  <div id="psExamples" class="ps-assets"></div>
 </div>
 
 <div id="sumPane" hidden>
@@ -3562,6 +3583,7 @@
     <span class="pv-spacer"></span>
     <button type="button" id="pvCutClear" class="tool-btn">Clear</button>
     <button type="button" id="pvCutMethod" class="tool-btn" hidden>Save as a method →</button>
+    <button type="button" id="pvCutExample" class="tool-btn" hidden>Save as an example →</button>
     <button type="button" id="pvCutSave" class="tool-btn primary">Save to library →</button>
   </div>
 </div>
@@ -9256,6 +9278,7 @@ function __detabaseMain() {
       saveLabel: "Save to library →",
       onDone: function (clips, kind, cb) {
         if (kind === "method") saveClipAsMethod(clips[0], cb);
+        else if (kind === "example") saveClipAsExample(clips[0], null, cb);
         else fileClipsAsConcepts(clips, null, cb);
       }
     });
@@ -9282,7 +9305,7 @@ function __detabaseMain() {
     if (mission && !mission.multi) {
       $("pvCutCount").textContent = n ? "Marked — draw again to change it, or carry on below" : (mission.hint || how);
     } else if (own && n > 1) {
-      $("pvCutCount").textContent = n + " parts marked · save them as concepts, or mark just one to save it as a method";
+      $("pvCutCount").textContent = n + " parts marked · save them as concepts, or mark just one to save it as a method or an example";
     } else {
       $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") + how;
     }
@@ -9291,6 +9314,8 @@ function __detabaseMain() {
     // the reader's own Cut parts can also make a method — out of exactly one cut part
     var mb = $("pvCutMethod");
     if (mb) { mb.hidden = !own; mb.disabled = n !== 1; }
+    var xb = $("pvCutExample");
+    if (xb) { xb.hidden = !own; xb.disabled = n !== 1; }
   }
   function pdfSlotUnits(d) { return d && d._uw ? { w: d._uw, h: d._uh } : null; }
   function pdfSlotByPage(page) { return (pdfView && pdfView.slots[page - 1]) || null; }
@@ -9702,7 +9727,7 @@ function __detabaseMain() {
       // Nothing is cleared until the save has actually happened: backing out of any step that
       // follows leaves the marks exactly where they were, ready to save another way.
       var session = pdfCut;
-      mission.onDone(clips, kind === "method" ? "method" : "concept", {
+      mission.onDone(clips, kind === "method" || kind === "example" ? kind : "concept", {
         saved: function () {
           pushPages();
           if (pdfCut === session) { pdfCut.marks = []; pdfDrawMarks(); pdfCutBar(); }
@@ -10686,6 +10711,10 @@ function __detabaseMain() {
     add.title = "crop it out of a document, or type it";
     add.addEventListener("click", function () { addAssetAt(sref); });
     head.appendChild(add);
+    var addX = document.createElement("button");
+    addX.type = "button"; addX.className = "btn-quiet"; addX.textContent = "＋ New example";
+    addX.addEventListener("click", function () { newExample(key); });
+    head.appendChild(addX);
     host.appendChild(head);
     var body = document.createElement("div");
     body.className = "sp-body";
@@ -11377,6 +11406,13 @@ function __detabaseMain() {
     }
     var cs = $("psCards");
     if (cs) { cs.innerHTML = ""; cs.appendChild(psCardsEl(pg)); }
+    var xs = $("psExamples");
+    if (xs) {
+      xs.innerHTML = "";
+      var exs = examplesOfMethod(pg.id);
+      if (!exs.length) xs.innerHTML = '<p class="muted pc-none">No worked examples of it yet — link one from an example, or make one from the subject page.</p>';
+      else { var g = document.createElement("div"); g.className = "ex-grid"; exs.forEach(function (x) { g.appendChild(exThumbEl(x)); }); xs.appendChild(g); }
+    }
   }
   // the cards a method is connected to: the ones its concepts sit in ("via …"), and the ones it was
   // connected to directly (those can be taken off here; a derived one goes when its concept does)
@@ -14084,12 +14120,13 @@ function __detabaseMain() {
     box.className = "em-results";
     if (!q) return box;
     function section(title) { box.insertAdjacentHTML("beforeend", '<div class="em-rhead">' + escapeHtml(title) + '</div>'); }
-    function hitRow(label, sub, onMain, extra) {
+    var TYPES = { c: "Concept", p: "Method", x: "Example" };
+    function hitRow(label, sub, onMain, extra, type) {
       var row = document.createElement("div");
       row.className = "em-hit";
       var b = document.createElement("button");
       b.type = "button"; b.className = "em-hit-main";
-      b.innerHTML = '<span>' + escapeHtml(label) + '</span>' + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '');
+      b.innerHTML = '<span>' + (type ? '<span class="mp-lvl lvl-' + type + '">' + TYPES[type] + '</span> ' : '') + escapeHtml(label) + '</span>' + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '');
       b.addEventListener("click", onMain);
       row.appendChild(b);
       (extra || []).forEach(function (x) {
@@ -14107,7 +14144,7 @@ function __detabaseMain() {
         hitRow(en.name, refPath(en.ref), function () { narrowAdd(en.ref); }, [
           { label: "↗", title: "go to it in ETI", run: function () { openRef(en.ref); } },
           { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
-        ]);
+        ], "c");
       });
     }
     var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).slice(0, 8);
@@ -14116,7 +14153,17 @@ function __detabaseMain() {
       pages.forEach(function (en) {
         hitRow(en.name, en.path + (en.assets ? " · uses " + en.assets : ""), function () { selectPsPage(en.ref.id); }, [
           { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
-        ]);
+        ], "p");
+      });
+    }
+    var exs = searchEntries(exEnsure().map(function (x) {
+      var cards = exampleCards(x).map(refName).join(" ");
+      return { ex: x, name: x.name, hay: [x.name, (x.tags || []).join(" "), subjectName(x.subject), cards, exMethods(x).map(function (m) { return m.name; }).join(" ")].join(" ").toLowerCase(), cards: cards };
+    }), q, function (en) { return en.hay; }).slice(0, 8);
+    if (exs.length) {
+      section("Examples");
+      exs.forEach(function (en) {
+        hitRow(en.name, subjectName(en.ex.subject) + (en.cards ? " · " + en.cards : " · not linked to a card"), function () { exOpen(en.ex.id); }, [], "x");
       });
     }
     // situations: the tag search, matched against everything ETI holds
@@ -14131,7 +14178,7 @@ function __detabaseMain() {
         });
       });
     }
-    if (!concepts.length && !pages.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
+    if (!concepts.length && !pages.length && !exs.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
     return box;
   }
 
@@ -14394,15 +14441,17 @@ function __detabaseMain() {
   }
   function ctHitAt(x, y) {
     var t = document.elementFromPoint(x, y);
-    t = t && t.closest && t.closest("[data-k], [data-v]");
+    t = t && t.closest && t.closest("[data-k], [data-v], [data-x]");
     if (!t || !ctEls || !ctEls.svg.contains(t)) return null;
     if (t.hasAttribute("data-v")) return { vine: t.getAttribute("data-v") };
+    if (t.hasAttribute("data-x")) return { example: t.getAttribute("data-x") };
     return ctEls.model.nodes[t.getAttribute("data-k")] || null;
   }
   function ctTap(x, y) {
     var h = ctHitAt(x, y);
     if (!h) return;
     if (h.vine) { selectPsPage(h.vine); return; }
+    if (h.example) { exOpen(h.example); return; }
     var n = h;
     // a circle too small to aim at is a ring tap: zoom in first
     if (n.leaf && n.r * ctView.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
@@ -14428,7 +14477,7 @@ function __detabaseMain() {
       if (ids().length === 1) {
         startPan(e.pointerId);
         var h = ctHitAt(e.clientX, e.clientY), p0 = pan;
-        if (h && !h.vine && h.leaf) holdT = setTimeout(function () {
+        if (h && !h.vine && !h.example && h.leaf) holdT = setTimeout(function () {
           if (pan !== p0 || p0.moved >= 8) return;
           p0.held = true;
           narrowAdd(h.ref);
@@ -14552,6 +14601,27 @@ function __detabaseMain() {
       var lb = el("text", { x: ctF(v.mid[0]), y: ctF(v.mid[1]), dy: "-0.55em", fill: v.color, "class": "ct-vlbl" + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gLbls);
       lb.textContent = v.pg.name;
     });
+    // examples: an amber square beside the card it illustrates, tied to each of its cards and methods;
+    // one with no card hangs below its subject
+    var gEx = el("g", { "class": "ct-exs" }, world), placed = {}, ql = mainQ.trim().toLowerCase();
+    exEnsure().forEach(function (ex) {
+      var ns = exampleCards(ex).map(function (r) { return model.nodes[refKey(r)]; }).filter(Boolean);
+      var vs = vines.filter(function (v) { return (ex.methodIds || []).indexOf(v.pg.id) >= 0; });
+      var base = ns[0] || model.nodes["s|" + ex.subject]; if (!base) return;
+      var k = placed[base.key] = (placed[base.key] || 0) + 1;
+      var a = ns.length ? -Math.PI / 4 + (k - 1) * 0.5 : Math.PI / 2 + (k - 1) * 0.3, d = base.r + 12;
+      var x = base.x + Math.cos(a) * d, y = base.y + Math.sin(a) * d, S = 8;
+      var dim = marks && !(ns.some(function (n) { return n.lit; }) || vs.some(function (v) { return marks.vis[v.pg.id]; }) || (ql && ex.name.toLowerCase().indexOf(ql) >= 0));
+      ns.concat(vs).forEach(function (t) {
+        var tx = t.mid ? t.mid[0] : t.x, ty = t.mid ? t.mid[1] : t.y;
+        if (!t.mid && !t.leaf) { var dx = x - t.x, dy = y - t.y, dd = Math.hypot(dx, dy) || 1; tx = t.x + dx / dd * t.r; ty = t.y + dy / dd * t.r; }
+        el("line", { x1: ctF(x), y1: ctF(y), x2: ctF(tx), y2: ctF(ty), "class": "ct-exline" + (dim ? " dim" : "") }, gEx);
+      });
+      var sq = el("rect", { x: ctF(x - S), y: ctF(y - S), width: 2 * S, height: 2 * S, rx: 3, "class": "ct-ex" + (dim ? " dim" : "") + (ns.length ? "" : " unlinked"), "data-x": ex.id }, gEx);
+      el("title", {}, sq).textContent = "Example · " + ex.name + (ns.length ? "" : " — not linked to a card");
+      var t = el("text", { x: ctF(x), y: ctF(y + S), dy: "1em", "class": "ct-lbl leaf ex" + (dim ? " dim" : "") }, gLbls);
+      labels.push({ el: t, r: S, leaf: true, lvl: "x", full: ex.name, hit: false });
+    });
     svg.classList.toggle("few", live > 0 && live <= 8);
     var E = ctEls = { box: box, svg: svg, world: world, labels: labels, model: model,
       allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
@@ -14665,6 +14735,224 @@ function __detabaseMain() {
   // is a column of its own on the right, with its own scrolling, drawing each method with the very
   // same vine row the main page uses (one tree, scoped — not a second one).
   // ============================================================
+  // ============================================================
+  // EXAMPLES — worked examples, a kind of their own
+  // Not a concept and not a method: a picture cut out of a document, named, filed under a subject,
+  // and connected to the cards it illustrates (and, if it is a worked example of one, to methods).
+  // Links are ids, so a card moved anywhere keeps its examples.
+  //   store.examples = [{ id, subject, name, tags, cardIds, methodIds, order, created }]
+  //   the picture: the example's own canvas doc, ps.main — the same slot a method's crop uses
+  // ============================================================
+  function exClip(ex) { return psBody(ex.id).main; }
+  function exMethods(ex) { return (ex.methodIds || []).map(psPageById).filter(Boolean); }
+  function examplesOfMethod(pgId) { return exEnsure().filter(function (x) { return (x.methodIds || []).indexOf(pgId) >= 0; }); }
+  function examplesOfCard(cardId) { return exEnsure().filter(function (x) { return (x.cardIds || []).indexOf(cardId) >= 0; }); }
+  function newExample(subjectKey) {
+    cropFromPdf({
+      title: "Crop the example",
+      hint: "Draw a loop around the whole worked example.",
+      saveLabel: "Use this →",
+      onDone: function (clip) { saveClipAsExample(clip, { subject: subjectKey }); }
+    });
+  }
+  // name → subject → what it connects to → Save. Nothing is written until Save, so backing out
+  // anywhere leaves no half-made example (and the clipboard reader keeps its marks).
+  function saveClipAsExample(clip, start, cb) {
+    cb = cb || {};
+    function cancelled() { if (cb.cancelled) cb.cancelled(); }
+    askName("Name this example", "Every example needs a name. You can change it whenever you like.", "", function (name) {
+      function go(k) { exReview({ name: name, subject: k, clip: clip, cardIds: [], methodIds: [] }, cb); }
+      if (start && start.subject) go(start.subject);
+      else pickSubject("Which subject?", "Which subject is this example for?", go, cancelled);
+    }, cancelled);
+  }
+  // pick one method — this subject's first
+  function pickMethod(title, firstSubject, onPick, onCancel) {
+    var pages = store.ps.pages.slice().sort(function (a, b) {
+      return ((a.subject === firstSubject) ? 0 : 1) - ((b.subject === firstSubject) ? 0 : 1) || subjectName(a.subject).localeCompare(subjectName(b.subject)) || a.name.localeCompare(b.name);
+    });
+    var box = ovOpen(title, { onCancel: onCancel });
+    box.body.innerHTML = '<div class="lw-opts"></div>';
+    var list = box.body.querySelector(".lw-opts"), lastG = null;
+    if (!pages.length) list.innerHTML = '<p class="muted">There are no methods yet.</p>';
+    pages.forEach(function (pg) {
+      var g = subjectName(pg.subject);
+      if (g !== lastG) { lastG = g; var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = g; list.appendChild(gl); }
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "lw-opt"; b.textContent = "🧩 " + pg.name + "  ›";
+      b.addEventListener("click", function () { box.close(true); onPick(pg); });
+      list.appendChild(b);
+    });
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+  }
+  // the links of an example, as chips: its cards and its methods, each removable, each addable
+  function exLinksEl(ex, onChange, onOpen) {
+    var wrap = document.createElement("div");
+    wrap.className = "ex-links";
+    function chips(label, items, add) {
+      var sec = document.createElement("div");
+      sec.className = "md-sec";
+      sec.innerHTML = '<div class="md-sechead">' + label + '</div><div class="ps-chips pc-list"></div>';
+      var row = sec.querySelector(".pc-list");
+      items.forEach(function (it) {
+        var chip = document.createElement("span"); chip.className = "ps-chip";
+        var go = document.createElement("button"); go.type = "button"; go.className = "ps-chip-go";
+        go.innerHTML = it.html; go.addEventListener("click", it.open);
+        var x = document.createElement("button"); x.type = "button"; x.className = "ps-chip-x"; x.textContent = "✕"; x.title = "disconnect";
+        x.addEventListener("click", it.remove);
+        chip.appendChild(go); chip.appendChild(x); row.appendChild(chip);
+      });
+      var b = document.createElement("button"); b.type = "button"; b.className = "ps-attach"; b.textContent = add.label;
+      b.addEventListener("click", add.run);
+      row.appendChild(b);
+      wrap.appendChild(sec);
+    }
+    chips("Cards it illustrates", (ex.cardIds || []).filter(function (id) { return refExists({ lvl: "c", id: id }); }).map(function (id) {
+      return { html: '<span class="mp-lvl lvl-c">Card</span> ' + escapeHtml(cardLabel(id)) + '<small class="pc-how">' + escapeHtml(subjectName(libSubjectOf({ lvl: "c", id: id }) || "")) + '</small>',
+        open: function () { if (onOpen) onOpen({ lvl: "c", id: id }); },
+        remove: function () { ex.cardIds = ex.cardIds.filter(function (x) { return x !== id; }); onChange(); } };
+    }), { label: "＋ Connect to card", run: function () {
+      pickLibTarget(null, function (cid) { ex.cardIds = ex.cardIds || []; if (ex.cardIds.indexOf(cid) < 0) ex.cardIds.push(cid); onChange(); }, null, { title: "Connect “" + (ex.name || "the example") + "” to" });
+    } });
+    chips("A worked example of — optional", exMethods(ex).map(function (pg) {
+      return { html: '<span class="mp-lvl lvl-p">Method</span> ' + escapeHtml(pg.name),
+        open: function () { if (onOpen) onOpen({ lvl: "p", id: pg.id }); },
+        remove: function () { ex.methodIds = ex.methodIds.filter(function (x) { return x !== pg.id; }); onChange(); } };
+    }), { label: "＋ Link a method", run: function () {
+      pickMethod("A worked example of which method?", ex.subject, function (pg) { ex.methodIds = ex.methodIds || []; if (ex.methodIds.indexOf(pg.id) < 0) ex.methodIds.push(pg.id); onChange(); });
+    } });
+    return wrap;
+  }
+  // the last step of making one: everything at a glance, the links (optional), Save
+  function exReview(draft, cb) {
+    var box = ovOpen("Save as an example", { wide: true, onCancel: function () { if (cb.cancelled) cb.cancelled(); } });
+    function draw() {
+      var b = box.body;
+      b.innerHTML = '<div class="md-top"><div class="md-crop"></div><div class="md-fields">' +
+        '<label class="md-label">Name</label><div class="lw-new"><input type="text" maxlength="80" class="md-name"></div>' +
+        '<label class="md-label">Subject</label><div class="md-subject"><b></b><button type="button" class="btn-quiet md-change">Change</button></div>' +
+        '</div></div>';
+      b.querySelector(".md-crop").appendChild(psCropBlock(draft.clip, 240));
+      var nameIn = b.querySelector(".md-name");
+      nameIn.value = draft.name;
+      nameIn.addEventListener("input", function () { draft.name = nameIn.value; });
+      b.querySelector(".md-subject b").textContent = subjectName(draft.subject);
+      b.querySelector(".md-change").addEventListener("click", function () {
+        pickSubject("Which subject?", "Which subject is this example for?", function (k) { draft.subject = k; draw(); });
+      });
+      b.appendChild(exLinksEl(draft, draw));
+    }
+    draw();
+    box.buttons([
+      { label: "Cancel", run: function () { box.close(); } },
+      { label: "Save example", primary: true, right: true, run: function () {
+        var name = (draft.name || "").trim();
+        if (!name) { alert("An example needs a name."); return; }
+        var ex = { id: uid("ex_"), subject: draft.subject, name: name, tags: [], cardIds: draft.cardIds.slice(), methodIds: draft.methodIds.slice(),
+                   order: examplesOf(draft.subject).length, created: Date.now() };
+        exEnsure().push(ex);
+        psBody(ex.id).main = draft.clip;
+        saveCanvas(ex.id);
+        saveStore();
+        box.close(true);
+        libAfterMove();
+        if (cb.saved) cb.saved();
+        libToast("Saved the example “" + name + "” to " + subjectName(ex.subject));
+      } }
+    ]);
+  }
+  // full size: the picture, what it is connected to (each one tappable), and what can be done to it
+  function exOpen(id) {
+    var ex = exampleById(id); if (!ex) return;
+    var box = ovOpen(ex.name, { wide: true });
+    box.ov.classList.add("ex-view");
+    function draw() {
+      box.setTitle(ex.name);
+      var b = box.body;
+      b.innerHTML = '<p class="muted ex-sub"></p><div class="ex-big"></div>';
+      b.querySelector(".ex-sub").textContent = "Example · " + subjectName(ex.subject);
+      var big = b.querySelector(".ex-big");
+      var clip = exClip(ex);
+      if (clip) big.appendChild(psCropBlock(clip, Math.min(1100, window.innerWidth - 120)));
+      else big.innerHTML = '<div class="doc-empty">Syncing this example…</div>';
+      b.appendChild(exLinksEl(ex, function () { saveStore(); draw(); libAfterMove(); }, function (ref) { box.close(true); openRef(ref); }));
+    }
+    draw();
+    box.buttons([
+      { label: "✎ Rename", run: function () { exRename(ex, draw); } },
+      { label: "↪ Move to…", run: function () { box.close(true); exMoveTo(ex); } },
+      { label: "🗑 Delete", run: function () { if (exDelete(ex)) box.close(true); } },
+      { label: "Close", primary: true, right: true, run: function () { box.close(true); } }
+    ]);
+  }
+  function exRename(ex, then) {
+    askName("Rename example", "", ex.name, function (n) { ex.name = n; saveStore(); libAfterMove(); if (then) then(); });
+  }
+  function exDelete(ex) {
+    if (!confirmDelete(ex.name)) return false;
+    store.examples = exEnsure().filter(function (x) { return x !== ex; });
+    killCanvas(ex.id);
+    saveStore(); libAfterMove();
+    libToast("Deleted the example “" + ex.name + "”");
+    return true;
+  }
+  // to another subject (its links stay — they are ids)
+  function exMoveTo(ex) {
+    pickLibTarget(null, function (key) {
+      libMoved("Moved “" + ex.name + "” to " + subjectName(key), function () {
+        if (ex.subject === key) return false;
+        ex.subject = key;
+        ex.order = examplesOf(key).length;
+      });
+    }, null, { upTo: "s", title: "Move “" + ex.name + "” to" });
+  }
+  function exMenu(ex, anchor) {
+    libMenu(anchor, [
+      { head: "Example · " + ex.name },
+      { label: "↗ Open", run: function () { exOpen(ex.id); } },
+      { label: "✎ Rename", run: function () { exRename(ex); } },
+      { label: "↪ Move to…", run: function () { exMoveTo(ex); } },
+      { sep: true },
+      { label: "🗑 Delete", danger: true, run: function () { exDelete(ex); } }
+    ]);
+  }
+  // a thumbnail: the picture, its name, its ⋯ — tap to open it full size
+  function exThumbEl(ex) {
+    var t = document.createElement("div");
+    t.className = "ex-thumb";
+    t.setAttribute("data-ex", ex.id);
+    t.innerHTML = '<div class="ex-pic"></div><div class="ex-cap"><span class="ex-badge">Example</span><b></b></div>';
+    t.querySelector("b").textContent = ex.name;
+    var clip = exClip(ex);
+    if (clip) t.querySelector(".ex-pic").appendChild(psCropBlock(clip, 220));
+    else t.querySelector(".ex-pic").innerHTML = '<div class="doc-empty">Syncing…</div>';
+    var n = exampleCards(ex).length;
+    if (!n) t.querySelector(".ex-cap").insertAdjacentHTML("beforeend", '<small class="vine-nocard">not linked to a card</small>');
+    var dots = document.createElement("button");
+    dots.type = "button"; dots.className = "lib-dots"; dots.textContent = "⋯"; dots.title = "rename, move or delete";
+    dots.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    dots.addEventListener("click", function (e) { e.stopPropagation(); exMenu(ex, dots); });
+    t.querySelector(".ex-cap").appendChild(dots);
+    t.addEventListener("click", function () { exOpen(ex.id); });
+    return t;
+  }
+  // a subject's examples, in their order; drag to reorder
+  function examplesGridEl(key, list) {
+    var grid = document.createElement("div");
+    grid.className = "ex-grid";
+    (list || examplesOf(key)).forEach(function (ex) { grid.appendChild(exThumbEl(ex)); });
+    dndList(grid, { type: "example", item: ".ex-thumb", axis: "grid", id: function (el) { return el.getAttribute("data-ex"); },
+      canDrop: function (drag) { var ex = exampleById(drag.id); return !!ex && ex.subject === key; },
+      onDrop: function (drag, index) {
+        var ex = exampleById(drag.id);
+        libMoved("Moved “" + ex.name + "”", function () {
+          var l = examplesOf(key).filter(function (x) { return x !== ex; });
+          l.splice(index, 0, ex);
+          l.forEach(function (x, i) { x.order = i; });
+        });
+      } });
+    return grid;
+  }
   // ============================================================
   // METHOD FOLDERS — a subject's methods, grouped
   // One level only: a folder holds methods, never folders. A method with no folder (or whose folder
@@ -14821,7 +15109,7 @@ function __detabaseMain() {
     return box;
   }
   function renderSubjectExtras(key) {
-    Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-sums"), function (n) { n.remove(); });
+    Array.prototype.forEach.call(document.querySelectorAll(".subj-side, .subj-sums, .subj-exs"), function (n) { n.remove(); });
     var on = !!key && refExists({ lvl: "s", id: key });
     document.body.classList.toggle("subject-page", on);
     if (sumPick && sumPick.key !== key) sumPickEnd();   // picking belongs to the subject it started on
@@ -14838,6 +15126,8 @@ function __detabaseMain() {
       sums = subjectSummariesSection(key);
       var foot = content.querySelector(":scope > .page-foot");
       if (foot) content.insertBefore(sums, foot); else content.appendChild(sums);
+      content.insertBefore(subjectExamplesSection(key), sums);
+      sums = content.querySelector(":scope > .subj-exs");
     }
     if (sumPick) sumPickPaint();
     // the Methods column runs the whole length of the concepts beside it: it spans exactly the rows
@@ -14908,6 +15198,20 @@ function __detabaseMain() {
     return hit;
   }
 
+  // ---- the Examples section ----
+  function subjectExamplesSection(key) {
+    var list = examplesOf(key);
+    var sec = document.createElement("section");
+    sec.className = "subj-sums subj-exs";
+    sec.innerHTML = '<header class="sums-head"><h3>Examples <span class="side-count">' + list.length + '</span></h3></header>';
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "btn-primary"; add.textContent = "＋ New example";
+    add.addEventListener("click", function () { newExample(key); });
+    sec.querySelector(".sums-head").appendChild(add);
+    if (!list.length) sec.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty"><b>No examples yet.</b> Tap “＋ New example” and crop a worked example out of a document.</div>');
+    else sec.appendChild(examplesGridEl(key, list));
+    return sec;
+  }
   // ---- the Summaries section: its own row under the concepts and the methods ----
   function subjectSummariesSection(key) {
     var list = summariesOf(key).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
@@ -15384,10 +15688,15 @@ function __detabaseMain() {
     });
     Object.keys(touched).forEach(function (id) { saveCanvas(id); });
     psStripRefs(keys);
+    store.ps.pages.forEach(function (pg) { if (pg.cardIds) pg.cardIds = pg.cardIds.filter(function (id) { return !keys["c|" + id]; }); });
+    exEnsure().forEach(function (x) {
+      x.cardIds = (x.cardIds || []).filter(function (id) { return !keys["c|" + id]; });
+      x.methodIds = (x.methodIds || []).filter(function (id) { return !keys["p|" + id]; });
+    });
     sumStripRefs(keys);   // and from every summary that used them
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
-      if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
+      if (r.lvl === "s") { exEnsure().forEach(function (x) { if (x.subject === r.id) killCanvas(x.id); }); store.examples = exEnsure().filter(function (x) { return x.subject !== r.id; }); store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
       else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
       else if (r.lvl === "c") store.cards = drop(store.cards, r.id);
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
@@ -15556,6 +15865,7 @@ function __detabaseMain() {
   });
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", function () { pdfCutSave("concept"); });
   if ($("pvCutMethod")) $("pvCutMethod").addEventListener("click", function () { pdfCutSave("method"); });
+  if ($("pvCutExample")) $("pvCutExample").addEventListener("click", function () { pdfCutSave("example"); });
   if ($("pvScroll")) {
     // one finger draws while cutting (pointer capture keeps its move/up events on the page);
     // two fingers always move and zoom. Nothing is bound to the document, so nothing here can
