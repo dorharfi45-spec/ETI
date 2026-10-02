@@ -843,6 +843,23 @@
   .subj-tools { display: flex; align-items: center; gap: 12px; margin: 14px 0 0; }
   .subj-tools-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--text-muted); flex: 1; }
   #customPane .subj-tools { margin-top: 6px; }
+  /* ---- method folders ---- */
+  .mf-list { display: flex; flex-direction: column; gap: 8px; }
+  .mf-group { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); min-width: 0; }
+  .mf-group.unfiled { border-style: dashed; }
+  .mf-head { display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 2px; }
+  .mf-caret { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 8px; border: 0; background: none;
+    font: inherit; font-weight: 700; color: var(--text-primary); text-align: left; cursor: pointer; }
+  .mf-caret .caret { font-size: .75rem; color: var(--text-muted); transition: transform .15s; }
+  .mf-group:not(.closed) .mf-caret .caret { transform: rotate(90deg); }
+  .mf-group.unfiled .mf-caret { cursor: default; }
+  .mf-group.unfiled .caret { visibility: hidden; }
+  .mf-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mf-body { padding: 2px 8px 8px; display: flex; flex-direction: column; gap: 6px; }
+  .mf-group.closed .mf-body { display: none; }
+  .mf-empty { font-size: .82rem; color: var(--text-muted); padding: 8px 6px; }
+  .mf-body > .vine { margin-bottom: 0; }
+  .mf-head .lib-dots, .vine-acts .lib-dots { position: static; }
   /* ---- a subject's page: its tabs as sections, each holding its cards ---- */
   .sp-body { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
   .sp-tab { border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); min-width: 0; }
@@ -3452,7 +3469,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B77</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B78</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -13597,7 +13614,7 @@ function __detabaseMain() {
   function problemIndex() {
     libEnsure();
     return store.ps.pages.map(function (pg) {
-      var tags = (pg.tags || []).filter(Boolean), subj = subjectName(pg.subject || "");
+      var tags = (pg.tags || []).filter(Boolean), fold = methodFolderOf(pg), subj = subjectName(pg.subject || "") + (fold ? " › 📁 " + fold.name : "");
       var assetNames = vineOf(pg.id).map(refName).join(" ");
       return { ref: { lvl: "p", id: pg.id }, name: pg.name, path: subj + (tags.length ? " › " + tags.join(" · ") : ""),
         hay: [pg.name, subj, tags.join(" "), assetNames].join(" ").toLowerCase(), assets: assetNames };
@@ -13957,7 +13974,8 @@ function __detabaseMain() {
     row.className = "vine";
     var head = document.createElement("button");
     head.type = "button"; head.className = "vine-page";
-    head.innerHTML = '<b>' + escapeHtml(pg.name) + '</b><small>' + escapeHtml(subjectName(pg.subject || "")) +
+    var fold = methodFolderOf(pg);
+    head.innerHTML = '<b>' + escapeHtml(pg.name) + '</b><small>' + escapeHtml(subjectName(pg.subject || "")) + (fold ? " › 📁 " + escapeHtml(fold.name) : "") +
       ((pg.tags || []).length ? " · " + escapeHtml(pg.tags.join(" · ")) : "") + '</small>';
     head.addEventListener("click", function () { selectPsPage(pg.id); });
     row.appendChild(head);
@@ -14551,6 +14569,141 @@ function __detabaseMain() {
   // is a column of its own on the right, with its own scrolling, drawing each method with the very
   // same vine row the main page uses (one tree, scoped — not a second one).
   // ============================================================
+  // ============================================================
+  // METHOD FOLDERS — a subject's methods, grouped
+  // One level only: a folder holds methods, never folders. A method with no folder (or whose folder
+  // is gone) is unfiled. Folders and methods keep the order they are dragged into, and a deleted
+  // folder never takes its methods with it.
+  //   store.methodFolders = [{ id, subject, name, order }]      a method: pg.folder, pg.order
+  // ============================================================
+  function mfOf(key) { return mfEnsure().filter(function (f) { return f.subject === key; }).sort(function (a, b) { return (a.order || 0) - (b.order || 0); }); }
+  function mfById(id) { return id ? byId(mfEnsure(), id) : null; }
+  function methodFolderOf(pg) { var f = mfById(pg && pg.folder); return f && f.subject === pg.subject ? f : null; }
+  function byOrderThenName(a, b) { return ((a.order == null ? 1e6 : a.order) - (b.order == null ? 1e6 : b.order)) || a.name.localeCompare(b.name); }
+  function methodsIn(key, fid) {
+    return psPagesOf(key).filter(function (pg) { var f = methodFolderOf(pg); return fid ? !!f && f.id === fid : !f; }).sort(byOrderThenName);
+  }
+  // a method into a folder (null = unfiled) at `index` (the end when null); both lists renumbered
+  function methodMove(pg, fid, index) {
+    var key = pg.subject, was = methodFolderOf(pg);
+    was = was ? was.id : null;
+    var list = methodsIn(key, fid).filter(function (x) { return x !== pg; });
+    if (index == null || index > list.length) index = list.length;
+    list.splice(index, 0, pg);
+    if (fid) pg.folder = fid; else delete pg.folder;
+    list.forEach(function (x, i) { x.order = i; });
+    if (was !== fid) methodsIn(key, was).forEach(function (x, i) { x.order = i; });
+  }
+  function mfCreate(key, then) {
+    askName("New folder", "A folder holds several of " + subjectName(key) + "’s methods.", "", function (name) {
+      var f = { id: uid("mf_"), subject: key, name: name, order: mfOf(key).length };
+      mfEnsure().push(f);
+      saveStore(); libAfterMove();
+      libToast("Made the folder “" + name + "”");
+      if (then) then(f);
+    });
+  }
+  function mfRename(f) { askName("Rename folder", "", f.name, function (n) { f.name = n; saveStore(); libAfterMove(); }); }
+  function mfDelete(f) {
+    var n = psPagesOf(f.subject).filter(function (pg) { return pg.folder === f.id; }).length;
+    if (!confirm("Delete the folder “" + f.name + "”?\n\n" + (n ? "Its " + n + " method" + (n === 1 ? " is" : "s are") + " not deleted — " + (n === 1 ? "it becomes" : "they become") + " unfiled." : "It is empty."))) return;
+    libMoved("Deleted the folder “" + f.name + "”", function () {
+      var moving = methodsIn(f.subject, f.id);
+      store.methodFolders = mfEnsure().filter(function (x) { return x !== f; });
+      moving.forEach(function (pg) { methodMove(pg, null, null); });
+    });
+  }
+  // "Move to…" for a method: one of its subject's folders, unfiled, or a new folder
+  function methodMoveTo(pg) {
+    var cur = methodFolderOf(pg);
+    var opts = (cur ? [{ id: "__unfiled", name: "Unfiled (out of “" + cur.name + "”)" }] : [])
+      .concat(mfOf(pg.subject).filter(function (f) { return f !== cur; }).map(function (f) { return { id: f.id, name: "📁 " + f.name }; }));
+    pickOrNew("Move “" + pg.name + "” to", "Which folder of " + subjectName(pg.subject) + "?", opts, "New folder name…", function (id, nn) {
+      libMoved("Moved “" + pg.name + "”", function () {
+        var fid = id === "__unfiled" ? null : id;
+        if (!id) { var f = { id: uid("mf_"), subject: pg.subject, name: nn, order: mfOf(pg.subject).length }; mfEnsure().push(f); fid = f.id; }
+        methodMove(pg, fid, null);
+      });
+    });
+  }
+  function methodMenu(pg, anchor) {
+    libMenu(anchor, [
+      { head: "Method · " + pg.name },
+      { label: "↗ Open", run: function () { selectPsPage(pg.id); } },
+      { label: "📁 Move to folder…", run: function () { methodMoveTo(pg); } },
+      { label: "✎ Rename", run: function () { libRename({ lvl: "p", id: pg.id }); } },
+      { sep: true },
+      { label: "🗑 Delete", danger: true, run: function () { libDelete({ lvl: "p", id: pg.id }); } }
+    ]);
+  }
+  // a method's row in a subject's lists: the vine, with its own ⋯
+  function methodRowEl(pg) {
+    var r = vineRowEl(pg);
+    r.classList.add("compact");
+    r.setAttribute("data-pg", pg.id);
+    var dots = document.createElement("button");
+    dots.type = "button"; dots.className = "lib-dots"; dots.textContent = "⋯"; dots.title = "move, rename or delete";
+    dots.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    dots.addEventListener("click", function (e) { e.stopPropagation(); methodMenu(pg, dots); });
+    r.querySelector(".vine-acts").appendChild(dots);
+    return r;
+  }
+  function mfGroupEl(key, f) {
+    var fid = f ? f.id : null, pages = methodsIn(key, fid);
+    var closed = !!(f && (store.ui.mfClosed || {})[f.id]);
+    var g = document.createElement("section");
+    g.className = "mf-group" + (f ? " is-folder" : " unfiled") + (closed ? " closed" : "");
+    if (f) g.setAttribute("data-mf", f.id);
+    g.innerHTML = '<header class="mf-head"><button type="button" class="mf-caret"><span class="caret">▸</span><span class="mf-icon">' + (f ? "📁" : "📄") +
+      '</span><span class="mf-name"></span><span class="side-count">' + pages.length + '</span></button></header><div class="mf-body"></div>';
+    g.querySelector(".mf-name").textContent = f ? f.name : "Unfiled";
+    var head = g.querySelector(".mf-head");
+    if (f) {
+      g.querySelector(".mf-caret").addEventListener("click", function () {
+        store.ui.mfClosed = store.ui.mfClosed || {};
+        if (closed) delete store.ui.mfClosed[f.id]; else store.ui.mfClosed[f.id] = 1;
+        saveStore(); libAfterMove();
+      });
+      var dots = document.createElement("button");
+      dots.type = "button"; dots.className = "lib-dots"; dots.textContent = "⋯"; dots.title = "rename or delete this folder";
+      dots.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+      dots.addEventListener("click", function (e) {
+        e.stopPropagation();
+        libMenu(dots, [{ head: "Folder · " + f.name }, { label: "✎ Rename", run: function () { mfRename(f); } }, { sep: true },
+          { label: "🗑 Delete folder", danger: true, run: function () { mfDelete(f); } }]);
+      });
+      head.appendChild(dots);
+    }
+    var body = g.querySelector(".mf-body");
+    if (!pages.length) body.innerHTML = '<div class="mf-empty">' + (f ? "Empty — drag methods in here." : "Drag a method here to take it out of its folder.") + '</div>';
+    pages.forEach(function (pg) { body.appendChild(methodRowEl(pg)); });
+    function ours(drag) { var pg = psPageById(drag.id); return !!pg && pg.subject === key; }
+    function into(drag, index) {
+      var pg = psPageById(drag.id);
+      libMoved("Moved “" + pg.name + "”" + (f ? " to " + f.name : " out of its folder"), function () { methodMove(pg, fid, index); });
+    }
+    dndList(body, { type: "method", item: ".vine", handle: ".vine-page", id: function (el) { return el.getAttribute("data-pg"); }, canDrop: ours, onDrop: into });
+    dndInto(head, { accepts: ["method"], canDrop: ours, onDrop: function (drag) { into(drag, null); } });
+    return g;
+  }
+  // a subject's methods, folder by folder, unfiled last
+  function methodsByFolderEl(key) {
+    var wrap = document.createElement("div");
+    wrap.className = "mf-list";
+    var folders = mfOf(key);
+    folders.forEach(function (f) { wrap.appendChild(mfGroupEl(key, f)); });
+    if (methodsIn(key, null).length || folders.length) wrap.appendChild(mfGroupEl(key, null));
+    dndList(wrap, { type: "mfolder", item: ".mf-group.is-folder", handle: ".mf-head", id: function (el) { return el.getAttribute("data-mf"); },
+      onDrop: function (drag, index) {
+        var f = mfById(drag.id); if (!f) return;
+        libMoved("Moved the folder “" + f.name + "”", function () {
+          var list = mfOf(key).filter(function (x) { return x !== f; });
+          list.splice(index, 0, f);
+          list.forEach(function (x, i) { x.order = i; });
+        });
+      } });
+    return wrap;
+  }
   function subjectMethodsPanel(key) {
     var pages = psPagesOf(key).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
     var box = document.createElement("section");
@@ -14560,13 +14713,15 @@ function __detabaseMain() {
     var add = document.createElement("button");
     add.type = "button"; add.className = "btn-primary side-action"; add.textContent = "＋ New method";
     add.addEventListener("click", function () { newProblemPage(key); });
+    var addF = document.createElement("button");
+    addF.type = "button"; addF.className = "btn-quiet side-action"; addF.textContent = "＋ Folder"; addF.title = "a folder holds several methods";
+    addF.addEventListener("click", function () { mfCreate(key); });
+    box.querySelector(".side-head").appendChild(addF);
     box.querySelector(".side-head").appendChild(add);
     var list = box.querySelector(".side-list");
-    if (!pages.length) {
+    if (!pages.length && !mfOf(key).length) {
       list.innerHTML = '<div class="side-empty"><b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses.</div>';
-    } else {
-      pages.forEach(function (pg) { var r = vineRowEl(pg); r.classList.add("compact"); list.appendChild(r); });
-    }
+    } else list.appendChild(methodsByFolderEl(key));
     return box;
   }
   function renderSubjectExtras(key) {
@@ -15136,7 +15291,7 @@ function __detabaseMain() {
     sumStripRefs(keys);   // and from every summary that used them
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
-      if (r.lvl === "s") { store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
+      if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
       else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
       else if (r.lvl === "c") store.cards = drop(store.cards, r.id);
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
