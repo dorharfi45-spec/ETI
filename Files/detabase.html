@@ -940,6 +940,18 @@
   .ct-leaf.used { fill: color-mix(in srgb, var(--accent) 24%, var(--bg)); stroke: var(--accent); }
   .ct-leaf:hover { stroke: var(--accent); stroke-width: 2.6; }
   .ct-vine { fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; opacity: .88; transition: opacity .2s; }
+  .ct-vine.unlinked { stroke-dasharray: 3 4; stroke-width: 2.4; }
+  /* a method's cards: on its page, and on every vine row */
+  .pc-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pc-chip .ps-chip-go { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 6px 6px 6px 12px; }
+  .pc-chip.direct { border-color: var(--accent); }
+  .pc-how { font-size: .72rem; color: var(--text-muted); }
+  .pc-none { margin: 0 0 6px; flex-basis: 100%; }
+  .vine-cards { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 2px; }
+  .vine-card { border: 0; background: none; padding: 2px 0; font-size: .76rem; color: var(--text-muted); cursor: pointer; }
+  .vine-card:hover { color: var(--accent); }
+  .vine-card.direct { color: var(--accent); }
+  .vine-nocard { font-size: .74rem; color: #b45309; }
   .ct-vine.hot { stroke-width: 5.5; opacity: 1; }
   .ct-dot { pointer-events: none; }
   .ct-vhit { fill: none; stroke: transparent; stroke-width: 22; pointer-events: stroke; cursor: pointer; }
@@ -3469,7 +3481,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B78</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B79</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3489,6 +3501,8 @@
   <div id="psDoc" class="ps-doc"></div>
   <div class="sidebar-label" style="margin-top:18px">Concepts</div>
   <div id="psAssets" class="ps-assets"></div>
+  <div class="sidebar-label" style="margin-top:18px">Cards</div>
+  <div id="psCards" class="ps-assets"></div>
 </div>
 
 <div id="sumPane" hidden>
@@ -11361,6 +11375,52 @@ function __detabaseMain() {
       v.textContent = "Vine: " + vine.map(refName).join("  →  ");
       as.appendChild(v);
     }
+    var cs = $("psCards");
+    if (cs) { cs.innerHTML = ""; cs.appendChild(psCardsEl(pg)); }
+  }
+  // the cards a method is connected to: the ones its concepts sit in ("via …"), and the ones it was
+  // connected to directly (those can be taken off here; a derived one goes when its concept does)
+  function psCardsEl(pg) {
+    var box = document.createElement("div");
+    box.className = "ps-chips pc-list";
+    var list = methodCards(pg.id);
+    if (!list.length) box.innerHTML = '<p class="muted pc-none">Not linked to a card yet — attach a concept it uses, or connect it to a card directly.</p>';
+    list.forEach(function (x) {
+      var chip = document.createElement("span");
+      chip.className = "ps-chip pc-chip" + (x.direct ? " direct" : "");
+      var go = document.createElement("button");
+      go.type = "button"; go.className = "ps-chip-go";
+      var how = x.direct ? "connected directly" + (x.via.length ? " · also via " + x.via.map(refName).join(", ") : "") : "via " + x.via.map(refName).join(", ");
+      go.innerHTML = '<span class="mp-lvl lvl-' + x.ref.lvl + '">' + (x.ref.lvl === "t" ? "Tab" : "Card") + '</span> ' + escapeHtml(refName(x.ref)) +
+        '<small class="pc-how">' + escapeHtml(how) + ' · ' + escapeHtml(subjectName(libSubjectOf(x.ref) || "")) + '</small>';
+      go.addEventListener("click", function () { openRef(x.ref); });
+      chip.appendChild(go);
+      if (x.direct) {
+        var del = document.createElement("button");
+        del.type = "button"; del.className = "ps-chip-x"; del.textContent = "✕"; del.title = "disconnect this card";
+        del.addEventListener("click", function () {
+          pg.cardIds = (pg.cardIds || []).filter(function (id) { return id !== x.ref.id; });
+          saveStore(); renderPsPane();
+        });
+        chip.appendChild(del);
+      }
+      box.appendChild(chip);
+    });
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "ps-attach"; add.textContent = "＋ Connect to card";
+    add.addEventListener("click", function () { methodConnectCard(pg); });
+    box.appendChild(add);
+    return box;
+  }
+  function methodConnectCard(pg, then) {
+    pickLibTarget(null, function (cid) {
+      pg.cardIds = pg.cardIds || [];
+      if (pg.cardIds.indexOf(cid) < 0) pg.cardIds.push(cid);
+      saveStore();
+      libToast("Connected “" + pg.name + "” to " + cardLabel(cid));
+      if (then) then(); else if (activePsPage === pg.id) renderPsPane();
+      libAfterMove();
+    }, null, { title: "Connect “" + pg.name + "” to" });
   }
 
   var PART_COLORS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2", "#db2777", "#65a30d"];
@@ -13993,6 +14053,18 @@ function __detabaseMain() {
       b.addEventListener("click", function () { narrowAdd(ref); });
       chain.appendChild(b);
     });
+    var cards = methodCards(pg.id), cl = document.createElement("div");
+    cl.className = "vine-cards";
+    if (!cards.length) cl.innerHTML = '<span class="vine-nocard">not linked to a card</span>';
+    cards.forEach(function (x) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "vine-card" + (x.direct ? " direct" : "");
+      b.textContent = (x.ref.lvl === "t" ? "▤ " : "▢ ") + refName(x.ref);
+      b.title = x.direct ? "connected directly — open it" : "via " + x.via.map(refName).join(", ") + " — open it";
+      b.addEventListener("click", function () { openRef(x.ref); });
+      cl.appendChild(b);
+    });
+    chain.appendChild(cl);
     row.appendChild(chain);
     var acts = document.createElement("div");
     acts.className = "vine-acts";
@@ -14086,7 +14158,10 @@ function __detabaseMain() {
   function ctBuild() {
     libEnsure();
     var nodes = {}, uses = {};
-    store.ps.pages.forEach(function (pg) { vineOf(pg.id).forEach(function (r) { var k = refKey(r); uses[k] = (uses[k] || 0) + 1; }); });
+    store.ps.pages.forEach(function (pg) {
+      vineOf(pg.id).concat((pg.cardIds || []).map(function (id) { return { lvl: "c", id: id }; }))
+        .forEach(function (r) { var k = refKey(r); uses[k] = (uses[k] || 0) + 1; });
+    });
     function node(ref, name, kids) {
       var n = { ref: ref, key: refKey(ref), name: name, kids: kids || [], x: 0, y: 0, r: 0, uses: uses[refKey(ref)] || 0 };
       n.kids.forEach(function (c) { c.parent = n; });
@@ -14165,19 +14240,21 @@ function __detabaseMain() {
   // comes from, and a method that uses a single concept wraps it in a bud
   function ctVines(model, dark) {
     var pal = dark ? CT_BLUES_DARK : CT_BLUES, out = [], segUse = {}, segAt = {}, buds = {};
+    var loose = {};
     store.ps.pages.forEach(function (pg) {
       var an = [];
-      vineOf(pg.id).forEach(function (r) { var n = model.nodes[refKey(r)]; if (n && an.indexOf(n) < 0) an.push(n); });
+      function add(r) { var n = model.nodes[refKey(r)]; if (n && an.indexOf(n) < 0) an.push(n); }
+      vineOf(pg.id).forEach(add);
+      (pg.cardIds || []).forEach(function (id) { add({ lvl: "c", id: id }); });   // connected to a card directly
       if (an.length) out.push({ pg: pg, an: an });
+      else if (model.nodes["s|" + pg.subject]) (loose[pg.subject] = loose[pg.subject] || []).push(pg);
     });
     out.forEach(function (v) {
       v.segs = [];
       for (var i = 1; i < v.an.length; i++) { var k = ctSegKey(v.an[i - 1], v.an[i]); segUse[k] = (segUse[k] || 0) + 1; v.segs.push(k); }
     });
     out.forEach(function (v) {
-      var h = 0;
-      for (var q = 0; q < v.pg.id.length; q++) h = (h * 31 + v.pg.id.charCodeAt(q)) | 0;
-      v.color = pal[Math.abs(h) % pal.length];
+      v.color = ctColor(v.pg, pal);
       v.ends = [];
       if (v.an.length === 1) {
         var n0 = v.an[0], b = buds[n0.key] = (buds[n0.key] || 0) + 1, R = n0.r + 2 + b * 4;
@@ -14212,13 +14289,32 @@ function __detabaseMain() {
       v.mid = mids[Math.floor((mids.length - 1) / 2)];
       v.box = box;
     });
+    // not connected to any card: a dashed bud on the subject's rim, so it is still there to tap
+    Object.keys(loose).forEach(function (sk) {
+      var sn = model.nodes["s|" + sk], list = loose[sk];
+      list.forEach(function (pg, i) {
+        var a = -Math.PI / 2 + (i - (list.length - 1) / 2) * 0.24, R = 9, dd = sn.r + R + 5;
+        var cx = sn.x + Math.cos(a) * dd, cy = sn.y + Math.sin(a) * dd;
+        out.push({ pg: pg, an: [], unlinked: true, color: ctColor(pg, pal), ends: [], mid: [cx, cy - R], box: [cx - R, cy - R, cx + R, cy + R],
+          d: "M" + ctF(cx - R) + " " + ctF(cy) + "a" + R + " " + R + " 0 1 0 " + (2 * R) + " 0a" + R + " " + R + " 0 1 0 " + (-2 * R) + " 0" });
+      });
+    });
     return out;
+  }
+  function ctColor(pg, pal) {
+    var h = 0;
+    for (var q = 0; q < pg.id.length; q++) h = (h * 31 + pg.id.charCodeAt(q)) | 0;
+    return pal[Math.abs(h) % pal.length];
   }
   // what the search leaves standing; null when nothing is being searched
   function ctMark(model, pages) {
     if (!(mainQ.trim() || mainNarrow.length || mainTag)) return null;
     var hit = {}, lit = {}, vis = {};
-    pages.forEach(function (pg) { vis[pg.id] = 1; vineOf(pg.id).forEach(function (r) { lit[refKey(r)] = 1; }); });
+    pages.forEach(function (pg) {
+      vis[pg.id] = 1;
+      vineOf(pg.id).forEach(function (r) { lit[refKey(r)] = 1; });
+      (pg.cardIds || []).forEach(function (id) { lit["c|" + id] = 1; });
+    });
     mainNarrow.forEach(function (r) { hit[refKey(r)] = 1; });
     if (mainTag) searchIndex.forEach(function (e) { if (e.tags.indexOf(mainTag) >= 0) { var r = entryRef(e); if (r) hit[refKey(r)] = 1; } });
     var toks = mainQ.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -14450,8 +14546,8 @@ function __detabaseMain() {
       if (!off) live++;
       if (marks && !off) focusBox = ctUnion(focusBox, v.box);
       var hit = el("path", { d: v.d, "class": "ct-vhit" + (off ? " off" : ""), "data-v": v.pg.id }, gHits);
-      el("title", {}, hit).textContent = v.pg.name;
-      el("path", { d: v.d, "class": "ct-vine" + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gVines);
+      el("title", {}, hit).textContent = v.pg.name + (v.unlinked ? " — not linked to a card" : "");
+      el("path", { d: v.d, "class": "ct-vine" + (v.unlinked ? " unlinked" : "") + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gVines);
       v.ends.forEach(function (p) { el("circle", { cx: ctF(p[0]), cy: ctF(p[1]), r: "3.4", fill: v.color, "class": "ct-dot" + (off ? " off" : ""), "data-vv": v.pg.id }, gVines); });
       var lb = el("text", { x: ctF(v.mid[0]), y: ctF(v.mid[1]), dy: "-0.55em", fill: v.color, "class": "ct-vlbl" + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gLbls);
       lb.textContent = v.pg.name;
