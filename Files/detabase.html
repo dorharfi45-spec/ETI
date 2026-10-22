@@ -866,29 +866,41 @@
   .sp-adds button { min-height: var(--tap); }
   .sp-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
   .sp-chips:empty { display: none; }
-  /* Separate: three boxes, each scrolling on its own; stacked on a narrow screen */
-  .sp-sep { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 14px; margin-top: 14px; align-items: start; }
-  @media (max-width: 1000px) { .sp-sep { grid-template-columns: minmax(0, 1fr); } }   /* iPad portrait: one box under the other */
-  .sp-box .side-head { flex-wrap: wrap; }
-  .sp-box-list { max-height: calc(100vh - 170px); min-height: 180px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .sc-tabs { display: flex; flex-direction: column; gap: 6px; }
-  .sc-tabgroup { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); }
-  .sc-tab { display: flex; align-items: center; gap: 4px; padding-right: 4px; }
-  .sc-go { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 10px; border: 0; background: none;
-    font: inherit; text-align: left; color: var(--text-primary); cursor: pointer; }
-  .sc-tab .sc-go { font-weight: 700; }
-  .sc-tab .caret { font-size: .72rem; color: var(--text-muted); transition: transform .15s; }
-  .sc-tabgroup:not(.closed) .sc-tab .caret { transform: rotate(90deg); }
-  .sc-tabgroup.closed .cd-grid { display: none; }
-  .sc-tab .side-count { margin-left: auto; }
-  .sc-all { min-height: 36px; padding: 0 10px; flex-shrink: 0; }
-  .sc-name { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.25; }
-  .sp-box .side-head { gap: 6px; padding: 8px 8px 8px 12px; }
+  /* Concepts view: each concept with its cards as tiles */
+  .cc-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .cc-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+  .cc-sec { min-width: 0; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); }
+  .cc-sec.flash, .cd-tile.flash { box-shadow: 0 0 0 3px var(--accent); }
+  .cc-head { display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px 4px; }
+  .cc-sec:not(.closed) > .cc-head { border-bottom: 1px solid var(--border); }
+  .cc-caret { min-width: var(--tap); min-height: var(--tap); border: 0; background: none; font: inherit; color: var(--text-muted); cursor: pointer; }
+  .cc-caret .caret { display: inline-block; font-size: .78rem; transition: transform .15s; }
+  .cc-sec:not(.closed) .cc-caret .caret { transform: rotate(90deg); }
+  .cc-name { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 6px; border: 0; background: none;
+    font: inherit; font-size: 1.08rem; font-weight: 750; color: var(--text-primary); text-align: left; cursor: pointer; }
+  .cc-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cc-name:hover .cc-title { color: var(--accent); }
+  .cc-head .lib-dots, .cc-head .used-badge { position: static; flex-shrink: 0; margin: 0; }
+  .cc-all { min-height: 36px; padding: 0 12px; flex-shrink: 0; }
+  .cc-page-grid { padding: 4px 0 0; }
+  /* Methods view: one box; the page scrolls */
+  .sp-box { margin-top: 14px; }
+  .sp-box .side-head { flex-wrap: wrap; gap: 6px; padding: 8px 8px 8px 12px; }
   .sp-box .side-head h3 { white-space: normal; min-width: 6.2em; }
   .sp-box .side-action.icon { min-width: 40px; min-height: 40px; padding: 0 8px; font-size: 1.05rem; }
-  @media (max-width: 1100px) { .sp-box-list { padding: 6px; } .sc-go { padding: 0 6px; } .sp-box .vine { padding: 8px; } .cd-grid { padding: 8px 6px; gap: 8px; } }
-  .sc-go:hover .sc-name { color: var(--accent); }
-  .sc-tab .lib-dots { position: static; flex-shrink: 0; }
+  .sp-box-list { display: flex; flex-direction: column; gap: 8px; padding: 10px; }
+  @media (max-width: 1100px) { .sp-box-list { padding: 6px; } .sp-box .vine { padding: 8px; } .cd-grid { padding: 8px 6px; gap: 8px; } }
+  /* summaries (live): groups, each a sheet of cards laid flat */
+  .ls-body { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+  .ls-group { padding: 12px 18px 16px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); }
+  .ls-ghead { margin: 0 0 4px; padding: 0; border: 0; }
+  .ls-gopen { min-height: var(--tap); padding: 0; border: 0; background: none; font: inherit; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
+  .ls-gopen:hover, .ls-ctitle:hover { color: var(--accent); }
+  .ls-card { padding: 12px 0 4px; border-top: 1px solid var(--border); }
+  .ls-ghead + .ls-card, .ls-group > .ls-card:first-child { padding-top: 4px; border-top: 0; }
+  .ls-chead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .ls-ctitle { min-height: 36px; padding: 0; border: 0; background: none; font: inherit; font-size: 1rem; font-weight: 700; color: var(--text-primary); text-align: left; cursor: pointer; }
+  .ls-card .ue-head .lib-dots, .ls-card .ue-head .used-badge, .ls-card .ue-edit { display: none; }
   /* ---- cards: the type label, the tile, the card page, managing types ---- */
   .ct-label { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; min-height: 30px; padding: 0 10px; border: 1px solid var(--ct, var(--border-strong));
     border-radius: 999px; background: color-mix(in srgb, var(--ct, transparent) 14%, var(--surface-1)); color: var(--text-primary); font: inherit; font-size: .74rem;
@@ -906,7 +918,7 @@
   .cd-top .lib-dots { position: static; flex-shrink: 0; margin-left: auto; min-height: 32px; min-width: 34px; }
   .cd-open { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-height: 0; padding: 8px 10px 10px; border: 0;
     background: none; font: inherit; color: var(--text-primary); text-align: left; cursor: pointer; }
-  .cd-title { font-size: 1.05rem; font-weight: 750; line-height: 1.22; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+  .cd-title { font-size: 1rem; font-weight: 750; line-height: 1.2; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
   .cd-open:hover .cd-title { color: var(--accent); }
   .cd-foot { font-size: .72rem; color: var(--text-muted); }
   .cd-foot:empty { display: none; }
@@ -918,20 +930,20 @@
   .cd-selbar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--accent);
     border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 8%, var(--bg)); }
   .cd-selcount { flex: 1 1 auto; font-size: .9rem; font-weight: 700; }
-  #cardPage .cp-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 12px; }
-  #cardPage .cp-head h2 { flex: 1 1 260px; min-width: 0; margin: 0; padding-top: 0; border-top: 0; font-size: 1.45rem; }
+  #subPage .cp-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 12px; }
+  #subPage .cp-head h2 { flex: 1 1 260px; min-width: 0; margin: 0; padding-top: 0; border-top: 0; font-size: 1.45rem; }
   .cd-acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .cd-acts .lib-dots, .cd-acts .used-badge { position: static; margin: 0; }
   .cd-sheet { padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); font-size: .95rem; }
-  .cd-sheet .card, .cd-sheet .tool, .cd-sheet details.subject { margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
-  .cd-sheet .sp-card.compact > .card { height: auto; }
-  .cd-sheet .ue-card > h4, .cd-sheet .sp-card.bi > .card > h4:first-child, .cd-sheet .sp-card.bi > details.subject > summary, .cd-sheet .sp-card.bi > h3:first-child { display: none; }
-  .cd-sheet .ue-block { margin: 12px 0 0; padding: 10px 0 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
-  .cd-sheet .ue-card > .ue-block:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
-  .cd-sheet .ue-name { font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
-  .cd-sheet .clip.note { border: 0; border-radius: 0; background: none; box-shadow: none; }
-  .cd-sheet .clip.note .note-ta { border: 0; background: none; padding: 0; resize: none; }
-  .cd-sheet .clip-resize { display: none; }
+  .cd-flat .card, .cd-flat .tool, .cd-flat details.subject { margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+  .cd-flat .sp-card.compact > .card { height: auto; }
+  .cd-flat .ue-card > h4, .cd-flat .sp-card.bi > .card > h4:first-child, .cd-flat .sp-card.bi > details.subject > summary, .cd-flat .sp-card.bi > h3:first-child { display: none; }
+  .cd-flat .ue-block { margin: 12px 0 0; padding: 10px 0 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
+  .cd-flat .ue-card > .ue-block:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .cd-flat .ue-name { font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
+  .cd-flat .clip.note { border: 0; border-radius: 0; background: none; box-shadow: none; }
+  .cd-flat .clip.note .note-ta { border: 0; background: none; padding: 0; resize: none; }
+  .cd-flat .clip-resize { display: none; }
   .cd-methods { margin-top: 18px; }
   .ct-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
   .ct-row { display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 6px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
@@ -3591,13 +3603,13 @@
 
 <div id="subjectPage" hidden></div>
 
-<div id="cardPage" hidden></div>
+<div id="subPage" hidden></div>
 
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B83</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B84</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6102,7 +6114,7 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeCard = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false;
     saveStore();
     renderEtiTree();
     applyView();
@@ -6185,8 +6197,8 @@ function __detabaseMain() {
     var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
     var onMining = !onProblem && !onSum && activeTop === "eti" && miningScreen;
     var onPs = !onProblem && !onSum && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
-    var onCard = !onProblem && !onSum && !onMining && !onPs && activeTop === "eti" && cardOpen();
-    var builtin = !onProblem && !onSum && !onPs && !onMining && !onCard && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onSub = !onProblem && !onSum && !onMining && !onPs && activeTop === "eti" && subOpen();
+    var builtin = !onProblem && !onSum && !onPs && !onMining && !onSub && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -6203,15 +6215,15 @@ function __detabaseMain() {
     });
     syncGroupButtons();
     $("customPane").hidden = onProblem || onMining || onSum || !activeSubject || activeTop === "eti";
-    $("subjectPage").hidden = !(!onProblem && !onSum && !onPs && !onMining && !onCard && activeTop === "eti" && (!!activeSubject || builtin));
-    $("cardPage").hidden = !onCard;
-    if (!onCard) parkCardPage();
+    $("subjectPage").hidden = !(!onProblem && !onSum && !onPs && !onMining && !onSub && activeTop === "eti" && (!!activeSubject || builtin));
+    $("subPage").hidden = !onSub;
+    if (!onSub) parkSubPage();
     $("psPane").hidden = !onPs;
     $("sumPane").hidden = !onSum;
     $("miningPane").hidden = !onMining;
     if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || onCard || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onSub || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -6252,7 +6264,7 @@ function __detabaseMain() {
     } else if (onSum) {
       var smx = summaryById(activeSummary);
       $("pageTitle").textContent = subjectName(smx.subject);
-      $("pageSubtitle").innerHTML = 'Summary · ' + smx.items.length + (smx.items.length === 1 ? ' item' : ' items');
+      $("pageSubtitle").innerHTML = 'Study sheet · ' + smx.items.length + (smx.items.length === 1 ? ' item' : ' items');
       history.replaceState(null, "", "#" + smx.id);
       renderSumPane();
     } else if (onPs) {
@@ -6261,12 +6273,12 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = 'A method in <b>' + escapeHtml(subjectName(pgx.subject || "")) + '</b>';
       history.replaceState(null, "", "#" + pgx.id);
       renderPsPane();
-    } else if (onCard) {
-      var cref = { lvl: "c", id: activeCard };
-      $("pageTitle").textContent = subjectName(libSubjectOf(cref));
-      $("pageSubtitle").innerHTML = 'A card in <b>' + escapeHtml(tabLabel(libPlace(cref).p)) + '</b>';
-      history.replaceState(null, "", "#card:" + encodeURIComponent(activeCard));
-      renderCardPage();
+    } else if (onSub) {
+      var sm = subMeta();
+      $("pageTitle").textContent = sm.title;
+      $("pageSubtitle").innerHTML = sm.sub;
+      history.replaceState(null, "", "#" + sm.hash);
+      renderSubPage();
     } else if (activeSubject) {
       var s = store.subjects.filter(function (x) { return x.id === activeSubject; })[0];
       if (activeTop === "eti") { noteSubject("s:" + activeSubject); renderSubjectPage(); }
@@ -6305,7 +6317,7 @@ function __detabaseMain() {
   }
 
   function selectTop(id) {
-    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeCard = null;
+    activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
     miningScreen = id === "eti";             // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
@@ -6316,11 +6328,11 @@ function __detabaseMain() {
     activeTop = "notebook"; activeSubject = null; viewingProblem = false; activeProblem = null;
     applyView();
   }
-  // card: open that card's page in it (openCardPage)
-  function selectSubject(id, card) {
+  // sub: open a page inside it — a card, a concept, a summary (openSub)
+  function selectSubject(id, sub) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeCard = card || null; miningScreen = false;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false;
     if (s.folder === "eti") noteSubject("s:" + id);
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
@@ -6459,7 +6471,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeCard = null; miningScreen = false;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -10795,8 +10807,8 @@ function __detabaseMain() {
   // tile opens the card's own page: its content as one sheet, its type, the methods connected to it.
   // ============================================================
   var CT_COLORS = ["#2563eb", "#7c3aed", "#0891b2", "#16a34a", "#dc2626", "#d97706", "#db2777", "#4f46e5", "#0d9488", "#65a30d", "#ea580c", "#64748b"];
-  var activeCard = null, cardFlash = null;   // the card page on screen; an element on it to flash once
-  var cdSel = null;                          // picking tiles to label: { key: subject, ids: { cardId: 1 }, paint() }
+  // picking tiles to label: { key: the subject key or concept id it is on, ids: { cardId: 1 }, paint(), allPaints: [] }
+  var cdSel = null;
   function cardTypeOf(cardId) { var id = cardTypeMap()[cardId]; return id ? byId(cardTypes(), id) : null; }
   // how many cards that still exist carry each type
   function cardTypeCounts() {
@@ -10814,7 +10826,7 @@ function __detabaseMain() {
   }
   function cardsRedraw() {
     if (spShown()) renderSubjectPage();
-    if (cardPageShown()) renderCardPage();
+    if (subPageShown()) renderSubPage();
   }
 
   // ---- the type: a small colored label; tapping it picks the type ----
@@ -10918,6 +10930,7 @@ function __detabaseMain() {
       Object.keys(m).forEach(function (id) { if (m[id] === t.id) { if (to) m[id] = to; else delete m[id]; } });
       store.cardTypes = cardTypes().filter(function (x) { return x !== t; });
       Object.keys((store.ui && store.ui.sp) || {}).forEach(function (k) { var o = store.ui.sp[k].offType; if (o) delete o[t.id]; });
+      Object.keys((store.ui && store.ui.lsum) || {}).forEach(function (k) { var o = (store.ui.lsum[k].off || {}).type; if (o) delete o[t.id]; });
       after();
     }
     if (!n) { if (confirm("Delete the type “" + t.name + "”? No card has it.")) drop(null); return; }
@@ -10962,7 +10975,23 @@ function __detabaseMain() {
     });
     return t;
   }
-  // the bar shown while picking tiles
+  // a concept's cards as a grid of tiles; long-press a tile to reorder it, or drag it into another concept
+  //   opts: as cardTileEl, plus empty: what an empty grid says
+  function cardGridEl(tabId, cards, opts) {
+    var grid = document.createElement("div");
+    grid.className = "cd-grid";
+    if (!cards.length) grid.innerHTML = '<p class="muted sp-empty">' + escapeHtml(opts.empty || "No cards in this concept yet.") + '</p>';
+    cards.forEach(function (c) { grid.appendChild(cardTileEl(c, opts)); });
+    dndList(grid, { type: "card", item: ".cd-tile", axis: "grid", handle: ".cd-open", id: function (x) { return x.getAttribute("data-card"); },
+      onDrop: function (drag, index) { cardTo(drag, tabId, index); } });
+    return grid;
+  }
+  // ---- picking tiles to label them: Select / Done, the bar, All / None per concept ----
+  function cdSelecting(scope) { return cdSel && cdSel.key === scope ? cdSel : null; }
+  function cdSelectBtn(scope) {
+    var on = !!cdSelecting(scope);
+    return actBtn(on ? "Done" : "Select", on ? "stop selecting" : "select cards to give them a type", function () { cdSel = on ? null : { key: scope, ids: {} }; cardsRedraw(); });
+  }
   function cdSelBarEl() {
     var sel = cdSel;
     var bar = document.createElement("div");
@@ -10973,81 +11002,314 @@ function __detabaseMain() {
       var n = Object.keys(sel.ids).length;
       bar.querySelector(".cd-selcount").textContent = n ? n + " selected" : "Tap cards to select them";
       setB.disabled = !n; clearB.disabled = !n;
+      (sel.allPaints || []).forEach(function (f) { f(); });
     };
     setB.addEventListener("click", function () { cardTypeMenu(setB, Object.keys(sel.ids)); });
     clearB.addEventListener("click", function () {
       sel.ids = {};
-      Array.prototype.forEach.call(document.querySelectorAll("#subjectPage .cd-tile.picked"), function (x) { x.classList.remove("picked"); });
-      Array.prototype.forEach.call(document.querySelectorAll("#subjectPage .sc-all"), function (x) { x.textContent = "All"; });
+      Array.prototype.forEach.call(document.querySelectorAll(".cd-tile.picked"), function (x) { x.classList.remove("picked"); });
       sel.paint();
     });
-    sel.paint();
     return bar;
   }
-
-  // ---- the card page: one card on its own, inside its subject ----
-  function cardOpen() { return !!activeCard && refExists({ lvl: "c", id: activeCard }); }
-  function cardPageShown() { var p = $("cardPage"); return !!p && !p.hidden; }
-  function openCardPage(cardId, elId) {
-    var ref = { lvl: "c", id: cardId };
-    if (!refExists(ref) || isHiddenRef(ref)) return;
-    var key = libSubjectOf(ref); if (!key) return;
-    cardFlash = elId || null;
-    openSubjectRef(key, null, cardId);       // its subject stays selected in the sidebar
-  }
-  // a built-in block shown on the card page goes back to the hidden library
-  function parkCardPage() { var h = $("cardPage"); if (h && h.firstChild) { spPark(h); h.innerHTML = ""; } }
-  function renderCardPage() {
-    var host = $("cardPage"); if (!host) return;
-    spPark(host);
-    host.innerHTML = "";
-    var ref = { lvl: "c", id: activeCard }, pl = libPlace(ref);
-    if (!pl || !refExists(ref)) return;
-    var methods = cardMethodsMap()[ref.id] || [];
-    host.innerHTML = '<button type="button" class="ps-back"></button>' +
-      '<div class="cp-head"><h2></h2><span class="cd-acts"></span></div>' +
-      '<div class="cd-sheet"></div>' +
-      '<section class="cd-methods"><div class="md-sechead">Connected methods <span class="side-count">' + methods.length + '</span></div></section>';
-    var back = host.querySelector(".ps-back");
-    back.textContent = "‹ " + tabLabel(pl.p);
-    back.title = "back to " + subjectName(libSubjectOf(ref));
-    back.addEventListener("click", function () {
-      openTabRef(pl.p, function () {
-        var el = document.querySelector('#subjectPage .cd-tile[data-card="' + ref.id + '"], #subjectPage .sp-card[data-card="' + ref.id + '"]');
-        if (el) el.scrollIntoView({ block: "center" });
-      });
+  // every card of one concept at once
+  function cdAllBtn(sel, cards, scopeEl) {
+    var ab = document.createElement("button");
+    ab.type = "button"; ab.className = "btn-quiet cc-all";
+    function paint() { ab.textContent = cards.every(function (c) { return sel.ids[c.id]; }) ? "None" : "All"; }
+    ab.addEventListener("click", function () {
+      var on = ab.textContent === "All";
+      cards.forEach(function (c) { if (on) sel.ids[c.id] = 1; else delete sel.ids[c.id]; });
+      Array.prototype.forEach.call(scopeEl.querySelectorAll(".cd-tile"), function (x) { x.classList.toggle("picked", on); });
+      sel.paint();
     });
-    host.querySelector("h2").textContent = cardLabel(ref.id);
-    var acts = host.querySelector(".cd-acts");
+    (sel.allPaints = sel.allPaints || []).push(paint);
+    paint();
+    return ab;
+  }
+
+  // ---- the card page: the card as one sheet, its type, the methods connected to it ----
+  function renderCardPage(host) {
+    var ref = { lvl: "c", id: activeSub.id }, pl = libPlace(ref);
+    var acts = subHeadEl(host, { label: "‹ " + tabLabel(pl.p), title: "back to the concept", run: function () { openConceptPage(pl.p, ref.id); } }, cardLabel(ref.id));
     acts.appendChild(cardTypeLabel(ref.id, true));
     var bd = usedBadge(ref); if (bd) acts.appendChild(bd);
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-quiet"; add.textContent = "＋ Add to it"; add.title = "add elements to this card";
-    add.addEventListener("click", function () { addAssetAt(ref); });
-    acts.appendChild(add);
+    acts.appendChild(actBtn("＋ Add to it", "add elements to this card", function () { addAssetAt(ref); }));
     acts.appendChild(dotsBtn(ref));
+    var sheet = document.createElement("div");
+    sheet.className = "cd-sheet cd-flat";
+    sheet.appendChild(cardFlatEl(ref));
+    host.appendChild(sheet);
+    host.appendChild(subMethodsEl("Connected methods", cardMethodsMap()[ref.id] || [],
+      "No method is connected to this card yet. A method connects to it when it uses this card or something in it, or through “＋ Connect to card” on the method."));
+  }
+  // a card's own content, ready to be laid flat (its title is shown by whoever holds it)
+  function cardFlatEl(ref) {
     var slot = spCardEl(ref);
     Array.prototype.forEach.call(slot.querySelectorAll(":scope > details.subject"), function (d) { d.open = true; });
-    host.querySelector(".cd-sheet").appendChild(slot);
-    var ms = host.querySelector(".cd-methods");
-    if (methods.length) ms.appendChild(conceptChipsEl(methods.map(function (pg) { return { lvl: "p", id: pg.id }; })));
-    else ms.insertAdjacentHTML("beforeend", '<p class="muted">No method is connected to this card yet. A method connects to it when it uses this card or something in it, or through “＋ Connect to card” on the method.</p>');
-    fillAllIn(host);
-    try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
-    spRefreshTools(host);
-    if (cardFlash) { var f = cardFlash; cardFlash = null; setTimeout(function () { flashEl(host.querySelector('.ue-block[data-ue="' + f + '"]')); }, 120); }
+    return slot;
   }
 
   // ============================================================
-  // A SUBJECT'S PAGE — one page for every subject, built-in or custom, in two views
-  //   Separate: two boxes side by side — Concepts | Methods — each scrolling on its own
+  // PAGES INSIDE A SUBJECT — a card, a concept, a summary
+  // Each is a view of its own (applyView: after the method page, before the subject page) while its
+  // subject stays selected in the sidebar. activeSub = { kind, id }:
+  //   card — a card id · concept — a concept (tab) id · summary — a subject key (all its concepts) · csummary — a concept id
+  // The address is #<kind>:<id>, so a reload comes back to the same page.
+  // ============================================================
+  var activeSub = null, subFocus = null;   // subFocus: what to flash once the page is drawn (a CSS selector)
+  function subRef(sub) { return { lvl: sub.kind === "card" ? "c" : sub.kind === "summary" ? "s" : "t", id: sub.id }; }
+  function subValid(sub) { if (!sub) return false; var r = subRef(sub); return refExists(r) && !isHiddenRef(r); }
+  function subOpen() { return subValid(activeSub); }
+  function isSubPage(kind, id) { return !!activeSub && activeSub.kind === kind && activeSub.id === id; }
+  function subPageShown() { var p = $("subPage"); return !!p && !p.hidden; }
+  function subSubjectOf(sub) { return sub.kind === "summary" ? sub.id : libSubjectOf(subRef(sub)); }
+  function openSub(kind, id, focus) {
+    var sub = { kind: kind, id: id };
+    if (!subValid(sub)) return;
+    var key = subSubjectOf(sub); if (!key) return;
+    subFocus = focus || null;
+    openSubjectRef(key, null, sub);
+  }
+  function openCardPage(cardId, elId) { openSub("card", cardId, elId ? '.ue-block[data-ue="' + elId + '"]' : null); }
+  function openConceptPage(tabId, cardId) { openSub("concept", tabId, cardId ? '.cd-tile[data-card="' + cardId + '"]' : null); }
+  // built-in blocks shown on the page go back to the hidden library
+  function parkSubPage() { var h = $("subPage"); if (h && h.firstChild) { spPark(h); h.innerHTML = ""; } }
+  // the title line above the page, and the address
+  function subMeta() {
+    var s = activeSub, key = subSubjectOf(s), sub;
+    if (s.kind === "card") sub = 'A card in <b>' + escapeHtml(tabLabel(libPlace(subRef(s)).p)) + '</b>';
+    else if (s.kind === "concept") sub = 'A concept in <b>' + escapeHtml(subjectName(key)) + '</b>';
+    else if (s.kind === "summary") sub = 'A summary of all its concepts';
+    else sub = 'A summary of <b>' + escapeHtml(tabLabel(s.id)) + '</b>';
+    return { title: subjectName(key), sub: sub, hash: s.kind + ":" + encodeURIComponent(s.id) };
+  }
+  function renderSubPage() {
+    var host = $("subPage"); if (!host) return;
+    spPark(host);
+    host.innerHTML = "";
+    if (!subOpen()) return;
+    var k = activeSub.kind;
+    if (k === "card") renderCardPage(host);
+    else if (k === "concept") renderConceptPage(host);
+    else lsumRender(host, conceptsSumSpec(subSubjectOf(activeSub), k === "csummary" ? activeSub.id : null));
+    fillAllIn(host);
+    try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
+    spRefreshTools(host);
+    if (subFocus) { var f = subFocus; subFocus = null; setTimeout(function () { flashEl(host.querySelector(f)); }, 120); }
+  }
+  // the top of every such page: back, the page's own title, its actions (returned, to fill)
+  function subHeadEl(host, back, title) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "ps-back"; b.textContent = back.label;
+    if (back.title) b.title = back.title;
+    b.addEventListener("click", back.run);
+    host.appendChild(b);
+    var head = document.createElement("div");
+    head.className = "cp-head";
+    head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
+    head.querySelector("h2").textContent = title;
+    host.appendChild(head);
+    return head.querySelector(".cd-acts");
+  }
+  function actBtn(label, title, run, cls) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = cls || "btn-quiet"; b.textContent = label;
+    if (title) b.title = title;
+    b.addEventListener("click", run);
+    return b;
+  }
+  // a list of methods as chips, under a heading
+  function subMethodsEl(title, methods, empty) {
+    var sec = document.createElement("section");
+    sec.className = "cd-methods";
+    sec.innerHTML = '<div class="md-sechead">' + escapeHtml(title) + ' <span class="side-count">' + methods.length + '</span></div>';
+    if (methods.length) sec.appendChild(conceptChipsEl(methods.map(function (pg) { return { lvl: "p", id: pg.id }; })));
+    else sec.insertAdjacentHTML("beforeend", '<p class="muted">' + escapeHtml(empty || "") + '</p>');
+    return sec;
+  }
+
+  // ============================================================
+  // A CONCEPT'S PAGE — its cards as tiles: add, reorder, move, delete, label; its summary
+  // ============================================================
+  function renderConceptPage(host) {
+    var tref = { lvl: "t", id: activeSub.id }, key = subSubjectOf(activeSub);
+    var cards = libKids(tref), sel = cdSelecting(tref.id);
+    if (sel) sel.allPaints = [];
+    var acts = subHeadEl(host, { label: "‹ " + subjectName(key), title: "back to the subject", run: function () { openTabRef(tref.id); } }, tabLabel(tref.id));
+    acts.appendChild(actBtn("📋 Summary", "every card of this concept on one page", function () { openSub("csummary", tref.id); }));
+    if (cards.length) acts.appendChild(cdSelectBtn(tref.id));
+    acts.appendChild(actBtn("＋ Card", "crop a card out of your notes, or type one in", function () { addAssetAt(tref); }, "btn-primary"));
+    var bd = usedBadge(tref); if (bd) acts.appendChild(bd);
+    acts.appendChild(dotsBtn(tref));
+    var grid = cardGridEl(tref.id, cards, { sel: sel, methods: cardMethodsMap(), empty: "No cards yet — tap “＋ Card” to crop one out of your notes, or type one in." });
+    grid.classList.add("cc-page-grid");
+    if (sel) {
+      var bar = cdSelBarEl();
+      bar.insertBefore(cdAllBtn(sel, cards, grid), bar.querySelector('[data-a="clear"]'));
+      host.appendChild(bar);
+      sel.paint();
+    }
+    host.appendChild(grid);
+    dndInto(host.querySelector(".cp-head"), { accepts: ["card"], onDrop: function (drag) { cardTo(drag, tref.id, null); } });
+    var whole = store.ps.pages.filter(function (pg) { return methodCards(pg.id).some(function (x) { return x.ref.lvl === "t" && x.ref.id === tref.id; }); });
+    if (whole.length) host.appendChild(subMethodsEl("Methods for the whole concept", whole));
+  }
+  // a new concept at the end of a subject
+  function newConcept(key) {
+    askName("New concept", "In " + subjectName(key) + " — a concept holds cards, for example “Kinematics”.", "", function (n) {
+      libEnsure();
+      var id = uid("ut_");
+      store.tabs.push({ id: id, subject: key, name: n, created: Date.now() });
+      libMove({ lvl: "t", id: id }, key, null);
+      saveStore(); libAfterMove();
+      setTimeout(function () { flashEl(spSectionOf(id)); }, 60);
+    });
+  }
+
+  // ============================================================
+  // SUMMARIES — live, filtered views; one component for every summary page
+  // A summary pulls everything of its scope onto one scrolling page, in groups, in order. Filters
+  // switch options off (card types, concepts, …); they are remembered per page, shown as chips, and
+  // groups left with nothing disappear. (The saved, hand-picked lists are Study sheets — STUDY SHEETS.)
+  //   spec = { mem, title, back: { label, title, run }, empty,
+  //            filters: [{ id, label, dots, opts: [{ id, name, color }], chip(opt) }],
+  //            groups(off) → [{ title, open(), items: [element] }] }
+  //   store.ui.lsum[mem] = { off: { <filter id>: { <option id>: 1 } } }
+  // ============================================================
+  function lsumState(spec) {
+    store.ui.lsum = store.ui.lsum || {};
+    var s = store.ui.lsum[spec.mem] = store.ui.lsum[spec.mem] || {};
+    s.off = s.off || {};
+    spec.filters.forEach(function (f) { s.off[f.id] = s.off[f.id] || {}; });
+    return s;
+  }
+  function lsumChips(spec, st) {
+    var out = [];
+    spec.filters.forEach(function (f) {
+      var off = st.off[f.id];
+      f.opts.forEach(function (o) { if (off[o.id]) out.push({ label: f.chip(o), clear: function () { delete off[o.id]; } }); });
+    });
+    return out;
+  }
+  function lsumRender(host, spec) {
+    var st = lsumState(spec), chips = lsumChips(spec, st);
+    var acts = subHeadEl(host, spec.back, spec.title);
+    acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
+    var row = document.createElement("div");
+    row.className = "sp-chips";
+    if (chips.length) {
+      row.insertAdjacentHTML("beforeend", '<span class="em-nlabel">Hidden</span>');
+      chips.forEach(function (c) {
+        var chip = document.createElement("span");
+        chip.className = "ps-chip";
+        chip.innerHTML = '<span class="ps-chip-go"></span>';
+        chip.firstChild.textContent = c.label;
+        chip.appendChild(actBtn("✕", "show it again", function () { c.clear(); saveStore(); renderSubPage(); }, "ps-chip-x"));
+        row.appendChild(chip);
+      });
+      row.appendChild(actBtn("Show all", "", function () { st.off = {}; saveStore(); renderSubPage(); }, "em-clearnarrow"));
+    }
+    host.appendChild(row);
+    var body = document.createElement("div");
+    body.className = "ls-body";
+    var groups = spec.groups(st.off).filter(function (g) { return g.items.length; });
+    if (!groups.length) body.innerHTML = '<p class="muted sp-empty">' + escapeHtml(chips.length ? "Nothing here with these filters." : spec.empty) + '</p>';
+    groups.forEach(function (g) {
+      var sec = document.createElement("section");
+      sec.className = "ls-group";
+      if (g.title) {
+        var h = document.createElement("h3");
+        h.className = "ls-ghead";
+        h.appendChild(actBtn(g.title, "open it", g.open, "ls-gopen"));
+        sec.appendChild(h);
+      }
+      g.items.forEach(function (el) { sec.appendChild(el); });
+      body.appendChild(sec);
+    });
+    host.appendChild(body);
+  }
+  function lsumFilters(spec) {
+    var st = lsumState(spec);
+    var box = ovOpen("Filters · " + spec.title, { wide: true });
+    box.ov.classList.add("sp-filters");
+    function changed() { saveStore(); renderSubPage(); draw(); }
+    function draw() {
+      box.body.innerHTML = "";
+      spec.filters.forEach(function (f) {
+        var off = st.off[f.id] = st.off[f.id] || {};
+        var sec = document.createElement("div");
+        sec.className = "spf-sec";
+        sec.innerHTML = '<div class="md-sechead">' + escapeHtml(f.label) + '</div>';
+        f.opts.forEach(function (o) {
+          var on = !off[o.id];
+          var r = spfCheck(on ? "on" : "off", o.name, function () { if (on) off[o.id] = 1; else delete off[o.id]; changed(); }, f.dots ? "type" : "");
+          if (o.color) r.style.setProperty("--ct", o.color);
+          sec.appendChild(r);
+        });
+        sec.appendChild(actBtn("All", "", function () { st.off[f.id] = {}; changed(); }, "spf-more"));
+        sec.appendChild(actBtn("None", "", function () { f.opts.forEach(function (o) { off[o.id] = 1; }); changed(); }, "spf-more"));
+        box.body.appendChild(sec);
+      });
+    }
+    draw();
+    box.buttons([
+      { label: "Show all", run: function () { st.off = {}; changed(); } },
+      { label: "Done", primary: true, right: true, run: function () { box.close(true); } }
+    ]);
+  }
+  // ---- concept summaries: a subject's concepts (tabId null), or one concept ----
+  function conceptsSumSpec(key, tabId) {
+    var filters = [{ id: "type", label: "Card types", dots: true,
+      opts: cardTypes().map(function (t) { return { id: t.id, name: t.name, color: t.color }; }).concat([{ id: "none", name: "Unlabeled" }]),
+      chip: function (o) { return "no " + (o.id === "none" ? "unlabeled cards" : o.name); } }];
+    if (!tabId) filters.push({ id: "concept", label: "Concepts",
+      opts: libKids({ lvl: "s", id: key }).map(function (t) { return { id: t.id, name: tabLabel(t.id) }; }),
+      chip: function (o) { return "without " + o.name; } });
+    return {
+      mem: tabId ? "t|" + tabId : "s|" + key,
+      title: "Summary · " + (tabId ? tabLabel(tabId) : "all concepts"),
+      back: tabId ? { label: "‹ " + tabLabel(tabId), title: "back to the concept", run: function () { openConceptPage(tabId); } }
+                  : { label: "‹ " + subjectName(key), title: "back to the subject", run: function () { openSubjectRef(key); } },
+      empty: tabId ? "No cards in this concept yet." : "No cards in this subject yet.",
+      filters: filters,
+      groups: function (off) {
+        var tabs = tabId ? [{ lvl: "t", id: tabId }] : libKids({ lvl: "s", id: key }).filter(function (t) { return !off.concept[t.id]; });
+        return tabs.map(function (t) {
+          return {
+            title: tabId ? null : tabLabel(t.id),
+            open: function () { openConceptPage(t.id); },
+            items: libKids(t).filter(function (c) { var ty = cardTypeOf(c.id); return !off.type[ty ? ty.id : "none"]; }).map(cardSumEl)
+          };
+        });
+      }
+    };
+  }
+  // a card in a summary: its type and title (tap the title for its page), then its content laid flat
+  function cardSumEl(cref) {
+    var d = document.createElement("article");
+    d.className = "ls-card cd-flat";
+    d.setAttribute("data-card", cref.id);
+    var h = document.createElement("div");
+    h.className = "ls-chead";
+    h.appendChild(cardTypeLabel(cref.id, true));
+    h.appendChild(actBtn(cardLabel(cref.id), "open the card", function () { openCardPage(cref.id); }, "ls-ctitle"));
+    d.appendChild(h);
+    d.appendChild(cardFlatEl(cref));
+    return d;
+  }
+
+  // ============================================================
+  // A SUBJECT'S PAGE — one page for every subject, built-in or custom, in three views
+  //   Concepts: every concept with its cards as tiles (a concept or a card opens as its own page)
+  //   Methods:  the subject's methods by folder
   //   Merged:   concept by concept, card by card — the card itself, then its methods
   // A built-in card is the HTML block itself, moved (never copied) out of the hidden library into
   // its place, so every tool in it keeps working; before anything is rebuilt each block goes back.
   // Filters are the subject's concepts and cards, card types (and, in Merged, cards / methods). A method
   // disappears only when every card it is connected to is filtered out; one connected to no card at
   // all sits in "Not linked to a card", which can be switched off. View and filters are kept per subject.
-  //   store.ui.sp[key] = { view: "merged" | "separate", off: { <tab or card id>: 1 }, offType: { <card type id> | "none": 1 }, hide: { c, m }, noUnlinked }
+  //   store.ui.sp[key] = { view: "concepts" | "methods" | "merged", off: { <tab or card id>: 1 }, offType: { <card type id> | "none": 1 }, hide: { c, m }, noUnlinked }
   // ============================================================
   function spShown() { var p = $("subjectPage"); return !!p && !p.hidden; }
   // every built-in block inside `host` back into the hidden library, and the user elements added inside it out
@@ -11121,7 +11383,8 @@ function __detabaseMain() {
   function spState(key) {
     store.ui.sp = store.ui.sp || {};
     var s = store.ui.sp[key] = store.ui.sp[key] || {};
-    if (s.view !== "separate") s.view = "merged";
+    if (s.view === "separate") s.view = "concepts";                 // the old two-box view
+    if (["concepts", "methods", "merged"].indexOf(s.view) < 0) s.view = "concepts";
     s.off = s.off || {}; s.hide = s.hide || {}; s.offType = s.offType || {};
     return s;
   }
@@ -11217,7 +11480,7 @@ function __detabaseMain() {
     var head = document.createElement("div");
     head.className = "sp-head";
     var nf = spChips(key, st).length;
-    head.innerHTML = '<div class="sp-seg" role="tablist"><button type="button" data-v="separate">Separate</button><button type="button" data-v="merged">Merged</button></div>' +
+    head.innerHTML = '<div class="sp-seg" role="tablist"><button type="button" data-v="concepts">Concepts</button><button type="button" data-v="methods">Methods</button><button type="button" data-v="merged">Merged</button></div>' +
       '<button type="button" class="sp-filter-btn">Filters' + (nf ? ' <span class="sp-badge">' + nf + '</span>' : '') + '</button>' +
       '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="c">＋ Card</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button></span>';
     Array.prototype.forEach.call(head.querySelectorAll(".sp-seg button"), function (b) {
@@ -11255,21 +11518,23 @@ function __detabaseMain() {
   }
   // the filter panel: the subject's tabs, each with its cards, as checkboxes (a tab with only some
   // of its cards on shows a partial mark); the card types; the "not linked" group; in Merged, the two kinds
+  // one checkbox row of a filter panel: state "on" | "some" | "off"
+  function spfCheck(state, label, onClick, cls) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "spf-row " + (cls || "");
+    b.innerHTML = '<span class="spf-box ' + state + '"></span><span class="spf-name"></span>';
+    b.querySelector(".spf-name").textContent = label;
+    b.setAttribute("role", "checkbox"); b.setAttribute("aria-checked", state === "on" ? "true" : state === "some" ? "mixed" : "false");
+    b.addEventListener("click", onClick);
+    return b;
+  }
   function spFilters(key) {
     var st = spState(key);
     var box = ovOpen("Filters · " + subjectName(key), { wide: true });
     box.ov.classList.add("sp-filters");
     var open = {};
     function changed() { saveStore(); renderSubjectPage(); draw(); }
-    function check(state, label, onClick, cls) {
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "spf-row " + (cls || "");
-      b.innerHTML = '<span class="spf-box ' + state + '"></span><span class="spf-name"></span>';
-      b.querySelector(".spf-name").textContent = label;
-      b.setAttribute("role", "checkbox"); b.setAttribute("aria-checked", state === "on" ? "true" : state === "some" ? "mixed" : "false");
-      b.addEventListener("click", onClick);
-      return b;
-    }
+    var check = spfCheck;
     function draw() {
       var b = box.body;
       b.innerHTML = '<div class="spf-sec"><div class="md-sechead">Concepts and cards</div><div class="spf-tabs"></div></div>';
@@ -11420,7 +11685,7 @@ function __detabaseMain() {
     return sec;
   }
 
-  // ---- Separate: two boxes — the concepts with their cards as tiles, the methods ----
+  // ---- a box with a head (title, count, compact buttons) and a list ----
   function spBoxEl(title, n, add) {
     var box = document.createElement("section");
     box.className = "side-box sp-box";
@@ -11433,68 +11698,57 @@ function __detabaseMain() {
     });
     return box;
   }
-  function spConceptsBox(key, st) {
+  // ---- Concepts: every concept with its cards as tiles ----
+  function spConceptsView(key, st, host) {
     var filtering = spChips(key, st).length > 0;
     var tabs = libKids({ lvl: "s", id: key }).filter(function (t) { return spTabState(st, t.id) !== "off"; });
-    var sel = cdSel && cdSel.key === key ? cdSel : null;
-    var methods = cardMethodsMap(), n = 0;
-    var box = spBoxEl("Concepts", 0, [
-      { label: sel ? "Done" : "Select", title: sel ? "stop selecting" : "select cards to give them a type", run: function () { cdSel = sel ? null : { key: key, ids: {} }; renderSubjectPage(); } },
-      { label: "＋", title: "New card", primary: true, run: function () { addAssetAt({ lvl: "s", id: key }); } }
-    ]);
-    var list = box.querySelector(".sp-box-list");
-    if (sel) list.appendChild(cdSelBarEl());
-    var tl = document.createElement("div");
-    tl.className = "sc-tabs";
-    if (!tabs.length) list.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No concepts yet.</b> Tap ＋ to crop the first card out of your notes, or type one in.</div>');
+    var sel = cdSelecting(key), methods = cardMethodsMap();
+    if (sel) sel.allPaints = [];
+    var bar = document.createElement("div");
+    bar.className = "cc-bar";
+    bar.appendChild(actBtn("📋 Summary", "every card of this subject on one page", function () { openSub("summary", key); }));
+    if (tabs.length) bar.appendChild(cdSelectBtn(key));
+    bar.appendChild(actBtn("＋ Concept", "a new concept at the end", function () { newConcept(key); }));
+    host.appendChild(bar);
+    if (sel) host.appendChild(cdSelBarEl());
+    var list = document.createElement("div");
+    list.className = "cc-list";
+    if (!tabs.length) list.innerHTML = '<div class="side-empty"><b>No concepts yet.</b> Tap “＋ Concept”, or “＋ Card” to crop the first card out of your notes.</div>';
     tabs.forEach(function (t) {
       var cards = libKids(t).filter(function (c) { return spCardShown(st, c); });
       if (filtering && !cards.length) return;           // filtering: only the concepts that still have cards
-      n += cards.length;
       var closed = !!(store.ui.spClosed || {})[t.id];
-      var grp = document.createElement("div");
-      grp.className = "sc-tabgroup" + (closed ? " closed" : "");
-      grp.setAttribute("data-tab", t.id);
-      var row = document.createElement("div");
-      row.className = "sc-tab";
-      row.innerHTML = '<button type="button" class="sc-go"><span class="caret">▸</span><span class="sc-name"></span><span class="side-count">' + cards.length + '</span></button>';
-      row.querySelector(".sc-name").textContent = tabLabel(t.id);
-      row.querySelector(".sc-go").addEventListener("click", function () {
+      var sec = document.createElement("section");
+      sec.className = "cc-sec" + (closed ? " closed" : "");
+      sec.setAttribute("data-tab", t.id);
+      var head = document.createElement("header");
+      head.className = "cc-head";
+      head.innerHTML = '<button type="button" class="cc-caret" aria-expanded="' + !closed + '" title="' + (closed ? "show" : "hide") + ' its cards"><span class="caret">▸</span></button>' +
+        '<button type="button" class="cc-name" title="open the concept"><span class="cc-title"></span><span class="side-count">' + cards.length + '</span></button>';
+      head.querySelector(".cc-title").textContent = tabLabel(t.id);
+      head.querySelector(".cc-caret").addEventListener("click", function () {
         store.ui.spClosed = store.ui.spClosed || {};
         if (closed) delete store.ui.spClosed[t.id]; else store.ui.spClosed[t.id] = 1;
         saveStore(); renderSubjectPage();
       });
-      var grid = document.createElement("div");
-      grid.className = "cd-grid";
-      if (sel && cards.length && !closed) {           // picking: every card of this concept at once
-        var ab = document.createElement("button");
-        ab.type = "button"; ab.className = "btn-quiet sc-all";
-        ab.textContent = cards.every(function (c) { return sel.ids[c.id]; }) ? "None" : "All";
-        ab.addEventListener("click", function () {
-          var on = ab.textContent === "All";
-          cards.forEach(function (c) { if (on) sel.ids[c.id] = 1; else delete sel.ids[c.id]; });
-          Array.prototype.forEach.call(grid.querySelectorAll(".cd-tile"), function (x) { x.classList.toggle("picked", on); });
-          ab.textContent = on ? "None" : "All";
-          sel.paint();
-        });
-        row.appendChild(ab);
+      head.querySelector(".cc-name").addEventListener("click", function () { openConceptPage(t.id); });
+      sec.appendChild(head);
+      dndInto(head, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, t.id, null); } });
+      if (!closed) {
+        var grid = cardGridEl(t.id, cards, { sel: sel, methods: methods });
+        if (sel && cards.length) head.appendChild(cdAllBtn(sel, cards, grid));
+        sec.appendChild(grid);
       }
-      row.appendChild(dotsBtn(t));
-      grp.appendChild(row);
-      dndInto(row, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, t.id, null); } });
-      if (!cards.length) grid.innerHTML = '<p class="muted sp-empty">No cards in this concept yet.</p>';
-      cards.forEach(function (c) { grid.appendChild(cardTileEl(c, { sel: sel, methods: methods })); });
-      dndList(grid, { type: "card", item: ".cd-tile", axis: "grid", handle: ".cd-open", id: function (x) { return x.getAttribute("data-card"); },
-        onDrop: function (drag, index) { cardTo(drag, t.id, index); } });
-      grp.appendChild(grid);
-      tl.appendChild(grp);
+      var bd = usedBadge(t); if (bd) head.appendChild(bd);
+      head.appendChild(dotsBtn(t));
+      list.appendChild(sec);
     });
-    dndList(tl, { type: "tab", item: ".sc-tabgroup", handle: ".sc-tab .sc-go", id: function (x) { return x.getAttribute("data-tab"); },
+    dndList(list, { type: "tab", item: ".cc-sec", handle: ".cc-name", id: function (x) { return x.getAttribute("data-tab"); },
       onDrop: function (drag, index) { tabTo(drag, key, index); } });
-    list.appendChild(tl);
-    box.querySelector(".side-count").textContent = n;
-    return box;
+    host.appendChild(list);
+    if (sel) sel.paint();
   }
+  // ---- Methods: the subject's methods by folder, and other subjects' connected to its cards ----
   function spMethodsBox(key, st, items) {
     var own = items.methods.filter(function (it) { return it.own; }), away = items.methods.filter(function (it) { return !it.own; });
     var keep = {};
@@ -11504,7 +11758,7 @@ function __detabaseMain() {
       { label: "＋", title: "New method", primary: true, run: function () { newProblemPage(key); } }
     ]);
     var list = box.querySelector(".sp-box-list");
-    if (!psPagesOf(key).length && !mfOf(key).length && !away.length) list.innerHTML = '<div class="side-empty"><b>No methods yet.</b> Crop one out of a PDF, split it into stages and attach the concepts it uses.</div>';
+    if (!psPagesOf(key).length && !mfOf(key).length && !away.length) list.innerHTML = '<div class="side-empty"><b>No methods yet.</b> Crop one out of a PDF, cut it into parts and attach the concepts it uses.</div>';
     else list.appendChild(methodsByFolderEl(key, function (pg) { return !!keep[pg.id]; }));
     if (away.length) {
       var g = document.createElement("section");
@@ -11514,14 +11768,6 @@ function __detabaseMain() {
       list.appendChild(g);
     }
     return box;
-  }
-  function spSeparate(key, st, host) {
-    var items = spItems(key, st);
-    var grid = document.createElement("div");
-    grid.className = "sp-sep";
-    grid.appendChild(spConceptsBox(key, st));
-    grid.appendChild(spMethodsBox(key, st, items));
-    host.appendChild(grid);
   }
 
   function renderSubjectPage() {
@@ -11540,7 +11786,9 @@ function __detabaseMain() {
     } else {
       host.appendChild(spHeadEl(key, st));
       host.appendChild(spChipsEl(key, st));
-      if (st.view === "separate") spSeparate(key, st, host); else spMerged(key, st, host);
+      if (st.view === "concepts") spConceptsView(key, st, host);
+      else if (st.view === "methods") host.appendChild(spMethodsBox(key, st, spItems(key, st)));
+      else spMerged(key, st, host);
       host.appendChild(subjectSummariesSection(key));
     }
     // a custom subject's notes, under its material, while it has any
@@ -11555,7 +11803,7 @@ function __detabaseMain() {
   }
   // re-draw whatever shows the library, after it changed
   function spRefresh() { if (spShown()) renderSubjectPage(); }
-  function spSectionOf(tabId) { return document.querySelector('#subjectPage [data-tab="' + tabId + '"]'); }   // Merged section or Separate group
+  function spSectionOf(tabId) { return document.querySelector('#subjectPage [data-tab="' + tabId + '"]'); }   // a concept's section, in Concepts or Merged
   function spOpenTab(tabId) {
     if (store.ui.spClosed && store.ui.spClosed[tabId]) { delete store.ui.spClosed[tabId]; saveStore(); return true; }
     return false;
@@ -11580,9 +11828,9 @@ function __detabaseMain() {
     el.scrollIntoView({ block: "center", behavior: "smooth" });
     el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
   }
-  function openSubjectRef(key, then, card) {
-    activePsPage = null; activeSummary = null; activeCard = card || null; miningScreen = false; viewingProblem = false;
-    if (key.slice(0, 2) === "s:") selectSubject(key.slice(2), card);
+  function openSubjectRef(key, then, sub) {
+    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; viewingProblem = false;
+    if (key.slice(0, 2) === "s:") selectSubject(key.slice(2), sub);
     else {
       var fid = key.slice(2);
       activeTop = "eti"; activeSubject = null; lastEtiFolder = fid;
@@ -11609,7 +11857,7 @@ function __detabaseMain() {
     if (ref.lvl === "p") { selectPsPage(ref.id); return; }
     if (ref.lvl === "st") { var sx = psPartById(ref.id); if (sx) selectPsPage(sx.page.id); return; }
     if (ref.lvl === "s") { openSubjectRef(ref.id); return; }
-    if (ref.lvl === "t") { openTabRef(ref.id); return; }
+    if (ref.lvl === "t") { openConceptPage(ref.id); return; }
     if (ref.lvl === "e") { var e = byId(store.elements, ref.id); if (e) openCardPage(e.card, e.id); return; }
     if (String(ref.id).indexOf("pane:") === 0) { openTabRef("b:" + String(ref.id).slice(5)); return; }   // an old clip of a whole built-in tab
     openCardPage(ref.id);
@@ -11619,7 +11867,7 @@ function __detabaseMain() {
 
   function selectPsPage(id) {
     if (!psPageById(id)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeCard = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false;
     applyView(); renderEtiTree();
   }
   // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
@@ -12021,7 +12269,7 @@ function __detabaseMain() {
     try { applyEtiEdits(); } catch (e) {}
     renderEtiTree();
     if (spShown()) renderSubjectPage();
-    if (cardPageShown()) renderCardPage();
+    if (subPageShown()) renderSubPage();
     if (miningScreen) { try { renderEtiMain(); } catch (e) {} }
     if (activePsPage && !viewingProblem) { try { renderPsPane(); } catch (e) {} }
     if (activeSummary) { try { renderSumPane(); } catch (e) {} }
@@ -15743,14 +15991,14 @@ function __detabaseMain() {
     var list = summariesOf(key).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
     var sec = document.createElement("section");
     sec.className = "subj-sums";
-    sec.innerHTML = '<header class="sums-head"><h3>Summaries <span class="side-count">' + list.length + '</span></h3></header><div class="sums-grid"></div>';
+    sec.innerHTML = '<header class="sums-head"><h3>Study sheets <span class="side-count">' + list.length + '</span></h3></header><div class="sums-grid"></div>';
     var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-primary"; add.textContent = "📝 New summary";
+    add.type = "button"; add.className = "btn-primary"; add.textContent = "📝 New study sheet";
     add.addEventListener("click", function () { sumPickStart(key, null); });
     sec.querySelector(".sums-head").appendChild(add);
     var grid = sec.querySelector(".sums-grid");
     if (!list.length) {
-      grid.innerHTML = '<div class="side-empty sums-empty"><b>No summaries yet.</b> Pick concepts and method stages from this subject, and it lays them out in order — then change the order however you like.</div>';
+      grid.innerHTML = '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Pick cards and method parts from this subject, and it lays them out in order — then change the order however you like.</div>';
     }
     list.forEach(function (sm) {
       var b = document.createElement("button");
@@ -15850,10 +16098,10 @@ function __detabaseMain() {
       document.body.appendChild(tray);
     }
     var n = Object.keys(sumPick.picked).length;
-    tray.querySelector(".sum-tray-text").innerHTML = '<b>' + (sumPick.editing ? "Editing a summary" : "New summary") + '</b> · ' +
-      (n ? n + " picked" : "tap concepts and method stages to pick them");
+    tray.querySelector(".sum-tray-text").innerHTML = '<b>' + (sumPick.editing ? "Editing a study sheet" : "New study sheet") + '</b> · ' +
+      (n ? n + " picked" : "tap cards and method parts to pick them");
     var go = tray.querySelector('[data-a="go"]');
-    go.textContent = sumPick.editing ? "Update summary" : "Create summary";
+    go.textContent = sumPick.editing ? "Update study sheet" : "Create study sheet";
     go.disabled = !n;
   }
   function sumPickEnd() {
@@ -15880,11 +16128,11 @@ function __detabaseMain() {
         saveStore();
         sumPickEnd();
         openSummary(sm.id);
-        libToast("Summary updated");
+        libToast("Study sheet updated");
         return;
       }
     }
-    askName("Name this summary", "It is laid out in the subject's own order — you can change that afterwards.", "Summary of " + subjectName(key), function (name) {
+    askName("Name this study sheet", "It is laid out in the subject's own order — you can change that afterwards.", "Study sheet — " + subjectName(key), function (name) {
       var sm2 = { id: uid("sm_"), subject: key, name: name, items: inSubjectOrder(key, refs), created: Date.now() };
       store.summaries.push(sm2);
       saveStore();
@@ -15898,7 +16146,7 @@ function __detabaseMain() {
   function openSummary(id) {
     var sm = summaryById(id); if (!sm) return;
     if (sumPick) sumPickEnd();
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeCard = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false;
     activeSummary = id;
     if (sm.subject.slice(0, 2) === "f:") lastEtiFolder = sm.subject.slice(2);   // its subject stays selected
     applyView(); renderEtiTree();
@@ -15913,11 +16161,11 @@ function __detabaseMain() {
     var sm = summaryById(activeSummary); if (!sm) return;
     $("sumBack").textContent = "‹ " + subjectName(sm.subject);
     $("sumTitle").textContent = sm.name;
-    $("pageSubtitle").innerHTML = 'Summary · ' + sm.items.length + (sm.items.length === 1 ? ' item' : ' items');
+    $("pageSubtitle").innerHTML = 'Study sheet · ' + sm.items.length + (sm.items.length === 1 ? ' item' : ' items');
     var list = $("sumList");
     list.innerHTML = "";
     if (!sm.items.length) {
-      list.innerHTML = '<div class="side-empty"><b>This summary is empty.</b> Tap “＋ Add more” to pick concepts and method stages.</div>';
+      list.innerHTML = '<div class="side-empty"><b>This study sheet is empty.</b> Tap “＋ Add more” to pick cards and method parts.</div>';
       return;
     }
     var w = Math.max(260, Math.min(900, libBlockWidth(list) - 30));
@@ -15934,7 +16182,7 @@ function __detabaseMain() {
           '<span class="ps-stage-btns">' +
             '<button type="button" data-a="up" title="move up"' + (i ? '' : ' disabled') + '>▲</button>' +
             '<button type="button" data-a="down" title="move down"' + (i < sm.items.length - 1 ? '' : ' disabled') + '>▼</button>' +
-            '<button type="button" data-a="del" class="danger" title="take it out of this summary">✕</button>' +
+            '<button type="button" data-a="del" class="danger" title="take it out of this study sheet">✕</button>' +
           '</span>' +
         '</div>';
       var body = document.createElement("div");
@@ -15955,12 +16203,12 @@ function __detabaseMain() {
       id: function (el) { return el.getAttribute("data-k"); },
       onDrop: function (drag, index) {
         var it = sm.items.filter(function (r) { return refKey(r) === drag.id; })[0]; if (!it) return;
-        libMoved("Summary order saved", function () { var rest = sm.items.filter(function (r) { return r !== it; }); rest.splice(index, 0, it); sm.items = rest; });
+        libMoved("Study sheet order saved", function () { var rest = sm.items.filter(function (r) { return r !== it; }); rest.splice(index, 0, it); sm.items = rest; });
       } });
   }
   function sumRename() {
     var sm = summaryById(activeSummary); if (!sm) return;
-    askName("Rename summary", "", sm.name, function (n) { sm.name = n; saveStore(); applyView(); });
+    askName("Rename study sheet", "", sm.name, function (n) { sm.name = n; saveStore(); applyView(); });
   }
   function sumDelete() {
     var sm = summaryById(activeSummary); if (!sm) return;
@@ -15973,12 +16221,12 @@ function __detabaseMain() {
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
-    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary || cardOpen()) return null;
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary || subOpen()) return null;
     if (activeSubject) return "s:" + activeSubject;
     return groupHasBuiltins(activeGroup) ? "f:" + lastEtiFolder : null;
   }
   function openMiningScreen() {   // ETI's main page
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeCard = null; miningScreen = true;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true;
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() { renderEtiMain(); }
@@ -16139,7 +16387,9 @@ function __detabaseMain() {
     var material = ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e";
     libMenu(anchor, [
       { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
-      ref.lvl === "c" && activeCard !== ref.id ? { label: "⤢ Open the card", run: function () { openCardPage(ref.id); } } : null,
+      ref.lvl === "c" && !isSubPage("card", ref.id) ? { label: "⤢ Open the card", run: function () { openCardPage(ref.id); } } : null,
+      ref.lvl === "t" && !isSubPage("concept", ref.id) ? { label: "⤢ Open the concept", run: function () { openConceptPage(ref.id); } } : null,
+      ref.lvl === "t" ? { label: "📋 Summary", run: function () { openSub("csummary", ref.id); } } : null,
       { label: "✎ Rename", run: function () { libRename(ref); } },
       ref.lvl === "c" ? { label: "🏷 Card type…", run: function () { cardTypeMenu(anchor, [ref.id]); } } : null,
       (ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e") ? { label: "↪ Move to…", run: function () { libMoveTo(ref); } } : null,
@@ -16247,7 +16497,7 @@ function __detabaseMain() {
     if (activeSubject && !byId(store.subjects, activeSubject)) activeSubject = null;
     if (activePsPage && !psPageById(activePsPage)) activePsPage = null;
     if (activeSummary && !summaryById(activeSummary)) activeSummary = null;
-    if (activeCard && (!refExists({ lvl: "c", id: activeCard }) || isHiddenRef({ lvl: "c", id: activeCard }))) activeCard = null;
+    if (activeSub && !subOpen()) activeSub = null;
     if (isHiddenRef({ lvl: "s", id: "f:" + lastEtiFolder })) {
       var vis = builtinFolderIds().filter(function (f) { return !isHiddenRef({ lvl: "s", id: "f:" + f }); })[0];
       if (vis) { lastEtiFolder = vis; activeGroup = effGroupOfBuiltin(vis); }
@@ -16738,9 +16988,10 @@ function __detabaseMain() {
     selectPsPage(initial);
   } else if (summaryById(initial)) {
     openSummary(initial);
-  } else if (initial.indexOf("card:") === 0) {
-    openCardPage(decodeURIComponent(initial.slice(5)));
-    if (!activeCard) selectTop("eti");
+  } else if (/^(card|concept|summary|csummary):/.test(initial)) {
+    var dk = initial.slice(0, initial.indexOf(":"));
+    openSub(dk, decodeURIComponent(initial.slice(dk.length + 1)));
+    if (!activeSub) selectTop("eti");
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
