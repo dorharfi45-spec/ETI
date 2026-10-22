@@ -829,25 +829,12 @@
   .subj-tools { display: flex; align-items: center; gap: 12px; margin: 14px 0 0; }
   .subj-tools-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--text-muted); flex: 1; }
   #customPane .subj-tools { margin-top: 6px; }
-  /* ---- examples: amber, everywhere ---- */
-  .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
-  .ex-thumb { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); overflow: hidden; cursor: pointer; }
-  .ex-thumb:hover { border-color: #d97706; }
-  .ex-pic { height: 132px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--surface-1); padding: 6px; }
-  .ex-pic .ps-crop, .ex-pic img { max-width: 100%; max-height: 120px; }
-  .ex-cap { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 6px 6px 8px 10px; }
-  .ex-cap b { flex: 1; min-width: 0; font-size: .88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ex-cap .vine-nocard { flex-basis: 100%; }
-  .ex-cap .lib-dots { position: static; }
-  .ex-badge, body .mp-lvl.lvl-x { font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; border-radius: 6px; padding: 2px 6px;
-    color: color-mix(in srgb, #d97706 78%, var(--text-primary)); background: color-mix(in srgb, #f59e0b 20%, transparent); }
-  .ex-view .ex-big { display: flex; justify-content: center; margin: 4px 0 14px; overflow: auto; }
-  .ex-sub { margin: 0 0 6px; }
-  .ex-links .md-sec { margin-top: 10px; }
-  .ct-ex { fill: #f59e0b; stroke: #b45309; stroke-width: 1.2; cursor: pointer; }
-  .ct-ex.unlinked { fill: none; stroke-dasharray: 3 3; }
-  .ct-exline { stroke: #d97706; stroke-width: 1.4; stroke-dasharray: 2 3; fill: none; pointer-events: none; }
-  .ct-lbl.ex { fill: #b45309; }
+  /* ---- method parts: the category picker carries the category's colour ---- */
+  .ps-stage { border-left: 4px solid var(--cat-color, var(--border)); padding-left: 10px; }
+  .ps-cat { min-height: 34px; border: 1px solid color-mix(in srgb, var(--cat-color, var(--accent)) 50%, var(--border)); border-radius: var(--r-sm);
+    background: color-mix(in srgb, var(--cat-color, var(--accent)) 12%, var(--bg)); color: var(--text-primary); font: inherit; font-size: .8rem; font-weight: 700; padding: 0 6px; }
+  .ps-part-text { white-space: pre-wrap; margin: 6px 0; line-height: 1.5; }
+  .md-stage-head .ps-cat { margin-right: 6px; }
   /* ---- method folders ---- */
   .mf-list { display: flex; flex-direction: column; gap: 8px; }
   .mf-group { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); min-width: 0; }
@@ -914,7 +901,6 @@
   .mg-title { display: flex; align-items: center; gap: 8px; min-height: var(--tap); margin: 10px 0; padding: 0 6px 0 12px; border: 1px solid var(--border);
     border-radius: var(--r-md); background: var(--surface-1); font-weight: 600; }
   .mg-title .lib-dots { position: static; margin-left: auto; }
-  .ex-grid.mini { grid-template-columns: repeat(auto-fill, minmax(160px, 220px)); }
   .sp-where { flex-basis: 100%; font-size: .72rem; color: var(--text-muted); }
   .sp-section { margin-top: 22px; }
   .sp-pickbox { margin-top: 14px; }
@@ -3555,7 +3541,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B81</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B82</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3566,7 +3552,8 @@
   <div class="cp-head">
     <h2 id="psTitle">–</h2>
     <span class="ps-actions">
-      <button id="psSplit" type="button" class="btn-primary">✂ Split into stages</button>
+      <button id="psSplit" type="button" class="btn-primary">✂ Cut parts</button>
+      <button id="psSource" type="button" class="btn-quiet" hidden>🖼 Source picture</button>
       <button id="psEdit" type="button" class="btn-quiet">✎ Open for editing</button>
       <button id="psRename" type="button" class="btn-quiet">✎ Rename</button>
       <button id="psDelete" type="button" class="btn-danger">🗑 Delete</button>
@@ -3577,8 +3564,8 @@
   <div id="psAssets" class="ps-assets"></div>
   <div class="sidebar-label" style="margin-top:18px">Cards</div>
   <div id="psCards" class="ps-assets"></div>
-  <div class="sidebar-label" style="margin-top:18px">Examples</div>
-  <div id="psExamples" class="ps-assets"></div>
+  <div class="sidebar-label" style="margin-top:18px">Connected methods</div>
+  <div id="psMethods" class="ps-assets"></div>
 </div>
 
 <div id="sumPane" hidden>
@@ -3638,7 +3625,6 @@
     <span class="pv-spacer"></span>
     <button type="button" id="pvCutClear" class="tool-btn">Clear</button>
     <button type="button" id="pvCutMethod" class="tool-btn" hidden>Save as a method →</button>
-    <button type="button" id="pvCutExample" class="tool-btn" hidden>Save as an example →</button>
     <button type="button" id="pvCutSave" class="tool-btn primary">Save to library →</button>
   </div>
 </div>
@@ -5609,7 +5595,11 @@ function __detabaseMain() {
       if (p.summaries) store.summaries = p.summaries;
       if (p.place) store.place = p.place;                 // where built-in tabs and cards sit
       if (p.methodFolders) store.methodFolders = p.methodFolders;
-      if (p.examples) store.examples = p.examples;
+      if (p.examples) store.examples = p.examples;          // read only by the schema-6 migration, which turns them into methods
+      if (p.cardTypes) store.cardTypes = p.cardTypes;
+      if (p.cardType) store.cardType = p.cardType;
+      if (p.methodKinds) store.methodKinds = p.methodKinds;
+      if (p.partCats) store.partCats = p.partCats;
       // a bench left in the stored metadata by an older build is a stale copy of a board's items:
       // drop it, so the doc binds to the real one again and nothing gets pushed to the cloud
       [store.canvases, store.elements, (store.ps || {}).pages].forEach(function (list) {
@@ -6186,7 +6176,7 @@ function __detabaseMain() {
       var pb = curProblem();
       if (onPage) {
         $("pageTitle").textContent = pb ? (pb.name || "Untitled page") : "Page";
-        $("pageSubtitle").innerHTML = 'A clipboard — collect concepts and stages onto it, and write around them with the pencil.';
+        $("pageSubtitle").innerHTML = 'A clipboard — collect cards and method parts onto it, and write around them with the pencil.';
       } else {
         $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
         $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Method' : 'Library element';
@@ -9334,7 +9324,6 @@ function __detabaseMain() {
       saveLabel: "Save to library →",
       onDone: function (clips, kind, cb) {
         if (kind === "method") saveClipAsMethod(clips[0], cb);
-        else if (kind === "example") saveClipAsExample(clips[0], null, cb);
         else fileClipsAsConcepts(clips, null, cb);
       }
     });
@@ -9361,7 +9350,7 @@ function __detabaseMain() {
     if (mission && !mission.multi) {
       $("pvCutCount").textContent = n ? "Marked — draw again to change it, or carry on below" : (mission.hint || how);
     } else if (own && n > 1) {
-      $("pvCutCount").textContent = n + " parts marked · save them as concepts, or mark just one to save it as a method or an example";
+      $("pvCutCount").textContent = n + " parts marked · save them as concepts, or mark just one to save it as a method";
     } else {
       $("pvCutCount").textContent = (n ? (n + (n === 1 ? " part marked · " : " parts marked · ")) : "") + how;
     }
@@ -9370,8 +9359,6 @@ function __detabaseMain() {
     // the reader's own Cut parts can also make a method — out of exactly one cut part
     var mb = $("pvCutMethod");
     if (mb) { mb.hidden = !own; mb.disabled = n !== 1; }
-    var xb = $("pvCutExample");
-    if (xb) { xb.hidden = !own; xb.disabled = n !== 1; }
   }
   function pdfSlotUnits(d) { return d && d._uw ? { w: d._uw, h: d._uh } : null; }
   function pdfSlotByPage(page) { return (pdfView && pdfView.slots[page - 1]) || null; }
@@ -9783,7 +9770,7 @@ function __detabaseMain() {
       // Nothing is cleared until the save has actually happened: backing out of any step that
       // follows leaves the marks exactly where they were, ready to save another way.
       var session = pdfCut;
-      mission.onDone(clips, kind === "method" || kind === "example" ? kind : "concept", {
+      mission.onDone(clips, kind === "method" ? "method" : "concept", {
         saved: function () {
           pushPages();
           if (pdfCut === session) { pdfCut.marks = []; pdfDrawMarks(); pdfCutBar(); }
@@ -10146,16 +10133,16 @@ function __detabaseMain() {
   // LIBRARY — the two banks
   // Raw material:
   //   Subject  "f:<folderId>" built-in (Trig base…) | "s:<id>" custom (store.subjects) — groups (Base, Calculus…) only hold subjects
-  //   Tab      "b:<pane target>" built-in (Unit circle…)  | store.tabs  "ut_…" {subject}
+  //   Concept  (internally "tab") "b:<pane target>" built-in (Unit circle…) | store.tabs "ut_…" {subject}| store.tabs  "ut_…" {subject}
   //   Card     built-in block's data-el key (the squares)   | store.cards "uc_…" {tab}
   //   Element  store.elements "ue_…" {card} — the smallest block; its content lives in a canvas doc with the same id
   // Methods (called "problem solving" internally — the storage keys, the "ps"/"p"/"st" names and the
   // pp_/st_ ids keep their old spelling so every method already saved loads exactly as before;
   // everything the user SEES says "method"):
-  //   store.ps = { pages[{id, subject, name, tags[], assets[ref], created, legacy?}] }
-  //   A page belongs to ONE subject. Its BODY — main crop, stages, attached assets — lives in the
-  //   page's canvas doc (see psBody); pages[].assets is only a flat search cache of that body.
-  // Asset refs: { lvl: "s" | "t" | "c" | "e" | "p" | "st", id }   ("p" a page, "st" one of its stages)
+  //   store.ps = { pages[{id, subject, name, kind, description, tags[], assets[ref], cardIds[], methodIds[], alsoSubjects[], folder?, order?, created, legacy?}] }
+  //   A method has ONE parent subject. Its BODY — parts, attached concepts, source picture — lives in
+  //   its canvas doc (see psBody); pages[].assets is only a flat search cache of that body.
+  // Refs: { lvl: "s" | "t" | "c" | "e" | "p" | "st", id }   ("t" a concept, "p" a method, "st" one of its parts)| "t" | "c" | "e" | "p" | "st", id }   ("p" a page, "st" one of its stages)
   // ============================================================
   function libEnsure() {
     store.tabs = store.tabs || [];
@@ -10298,6 +10285,42 @@ function __detabaseMain() {
     delete store.ps.topics;
     delete store.ps.subtopics;
     store.schema = 5;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+
+  // ---- schema 6: methods are made of parts; standalone examples become methods ----
+  // Every method body turns into parts (psUpgrade); every example becomes a method with one Example
+  // part, keeping its id (so its document is the same document), its card links (direct card
+  // links) and its method links. Methods start with no kind and no description — the Methods page
+  // lists them so the owner can fill them in. The lists the owner can extend (card types, method
+  // kinds, part categories) are created with their starting entries. The whole store is backed up
+  // to localStorage first, and every method / example document to IndexedDB (local only).
+  (function migrateParts() {
+    if (store.schema >= 6) return;
+    try {
+      if (!localStorage.getItem("detabase.v1.pre-parts")) localStorage.setItem("detabase.v1.pre-parts", localStorage.getItem(LS_KEY) || "");
+    } catch (e) {}
+    libEnsure();
+    var exs = store.examples || [], docs = {};
+    store.ps.pages.concat(exs).forEach(function (x) { var d = window.DBX.get(x.id); if (d) docs[x.id] = JSON.parse(JSON.stringify(d)); });
+    if (Object.keys(docs).length && !window.DBX.get("__pre_parts")) window.DBX.put("__pre_parts", { docs: docs, examples: exs, ts: Date.now() });
+    cardTypes(); cardTypeMap(); methodKinds(); partCats();
+    exs.forEach(function (ex) {
+      if (psPageById(ex.id)) return;
+      store.ps.pages.push({ id: ex.id, subject: ex.subject, name: ex.name, tags: (ex.tags || []).slice(), assets: [],
+        cardIds: (ex.cardIds || []).slice(), methodIds: (ex.methodIds || []).slice(), created: ex.created || Date.now(), wasExample: 1 });
+    });
+    delete store.examples;
+    Object.keys((store.ui && store.ui.sp) || {}).forEach(function (k) { var h = store.ui.sp[k].hide; if (h) delete h.x; });   // the Examples kind is gone
+    store.ps.pages.forEach(function (pg) {
+      if (pg.kind === undefined) pg.kind = null;
+      if (pg.description == null) pg.description = "";
+      if (!pg.alsoSubjects) pg.alsoSubjects = [];
+      if (!pg.methodIds) pg.methodIds = [];
+      if (window.DBX.get(pg.id) || canvasCache[pg.id]) psBody(pg.id);   // converts and saves the document now
+      psSyncCache(pg);
+    });
+    store.schema = 6;
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
@@ -10455,15 +10478,12 @@ function __detabaseMain() {
     saveStore();
   }
 
-  // ---- method folders, card links, examples ----
+  // ---- method folders and card links ----
   //   store.methodFolders = [{ id, subject, name, order }]       a method: pg.folder (or none = unfiled), pg.order
   //   pg.cardIds = [cardId]                                       direct links, beside the derived ones
-  //   store.examples = [{ id, subject, name, tags, cardIds, methodIds, order, created }]
-  //   an example's picture lives in its canvas doc's ps.main, exactly like a method's crop
+  //   pg.methodIds = [methodId]                                   links to other methods (any subject)
+  //   pg.alsoSubjects = [subjectKey]                              connected subjects — the tree only
   function mfEnsure() { store.methodFolders = store.methodFolders || []; return store.methodFolders; }
-  function exEnsure() { store.examples = store.examples || []; return store.examples; }
-  function exampleById(id) { return id ? byId(exEnsure(), id) : null; }
-  function examplesOf(subjectKey) { return exEnsure().filter(function (x) { return x.subject === subjectKey; }).sort(function (a, b) { return (a.order || 0) - (b.order || 0); }); }
   // a method's cards — the ones its concepts belong to (an element → its card, a card → itself, a
   // whole tab → that tab as one), plus the ones linked to it directly. Computed from ids every time,
   // so a concept moved to another card takes the link with it.
@@ -10484,9 +10504,6 @@ function __detabaseMain() {
     });
     (pg.cardIds || []).forEach(function (id) { add({ lvl: "c", id: id }, null); });
     return out;
-  }
-  function exampleCards(ex) {
-    return (ex.cardIds || []).map(function (id) { return { lvl: "c", id: id }; }).filter(refExists);
   }
   function tabLabel(tabId) {
     if (tabId.slice(0, 2) === "b:") {
@@ -10509,7 +10526,7 @@ function __detabaseMain() {
     if (ref.lvl === "t") return tabLabel(ref.id);
     if (ref.lvl === "c") return cardLabel(ref.id);
     if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? pg.name : "(deleted method)"; }
-    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? stageName(sx.stage, sx.index) : "(deleted stage)"; }
+    if (ref.lvl === "st") { var sx = psPartById(ref.id); return sx ? partLabel(sx.page.id, sx.part) : "(deleted part)"; }
     var e = byId(store.elements, ref.id); return e ? e.name : "(deleted element)";
   }
   // board item → asset ref (things mined from the library)
@@ -10518,32 +10535,74 @@ function __detabaseMain() {
     if (it.cardId) { var k = String(it.cardId); return k.indexOf("pane:") === 0 ? { lvl: "t", id: "b:" + k.slice(5) } : { lvl: "c", id: k }; }
     return null;
   }
-  // ---- problem-solving pages: subject, crops, stages, vine ------------------------------
-  // A page is a main crop plus an ordered, flat list of stages; stages cannot be split further.
-  // The body lives in the page's canvas doc because crops carry polys, and nested arrays are exactly
-  // what sync/main refuses. store.ps.pages[].assets mirrors the body's refs as a flat search cache,
-  // so the vine tree and search still work on a device whose docs have not arrived yet.
-  //   body = { main: <clip>|null, stages: [ { id, name, crop: <clip>, assets: [ref] } ], assets: [ref] }
-  // The VINE is derived, never stored: page-level assets first, then each stage's, in stage order.
+  // ---- methods: subject, parts, vine ------------------------------------------------------
+  // A method is a list of PARTS, each with a category (Stage, Explanation, Example, …) and an image
+  // crop and/or a text, plus the concepts attached to the whole method and to each part. The
+  // picture the parts were cut from is kept apart as the method's SOURCE — never shown as a part.
+  // The body lives in the method's canvas doc because crops carry polys, and nested arrays are
+  // exactly what sync/main refuses. store.ps.pages[].assets mirrors the body's refs as a flat search
+  // cache, so search and the tree still work on a device whose docs have not arrived yet.
+  //   body = { parts: [{ id, cat, name, clip: <clip>|null, text, assets: [ref] }], assets: [ref], source: <clip>|null }
+  // Parts keep the "st" ref level and the ids stages had, so every reference saved to a stage
+  // (study sheets, clipboards) still finds its part.
+  // The VINE is derived, never stored: the method's own concepts first, then each part's, in order.
   function psPageById(id) { libEnsure(); return byId(store.ps.pages, id); }
+  // a body from before parts (a main crop + stages) becomes parts the moment it is read — also one
+  // that arrives later from a device still on an older build. The main crop of a method that had
+  // stages becomes its source; one without stages becomes its only part (an Example if the method
+  // was a standalone example, an Explanation otherwise).
+  function psUpgrade(ps, pg) {
+    if (ps.parts) return false;
+    var stages = ps.stages || [];
+    ps.parts = stages.map(function (st) { return { id: st.id, cat: "stage", name: /^Stage \d+$/.test(st.name || "") ? "" : (st.name || ""),   // an automatic "Stage N" is not a typed name
+      clip: st.crop || null, text: "", assets: st.assets || [] }; });
+    if (!stages.length && ps.main) ps.parts.push({ id: uid("st_"), cat: pg && pg.wasExample ? "example" : "explanation", name: "", clip: ps.main, text: "", assets: [] });
+    ps.source = ps.main || null;
+    delete ps.stages; delete ps.main;
+    return true;
+  }
   function psBody(id) {
     var c = loadCanvas(id);
-    if (!c.ps) c.ps = { main: null, stages: [], assets: [] };
-    if (!c.ps.stages) c.ps.stages = [];
+    if (!c.ps) c.ps = { parts: [], assets: [], source: null };
+    if (psUpgrade(c.ps, psPageById(id))) saveCanvas(id);
     if (!c.ps.assets) c.ps.assets = [];
     return c.ps;
   }
-  function psStages(id) { return psBody(id).stages; }
-  function psStageById(stId) {
+  function psParts(id) { return psBody(id).parts; }
+  function psPartById(partId) {
     libEnsure();
     var pages = store.ps.pages;
     for (var i = 0; i < pages.length; i++) {
-      var sts = psBody(pages[i].id).stages;
-      for (var j = 0; j < sts.length; j++) if (sts[j].id === stId) return { page: pages[i], stage: sts[j], index: j };
+      var ps = psBody(pages[i].id).parts;
+      for (var j = 0; j < ps.length; j++) if (ps[j].id === partId) return { page: pages[i], part: ps[j], index: j };
     }
     return null;
   }
-  function stageName(st, i) { return (st && st.name) || ("Stage " + ((i || 0) + 1)); }
+  // a part's name: what was typed, else its category and its number among the method's parts of that category
+  function partLabel(pgId, part) {
+    if (!part) return "Part";
+    if (part.name && part.name.trim()) return part.name;
+    var n = 0, ps = psParts(pgId);
+    for (var i = 0; i < ps.length; i++) { if (ps[i].cat === part.cat) n++; if (ps[i] === part) break; }
+    return partCatName(part.cat) + " " + Math.max(1, n);
+  }
+
+  // ---- the lists the owner can extend: card types, method kinds, part categories ----
+  // the starting entries (functions, not vars: the schema-6 migration runs before this part of the file)
+  function CARD_TYPES0() { return [
+    { id: "definition", name: "Definition", color: "#2563eb" }, { id: "theorem", name: "Theorem", color: "#7c3aed" },
+    { id: "formula", name: "Formula", color: "#0891b2" }, { id: "explanation", name: "Explanation", color: "#16a34a" },
+    { id: "proof", name: "Proof", color: "#dc2626" }, { id: "note", name: "Note", color: "#d97706" }
+  ]; }
+  function METHOD_KINDS0() { return [{ id: "problem", name: "Problem solving", color: "#7c3aed" }, { id: "action", name: "Action", color: "#0891b2" }]; }
+  function PART_CATS0() { return [{ id: "stage", name: "Stage", color: "#2563eb" }, { id: "explanation", name: "Explanation", color: "#16a34a" }, { id: "example", name: "Example", color: "#d97706" }]; }
+  function listCopy(l) { return l.map(function (x) { return { id: x.id, name: x.name, color: x.color }; }); }
+  function cardTypes() { if (!store.cardTypes) store.cardTypes = listCopy(CARD_TYPES0()); return store.cardTypes; }
+  function cardTypeMap() { if (!store.cardType) store.cardType = {}; return store.cardType; }   // { cardId: typeId } — absent = Unlabeled
+  function methodKinds() { if (!store.methodKinds) store.methodKinds = listCopy(METHOD_KINDS0()); return store.methodKinds; }
+  function partCats() { if (!store.partCats) store.partCats = listCopy(PART_CATS0()); return store.partCats; }
+  function partCatName(id) { var c = byId(partCats(), id); return c ? c.name : "Part"; }
+  function partCatColor(id) { var c = byId(partCats(), id); return c ? c.color : "var(--text-muted)"; }
   // has this page's body reached this device yet? (a page synced from another device arrives as
   // metadata first and its doc a moment later — until then the flat cache is all there is)
   function psDocPresent(id) {
@@ -10563,7 +10622,7 @@ function __detabaseMain() {
       seen[k] = 1; out.push({ lvl: r.lvl, id: r.id });
     }
     (b.assets || []).forEach(add);
-    (b.stages || []).forEach(function (st) { (st.assets || []).forEach(add); });
+    (b.parts || []).forEach(function (p) { (p.assets || []).forEach(add); });
     return out;
   }
   function vineKeys(id) { var m = {}; vineOf(id).forEach(function (r) { m[refKey(r)] = 1; }); return m; }
@@ -10593,7 +10652,7 @@ function __detabaseMain() {
       var b = psBody(pg.id), hit = false;
       function keep(list) { return (list || []).filter(function (r) { if (keys[refKey(r)]) { hit = true; return false; } return true; }); }
       b.assets = keep(b.assets);
-      (b.stages || []).forEach(function (st) { st.assets = keep(st.assets); });
+      (b.parts || []).forEach(function (p) { p.assets = keep(p.assets); });
       if (hit) { psSyncCache(pg); saveCanvas(pg.id); }
     });
   }
@@ -10663,11 +10722,11 @@ function __detabaseMain() {
   function fillAllIn(host) { Array.prototype.forEach.call(host.querySelectorAll(".ue-block"), fillLibBlock); }
   // ============================================================
   // A SUBJECT'S PAGE — one page for every subject, built-in or custom, in two views
-  //   Separate: three boxes side by side — Concepts | Methods | Examples — each scrolling on its own
-  //   Merged:   tab by tab, card by card — the card's concepts, then its methods, then its examples
+  //   Separate: two boxes side by side — Concepts | Methods — each scrolling on its own
+  //   Merged:   concept by concept, card by card — the card itself, then its methods
   // A built-in card is the HTML block itself, moved (never copied) out of the hidden library into
   // its place, so every tool in it keeps working; before anything is rebuilt each block goes back.
-  // Filters are the subject's tabs and cards (and, in Merged, the three kinds). A method or example
+  // Filters are the subject's concepts and cards (and, in Merged, cards / methods). A method
   // disappears only when every card it is connected to is filtered out; one connected to no card at
   // all sits in "Not linked to a card", which can be switched off. View and filters are kept per subject.
   //   store.ui.sp[key] = { view: "merged" | "separate", off: { <tab or card id>: 1 }, hide: { c, m, x }, noUnlinked }
@@ -10772,7 +10831,7 @@ function __detabaseMain() {
     return !n ? "on" : n === cs.length ? "off" : "some";
   }
   function spCardOn(st, cref) { var pl = libPlace(cref); return !!pl && !st.off[pl.p] && !st.off[cref.id]; }
-  // is something a method or an example is connected to still on screen? A card or tab of another
+  // is something a method is connected to still on screen? A card or concept of another
   // subject is not this page's to filter, so it always counts.
   function spLinkOn(st, key, ref) {
     if (libSubjectOf(ref) !== key) return true;
@@ -10803,12 +10862,12 @@ function __detabaseMain() {
         if (st.off[c.id]) out.push({ label: cardLabel(c.id), clear: function () { delete st.off[c.id]; } });
       });
     });
-    var kinds = { c: "concepts", m: "methods", x: "examples" };
+    var kinds = { c: "cards", m: "methods" };
     if (st.view === "merged") Object.keys(kinds).forEach(function (k) { if (st.hide[k]) out.push({ label: "no " + kinds[k], clear: function () { delete st.hide[k]; } }); });
     if (st.noUnlinked) out.push({ label: "nothing that is not linked to a card", clear: function () { delete st.noUnlinked; } });
     return out;
   }
-  // the methods and examples this page shows: its own, and other subjects' that are connected to
+  // the methods this page shows: its own, and other subjects' that are connected to
   // one of its cards — each with what it is connected to
   function spItems(key, st) {
     function item(kind, obj, links) {
@@ -10822,11 +10881,10 @@ function __detabaseMain() {
       return (it.own ? it.links : it.here).some(function (r) { return spLinkOn(st, key, r); });
     }
     return {
-      methods: store.ps.pages.map(function (pg) { return item("m", pg, methodCards(pg.id).map(function (x) { return x.ref; })); }).filter(shown),
-      examples: exEnsure().map(function (ex) { return item("x", ex, exampleCards(ex)); }).filter(shown)
+      methods: store.ps.pages.map(function (pg) { return item("m", pg, methodCards(pg.id).map(function (x) { return x.ref; })); }).filter(shown)
     };
   }
-  // "also in …" / "from …": where else a method or example is connected
+  // "also in …" / "from …": where else a method is connected
   function spWhere(it, key, here) {
     var bits = [];
     if (!it.own) bits.push("from " + subjectName(it.obj.subject));
@@ -10835,12 +10893,12 @@ function __detabaseMain() {
     return bits.join(" · ");
   }
   function spItemEl(it, key, here) {
-    var el = it.kind === "m" ? methodRowEl(it.obj) : exThumbEl(it.obj);
+    var el = methodRowEl(it.obj);
     var w = spWhere(it, key, here);
     if (w) {
       var hint = document.createElement("div");
       hint.className = "sp-where"; hint.textContent = w;
-      (it.kind === "m" ? el.querySelector(".vine-chain") : el.querySelector(".ex-cap")).appendChild(hint);
+      el.querySelector(".vine-chain").appendChild(hint);
     }
     return el;
   }
@@ -10852,8 +10910,7 @@ function __detabaseMain() {
     var nf = spChips(key, st).length;
     head.innerHTML = '<div class="sp-seg" role="tablist"><button type="button" data-v="separate">Separate</button><button type="button" data-v="merged">Merged</button></div>' +
       '<button type="button" class="sp-filter-btn">Filters' + (nf ? ' <span class="sp-badge">' + nf + '</span>' : '') + '</button>' +
-      '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="c">＋ Concept</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button>' +
-      '<button type="button" class="btn-quiet" data-a="x">＋ Example</button></span>';
+      '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="c">＋ Card</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button></span>';
     Array.prototype.forEach.call(head.querySelectorAll(".sp-seg button"), function (b) {
       var on = b.getAttribute("data-v") === st.view;
       b.classList.toggle("on", on); b.setAttribute("aria-selected", on);
@@ -10862,7 +10919,6 @@ function __detabaseMain() {
     head.querySelector(".sp-filter-btn").addEventListener("click", function () { spFilters(key); });
     head.querySelector('[data-a="c"]').addEventListener("click", function () { addAssetAt({ lvl: "s", id: key }); });
     head.querySelector('[data-a="m"]').addEventListener("click", function () { newProblemPage(key); });
-    head.querySelector('[data-a="x"]').addEventListener("click", function () { newExample(key); });
     return head;
   }
   function spChipsEl(key, st) {
@@ -10907,7 +10963,7 @@ function __detabaseMain() {
     }
     function draw() {
       var b = box.body;
-      b.innerHTML = '<div class="spf-sec"><div class="md-sechead">Tabs and cards</div><div class="spf-tabs"></div></div>';
+      b.innerHTML = '<div class="spf-sec"><div class="md-sechead">Concepts and cards</div><div class="spf-tabs"></div></div>';
       var tabsEl = b.querySelector(".spf-tabs");
       libKids({ lvl: "s", id: key }).forEach(function (t) {
         var ts = spTabState(st, t.id), cards = libKids(t);
@@ -10929,15 +10985,15 @@ function __detabaseMain() {
       });
       var more = document.createElement("div");
       more.className = "spf-sec";
-      more.innerHTML = '<div class="md-sechead">Methods and examples</div>';
+      more.innerHTML = '<div class="md-sechead">Methods</div>';
       more.appendChild(check(st.noUnlinked ? "off" : "on", "Show the ones not linked to a card", function () { if (st.noUnlinked) delete st.noUnlinked; else st.noUnlinked = 1; changed(); }));
       b.appendChild(more);
       var kinds = document.createElement("div");
       kinds.className = "spf-sec";
       kinds.innerHTML = '<div class="md-sechead">Show in the Merged view <span class="muted">— at least one</span></div>';
-      [["c", "Concepts"], ["m", "Methods"], ["x", "Examples"]].forEach(function (k) {
+      [["c", "Cards"], ["m", "Methods"]].forEach(function (k) {
         var on = !st.hide[k[0]];
-        var lastOn = on && ["c", "m", "x"].filter(function (z) { return !st.hide[z]; }).length === 1;
+        var lastOn = on && ["c", "m"].filter(function (z) { return !st.hide[z]; }).length === 1;
         var r = check(on ? "on" : "off", k[1], function () { if (lastOn) return; if (on) st.hide[k[0]] = 1; else delete st.hide[k[0]]; changed(); });
         if (lastOn) { r.disabled = true; r.title = "at least one kind stays on"; }
         kinds.appendChild(r);
@@ -10978,25 +11034,19 @@ function __detabaseMain() {
     var box = document.createElement("div");
     box.className = "mg-links";
     if (label) box.insertAdjacentHTML("beforeend", '<div class="mg-label">' + escapeHtml(label) + '</div>');
-    var ms = list.filter(function (it) { return it.kind === "m"; }), xs = list.filter(function (it) { return it.kind === "x"; });
-    ms.forEach(function (it) { box.appendChild(spItemEl(it, key, here)); });
-    if (xs.length) {
-      var g = document.createElement("div"); g.className = "ex-grid mini";
-      xs.forEach(function (it) { g.appendChild(spItemEl(it, key, here)); });
-      box.appendChild(g);
-    }
+    list.forEach(function (it) { box.appendChild(spItemEl(it, key, here)); });
     return box;
   }
   function spMerged(key, st, host) {
-    var items = spItems(key, st), show = { c: !st.hide.c, m: !st.hide.m, x: !st.hide.x };
-    var all = items.methods.filter(function () { return show.m; }).concat(items.examples.filter(function () { return show.x; }));
+    var items = spItems(key, st), show = { c: !st.hide.c, m: !st.hide.m };
+    var all = items.methods.filter(function () { return show.m; });
     var at = {};
     all.forEach(function (it) { it.here.forEach(function (r) { (at[refKey(r)] = at[refKey(r)] || []).push(it); }); });
     var filtering = spChips(key, st).length > 0;
     var body = document.createElement("div");
     body.className = "sp-body";
     var tabs = libKids({ lvl: "s", id: key });
-    if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No tabs yet — tap “＋ Concept” to crop the first one out of a document.</p>';
+    if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No concepts yet — tap “＋ Card” to crop the first card out of a document.</p>';
     tabs.forEach(function (t) {
       if (spTabState(st, t.id) === "off") return;
       var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
@@ -11004,14 +11054,14 @@ function __detabaseMain() {
       var shown = cards.filter(function (c) { return show.c || (at[refKey(c)] || []).length; });
       if (filtering && !shown.length && !tabLinks.length) return;
       body.appendChild(spTabEl(t, key, shown.length, function (tb) {
-        if (tabLinks.length) tb.appendChild(spLinksEl(tabLinks, key, t, "For the whole tab"));
+        if (tabLinks.length) tb.appendChild(spLinksEl(tabLinks, key, t, "For the whole concept"));
         var list = document.createElement("div");
         list.className = "sp-cards";
         tb.appendChild(list);
         dndList(list, { type: "card", item: ".mg-card", axis: "grid", id: function (el) { return el.getAttribute("data-card"); },
           handle: function (it, tt) { var h = tt.closest(".dnd-handle"); return !!h && h.closest(".mg-card") === it; },
           onDrop: function (drag, index) { cardTo(drag, t.id, index); } });
-        if (!shown.length) list.innerHTML = '<p class="muted sp-empty">' + (cards.length ? "Nothing here with these filters." : "No cards in this tab yet.") + '</p>';
+        if (!shown.length) list.innerHTML = '<p class="muted sp-empty">' + (cards.length ? "Nothing here with these filters." : "No cards in this concept yet.") + '</p>';
         shown.forEach(function (c) {
           var links = at[refKey(c)] || [];
           var wrap = document.createElement("div");
@@ -11060,7 +11110,7 @@ function __detabaseMain() {
   function spConceptsBox(key, st) {
     var tabs = libKids({ lvl: "s", id: key }).filter(function (t) { return spTabState(st, t.id) !== "off"; });
     var n = 0;
-    var box = spBoxEl("Concepts", 0, [{ label: "＋", title: "New concept", primary: true, run: function () { addAssetAt({ lvl: "s", id: key }); } }]);
+    var box = spBoxEl("Concepts", 0, [{ label: "＋", title: "New card", primary: true, run: function () { addAssetAt({ lvl: "s", id: key }); } }]);
     var list = box.querySelector(".sp-box-list");
     var tl = document.createElement("div");
     tl.className = "sc-tabs";
@@ -11146,29 +11196,12 @@ function __detabaseMain() {
     }
     return box;
   }
-  function spExamplesBox(key, st, items) {
-    var own = items.examples.filter(function (it) { return it.own; }), away = items.examples.filter(function (it) { return !it.own; });
-    var box = spBoxEl("Examples", items.examples.length, [{ label: "＋", title: "New example", primary: true, run: function () { newExample(key); } }]);
-    var list = box.querySelector(".sp-box-list");
-    var linked = own.filter(function (it) { return it.links.length; }).map(function (it) { return it.obj; });
-    var loose = own.filter(function (it) { return !it.links.length; }).map(function (it) { return it.obj; });
-    if (!items.examples.length) list.innerHTML = '<div class="side-empty"><b>No examples yet.</b> Tap “＋ Example” and crop a worked example out of a document.</div>';
-    if (linked.length) list.appendChild(examplesGridEl(key, linked));
-    function group(title, els) {
-      list.insertAdjacentHTML("beforeend", '<div class="mg-label">' + escapeHtml(title) + '</div>');
-      list.appendChild(els);
-    }
-    if (loose.length) group("Not linked to a card", examplesGridEl(key, loose));
-    if (away.length) { var g = document.createElement("div"); g.className = "ex-grid"; away.forEach(function (it) { g.appendChild(spItemEl(it, key, null)); }); group("From other subjects", g); }
-    return box;
-  }
   function spSeparate(key, st, host) {
     var items = spItems(key, st);
     var grid = document.createElement("div");
     grid.className = "sp-sep";
     grid.appendChild(spConceptsBox(key, st));
     grid.appendChild(spMethodsBox(key, st, items));
-    grid.appendChild(spExamplesBox(key, st, items));
     host.appendChild(grid);
   }
 
@@ -11267,7 +11300,7 @@ function __detabaseMain() {
   function openRef(ref) {
     if (!ref) return;
     if (ref.lvl === "p") { selectPsPage(ref.id); return; }
-    if (ref.lvl === "st") { var sx = psStageById(ref.id); if (sx) selectPsPage(sx.page.id); return; }
+    if (ref.lvl === "st") { var sx = psPartById(ref.id); if (sx) selectPsPage(sx.page.id); return; }
     if (ref.lvl === "s") { openSubjectRef(ref.id); return; }
     if (ref.lvl === "t") { openTabRef(ref.id); return; }
     if (ref.lvl === "e") { var e = byId(store.elements, ref.id); if (e) jumpToCard(e.card, e.id); return; }
@@ -11296,10 +11329,10 @@ function __detabaseMain() {
   }
 
   // ============================================================
-  // AUTHORING A PROBLEM-SOLVING PAGE
-  // A page is made, not written: crop the problem out of a document, split that crop into the stages
-  // you would solve it in, and attach the concepts the page — or one single stage — uses. Stages are
-  // one level deep on purpose: a stage cannot be split again.
+  // AUTHORING A METHOD
+  // A method is made, not written: crop it out of a document (that crop is kept as its source picture),
+  // cut it into parts — each a Stage, an Explanation or an Example — and attach the concepts the method,
+  // or one single part, uses.
   // ============================================================
   function psRender() { if (activePsPage) renderPsPane(); }
   // which subject — the same grouping the sidebar shows
@@ -11347,7 +11380,9 @@ function __detabaseMain() {
     return box;
   }
 
-  // ---- making a page ----
+  // ---- making a method ----
+  // Crop the whole thing out of a document — it becomes the method's source picture — then cut it
+  // into parts right away. Keeping it whole is fine too: then the whole crop is the one part.
   function newProblemPage(subjectKey) {
     libEnsure();
     if (!subjectKey) {
@@ -11356,74 +11391,101 @@ function __detabaseMain() {
     }
     cropFromPdf({
       title: "Crop the method",
-      hint: "Draw a loop around the whole thing — that becomes the method.",
+      hint: "Draw a loop around the whole thing — next you cut it into its parts.",
       saveLabel: "Use this →",
       onDone: function (clip) {
         askName("Name this method", "Every method needs a name. You can change it whenever you like.", "", function (name) {
-          var pg = { id: uid("pp_"), subject: subjectKey, name: name, tags: [], assets: [], created: Date.now() };
+          var pg = { id: uid("pp_"), subject: subjectKey, name: name, tags: [], assets: [], kind: null, description: "",
+                     alsoSubjects: [], methodIds: [], created: Date.now() };
           store.ps.pages.push(pg);
-          psBody(pg.id).main = clip;
+          psBody(pg.id).source = clip;
           psSaveBody(pg);
           renderEtiTree();
           selectPsPage(pg.id);
           libToast("Created “" + name + "” in " + subjectName(subjectKey));
+          psCutParts(pg, true);
         });
       }
     });
   }
-  // a page written by hand, before the crop tool existed, can still be given a crop
-  function psSetMain(pg) {
+  // the picture the parts are cut from (a new one, or a replacement)
+  function psSetSource(pg, then) {
     cropFromPdf({
-      title: "Crop the method",
-      hint: "Draw a loop around the whole thing.",
+      title: "The picture of “" + pg.name + "”",
+      hint: "Draw a loop around the whole thing — its parts are cut from it.",
       saveLabel: "Use this →",
       onDone: function (clip) {
-        psBody(pg.id).main = clip;
+        psBody(pg.id).source = clip;
         psSaveBody(pg);
         psRender();
-        libToast("Cropped into “" + pg.name + "”");
+        if (then) then();
       }
     });
   }
+  // the source picture, kept out of the parts: look at it, cut more parts from it, or replace it
+  function psShowSource(pg) {
+    var b = psBody(pg.id);
+    if (!b.source) { psSetSource(pg); return; }
+    var box = ovOpen("Source picture · " + pg.name, { wide: true });
+    box.body.innerHTML = '<p class="lw-hint">What this method\'s parts were cut from. It is not shown on the method page.</p>';
+    box.body.appendChild(psCropBlock(b.source, Math.min(1000, window.innerWidth - 120)));
+    box.buttons([
+      { label: "✂ Cut parts from it", run: function () { box.close(true); psCutParts(pg); } },
+      { label: "Replace the picture", run: function () { box.close(true); psSetSource(pg); } },
+      { label: "Close", primary: true, right: true, run: function () { box.close(true); } }
+    ]);
+  }
 
-  // ---- stages ----
-  function psAddStages(pg) {
+  // ---- parts ----
+  // Cut parts out of the source picture; new parts are Stages (their category can be changed on the
+  // method page). firstTime: a brand-new method may also be kept whole, as one Explanation part.
+  function psCutParts(pg, firstTime) {
     var body = psBody(pg.id);
-    if (!body.main) { psSetMain(pg); return; }
+    if (!body.source) { psSetSource(pg, function () { psCutParts(pg, firstTime); }); return; }
+    var src = body.source, stages = body.parts.filter(function (p) { return p.cat === "stage"; }).length;
     cropInsideCrop({
-      clip: body.main,
-      title: "Split “" + pg.name + "” into stages",
-      hint: "Draw a loop around each stage, in the order you would solve them. A stage cannot be split again.",
-      saveLabel: "Add stages",
-      existing: body.stages.map(function (st, i) { return { name: stageName(st, i), polys: (st.crop || {}).polys || [] }; }),
-      nameFor: function (i) { return "Stage " + (i + 1); },
+      clip: src,
+      title: "Cut “" + pg.name + "” into parts",
+      hint: "Draw a loop around each part, in order. New parts are Stages — change a part's category on the method page." +
+            (firstTime ? " Or keep it whole." : ""),
+      saveLabel: "Add parts",
+      allowEmpty: !!firstTime, emptyLabel: "Keep it whole",
+      existing: body.parts.filter(function (p) { return p.clip && p.clip.pdfId === src.pdfId && p.clip.page === src.page; })
+        .map(function (p) { return { name: partLabel(pg.id, p), polys: p.clip.polys || [] }; }),
+      nameFor: function (i) { return "Stage " + (stages + i + 1); },
       onDone: function (parts) {
-        parts.forEach(function (p) {
-          body.stages.push({ id: uid("st_"), name: p.name, crop: p.clip, assets: [] });
+        if (!parts.length) body.parts.push({ id: uid("st_"), cat: "explanation", name: "", clip: src, text: "", assets: [] });
+        parts.forEach(function (p, i) {
+          var dflt = "Stage " + (stages + i + 1);
+          body.parts.push({ id: uid("st_"), cat: "stage", name: p.name && p.name !== dflt ? p.name : "", clip: p.clip, text: "", assets: [] });
         });
         psSaveBody(pg);
         psRender();
-        libToast("Added " + parts.length + (parts.length === 1 ? " stage" : " stages"));
+        libToast(parts.length ? "Added " + parts.length + (parts.length === 1 ? " part" : " parts") : "Kept whole, as one part");
       }
     });
   }
-  function psRenameStage(pg, st, i) {
-    askName("Rename stage", "", stageName(st, i), function (n) {
-      st.name = n; psSaveBody(pg); psRender();
+  function psRenamePart(pg, part) {
+    askName("Rename part", "Leave it empty to go back to its category name.", part.name || "", function (n) {
+      part.name = n; psSaveBody(pg); psRender();
     });
   }
-  function psDeleteStage(pg, st, i) {
-    if (!confirmDelete(stageName(st, i))) return;
+  function psSetPartCat(pg, part, cat) {
+    if (!byId(partCats(), cat)) return;
+    part.cat = cat; psSaveBody(pg); psRender();
+  }
+  function psDeletePart(pg, part) {
+    if (!confirmDelete(partLabel(pg.id, part))) return;
     var body = psBody(pg.id);
-    body.stages = body.stages.filter(function (x) { return x !== st; });
-    var gone = {}; gone[refKey({ lvl: "st", id: st.id })] = 1;
-    sumStripRefs(gone);   // a deleted stage leaves the summaries it was in
+    body.parts = body.parts.filter(function (x) { return x !== part; });
+    var gone = {}; gone[refKey({ lvl: "st", id: part.id })] = 1;
+    sumStripRefs(gone);   // a deleted part leaves the study sheets it was in
     psSaveBody(pg); psRender();
   }
-  function psMoveStage(pg, i, dir) {
-    var sts = psBody(pg.id).stages, j = i + dir;
-    if (j < 0 || j >= sts.length) return;
-    var tmp = sts[i]; sts[i] = sts[j]; sts[j] = tmp;
+  function psMovePart(pg, i, dir) {
+    var ps = psBody(pg.id).parts, j = i + dir;
+    if (j < 0 || j >= ps.length) return;
+    var tmp = ps[i]; ps[i] = ps[j]; ps[j] = tmp;
     psSaveBody(pg); psRender();
   }
   // ============================================================
@@ -11623,11 +11685,11 @@ function __detabaseMain() {
 
   // ---- undo: what a move changed, put back ----
   // Every move touches only the library's shape, so a copy of those parts of the store is the undo.
-  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "examples", "order", "subjects", "builtinGroup", "summaries"];
+  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "order", "subjects", "builtinGroup", "summaries"];
   function shapeSnap() {
     var s = {};
     UNDO_KEYS.forEach(function (k) { s[k] = store[k] === undefined ? undefined : JSON.stringify(store[k]); });
-    s.pages = JSON.stringify((store.ps.pages || []).map(function (pg) { return { id: pg.id, subject: pg.subject, folder: pg.folder, order: pg.order }; }));
+    s.pages = JSON.stringify((store.ps.pages || []).map(function (pg) { return { id: pg.id, subject: pg.subject, folder: pg.folder, order: pg.order }; }));   // the fields a move changes
     return s;
   }
   function shapeRestore(s) {
@@ -11655,40 +11717,40 @@ function __detabaseMain() {
     if (activePsPage && !viewingProblem) { try { renderPsPane(); } catch (e) {} }
     if (activeSummary) { try { renderSumPane(); } catch (e) {} }
   }
-  // a method's stages: their order is the vine's order
-  function psStagesDnd(docEl, pg) {
-    dndList(docEl, { type: "stage", item: ".ps-stage", grip: ".ps-grip", handle: ".ps-stage-head", fold: "reordering",
+  // a method's parts: their order is the vine's order
+  function psPartsDnd(docEl, pg) {
+    dndList(docEl, { type: "part", item: ".ps-stage", grip: ".ps-grip", handle: ".ps-stage-head", fold: "reordering",
       id: function (el) { return el.getAttribute("data-st"); },
       onDrop: function (drag, index) {
-        var body = psBody(pg.id), was = body.stages.slice();
-        var st = was.filter(function (x) { return x.id === drag.id; })[0]; if (!st) return;
-        var next = was.filter(function (x) { return x !== st; });
-        next.splice(index, 0, st);
-        body.stages = next; psSaveBody(pg); psRender();
-        libToast("Stage order saved", { label: "Undo", run: function () { psBody(pg.id).stages = was; psSaveBody(pg); psRender(); } });
+        var body = psBody(pg.id), was = body.parts.slice();
+        var p = was.filter(function (x) { return x.id === drag.id; })[0]; if (!p) return;
+        var next = was.filter(function (x) { return x !== p; });
+        next.splice(index, 0, p);
+        body.parts = next; psSaveBody(pg); psRender();
+        libToast("Part order saved", { label: "Undo", run: function () { psBody(pg.id).parts = was; psSaveBody(pg); psRender(); } });
       } });
   }
 
-  // ---- "Connected concepts" — ONE popup, wherever a page or a stage is tapped -----------
-  // Tapping the page header opens it for the page; tapping a stage opens it for that stage. The
+  // ---- "Connected concepts" — ONE popup, wherever a method or a part is tapped ----------
+  // Tapping the method header opens it for the method; tapping a part opens it for that part. The
   // same component does the job in the authoring view and everywhere a vine is browsed, so there is
   // one place that answers "what does this use?" and one place that changes the answer.
   function psTargetOf(ref) {
     if (!ref) return null;
-    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? { pg: pg, st: null, name: pg.name } : null; }
-    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? { pg: sx.page, st: sx.stage, name: stageName(sx.stage, sx.index) } : null; }
+    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg ? { pg: pg, part: null, name: pg.name } : null; }
+    if (ref.lvl === "st") { var sx = psPartById(ref.id); return sx ? { pg: sx.page, part: sx.part, name: partLabel(sx.page.id, sx.part) } : null; }
     return null;
   }
   function psConceptsOf(ref) {
     var t = psTargetOf(ref); if (!t) return [];
-    return (t.st ? t.st.assets : psBody(t.pg.id).assets) || [];
+    return (t.part ? t.part.assets : psBody(t.pg.id).assets) || [];
   }
-  function psAttach(pg, st, then) {
+  function psAttach(pg, part, then) {
     openAssetPicker({
-      title: st ? "Concepts used in “" + stageName(st, psBody(pg.id).stages.indexOf(st)) + "”" : "Concepts used in “" + pg.name + "”",
+      title: part ? "Concepts used in “" + partLabel(pg.id, part) + "”" : "Concepts used in “" + pg.name + "”",
       firstSubject: pg.subject,
       onPick: function (refs) {
-        var list = st ? (st.assets = st.assets || []) : (psBody(pg.id).assets = psBody(pg.id).assets || []);
+        var list = part ? (part.assets = part.assets || []) : (psBody(pg.id).assets = psBody(pg.id).assets || []);
         var have = {};
         list.forEach(function (r) { have[refKey(r)] = 1; });
         var added = 0;
@@ -11702,17 +11764,17 @@ function __detabaseMain() {
       }
     });
   }
-  function psDetach(pg, st, ref, then) {
+  function psDetach(pg, part, ref, then) {
     var body = psBody(pg.id);
-    var list = st ? st.assets : body.assets;
+    var list = part ? part.assets : body.assets;
     var k = refKey(ref);
     var out = (list || []).filter(function (r) { return refKey(r) !== k; });
-    if (st) st.assets = out; else body.assets = out;
+    if (part) part.assets = out; else body.assets = out;
     psSaveBody(pg); psRender();
     if (then) then();
   }
   // The chips of a concept list — the ONE piece every "what does this use?" list is drawn with:
-  // a saved method or stage (conceptListEl, the Connected concepts popup) and a method still being
+  // a saved method or part (conceptListEl, the Connected concepts popup) and a method still being
   // put together from the clipboard (its review step). Tap a chip to go to the concept, ✕ to take it off.
   //   opts: { onRemove(ref), onAttach(), noJump }
   function conceptChipsEl(list, opts) {
@@ -11747,13 +11809,13 @@ function __detabaseMain() {
     }
     return box;
   }
-  // the list for a saved method or stage — the popup shows it, and so can anything else that wants to
+  // the list for a saved method or part — the popup shows it, and so can anything else that wants to
   function conceptListEl(ref, editable, onChange) {
     var t = psTargetOf(ref);
     if (!t) return conceptChipsEl([], {});
     return conceptChipsEl(psConceptsOf(ref), editable ? {
-      onRemove: function (r) { psDetach(t.pg, t.st, r, onChange); },
-      onAttach: function () { psAttach(t.pg, t.st, onChange); }
+      onRemove: function (r) { psDetach(t.pg, t.part, r, onChange); },
+      onAttach: function () { psAttach(t.pg, t.part, onChange); }
     } : {});
   }
   var conceptsBox = null;
@@ -11763,7 +11825,7 @@ function __detabaseMain() {
     closeConcepts();
     var box = ovOpen("Connected concepts", { onCancel: function () { conceptsBox = null; } });
     conceptsBox = box;
-    box.body.innerHTML = '<p class="lw-hint">' + (t.st ? "Stage" : "Method") + ' · <b>' + escapeHtml(t.name) + '</b></p>';
+    box.body.innerHTML = '<p class="lw-hint">' + (t.part ? partCatName(t.part.cat) : "Method") + ' · <b>' + escapeHtml(t.name) + '</b></p>';
     var host = document.createElement("div");
     box.body.appendChild(host);
     function draw() {
@@ -11775,8 +11837,8 @@ function __detabaseMain() {
     draw();
     box.buttons([
       { label: "＋ Add to a clipboard", run: function () { closeConcepts(); chooseBoardAndMine([{ lvl: ref.lvl, id: ref.id }]); } },
-      // a stage's popup can take you to its method — unless that method is already what is on screen
-      t.st && !(activePsPage === t.pg.id && !miningScreen) ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
+      // a part's popup can take you to its method — unless that method is already what is on screen
+      t.part && !(activePsPage === t.pg.id && !miningScreen) ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
       { label: "Done", primary: true, right: true, run: function () { closeConcepts(); } }
     ]);
     return box;
@@ -11798,50 +11860,56 @@ function __detabaseMain() {
     var tags = (pg.tags || []).filter(Boolean);
     $("psCrumb").textContent = tags.join(" · ");   // the subject is in the page subtitle; tags, if any, here
     $("psTitle").textContent = pg.name;
-    var body = psBody(pg.id), legacy = !body.main && !body.stages.length;
-    if ($("psEdit")) $("psEdit").hidden = !legacy;           // only a hand-written page opens in the board editor
-    if ($("psSplit")) $("psSplit").textContent = body.main ? "✂ Split into stages" : "✂ Crop it from a document";
+    var body = psBody(pg.id), legacy = !body.parts.length && !body.source;
+    if ($("psEdit")) $("psEdit").hidden = !legacy;           // only a hand-written method opens in the board editor
+    if ($("psSplit")) $("psSplit").textContent = body.source ? "✂ Cut parts" : "✂ Crop it from a document";
+    if ($("psSource")) $("psSource").hidden = !body.source;
     var docEl = $("psDoc");
     docEl.innerHTML = "";
     var w = libBlockWidth(docEl) - 4;
-    if (body.main) {
-      var main = document.createElement("div");
-      main.className = "ps-main ps-tap";
-      main.title = "what this method uses";
-      main.appendChild(psCropBlock(body.main, w - 8));
-      main.addEventListener("click", function () { openConceptsPopup({ lvl: "p", id: pg.id }); });
-      docEl.appendChild(main);
-    }
-    body.stages.forEach(function (st, i) {
+    body.parts.forEach(function (part, i) {
       var row = document.createElement("div");
       row.className = "ps-stage";
-      row.setAttribute("data-st", st.id);
+      row.setAttribute("data-st", part.id);
+      row.style.setProperty("--cat-color", partCatColor(part.cat));
       row.innerHTML =
         '<div class="ps-stage-head">' +
           '<span class="ps-grip" title="drag to reorder">⠿</span>' +
-          '<b>' + escapeHtml(stageName(st, i)) + '</b>' +
+          '<select class="ps-cat" title="category">' + partCats().map(function (c) {
+            return '<option value="' + c.id + '"' + (c.id === part.cat ? " selected" : "") + '>' + escapeHtml(c.name) + '</option>';
+          }).join("") + '</select>' +
+          '<b>' + escapeHtml(partLabel(pg.id, part)) + '</b>' +
           '<span class="ps-stage-btns">' +
             '<button type="button" data-a="up" title="move up"' + (i ? '' : ' disabled') + '>▲</button>' +
-            '<button type="button" data-a="down" title="move down"' + (i < body.stages.length - 1 ? '' : ' disabled') + '>▼</button>' +
+            '<button type="button" data-a="down" title="move down"' + (i < body.parts.length - 1 ? '' : ' disabled') + '>▼</button>' +
             '<button type="button" data-a="ren" title="rename">✎</button>' +
-            '<button type="button" data-a="del" class="danger" title="delete this stage">🗑</button>' +
+            '<button type="button" data-a="del" class="danger" title="delete this part">🗑</button>' +
           '</span>' +
         '</div>';
-      var cropEl = psCropBlock(st.crop, w - 40);
-      cropEl.classList.add("ps-tap");
-      cropEl.title = "what this stage uses";
-      cropEl.addEventListener("click", function () { openConceptsPopup({ lvl: "st", id: st.id }); });
-      row.appendChild(cropEl);
-      row.appendChild(psUsesLine({ lvl: "st", id: st.id }, "uses"));
-      row.querySelector('[data-a="up"]').addEventListener("click", function () { psMoveStage(pg, i, -1); });
-      row.querySelector('[data-a="down"]').addEventListener("click", function () { psMoveStage(pg, i, 1); });
-      row.querySelector('[data-a="ren"]').addEventListener("click", function () { psRenameStage(pg, st, i); });
-      row.querySelector('[data-a="del"]').addEventListener("click", function () { psDeleteStage(pg, st, i); });
+      row.querySelector(".ps-cat").addEventListener("change", function () { psSetPartCat(pg, part, this.value); });
+      if (part.clip) {
+        var cropEl = psCropBlock(part.clip, w - 40);
+        cropEl.classList.add("ps-tap");
+        cropEl.title = "what this part uses";
+        cropEl.addEventListener("click", function () { openConceptsPopup({ lvl: "st", id: part.id }); });
+        row.appendChild(cropEl);
+      }
+      if (part.text) {
+        var tx = document.createElement("div");
+        tx.className = "ps-part-text";
+        tx.textContent = part.text;
+        row.appendChild(tx);
+      }
+      row.appendChild(psUsesLine({ lvl: "st", id: part.id }, "uses"));
+      row.querySelector('[data-a="up"]').addEventListener("click", function () { psMovePart(pg, i, -1); });
+      row.querySelector('[data-a="down"]').addEventListener("click", function () { psMovePart(pg, i, 1); });
+      row.querySelector('[data-a="ren"]').addEventListener("click", function () { psRenamePart(pg, part); });
+      row.querySelector('[data-a="del"]').addEventListener("click", function () { psDeletePart(pg, part); });
       docEl.appendChild(row);
     });
-    psStagesDnd(docEl, pg);
-    if (body.main && !body.stages.length) {
-      docEl.insertAdjacentHTML("beforeend", '<p class="muted ps-hint">Not split into stages yet — tap “✂ Split into stages” and draw a loop around each step.</p>');
+    psPartsDnd(docEl, pg);
+    if (body.source && !body.parts.length) {
+      docEl.insertAdjacentHTML("beforeend", '<p class="muted ps-hint">No parts yet — tap “✂ Cut parts” and draw a loop around each one.</p>');
     }
     // Hand-written content is shown whether or not the page has crops: a page from before the crop
     // tool keeps everything it had, and giving it a crop must never hide what was already on it.
@@ -11852,7 +11920,7 @@ function __detabaseMain() {
     }
     if (legacy) {
       docEl.insertAdjacentHTML("beforeend", doc
-        ? '<p class="muted ps-hint">Tap “✂ Crop it from a document” to give this method a crop — then it can be split into stages like any other.</p>'
+        ? '<p class="muted ps-hint">Tap “✂ Crop it from a document” to give this method a picture — then it can be cut into parts like any other.</p>'
         : '<div class="doc-empty">Syncing this method…</div>');
     }
     var as = $("psAssets");
@@ -11867,12 +11935,14 @@ function __detabaseMain() {
     }
     var cs = $("psCards");
     if (cs) { cs.innerHTML = ""; cs.appendChild(psCardsEl(pg)); }
-    var xs = $("psExamples");
-    if (xs) {
-      xs.innerHTML = "";
-      var exs = examplesOfMethod(pg.id);
-      if (!exs.length) xs.innerHTML = '<p class="muted pc-none">No worked examples of it yet — link one from an example, or make one from the subject page.</p>';
-      else { var g = document.createElement("div"); g.className = "ex-grid"; exs.forEach(function (x) { g.appendChild(exThumbEl(x)); }); xs.appendChild(g); }
+    var ms = $("psMethods");
+    if (ms) {
+      // connected methods — its own links and the methods that link to it (editing them comes with the method page)
+      var linked = (pg.methodIds || []).map(psPageById).filter(Boolean);
+      store.ps.pages.forEach(function (o) { if (o !== pg && (o.methodIds || []).indexOf(pg.id) >= 0 && linked.indexOf(o) < 0) linked.push(o); });
+      ms.innerHTML = "";
+      if (!linked.length) ms.innerHTML = '<p class="muted pc-none">Not connected to other methods.</p>';
+      else ms.appendChild(conceptChipsEl(linked.map(function (o) { return { lvl: "p", id: o.id }; }), {}));
     }
   }
   // the cards a method is connected to: the ones its concepts sit in ("via …"), and the ones it was
@@ -11888,7 +11958,7 @@ function __detabaseMain() {
       var go = document.createElement("button");
       go.type = "button"; go.className = "ps-chip-go";
       var how = x.direct ? "connected directly" + (x.via.length ? " · also via " + x.via.map(refName).join(", ") : "") : "via " + x.via.map(refName).join(", ");
-      go.innerHTML = '<span class="mp-lvl lvl-' + x.ref.lvl + '">' + (x.ref.lvl === "t" ? "Tab" : "Card") + '</span> ' + escapeHtml(refName(x.ref)) +
+      go.innerHTML = '<span class="mp-lvl lvl-' + x.ref.lvl + '">' + (x.ref.lvl === "t" ? "Concept" : "Card") + '</span> ' + escapeHtml(refName(x.ref)) +
         '<small class="pc-how">' + escapeHtml(how) + ' · ' + escapeHtml(subjectName(libSubjectOf(x.ref) || "")) + '</small>';
       go.addEventListener("click", function () { openRef(x.ref); });
       chip.appendChild(go);
@@ -12008,9 +12078,9 @@ function __detabaseMain() {
     function stepTab() {
       // the tab that is open is offered first: that is usually where a new concept belongs
       var tabs = libTabs(t.subject), open = start && start.tab, first = open ? tabs.filter(function (x) { return x.id === open; }) : [];
-      if (first.length) tabs = first.map(function (x) { return { id: x.id, name: x.name, group: "The tab you are on" }; })
-        .concat(tabs.filter(function (x) { return x.id !== open; }).map(function (x) { return { id: x.id, name: x.name, group: "Other tabs" }; }));
-      pickOrNew(head("Tab"), "In " + subjectName(t.subject) + " — which tab?", tabs, "New tab name…", function (id, nn) {
+      if (first.length) tabs = first.map(function (x) { return { id: x.id, name: x.name, group: "The concept you are on" }; })
+        .concat(tabs.filter(function (x) { return x.id !== open; }).map(function (x) { return { id: x.id, name: x.name, group: "Other concepts" }; }));
+      pickOrNew(head("Concept"), "In " + subjectName(t.subject) + " — which concept?", tabs, "New concept name…", function (id, nn) {
         if (id) t.tab = id;
         else { t.tab = uid("ut_"); store.tabs.push({ id: t.tab, subject: t.subject, name: nn, created: Date.now() }); libMove({ lvl: "t", id: t.tab }, t.subject, null); }
         if (upTo === "t") done(t.tab); else stepCard();
@@ -12113,20 +12183,22 @@ function __detabaseMain() {
   function saveClipAsMethod(clip, cb) {
     cb = cb || {};
     function cancelled() { if (cb.cancelled) cb.cancelled(); }
-    var draft = { name: "", subject: null, clip: clip, stages: [], assets: [] };
+    var draft = { name: "", subject: null, clip: clip, parts: [], assets: [] };
     askName("Name this method", "Every method needs a name. You can change it whenever you like.", "", function (name) {
       draft.name = name;
       pickSubject("Which subject?", "Which subject is this method for?", function (k) {
         draft.subject = k;
         cropInsideCrop({
           clip: clip,
-          title: "Split “" + name + "” into stages",
-          hint: "Draw a loop around each stage, in the order you would solve them. A stage cannot be split again. " +
-                "No stages is fine too — it can be split later.",
-          saveLabel: "Next", allowEmpty: true, emptyLabel: "Next — no stages",
+          title: "Cut “" + name + "” into parts",
+          hint: "Draw a loop around each part, in order. New parts are Stages — change a category below. " +
+                "Keeping it whole is fine too: then it is one part.",
+          saveLabel: "Next", allowEmpty: true, emptyLabel: "Next — keep it whole",
           nameFor: function (i) { return "Stage " + (i + 1); },
           onDone: function (parts) {
-            draft.stages = parts.map(function (p) { return { id: uid("st_"), name: p.name, crop: p.clip, assets: [] }; });
+            draft.parts = parts.length
+              ? parts.map(function (p, i) { return { id: uid("st_"), cat: "stage", name: p.name && p.name !== "Stage " + (i + 1) ? p.name : "", clip: p.clip, text: "", assets: [] }; })
+              : [{ id: uid("st_"), cat: "explanation", name: "", clip: clip, text: "", assets: [] }];
             reviewMethodDraft(draft, cb);
           },
           onCancel: cancelled
@@ -12134,7 +12206,7 @@ function __detabaseMain() {
       }, cancelled);
     }, cancelled);
   }
-  // the last step: everything at a glance, the concepts (optional), the stage order, then Save
+  // the last step: everything at a glance, the concepts (optional), the parts and their order, then Save
   function reviewMethodDraft(draft, cb) {
     var box = ovOpen("Save as a method", { wide: true, onCancel: function () { if (cb.cancelled) cb.cancelled(); } });
     function addRefs(list, refs) {
@@ -12159,7 +12231,7 @@ function __detabaseMain() {
           '<label class="md-label">Subject</label><div class="md-subject"><b></b><button type="button" class="btn-quiet md-change">Change</button></div>' +
         '</div></div>' +
         '<div class="md-sec"><div class="md-sechead">This method uses <span class="muted">— optional, and can be done later</span></div><div class="md-uses"></div></div>' +
-        '<div class="md-sec"><div class="md-sechead">Stages</div><div class="md-stages"></div></div>';
+        '<div class="md-sec"><div class="md-sechead">Parts</div><div class="md-stages"></div></div>';
       b.querySelector(".md-crop").appendChild(psCropBlock(draft.clip, 240));
       var nameIn = b.querySelector(".md-name");
       nameIn.value = draft.name;
@@ -12170,40 +12242,42 @@ function __detabaseMain() {
       });
       b.querySelector(".md-uses").appendChild(chips(draft.assets, function (l) { draft.assets = l; }, "Concepts used in “" + (draft.name || "this method") + "”"));
       var sts = b.querySelector(".md-stages");
-      if (!draft.stages.length) sts.innerHTML = '<p class="muted">No stages — it is saved whole, and can be split into stages later from the method itself.</p>';
-      draft.stages.forEach(function (st, i) {
+      draft.parts.forEach(function (part, i) {
         var row = document.createElement("div");
         row.className = "md-stage";
-        row.innerHTML = '<div class="md-stage-head"><span class="md-num">' + (i + 1) + '</span><input type="text" maxlength="60">' +
+        row.innerHTML = '<div class="md-stage-head"><span class="md-num">' + (i + 1) + '</span>' +
+          '<select class="ps-cat">' + partCats().map(function (c) { return '<option value="' + c.id + '"' + (c.id === part.cat ? " selected" : "") + '>' + escapeHtml(c.name) + '</option>'; }).join("") + '</select>' +
+          '<input type="text" maxlength="60" placeholder="name (optional)">' +
           '<button type="button" class="btn-quiet md-mv" data-d="-1" title="move up"' + (i ? '' : ' disabled') + '>▲</button>' +
-          '<button type="button" class="btn-quiet md-mv" data-d="1" title="move down"' + (i < draft.stages.length - 1 ? '' : ' disabled') + '>▼</button></div>';
+          '<button type="button" class="btn-quiet md-mv" data-d="1" title="move down"' + (i < draft.parts.length - 1 ? '' : ' disabled') + '>▼</button></div>';
+        row.querySelector(".ps-cat").addEventListener("change", function () { part.cat = this.value; });
         var inp = row.querySelector("input");
-        inp.value = st.name;
-        inp.addEventListener("input", function () { st.name = inp.value; });
+        inp.value = part.name;
+        inp.addEventListener("input", function () { part.name = inp.value; });
         Array.prototype.forEach.call(row.querySelectorAll(".md-mv"), function (mv) {
           mv.addEventListener("click", function () {
             var j = i + (+mv.getAttribute("data-d"));
-            if (j < 0 || j >= draft.stages.length) return;
-            var tmp = draft.stages[i]; draft.stages[i] = draft.stages[j]; draft.stages[j] = tmp;
+            if (j < 0 || j >= draft.parts.length) return;
+            var tmp = draft.parts[i]; draft.parts[i] = draft.parts[j]; draft.parts[j] = tmp;
             draw();
           });
         });
-        row.appendChild(psCropBlock(st.crop, 220));
-        row.appendChild(chips(st.assets, function (l) { st.assets = l; }, "Concepts used in “" + (st.name || "this stage") + "”"));
+        row.appendChild(psCropBlock(part.clip, 220));
+        row.appendChild(chips(part.assets, function (l) { part.assets = l; }, "Concepts used in this part"));
         sts.appendChild(row);
       });
     }
     function save() {
       var name = (draft.name || "").trim();
       if (!name) { alert("A method needs a name."); return; }
-      if (draft.stages.some(function (st) { return !(st.name || "").trim(); })) { alert("Give every stage a name."); return; }
       libEnsure();
-      // exactly what "＋ New method" makes: the page, its crop, then its stages and concepts
-      var pg = { id: uid("pp_"), subject: draft.subject, name: name, tags: [], assets: [], created: Date.now() };
+      // exactly what "＋ New method" makes: the method, its source picture, then its parts and concepts
+      var pg = { id: uid("pp_"), subject: draft.subject, name: name, tags: [], assets: [], kind: null, description: "",
+                 alsoSubjects: [], methodIds: [], created: Date.now() };
       store.ps.pages.push(pg);
       var body = psBody(pg.id);
-      body.main = draft.clip;
-      body.stages = draft.stages.map(function (st) { return { id: st.id, name: st.name.trim(), crop: st.crop, assets: st.assets }; });
+      body.source = draft.clip;
+      body.parts = draft.parts.map(function (p) { return { id: p.id, cat: p.cat, name: (p.name || "").trim(), clip: p.clip, text: "", assets: p.assets }; });
       body.assets = draft.assets;
       psSaveBody(pg);
       box.close(true);
@@ -14117,11 +14191,11 @@ function __detabaseMain() {
   // from its canvas docs). Decompose replaces it by the level below. Adding never touches ETI.
   // Extra ref level "p" = a problem-solving page.
   // ============================================================
-  var ASSET_LV = { s: "Subject", t: "Tab", c: "Card", e: "Element", p: "Method", st: "Stage" };
+  var ASSET_LV = { s: "Subject", t: "Concept", c: "Card", e: "Element", p: "Method", st: "Part" };
   function refKey(r) { return r.lvl + "|" + r.id; }
   function refExists(ref) {
     if (ref.lvl === "p") return !!psPageById(ref.id);
-    if (ref.lvl === "st") return !!psStageById(ref.id);
+    if (ref.lvl === "st") return !!psPartById(ref.id);
     if (ref.lvl === "e") return !!byId(store.elements, ref.id);
     if (ref.lvl === "c") return !!byId(store.cards, ref.id) || !!document.querySelector('[data-el="' + ref.id + '"]');
     if (ref.lvl === "t") return ref.id.slice(0, 2) === "b:" ? !!$("pane-" + ref.id.slice(2)) : !!byId(store.tabs, ref.id);
@@ -14132,11 +14206,11 @@ function __detabaseMain() {
     if (ref.lvl === "s") return libTabs(ref.id).map(function (x) { return { lvl: "t", id: x.id }; });
     if (ref.lvl === "t") return libCards(ref.id).map(function (x) { return { lvl: "c", id: x.id }; });
     if (ref.lvl === "c") return libElements(ref.id).map(function (x) { return { lvl: "e", id: x.id }; });
-    if (ref.lvl === "p") return psStages(ref.id).map(function (x) { return { lvl: "st", id: x.id }; });
+    if (ref.lvl === "p") return psParts(ref.id).map(function (x) { return { lvl: "st", id: x.id }; });
     return [];
   }
   function refParent(ref) {
-    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? { lvl: "p", id: sx.page.id } : null; }
+    if (ref.lvl === "st") { var sx = psPartById(ref.id); return sx ? { lvl: "p", id: sx.page.id } : null; }
     if (ref.lvl === "p") { var pp = psPageById(ref.id); return pp && pp.subject ? { lvl: "s", id: pp.subject } : null; }
     if (ref.lvl === "e") { var e = byId(store.elements, ref.id); return e ? { lvl: "c", id: e.card } : null; }
     if (ref.lvl === "c" || ref.lvl === "t") {
@@ -14327,6 +14401,11 @@ function __detabaseMain() {
     if (!doc) { var ph = document.createElement("div"); ph.className = "doc-empty"; ph.textContent = "Syncing…"; return ph; }
     return renderDocStatic(doc, w);
   }
+  // a part's content: its crop and/or its text
+  function partBodyInto(host, part, w) {
+    if (part.clip) host.appendChild(psCropBlock(part.clip, w));
+    if (part.text) { var t = document.createElement("div"); t.className = "ps-part-text"; t.textContent = part.text; host.appendChild(t); }
+  }
   function assetBody(ref, baseW) {
     var d = document.createElement("div");
     d.className = "asset-body lvl-" + ref.lvl;
@@ -14350,16 +14429,15 @@ function __detabaseMain() {
     } else if (ref.lvl === "p") {
       var pg = psPageById(ref.id), pb = psBody(pg.id);
       d.insertAdjacentHTML("beforeend", '<h4>🧩 ' + escapeHtml(pg.name) + '</h4>');
-      if (pb.main) d.appendChild(psCropBlock(pb.main, inner));
-      (pb.stages || []).forEach(function (st, i) {
-        d.insertAdjacentHTML("beforeend", '<div class="asset-stage">' + escapeHtml(stageName(st, i)) + '</div>');
-        d.appendChild(psCropBlock(st.crop, inner - 10));
+      pb.parts.forEach(function (part) {
+        d.insertAdjacentHTML("beforeend", '<div class="asset-stage">' + escapeHtml(partLabel(pg.id, part)) + '</div>');
+        partBodyInto(d, part, inner - 10);
       });
-      if (!pb.main && !(pb.stages || []).length) d.appendChild(docStaticFor(pg.id, inner));
+      if (!pb.parts.length) d.appendChild(docStaticFor(pg.id, inner));
     } else if (ref.lvl === "st") {
-      var sx = psStageById(ref.id);
-      d.insertAdjacentHTML("beforeend", '<h4>' + escapeHtml(sx ? stageName(sx.stage, sx.index) : "Stage") + '</h4>');
-      if (sx) d.appendChild(psCropBlock(sx.stage.crop, inner));
+      var sx = psPartById(ref.id);
+      d.insertAdjacentHTML("beforeend", '<h4>' + escapeHtml(sx ? partLabel(sx.page.id, sx.part) : "Part") + '</h4>');
+      if (sx) partBodyInto(d, sx.part, inner);
     } else if (ref.lvl === "c") {
       cardInto(d, ref.id);
     } else if (ref.lvl === "t") {
@@ -14555,7 +14633,7 @@ function __detabaseMain() {
     cards.forEach(function (x) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "vine-card" + (x.direct ? " direct" : "");
-      b.textContent = (x.ref.lvl === "t" ? "▤ " : "▢ ") + refName(x.ref);
+      b.textContent = (x.ref.lvl === "t" ? "▤ concept " : "▢ ") + refName(x.ref);
       b.title = x.direct ? "connected directly — open it" : "via " + x.via.map(refName).join(", ") + " — open it";
       b.addEventListener("click", function () { openRef(x.ref); });
       cl.appendChild(b);
@@ -14580,7 +14658,7 @@ function __detabaseMain() {
     box.className = "em-results";
     if (!q) return box;
     function section(title) { box.insertAdjacentHTML("beforeend", '<div class="em-rhead">' + escapeHtml(title) + '</div>'); }
-    var TYPES = { c: "Concept", p: "Method", x: "Example" };
+    var TYPES = { c: "Concept", p: "Method" };
     function hitRow(label, sub, onMain, extra, type) {
       var row = document.createElement("div");
       row.className = "em-hit";
@@ -14616,16 +14694,6 @@ function __detabaseMain() {
         ], "p");
       });
     }
-    var exs = searchEntries(exEnsure().map(function (x) {
-      var cards = exampleCards(x).map(refName).join(" ");
-      return { ex: x, name: x.name, hay: [x.name, (x.tags || []).join(" "), subjectName(x.subject), cards, exMethods(x).map(function (m) { return m.name; }).join(" ")].join(" ").toLowerCase(), cards: cards };
-    }), q, function (en) { return en.hay; }).slice(0, 8);
-    if (exs.length) {
-      section("Examples");
-      exs.forEach(function (en) {
-        hitRow(en.name, subjectName(en.ex.subject) + (en.cards ? " · " + en.cards : " · not linked to a card"), function () { exOpen(en.ex.id); }, [], "x");
-      });
-    }
     // situations: the tag search, matched against everything ETI holds
     var ql = q.toLowerCase();
     var tags = availableTags().filter(function (t) { return t.label.toLowerCase().indexOf(ql) >= 0 || t.id.indexOf(ql) >= 0; }).slice(0, 6);
@@ -14638,7 +14706,7 @@ function __detabaseMain() {
         });
       });
     }
-    if (!concepts.length && !pages.length && !exs.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
+    if (!concepts.length && !pages.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
     return box;
   }
 
@@ -14901,17 +14969,15 @@ function __detabaseMain() {
   }
   function ctHitAt(x, y) {
     var t = document.elementFromPoint(x, y);
-    t = t && t.closest && t.closest("[data-k], [data-v], [data-x]");
+    t = t && t.closest && t.closest("[data-k], [data-v]");
     if (!t || !ctEls || !ctEls.svg.contains(t)) return null;
     if (t.hasAttribute("data-v")) return { vine: t.getAttribute("data-v") };
-    if (t.hasAttribute("data-x")) return { example: t.getAttribute("data-x") };
     return ctEls.model.nodes[t.getAttribute("data-k")] || null;
   }
   function ctTap(x, y) {
     var h = ctHitAt(x, y);
     if (!h) return;
     if (h.vine) { selectPsPage(h.vine); return; }
-    if (h.example) { exOpen(h.example); return; }
     var n = h;
     // a circle too small to aim at is a ring tap: zoom in first
     if (n.leaf && n.r * ctView.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
@@ -14937,7 +15003,7 @@ function __detabaseMain() {
       if (ids().length === 1) {
         startPan(e.pointerId);
         var h = ctHitAt(e.clientX, e.clientY), p0 = pan;
-        if (h && !h.vine && !h.example && h.leaf) holdT = setTimeout(function () {
+        if (h && !h.vine && h.leaf) holdT = setTimeout(function () {
           if (pan !== p0 || p0.moved >= 8) return;
           p0.held = true;
           narrowAdd(h.ref);
@@ -15061,27 +15127,6 @@ function __detabaseMain() {
       var lb = el("text", { x: ctF(v.mid[0]), y: ctF(v.mid[1]), dy: "-0.55em", fill: v.color, "class": "ct-vlbl" + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gLbls);
       lb.textContent = v.pg.name;
     });
-    // examples: an amber square beside the card it illustrates, tied to each of its cards and methods;
-    // one with no card hangs below its subject
-    var gEx = el("g", { "class": "ct-exs" }, world), placed = {}, ql = mainQ.trim().toLowerCase();
-    exEnsure().forEach(function (ex) {
-      var ns = exampleCards(ex).map(function (r) { return model.nodes[refKey(r)]; }).filter(Boolean);
-      var vs = vines.filter(function (v) { return (ex.methodIds || []).indexOf(v.pg.id) >= 0; });
-      var base = ns[0] || model.nodes["s|" + ex.subject]; if (!base) return;
-      var k = placed[base.key] = (placed[base.key] || 0) + 1;
-      var a = ns.length ? -Math.PI / 4 + (k - 1) * 0.5 : Math.PI / 2 + (k - 1) * 0.3, d = base.r + 12;
-      var x = base.x + Math.cos(a) * d, y = base.y + Math.sin(a) * d, S = 8;
-      var dim = marks && !(ns.some(function (n) { return n.lit; }) || vs.some(function (v) { return marks.vis[v.pg.id]; }) || (ql && ex.name.toLowerCase().indexOf(ql) >= 0));
-      ns.concat(vs).forEach(function (t) {
-        var tx = t.mid ? t.mid[0] : t.x, ty = t.mid ? t.mid[1] : t.y;
-        if (!t.mid && !t.leaf) { var dx = x - t.x, dy = y - t.y, dd = Math.hypot(dx, dy) || 1; tx = t.x + dx / dd * t.r; ty = t.y + dy / dd * t.r; }
-        el("line", { x1: ctF(x), y1: ctF(y), x2: ctF(tx), y2: ctF(ty), "class": "ct-exline" + (dim ? " dim" : "") }, gEx);
-      });
-      var sq = el("rect", { x: ctF(x - S), y: ctF(y - S), width: 2 * S, height: 2 * S, rx: 3, "class": "ct-ex" + (dim ? " dim" : "") + (ns.length ? "" : " unlinked"), "data-x": ex.id }, gEx);
-      el("title", {}, sq).textContent = "Example · " + ex.name + (ns.length ? "" : " — not linked to a card");
-      var t = el("text", { x: ctF(x), y: ctF(y + S), dy: "1em", "class": "ct-lbl leaf ex" + (dim ? " dim" : "") }, gLbls);
-      labels.push({ el: t, r: S, leaf: true, lvl: "x", full: ex.name, hit: false });
-    });
     svg.classList.toggle("few", live > 0 && live <= 8);
     var E = ctEls = { box: box, svg: svg, world: world, labels: labels, model: model,
       allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
@@ -15187,228 +15232,6 @@ function __detabaseMain() {
       if (pages.length > 60) vbox.insertAdjacentHTML("beforeend", '<p class="muted">…and ' + (pages.length - 60) + ' more — narrow it down.</p>');
     }
 
-  }
-  // ============================================================
-  // EXAMPLES — worked examples, a kind of their own
-  // Not a concept and not a method: a picture cut out of a document, named, filed under a subject,
-  // and connected to the cards it illustrates (and, if it is a worked example of one, to methods).
-  // Links are ids, so a card moved anywhere keeps its examples.
-  //   store.examples = [{ id, subject, name, tags, cardIds, methodIds, order, created }]
-  //   the picture: the example's own canvas doc, ps.main — the same slot a method's crop uses
-  // ============================================================
-  function exClip(ex) { return psBody(ex.id).main; }
-  function exMethods(ex) { return (ex.methodIds || []).map(psPageById).filter(Boolean); }
-  function examplesOfMethod(pgId) { return exEnsure().filter(function (x) { return (x.methodIds || []).indexOf(pgId) >= 0; }); }
-  function examplesOfCard(cardId) { return exEnsure().filter(function (x) { return (x.cardIds || []).indexOf(cardId) >= 0; }); }
-  function newExample(subjectKey) {
-    cropFromPdf({
-      title: "Crop the example",
-      hint: "Draw a loop around the whole worked example.",
-      saveLabel: "Use this →",
-      onDone: function (clip) { saveClipAsExample(clip, { subject: subjectKey }); }
-    });
-  }
-  // name → subject → what it connects to → Save. Nothing is written until Save, so backing out
-  // anywhere leaves no half-made example (and the clipboard reader keeps its marks).
-  function saveClipAsExample(clip, start, cb) {
-    cb = cb || {};
-    function cancelled() { if (cb.cancelled) cb.cancelled(); }
-    askName("Name this example", "Every example needs a name. You can change it whenever you like.", "", function (name) {
-      function go(k) { exReview({ name: name, subject: k, clip: clip, cardIds: [], methodIds: [] }, cb); }
-      if (start && start.subject) go(start.subject);
-      else pickSubject("Which subject?", "Which subject is this example for?", go, cancelled);
-    }, cancelled);
-  }
-  // pick one method — this subject's first
-  function pickMethod(title, firstSubject, onPick, onCancel) {
-    var pages = store.ps.pages.slice().sort(function (a, b) {
-      return ((a.subject === firstSubject) ? 0 : 1) - ((b.subject === firstSubject) ? 0 : 1) || subjectName(a.subject).localeCompare(subjectName(b.subject)) || a.name.localeCompare(b.name);
-    });
-    var box = ovOpen(title, { onCancel: onCancel });
-    box.body.innerHTML = '<div class="lw-opts"></div>';
-    var list = box.body.querySelector(".lw-opts"), lastG = null;
-    if (!pages.length) list.innerHTML = '<p class="muted">There are no methods yet.</p>';
-    pages.forEach(function (pg) {
-      var g = subjectName(pg.subject);
-      if (g !== lastG) { lastG = g; var gl = document.createElement("div"); gl.className = "lw-group"; gl.textContent = g; list.appendChild(gl); }
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "lw-opt"; b.textContent = "🧩 " + pg.name + "  ›";
-      b.addEventListener("click", function () { box.close(true); onPick(pg); });
-      list.appendChild(b);
-    });
-    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
-  }
-  // the links of an example, as chips: its cards and its methods, each removable, each addable
-  function exLinksEl(ex, onChange, onOpen) {
-    var wrap = document.createElement("div");
-    wrap.className = "ex-links";
-    function chips(label, items, add) {
-      var sec = document.createElement("div");
-      sec.className = "md-sec";
-      sec.innerHTML = '<div class="md-sechead">' + label + '</div><div class="ps-chips pc-list"></div>';
-      var row = sec.querySelector(".pc-list");
-      items.forEach(function (it) {
-        var chip = document.createElement("span"); chip.className = "ps-chip";
-        var go = document.createElement("button"); go.type = "button"; go.className = "ps-chip-go";
-        go.innerHTML = it.html; go.addEventListener("click", it.open);
-        var x = document.createElement("button"); x.type = "button"; x.className = "ps-chip-x"; x.textContent = "✕"; x.title = "disconnect";
-        x.addEventListener("click", it.remove);
-        chip.appendChild(go); chip.appendChild(x); row.appendChild(chip);
-      });
-      var b = document.createElement("button"); b.type = "button"; b.className = "ps-attach"; b.textContent = add.label;
-      b.addEventListener("click", add.run);
-      row.appendChild(b);
-      wrap.appendChild(sec);
-    }
-    chips("Cards it illustrates", (ex.cardIds || []).filter(function (id) { return refExists({ lvl: "c", id: id }); }).map(function (id) {
-      return { html: '<span class="mp-lvl lvl-c">Card</span> ' + escapeHtml(cardLabel(id)) + '<small class="pc-how">' + escapeHtml(subjectName(libSubjectOf({ lvl: "c", id: id }) || "")) + '</small>',
-        open: function () { if (onOpen) onOpen({ lvl: "c", id: id }); },
-        remove: function () { ex.cardIds = ex.cardIds.filter(function (x) { return x !== id; }); onChange(); } };
-    }), { label: "＋ Connect to card", run: function () {
-      pickLibTarget(null, function (cid) { ex.cardIds = ex.cardIds || []; if (ex.cardIds.indexOf(cid) < 0) ex.cardIds.push(cid); onChange(); }, null, { title: "Connect “" + (ex.name || "the example") + "” to" });
-    } });
-    chips("A worked example of — optional", exMethods(ex).map(function (pg) {
-      return { html: '<span class="mp-lvl lvl-p">Method</span> ' + escapeHtml(pg.name),
-        open: function () { if (onOpen) onOpen({ lvl: "p", id: pg.id }); },
-        remove: function () { ex.methodIds = ex.methodIds.filter(function (x) { return x !== pg.id; }); onChange(); } };
-    }), { label: "＋ Link a method", run: function () {
-      pickMethod("A worked example of which method?", ex.subject, function (pg) { ex.methodIds = ex.methodIds || []; if (ex.methodIds.indexOf(pg.id) < 0) ex.methodIds.push(pg.id); onChange(); });
-    } });
-    return wrap;
-  }
-  // the last step of making one: everything at a glance, the links (optional), Save
-  function exReview(draft, cb) {
-    var box = ovOpen("Save as an example", { wide: true, onCancel: function () { if (cb.cancelled) cb.cancelled(); } });
-    function draw() {
-      var b = box.body;
-      b.innerHTML = '<div class="md-top"><div class="md-crop"></div><div class="md-fields">' +
-        '<label class="md-label">Name</label><div class="lw-new"><input type="text" maxlength="80" class="md-name"></div>' +
-        '<label class="md-label">Subject</label><div class="md-subject"><b></b><button type="button" class="btn-quiet md-change">Change</button></div>' +
-        '</div></div>';
-      b.querySelector(".md-crop").appendChild(psCropBlock(draft.clip, 240));
-      var nameIn = b.querySelector(".md-name");
-      nameIn.value = draft.name;
-      nameIn.addEventListener("input", function () { draft.name = nameIn.value; });
-      b.querySelector(".md-subject b").textContent = subjectName(draft.subject);
-      b.querySelector(".md-change").addEventListener("click", function () {
-        pickSubject("Which subject?", "Which subject is this example for?", function (k) { draft.subject = k; draw(); });
-      });
-      b.appendChild(exLinksEl(draft, draw));
-    }
-    draw();
-    box.buttons([
-      { label: "Cancel", run: function () { box.close(); } },
-      { label: "Save example", primary: true, right: true, run: function () {
-        var name = (draft.name || "").trim();
-        if (!name) { alert("An example needs a name."); return; }
-        var ex = { id: uid("ex_"), subject: draft.subject, name: name, tags: [], cardIds: draft.cardIds.slice(), methodIds: draft.methodIds.slice(),
-                   order: examplesOf(draft.subject).length, created: Date.now() };
-        exEnsure().push(ex);
-        psBody(ex.id).main = draft.clip;
-        saveCanvas(ex.id);
-        saveStore();
-        box.close(true);
-        libAfterMove();
-        if (cb.saved) cb.saved();
-        libToast("Saved the example “" + name + "” to " + subjectName(ex.subject));
-      } }
-    ]);
-  }
-  // full size: the picture, what it is connected to (each one tappable), and what can be done to it
-  function exOpen(id) {
-    var ex = exampleById(id); if (!ex) return;
-    var box = ovOpen(ex.name, { wide: true });
-    box.ov.classList.add("ex-view");
-    function draw() {
-      box.setTitle(ex.name);
-      var b = box.body;
-      b.innerHTML = '<p class="muted ex-sub"></p><div class="ex-big"></div>';
-      b.querySelector(".ex-sub").textContent = "Example · " + subjectName(ex.subject);
-      var big = b.querySelector(".ex-big");
-      var clip = exClip(ex);
-      if (clip) big.appendChild(psCropBlock(clip, Math.min(1100, window.innerWidth - 120)));
-      else big.innerHTML = '<div class="doc-empty">Syncing this example…</div>';
-      b.appendChild(exLinksEl(ex, function () { saveStore(); draw(); libAfterMove(); }, function (ref) { box.close(true); openRef(ref); }));
-    }
-    draw();
-    box.buttons([
-      { label: "✎ Rename", run: function () { exRename(ex, draw); } },
-      { label: "↪ Move to…", run: function () { box.close(true); exMoveTo(ex); } },
-      { label: "🗑 Delete", run: function () { if (exDelete(ex)) box.close(true); } },
-      { label: "Close", primary: true, right: true, run: function () { box.close(true); } }
-    ]);
-  }
-  function exRename(ex, then) {
-    askName("Rename example", "", ex.name, function (n) { ex.name = n; saveStore(); libAfterMove(); if (then) then(); });
-  }
-  function exDelete(ex) {
-    if (!confirmDelete(ex.name)) return false;
-    store.examples = exEnsure().filter(function (x) { return x !== ex; });
-    killCanvas(ex.id);
-    saveStore(); libAfterMove();
-    libToast("Deleted the example “" + ex.name + "”");
-    return true;
-  }
-  // to another subject (its links stay — they are ids)
-  function exMoveTo(ex) {
-    pickLibTarget(null, function (key) {
-      libMoved("Moved “" + ex.name + "” to " + subjectName(key), function () {
-        if (ex.subject === key) return false;
-        ex.subject = key;
-        ex.order = examplesOf(key).length;
-      });
-    }, null, { upTo: "s", title: "Move “" + ex.name + "” to" });
-  }
-  function exMenu(ex, anchor) {
-    libMenu(anchor, [
-      { head: "Example · " + ex.name },
-      { label: "↗ Open", run: function () { exOpen(ex.id); } },
-      { label: "✎ Rename", run: function () { exRename(ex); } },
-      { label: "↪ Move to…", run: function () { exMoveTo(ex); } },
-      { sep: true },
-      { label: "🗑 Delete", danger: true, run: function () { exDelete(ex); } }
-    ]);
-  }
-  // a thumbnail: the picture, its name, its ⋯ — tap to open it full size
-  function exThumbEl(ex) {
-    var t = document.createElement("div");
-    t.className = "ex-thumb";
-    t.setAttribute("data-ex", ex.id);
-    t.innerHTML = '<div class="ex-pic"></div><div class="ex-cap"><span class="ex-badge">Example</span><b></b></div>';
-    t.querySelector("b").textContent = ex.name;
-    var clip = exClip(ex);
-    if (clip) t.querySelector(".ex-pic").appendChild(psCropBlock(clip, 220));
-    else t.querySelector(".ex-pic").innerHTML = '<div class="doc-empty">Syncing…</div>';
-    var n = exampleCards(ex).length;
-    if (!n) t.querySelector(".ex-cap").insertAdjacentHTML("beforeend", '<small class="vine-nocard">not linked to a card</small>');
-    var dots = document.createElement("button");
-    dots.type = "button"; dots.className = "lib-dots"; dots.textContent = "⋯"; dots.title = "rename, move or delete";
-    dots.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
-    dots.addEventListener("click", function (e) { e.stopPropagation(); exMenu(ex, dots); });
-    t.querySelector(".ex-cap").appendChild(dots);
-    t.addEventListener("click", function () { exOpen(ex.id); });
-    return t;
-  }
-  // a subject's examples, in their order; drag to reorder
-  function examplesGridEl(key, list) {
-    var grid = document.createElement("div");
-    grid.className = "ex-grid";
-    var group = (list || examplesOf(key)).filter(function (x) { return x.subject === key; });
-    (list || examplesOf(key)).forEach(function (ex) { grid.appendChild(exThumbEl(ex)); });
-    dndList(grid, { type: "example", item: ".ex-thumb", axis: "grid", id: function (el) { return el.getAttribute("data-ex"); },
-      canDrop: function (drag) { return group.some(function (x) { return x.id === drag.id; }); },
-      onDrop: function (drag, index) {
-        var ex = exampleById(drag.id);
-        libMoved("Moved “" + ex.name + "”", function () {
-          // the group keeps the places it had in the subject's order; only its own order changes
-          var all = examplesOf(key), slots = group.map(function (x) { return all.indexOf(x); }).sort(function (a, b) { return a - b; });
-          var mine = group.filter(function (x) { return x !== ex; });
-          mine.splice(index, 0, ex);
-          slots.forEach(function (sl, i) { all[sl] = mine[i]; });
-          all.forEach(function (x, i) { x.order = i; });
-        });
-      } });
-    return grid;
   }
   // ============================================================
   // METHOD FOLDERS — a subject's methods, grouped
@@ -15575,7 +15398,7 @@ function __detabaseMain() {
     });
     psPagesOf(key).slice().sort(byName).forEach(function (pg) {
       out.push({ lvl: "p", id: pg.id });
-      psStages(pg.id).forEach(function (st) { out.push({ lvl: "st", id: st.id }); });
+      psParts(pg.id).forEach(function (p) { out.push({ lvl: "st", id: p.id }); });
     });
     return out;
   }
@@ -15635,17 +15458,17 @@ function __detabaseMain() {
   function subjectPickPanel(key) {
     var box = document.createElement("section");
     box.className = "side-box side-full";
-    box.innerHTML = '<div class="side-sticky"><header class="side-head"><h3>Method stages</h3></header><div class="side-list"></div></div>';
+    box.innerHTML = '<div class="side-sticky"><header class="side-head"><h3>Method parts</h3></header><div class="side-list"></div></div>';
     var el = box.querySelector(".side-list");
     var pages = psPagesOf(key).slice().sort(byName);
     if (!pages.length) el.innerHTML = '<div class="side-empty">This subject has no methods yet — pick from its concepts.</div>';
     pages.forEach(function (pg) {
-      var sts = psStages(pg.id);
+      var sts = psParts(pg.id);
       var grp = document.createElement("div");
       grp.className = "pick-group";
       grp.textContent = pg.name;
       el.appendChild(grp);
-      (sts.length ? sts.map(function (st, i) { return { ref: { lvl: "st", id: st.id }, name: stageName(st, i) }; })
+      (sts.length ? sts.map(function (p) { return { ref: { lvl: "st", id: p.id }, name: partLabel(pg.id, p) }; })
                   : [{ ref: { lvl: "p", id: pg.id }, name: "The whole method" }]).forEach(function (it) {
         var b = document.createElement("button");
         b.type = "button"; b.className = "pick-row"; b.setAttribute("data-k", refKey(it.ref));
@@ -15886,7 +15709,7 @@ function __detabaseMain() {
   // board with the save target already chosen), and "used in problem pages".
   // Management refs cover every level of one library: subject, tab, card, element, problem page, stage.
   // ============================================================
-  var MG_LV = { s: "subject", t: "tab", c: "card", e: "element", p: "method", st: "stage" };
+  var MG_LV = { s: "subject", t: "concept", c: "card", e: "element", p: "method", st: "part" };
   function mgmtObj(ref) {
     libEnsure();
     if (ref.lvl === "s") return ref.id.slice(0, 2) === "s:" ? byId(store.subjects, ref.id.slice(2)) : null;
@@ -15894,7 +15717,7 @@ function __detabaseMain() {
     if (ref.lvl === "c") return byId(store.cards, ref.id);
     if (ref.lvl === "e") return byId(store.elements, ref.id);
     if (ref.lvl === "p") return psPageById(ref.id);
-    if (ref.lvl === "st") { var sx = psStageById(ref.id); return sx ? sx.stage : null; }
+    if (ref.lvl === "st") { var sx = psPartById(ref.id); return sx ? sx.part : null; }
     return null;
   }
   function mgmtExists(ref) { return refExists(ref); }
@@ -15994,7 +15817,7 @@ function __detabaseMain() {
   }
   function openMgmtMenu(ref, anchor) {
     var builtin = isBuiltinRef(ref), used = usedInPages(ref);
-    var addLbl = { s: "＋ Add a tab here", t: "＋ Add a card here", c: "＋ Add elements here" }[ref.lvl];
+    var addLbl = { s: "＋ Add a concept here", t: "＋ Add a card here", c: "＋ Add elements here" }[ref.lvl];
     var material = ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e";
     libMenu(anchor, [
       { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
@@ -16026,7 +15849,7 @@ function __detabaseMain() {
     if (n == null) return;
     n = n.trim(); if (!n || n === cur) return;
     if (o) o.name = n; else store.etiEdits.names[refKey(ref)] = n;
-    if (ref.lvl === "st") { var sp = psStageById(ref.id); if (sp) psSaveBody(sp.page); }   // a stage lives in the page's doc
+    if (ref.lvl === "st") { var sp = psPartById(ref.id); if (sp) psSaveBody(sp.page); }   // a part lives in the method's doc
     saveStore();
     refreshAfterManage();
   }
@@ -16084,14 +15907,14 @@ function __detabaseMain() {
     Object.keys(touched).forEach(function (id) { saveCanvas(id); });
     psStripRefs(keys);
     store.ps.pages.forEach(function (pg) { if (pg.cardIds) pg.cardIds = pg.cardIds.filter(function (id) { return !keys["c|" + id]; }); });
-    exEnsure().forEach(function (x) {
-      x.cardIds = (x.cardIds || []).filter(function (id) { return !keys["c|" + id]; });
-      x.methodIds = (x.methodIds || []).filter(function (id) { return !keys["p|" + id]; });
+    store.ps.pages.forEach(function (pg) {
+      if (pg.methodIds) pg.methodIds = pg.methodIds.filter(function (id) { return !keys["p|" + id]; });
+      if (pg.alsoSubjects) pg.alsoSubjects = pg.alsoSubjects.filter(function (k) { return !keys["s|" + k]; });
     });
     sumStripRefs(keys);   // and from every summary that used them
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
-      if (r.lvl === "s") { exEnsure().forEach(function (x) { if (x.subject === r.id) killCanvas(x.id); }); store.examples = exEnsure().filter(function (x) { return x.subject !== r.id; }); store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
+      if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
       else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
       else if (r.lvl === "c") store.cards = drop(store.cards, r.id);
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
@@ -16151,7 +15974,7 @@ function __detabaseMain() {
       if (!ref) return;
       var row = document.createElement("div");
       row.className = "lb-row";
-      row.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ref.lvl === "s" ? "Subject" : "Tab") + '</span><b>' + escapeHtml(mgmtName(ref)) + '</b>';
+      row.innerHTML = '<span class="mp-lvl lvl-' + ref.lvl + '">' + (ref.lvl === "s" ? "Subject" : "Concept") + '</span><b>' + escapeHtml(mgmtName(ref)) + '</b>';
       // adding lives in one place now — "＋ Add concept", right above the tabs
       var ren = document.createElement("button"); ren.type = "button"; ren.textContent = "✎"; ren.title = "rename"; ren.addEventListener("click", function () { libRename(ref); });
       var del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = isBuiltinRef(ref) ? "🙈" : "🗑"; del.title = isBuiltinRef(ref) ? "hide from ETI" : "delete";
@@ -16241,7 +16064,7 @@ function __detabaseMain() {
   window.__vines = {
     of: function (id) { return vineOf(id).map(function (r) { return refKey(r) + " · " + refName(r); }); },
     containing: function (refs) { return vinesContaining(refs).map(function (pg) { return pg.name; }); },
-    pages: function () { return store.ps.pages.map(function (pg) { return { id: pg.id, name: pg.name, subject: subjectName(pg.subject || ""), tags: pg.tags || [], stages: psStages(pg.id).length }; }); }
+    pages: function () { return store.ps.pages.map(function (pg) { return { id: pg.id, name: pg.name, subject: subjectName(pg.subject || ""), tags: pg.tags || [], kind: pg.kind, parts: psParts(pg.id).map(function (p) { return p.cat; }) }; }); }
   };
   // the crop tool, for driving it from a device with no console
   window.__crop = { fromPdf: cropFromPdf, inside: cropInsideCrop, pick: pickPdf };
@@ -16260,7 +16083,6 @@ function __detabaseMain() {
   });
   if ($("pvCutSave")) $("pvCutSave").addEventListener("click", function () { pdfCutSave("concept"); });
   if ($("pvCutMethod")) $("pvCutMethod").addEventListener("click", function () { pdfCutSave("method"); });
-  if ($("pvCutExample")) $("pvCutExample").addEventListener("click", function () { pdfCutSave("example"); });
   if ($("pvScroll")) {
     // one finger draws while cutting (pointer capture keeps its move/up events on the page);
     // two fingers always move and zoom. Nothing is bound to the document, so nothing here can
@@ -16575,8 +16397,9 @@ function __detabaseMain() {
   if ($("psTitle")) $("psTitle").addEventListener("click", function () { if (activePsPage) openConceptsPopup({ lvl: "p", id: activePsPage }); });
   if ($("psSplit")) $("psSplit").addEventListener("click", function () {
     var pg = psPageById(activePsPage); if (!pg) return;
-    if (psBody(pg.id).main) psAddStages(pg); else psSetMain(pg);
+    psCutParts(pg);
   });
+  if ($("psSource")) $("psSource").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) psShowSource(pg); });
   if ($("psEdit")) $("psEdit").addEventListener("click", function () { if (activePsPage) openDocEditor(activePsPage); });
   if ($("psRename")) $("psRename").addEventListener("click", function () { if (activePsPage) libRename({ lvl: "p", id: activePsPage }); });
   if ($("psDelete")) $("psDelete").addEventListener("click", function () { if (activePsPage) libDelete({ lvl: "p", id: activePsPage }); });
