@@ -835,13 +835,13 @@
   /* the method page's header: kind, description, what it uses */
   .ps-head { display: flex; flex-direction: column; gap: 8px; max-width: 1180px; margin: 8px 0 4px; }
   .ps-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-  .sp-seg.ps-kinds button.on { background: var(--kind, var(--accent)); color: var(--on-accent); }
+  .sp-seg.ps-kinds button.on { background: color-mix(in srgb, var(--kind, var(--accent)) 22%, var(--surface-1)); color: var(--text-primary); box-shadow: inset 0 0 0 2px var(--kind, var(--accent)); }
   .ps-needs { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border: 1px dashed #d97706; border-radius: 999px; color: #d97706; font-size: .78rem; font-weight: 700; }
   .ps-desc { display: block; width: 100%; min-height: var(--tap); padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1);
     font: inherit; color: var(--text-primary); text-align: left; white-space: pre-wrap; line-height: 1.5; cursor: pointer; }
   .ps-desc.empty { border-style: dashed; background: none; color: var(--text-muted); }
   .ps-desc:hover { border-color: var(--accent); }
-  .ps-stage-head .lib-dots { position: static; flex-shrink: 0; margin-left: auto; }
+  .ps-stage-head .lib-dots { flex-shrink: 0; margin-left: auto; }
   .md-kind { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
   .md-desc { width: 100%; box-sizing: border-box; }
   .md-stage-head .ps-cat { margin-right: 6px; }
@@ -850,7 +850,7 @@
   .mf-group.unfiled .cc-name { padding-left: 12px; cursor: default; }
   .mf-icon { flex-shrink: 0; }
   .cc-need.on { border-color: #d97706; background: color-mix(in srgb, #d97706 12%, var(--bg)); color: #d97706; }
-  .vine-acts .lib-dots { position: static; }
+
   /* ---- a subject's page: the header — views, filters, adding ---- */
   .sp-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
   .sp-seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: var(--r-md); overflow: hidden; background: var(--surface-1); }
@@ -879,7 +879,7 @@
     font: inherit; font-size: 1.08rem; font-weight: 750; color: var(--text-primary); text-align: left; cursor: pointer; }
   .cc-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .cc-name:hover .cc-title { color: var(--accent); }
-  .cc-head .lib-dots, .cc-head .used-badge { position: static; flex-shrink: 0; margin: 0; }
+  .cc-head .lib-dots, .cc-head .used-badge { flex-shrink: 0; margin: 0; }
   .cc-all { min-height: 36px; padding: 0 12px; flex-shrink: 0; }
   .cc-page-grid { padding: 4px 0 0; }
   @media (max-width: 1100px) { .cd-grid { padding: 8px 6px; gap: 8px; } }
@@ -904,25 +904,26 @@
   /* ---- cards: the type label, the tile, the card page, managing types ---- */
   .ct-label { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; min-height: 30px; padding: 0 10px; border: 1px solid var(--ct, var(--border-strong));
     border-radius: 999px; background: color-mix(in srgb, var(--ct, transparent) 14%, var(--surface-1)); color: var(--text-primary); font: inherit; font-size: .74rem;
-    font-weight: 700; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; cursor: pointer; }
+    font-weight: 700; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap; vertical-align: middle; cursor: pointer; }
+  .ct-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .ct-label::before { content: ""; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--ct); }
-  .ct-label.none { border-style: dashed; background: none; color: var(--text-muted); font-weight: 600; }
+  .ct-label.none { border-style: dashed; background: none; color: var(--text-secondary); font-weight: 600; }
   .ct-label.none::before { display: none; }
   span.ct-label { cursor: default; }
   .card > h4 > .ct-label, .subject > summary > .ct-label, .tool-title > .ct-label, h3 > .ct-label, .mg-title > .ct-label { margin-right: 8px; }
   .cd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 10px; }
   .cd-tile { position: relative; display: flex; flex-direction: column; aspect-ratio: 1 / 1; min-width: 0; border: 1px solid var(--border); border-top: 4px solid var(--ct);
-    border-radius: var(--r-md); background: var(--surface-1); overflow: hidden; }
+    border-radius: var(--r-md); background: var(--surface-1); }
   .cd-top { display: flex; align-items: center; gap: 4px; min-width: 0; padding: 6px 6px 0; }
   .cd-top .ct-label { flex: 0 1 auto; min-width: 0; }
   .cd-open { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 8px 10px 4px; border: 0;
     background: none; font: inherit; color: var(--text-primary); text-align: left; cursor: pointer; }
   .cd-bottom { display: flex; align-items: center; gap: 4px; min-height: 34px; padding: 0 6px 6px 10px; }
   .cd-bottom .cd-foot { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .cd-bottom .lib-dots { position: static; flex-shrink: 0; margin-left: auto; min-height: 30px; min-width: 34px; }
+  .cd-bottom .lib-dots { flex-shrink: 0; margin-left: auto; min-height: 30px; min-width: 34px; }
   .cd-title { font-size: 1rem; font-weight: 750; line-height: 1.2; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
   .cd-open:hover .cd-title { color: var(--accent); }
-  .cd-foot { font-size: .72rem; color: var(--text-muted); }
+  .cd-foot { font-size: .72rem; color: var(--text-secondary); }
 
   .cd-check { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 24px; height: 24px; border: 2px solid var(--border-strong);
     border-radius: 50%; background: var(--bg); font-size: .8rem; font-weight: 900; color: var(--on-accent); }
@@ -935,7 +936,7 @@
   #subPage .cp-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 12px; }
   #subPage .cp-head h2 { flex: 1 1 260px; min-width: 0; margin: 0; padding-top: 0; border-top: 0; font-size: 1.45rem; }
   .cd-acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .cd-acts .lib-dots, .cd-acts .used-badge { position: static; margin: 0; }
+  .cd-acts .lib-dots, .cd-acts .used-badge { margin: 0; }
   .cd-sheet { padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); font-size: .95rem; }
   .cd-flat .card, .cd-flat .tool, .cd-flat details.subject { margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
   .cd-flat .sp-card.compact > .card { height: auto; }
@@ -969,7 +970,7 @@
   .mg-label { margin: 6px 0 2px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
   .mg-title { display: flex; align-items: center; gap: 8px; min-height: var(--tap); margin: 10px 0; padding: 0 6px 0 12px; border: 1px solid var(--border);
     border-radius: var(--r-md); background: var(--surface-1); font-weight: 600; }
-  .mg-title .lib-dots { position: static; margin-left: auto; }
+  .mg-title .lib-dots { margin-left: auto; }
   .sp-where { flex-basis: 100%; font-size: .72rem; color: var(--text-muted); }
   .sp-section { margin-top: 22px; }
   .sp-pickbox { margin-top: 14px; }
@@ -1161,6 +1162,10 @@
   .lb-row button.danger { border-color: color-mix(in srgb, var(--danger) 45%, transparent); color: var(--danger); }
   .lb-row button.danger:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
   .lib-dots { min-height: 36px; min-width: 40px; }
+  /* finger-sized targets (~44 px): small controls keep their look; an invisible frame around them takes the tap */
+  .lib-dots, button.ct-label, .ps-back, .ue-edit, .used-badge, .vine-card, .ps-mini, .ls-kicker, .ls-ctitle { position: relative; }
+  .lib-dots::after, button.ct-label::after, .ps-back::after, .ue-edit::after, .used-badge::after, .vine-card::after, .ps-mini::after,
+  .ls-kicker::after, .ls-ctitle::after { content: ""; position: absolute; inset: -8px -4px; }
 
   /* ---- the sidebar's way into Methods & concepts, and its add links ---- */
   .eti-mining-btn { min-height: var(--tap); border-radius: var(--r-md); cursor: pointer; }
@@ -3617,7 +3622,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B87</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B88</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5662,6 +5667,7 @@ function __detabaseMain() {
       var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.canvases = p.canvases || [];
       store.deadCanvases = p.deadCanvases || [];
       if (p.libv) store.libv = p.libv;
+      if (p.libFix) store.libFix = p.libFix;          // the B75 repair ran: without this it ran again on every load (and could bring back deleted concepts)
       if (p.pdfs) store.pdfs = p.pdfs;                 // the PDF shelf (the files live in DBF)
       if (p.tabs) store.tabs = p.tabs;
       if (p.cards) store.cards = p.cards;
@@ -10830,7 +10836,8 @@ function __detabaseMain() {
     var b = document.createElement(editable ? "button" : "span");
     b.className = "ct-label no-drag" + (t ? "" : " none");
     if (t) b.style.setProperty("--ct", t.color);
-    b.textContent = t ? t.name : editable ? "＋ Type" : "Unlabeled";
+    b.innerHTML = '<span class="ct-txt"></span>';           // the text in a span: it can be cut with "…" while the button's tap area reaches past it
+    b.firstChild.textContent = t ? t.name : editable ? "＋ Type" : "Unlabeled";
     if (editable) {
       b.type = "button"; b.title = "card type";
       b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); cardTypeMenu(b, [cardId]); });
@@ -11094,7 +11101,8 @@ function __detabaseMain() {
     else sub = 'A summary of <b>' + escapeHtml(tabLabel(s.id)) + '</b>';
     return { title: subjectName(key), sub: sub, hash: s.kind + ":" + encodeURIComponent(s.id) };
   }
-  function renderSubPage() {
+  function renderSubPage() { keepScroll(drawSubPage); }
+  function drawSubPage() {
     var host = $("subPage"); if (!host) return;
     spPark(host);
     host.innerHTML = "";
@@ -11810,6 +11818,7 @@ function __detabaseMain() {
       head.appendChild(dotsBtn(t));
       list.appendChild(sec);
     });
+    if (tabs.length && !list.children.length) list.innerHTML = '<div class="side-empty"><b>Nothing here with these filters.</b> Tap ✕ on a chip above, or “Show all”.</div>';
     dndList(list, { type: "tab", item: ".cc-sec", handle: ".cc-name", id: function (x) { return x.getAttribute("data-tab"); },
       onDrop: function (drag, index) { tabTo(drag, key, index); } });
     host.appendChild(list);
@@ -11843,11 +11852,21 @@ function __detabaseMain() {
     if (!all.length && !mfOf(key).length) {
       host.insertAdjacentHTML("beforeend", '<div class="side-empty cc-list"><b>No methods yet.</b> Tap “＋ Method” to crop one out of a document, cut it into parts and attach the concepts it uses.</div>');
     } else {
-      host.appendChild(methodsByFolderEl(key, { keep: st.need ? needs[st.need].test : null, sel: sel }));
+      var keep = st.need ? needs[st.need].test : null;
+      if (keep && !all.some(keep)) host.insertAdjacentHTML("beforeend", '<div class="side-empty cc-list"><b>' + (st.need === "kind" ? "Every method here has a kind." : "Every method here has a description.") + '</b> Tap “' + needs[st.need].label + '” again to see them all.</div>');
+      else host.appendChild(methodsByFolderEl(key, { keep: keep, sel: sel }));
     }
     if (sel) sel.paint();
   }
-  function renderSubjectPage() {
+  // a redraw keeps the page where it was: emptying it first would let the browser snap back up
+  // (opening a page still scrolls to its top — applyView does that after drawing)
+  function keepScroll(draw) {
+    var y = window.scrollY;
+    draw();
+    if (Math.abs(window.scrollY - y) > 1) window.scrollTo(0, y);
+  }
+  function renderSubjectPage() { keepScroll(drawSubjectPage); }
+  function drawSubjectPage() {
     var host = $("subjectPage"); if (!host) return;
     spPark();
     var key = shownSubjectKey();
@@ -12682,7 +12701,8 @@ function __detabaseMain() {
 
   // the method page: its header (name, kind, description, what it uses), its parts in order, the cards
   // and methods it is connected to
-  function renderPsPane() {
+  function renderPsPane() { keepScroll(drawPsPane); }
+  function drawPsPane() {
     var pg = psPageById(activePsPage); if (!pg) return;
     var tags = (pg.tags || []).filter(Boolean);
     $("psCrumb").textContent = tags.join(" · ");   // the subject is in the page subtitle; tags, if any, here
@@ -16298,7 +16318,8 @@ function __detabaseMain() {
     var b = document.createElement(editable ? "button" : "span");
     b.className = "ct-label no-drag" + (k ? "" : " none");
     if (k) b.style.setProperty("--ct", k.color || "var(--accent)");
-    b.textContent = k ? k.name : editable ? "＋ Kind" : "No kind yet";
+    b.innerHTML = '<span class="ct-txt"></span>';
+    b.firstChild.textContent = k ? k.name : editable ? "＋ Kind" : "No kind yet";
     if (editable) {
       b.type = "button"; b.title = "what kind of method";
       b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); methodKindMenu(b, [pg.id]); });
