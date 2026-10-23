@@ -3622,7 +3622,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B88</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B89</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -16960,6 +16960,7 @@ function __detabaseMain() {
       (ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e") ? { label: "↪ Move to…", run: function () { libMoveTo(ref); } } : null,
       addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
       ref.lvl === "s" ? { label: "🧩 New method here", run: function () { newProblemPage(ref.id); } } : null,
+      ref.lvl === "s" ? { label: "🧹 Empty this subject…", run: function () { emptySubject(ref.id); } } : null,
       (ref.lvl === "e" || ref.lvl === "p") ? { label: "✎ Edit content", run: function () { openDocEditor(ref.id); } } : null,
       material ? { label: "🧩 Used in " + used.length + " method" + (used.length === 1 ? "" : "s"), disabled: !used.length, run: function () { openUsedMenu(ref, anchor); } } : null,
       { sep: true },
@@ -17011,12 +17012,14 @@ function __detabaseMain() {
     });
     return uses;
   }
-  function libDelete(ref) {
+  // quiet: no question, no toast, no save or redraw — for a caller deleting many things at once (emptySubject)
+  function libDelete(ref, quiet) {
     libEnsure();
     var name = mgmtName(ref), lv = MG_LV[ref.lvl];
     if (isBuiltinRef(ref)) {
-      if (!confirm('Hide the ' + lv + ' “' + name + '” from ETI?\n\nBuilt-in content is only hidden (its tools keep working). Restore it any time from “Hidden” at the bottom of the sidebar.')) return;
+      if (!quiet && !confirm('Hide the ' + lv + ' “' + name + '” from ETI?\n\nBuilt-in content is only hidden (its tools keep working). Restore it any time from “Hidden” at the bottom of the sidebar.')) return;
       store.etiEdits.hidden[refKey(ref)] = 1;
+      if (quiet) return;
       saveStore(); leaveIfGone(); refreshAfterManage();
       libToast("Hid " + lv + " “" + name + "”");
       return;
@@ -17033,7 +17036,11 @@ function __detabaseMain() {
     if (uses.length) msg += "\n\nIt is used on " + uses.length + " board block" + (uses.length === 1 ? "" : "s") + " — they keep a frozen copy.";
     if (links) msg += "\n\n" + links + " link" + (links === 1 ? "" : "s") + " from methods will be removed.";
     msg += "\n\nלא ניתן לשחזר.";
-    if (!confirm(msg)) return;
+    if (!quiet && !confirm(msg)) return;
+    // built-in content moved in here is never deleted: it goes back to its own lesson
+    (function home(r) {
+      refKids(r).forEach(function (k) { if (isBuiltinRef(k)) { if (store.place) delete store.place[refKey(k)]; } else home(k); });
+    })(ref);
     // freeze the blocks on boards first, while their content still exists
     var touched = {};
     uses.forEach(function (u) {
@@ -17055,8 +17062,44 @@ function __detabaseMain() {
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
       else if (r.lvl === "p") { store.ps.pages = drop(store.ps.pages, r.id); killCanvas(r.id); }
     });
+    if (quiet) return;
     saveStore(); leaveIfGone(); refreshAfterManage();
     libToast("Deleted " + lv + " “" + name + "”");
+  }
+  // ---- empty a subject: every concept and every method of it goes — each through libDelete, so
+  // everything that cascades from one delete cascades here — and the subject itself stays ----
+  // Backed up first like a migration: the whole store (localStorage "detabase.v1.pre-empty") and every
+  // document that is about to go (IndexedDB "__pre_empty", local only). Methods only "also connected"
+  // to the subject are not its own and stay.
+  function emptySubject(key) {
+    libEnsure();
+    var sref = { lvl: "s", id: key }, name = subjectName(key);
+    var tabs = libKids(sref), pages = psPagesOf(key).slice(), folders = mfOf(key);
+    var cards = 0, homing = 0, els = 0, docIds = pages.map(function (pg) { return pg.id; });
+    tabs.forEach(function (t) { libKids(t).forEach(function (c) { if (isBuiltinRef(c) && !isBuiltinRef(t)) homing++; else cards++; libKids(c).forEach(function (e) { els++; docIds.push(e.id); }); }); });
+    if (!tabs.length && !pages.length && !folders.length) { libToast("“" + name + "” is already empty"); return; }
+    function n(k, one, many) { return k + " " + (k === 1 ? one : many); }
+    var builtins = tabs.filter(isBuiltinRef).length;
+    var what = [n(tabs.length, "concept", "concepts") + " (" + n(cards, "card", "cards") + ", " + n(els, "element", "elements") + ")", n(pages.length, "method", "methods")];
+    if (folders.length) what.push(n(folders.length, "method folder", "method folders"));
+    var msg = "Empty “" + name + "”?\n\nThis deletes " + what.join(", ") + ". The subject itself stays, empty." +
+      (builtins ? "\n\n" + n(builtins, "built-in concept is", "built-in concepts are") + " only hidden (bring back from “Hidden”)." : "") +
+      (homing ? "\n\n" + n(homing, "built-in card", "built-in cards") + " moved in here " + (homing === 1 ? "goes" : "go") + " back to " + (homing === 1 ? "its" : "their") + " own lesson." : "") +
+      "\n\nA backup of everything is kept on this device first.\n\nלא ניתן לשחזר.";
+    if (!confirm(msg)) return;
+    try {
+      localStorage.setItem("detabase.v1.pre-empty", localStorage.getItem(LS_KEY) || JSON.stringify(mainSnapshot()));
+      var docs = {};
+      docIds.forEach(function (id) { var d = window.DBX.get(id); if (d) docs[id] = JSON.parse(JSON.stringify(d)); });
+      window.DBX.put("__pre_empty", { subject: key, docs: docs, ts: Date.now() });
+    } catch (e) { alert("The backup could not be made, so nothing was deleted."); return; }
+    pages.forEach(function (pg) { if (psPageById(pg.id)) libDelete({ lvl: "p", id: pg.id }, true); });
+    tabs.forEach(function (t) { if (refExists(t)) libDelete({ lvl: "t", id: t.id }, true); });
+    store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== key; });     // all empty now
+    store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== key || sm.items.length; });   // study sheets left with nothing
+    var sp = (store.ui.sp || {})[key]; if (sp) { sp.off = {}; delete sp.need; }
+    saveStore(); leaveIfGone(); refreshAfterManage();
+    libToast("Emptied “" + name + "”");
   }
   function leaveIfGone() {
     if (activeSubject && !byId(store.subjects, activeSubject)) activeSubject = null;
@@ -17117,6 +17160,7 @@ function __detabaseMain() {
       del.addEventListener("click", function () { libDelete(ref); });
       row.appendChild(ren);
       var bd = usedBadge(ref); if (bd) row.appendChild(bd);
+      if (ref.lvl === "s") row.appendChild(dotsBtn(ref));   // the subject's menu: add, new method, empty it, …
       row.appendChild(del);
       bar.appendChild(row);
     });
