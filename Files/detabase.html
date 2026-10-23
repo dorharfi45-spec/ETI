@@ -3613,7 +3613,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B86</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B86.1</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -11853,7 +11853,6 @@ function __detabaseMain() {
     bar.appendChild(actBtn("＋ 📁 Folder", "a new folder for methods", function () { mfCreate(key); }));
     Object.keys(needs).forEach(function (k) {
       var n = all.filter(needs[k].test).length;
-      if (!n && st.need !== k) return;
       bar.appendChild(actBtn(needs[k].label + " · " + n, st.need === k ? "show every method again" : "show only these",
         function () { if (st.need === k) delete st.need; else st.need = k; saveStore(); renderSubjectPage(); }, "btn-quiet cc-need" + (st.need === k ? " on" : "")));
     });
