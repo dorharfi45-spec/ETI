@@ -548,7 +548,7 @@
   .ue-edit:hover { color: var(--accent); border-color: var(--accent); }
   .ue-body { overflow-x: auto; }
   .ue-extra { margin-top: 22px; padding-top: 6px; border-top: 1px dashed var(--border-strong); }
-  .cp-tabs { position: static; }
+
   .cp-notes { margin-top: 22px; }
   .cp-notes summary { cursor: pointer; font-weight: 700; color: var(--text-secondary); font-size: .85rem; }
   .ps-crumb { font-size: .8rem; color: var(--text-muted); margin-top: 8px; }
@@ -826,9 +826,7 @@
   .sum-item-body { overflow-x: auto; }
   .sum-item-body .asset-body { max-width: 100%; }
   /* the concepts' own row, right above their tabs */
-  .subj-tools { display: flex; align-items: center; gap: 12px; margin: 14px 0 0; }
-  .subj-tools-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--text-muted); flex: 1; }
-  #customPane .subj-tools { margin-top: 6px; }
+
   /* ---- method parts: the category picker carries the category's colour ---- */
   .ps-stage { border-left: 4px solid var(--cat-color, var(--border)); padding-left: 10px; }
   .ps-cat { min-height: 34px; border: 1px solid color-mix(in srgb, var(--cat-color, var(--accent)) 50%, var(--border)); border-radius: var(--r-sm);
@@ -1058,7 +1056,7 @@
   .ct-svg { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none;
     -webkit-touch-callout: none; cursor: grab; }
   .ct-svg:active { cursor: grabbing; }
-  .ct-svg circle, .ct-svg path { vector-effect: non-scaling-stroke; }
+  .ct-svg circle, .ct-svg path, .ct-svg line, .ct-svg rect { vector-effect: non-scaling-stroke; }
   .ct-ring { stroke: var(--border-strong); stroke-width: 1; cursor: zoom-in; transition: opacity .2s; }
   .ct-ring.lvl-s { fill: color-mix(in srgb, var(--accent) 6%, var(--bg)); stroke-width: 1.6; }
   .ct-ring.lvl-t { fill: color-mix(in srgb, var(--accent) 4%, var(--surface-2)); }
@@ -1069,8 +1067,19 @@
   .ct-leaf { fill: var(--bg); stroke: var(--text-muted); stroke-width: 1.3; cursor: pointer; transition: opacity .2s; }
   .ct-leaf.used { fill: color-mix(in srgb, var(--accent) 24%, var(--bg)); stroke: var(--accent); }
   .ct-leaf:hover { stroke: var(--accent); stroke-width: 2.6; }
-  .ct-vine { fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; opacity: .88; transition: opacity .2s; }
-  .ct-vine.unlinked { stroke-dasharray: 3 4; stroke-width: 2.4; }
+  /* a method: a square in its subject's band — a solid stem to the subject, lines to its cards, dashed to connected subjects */
+  .ct-mhit { fill: transparent; cursor: pointer; }
+  .ct-mhit.off { display: none; }
+  .ct-method { stroke: var(--bg); stroke-width: 1.5; cursor: pointer; transition: opacity .2s; }
+  .ct-method.nokind { stroke: var(--text-primary); stroke-dasharray: 2 2; }
+  .ct-method:hover, .ct-method.hot { stroke: var(--text-primary); stroke-width: 2.6; stroke-dasharray: none; }
+  .ct-stem { stroke-width: 2.4; stroke-linecap: round; opacity: .9; pointer-events: none; }
+  .ct-link { fill: none; stroke-width: 1.6; opacity: .5; pointer-events: none; transition: opacity .2s; }
+  .ct-link.also { stroke-dasharray: 7 5; stroke-width: 1.8; opacity: .75; }
+  .ct-mlink { fill: none; stroke: var(--text-secondary); stroke-width: 2.2; opacity: .6; pointer-events: none; }
+  .ct-link.hot, .ct-mlink.hot, .ct-stem.hot { opacity: 1; stroke-width: 3; }
+  .ct-mlbl { font-size: calc(10.5px * var(--ctu, 1)); font-weight: 700; }
+  .ps-stage.flash { box-shadow: 0 0 0 3px var(--accent); }
   /* a method's cards: on its page, and on every vine row */
   .pc-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .pc-chip .ps-chip-go { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 6px 6px 6px 12px; }
@@ -1082,24 +1091,19 @@
   .vine-card:hover { color: var(--accent); }
   .vine-card.direct { color: var(--accent); }
   .vine-nocard { font-size: .74rem; color: #b45309; }
-  .ct-vine.hot { stroke-width: 5.5; opacity: 1; }
-  .ct-dot { pointer-events: none; }
-  .ct-vhit { fill: none; stroke: transparent; stroke-width: 22; pointer-events: stroke; cursor: pointer; }
-  .ct-lbl, .ct-vlbl { pointer-events: none; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3.5px * var(--ctu, 1));
+  .ct-lbl { pointer-events: none; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3.5px * var(--ctu, 1));
     stroke-linejoin: round; text-anchor: middle; font-family: inherit; }
   .ct-lbl { fill: var(--text-secondary); }
   .ct-lbl.lvl-s { font-size: calc(14px * var(--ctu, 1)); font-weight: 700; fill: var(--text-primary); letter-spacing: .01em; }
   .ct-lbl.lvl-t { font-size: calc(12px * var(--ctu, 1)); font-weight: 600; }
   .ct-lbl.lvl-c { font-size: calc(11px * var(--ctu, 1)); }
   .ct-lbl.leaf { font-size: calc(10.5px * var(--ctu, 1)); fill: var(--text-primary); }
-  /* a method's name rides on its vine when only a few are on show, or when the mouse is on it */
-  .ct-vlbl { display: none; font-size: calc(11.5px * var(--ctu, 1)); font-weight: 700; pointer-events: auto; cursor: pointer; }
-  .ct-svg.few .ct-vlbl:not(.off), .ct-vlbl.hot { display: inline; }
+
   /* the search: what it leaves out steps back */
   .ct-svg .dim { opacity: .25; }
   .ct-svg .off { opacity: .07; }
   .ct-lbl.leaf.dim { display: none; }
-  .ct-vhit.off, .ct-vlbl.off { display: none; }
+  .ct-mlbl.off { display: none; }
   .ct-ring.hit { stroke: var(--accent); stroke-width: 2.6; }
   .ct-leaf.hit { stroke: var(--accent); stroke-width: 3; fill: color-mix(in srgb, var(--accent) 36%, var(--bg)); }
   .ct-ctrl { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
@@ -3613,7 +3617,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B86.1</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B87</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -8944,31 +8948,6 @@ function __detabaseMain() {
     return SIT_TAGS.filter(function (t) { return searchIndex.some(function (e) { return e.tags.indexOf(t.id) >= 0; }); });
   }
 
-  function runSearch(q, tags) {
-    q = (q || "").trim().toLowerCase();
-    var toks = q.split(/\s+/).filter(Boolean);
-    tags = tags || [];
-    if (!toks.length && !tags.length) return [];
-    var scored = [];
-    searchIndex.forEach(function (e) {
-      if (tags.length && !tags.every(function (t) { return e.tags.indexOf(t) >= 0; })) return;   // AND — narrows as you add more
-      var score = tags.length * 2, ok = true;
-      toks.forEach(function (t) {
-        var inTitle = e.title.toLowerCase().indexOf(t) >= 0;
-        var inHay = e.hay.indexOf(t) >= 0;
-        if (!inHay && !inTitle) ok = false;
-        if (inTitle) score += 5;
-        if (inHay) score += 1;
-      });
-      if (!ok) return;
-      if (e.kind === "tab") score -= 1.5;      // prefer specific cards over whole tabs
-      if (e.kind === "container") score += 0.5;
-      scored.push({ e: e, score: score });
-    });
-    scored.sort(function (a, b) { return b.score - a.score; });
-    return scored.slice(0, tags.length && !toks.length ? 40 : 18).map(function (x) { return x.e; });
-  }
-
   // ============================================================
   // NOTEBOOK BANK  —  the main Notebook screen = a library of pages
   // ============================================================
@@ -10606,7 +10585,7 @@ function __detabaseMain() {
       var ov = editName({ lvl: "t", id: tabId });
       return ov ? (tnum ? tnum.textContent.trim() + " " : "") + ov : ((tb && tb.dataset.orig) ? (tnum ? tnum.textContent.trim() + " " : "") + tb.dataset.orig : btnLabel(tb) || tabId);
     }
-    var t = byId(store.tabs, tabId); return t ? t.name : "(deleted tab)";
+    var t = byId(store.tabs, tabId); return t ? t.name : "(deleted concept)";
   }
   function cardLabel(cardId) {
     var c = byId(store.cards, cardId); if (c) return c.name;
@@ -11953,7 +11932,12 @@ function __detabaseMain() {
   function openRef(ref) {
     if (!ref) return;
     if (ref.lvl === "p") { selectPsPage(ref.id); return; }
-    if (ref.lvl === "st") { var sx = psPartById(ref.id); if (sx) selectPsPage(sx.page.id); return; }
+    if (ref.lvl === "st") {                      // a part: its method, with the part flashed
+      var sx = psPartById(ref.id); if (!sx) return;
+      selectPsPage(sx.page.id);
+      setTimeout(function () { flashEl(document.querySelector('#psPane .ps-stage[data-st="' + ref.id + '"]')); }, 120);
+      return;
+    }
     if (ref.lvl === "s") { openSubjectRef(ref.id); return; }
     if (ref.lvl === "t") { openConceptPage(ref.id); return; }
     if (ref.lvl === "e") { var e = byId(store.elements, ref.id); if (e) openCardPage(e.card, e.id); return; }
@@ -12741,7 +12725,7 @@ function __detabaseMain() {
     if (vine.length) {
       var v = document.createElement("p");
       v.className = "muted ps-vine";
-      v.textContent = "Vine: " + vine.map(refName).join("  →  ");
+      v.textContent = "Uses, in order: " + vine.map(refName).join("  →  ");
       head.appendChild(v);
     }
     // ---- the parts ----
@@ -15151,9 +15135,9 @@ function __detabaseMain() {
     libEnsure();
     return store.ps.pages.map(function (pg) {
       var tags = (pg.tags || []).filter(Boolean), fold = methodFolderOf(pg), subj = subjectName(pg.subject || "") + (fold ? " › 📁 " + fold.name : "");
-      var assetNames = vineOf(pg.id).map(refName).join(" ");
-      return { ref: { lvl: "p", id: pg.id }, name: pg.name, path: subj + (tags.length ? " › " + tags.join(" · ") : ""),
-        hay: [pg.name, subj, tags.join(" "), assetNames].join(" ").toLowerCase(), assets: assetNames };
+      var assetNames = vineOf(pg.id).map(refName).join(" "), kind = pg.kind && byId(methodKinds(), pg.kind);
+      return { ref: { lvl: "p", id: pg.id }, name: pg.name, path: subj + (tags.length ? " › " + tags.join(" · ") : ""), kind: kind ? kind.name : "",
+        hay: [pg.name, pg.description || "", kind ? kind.name : "", subj, tags.join(" "), assetNames].join(" ").toLowerCase(), assets: assetNames };
     });
   }
   function searchEntries(list, q, hayOf) {
@@ -15502,7 +15486,7 @@ function __detabaseMain() {
     if (q) {
       var toks = q.split(/\s+/).filter(Boolean);
       pages = pages.filter(function (pg) {
-        var hay = [pg.name, subjectName(pg.subject || ""), (pg.tags || []).join(" "), vineOf(pg.id).map(refName).join(" ")].join(" ").toLowerCase();
+        var hay = [pg.name, pg.description || "", subjectName(pg.subject || ""), (pg.tags || []).join(" "), vineOf(pg.id).map(refName).join(" ")].join(" ").toLowerCase();
         return toks.every(function (t) { return hay.indexOf(t) >= 0; });
       });
     }
@@ -15558,13 +15542,27 @@ function __detabaseMain() {
     row.appendChild(acts);
     return row;
   }
+  // every part of every method on this device, for the search
+  function partIndex() {
+    var out = [];
+    store.ps.pages.forEach(function (pg) {
+      if (!psDocPresent(pg.id)) return;
+      psParts(pg.id).forEach(function (p) {
+        var label = partLabel(pg.id, p), cat = partCatName(p.cat);
+        out.push({ ref: { lvl: "st", id: p.id }, name: label, pg: pg, cat: cat, text: p.text || "",
+          hay: [label, p.text || "", cat, pg.name].join(" ").toLowerCase() });
+      });
+    });
+    return out;
+  }
+  // what the words find, grouped by what each thing is — every result says what it is
   function mainResultsEl() {
     var q = mainQ.trim();
     var box = document.createElement("div");
     box.className = "em-results";
     if (!q) return box;
     function section(title) { box.insertAdjacentHTML("beforeend", '<div class="em-rhead">' + escapeHtml(title) + '</div>'); }
-    var TYPES = { c: "Concept", p: "Method" };
+    var TYPES = { s: "Subject", t: "Concept", c: "Card", e: "Element", p: "Method", st: "Part" };
     function hitRow(label, sub, onMain, extra, type) {
       var row = document.createElement("div");
       row.className = "em-hit";
@@ -15581,29 +15579,54 @@ function __detabaseMain() {
       });
       box.appendChild(row);
     }
-    var concepts = searchEntries(materialIndex(), q, function (en) { return (en.name + " " + refPath(en.ref)).toLowerCase(); }).slice(0, 8);
-    if (concepts.length) {
-      section("Concepts");
-      concepts.forEach(function (en) {
-        hitRow(en.name, refPath(en.ref), function () { narrowAdd(en.ref); }, [
-          { label: "↗", title: "go to it in ETI", run: function () { openRef(en.ref); } },
+    // the library — subjects and concepts, then cards (found by their title or their type) and elements;
+    // tapping one narrows the methods to those that use it
+    var lib = searchEntries(materialIndex(), q, function (en) {
+      var ty = en.ref.lvl === "c" && cardTypeOf(en.ref.id);
+      return (en.name + " " + refPath(en.ref) + (ty ? " " + ty.name : "")).toLowerCase();
+    });
+    var found = 0;
+    [["Concepts", ["s", "t"]], ["Cards", ["c", "e"]]].forEach(function (g) {
+      var list = lib.filter(function (en) { return g[1].indexOf(en.ref.lvl) >= 0; }).slice(0, 8);
+      if (!list.length) return;
+      found += list.length;
+      section(g[0]);
+      list.forEach(function (en) {
+        var ty = en.ref.lvl === "c" && cardTypeOf(en.ref.id);
+        hitRow(en.name, (ty ? ty.name + " · " : "") + refPath(en.ref), function () { narrowAdd(en.ref); }, [
+          { label: "↗", title: "open it", run: function () { openRef(en.ref); } },
           { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
-        ], "c");
+        ], en.ref.lvl);
       });
-    }
+    });
+    // methods — by name, description, kind, subject › folder, tags and the concepts they use
     var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).slice(0, 8);
     if (pages.length) {
+      found += pages.length;
       section("Methods");
       pages.forEach(function (en) {
-        hitRow(en.name, en.path + (en.assets ? " · uses " + en.assets : ""), function () { selectPsPage(en.ref.id); }, [
+        hitRow(en.name, [en.kind || "needs a kind", en.path].concat(en.assets ? ["uses " + en.assets] : []).join(" · "), function () { selectPsPage(en.ref.id); }, [
           { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
         ], "p");
+      });
+    }
+    // method parts — by name, text and category
+    var parts = searchEntries(partIndex(), q, function (en) { return en.hay; }).slice(0, 8);
+    if (parts.length) {
+      found += parts.length;
+      section("Method parts");
+      parts.forEach(function (en) {
+        var snip = en.text ? " · “" + (en.text.length > 70 ? en.text.slice(0, 69) + "…" : en.text) + "”" : "";
+        hitRow(en.name, en.cat + " in " + en.pg.name + snip, function () { openRef(en.ref); }, [
+          { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
+        ], "st");
       });
     }
     // situations: the tag search, matched against everything ETI holds
     var ql = q.toLowerCase();
     var tags = availableTags().filter(function (t) { return t.label.toLowerCase().indexOf(ql) >= 0 || t.id.indexOf(ql) >= 0; }).slice(0, 6);
     if (tags.length) {
+      found += tags.length;
       section("Involves…");
       tags.forEach(function (t) {
         hitRow(t.label, mainTag === t.id ? "filtering by this" : "", function () {
@@ -15612,7 +15635,7 @@ function __detabaseMain() {
         });
       });
     }
-    if (!concepts.length && !pages.length && !tags.length) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
+    if (!found) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
     return box;
   }
 
@@ -15620,8 +15643,11 @@ function __detabaseMain() {
   // THE CONCEPT TREE — the main page's map of the library
   // A concept is a circle. A card is a ring around its concepts, a tab a ring around its cards and a
   // subject a ring around its tabs (a built-in card has no pieces of its own, so it is its own
-  // smallest circle). A method is a blue vine running through the circles it uses, in stage order.
-  // Tap a circle to open it, a ring to zoom into it, a vine to open its method; hold a circle to see
+  // smallest circle). A method is a small square inside its own subject's ring, in a band between the
+  // concepts and the rim, on the side of the cards it uses: a short solid stem joins it to its subject,
+  // solid lines run to its cards and to the methods it is linked to, and dashed lines to the other
+  // subjects it is connected to.
+  // Tap a circle to open it, a ring to zoom into it, a square to open its method; hold a circle to see
   // only the methods that use it. The search above drives the tree too: whatever the filters leave
   // out steps back, and the view flies to what is left.
   // ============================================================
@@ -15632,6 +15658,7 @@ function __detabaseMain() {
   var CT_LEAF = 11;
   var CT_GAP = { c: 3, t: 6, s: 10, root: 34 };    // between the circles a ring holds
   var CT_PAD = { c: 5, t: 10, s: 18, root: 0 };    // inside a ring, around what it holds
+  var CT_MR = 8, CT_MGAP = 46, CT_MRING = 22;      // a method square: half its side; room between two side by side (for the name); between rings of them
   var CT_BLUES = ["#2563eb", "#0284c7", "#1d4ed8", "#0ea5e9", "#4f46e5", "#0369a1"];
   var CT_BLUES_DARK = ["#60a5fa", "#38bdf8", "#93c5fd", "#7dd3fc", "#818cf8", "#3b82f6"];
   function ctF(n) { return (+n).toFixed(1); }
@@ -15652,13 +15679,15 @@ function __detabaseMain() {
     // every concept the same size, so the map does not shift about as methods come and go
     function leaf(ref, name) { var n = node(ref, name); n.leaf = true; n.r = CT_LEAF; return n; }
     var subjects = allSubjectKeys().map(function (sk) {
-      return node({ lvl: "s", id: sk }, subjectName(sk), libTabs(sk).map(function (t) {
+      var sn = node({ lvl: "s", id: sk }, subjectName(sk), libTabs(sk).map(function (t) {
         return node({ lvl: "t", id: t.id }, t.name, libCards(t.id).map(function (c) {
           var ref = { lvl: "c", id: c.id };
           if (!byId(store.cards, c.id)) return leaf(ref, c.name);
           return node(ref, c.name, libElements(c.id).map(function (e) { return leaf({ lvl: "e", id: e.id }, e.name); }));
         }));
       }));
+      sn.methods = psPagesOf(sk).slice().sort(byName);     // its own methods: they sit inside its ring
+      return sn;
     });
     var root = node({ lvl: "root", id: "" }, "", subjects);
     ctPack(root);
@@ -15671,7 +15700,7 @@ function __detabaseMain() {
     if (n.leaf) return;
     n.kids.forEach(ctPack);
     var lvl = n.ref.lvl;
-    if (!n.kids.length) { n.r = CT_LEAF + 4; n.empty = true; return; }
+    if (!n.kids.length) { n.r = CT_LEAF + 4; n.empty = true; ctMethodBand(n, 4); return; }
     var gap = CT_GAP[lvl], placed = [];
     n.kids.slice().sort(function (a, b) { return b.r - a.r; }).forEach(function (c) {
       if (!placed.length) { c.x = 0; c.y = 0; placed.push(c); return; }
@@ -15715,77 +15744,99 @@ function __detabaseMain() {
     var R = 0;
     placed.forEach(function (p) { p.x -= cx; p.y -= cy; R = Math.max(R, Math.hypot(p.x, p.y) + p.r); });
     n.r = R + CT_PAD[lvl];
+    ctMethodBand(n, R + CT_PAD[lvl] / 2);
   }
-  function ctSegKey(a, b) { return a.key < b.key ? a.key + "~" + b.key : b.key + "~" + a.key; }
-  // every method as a path through its circles; a ring is met at its edge, on the side the vine
-  // comes from, and a method that uses a single concept wraps it in a bud
-  function ctVines(model, dark) {
-    var pal = dark ? CT_BLUES_DARK : CT_BLUES, out = [], segUse = {}, segAt = {}, buds = {};
-    var loose = {};
-    store.ps.pages.forEach(function (pg) {
-      var an = [];
-      function add(r) { var n = model.nodes[refKey(r)]; if (n && an.indexOf(n) < 0) an.push(n); }
-      vineOf(pg.id).forEach(add);
-      (pg.cardIds || []).forEach(function (id) { add({ lvl: "c", id: id }); });   // connected to a card directly
-      if (an.length) out.push({ pg: pg, an: an });
-      else if (model.nodes["s|" + pg.subject]) (loose[pg.subject] = loose[pg.subject] || []).push(pg);
-    });
-    out.forEach(function (v) {
-      v.segs = [];
-      for (var i = 1; i < v.an.length; i++) { var k = ctSegKey(v.an[i - 1], v.an[i]); segUse[k] = (segUse[k] || 0) + 1; v.segs.push(k); }
-    });
-    out.forEach(function (v) {
-      v.color = ctColor(v.pg, pal);
-      v.ends = [];
-      if (v.an.length === 1) {
-        var n0 = v.an[0], b = buds[n0.key] = (buds[n0.key] || 0) + 1, R = n0.r + 2 + b * 4;
-        v.d = "M" + ctF(n0.x - R) + " " + ctF(n0.y) + "a" + ctF(R) + " " + ctF(R) + " 0 1 0 " + ctF(2 * R) + " 0" +
-              "a" + ctF(R) + " " + ctF(R) + " 0 1 0 " + ctF(-2 * R) + " 0";
-        v.mid = [n0.x, n0.y - R];
-        v.box = [n0.x - R, n0.y - R, n0.x + R, n0.y + R];
-        return;
-      }
-      var pts = v.an.map(function (n, i) {
-        if (n.leaf || n.empty) return [n.x, n.y];
-        var o = v.an[i - 1] || v.an[i + 1], dx = o.x - n.x, dy = o.y - n.y, d = Math.hypot(dx, dy) || 1;
-        var p = [n.x + dx / d * n.r, n.y + dy / d * n.r];
-        v.ends.push(p);
-        return p;
-      });
-      var d = "M" + ctF(pts[0][0]) + " " + ctF(pts[0][1]), mids = [], box = [1e9, 1e9, -1e9, -1e9];
-      pts.forEach(function (p) { box[0] = Math.min(box[0], p[0]); box[1] = Math.min(box[1], p[1]); box[2] = Math.max(box[2], p[0]); box[3] = Math.max(box[3], p[1]); });
-      for (var i = 1; i < pts.length; i++) {
-        var a = pts[i - 1], c = pts[i], k = v.segs[i - 1], n = segUse[k], j = segAt[k] = (segAt[k] || 0) + 1;
-        // a stretch several vines share gets a lane for each, and the lanes keep their side whichever
-        // way a vine runs it; a stretch of its own just sways, like a vine
-        var flip = v.an[i - 1].key > v.an[i].key ? -1 : 1;
-        var dx = c[0] - a[0], dy = c[1] - a[1], len = Math.hypot(dx, dy) || 1;
-        var px = -dy / len * flip, py = dx / len * flip;
-        var off = n > 1 ? (j - 1 - (n - 1) / 2) * 10 : (i % 2 ? 1 : -1) * flip * Math.min(36, len * 0.14);
-        var qx = (a[0] + c[0]) / 2 + px * off * 2, qy = (a[1] + c[1]) / 2 + py * off * 2;
-        d += "Q" + ctF(qx) + " " + ctF(qy) + " " + ctF(c[0]) + " " + ctF(c[1]);
-        mids.push([(a[0] + 2 * qx + c[0]) / 4, (a[1] + 2 * qy + c[1]) / 4]);
-      }
-      v.d = d;
-      v.mid = mids[Math.floor((mids.length - 1) / 2)];
-      v.box = box;
-    });
-    // not connected to any card: a dashed bud on the subject's rim, so it is still there to tap
-    Object.keys(loose).forEach(function (sk) {
-      var sn = model.nodes["s|" + sk], list = loose[sk];
-      list.forEach(function (pg, i) {
-        var a = -Math.PI / 2 + (i - (list.length - 1) / 2) * 0.24, R = 9, dd = sn.r + R + 5;
-        var cx = sn.x + Math.cos(a) * dd, cy = sn.y + Math.sin(a) * dd;
-        out.push({ pg: pg, an: [], unlinked: true, color: ctColor(pg, pal), ends: [], mid: [cx, cy - R], box: [cx - R, cy - R, cx + R, cy + R],
-          d: "M" + ctF(cx - R) + " " + ctF(cy) + "a" + R + " " + R + " 0 1 0 " + (2 * R) + " 0a" + R + " " + R + " 0 1 0 " + (-2 * R) + " 0" });
+  // a subject with methods: rings of method squares around what it holds (as many rings as they
+  // need), and the subject's own ring widened around them
+  function ctMethodBand(n, inner) {
+    if (n.ref.lvl !== "s" || !(n.methods || []).length) return;
+    var left = n.methods.length, orbits = [], step = 2 * CT_MR + CT_MGAP;
+    while (left > 0) {
+      var r = inner + CT_MR + 6 + orbits.length * (2 * CT_MR + CT_MRING);
+      var cap = Math.max(1, Math.floor(2 * Math.PI * r / step));
+      orbits.push({ r: r, n: Math.min(cap, left) });
+      left -= cap;
+    }
+    n.orbits = orbits;
+    n.r = orbits[orbits.length - 1].r + CT_MR + CT_PAD.s;
+  }
+  // every method as a square in its subject's band, turned towards the cards it uses there; its lines:
+  // to its cards and concepts (solid), to the other subjects it is connected to (dashed), and between
+  // linked methods
+  function ctMethods(model, dark) {
+    var pal = dark ? CT_BLUES_DARK : CT_BLUES, out = [], byPg = {};
+    model.root.kids.forEach(function (sn) {
+      if (!sn.orbits) return;
+      var i0 = 0;
+      sn.orbits.forEach(function (orb) {
+        var list = sn.methods.slice(i0, i0 + orb.n).map(function (pg) {
+          var sx = 0, sy = 0, c = 0;
+          methodCards(pg.id).forEach(function (x) {
+            var t = model.nodes[refKey(x.ref)];
+            if (t && ctInside(t, sn)) { sx += t.x - sn.x; sy += t.y - sn.y; c++; }
+          });
+          return { pg: pg, a: c && (sx || sy) ? Math.atan2(sy, sx) : null };
+        });
+        i0 += orb.n;
+        ctSpread(list, (2 * CT_MR + CT_MGAP) / orb.r);
+        list.forEach(function (m) {
+          var cs = Math.cos(m.a), sn2 = Math.sin(m.a);
+          var v = { pg: m.pg, x: sn.x + cs * orb.r, y: sn.y + sn2 * orb.r, rim: [sn.x + cs * sn.r, sn.y + sn2 * sn.r], color: ctMethodColor(m.pg, pal) };
+          out.push(v); byPg[m.pg.id] = v;
+        });
       });
     });
-    return out;
+    out.forEach(function (v) {
+      v.lines = [];
+      methodCards(v.pg.id).forEach(function (x) { var t = model.nodes[refKey(x.ref)]; if (t) v.lines.push({ also: false, to: ctFacing(t, v) }); });
+      (v.pg.alsoSubjects || []).forEach(function (k) { var t = model.nodes["s|" + k]; if (t) v.lines.push({ also: true, to: ctFacing(t, v) }); });
+    });
+    var links = [], seen = {};
+    out.forEach(function (v) {
+      methodLinksOf(v.pg).forEach(function (o) {
+        var w = byPg[o.id], k = [v.pg.id, o.id].sort().join("~");
+        if (w && !seen[k]) { seen[k] = 1; links.push({ a: v, b: w }); }
+      });
+    });
+    return { nodes: out, links: links };
   }
-  function ctColor(pg, pal) {
+  function ctInside(t, ring) { for (var p = t; p; p = p.parent) if (p === ring) return true; return false; }
+  // where a line meets a circle: a concept's centre, a ring's rim on the side facing p
+  function ctFacing(t, p) {
+    if (t.leaf) return [t.x, t.y];
+    var dx = p.x - t.x, dy = p.y - t.y, d = Math.hypot(dx, dy) || 1;
+    return [t.x + dx / d * t.r, t.y + dy / d * t.r];
+  }
+  // angles round a ring: each as close to where it wants to be as the room allows (no wish: along the
+  // bottom — the subject's name sits at the top)
+  function ctSpread(list, minSep) {
+    var free = list.filter(function (m) { return m.a == null; });
+    free.forEach(function (m, i) { m.a = Math.PI / 2 + (i - (free.length - 1) / 2) * minSep; });
+    if (list.length < 2) return;
+    for (var it = 0; it < 80; it++) {
+      list.sort(function (p, q) { return p.a - q.a; });
+      var moved = false;
+      for (var i = 0; i < list.length; i++) {
+        var a = list[i], b = list[(i + 1) % list.length];
+        var gap = b.a - a.a + (i === list.length - 1 ? 2 * Math.PI : 0);
+        if (gap < minSep - 1e-6) { var push = (minSep - gap) / 2 + 1e-4; a.a -= push; b.a += push; moved = true; }
+      }
+      if (!moved) break;
+    }
+  }
+  // a method's color: its kind's; with no kind yet, one of the blues (always the same one for it)
+  function ctMethodColor(pg, pal) {
+    var k = pg.kind && byId(methodKinds(), pg.kind);
+    if (k && k.color) return k.color;
     var h = 0;
     for (var q = 0; q < pg.id.length; q++) h = (h * 31 + pg.id.charCodeAt(q)) | 0;
     return pal[Math.abs(h) % pal.length];
+  }
+  // a gentle curve from a to b
+  function ctCurve(a, b) {
+    var dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, off = Math.min(40, len * 0.12);
+    var qx = (a[0] + b[0]) / 2 - dy / len * off, qy = (a[1] + b[1]) / 2 + dx / len * off;
+    return "M" + ctF(a[0]) + " " + ctF(a[1]) + "Q" + ctF(qx) + " " + ctF(qy) + " " + ctF(b[0]) + " " + ctF(b[1]);
   }
   // what the search leaves standing; null when nothing is being searched
   function ctMark(model, pages) {
@@ -15863,7 +15914,8 @@ function __detabaseMain() {
     var k = ctView.k;
     E.labels.forEach(function (L) {
       var sr = L.r * k, show, room;
-      if (L.leaf) { show = sr >= 14 || (L.hit && sr >= 4); room = L.hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
+      if (L.lvl === "p") { show = sr >= 7 || (L.hit && sr >= 3); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
+      else if (L.leaf) { show = sr >= 14 || (L.hit && sr >= 4); room = L.hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
       else { show = sr >= (L.lvl === "s" ? 34 : 46); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
       if (show) {
         var max = Math.max(3, Math.floor(room / (L.lvl === "s" ? 8.4 : 6.6)));
@@ -15877,13 +15929,19 @@ function __detabaseMain() {
     var t = document.elementFromPoint(x, y);
     t = t && t.closest && t.closest("[data-k], [data-v]");
     if (!t || !ctEls || !ctEls.svg.contains(t)) return null;
-    if (t.hasAttribute("data-v")) return { vine: t.getAttribute("data-v") };
+    if (t.hasAttribute("data-v")) return { method: t.getAttribute("data-v") };
     return ctEls.model.nodes[t.getAttribute("data-k")] || null;
   }
   function ctTap(x, y) {
     var h = ctHitAt(x, y);
     if (!h) return;
-    if (h.vine) { selectPsPage(h.vine); return; }
+    if (h.method) {
+      // a square too small to aim at: zoom into its subject first
+      var pg = psPageById(h.method), sn = pg && ctEls.model.nodes["s|" + pg.subject];
+      if (sn && CT_MR * ctView.k < 7) { ctFocus = sn.key; ctAuto = { box: ctBoxOf([sn]), maxK: 3.4 }; ctFly(ctFitTo(ctBoxOf([sn]), 3.4)); return; }
+      selectPsPage(h.method);
+      return;
+    }
     var n = h;
     // a circle too small to aim at is a ring tap: zoom in first
     if (n.leaf && n.r * ctView.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
@@ -15909,7 +15967,7 @@ function __detabaseMain() {
       if (ids().length === 1) {
         startPan(e.pointerId);
         var h = ctHitAt(e.clientX, e.clientY), p0 = pan;
-        if (h && !h.vine && h.leaf) holdT = setTimeout(function () {
+        if (h && !h.method && h.leaf) holdT = setTimeout(function () {
           if (pan !== p0 || p0.moved >= 8) return;
           p0.held = true;
           narrowAdd(h.ref);
@@ -15967,9 +16025,9 @@ function __detabaseMain() {
       ctFocus = null; ctAuto = null;
       ctApply();
     }, { passive: false });
-    // desktop: a vine under the mouse stands out, with its name
+    // desktop: a method under the mouse stands out, with its lines
     function hot(id, on) {
-      Array.prototype.forEach.call(svg.querySelectorAll('[data-vv="' + id + '"]'), function (n) { n.classList.toggle("hot", on); });
+      Array.prototype.forEach.call(svg.querySelectorAll('[data-vv~="' + id + '"]'), function (n) { n.classList.toggle("hot", on); });
     }
     svg.addEventListener("mouseover", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), true); });
     svg.addEventListener("mouseout", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), false); });
@@ -15986,17 +16044,17 @@ function __detabaseMain() {
     if (ctEls && ctEls.ro) ctEls.ro.disconnect();
     var model = ctBuild();
     var dark = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
-    var vines = ctVines(model, dark);
+    var methods = ctMethods(model, dark);
     var marks = ctMark(model, pages);
     var NS = "http://www.w3.org/2000/svg";
-    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings"></g><g class="ct-hits"></g>' +
-      '<g class="ct-leaves"></g><g class="ct-vines"></g><g class="ct-lbls"></g></g></svg>' +
+    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings"></g><g class="ct-links"></g>' +
+      '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-hint">Tap a circle to open it · a ring to zoom in · a blue vine to open its method · hold a circle for the methods that use it</div>';
+      '<div class="ct-hint">Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for the methods that use it</div>';
     var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
-    var gRings = world.querySelector(".ct-rings"), gHits = world.querySelector(".ct-hits"), gLeaves = world.querySelector(".ct-leaves"),
-        gVines = world.querySelector(".ct-vines"), gLbls = world.querySelector(".ct-lbls");
+    var gRings = world.querySelector(".ct-rings"), gLinks = world.querySelector(".ct-links"), gLeaves = world.querySelector(".ct-leaves"),
+        gMethods = world.querySelector(".ct-methods"), gLbls = world.querySelector(".ct-lbls");
     function el(tag, attrs, parent) {
       var n = document.createElementNS(NS, tag);
       for (var a in attrs) n.setAttribute(a, attrs[a]);
@@ -16021,19 +16079,25 @@ function __detabaseMain() {
       }
       n.kids.forEach(walk);
     })(model.root);
-    var live = 0;
-    vines.forEach(function (v) {
-      var off = marks && !marks.vis[v.pg.id];
-      if (!off) live++;
-      if (marks && !off) focusBox = ctUnion(focusBox, v.box);
-      var hit = el("path", { d: v.d, "class": "ct-vhit" + (off ? " off" : ""), "data-v": v.pg.id }, gHits);
-      el("title", {}, hit).textContent = v.pg.name + (v.unlinked ? " — not linked to a card" : "");
-      el("path", { d: v.d, "class": "ct-vine" + (v.unlinked ? " unlinked" : "") + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gVines);
-      v.ends.forEach(function (p) { el("circle", { cx: ctF(p[0]), cy: ctF(p[1]), r: "3.4", fill: v.color, "class": "ct-dot" + (off ? " off" : ""), "data-vv": v.pg.id }, gVines); });
-      var lb = el("text", { x: ctF(v.mid[0]), y: ctF(v.mid[1]), dy: "-0.55em", fill: v.color, "class": "ct-vlbl" + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gLbls);
-      lb.textContent = v.pg.name;
+    // linked methods: one line between the two squares
+    methods.links.forEach(function (l) {
+      var off = marks && !(marks.vis[l.a.pg.id] && marks.vis[l.b.pg.id]);
+      el("path", { d: ctCurve([l.a.x, l.a.y], [l.b.x, l.b.y]), "class": "ct-mlink" + (off ? " off" : ""), "data-vv": l.a.pg.id + " " + l.b.pg.id }, gLinks);
     });
-    svg.classList.toggle("few", live > 0 && live <= 8);
+    methods.nodes.forEach(function (v) {
+      var off = marks && !marks.vis[v.pg.id];
+      v.lines.forEach(function (L) {
+        el("path", { d: ctCurve([v.x, v.y], L.to), "class": "ct-link" + (L.also ? " also" : "") + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+      });
+      el("line", { x1: ctF(v.x), y1: ctF(v.y), x2: ctF(v.rim[0]), y2: ctF(v.rim[1]), "class": "ct-stem" + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+      el("rect", { x: ctF(v.x - CT_MR - 9), y: ctF(v.y - CT_MR - 9), width: 2 * CT_MR + 18, height: 2 * CT_MR + 18, "class": "ct-mhit" + (off ? " off" : ""), "data-v": v.pg.id }, gMethods);   // a finger-sized target
+      var sq = el("rect", { x: ctF(v.x - CT_MR), y: ctF(v.y - CT_MR), width: 2 * CT_MR, height: 2 * CT_MR, rx: 3, fill: v.color,
+        "class": "ct-method" + (v.pg.kind ? "" : " nokind") + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gMethods);
+      el("title", {}, sq).textContent = v.pg.name + (v.pg.kind ? "" : " — needs a kind");
+      var lb = el("text", { x: ctF(v.x), y: ctF(v.y + CT_MR), dy: "1em", fill: v.color, "class": "ct-lbl ct-mlbl" + (off ? " off" : ""), "data-vv": v.pg.id }, gLbls);
+      labels.push({ el: lb, r: CT_MR, leaf: false, lvl: "p", full: v.pg.name, hit: !!(marks && !off) });
+      if (marks && !off) focusBox = ctUnion(focusBox, [v.x - 30, v.y - 30, v.x + 30, v.y + 30]);
+    });
     var E = ctEls = { box: box, svg: svg, world: world, labels: labels, model: model,
       allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
     ctWire(E);
@@ -16068,7 +16132,7 @@ function __detabaseMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
     host.innerHTML =
-      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search methods, concepts, or what a method involves…" autocomplete="off">' +
+      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search concepts, cards, methods and their parts — or what a method involves…" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
       '<div class="em-narrow"></div><div class="em-tree"></div><div class="em-res"></div>' +
       '<div class="em-vines"></div>';
@@ -16127,7 +16191,7 @@ function __detabaseMain() {
         ? escapeHtml(pages.length + (pages.length === 1 ? " method" : " methods") + " of " + total)
         : escapeHtml(total ? "All " + total + (total === 1 ? " method" : " methods") : "Methods")) + '</div>');
     if (!total) {
-      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No methods yet. Tap “＋ New method”, crop it out of a PDF, split it into stages and attach the concepts it uses — it shows up here as a vine.</p>');
+      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No methods yet. Tap “＋ New method”, crop it out of a PDF, cut it into parts and attach the concepts it uses — it shows up here, and as a square in the tree.</p>');
     } else if (!pages.length) {
       vbox.insertAdjacentHTML("beforeend", '<p class="muted">No method uses all of those together. Take one off to widen the search.</p>');
     } else {
