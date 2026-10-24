@@ -831,7 +831,12 @@
   .ps-stage { border-left: 4px solid var(--cat-color, var(--border)); padding-left: 10px; }
   .ps-cat { min-height: 34px; border: 1px solid color-mix(in srgb, var(--cat-color, var(--accent)) 50%, var(--border)); border-radius: var(--r-sm);
     background: color-mix(in srgb, var(--cat-color, var(--accent)) 12%, var(--bg)); color: var(--text-primary); font: inherit; font-size: .8rem; font-weight: 700; padding: 0 6px; }
-  .ps-part-text { white-space: pre-wrap; margin: 6px 0; line-height: 1.5; }
+  .ps-part-text { margin: 6px 0; line-height: 1.6; }
+  .ps-part-text .mt-line { min-height: 1.2em; margin: 2px 0; }
+  /* a piecewise brace — in typed part text (partTextEl) and in built-in cards */
+  .pw { display: inline-flex; align-items: center; gap: .5em; flex-wrap: wrap; }
+  .pw-b { display: inline-grid; grid-template-columns: auto auto; column-gap: 1.6em; row-gap: .25em;
+    padding: .2em 0 .2em .75em; border-left: 2px solid currentColor; border-radius: 12px 0 0 12px; }
   /* the method page's header: kind, description, what it uses */
   .ps-head { display: flex; flex-direction: column; gap: 8px; max-width: 1180px; margin: 8px 0 4px; }
   .ps-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
@@ -2251,6 +2256,7 @@
     <button data-folder="geo" data-group="base"><span class="ficon">△</span>Geometry base</button>
     <button data-folder="powlog" data-group="base"><span class="ficon">🔟</span>Powers &amp; Logs</button>
     <button data-folder="precalc" data-group="base"><span class="ficon">∫</span>Precalc</button>
+    <button data-folder="fn" data-group="calc"><span class="ficon">ƒ</span>Functions</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2300,6 +2306,13 @@
   <button data-target="c3"><span class="tnum">2</span>Integrals</button>
   <button data-target="c4"><span class="tnum">3</span>Trig calculus</button>
   <button data-target="c5"><span class="tnum">4</span>Exp &amp; log calculus</button>
+</nav>
+
+<nav class="tabbar" data-folder="fn" id="tabbar-fn">
+  <button data-target="fn1" class="on"><span class="tnum">1</span>What is a function</button>
+  <button data-target="fn2"><span class="tnum">2</span>Piecewise functions</button>
+  <button data-target="fn3"><span class="tnum">3</span>Trig with an inner argument</button>
+  <button data-target="fn4"><span class="tnum">4</span>Composition</button>
 </nav>
 
 <main id="paneHost">
@@ -3603,6 +3616,163 @@
 
 </div><!-- /folder-precalc -->
 
+<div class="folder" id="folder-fn">
+
+<!-- ===== FN1 · WHAT IS A FUNCTION ===== -->
+<section class="pane on" id="pane-fn1">
+<h2><span class="num">1</span>What is a function</h2>
+<div class="card" data-ctype="definition">
+  <h4>Function</h4>
+  <p>A <b>function</b> <code>f</code> gives <b>each</b> input <code>x</code> of its domain <b>exactly one</b> output <code>f(x)</code>.</p>
+  <ul class="idlist">
+    <li><code>x</code> = input,&nbsp; <code>y = f(x)</code> = output</li>
+    <li>On a graph: every vertical line meets it <b>at most once</b>.</li>
+  </ul>
+</div>
+<div class="card" data-ctype="definition">
+  <h4>Domain and range</h4>
+  <ul class="idlist">
+    <li><b>Domain</b> — every <code>x</code> the rule is allowed on.</li>
+    <li><b>Range</b> — every value <code>f(x)</code> actually takes.</li>
+  </ul>
+  <p class="muted">Finding a domain: Precalc › 0 Domain.</p>
+</div>
+</section>
+
+<!-- ===== FN2 · PIECEWISE FUNCTIONS ===== -->
+<section class="pane" id="pane-fn2">
+<h2><span class="num">2</span>Piecewise functions</h2>
+<div class="card" data-ctype="definition">
+  <h4>Piecewise function</h4>
+  <p>A different rule on each part of the domain:</p>
+  <p><span class="pw"><code>f(x) =</code><span class="pw-b"><code>g(x)</code><code>x &lt; a</code><code>h(x)</code><code>x ≥ a</code></span></span></p>
+  <ul class="idlist">
+    <li>The conditions never overlap — every <code>x</code> gets one rule.</li>
+    <li><code>f(c)</code>: find the piece whose condition <code>c</code> meets, use only that rule.</li>
+    <li>Graph: <code>≤ ≥</code> = full dot (included), <code>&lt; &gt;</code> = empty dot.</li>
+  </ul>
+</div>
+<div class="card" data-ctype="formula">
+  <h4>Absolute value as a piecewise function</h4>
+  <p><span class="pw"><code>|x| =</code><span class="pw-b"><code>x</code><code>x ≥ 0</code><code>−x</code><code>x &lt; 0</code></span></span></p>
+  <p><span class="pw"><code>|g(x)| =</code><span class="pw-b"><code>g(x)</code><code>g(x) ≥ 0</code><code>−g(x)</code><code>g(x) &lt; 0</code></span></span></p>
+  <p>The pieces meet where the inside is <code>0</code>.</p>
+  <p class="muted">Solving <code>|·|</code> equations: Algebra base › A Absolute value.</p>
+</div>
+</section>
+
+<!-- ===== FN3 · TRIG FUNCTIONS WITH AN INNER ARGUMENT ===== -->
+<section class="pane" id="pane-fn3">
+<h2><span class="num">3</span>Trig functions with an inner argument</h2>
+<div class="card" data-ctype="explanation">
+  <h4>The argument is the angle</h4>
+  <p>In <code>sin(2x − π/3)</code> the angle is the <b>whole argument</b> <code>u = 2x − π/3</code>, not <code>x</code>. Every fact about <code>sin u</code> holds for <code>u</code>: write the condition on <code>u</code> first, then solve for <code>x</code>.</p>
+  <p><code>sin(2x) = 0</code> → <code>2x = πk</code> → <code>x = πk/2</code> &nbsp;(not <code>x = πk</code>).</p>
+  <p class="muted">General solutions: Trig base › 2.6 · periods: Trig base › 2.5.</p>
+</div>
+<div class="card" data-ctype="formula">
+  <h4>Zeros, max and min of sin, cos, tan</h4>
+  <table>
+    <thead><tr><th></th><th>zero</th><th>max</th><th>min</th></tr></thead>
+    <tbody>
+      <tr><td><code>sin u</code></td><td><code>u = πk</code></td><td><code>1</code> at <code>u = π/2 + 2πk</code></td><td><code>−1</code> at <code>u = −π/2 + 2πk</code></td></tr>
+      <tr><td><code>cos u</code></td><td><code>u = π/2 + πk</code></td><td><code>1</code> at <code>u = 2πk</code></td><td><code>−1</code> at <code>u = π + 2πk</code></td></tr>
+      <tr><td><code>tan u</code></td><td><code>u = πk</code></td><td colspan="2">none — undefined (asymptote) at <code>u = π/2 + πk</code></td></tr>
+    </tbody>
+  </table>
+  <p class="muted"><code>k</code> = any integer. Max and min together: <code>sin u = ±1</code> at <code>u = π/2 + πk</code>.</p>
+</div>
+<div class="card" data-ctype="formula">
+  <h4>Period, amplitude and shifts</h4>
+  <p><code>y = A·sin(Bx + C) + D</code> &nbsp;(same for <code>cos</code>), <code>B &gt; 0</code>:</p>
+  <ul class="idlist">
+    <li>period <code>T = 2π/B</code> &nbsp;·&nbsp; for <code>tan(Bx + C)</code>: <code>T = π/B</code></li>
+    <li>amplitude <code>|A|</code> &nbsp;·&nbsp; midline <code>y = D</code></li>
+    <li>max <code>D + |A|</code> &nbsp;·&nbsp; min <code>D − |A|</code></li>
+    <li>shift: the cycle starts where <code>Bx + C = 0</code></li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== FN4 · COMPOSITION ===== -->
+<section class="pane" id="pane-fn4">
+<h2><span class="num">4</span>Composition of functions</h2>
+<div class="card" data-ctype="definition">
+  <h4>Composition</h4>
+  <p><code>(f∘g)(x) = f(g(x))</code> — first <code>g</code> (inner), then <code>f</code> (outer) on its result.</p>
+  <p><code>f(x) = x²</code>, <code>g(x) = x + 1</code>: &nbsp;<code>f(g(x)) = (x + 1)²</code>, &nbsp;<code>g(f(x)) = x² + 1</code>.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Domain of a composition</h4>
+  <p><code>x</code> is in the domain of <code>f∘g</code> ⇔ <code>x</code> is in the domain of <code>g</code> <b>AND</b> <code>g(x)</code> is in the domain of <code>f</code>.</p>
+  <p class="muted">Find it from these two conditions, not from the simplified formula.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Rules of composition</h4>
+  <ul class="idlist">
+    <li>Order matters: in general <code>f∘g ≠ g∘f</code></li>
+    <li>Brackets don't: <code>(f∘g)∘h = f∘(g∘h)</code></li>
+    <li>Identity <code>id(x) = x</code>: <code>f∘id = id∘f = f</code></li>
+  </ul>
+</div>
+</section>
+
+</div><!-- /folder-fn -->
+
+<!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
+     Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
+<script type="application/json" id="biMethods">
+[
+{ "id": "pp_bi_fnabs", "v": 1, "subject": "f:fn", "kind": "action",
+  "name": "Absolute value → piecewise",
+  "description": "Rewrite a function with |·| as a piecewise function with no absolute values.",
+  "uses": [["c", "fn2", "Absolute value as a piecewise function"], ["c", "fn2", "Piecewise function"], ["t", "b:a1"]],
+  "parts": [
+    { "id": "st_bi_fnabs1", "cat": "stage", "name": "Find the seams", "text": "Set each expression inside `|·|` equal to `0` and solve. These `x` values cut the number line into intervals." },
+    { "id": "st_bi_fnabs2", "cat": "stage", "name": "Sign of each inside", "text": "On each interval, test one point: is each inside **≥ 0** or **< 0**?" },
+    { "id": "st_bi_fnabs3", "cat": "stage", "name": "Drop the bars", "text": "Inside `≥ 0`: `|g| = g`\nInside `< 0`: `|g| = −(g)` — keep the brackets!" },
+    { "id": "st_bi_fnabs4", "cat": "stage", "name": "Simplify and write", "text": "Simplify each interval's rule and write the piecewise function. The seam point itself (`=`) goes into one of the pieces." },
+    { "id": "st_bi_fnabs5", "cat": "example", "name": "Example — one absolute value", "text": "`f(x) = |x − 2| + x`\n1. Seam: `x − 2 = 0` → `x = 2`\n2. `x ≥ 2`: inside `≥ 0` · `x < 2`: inside `< 0`\n3. `x ≥ 2`: `(x − 2) + x` · `x < 2`: `−(x − 2) + x`\n4.\nf(x) = { 2x − 2 ; x ≥ 2\n{ 2 ; x < 2" },
+    { "id": "st_bi_fnabs6", "cat": "example", "name": "Example — two absolute values", "text": "`f(x) = |x − 1| + |x + 2|`\n1. Seams: `x = 1` and `x = −2` → three intervals\n2. `x < −2`: both `< 0` · `−2 ≤ x < 1`: `x + 2 ≥ 0`, `x − 1 < 0` · `x ≥ 1`: both `≥ 0`\n3. `−(x − 1) − (x + 2)` · `−(x − 1) + (x + 2)` · `(x − 1) + (x + 2)`\n4.\nf(x) = { −2x − 1 ; x < −2\n{ 3 ; −2 ≤ x < 1\n{ 2x + 1 ; x ≥ 1" }
+  ] },
+{ "id": "pp_bi_fntrz", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Roots of a trig function with an inner argument",
+  "description": "Find where sin, cos or tan of an expression is 0 — optionally inside an interval.",
+  "uses": [["c", "fn3", "The argument is the angle"], ["c", "fn3", "Zeros, max and min of sin, cos, tan"], ["t", "b:s6"]],
+  "parts": [
+    { "id": "st_bi_fntrz1", "cat": "stage", "name": "Name the argument", "text": "Call the whole argument `u` — e.g. `u = 2x − π/3`." },
+    { "id": "st_bi_fntrz2", "cat": "stage", "name": "Zero condition on u", "text": "`sin u = 0` → `u = πk`\n`cos u = 0` → `u = π/2 + πk`\n`tan u = 0` → `u = πk`\n(`k` = any integer)" },
+    { "id": "st_bi_fntrz3", "cat": "stage", "name": "Solve for x", "text": "Put the argument back for `u` and solve for `x`. Divide **every** term — `πk` too." },
+    { "id": "st_bi_fntrz4", "cat": "stage", "name": "Pick k (if there is an interval)", "text": "Try `k = 0, 1, −1, 2, …` and keep only the `x` values inside the interval." },
+    { "id": "st_bi_fntrz5", "cat": "example", "name": "Example", "text": "`f(x) = sin(2x − π/3)`, `0 ≤ x ≤ π`\n1. `u = 2x − π/3`\n2. `2x − π/3 = πk`\n3. `2x = π/3 + πk` → `x = π/6 + πk/2`\n4. `k = 0`: `x = π/6` ✓ · `k = 1`: `x = 2π/3` ✓ · `k = 2`: `x = 7π/6 > π` ✗ · `k = −1`: `x = −π/3 < 0` ✗\nRoots: `x = π/6` and `x = 2π/3`" }
+  ] },
+{ "id": "pp_bi_fntrm", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Max and min points of a trig function with an inner argument",
+  "description": "Find the maximum and minimum points of A·sin(Bx + C) + D or A·cos(Bx + C) + D.",
+  "uses": [["c", "fn3", "The argument is the angle"], ["c", "fn3", "Zeros, max and min of sin, cos, tan"], ["c", "fn3", "Period, amplitude and shifts"]],
+  "parts": [
+    { "id": "st_bi_fntrm1", "cat": "stage", "name": "Name the argument", "text": "`u = Bx + C`" },
+    { "id": "st_bi_fntrm2", "cat": "stage", "name": "Max / min condition on u", "text": "`sin u`: max at `u = π/2 + 2πk`, min at `u = −π/2 + 2πk`\n`cos u`: max at `u = 2πk`, min at `u = π + 2πk`" },
+    { "id": "st_bi_fntrm3", "cat": "stage", "name": "Check the sign of A", "text": "`A > 0`: `f` is max where `sin u` is max.\n`A < 0`: they swap — `f` is max where `sin u` is min." },
+    { "id": "st_bi_fntrm4", "cat": "stage", "name": "Solve for x", "text": "Put the argument back for `u` and solve for `x`. Divide **every** term — `2πk` too." },
+    { "id": "st_bi_fntrm5", "cat": "stage", "name": "The y values", "text": "`y = D + |A|` at a max, `y = D − |A|` at a min." },
+    { "id": "st_bi_fntrm6", "cat": "example", "name": "Example", "text": "`f(x) = 2·sin(3x) + 1`\n1. `u = 3x`\n2. max: `3x = π/2 + 2πk` · min: `3x = −π/2 + 2πk`\n3. `A = 2 > 0` → no swap\n4. max: `x = π/6 + 2πk/3` · min: `x = −π/6 + 2πk/3`\n5. max `y = 1 + 2 = 3` · min `y = 1 − 2 = −1`\nMax points `(π/6 + 2πk/3, 3)`, min points `(−π/6 + 2πk/3, −1)`" }
+  ] },
+{ "id": "pp_bi_fncomp", "v": 1, "subject": "f:fn", "kind": "action",
+  "name": "Compose two functions and find the domain",
+  "description": "Build f(g(x)) from f and g, simplify it, and find where it is defined.",
+  "uses": [["c", "fn4", "Composition"], ["c", "fn4", "Domain of a composition"], ["t", "b:c1"]],
+  "parts": [
+    { "id": "st_bi_fncomp1", "cat": "stage", "name": "Inner and outer", "text": "In `f(g(x))`: `g` is the inner function (first), `f` the outer one." },
+    { "id": "st_bi_fncomp2", "cat": "stage", "name": "Substitute", "text": "Write the rule of `f` and replace every `x` in it by `(g(x))` — in brackets." },
+    { "id": "st_bi_fncomp3", "cat": "stage", "name": "Simplify", "text": "Simplify the result." },
+    { "id": "st_bi_fncomp4", "cat": "stage", "name": "Domain", "text": "Both, **AND**: `x` in the domain of `g`, and `g(x)` in the domain of `f`. Use these — not the simplified formula." },
+    { "id": "st_bi_fncomp5", "cat": "example", "name": "Example — order matters", "text": "`f(x) = √x`, `g(x) = x − 3`\n1. `f(g(x))`: inner `g`, outer `f`\n2. `f(g(x)) = √(x − 3)`\n3. nothing to simplify\n4. any `x` (domain of `g`) **AND** `x − 3 ≥ 0` → `x ≥ 3`\nThe other order: `g(f(x)) = √x − 3`, domain `x ≥ 0` — a different function." },
+    { "id": "st_bi_fncomp6", "cat": "example", "name": "Example — the formula hides the domain", "text": "`f(x) = x²`, `g(x) = √x`\n2–3. `f(g(x)) = (√x)² = x`\n4. `g` needs `x ≥ 0` → domain `x ≥ 0`, not every `x`." }
+  ] }
+]
+</script>
+
 </div><!-- /topfolder-eti -->
 
 <div id="customPane" hidden>
@@ -3622,7 +3792,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B89</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B90</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5646,7 +5816,9 @@ function __detabaseMain() {
     powlog: { title: "Powers & Logs — High-School Reference",
       sub: 'From <span class="mono">Powers and Logs base.md</span> — exponent &amp; log rules, equations, inequalities.' },
     precalc: { title: "Precalculus — Derivatives & Integrals",
-      sub: 'From <span class="mono">Precalc.md</span> — domain, derivatives, integrals, trig &amp; exp/log calculus.' }
+      sub: 'From <span class="mono">Precalc.md</span> — domain, derivatives, integrals, trig &amp; exp/log calculus.' },
+    fn: { title: "Functions — for Calculus 1",
+      sub: 'What a function is, piecewise and absolute-value functions, trig with an inner argument, composition.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -5667,7 +5839,8 @@ function __detabaseMain() {
       var p = JSON.parse(raw); store.schema = p.schema || 0; store.folders = p.folders || []; store.groups = p.groups || []; store.ui = p.ui || {}; store.subjects = p.subjects || []; store.notes = p.notes || {}; store.order = p.order || {}; store.canvases = p.canvases || [];
       store.deadCanvases = p.deadCanvases || [];
       if (p.libv) store.libv = p.libv;
-      if (p.libFix) store.libFix = p.libFix;          // the B75 repair ran: without this it ran again on every load (and could bring back deleted concepts)
+      if (p.libFix) store.libFix = p.libFix;
+      if (p.oneTime) store.oneTime = p.oneTime;       // one-time jobs already offered (so they are not offered again)          // the B75 repair ran: without this it ran again on every load (and could bring back deleted concepts)
       if (p.pdfs) store.pdfs = p.pdfs;                 // the PDF shelf (the files live in DBF)
       if (p.tabs) store.tabs = p.tabs;
       if (p.cards) store.cards = p.cards;
@@ -5682,6 +5855,7 @@ function __detabaseMain() {
       if (p.cardType) store.cardType = p.cardType;
       if (p.methodKinds) store.methodKinds = p.methodKinds;
       if (p.partCats) store.partCats = p.partCats;
+      if (p.biSeed) store.biSeed = p.biSeed;               // which built-in methods / card types were copied (seedBuiltins)
       // a bench left in the stored metadata by an older build is a stale copy of a board's items:
       // drop it, so the doc binds to the real one again and nothing gets pushed to the cloud
       [store.canvases, store.elements, (store.ps || {}).pages].forEach(function (list) {
@@ -10716,6 +10890,73 @@ function __detabaseMain() {
       return true;
     });
   }
+  // a part's typed text, shown with a little markup: `…` = math (a <code>, so prettyFractions stacks
+  // a/b), **…** = bold, and a piecewise brace — "f(x) = { value ; condition" starts one, following
+  // "{ value ; condition" lines continue it. Display only: the saved text is what was typed.
+  function partTextEl(text) {
+    var out = [], pw = null;
+    function inline(s) { return escapeHtml(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>"); }
+    function cell(s) { s = s.trim(); return s.indexOf("`") >= 0 ? inline(s) : "<code>" + escapeHtml(s) + "</code>"; }
+    function close() { if (pw) { out.push(pw.join("") + "</span></span></div>"); pw = null; } }
+    String(text).split("\n").forEach(function (line) {
+      var m = /^(.*?)\{\s+([^;{}]*);(.*)$/.exec(line);
+      if (m) {
+        if (m[1].trim() || !pw) { close(); pw = ['<div class="mt-line"><span class="pw">' + (m[1].trim() ? cell(m[1]) : "") + '<span class="pw-b">']; }
+        pw.push("<span>" + cell(m[2]) + "</span><span>" + cell(m[3]) + "</span>");
+        return;
+      }
+      close();
+      out.push('<div class="mt-line">' + (line.trim() ? inline(line) : "&nbsp;") + "</div>");
+    });
+    close();
+    var d = document.createElement("div");
+    d.className = "ps-part-text";
+    d.innerHTML = out.join("");
+    return d;
+  }
+  // ---- built-in methods: written in the HTML (#biMethods), kept in the owner's data like any method ----
+  // Each has fixed ids (method pp_bi_…, parts st_bi_…) and a version v. store.biSeed records what was
+  // copied: {m: {methodId: v}, ct: {cardId: 1}}. A method is (re)written when its v is higher than the
+  // recorded one — name, kind, description, subject, parts, concepts; the owner's folder, order, links
+  // and connected subjects stay. One the owner deleted stays deleted. A built-in card's data-ctype is
+  // its starting type, set once and only on a card with no type yet. Nothing new → nothing is saved.
+  function seedBuiltins() {
+    var src = $("biMethods");
+    var list = src ? JSON.parse(src.textContent) : [];
+    libEnsure(); biEnsure();
+    var seed = store.biSeed || { m: {}, ct: {} };
+    var methods = list.filter(function (m) { return !(seed.m[m.id] >= m.v); });
+    var typed = Object.keys(BI.cards).filter(function (k) { return !seed.ct[k] && BI.cards[k].nodes[0].getAttribute("data-ctype"); });
+    if (!methods.length && !typed.length) return;
+    try {
+      if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", localStorage.getItem(LS_KEY) || "");
+    } catch (e) {}
+    function ref(r) { return r[0] === "c" ? { lvl: "c", id: r[1] + ":" + elSlug(r[2]) } : { lvl: r[0], id: r[1] }; }
+    methods.forEach(function (m) {
+      var pg = psPageById(m.id);
+      if (!pg && seed.m[m.id] != null) { seed.m[m.id] = m.v; return; }   // deleted by the owner
+      if (!pg) {
+        pg = { id: m.id, tags: [], assets: [], alsoSubjects: [], methodIds: [], created: Date.now() };
+        store.ps.pages.push(pg);
+      }
+      pg.subject = m.subject; pg.name = m.name; pg.kind = m.kind; pg.description = m.description || ""; pg.builtin = 1;
+      var body = psBody(m.id);
+      body.parts = m.parts.map(function (p) { return { id: p.id, cat: p.cat, name: p.name || "", clip: null, text: p.text, assets: (p.uses || []).map(ref) }; });
+      body.assets = (m.uses || []).map(ref);
+      body.source = null;
+      psSyncCache(pg);
+      saveCanvas(m.id);
+      seed.m[m.id] = m.v;
+    });
+    var types = cardTypes(), map = cardTypeMap();
+    typed.forEach(function (k) {
+      var t = BI.cards[k].nodes[0].getAttribute("data-ctype");
+      if (!map[k] && byId(types, t)) map[k] = t;
+      seed.ct[k] = 1;
+    });
+    store.biSeed = seed;
+    saveStore();
+  }
   function psSyncCache(pg) { if (pg && psDocPresent(pg.id)) pg.assets = vineOf(pg.id); }
   function psSaveBody(pg) {
     if (!pg) return;
@@ -11378,12 +11619,7 @@ function __detabaseMain() {
     h.appendChild(actBtn(partLabel(pg.id, part), "what this part uses", function () { openConceptsPopup({ lvl: "st", id: part.id }); }, "ls-ctitle"));
     d.appendChild(h);
     if (part.clip) d.appendChild(psCropBlock(part.clip, Math.max(240, libBlockWidth($("subPage")) - 60)));
-    if (part.text) {
-      var tx = document.createElement("div");
-      tx.className = "ps-part-text";
-      tx.textContent = part.text;
-      d.appendChild(tx);
-    }
+    if (part.text) d.appendChild(partTextEl(part.text));
     return d;
   }
 
@@ -12215,7 +12451,8 @@ function __detabaseMain() {
   // a part's text: written, changed, or (when it has a picture) taken off
   function psEditPartText(pg, part) {
     askText((part.text ? "Edit the text · " : "Write text · ") + partLabel(pg.id, part),
-      part.clip ? "Shown under the part's picture. Leave it empty to take the text off." : "The part's text.",
+      (part.clip ? "Shown under the part's picture. Leave it empty to take the text off." : "The part's text.") +
+        " Math between backticks: `x/2` shows as a fraction; **bold**.",
       part.text || "", function (v) { part.text = v; psSaveBody(pg); psRender(); }, { allowEmpty: !!part.clip });
   }
   function psSetPartClip(pg, part) {
@@ -12776,12 +13013,7 @@ function __detabaseMain() {
         row.appendChild(el);
       }
       if (part.clip) tapForConcepts(psCropBlock(part.clip, w - 40));
-      if (part.text) {
-        var tx = document.createElement("div");
-        tx.className = "ps-part-text";
-        tx.textContent = part.text;
-        tapForConcepts(tx);
-      }
+      if (part.text) tapForConcepts(partTextEl(part.text));
       row.appendChild(psUsesLine({ lvl: "st", id: part.id }, "uses"));
       docEl.appendChild(row);
     });
@@ -15314,7 +15546,7 @@ function __detabaseMain() {
   // a part's content: its crop and/or its text
   function partBodyInto(host, part, w) {
     if (part.clip) host.appendChild(psCropBlock(part.clip, w));
-    if (part.text) { var t = document.createElement("div"); t.className = "ps-part-text"; t.textContent = part.text; host.appendChild(t); }
+    if (part.text) host.appendChild(partTextEl(part.text));
   }
   function assetBody(ref, baseW) {
     var d = document.createElement("div");
@@ -17071,7 +17303,8 @@ function __detabaseMain() {
   // Backed up first like a migration: the whole store (localStorage "detabase.v1.pre-empty") and every
   // document that is about to go (IndexedDB "__pre_empty", local only). Methods only "also connected"
   // to the subject are not its own and stay.
-  function emptySubject(key) {
+  //   asked: the owner asked for this one in advance — the question says so
+  function emptySubject(key, asked) {
     libEnsure();
     var sref = { lvl: "s", id: key }, name = subjectName(key);
     var tabs = libKids(sref), pages = psPagesOf(key).slice(), folders = mfOf(key);
@@ -17082,7 +17315,7 @@ function __detabaseMain() {
     var builtins = tabs.filter(isBuiltinRef).length;
     var what = [n(tabs.length, "concept", "concepts") + " (" + n(cards, "card", "cards") + ", " + n(els, "element", "elements") + ")", n(pages.length, "method", "methods")];
     if (folders.length) what.push(n(folders.length, "method folder", "method folders"));
-    var msg = "Empty “" + name + "”?\n\nThis deletes " + what.join(", ") + ". The subject itself stays, empty." +
+    var msg = (asked ? "You asked for “" + name + "” to be emptied.\n\n" : "") + "Empty “" + name + "”?\n\nThis deletes " + what.join(", ") + ". The subject itself stays, empty." +
       (builtins ? "\n\n" + n(builtins, "built-in concept is", "built-in concepts are") + " only hidden (bring back from “Hidden”)." : "") +
       (homing ? "\n\n" + n(homing, "built-in card", "built-in cards") + " moved in here " + (homing === 1 ? "goes" : "go") + " back to " + (homing === 1 ? "its" : "their") + " own lesson." : "") +
       "\n\nA backup of everything is kept on this device first.\n\nלא ניתן לשחזר.";
@@ -17559,6 +17792,7 @@ function __detabaseMain() {
   } catch (e) { if (window.console) console.error("planner sortables:", e); }
   try { tagBuiltinElements(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
   try { migratePlacement(); } catch (e) { if (window.console) console.error("migratePlacement:", e); }
+  try { seedBuiltins(); } catch (e) { if (window.console) console.error("seedBuiltins:", e); }
   try { initSortables(); } catch (e) { if (window.console) console.error("initSortables:", e); }
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
   try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
@@ -17619,6 +17853,20 @@ function __detabaseMain() {
   } else {
     selectTop("eti");
   }
+  // ---- once (B89.1): the owner asked for the Calculus subject to be emptied, so the app offers it
+  // by itself on the next load, a moment after it opens — one question, the same emptySubject.
+  // Offered once on every device that has not been offered it (store.oneTime syncs).
+  setTimeout(function () {
+    store.oneTime = store.oneTime || {};
+    if (store.oneTime.emptyCalculus) return;
+    var keys = allSubjectKeys().filter(function (k) { return /calculus/i.test(subjectName(k)); });
+    store.oneTime.emptyCalculus = Date.now();          // offered once, whatever the answer — the ⋯ menu can still do it
+    saveStore();
+    if (!keys.length) { alert("No subject called “Calculus” was found, so nothing was emptied. Tell Claude what the subject is called."); return; }
+    keys.forEach(function (k) {
+      if (libKids({ lvl: "s", id: k }).length || psPagesOf(k).length || mfOf(k).length) emptySubject(k, true);
+    });
+  }, 900);
 
   // =========================================================
   // Pretty fractions — render "a / b" inside <code> as a stacked fraction
