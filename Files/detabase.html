@@ -1315,6 +1315,21 @@
   }
   .frac > .fnum { padding: 0 .35em .05em; border-bottom: 1.6px solid currentColor; }
   .frac > .fden { padding: .05em .35em 0; }
+  /* lim with its x→a underneath (prettyFractions) */
+  .lim { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.05; margin-right: .3em; }
+  .lim > .lim-s { font-size: .74em; white-space: nowrap; }
+  /* an illustration inside a built-in card */
+  svg.ill { display: block; width: 100%; max-width: 420px; height: auto; margin: 10px auto; }
+  svg.ill text { font: 13px Georgia, serif; fill: var(--text-primary); }
+  svg.ill text.sm { font-size: 12px; fill: var(--text-muted); }
+  svg.ill .ax { stroke: var(--text-muted); stroke-width: 1.3; fill: none; }
+  svg.ill .cv { stroke: var(--accent); stroke-width: 2.4; fill: none; }
+  svg.ill .gd { stroke: var(--text-muted); stroke-width: 1.2; stroke-dasharray: 4 3; fill: none; }
+  svg.ill .band { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: none; }
+  svg.ill .band2 { fill: color-mix(in srgb, #16a34a 16%, transparent); stroke: none; }
+  svg.ill .hole { fill: var(--surface-1); stroke: var(--accent); stroke-width: 2; }
+  svg.ill .dot { fill: var(--accent); }
+  svg.ill .warn { fill: #dc2626; }
   .card {
     background: var(--surface-1);
     border: 1px solid var(--border);
@@ -2257,6 +2272,7 @@
     <button data-folder="powlog" data-group="base"><span class="ficon">🔟</span>Powers &amp; Logs</button>
     <button data-folder="precalc" data-group="base"><span class="ficon">∫</span>Precalc</button>
     <button data-folder="fn" data-group="calc"><span class="ficon">ƒ</span>Functions</button>
+    <button data-folder="lim" data-group="calc"><span class="ficon">→</span>Limits and continuity</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2313,6 +2329,17 @@
   <button data-target="fn2"><span class="tnum">2</span>Piecewise functions</button>
   <button data-target="fn3"><span class="tnum">3</span>Trig with an inner argument</button>
   <button data-target="fn4"><span class="tnum">4</span>Composition</button>
+</nav>
+
+<nav class="tabbar" data-folder="lim" id="tabbar-lim">
+  <button data-target="lm1" class="on"><span class="tnum">1</span>What is a limit</button>
+  <button data-target="lm2"><span class="tnum">2</span>Arithmetic of limits</button>
+  <button data-target="lm3"><span class="tnum">3</span>Calculating limits</button>
+  <button data-target="lm4"><span class="tnum">4</span>L'Hôpital's rule</button>
+  <button data-target="lm5"><span class="tnum">5</span>Continuity</button>
+  <button data-target="lm6"><span class="tnum">6</span>Arithmetic of continuity</button>
+  <button data-target="lm7"><span class="tnum">7</span>Composition and continuity</button>
+  <button data-target="lm8"><span class="tnum">8</span>Intermediate value theorem</button>
 </nav>
 
 <main id="paneHost">
@@ -3416,7 +3443,7 @@
 <details class="subject" open>
   <summary>Secant → tangent<span class="stag">interactive</span></summary>
   <div class="subject-body">
-    <p><code>f'(x) = lim(h→0) [f(x+h) − f(x)] / h</code> — the secant slope collapses to the tangent slope.</p>
+    <p><code>f'(x) = lim_(h→0) [f(x+h) − f(x)] / h</code> — the secant slope collapses to the tangent slope.</p>
     <div class="tool">
       <p class="tool-title">Shrink <code>h</code> toward 0 &nbsp;(<code>f(x) = ¼x²</code>, at <code>x = 2</code>)</p>
       <label class="muted">h = <span id="secHLbl" class="mono">2.0</span></label>
@@ -3599,7 +3626,7 @@
 <details class="subject" open>
   <summary>The number <code>e</code><span class="stag">interactive</span></summary>
   <div class="subject-body">
-    <p><code>e = lim(n→∞) (1 + 1/n)ⁿ ≈ 2.71828</code> — the unique base where the tangent to <code>y = aˣ</code> at <code>x = 0</code> has slope exactly 1, which is why <code>eˣ</code> is its own derivative.</p>
+    <p><code>e = lim_(n→∞) (1 + 1/n)ⁿ ≈ 2.71828</code> — the unique base where the tangent to <code>y = aˣ</code> at <code>x = 0</code> has slope exactly 1, which is why <code>eˣ</code> is its own derivative.</p>
     <div class="tool">
       <p class="tool-title">Watch <code>(1 + 1/n)ⁿ</code> approach <code>e</code></p>
       <label class="muted">n = <span id="eNLbl" class="mono">10</span></label>
@@ -3719,6 +3746,277 @@
 
 </div><!-- /folder-fn -->
 
+<div class="folder" id="folder-lim">
+
+<!-- ===== LM1 · WHAT IS A LIMIT ===== -->
+<section class="pane on" id="pane-lm1">
+<h2><span class="num">1</span>What is a limit</h2>
+<div class="card" data-ctype="definition">
+  <h4>Limit of a function</h4>
+  <p><code>lim_(x→a) f(x) = L</code> — as <code>x</code> gets close to <code>a</code> (with <code>x ≠ a</code>), <code>f(x)</code> gets as close to <code>L</code> as we want.</p>
+  <p><b>Full notation (ε–δ):</b></p>
+  <p><code>lim_(x→a) f(x) = L &nbsp;⇔&nbsp; ∀ε &gt; 0 ∃δ &gt; 0 : 0 &lt; |x − a| &lt; δ ⇒ |f(x) − L| &lt; ε</code></p>
+  <svg class="ill" viewBox="0 0 420 260" role="img" aria-label="epsilon band around L and delta band around a">
+    <rect class="band" x="60" y="90" width="345" height="60"/>
+    <rect class="band2" x="190" y="15" width="60" height="215"/>
+    <path class="ax" d="M60 230 H405 M60 230 V12"/>
+    <path class="cv" d="M75 215 C150 185 185 150 220 120 S300 60 395 35"/>
+    <path class="gd" d="M220 120 V230 M60 120 H220"/>
+    <circle class="hole" cx="220" cy="120" r="5"/>
+    <text x="54" y="124" text-anchor="end">L</text>
+    <text class="sm" x="54" y="94" text-anchor="end">L+ε</text>
+    <text class="sm" x="54" y="154" text-anchor="end">L−ε</text>
+    <text x="220" y="250" text-anchor="middle">a</text>
+    <text class="sm" x="186" y="250" text-anchor="middle">a−δ</text>
+    <text class="sm" x="254" y="250" text-anchor="middle">a+δ</text>
+  </svg>
+  <p class="muted">For <b>every</b> band <code>L ± ε</code> (blue) there is a band <code>a ± δ</code> (green) where the graph — except at <code>a</code> itself — stays inside the blue band.</p>
+</div>
+<div class="card" data-ctype="definition">
+  <h4>One-sided limits</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→a⁻) f(x)</code> — from the left (<code>x &lt; a</code>) &nbsp;·&nbsp; <code>lim_(x→a⁺) f(x)</code> — from the right (<code>x &gt; a</code>)</li>
+    <li><code>lim_(x→a) f(x) = L &nbsp;⇔&nbsp; lim_(x→a⁻) f(x) = lim_(x→a⁺) f(x) = L</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a jump: different left and right limits">
+    <path class="ax" d="M50 195 H405 M50 195 V12"/>
+    <path class="gd" d="M50 125 H210 M50 70 H210 M210 195 V70"/>
+    <path class="cv" d="M65 165 C120 155 170 138 210 125"/>
+    <path class="cv" d="M210 70 C260 60 320 50 395 44"/>
+    <circle class="hole" cx="210" cy="125" r="5"/>
+    <circle class="dot" cx="210" cy="70" r="5"/>
+    <text x="44" y="129" text-anchor="end">L₁</text>
+    <text x="44" y="74" text-anchor="end">L₂</text>
+    <text x="210" y="213" text-anchor="middle">a</text>
+  </svg>
+  <p class="muted">Left limit <code>L₁</code> ≠ right limit <code>L₂</code> → no limit at <code>a</code>. Typical at the seam of a piecewise function or <code>|·|</code> (Functions › 2).</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Properties of a limit</h4>
+  <ul class="idlist">
+    <li><b>The value at the point doesn't matter.</b> <code>f(a)</code> may be anything, or not exist — the limit only looks at <code>x</code> near <code>a</code>.</li>
+    <li><b>Unique:</b> <code>lim_(x→a) f(x) = L₁</code> and <code>lim_(x→a) f(x) = L₂</code> ⇒ <code>L₁ = L₂</code></li>
+    <li><b>Local:</b> <code>f(x) = g(x)</code> for all <code>x ≠ a</code> near <code>a</code> ⇒ <code>lim_(x→a) f(x) = lim_(x→a) g(x)</code> &nbsp;(this is why cancelling works)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="hole at the limit, f(a) elsewhere">
+    <path class="ax" d="M50 185 H405 M50 185 V12"/>
+    <path class="gd" d="M50 120 H210 M50 55 H210 M210 185 V55"/>
+    <path class="cv" d="M65 170 C130 150 170 132 210 120 S300 95 395 85"/>
+    <circle class="hole" cx="210" cy="120" r="5"/>
+    <circle class="dot" cx="210" cy="55" r="5"/>
+    <text x="44" y="124" text-anchor="end">L</text>
+    <text x="44" y="59" text-anchor="end">f(a)</text>
+    <text x="210" y="203" text-anchor="middle">a</text>
+  </svg>
+  <p class="muted">Here <code>lim_(x→a) f(x) = L</code> even though <code>f(a) ≠ L</code>.</p>
+</div>
+<div class="card" data-ctype="definition">
+  <h4>Infinite limits and limits at infinity</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→∞) f(x) = L &nbsp;⇔&nbsp; ∀ε &gt; 0 ∃M : x &gt; M ⇒ |f(x) − L| &lt; ε</code></li>
+    <li><code>lim_(x→a) f(x) = ∞ &nbsp;⇔&nbsp; ∀M ∃δ &gt; 0 : 0 &lt; |x − a| &lt; δ ⇒ f(x) &gt; M</code></li>
+  </ul>
+  <p class="muted">A limit of <code>±∞</code> is not a finite limit — the arithmetic of limits needs finite ones.</p>
+</div>
+</section>
+
+<!-- ===== LM2 · ARITHMETIC OF LIMITS ===== -->
+<section class="pane" id="pane-lm2">
+<h2><span class="num">2</span>Arithmetic of limits</h2>
+<div class="card" data-ctype="theorem">
+  <h4>Arithmetic of limits</h4>
+  <p>If <code>lim_(x→a) f(x) = L</code> and <code>lim_(x→a) g(x) = M</code> with <code>L, M ∈ ℝ</code> (both exist and are finite), then:</p>
+  <ul class="idlist">
+    <li><code>lim_(x→a) [f(x) ± g(x)] = L ± M</code></li>
+    <li><code>lim_(x→a) c·f(x) = c·L</code></li>
+    <li><code>lim_(x→a) [f(x)·g(x)] = L·M</code></li>
+    <li><code>lim_(x→a) f(x)/g(x) = L/M</code> &nbsp;if <code>M ≠ 0</code></li>
+  </ul>
+  <p class="muted">In words: when both limits exist (finite), you may split the limit over <code>+ − · ÷</code>.</p>
+</div>
+<div class="card" data-ctype="explanation">
+  <h4>When you can't use the arithmetic</h4>
+  <ul class="idlist">
+    <li><b>One exists, one doesn't</b> ⇒ the sum has <b>no</b> limit: <code>lim f</code> exists, <code>lim g</code> doesn't ⇒ <code>lim (f + g)</code> doesn't (else <code>g = (f + g) − f</code> would have one).</li>
+    <li><b>Neither exists</b> ⇒ can't tell — the sum or product may still have a limit (examples next card).</li>
+    <li><b>Indeterminate forms</b> — unknown until you rewrite the expression: <code>0/0</code>, <code>∞/∞</code>, <code>∞ − ∞</code>, <code>0·∞</code>, <code>1<sup>∞</sup></code>, <code>0<sup>0</sup></code>, <code>∞<sup>0</sup></code></li>
+    <li><b>Not indeterminate:</b> <code>L/∞ = 0</code>, &nbsp;<code>∞ + ∞ = ∞</code>, &nbsp;<code>L·∞ = ±∞</code> (<code>L ≠ 0</code>), &nbsp;<code>L/0</code> (<code>L ≠ 0</code>) <code>= ±∞</code> — check the sign from each side.</li>
+  </ul>
+</div>
+<div class="card" data-ctype="note">
+  <h4>No limits apart, a limit together</h4>
+  <p><b>Sum</b> — at <code>a = 0</code>: <code>f(x) = 1/x</code>, <code>g(x) = −1/x</code> have no limit, but <code>f(x) + g(x) = 0</code> → limit <code>0</code>.</p>
+  <p><b>Product</b> — at <code>a = 0</code>, the sign function</p>
+  <p><span class="pw"><code>f(x) = g(x) =</code><span class="pw-b"><code>1</code><code>x ≥ 0</code><code>−1</code><code>x &lt; 0</code></span></span></p>
+  <p>has a jump (no limit), but <code>f(x)·g(x) = 1</code> → limit <code>1</code>. Same for <code>f(x)/g(x) = 1</code>.</p>
+  <p class="muted">So <code>lim (f + g)</code> existing does <b>not</b> mean <code>lim f</code> and <code>lim g</code> exist — never split a limit before you know both parts exist.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Zero times bounded</h4>
+  <p><code>lim_(x→a) f(x) = 0</code> and <code>∃K &gt; 0 : |g(x)| ≤ K</code> near <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x)·g(x) = 0</code></p>
+  <p class="muted">Even when <code>lim g</code> doesn't exist: <code>lim_(x→0) x·sin(1/x) = 0</code>, since <code>|sin(1/x)| ≤ 1</code>.</p>
+</div>
+</section>
+
+<!-- ===== LM3 · CALCULATING LIMITS ===== -->
+<section class="pane" id="pane-lm3">
+<h2><span class="num">3</span>Calculating limits</h2>
+<div class="card" data-ctype="theorem">
+  <h4>When plugging in works</h4>
+  <p><code>f</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
+  <p>Every elementary function is continuous on its domain: polynomials, rational functions (denominator <code>≠ 0</code>), roots, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>aˣ</code>, <code>ln</code> — and their sums, products, quotients and compositions (concepts 6–7).</p>
+  <p class="muted">Plugging in gives <code>0/0</code>, <code>∞/∞</code>… → <code>a</code> is not in the domain: rewrite first.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Polynomials and the biggest power</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→a) p(x) = p(a)</code></li>
+    <li><code>p(x) = aₙxⁿ + … + a₁x + a₀</code>, <code>aₙ ≠ 0</code>: &nbsp;<code>lim_(x→±∞) p(x) = lim_(x→±∞) aₙxⁿ</code></li>
+    <li>Rational <code>p(x)/q(x)</code> at <code>±∞</code>: deg <code>p</code> &lt; deg <code>q</code> → <code>0</code> · equal → ratio of the leading coefficients · deg <code>p</code> &gt; deg <code>q</code> → <code>±∞</code></li>
+  </ul>
+</div>
+<div class="card" data-ctype="formula">
+  <h4>Shortened multiplication formulas</h4>
+  <ul class="idlist">
+    <li><code>a² − b² = (a − b)(a + b)</code></li>
+    <li><code>(a ± b)² = a² ± 2ab + b²</code></li>
+    <li><code>a³ − b³ = (a − b)(a² + ab + b²)</code></li>
+    <li><code>a³ + b³ = (a + b)(a² − ab + b²)</code></li>
+  </ul>
+  <p class="muted">Read right-to-left they factor; left-to-right they build the "partner" that cancels a root.</p>
+</div>
+<div class="card" data-ctype="explanation">
+  <h4>Multiplying by 1</h4>
+  <p>Multiplying by <code>A/A</code> (= 1, for <code>A ≠ 0</code>) changes the <b>form</b>, not the value:</p>
+  <ul class="idlist">
+    <li><code>(1/xⁿ)/(1/xⁿ)</code> — divide top and bottom by the biggest power (<code>x → ∞</code>)</li>
+    <li><code>(√x + 2)/(√x + 2)</code> — the conjugate: <code>(√x − 2)(√x + 2) = x − 4</code> removes the root</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== LM4 · L'HÔPITAL ===== -->
+<section class="pane" id="pane-lm4">
+<h2><span class="num">4</span>L'Hôpital's rule</h2>
+<div class="card" data-ctype="theorem">
+  <h4>L'Hôpital's rule</h4>
+  <p>If <code>f, g</code> are differentiable near <code>a</code> (except maybe at <code>a</code>), <code>g'(x) ≠ 0</code> near <code>a</code>,</p>
+  <p><code>lim_(x→a) f(x) = lim_(x→a) g(x) = 0</code> &nbsp;(or both <code>±∞</code>), &nbsp;and <code>lim_(x→a) f'(x)/g'(x) = L</code> (<code>L</code> finite or <code>±∞</code>)</p>
+  <p>⇒ &nbsp;<code>lim_(x→a) f(x)/g(x) = lim_(x→a) f'(x)/g'(x) = L</code></p>
+  <p class="muted">Also for <code>x → ±∞</code> and one-sided limits. Only for <code>0/0</code> or <code>∞/∞</code>. Differentiate top and bottom <b>separately</b> — not the quotient rule. Derivatives: Precalc › 1 Derivatives, 3 Trig calculus, 4 Exp &amp; log calculus.</p>
+</div>
+<div class="card" data-ctype="formula">
+  <h4>Other forms into 0/0 or ∞/∞</h4>
+  <ul class="idlist">
+    <li><code>0·∞</code>: &nbsp;<code>f·g = f/(1/g)</code></li>
+    <li><code>∞ − ∞</code>: &nbsp;common denominator, or the conjugate</li>
+    <li><code>1<sup>∞</sup></code>, <code>0<sup>0</sup></code>, <code>∞<sup>0</sup></code>: &nbsp;<code>f<sup>g</sup> = e<sup>g·ln f</sup></code> → find <code>lim g·ln f</code></li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== LM5 · CONTINUITY ===== -->
+<section class="pane" id="pane-lm5">
+<h2><span class="num">5</span>Continuity</h2>
+<div class="card" data-ctype="definition">
+  <h4>Continuity at a point</h4>
+  <p><code>f</code> is continuous at <code>a</code> &nbsp;⇔&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
+  <p><b>Full notation:</b> <code>∀ε &gt; 0 ∃δ &gt; 0 : |x − a| &lt; δ ⇒ |f(x) − f(a)| &lt; ε</code></p>
+  <p>Three conditions: <code>f(a)</code> exists · <code>lim_(x→a) f(x)</code> exists · they are equal. One fails → not continuous:</p>
+  <svg class="ill" viewBox="0 0 420 155" role="img" aria-label="three ways to fail: hole, jump, moved point">
+    <path class="ax" d="M10 125 H130 M150 125 H270 M290 125 H410"/>
+    <path class="cv" d="M15 110 Q70 60 125 30"/>
+    <circle class="hole" cx="70" cy="65" r="5"/>
+    <path class="cv" d="M155 105 L210 85 M210 50 L265 35"/>
+    <circle class="hole" cx="210" cy="85" r="5"/>
+    <circle class="dot" cx="210" cy="50" r="5"/>
+    <path class="cv" d="M295 110 Q350 60 405 30"/>
+    <circle class="hole" cx="350" cy="65" r="5"/>
+    <circle class="dot" cx="350" cy="25" r="5"/>
+    <text class="sm" x="70" y="145" text-anchor="middle">no f(a)</text>
+    <text class="sm" x="210" y="145" text-anchor="middle">no limit (jump)</text>
+    <text class="sm" x="350" y="145" text-anchor="middle">f(a) ≠ limit</text>
+  </svg>
+</div>
+<div class="card" data-ctype="definition">
+  <h4>One-sided continuity and intervals</h4>
+  <ul class="idlist">
+    <li>From the right: <code>lim_(x→a⁺) f(x) = f(a)</code> &nbsp;·&nbsp; from the left: <code>lim_(x→a⁻) f(x) = f(a)</code></li>
+    <li>On <code>(a, b)</code>: continuous at every point.</li>
+    <li>On <code>[a, b]</code>: on <code>(a, b)</code> + from the right at <code>a</code> + from the left at <code>b</code>.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== LM6 · ARITHMETIC OF CONTINUITY ===== -->
+<section class="pane" id="pane-lm6">
+<h2><span class="num">6</span>Arithmetic of continuity</h2>
+<div class="card" data-ctype="theorem">
+  <h4>Arithmetic of continuous functions</h4>
+  <p><code>f, g</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>f ± g</code>, <code>c·f</code>, <code>f·g</code> continuous at <code>a</code>, and <code>f/g</code> too if <code>g(a) ≠ 0</code>.</p>
+  <p class="muted"><code>x² + sin x</code> is continuous everywhere; <code>(x + 1)/(x − 2)</code> for every <code>x ≠ 2</code>.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Continuous and not continuous</h4>
+  <ul class="idlist">
+    <li><code>f</code> continuous at <code>a</code>, <code>g</code> not &nbsp;⇒&nbsp; <code>f ± g</code> <b>not</b> continuous at <code>a</code></li>
+    <li>… and if also <code>f(a) ≠ 0</code> &nbsp;⇒&nbsp; <code>f·g</code>, <code>g/f</code> <b>not</b> continuous at <code>a</code></li>
+    <li>Both not continuous ⇒ can't tell.</li>
+  </ul>
+  <p class="muted"><code>x + sgn x</code> is not continuous at 0; but <code>x·sgn x = |x|</code> is (there <code>f(0) = 0</code>). Proved by contradiction — see the method.</p>
+</div>
+</section>
+
+<!-- ===== LM7 · COMPOSITION ===== -->
+<section class="pane" id="pane-lm7">
+<h2><span class="num">7</span>Composition and continuity</h2>
+<div class="card" data-ctype="theorem">
+  <h4>Composition of continuous functions</h4>
+  <p><code>g</code> continuous at <code>a</code> and <code>f</code> continuous at <code>g(a)</code> &nbsp;⇒&nbsp; <code>f∘g</code> continuous at <code>a</code></p>
+  <p class="muted"><code>sin(x²)</code>, <code>√(x² + 1)</code>, <code>e<sup>cos x</sup></code> — continuous wherever defined. Composition itself: Functions › 4.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>Limit of a composition</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→a) g(x) = b</code> and <code>f</code> continuous at <code>b</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = f(lim_(x→a) g(x)) = f(b)</code></li>
+    <li><b>Substitution:</b> <code>lim_(x→a) g(x) = b</code>, <code>g(x) ≠ b</code> near <code>a</code>, <code>lim_(t→b) f(t) = L</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = L</code></li>
+  </ul>
+  <p class="muted">The limit goes inside a continuous function: <code>lim_(x→0) cos(x² + π) = cos π = −1</code>. The second line is why a help variable <code>t</code> works.</p>
+</div>
+</section>
+
+<!-- ===== LM8 · INTERMEDIATE VALUE THEOREM ===== -->
+<section class="pane" id="pane-lm8">
+<h2><span class="num">8</span>Intermediate value theorem</h2>
+<div class="card" data-ctype="theorem">
+  <h4>Intermediate value theorem</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and <code>y</code> between <code>f(a)</code> and <code>f(b)</code> &nbsp;⇒&nbsp; <code>∃c ∈ [a, b] : f(c) = y</code></p>
+  <svg class="ill" viewBox="0 0 420 235" role="img" aria-label="a continuous curve from f(a) to f(b) crosses the level y at c">
+    <path class="ax" d="M50 205 H405 M50 205 V12"/>
+    <path class="gd" d="M50 170 H80 V205 M50 50 H360 V205 M250 110 V205"/>
+    <path class="gd" d="M50 110 H405" style="stroke: var(--accent)"/>
+    <path class="cv" d="M80 170 C150 190 200 60 250 110 S330 70 360 50"/>
+    <circle class="dot" cx="80" cy="170" r="4"/>
+    <circle class="dot" cx="360" cy="50" r="4"/>
+    <circle class="dot warn" cx="250" cy="110" r="5"/>
+    <text x="44" y="174" text-anchor="end">f(a)</text>
+    <text x="44" y="54" text-anchor="end">f(b)</text>
+    <text x="44" y="114" text-anchor="end">y</text>
+    <text x="80" y="223" text-anchor="middle">a</text>
+    <text x="250" y="223" text-anchor="middle">c</text>
+    <text x="360" y="223" text-anchor="middle">b</text>
+  </svg>
+  <p class="muted">A continuous graph can't get from <code>f(a)</code> to <code>f(b)</code> without crossing every level in between.</p>
+</div>
+<div class="card" data-ctype="theorem">
+  <h4>A root between a sign change</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and <code>f(a)·f(b) &lt; 0</code> &nbsp;⇒&nbsp; <code>∃c ∈ (a, b) : f(c) = 0</code></p>
+  <p class="muted">Says a root <b>exists</b> — not where, not how many. Continuity on the whole <code>[a, b]</code> is a must: <code>1/x</code> on <code>[−1, 1]</code> changes sign with no root.</p>
+</div>
+</section>
+
+</div><!-- /folder-lim -->
+
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
 <script type="application/json" id="biMethods">
@@ -3769,6 +4067,114 @@
     { "id": "st_bi_fncomp4", "cat": "stage", "name": "Domain", "text": "Both, **AND**: `x` in the domain of `g`, and `g(x)` in the domain of `f`. Use these — not the simplified formula." },
     { "id": "st_bi_fncomp5", "cat": "example", "name": "Example — order matters", "text": "`f(x) = √x`, `g(x) = x − 3`\n1. `f(g(x))`: inner `g`, outer `f`\n2. `f(g(x)) = √(x − 3)`\n3. nothing to simplify\n4. any `x` (domain of `g`) **AND** `x − 3 ≥ 0` → `x ≥ 3`\nThe other order: `g(f(x)) = √x − 3`, domain `x ≥ 0` — a different function." },
     { "id": "st_bi_fncomp6", "cat": "example", "name": "Example — the formula hides the domain", "text": "`f(x) = x²`, `g(x) = √x`\n2–3. `f(g(x)) = (√x)² = x`\n4. `g` needs `x ≥ 0` → domain `x ≥ 0`, not every `x`." }
+  ] },
+
+{ "id": "pp_bi_lmgen", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Calculate a limit — the general procedure",
+  "description": "Decide whether you may plug in, and which tool to use when you can't.",
+  "uses": [["c", "lm3", "When plugging in works"], ["c", "lm2", "When you can't use the arithmetic"], ["c", "lm1", "One-sided limits"], ["c", "lm3", "Polynomials and the biggest power"]],
+  "parts": [
+    { "id": "st_bi_lmgen1", "cat": "stage", "name": "Plug in", "text": "Put `x = a` into the expression." },
+    { "id": "st_bi_lmgen2", "cat": "stage", "name": "A number?", "text": "You got a number → that is the limit (the function is continuous there)." },
+    { "id": "st_bi_lmgen3", "cat": "stage", "name": "L/0 with L ≠ 0?", "text": "→ the answer is `+∞`, `−∞` or no limit. Find the sign of the denominator from each side (`a⁻`, `a⁺`): equal signs → that infinity; different → no limit." },
+    { "id": "st_bi_lmgen4", "cat": "stage", "name": "Indeterminate? Pick a tool", "text": "`0/0`, `∞/∞`, `∞ − ∞`, `0·∞`… → rewrite, by what you see:\n• polynomials → **factor and cancel**\n• a root → **multiply by the conjugate**\n• `x → ±∞` → **divide by the biggest power**\n• a repeating chunk → **help variable t**\n• easy derivatives → **L'Hôpital**" },
+    { "id": "st_bi_lmgen5", "cat": "stage", "name": "A seam?", "text": "Piecewise function or `|·|` at the point where the rule changes → find the two one-sided limits; equal → that is the limit." },
+    { "id": "st_bi_lmgen6", "cat": "example", "name": "Examples", "text": "`lim_(x→3) (x² + 1)` → `10` (stage 2)\n`lim_(x→1) 1/(x − 1)²` → `1/0`, denominator `> 0` from both sides → `+∞` (stage 3)\n`lim_(x→1) 1/(x − 1)` → `1/0`, `−` from the left, `+` from the right → no limit (stage 3)\n`lim_(x→2) (x² − 4)/(x − 2)` → `0/0`, polynomials → factor (stage 4)" }
+  ] },
+{ "id": "pp_bi_lmfac", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit of 0/0 — factor and cancel",
+  "description": "Remove a 0/0 by factoring out (x − a) with the shortened multiplication formulas and cancelling it.",
+  "uses": [["c", "lm3", "Shortened multiplication formulas"], ["c", "lm1", "Properties of a limit"]],
+  "parts": [
+    { "id": "st_bi_lmfac1", "cat": "stage", "name": "Check the form", "text": "Plug in `x = a`: `0/0` → both top and bottom have the factor `(x − a)`." },
+    { "id": "st_bi_lmfac2", "cat": "stage", "name": "Factor", "text": "Factor top and bottom (shortened multiplication formulas, common factor, or the roots of a quadratic) so `(x − a)` shows." },
+    { "id": "st_bi_lmfac3", "cat": "stage", "name": "Cancel", "text": "Cancel `(x − a)` — allowed because `x ≠ a` inside a limit." },
+    { "id": "st_bi_lmfac4", "cat": "stage", "name": "Plug in again", "text": "Put `x = a` into what is left. Still `0/0` → factor again." },
+    { "id": "st_bi_lmfac5", "cat": "example", "name": "Example", "text": "`lim_(x→2) (x² − 4)/(x − 2)`\n1. `0/0`\n2. `x² − 4 = (x − 2)(x + 2)`\n3. `= lim_(x→2) (x + 2)`\n4. `= 4`" },
+    { "id": "st_bi_lmfac6", "cat": "example", "name": "Example — cubes", "text": "`lim_(x→1) (x³ − 1)/(x² − 1)`\n1. `0/0`\n2. `(x − 1)(x² + x + 1)` over `(x − 1)(x + 1)`\n3. `= lim_(x→1) (x² + x + 1)/(x + 1)`\n4. `= 3/2`" }
+  ] },
+{ "id": "pp_bi_lmcon", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit with a root — multiply by the conjugate",
+  "description": "Remove a root that causes 0/0 or ∞ − ∞ by multiplying by its conjugate over itself.",
+  "uses": [["c", "lm3", "Multiplying by 1"], ["c", "lm3", "Shortened multiplication formulas"]],
+  "parts": [
+    { "id": "st_bi_lmcon1", "cat": "stage", "name": "Find the root expression", "text": "The part `√A − B` (or `√A + B`) that makes `0/0` or `∞ − ∞`." },
+    { "id": "st_bi_lmcon2", "cat": "stage", "name": "Multiply by 1", "text": "Multiply top and bottom by the conjugate: `(√A + B)/(√A + B)`." },
+    { "id": "st_bi_lmcon3", "cat": "stage", "name": "Use a² − b²", "text": "`(√A − B)(√A + B) = A − B²` — the root is gone. Leave the other side unexpanded." },
+    { "id": "st_bi_lmcon4", "cat": "stage", "name": "Cancel and plug in", "text": "Cancel the common factor (or divide by the biggest power if `x → ∞`), then plug in." },
+    { "id": "st_bi_lmcon5", "cat": "example", "name": "Example — 0/0", "text": "`lim_(x→4) (√x − 2)/(x − 4)`\n1. `0/0`, root expression `√x − 2`\n2. multiply by `(√x + 2)/(√x + 2)`\n3. `= lim_(x→4) (x − 4)/((x − 4)(√x + 2))`\n4. `= lim_(x→4) 1/(√x + 2) = 1/4`" },
+    { "id": "st_bi_lmcon6", "cat": "example", "name": "Example — ∞ − ∞", "text": "`lim_(x→∞) (√(x² + x) − x)`\n1. `∞ − ∞`\n2. multiply by `(√(x² + x) + x)/(√(x² + x) + x)`\n3. `= lim_(x→∞) x/(√(x² + x) + x)`\n4. divide by `x`: `= lim_(x→∞) 1/(√(1 + 1/x) + 1) = 1/2`" }
+  ] },
+{ "id": "pp_bi_lmbig", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit at infinity — divide by the biggest power",
+  "description": "For x → ±∞: multiply by (1/xⁿ)/(1/xⁿ) so every term but the leading ones goes to 0.",
+  "uses": [["c", "lm3", "Polynomials and the biggest power"], ["c", "lm3", "Multiplying by 1"], ["c", "lm1", "Infinite limits and limits at infinity"]],
+  "parts": [
+    { "id": "st_bi_lmbig1", "cat": "stage", "name": "Find the biggest power", "text": "The biggest power of `x` in the **denominator**: `xⁿ`." },
+    { "id": "st_bi_lmbig2", "cat": "stage", "name": "Multiply by 1", "text": "Multiply top and bottom by `1/xⁿ` (divide every term by `xⁿ`). Under a root `√(…)`, `x` comes in as `√(x²)` (careful: `√(x²) = |x|`, so `= −x` when `x → −∞`)." },
+    { "id": "st_bi_lmbig3", "cat": "stage", "name": "Drop what goes to 0", "text": "`c/xᵏ → 0` for `k > 0`." },
+    { "id": "st_bi_lmbig4", "cat": "stage", "name": "Read the limit", "text": "What is left gives the limit: a number, `0`, or `±∞`." },
+    { "id": "st_bi_lmbig5", "cat": "example", "name": "Example", "text": "`lim_(x→∞) (3x² − x)/(2x² + 5)`\n1. `x²`\n2. `= lim_(x→∞) (3 − 1/x)/(2 + 5/x²)`\n3. `1/x → 0`, `5/x² → 0`\n4. `= 3/2`" },
+    { "id": "st_bi_lmbig6", "cat": "example", "name": "Example — shortcut", "text": "Same answer from the biggest-power rule: equal degrees → ratio of the leading coefficients `3/2`. Degree on top bigger, e.g. `(x³ + 1)/(x² − 4)` → `∞`." }
+  ] },
+{ "id": "pp_bi_lmsub", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit with a help variable t",
+  "description": "Replace a repeating chunk by t to turn the limit into one you can factor or recognize.",
+  "uses": [["c", "lm7", "Limit of a composition"], ["c", "lm3", "Shortened multiplication formulas"]],
+  "parts": [
+    { "id": "st_bi_lmsub1", "cat": "stage", "name": "Choose t", "text": "Let `t` = the chunk that repeats or makes it hard (a root, `eˣ`, `ln x`, `1/x`…)." },
+    { "id": "st_bi_lmsub2", "cat": "stage", "name": "Where does t go?", "text": "Find what `t` tends to as `x → a`: `t → b`." },
+    { "id": "st_bi_lmsub3", "cat": "stage", "name": "Rewrite in t", "text": "Write the whole expression with `t` only — no `x` left." },
+    { "id": "st_bi_lmsub4", "cat": "stage", "name": "Solve the new limit", "text": "`lim_(t→b)` of the new expression, with any other tool." },
+    { "id": "st_bi_lmsub5", "cat": "example", "name": "Example", "text": "`lim_(x→1) (∛x − 1)/(x − 1)`\n1. `t = ∛x`, so `x = t³`\n2. `x → 1` ⇒ `t → 1`\n3. `= lim_(t→1) (t − 1)/(t³ − 1)`\n4. `t³ − 1 = (t − 1)(t² + t + 1)` → `= lim_(t→1) 1/(t² + t + 1) = 1/3`" }
+  ] },
+{ "id": "pp_bi_lmlho", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "L'Hôpital's rule",
+  "description": "For 0/0 or ∞/∞: replace f/g by f′/g′ and take the limit again.",
+  "uses": [["c", "lm4", "L'Hôpital's rule"], ["c", "lm4", "Other forms into 0/0 or ∞/∞"], ["c", "c2", "Differentiation rules"], ["c", "c4", "Derivatives"], ["c", "c5", "Derivatives & integrals"]],
+  "parts": [
+    { "id": "st_bi_lmlho1", "cat": "stage", "name": "Check the form", "text": "Plug in: only `0/0` or `∞/∞` allowed. Another form → turn it into one first (`0·∞`, `∞ − ∞`, powers — see the card)." },
+    { "id": "st_bi_lmlho2", "cat": "stage", "name": "Differentiate separately", "text": "Derivative of the top, derivative of the bottom — **not** the quotient rule." },
+    { "id": "st_bi_lmlho3", "cat": "stage", "name": "New limit", "text": "Take `lim f'(x)/g'(x)` — plug in." },
+    { "id": "st_bi_lmlho4", "cat": "stage", "name": "Repeat if needed", "text": "Still `0/0` or `∞/∞` → back to stage 2." },
+    { "id": "st_bi_lmlho5", "cat": "example", "name": "Example", "text": "`lim_(x→0) (eˣ − 1)/x`\n1. `0/0` ✓\n2. `(eˣ − 1)' = eˣ`, `(x)' = 1`\n3. `= lim_(x→0) eˣ/1 = 1`" },
+    { "id": "st_bi_lmlho6", "cat": "example", "name": "Example — twice", "text": "`lim_(x→∞) x²/eˣ`\n1. `∞/∞` ✓\n2–3. `= lim_(x→∞) 2x/eˣ` — still `∞/∞`\n4. `= lim_(x→∞) 2/eˣ = 0`" },
+    { "id": "st_bi_lmlho7", "cat": "example", "name": "Example — when not to", "text": "`lim_(x→0⁺) (x + 1)/x` is `1/0`, not `0/0`. L'Hôpital would give `1` — wrong. The real answer: `+∞`." }
+  ] },
+{ "id": "pp_bi_lmcpt", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Check continuity at a point (or find a parameter)",
+  "description": "Check the three conditions at a point — typically the seam of a piecewise function.",
+  "uses": [["c", "lm5", "Continuity at a point"], ["c", "lm1", "One-sided limits"], ["c", "fn2", "Piecewise function"]],
+  "parts": [
+    { "id": "st_bi_lmcpt1", "cat": "stage", "name": "f(a)", "text": "Compute `f(a)` from the piece that contains `a`. Undefined → not continuous." },
+    { "id": "st_bi_lmcpt2", "cat": "stage", "name": "One-sided limits", "text": "`lim_(x→a⁻) f(x)` with the left piece, `lim_(x→a⁺) f(x)` with the right piece." },
+    { "id": "st_bi_lmcpt3", "cat": "stage", "name": "Compare", "text": "Continuous ⇔ left limit = right limit = `f(a)`. With a parameter: set them equal and solve." },
+    { "id": "st_bi_lmcpt4", "cat": "example", "name": "Example — find a", "text": "For which `a` is `f` continuous at `x = 2`?\nf(x) = { ax + 1 ; x < 2\n{ x² ; x ≥ 2\n1. `f(2) = 4`\n2. left: `2a + 1` · right: `4`\n3. `2a + 1 = 4` → `a = 3/2`" }
+  ] },
+{ "id": "pp_bi_lmcontra", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Proof by contradiction",
+  "description": "A general way to prove a claim: assume it is false and show that leads to something impossible. Here: (dis)continuity and limits.",
+  "uses": [["c", "lm6", "Continuous and not continuous"], ["c", "lm6", "Arithmetic of continuous functions"], ["c", "lm2", "When you can't use the arithmetic"]],
+  "parts": [
+    { "id": "st_bi_lmcontra1", "cat": "stage", "name": "State the claim", "text": "Write exactly what you want to prove — e.g. \"`h` is **not** continuous at `a`\"." },
+    { "id": "st_bi_lmcontra2", "cat": "stage", "name": "Assume the opposite", "text": "\"Suppose, on the contrary, that `h` **is** continuous at `a`.\"" },
+    { "id": "st_bi_lmcontra3", "cat": "stage", "name": "Build from the assumption", "text": "Combine the assumption with what is given, using theorems (arithmetic of limits / continuity, composition). Typical move: write the bad function from the good ones — `g = (f + g) − f`." },
+    { "id": "st_bi_lmcontra4", "cat": "stage", "name": "Hit a contradiction", "text": "Reach something that contradicts a given fact or a known truth (\"so `g` is continuous — but we were told it isn't\")." },
+    { "id": "st_bi_lmcontra5", "cat": "stage", "name": "Conclude", "text": "The assumption was false, so the claim is true. ∎" },
+    { "id": "st_bi_lmcontra6", "cat": "example", "name": "Example — not continuous", "text": "`f(x) = x²` is continuous at 0, `g(x) = sgn x` is not. Prove `f + g` is not continuous at 0.\n1. Claim: `f + g` not continuous at 0.\n2. Suppose `f + g` is continuous at 0.\n3. `g = (f + g) − f`: a difference of two functions continuous at 0 → continuous at 0 (arithmetic of continuity).\n4. But `g` is not continuous at 0 — contradiction.\n5. So `f + g` is not continuous at 0. ∎" },
+    { "id": "st_bi_lmcontra7", "cat": "example", "name": "Example — no limit", "text": "Prove `lim_(x→0) [x + sin(1/x)]` does not exist.\n1. Claim: no limit.\n2. Suppose it exists: `= L`.\n3. `lim_(x→0) x = 0` exists, so `sin(1/x) = [x + sin(1/x)] − x` would have limit `L − 0` (arithmetic of limits).\n4. But `lim_(x→0) sin(1/x)` does not exist — contradiction.\n5. So the limit does not exist. ∎" }
+  ] },
+{ "id": "pp_bi_lmivt", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Prove an equation has a root (IVT)",
+  "description": "Show f(x) = 0 (or f(x) = h(x)) has a solution in an interval with the intermediate value theorem.",
+  "uses": [["c", "lm8", "A root between a sign change"], ["c", "lm8", "Intermediate value theorem"], ["c", "lm6", "Arithmetic of continuous functions"]],
+  "parts": [
+    { "id": "st_bi_lmivt1", "cat": "stage", "name": "Make it = 0", "text": "`f(x) = h(x)` → define `g(x) = f(x) − h(x)`; a root of `g` solves the equation." },
+    { "id": "st_bi_lmivt2", "cat": "stage", "name": "Continuity", "text": "Show `g` is continuous on `[a, b]` (elementary functions, arithmetic and composition of continuous functions)." },
+    { "id": "st_bi_lmivt3", "cat": "stage", "name": "Opposite signs", "text": "Find `a`, `b` with `g(a)·g(b) < 0` — try easy points: `0`, `±1`, `π/2`, the interval's ends." },
+    { "id": "st_bi_lmivt4", "cat": "stage", "name": "Conclude", "text": "By the IVT, `∃c ∈ (a, b) : g(c) = 0`, i.e. `f(c) = h(c)`. ∎" },
+    { "id": "st_bi_lmivt5", "cat": "example", "name": "Example", "text": "`x³ + x − 1 = 0` has a root in `(0, 1)`.\n1. `g(x) = x³ + x − 1`\n2. a polynomial → continuous on `[0, 1]`\n3. `g(0) = −1 < 0`, `g(1) = 1 > 0`\n4. `∃c ∈ (0, 1) : g(c) = 0`. ∎" },
+    { "id": "st_bi_lmivt6", "cat": "example", "name": "Example — two sides", "text": "`cos x = x` has a solution.\n1. `g(x) = cos x − x`\n2. difference of continuous functions → continuous on `[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎" }
   ] }
 ]
 </script>
@@ -3792,7 +4198,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B90</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B91</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5818,7 +6224,9 @@ function __detabaseMain() {
     precalc: { title: "Precalculus — Derivatives & Integrals",
       sub: 'From <span class="mono">Precalc.md</span> — domain, derivatives, integrals, trig &amp; exp/log calculus.' },
     fn: { title: "Functions — for Calculus 1",
-      sub: 'What a function is, piecewise and absolute-value functions, trig with an inner argument, composition.' }
+      sub: 'What a function is, piecewise and absolute-value functions, trig with an inner argument, composition.' },
+    lim: { title: "Limits and continuity — for Calculus 1",
+      sub: 'Limits, their arithmetic and calculation, L\'Hôpital, continuity and the intermediate value theorem.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -17869,24 +18277,46 @@ function __detabaseMain() {
   }, 900);
 
   // =========================================================
-  // Pretty fractions — render "a / b" inside <code> as a stacked fraction
+  // Pretty math — inside <code>: "a / b" → a stacked fraction (brackets around a whole numerator or
+  // denominator are dropped), "lim_(x→a)" → "lim" with x→a underneath. Works on each text node, so
+  // a <code> with tags inside (<b>, <sup>…) is handled too.
   // =========================================================
   function prettyFractions(root) {
-    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐ√_.]+";
-    var TERM = "(?:√?\\([^()]+\\)|" + TOK + "(?:\\s" + TOK + ")?)";
-    var re = new RegExp("(" + TERM + ")\\s*/\\s*(" + TERM + ")", "g");
+    var PAR = "\\((?:[^()]|\\([^()]*\\))+\\)";   // (…) with at most one level of (…) inside
+    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π, f(x), g'(x)
+    var TERM = "(?:√?" + PAR + "|" + CALL + "(?:\\s" + CALL + ")?)";
+    var SRC = "(" + TERM + ")\\s*/\\s*(" + TERM + ")";
     var SKIP = { and: 1, or: 1, AND: 1, OR: 1, n: 1 };
+    function bare(t) {   // "(x − 4)" → "x − 4", but "(x − 4)(x + 2)" stays
+      if (t.charAt(0) !== "(") return t;
+      for (var i = 0, d = 0; i < t.length; i++) {
+        d += t[i] === "(" ? 1 : t[i] === ")" ? -1 : 0;
+        if (d === 0) return i === t.length - 1 ? t.slice(1, -1) : t;
+      }
+      return t;
+    }
+    function fracs(h) {   // a numerator / denominator may hold a fraction itself: (1/x)/(1/x)
+      return h.replace(new RegExp(SRC, "g"), function (m, a, b) {
+        a = a.trim(); b = b.trim();
+        return (SKIP[a] || SKIP[b]) ? m
+          : '<span class="frac"><span class="fnum">' + fracs(bare(a)) + '</span><span class="fden">' + fracs(bare(b)) + '</span></span>';
+      });
+    }
+    function pretty(h) { return fracs(h).replace(/lim_\(([^()]*)\)/g, '<span class="lim">lim<span class="lim-s">$1</span></span>'); }
     var list = root.querySelectorAll ? root.querySelectorAll("code:not([data-fx])") : [];
     Array.prototype.forEach.call(list, function (c) {
-      var h = c.innerHTML;
-      if (h.indexOf("/") >= 0 && !/<[a-z]/i.test(h)) {
-        c.innerHTML = h.replace(re, function (m, a, b) {
-          a = a.trim(); b = b.trim();
-          return (SKIP[a] || SKIP[b]) ? m
-            : '<span class="frac"><span class="fnum">' + a + '</span><span class="fden">' + b + '</span></span>';
-        });
-      }
       c.setAttribute("data-fx", "1");
+      if (c.textContent.indexOf("/") < 0 && c.textContent.indexOf("lim_(") < 0) return;
+      var w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT), texts = [], t;
+      while ((t = w.nextNode())) texts.push(t);
+      texts.forEach(function (n) {
+        var h = escapeHtml(n.nodeValue), h2 = pretty(h);
+        if (h2 === h) return;
+        var tmp = document.createElement("span");
+        tmp.innerHTML = h2;
+        while (tmp.firstChild) n.parentNode.insertBefore(tmp.firstChild, n);
+        n.parentNode.removeChild(n);
+      });
     });
   }
   var fxPending = false;
