@@ -784,32 +784,6 @@
   body.dnd-active, body.dnd-active * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
   .dnd-handle, .sp-tab-head, .ue-head, .tree-ghead, .tree-kids > button, #topbar > button, .ps-stage-head, .sum-item-head, .pl-tpl-item, .pl-goal-group, .pl-fmt-block-row {
     -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-  /* picking: the whole concept block is the target, ringed when it is in */
-  .pick-host { position: relative; }
-  .pick-ov { position: absolute; inset: 0; z-index: 15;   /* above a card's content, below the sticky tab bar (20) */ border: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); border-radius: var(--r-md);
-    background: color-mix(in srgb, var(--accent) 4%, transparent); cursor: pointer; padding: 0; }
-  .pick-ov:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
-  .pick-ov.on { border-style: solid; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
-  .pick-badge { position: absolute; top: 8px; right: 8px; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
-    background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-secondary); font-size: .8rem; font-weight: 700; box-shadow: var(--shadow); }
-  .pick-badge::before { content: "＋ Add"; }
-  .pick-ov.on .pick-badge { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .pick-ov.on .pick-badge::before { content: "✓ In"; }
-  body.sum-picking .lib-dots, body.sum-picking .used-badge, body.sum-picking #libBar { visibility: hidden; }
-  .pick-group { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; color: var(--text-muted); margin: 8px 4px 0; }
-  .pick-row { display: flex; align-items: center; gap: 10px; min-height: var(--tap); width: 100%; text-align: left; padding: 0 12px; font: inherit; font-size: .9rem;
-    border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); cursor: pointer; }
-  .pick-row:hover { border-color: var(--accent); }
-  .pick-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border-strong); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .8rem; }
-  .pick-row.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); }
-  .pick-row.on .pick-box { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .pick-row.on .pick-box::before { content: "✓"; }
-  /* the tray while picking */
-  .sum-tray { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 5000; display: flex; align-items: center; gap: 10px;
-    max-width: calc(100vw - 24px); padding: 10px 10px 10px 18px; border-radius: var(--r-lg); background: var(--bg); border: 1px solid var(--border-strong); box-shadow: var(--shadow); }
-  .sum-tray-text { font-size: .9rem; color: var(--text-secondary); }
-  @media (max-width: 640px) { .sum-tray { flex-wrap: wrap; justify-content: flex-end; } .sum-tray-text { flex: 1 1 100%; } }
-  body.sum-picking { padding-bottom: 90px; }
   /* a summary's own page */
   #sumPane .cp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
   #sumPane .cp-head h2 { font-size: 1.45rem; flex: 1 1 260px; min-width: 0; border-top: 0; padding-top: 0; margin: 0; cursor: pointer; }
@@ -896,6 +870,10 @@
   .ls-ghead { margin: 0 0 4px; padding: 0; border: 0; }
   .ls-gopen { min-height: var(--tap); padding: 0; border: 0; background: none; font: inherit; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
   .ls-gopen:hover, .ls-ctitle:hover, .ls-kicker:hover { color: var(--accent); }
+  .ls-shead { display: block; width: 100%; min-height: var(--tap); margin: 18px 0 0; padding: 4px 2px 6px; border: 0; border-bottom: 2px solid var(--accent); background: none; font: inherit; font-size: 1.35rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
+  .ls-shead:first-child { margin-top: 0; }
+  .ls-shead:hover { color: var(--accent); }
+  .em-libbar { margin: 0 0 12px; }
   .ls-kicker { display: block; min-height: 30px; padding: 0; border: 0; background: none; font: inherit; font-size: .74rem; font-weight: 700; letter-spacing: .04em;
     text-transform: uppercase; color: var(--text-muted); text-align: left; cursor: pointer; }
   .ls-gtitle { display: block; padding-bottom: 4px; font-size: 1.08rem; font-weight: 700; line-height: 1.4; white-space: pre-wrap; color: var(--text-primary); }
@@ -980,8 +958,6 @@
   .mg-title .lib-dots { margin-left: auto; }
   .sp-where { flex-basis: 100%; font-size: .72rem; color: var(--text-muted); }
   .sp-section { margin-top: 22px; }
-  .sp-pickbox { margin-top: 14px; }
-  .sp-pickbox .side-list { max-height: 280px; }
   /* the filter panel */
   .spf-sec { margin-bottom: 16px; }
   .spf-tab { display: flex; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); padding: 2px 0; }
@@ -4298,12 +4274,13 @@
 
 <div id="subPage" hidden></div>
 <div id="folderPage" class="folder-page" hidden></div>
+<div id="scopePane" hidden></div>
 
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B94</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B95</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6863,7 +6840,7 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = id;   // its own page
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = id; scopeSum = null;   // its own page
     saveStore();
     renderEtiTree();
     applyView();
@@ -6898,6 +6875,7 @@ function __detabaseMain() {
     store.subjects.forEach(function (s) { if (s.folder === "eti" && s.group === id) s.group = up || "base"; });
     groupKidsOf(id).forEach(function (g) { if (up) store.groupParent[g] = up; else delete store.groupParent[g]; });
     if (store.groupParent) delete store.groupParent[id];
+    sumEnsure().forEach(function (sm) { if (sm.subject === "g:" + id) sm.subject = up ? "g:" + up : "lib"; });   // its study sheets: to where its contents went
     store.groups = store.groups.filter(function (g) { return g.id !== id; });
     if (store.order.etiKids) delete store.order.etiKids[id];
     if (store.order.etiGroups) store.order.etiGroups = store.order.etiGroups.filter(function (x) { return x !== id; });
@@ -6931,6 +6909,7 @@ function __detabaseMain() {
     head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
     head.querySelector("h2").textContent = groupIcon(gid) + " " + groupName(gid);
     var acts = head.querySelector(".cd-acts");
+    acts.appendChild(actBtn("📋 Summary", "everything in this folder on one page, with filters — save it as a study sheet", function () { openScopeSummary("g:" + gid); }));
     acts.appendChild(actBtn("＋ Folder", "a new folder inside this one", function () {
       askName("New folder", "Inside “" + groupName(gid) + "”.", "", function (n) { var id = addGroup(n, gid); renderFolderPage(); if (id) libToast("Created the folder “" + n + "”"); });
     }));
@@ -6973,6 +6952,7 @@ function __detabaseMain() {
       sg.appendChild(b);
     });
     host.appendChild(sg);
+    host.appendChild(studySheetsSection("g:" + gid));
   }
   function folderMenu(anchor, gid) {
     var custom = !BUILTIN_GROUPS[gid];
@@ -7042,11 +7022,12 @@ function __detabaseMain() {
     var onPage = onProblem && isPage(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
     var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
-    var onMining = !onProblem && !onSum && activeTop === "eti" && miningScreen;
+    var onScope = !onProblem && !onSum && activeTop === "eti" && scopeValid(scopeSum);   // a folder's / the library's summary (every other page clears scopeSum)
+    var onMining = !onProblem && !onSum && !onScope && activeTop === "eti" && miningScreen;
     var onPs = !onProblem && !onSum && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
     var onSub = !onProblem && !onSum && !onMining && !onPs && activeTop === "eti" && subOpen();
-    var onFolder = !onProblem && !onSum && !onMining && !onPs && !onSub && activeTop === "eti" && !activeSubject && !!folderPage && groupExists(folderPage);
-    var builtin = !onProblem && !onSum && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onFolder = !onProblem && !onSum && !onScope && !onMining && !onPs && !onSub && activeTop === "eti" && !activeSubject && !!folderPage && groupExists(folderPage);
+    var builtin = !onProblem && !onSum && !onScope && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -7063,24 +7044,24 @@ function __detabaseMain() {
     });
     syncGroupButtons();
     $("customPane").hidden = onProblem || onMining || onSum || !activeSubject || activeTop === "eti";
-    $("subjectPage").hidden = !(!onProblem && !onSum && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && (!!activeSubject || builtin));
+    $("subjectPage").hidden = !(!onProblem && !onSum && !onScope && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && (!!activeSubject || builtin));
     $("subPage").hidden = !onSub;
     $("folderPage").hidden = !onFolder;
+    $("scopePane").hidden = !onScope;
+    if (!onScope) parkScopePane();
     if (!onSub) parkSubPage();
     $("psPane").hidden = !onPs;
     $("sumPane").hidden = !onSum;
     $("miningPane").hidden = !onMining;
     if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onScope || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
     }
     setTimeout(function () {                                              // after the branches below settle the open tab
       try { renderLibBar(); } catch (e) {}
-      var sk = shownSubjectKey();
-      if (sumPick && sumPick.key !== sk) sumPickEnd();   // picking belongs to the subject it started on
     }, 0);
     if (onNbBank) {
       nbTab(store.ui.nbTab || "pdfs");
@@ -7112,7 +7093,7 @@ function __detabaseMain() {
       renderMiningScreen();
     } else if (onSum) {
       var smx = summaryById(activeSummary);
-      $("pageTitle").textContent = subjectName(smx.subject);
+      $("pageTitle").textContent = smx.subject === "lib" ? "ETI" : scopeName(smx.subject);
       $("pageSubtitle").innerHTML = 'Study sheet · ' + smx.items.length + (smx.items.length === 1 ? ' item' : ' items');
       history.replaceState(null, "", "#" + smx.id);
       renderSumPane();
@@ -7128,6 +7109,11 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = sm.sub;
       history.replaceState(null, "", "#" + sm.hash);
       renderSubPage();
+    } else if (onScope) {
+      $("pageTitle").textContent = scopeSum === "lib" ? "ETI" : groupName(scopeSum.slice(2));
+      $("pageSubtitle").innerHTML = scopeSum === "lib" ? 'A summary of the whole library' : 'A summary of everything in this folder';
+      history.replaceState(null, "", "#" + scopeSumHash(scopeSum));
+      renderScopePane();
     } else if (onFolder) {
       var fpath = groupPath(folderPage).slice(0, -1);
       $("pageTitle").textContent = groupName(folderPage);
@@ -7173,7 +7159,7 @@ function __detabaseMain() {
 
   function selectTop(id) {
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
-    miningScreen = id === "eti"; folderPage = null;           // ETI's main page is its landing page
+    miningScreen = id === "eti"; folderPage = null; scopeSum = null;           // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
@@ -7187,7 +7173,7 @@ function __detabaseMain() {
   function selectSubject(id, sub) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; scopeSum = null;
     if (s.folder === "eti") noteSubject("s:" + id);
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
@@ -7326,7 +7312,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -12124,6 +12110,12 @@ function __detabaseMain() {
     var st = lsumState(spec), chips = lsumChips(spec, st);
     var acts = bar || subHeadEl(host, spec.back, spec.title);
     acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
+    var groups = [];                   // filled below; Save takes what is on screen when it is tapped
+    acts.appendChild(actBtn("💾 Save to study sheet", "save what this summary shows — into a new study sheet or onto one you have", function () {
+      var refs = [];
+      groups.forEach(function (g) { g.items.forEach(function (el) { if (el.__ref) refs.push(el.__ref); }); });
+      sumSaveRefs(refs, spec.scope, function () { lsumRedraw(spec); });
+    }));
     var row = document.createElement("div");
     row.className = "sp-chips";
     if (chips.length) {
@@ -12141,12 +12133,13 @@ function __detabaseMain() {
     host.appendChild(row);
     var body = document.createElement("div");
     body.className = "ls-body";
-    var groups = spec.groups(st.off, Math.max(240, libBlockWidth(host) - 60)).filter(function (g) { return g.items.length; });
+    groups = spec.groups(st.off, Math.max(240, libBlockWidth(host) - 60)).filter(function (g) { return g.items.length; });
     if (!groups.length) body.innerHTML = '<p class="muted sp-empty">' + escapeHtml(chips.length ? "Nothing here with these filters." : spec.empty) + '</p>';
     groups.forEach(function (g) {
       var sec = document.createElement("section");
       sec.className = "ls-group";
       if (g.tab) sec.setAttribute("data-tab", g.tab);     // a concept's group: found like its section (spSectionOf)
+      if (g.head) body.appendChild(actBtn(g.head.title, "open it", g.head.open, "ls-shead"));   // a subject's name, above its first group (folder and library summaries)
       if (g.title || g.kicker) {
         var h = document.createElement("h3");
         h.className = "ls-ghead";
@@ -12199,6 +12192,7 @@ function __detabaseMain() {
       chip: function (o) { return "without " + o.name; } });
     return {
       mem: tabId ? "t|" + tabId : "s|" + key,
+      scope: key,                                 // where a study sheet saved from it belongs
       title: "Summary · " + (tabId ? tabLabel(tabId) : "all concepts"),
       back: tabId ? { label: "‹ " + tabLabel(tabId), title: "back to the concept", run: function () { openConceptPage(tabId); } } : null,
       redraw: tabId ? null : renderSubjectPage,   // a subject's: its Concepts tab
@@ -12220,6 +12214,7 @@ function __detabaseMain() {
   function cardSumEl(cref) {
     var d = document.createElement("article");
     d.className = "ls-card cd-flat";
+    d.__ref = { lvl: "c", id: cref.id };          // what "💾 Save to study sheet" saves
     d.setAttribute("data-card", cref.id);
     var h = document.createElement("div");
     h.className = "ls-chead";
@@ -12251,6 +12246,7 @@ function __detabaseMain() {
     }
     return {
       mem: one ? "p|" + one.id : "m|" + key,
+      scope: key,
       title: "Summary · " + (one ? one.name : "all methods"),
       back: one ? { label: "‹ " + one.name, title: "back to the method", run: function () { selectPsPage(one.id); } } : null,
       redraw: one ? null : renderSubjectPage,     // a subject's: its Methods tab
@@ -12277,6 +12273,7 @@ function __detabaseMain() {
   function partSumEl(pg, part, w) {
     var d = document.createElement("article");
     d.className = "ls-card ls-part";
+    d.__ref = { lvl: "st", id: part.id };
     d.setAttribute("data-st", part.id);
     var h = document.createElement("div");
     h.className = "ls-chead";
@@ -12290,6 +12287,67 @@ function __detabaseMain() {
     if (part.clip) d.appendChild(psCropBlock(part.clip, w));
     if (part.text) d.appendChild(partTextEl(part.text));
     return d;
+  }
+
+  // ---- a folder's summary (every subject in it, folders inside included) or the whole library's ----
+  // scope "g:<group id>" | "lib". Each subject's concepts (card by card) and methods (part by part), the
+  // subject's name above them; filters: Subjects, Show (cards / method parts), Card types, Part categories,
+  // Method kinds. Its own page (scopeSum, pane #scopePane, address #fsummary:<group id> / #lsummary).
+  var scopeSum = null;
+  function groupSubjectKeysDeep(gid) {
+    return groupKidsOf(gid).reduce(function (out, g) { return out.concat(groupSubjectKeysDeep(g)); }, groupSubjectKeys(gid).slice());
+  }
+  function scopeValid(scope) { return scope === "lib" || (!!scope && scope.slice(0, 2) === "g:" && groupExists(scope.slice(2))); }
+  function scopeSumSpec(scope) {
+    var keys = scope === "lib" ? allSubjectKeys() : groupSubjectKeysDeep(scope.slice(2));
+    var one = function (list) { return list.map(function (x) { return { id: x.id, name: x.name, color: x.color }; }); };
+    return {
+      mem: "x|" + scope, scope: scope, redraw: renderScopePane,
+      title: "Summary · " + (scope === "lib" ? "the whole library" : groupName(scope.slice(2))),
+      back: scope === "lib" ? { label: "‹ ETI", title: "back to ETI's main page", run: openMiningScreen }
+                            : { label: "‹ " + groupName(scope.slice(2)), title: "back to the folder", run: function () { selectGroup(scope.slice(2)); } },
+      empty: keys.length ? "Nothing in these subjects yet." : "No subjects here yet.",
+      filters: [
+        { id: "subject", label: "Subjects", opts: keys.map(function (k) { return { id: k, name: subjectName(k) }; }), chip: function (o) { return "without " + o.name; } },
+        { id: "show", label: "Show", opts: [{ id: "c", name: "Cards" }, { id: "m", name: "Method parts" }], chip: function (o) { return "no " + o.name.toLowerCase(); } },
+        { id: "type", label: "Card types", dots: true, opts: one(cardTypes()).concat([{ id: "none", name: "Unlabeled" }]),
+          chip: function (o) { return "no " + (o.id === "none" ? "unlabeled cards" : o.name); } },
+        { id: "cat", label: "Part categories", dots: true, opts: one(partCats()), chip: function (o) { return "no " + o.name + " parts"; } },
+        { id: "kind", label: "Method kinds", dots: true, opts: one(methodKinds()).concat([{ id: "none", name: "No kind yet" }]),
+          chip: function (o) { return o.id === "none" ? "no methods without a kind" : "no " + o.name + " methods"; } }
+      ],
+      groups: function (off, w) {
+        var out = [];
+        keys.filter(function (k) { return !off.subject[k]; }).forEach(function (k) {
+          var mine = [];
+          if (!off.show.c) mine = mine.concat(conceptsSumSpec(k, null).groups({ type: off.type, concept: {} }, w));
+          if (!off.show.m) mine = mine.concat(methodsSumSpec(k, null).groups({ cat: off.cat, kind: off.kind, method: {}, folder: {} }, w));
+          mine = mine.filter(function (g) { return g.items.length; });
+          if (mine.length) mine[0].head = { title: subjectName(k), open: function () { openSubjectRef(k); } };
+          out = out.concat(mine);
+        });
+        return out;
+      }
+    };
+  }
+  function openScopeSummary(scope) {
+    if (!scopeValid(scope)) return;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null;
+    scopeSum = scope;
+    applyView(); renderEtiTree();
+  }
+  function scopeSumHash(scope) { return scope === "lib" ? "lsummary" : "fsummary:" + encodeURIComponent(scope.slice(2)); }
+  // built-in cards are moved into it (like a subject's page) — back to the hidden library before redrawing or leaving
+  function parkScopePane() { var h = $("scopePane"); if (h && h.firstChild) { spPark(h); h.innerHTML = ""; } }
+  function renderScopePane() { keepScroll(drawScopePane); }
+  function drawScopePane() {
+    var host = $("scopePane"); if (!host) return;
+    parkScopePane();
+    if (!scopeValid(scopeSum)) return;
+    lsumRender(host, scopeSumSpec(scopeSum));
+    fillAllIn(host);
+    try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
+    spRefreshTools(host);
   }
 
   // ============================================================
@@ -12808,20 +12866,12 @@ function __detabaseMain() {
     host.innerHTML = "";
     if (!key || !refExists({ lvl: "s", id: key })) return;
     var st = spState(key);
-    if (sumPick && sumPick.key === key) {
-      // picking for a summary: every concept, full size, to tick; the method stages in a box above
-      var pick = subjectPickPanel(key);
-      pick.classList.add("sp-pickbox");
-      host.appendChild(pick);
-      spMerged(key, { view: "merged", off: {}, hide: { m: 1 } }, host);
-    } else {
-      host.appendChild(spHeadEl(key, st));
-      if (!spSummaryShown(st)) host.appendChild(spChipsEl(key, st));
-      if (st.view === "concepts") spConceptsView(key, st, host);
-      else if (st.view === "methods") spMethodsView(key, st, host);
-      else spMerged(key, st, host);
-      host.appendChild(subjectSummariesSection(key));
-    }
+    host.appendChild(spHeadEl(key, st));
+    if (!spSummaryShown(st)) host.appendChild(spChipsEl(key, st));
+    if (st.view === "concepts") spConceptsView(key, st, host);
+    else if (st.view === "methods") spMethodsView(key, st, host);
+    else spMerged(key, st, host);
+    host.appendChild(studySheetsSection(key));
     // a custom subject's notes, under its material, while it has any
     if (key.slice(0, 2) === "s:") {
       var nw = $("cpNotesWrap");
@@ -12830,7 +12880,6 @@ function __detabaseMain() {
     fillAllIn(host);
     try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
     spRefreshTools(host);
-    if (sumPick) { try { sumPickPaint(); } catch (e) {} }
   }
   // re-draw whatever shows the library, after it changed
   function spRefresh() { if (spShown()) renderSubjectPage(); }
@@ -12860,7 +12909,7 @@ function __detabaseMain() {
     el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
   }
   function openSubjectRef(key, then, sub) {
-    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; viewingProblem = false;
+    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; scopeSum = null; viewingProblem = false;
     if (key.slice(0, 2) === "s:") selectSubject(key.slice(2), sub);
     else {
       var fid = key.slice(2);
@@ -12900,11 +12949,11 @@ function __detabaseMain() {
   }
   // ---- problem-solving bank: right rail + page view ----
   var activePsPage = null, miningScreen = true;   // ETI opens on its main page
-  var folderPage = null;                          // a folder's own page (its group id) — FOLDER PAGE
+  var folderPage = null;                         // a folder's own page (its group id) — FOLDER PAGE
 
   function selectPsPage(id) {
     if (!psPageById(id)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null;
     applyView(); renderEtiTree();
   }
   // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
@@ -13498,6 +13547,7 @@ function __detabaseMain() {
     if (activePsPage && !viewingProblem) { try { renderPsPane(); } catch (e) {} }
     if (activeSummary) { try { renderSumPane(); } catch (e) {} }
     if (folderPage && $("folderPage") && !$("folderPage").hidden) renderFolderPage();
+    if (scopeValid(scopeSum) && $("scopePane") && !$("scopePane").hidden) renderScopePane();
   }
   // a method's parts: their order is the vine's order
   function psPartsDnd(docEl, pg) {
@@ -16217,8 +16267,7 @@ function __detabaseMain() {
     var wrap = document.createElement("div");
     nodes.forEach(function (n) {
       var c = n.cloneNode(true);
-      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls, .lib-dots, .used-badge, .pick-ov").forEach(function (x) { x.remove(); });
-      c.classList.remove("pick-host", "picked");
+      c.querySelectorAll(".ue-extra, .pin-btn, .del-x, .accordion-controls, .lib-dots, .used-badge").forEach(function (x) { x.remove(); });
       c.style.display = "";
       c.querySelectorAll("details").forEach(function (d) { d.open = true; });
       if (c.tagName === "DETAILS") c.open = true;
@@ -17085,10 +17134,14 @@ function __detabaseMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
     host.innerHTML =
+      '<div class="cc-bar em-libbar"></div>' +
       '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search concepts, cards, methods and their parts — or what a method involves…" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
       '<div class="em-narrow"></div><div class="em-tree"></div><div class="em-res"></div>' +
-      '<div class="em-vines"></div>';
+      '<div class="em-vines"></div><div class="em-sheets"></div>';
+    // the whole library: its summary (save any of it as a study sheet), and every study sheet you have
+    host.querySelector(".em-libbar").appendChild(actBtn("📋 Summary of the whole library", "every subject on one page, with filters — save any of it as a study sheet", function () { openScopeSummary("lib"); }, "btn-primary"));
+    host.querySelector(".em-sheets").appendChild(studySheetsSection("lib"));
     var input = host.querySelector(".em-search");
     input.value = mainQ;
     var st;
@@ -17428,50 +17481,31 @@ function __detabaseMain() {
     return wrap;
   }
   // ============================================================
-  // STUDY SHEETS — a subject's own revision sheet (called "summaries" until B84; the code names are kept)
-  // Pick concepts from the subject's material and stages from its methods; Create lays them out in
-  // the subject's own order — tab by tab, card by card, then each method's stages in solving order —
-  // and the order can then be changed by hand. A summary is a list of references, like everything
-  // else in the library, so it always shows the current version of what it points at.
-  //   store.summaries = [{ id, subject, name, items: [ref], created }]   (flat refs: safe in sync/main)
+  // STUDY SHEETS — saved summaries (called "summaries" until B84; the code names are kept)
+  // Since B95 a study sheet is made from summaries: any summary (a subject's Concepts or Methods tab, a
+  // concept's, a method's, a folder's, the whole library's) has "💾 Save to study sheet", which saves
+  // exactly what it shows, in its order — into a new sheet or added to the end of one you have, so a
+  // sheet can collect from many summaries. On the sheet the order can be changed and items taken out.
+  // A sheet is a list of references, so it always shows the current version of what it points at.
+  //   store.summaries = [{ id, subject: <scope>, name, items: [ref], created }]   (flat refs: safe in sync/main)
+  //   scope = a subject key ("f:…" / "s:…"), "g:<group id>" (a folder) or "lib" (the whole library):
+  //   where the sheet is listed and where "＋ Add more" goes back to.
   // ============================================================
   var activeSummary = null;
-  var sumPick = null;    // while picking: { key, picked: { refKey: ref }, editing: summaryId | null }
   function sumEnsure() { store.summaries = store.summaries || []; return store.summaries; }
   function summaryById(id) { return id ? byId(sumEnsure(), id) : null; }
-  function summariesOf(key) { return sumEnsure().filter(function (s) { return s.subject === key; }); }
+  function summariesOf(scope) { return sumEnsure().filter(function (s) { return scope === "lib" || s.subject === scope; }); }
   function byName(a, b) { return a.name.localeCompare(b.name); }
-  // every concept of the subject (tab by tab, card by card, a custom card's elements after it), then
-  // every method as the side panel lists them, each followed by its stages in solving order
-  function subjectOrder(key) {
-    var out = [];
-    libTabs(key).forEach(function (t) {
-      libCards(t.id).forEach(function (c) {
-        out.push({ lvl: "c", id: c.id });
-        libElements(c.id).forEach(function (e) { out.push({ lvl: "e", id: e.id }); });
-      });
-    });
-    psPagesOf(key).slice().sort(byName).forEach(function (pg) {
-      out.push({ lvl: "p", id: pg.id });
-      psParts(pg.id).forEach(function (p) { out.push({ lvl: "st", id: p.id }); });
-    });
-    return out;
+  function scopeName(scope) {
+    if (scope === "lib") return "the whole library";
+    if (scope.slice(0, 2) === "g:") return groupExists(scope.slice(2)) ? groupName(scope.slice(2)) : "(deleted folder)";
+    return subjectName(scope);
   }
-  function inSubjectOrder(key, refs) {
-    var want = {};
-    refs.forEach(function (r) { want[refKey(r)] = 1; });
-    var ordered = subjectOrder(key).filter(function (r) { return want[refKey(r)]; });
-    var seen = {};
-    ordered.forEach(function (r) { seen[refKey(r)] = 1; });
-    refs.forEach(function (r) { if (!seen[refKey(r)]) ordered.push(r); });   // anything from outside goes last
-    // a whole card already shows its elements, and a whole method its stages: never show them twice
-    var have = {};
-    ordered.forEach(function (r) { have[refKey(r)] = 1; });
-    return ordered.filter(function (r) {
-      if (r.lvl !== "e" && r.lvl !== "st") return true;
-      var par = refParent(r);
-      return !(par && have[refKey(par)]);
-    });
+  function openScope(scope) {
+    if (scope === "lib") openMiningScreen();
+    else if (scope.slice(0, 2) === "g:") { if (groupExists(scope.slice(2))) selectGroup(scope.slice(2)); else openMiningScreen(); }
+    else if (refExists({ lvl: "s", id: scope })) openSubjectRef(scope);
+    else openMiningScreen();
   }
   // when something is deleted from the library, it leaves every summary too
   function sumStripRefs(keys) {
@@ -17483,168 +17517,59 @@ function __detabaseMain() {
     });
     return hit;
   }
+  // "💾 Save to study sheet": what a summary shows, into a new sheet or onto the end of one you have.
+  // Whatever is already on that sheet is not added twice (a part neither, when its whole method is there).
+  function sumSaveRefs(refs, scope, after) {
+    if (!refs.length) { libToast("Nothing to save — this summary shows nothing with these filters."); return; }
+    var opts = sumEnsure().slice().sort(function (a, b) { return scopeName(a.subject).localeCompare(scopeName(b.subject)) || (b.created || 0) - (a.created || 0); })
+      .map(function (sm) { return { id: sm.id, name: sm.name + " · " + sm.items.length, group: scopeName(sm.subject) }; });
+    pickOrNew("Save to a study sheet", refs.length + (refs.length === 1 ? " item" : " items") + ", as this summary shows them. Add them to a sheet you have, or start a new one.",
+      opts, "New study sheet name…", function (id, nn) {
+        var sm = id ? summaryById(id) : null;
+        if (!sm) { sm = { id: uid("sm_"), subject: scope, name: nn || "Study sheet", items: [], created: Date.now() }; sumEnsure().push(sm); }
+        var have = {};
+        sm.items.forEach(function (r) { have[refKey(r)] = 1; });
+        var add = refs.filter(function (r) {
+          if (have[refKey(r)]) return false;
+          var par = r.lvl === "st" ? refParent(r) : null;
+          return !(par && have[refKey(par)]);
+        }).map(function (r) { return { lvl: r.lvl, id: r.id }; });
+        sm.items = sm.items.concat(add);
+        saveStore();
+        if (after) after();
+        var skipped = refs.length - add.length;
+        libToast((id ? "Added " + add.length + " to “" + sm.name + "”" : "Created “" + sm.name + "” — " + add.length + (add.length === 1 ? " item" : " items")) +
+          (skipped ? " (" + skipped + " already there)" : ""), { label: "Open", run: function () { openSummary(sm.id); } });
+      });
+  }
 
-  // ---- the Summaries section: its own row under the concepts and the methods ----
-  function subjectSummariesSection(key) {
-    var list = summariesOf(key).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
+  // ---- the Study sheets section: under a subject's page, a folder's page, and the main page (every sheet) ----
+  function studySheetsSection(scope) {
+    var list = summariesOf(scope).slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
     var sec = document.createElement("section");
     sec.className = "subj-sums";
-    sec.innerHTML = '<header class="sums-head"><h3>Study sheets <span class="side-count">' + list.length + '</span></h3></header><div class="sums-grid"></div>';
-    var add = document.createElement("button");
-    add.type = "button"; add.className = "btn-primary"; add.textContent = "📝 New study sheet";
-    add.addEventListener("click", function () { sumPickStart(key, null); });
-    sec.querySelector(".sums-head").appendChild(add);
+    sec.innerHTML = '<header class="sums-head"><h3>' + (scope === "lib" ? "All study sheets" : "Study sheets") + ' <span class="side-count">' + list.length + '</span></h3></header><div class="sums-grid"></div>';
     var grid = sec.querySelector(".sums-grid");
     if (!list.length) {
-      grid.innerHTML = '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Pick cards and method parts from this subject, and it lays them out in order — then change the order however you like.</div>';
+      grid.innerHTML = '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Open a summary, set its filters, and tap “💾 Save to study sheet” — later summaries can be added to the same sheet.</div>';
     }
     list.forEach(function (sm) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "sum-card";
       var preview = sm.items.slice(0, 3).map(function (r) { return refLabel(r); }).join(" · ") + (sm.items.length > 3 ? " …" : "");
-      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + sm.items.length + (sm.items.length === 1 ? " item" : " items") + '</small>' +
+      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + sm.items.length + (sm.items.length === 1 ? " item" : " items") +
+        (scope === "lib" ? " · " + escapeHtml(scopeName(sm.subject)) : "") + '</small>' +
         (preview ? '<span class="sum-card-preview">' + escapeHtml(preview) + '</span>' : '');
       b.addEventListener("click", function () { openSummary(sm.id); });
       grid.appendChild(b);
     });
     return sec;
   }
-  // while picking, the methods column lists every stage to tick (a method with no stages, whole)
-  function subjectPickPanel(key) {
-    var box = document.createElement("section");
-    box.className = "side-box side-full";
-    box.innerHTML = '<div class="side-sticky"><header class="side-head"><h3>Method parts</h3></header><div class="side-list"></div></div>';
-    var el = box.querySelector(".side-list");
-    var pages = psPagesOf(key).slice().sort(byName);
-    if (!pages.length) el.innerHTML = '<div class="side-empty">This subject has no methods yet — pick from its concepts.</div>';
-    pages.forEach(function (pg) {
-      var sts = psParts(pg.id);
-      var grp = document.createElement("div");
-      grp.className = "pick-group";
-      grp.textContent = pg.name;
-      el.appendChild(grp);
-      (sts.length ? sts.map(function (p) { return { ref: { lvl: "st", id: p.id }, name: partLabel(pg.id, p) }; })
-                  : [{ ref: { lvl: "p", id: pg.id }, name: "The whole method" }]).forEach(function (it) {
-        var b = document.createElement("button");
-        b.type = "button"; b.className = "pick-row"; b.setAttribute("data-k", refKey(it.ref));
-        b.innerHTML = '<span class="pick-box"></span><span>' + escapeHtml(it.name) + '</span>';
-        b.addEventListener("click", function () { sumPickToggle(it.ref); });
-        el.appendChild(b);
-      });
-    });
-    return box;
-  }
-
-  // ---- picking ----
-  function sumPickStart(key, editing) {
-    var sm = editing ? summaryById(editing) : null;
-    sumPick = { key: key, picked: {}, editing: sm ? sm.id : null };
-    if (sm) sm.items.forEach(function (r) { sumPick.picked[refKey(r)] = { lvl: r.lvl, id: r.id }; });
-    if (shownSubjectKey() === key) renderSubjectPage();
-    else openSubjectRef(key);      // its page renders, and paints the pick marks as it does
-  }
-  // the marks on the concepts themselves: the whole block is the target, so it is easy to hit
-  function sumPickScope() {
-    if (!sumPick) return null;
-    return $("subjectPage");
-  }
-  function sumPickPaint() {
-    if (!sumPick) return;
-    document.body.classList.add("sum-picking");
-    var scope = sumPickScope(); if (!scope) return;
-    var blocks = [];
-    Array.prototype.forEach.call(scope.querySelectorAll("[data-el]"), function (n) {
-      if (n.closest(".ue-card, .ue-block")) return;
-      blocks.push({ node: n, ref: { lvl: "c", id: n.getAttribute("data-el") } });
-    });
-    Array.prototype.forEach.call(scope.querySelectorAll(".ue-card[data-uc]"), function (n) { blocks.push({ node: n, ref: { lvl: "c", id: n.getAttribute("data-uc") } }); });
-    Array.prototype.forEach.call(scope.querySelectorAll(".ue-block[data-ue]"), function (n) { blocks.push({ node: n, ref: { lvl: "e", id: n.getAttribute("data-ue") } }); });
-    blocks.forEach(function (b) {
-      if (b.node.querySelector(":scope > .pick-ov")) return;
-      b.node.classList.add("pick-host");
-      var ov = document.createElement("button");
-      ov.type = "button"; ov.className = "pick-ov"; ov.setAttribute("data-k", refKey(b.ref));
-      ov.innerHTML = '<span class="pick-badge"></span>';
-      ov.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); sumPickToggle(b.ref); });
-      b.node.appendChild(ov);
-    });
-    sumPickSync();
-  }
-  function sumPickToggle(ref) {
-    if (!sumPick) return;
-    var k = refKey(ref);
-    if (sumPick.picked[k]) delete sumPick.picked[k];
-    else sumPick.picked[k] = { lvl: ref.lvl, id: ref.id };
-    sumPickSync();
-  }
-  // every mark, list row and the tray reflect what is picked
-  function sumPickSync() {
-    if (!sumPick) return;
-    Array.prototype.forEach.call(document.querySelectorAll(".pick-ov, .pick-row"), function (n) {
-      var on = !!sumPick.picked[n.getAttribute("data-k")];
-      n.classList.toggle("on", on);
-      var host = n.classList.contains("pick-ov") ? n.parentNode : null;
-      if (host) host.classList.toggle("picked", on);
-    });
-    var tray = $("sumTray");
-    if (!tray) {
-      tray = document.createElement("div");
-      tray.id = "sumTray"; tray.className = "sum-tray";
-      tray.innerHTML = '<span class="sum-tray-text"></span><button type="button" class="btn-quiet" data-a="x">Cancel</button><button type="button" class="btn-primary" data-a="go"></button>';
-      tray.querySelector('[data-a="x"]').addEventListener("click", function () { var k = sumPick && sumPick.key, ed = sumPick && sumPick.editing; sumPickEnd(); if (ed) openSummary(ed); else if (k) renderSubjectPage(); });
-      tray.querySelector('[data-a="go"]').addEventListener("click", sumPickCommit);
-      document.body.appendChild(tray);
-    }
-    var n = Object.keys(sumPick.picked).length;
-    tray.querySelector(".sum-tray-text").innerHTML = '<b>' + (sumPick.editing ? "Editing a study sheet" : "New study sheet") + '</b> · ' +
-      (n ? n + " picked" : "tap cards and method parts to pick them");
-    var go = tray.querySelector('[data-a="go"]');
-    go.textContent = sumPick.editing ? "Update study sheet" : "Create study sheet";
-    go.disabled = !n;
-  }
-  function sumPickEnd() {
-    sumPick = null;
-    document.body.classList.remove("sum-picking");
-    Array.prototype.forEach.call(document.querySelectorAll(".pick-ov"), function (n) { n.remove(); });
-    Array.prototype.forEach.call(document.querySelectorAll(".pick-host"), function (n) { n.classList.remove("pick-host", "picked"); });
-    var tray = $("sumTray"); if (tray) tray.remove();
-  }
-  function sumPickCommit() {
-    if (!sumPick) return;
-    var key = sumPick.key, refs = Object.keys(sumPick.picked).map(function (k) { return sumPick.picked[k]; });
-    if (!refs.length) return;
-    sumEnsure();
-    if (sumPick.editing) {
-      var sm = summaryById(sumPick.editing);
-      if (sm) {
-        // what was already there keeps the order you gave it; anything new joins at the end, in order
-        var kept = sm.items.filter(function (r) { return sumPick.picked[refKey(r)]; });
-        var keptKeys = {};
-        kept.forEach(function (r) { keptKeys[refKey(r)] = 1; });
-        var added = inSubjectOrder(key, refs.filter(function (r) { return !keptKeys[refKey(r)]; }));
-        sm.items = kept.concat(added);
-        saveStore();
-        sumPickEnd();
-        openSummary(sm.id);
-        libToast("Study sheet updated");
-        return;
-      }
-    }
-    askName("Name this study sheet", "It is laid out in the subject's own order — you can change that afterwards.", "Study sheet — " + subjectName(key), function (name) {
-      var sm2 = { id: uid("sm_"), subject: key, name: name, items: inSubjectOrder(key, refs), created: Date.now() };
-      store.summaries.push(sm2);
-      saveStore();
-      sumPickEnd();
-      openSummary(sm2.id);
-      libToast("Created “" + name + "” — " + sm2.items.length + (sm2.items.length === 1 ? " item" : " items"));
-    });
-  }
 
   // ---- a summary's own page ----
   function openSummary(id) {
     var sm = summaryById(id); if (!sm) return;
-    if (sumPick) sumPickEnd();
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false; folderPage = null;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null;
     activeSummary = id;
     if (sm.subject.slice(0, 2) === "f:") lastEtiFolder = sm.subject.slice(2);   // its subject stays selected
     applyView(); renderEtiTree();
@@ -17657,13 +17582,13 @@ function __detabaseMain() {
   }
   function renderSumPane() {
     var sm = summaryById(activeSummary); if (!sm) return;
-    $("sumBack").textContent = "‹ " + subjectName(sm.subject);
+    $("sumBack").textContent = "‹ " + (sm.subject === "lib" ? "ETI" : scopeName(sm.subject));
     $("sumTitle").textContent = sm.name;
     $("pageSubtitle").innerHTML = 'Study sheet · ' + sm.items.length + (sm.items.length === 1 ? ' item' : ' items');
     var list = $("sumList");
     list.innerHTML = "";
     if (!sm.items.length) {
-      list.innerHTML = '<div class="side-empty"><b>This study sheet is empty.</b> Tap “＋ Add more” to pick cards and method parts.</div>';
+      list.innerHTML = '<div class="side-empty"><b>This study sheet is empty.</b> Open a summary and tap “💾 Save to study sheet” to add to it.</div>';
       return;
     }
     var w = Math.max(260, Math.min(900, libBlockWidth(list) - 30));
@@ -17714,17 +17639,17 @@ function __detabaseMain() {
     store.summaries = sumEnsure().filter(function (x) { return x.id !== sm.id; });
     activeSummary = null;
     saveStore();
-    openSubjectRef(sm.subject);
+    openScope(sm.subject);
     libToast("Deleted “" + sm.name + "”");
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
-    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary || subOpen() || (folderPage && groupExists(folderPage))) return null;
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary || subOpen() || (folderPage && groupExists(folderPage)) || scopeValid(scopeSum)) return null;
     if (activeSubject) return "s:" + activeSubject;
     return groupHasBuiltins(activeGroup) ? "f:" + lastEtiFolder : null;
   }
   function openMiningScreen() {   // ETI's main page
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null; scopeSum = null;
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() { renderEtiMain(); }
@@ -18505,11 +18430,12 @@ function __detabaseMain() {
     spSetView(pg.subject, "methods"); openSubjectRef(pg.subject);
   });
   if ($("psSummary")) $("psSummary").addEventListener("click", function () { if (activePsPage) openSub("psummary", activePsPage); });
-  if ($("sumBack")) $("sumBack").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) openSubjectRef(sm.subject); });
+  if ($("sumBack")) $("sumBack").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) openScope(sm.subject); });
   if ($("sumTitle")) $("sumTitle").addEventListener("click", sumRename);
   if ($("sumRename")) $("sumRename").addEventListener("click", sumRename);
   if ($("sumDelete")) $("sumDelete").addEventListener("click", sumDelete);
-  if ($("sumMore")) $("sumMore").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) sumPickStart(sm.subject, sm.id); });
+  // ＋ Add more: back to where the sheet belongs; any summary there saves onto it ("💾 Save to study sheet")
+  if ($("sumMore")) $("sumMore").addEventListener("click", function () { var sm = summaryById(activeSummary); if (!sm) return; openScope(sm.subject); libToast("Open a summary, then “💾 Save to study sheet” → “" + sm.name + "”"); });
   if ($("sumClip")) $("sumClip").addEventListener("click", function () {
     var sm = summaryById(activeSummary); if (!sm || !sm.items.length) return;
     chooseBoardAndMine(sm.items.slice(), { column: true });   // one under another, in the summary's order
@@ -18532,6 +18458,9 @@ function __detabaseMain() {
     openMiningScreen();
   } else if (psPageById(initial)) {
     selectPsPage(initial);
+  } else if (initial === "lsummary" || /^fsummary:/.test(initial)) {      // a folder's or the library's summary
+    openScopeSummary(initial === "lsummary" ? "lib" : "g:" + decodeURIComponent(initial.slice(9)));
+    if (!scopeSum) selectTop("eti");
   } else if (summaryById(initial)) {
     openSummary(initial);
   } else if (/^(card|concept|summary|csummary|msummary|psummary):/.test(initial)) {
