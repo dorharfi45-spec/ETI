@@ -1535,6 +1535,11 @@
   .fp-sep { color: var(--text-muted); }
   .fp-h { margin: 22px 0 10px; font-size: 1rem; }
   .fp-tile b { font-size: 1.02rem; }
+  .fp-cell { position: relative; display: flex; }
+  .fp-cell > .fp-tile { flex: 1; padding-right: 60px; }
+  .fp-cell > .lib-dots { position: absolute; top: 10px; right: 10px; }
+  #folderPage .cp-head h2 { cursor: pointer; }
+  #folderPage .cp-head h2:hover { color: var(--accent); }
   @media (max-width: 760px) {
     .tree-kids { flex-direction: row; flex-wrap: wrap; }
     .tree-kids button { width: auto; }
@@ -4280,7 +4285,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B95</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B96</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6605,7 +6610,7 @@ function __detabaseMain() {
     return !!BUILTIN_GROUPS[id] || store.groups.some(function (g) { return g.id === id; });
   }
   function groupName(id) {
-    return BUILTIN_GROUPS[id] ? BUILTIN_GROUPS[id].name
+    return BUILTIN_GROUPS[id] ? ((store.etiEdits && store.etiEdits.names && store.etiEdits.names["g|" + id]) || BUILTIN_GROUPS[id].name)
       : ((store.groups.filter(function (g) { return g.id === id; })[0] || {}).name || id);
   }
   var BUILTIN_GROUP_ORDER = ["base", "calc", "physics", "ee", "me"];
@@ -6908,6 +6913,8 @@ function __detabaseMain() {
     head.className = "cp-head";
     head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
     head.querySelector("h2").textContent = groupIcon(gid) + " " + groupName(gid);
+    head.querySelector("h2").title = "tap to rename";
+    head.querySelector("h2").addEventListener("click", function () { folderRename(gid); });
     var acts = head.querySelector(".cd-acts");
     acts.appendChild(actBtn("📋 Summary", "everything in this folder on one page, with filters — save it as a study sheet", function () { openScopeSummary("g:" + gid); }));
     acts.appendChild(actBtn("＋ Folder", "a new folder inside this one", function () {
@@ -6936,7 +6943,7 @@ function __detabaseMain() {
         var b = actBtn("", "open the folder", function () { selectGroup(g); }, "sum-card fp-tile");
         b.innerHTML = '<b></b><small>' + n + (n === 1 ? " subject" : " subjects") + (nf ? " · " + nf + (nf === 1 ? " folder" : " folders") : "") + '</small>';
         b.querySelector("b").textContent = groupIcon(g) + " " + groupName(g);
-        fg.appendChild(b);
+        fg.appendChild(fpCell(b, actBtn("⋯", "rename or move this folder", function (e) { folderMenu(e.currentTarget, g); }, "lib-dots fp-dots")));
       });
       host.appendChild(fg);
     }
@@ -6949,17 +6956,35 @@ function __detabaseMain() {
       var b = actBtn("", "open the subject", function () { openSubjectRef(k); }, "sum-card fp-tile");
       b.innerHTML = '<b></b><small>' + nc + (nc === 1 ? " concept" : " concepts") + ' · ' + nm + (nm === 1 ? " method" : " methods") + '</small>';
       b.querySelector("b").textContent = subjectName(k);
-      sg.appendChild(b);
+      sg.appendChild(fpCell(b, dotsBtn({ lvl: "s", id: k })));   // the subject's own ⋯: Rename, Move to…, …
     });
     host.appendChild(sg);
     host.appendChild(studySheetsSection("g:" + gid));
   }
+  // a tile with its ⋯ beside it (a button can't hold another button)
+  function fpCell(tile, dots) {
+    var c = document.createElement("div");
+    c.className = "fp-cell";
+    c.appendChild(tile); c.appendChild(dots);
+    return c;
+  }
+  // a custom folder keeps its name; a built-in one's new name is kept like any built-in rename (etiEdits.names["g|<id>"])
+  function folderRename(gid) {
+    askName("Rename folder", BUILTIN_GROUPS[gid] ? "Its first name was “" + BUILTIN_GROUPS[gid].name + "” — type that to go back to it." : "", groupName(gid), function (n) {
+      var g = byId(store.groups, gid);
+      if (g) g.name = n;
+      else {
+        libEnsure(); store.etiEdits.names = store.etiEdits.names || {};
+        if (n === BUILTIN_GROUPS[gid].name) delete store.etiEdits.names["g|" + gid]; else store.etiEdits.names["g|" + gid] = n;
+      }
+      saveStore(); renderEtiTree(); applyView();
+      libToast("Renamed to “" + n + "”");
+    });
+  }
   function folderMenu(anchor, gid) {
     var custom = !BUILTIN_GROUPS[gid];
     libMenu(anchor, [
-      custom ? { label: "✎ Rename", run: function () {
-        askName("Rename folder", "", groupName(gid), function (n) { var g = byId(store.groups, gid); if (g) g.name = n; saveStore(); renderEtiTree(); applyView(); });
-      } } : null,
+      { label: "✎ Rename", run: function () { folderRename(gid); } },
       { label: "↪ Move to…", run: function () { folderMoveTo(gid); } },
       custom ? { sep: true } : null,
       custom ? { label: "Delete folder…", danger: true, run: function () { var up = groupParentOf(gid); delGroup(gid); if (!groupExists(gid)) { if (up) selectGroup(up); else openMiningScreen(); } } } : null
