@@ -1550,6 +1550,15 @@
   .tree-kids.dnd-hot { border-left-color: var(--accent); }
   .tree-kids .add-btn { padding: 6px 12px; font-size: .8rem; }
   .tree-empty { font-size: .74rem; color: var(--text-muted); padding: 2px 4px 4px; }
+  .tree-subs { display: flex; flex-direction: column; gap: 5px; flex-basis: 100%; }
+  .tree-subs:empty { display: none; }
+  .tree-ghead .caret { padding: 10px 8px; margin: -10px -2px -10px -8px; }   /* the fold target, finger-sized */
+  .fp-path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-bottom: 6px; }
+  .fp-crumb { border: none; background: none; color: var(--accent); font: inherit; font-size: .88rem; font-weight: 600; padding: 8px 4px; cursor: pointer; }
+  .fp-crumb:hover { text-decoration: underline; }
+  .fp-sep { color: var(--text-muted); }
+  .fp-h { margin: 22px 0 10px; font-size: 1rem; }
+  .fp-tile b { font-size: 1.02rem; }
   @media (max-width: 760px) {
     .tree-kids { flex-direction: row; flex-wrap: wrap; }
     .tree-kids button { width: auto; }
@@ -4288,12 +4297,13 @@
 <div id="subjectPage" hidden></div>
 
 <div id="subPage" hidden></div>
+<div id="folderPage" class="folder-page" hidden></div>
 
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B93</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B94</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6351,6 +6361,7 @@ function __detabaseMain() {
       if (p.ps) store.ps = p.ps;
       if (p.etiEdits) store.etiEdits = p.etiEdits;
       if (p.summaries) store.summaries = p.summaries;
+      if (p.groupParent) store.groupParent = p.groupParent;   // folders inside folders (B94)
       if (p.place) store.place = p.place;                 // where built-in tabs and cards sit
       if (p.methodFolders) store.methodFolders = p.methodFolders;
       if (p.examples) store.examples = p.examples;          // read only by the schema-6 migration, which turns them into methods
@@ -6624,15 +6635,46 @@ function __detabaseMain() {
   function everyGroupId() {
     return BUILTIN_GROUP_ORDER.concat(store.groups.map(function (g) { return g.id; }));
   }
-  function allGroupIds() {
-    var all = everyGroupId();
-    var ord = (store.order && store.order.etiGroups) || [];
-    return all.slice().sort(function (a, b) {
+  // ---- folders inside folders (B94): store.groupParent = { <group id>: <parent group id> }, no entry = at the
+  // top. In the UI a group is a "folder". Siblings are ordered by one shared list, store.order.etiGroups.
+  function groupOrderSort(ids) {
+    var all = everyGroupId(), ord = (store.order && store.order.etiGroups) || [];
+    return ids.slice().sort(function (a, b) {
       var ia = ord.indexOf(a), ib = ord.indexOf(b);
       if (ia < 0) ia = 1000 + all.indexOf(a);
       if (ib < 0) ib = 1000 + all.indexOf(b);
       return ia - ib;
     });
+  }
+  function groupParentOf(gid) {
+    var p = store.groupParent && store.groupParent[gid];
+    if (!p || !groupExists(p)) return null;
+    for (var n = p, i = 0; n && i < 100; n = store.groupParent[n], i++) if (n === gid) return null;   // a loop (two devices) reads as the top
+    return p;
+  }
+  function groupKidsOf(parent) {
+    return groupOrderSort(everyGroupId().filter(function (g) { return groupParentOf(g) === (parent || null); }));
+  }
+  // every folder, depth first in sidebar order
+  function allGroupIds() {
+    var out = [];
+    (function walk(p) { groupKidsOf(p).forEach(function (g) { out.push(g); walk(g); }); })(null);
+    return out;
+  }
+  function groupInside(gid, anc) { for (var n = gid, i = 0; n && i < 100; n = groupParentOf(n), i++) if (n === anc) return true; return false; }
+  function groupPath(gid) { var out = []; for (var n = gid, i = 0; n && i < 100; n = groupParentOf(n), i++) out.unshift(n); return out; }
+  // a folder into another (parent null = the top), at `index` among its new siblings (the end when null)
+  function groupMoveTo(gid, parent, index) {
+    if (!groupExists(gid) || (parent && (!groupExists(parent) || groupInside(parent, gid)))) return false;
+    store.groupParent = store.groupParent || {};
+    if (parent) store.groupParent[gid] = parent; else delete store.groupParent[gid];
+    var sibs = groupKidsOf(parent).filter(function (x) { return x !== gid; });
+    if (index == null || index > sibs.length) index = sibs.length;
+    var ord = groupOrderSort(everyGroupId()).filter(function (x) { return x !== gid; });
+    var at = index < sibs.length ? ord.indexOf(sibs[index]) : sibs.length ? ord.indexOf(sibs[sibs.length - 1]) + 1 : ord.length;
+    ord.splice(at, 0, gid);
+    store.order.etiGroups = ord;
+    if (parent) setGroupClosed(parent, false);
   }
   function groupIcon(id) { return BUILTIN_GROUPS[id] ? BUILTIN_GROUPS[id].icon : "📁"; }
   function isGroupClosed(id) { return !!(store.ui.closedGroups && store.ui.closedGroups[id]); }
@@ -6735,66 +6777,82 @@ function __detabaseMain() {
     var tree = $("etiTree");
     if (!tree) return;
     tree.textContent = "";
-    allGroupIds().forEach(function (gid) {
-      var custom = !BUILTIN_GROUPS[gid];
-      var keys = groupSubjectKeys(gid);
-      var wrap = document.createElement("div");
-      wrap.className = "tree-group" + (isGroupClosed(gid) ? "" : " open");
-      wrap.dataset.group = gid;
-
-      var head = document.createElement("div");
-      head.className = "tree-ghead" + (gid === activeGroup ? " on" : "");
-      head.setAttribute("role", "button");
-      head.tabIndex = 0;
-      head.innerHTML = '<span class="caret">▶</span><span class="ficon">' + groupIcon(gid) + '</span>'
-        + '<span class="gname">' + escapeHtml(groupName(gid)) + '</span>'
-        + '<span class="gcount">' + keys.length + '</span>';
-      head.addEventListener("click", function () {
-        var closed = !isGroupClosed(gid);
-        setGroupClosed(gid, closed);
-        wrap.classList.toggle("open", !closed);
-      });
-      if (custom) makeSwipeRow(head, function () { return groupName(gid); }, function () { delGroup(gid); });
-      head.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); head.click(); }
-      });
-      dndInto(head, { accepts: ["subject"], onDrop: function (drag) { libMoved("Moved “" + subjectName(drag.id) + "” to " + groupName(gid), function () { return subjectToGroup(drag.id, gid, null); }); } });
-      wrap.appendChild(head);
-
-      var kids = document.createElement("div");
-      kids.className = "tree-kids folderbar";
-      keys.forEach(function (k) { var n = subjectNodeForKey(k); if (n) kids.appendChild(n); });
-      if (!keys.length) {
-        var em = document.createElement("div");
-        em.className = "tree-empty";
-        em.textContent = "No subjects yet — drag one here";
-        kids.appendChild(em);
-      }
-      var add = document.createElement("button");
-      add.type = "button";
-      add.className = "add-btn";
-      add.textContent = "+ subject";
-      add.addEventListener("click", function () {
-        var n = prompt("New subject in “" + groupName(gid) + "”:");
-        if (n && n.trim()) addSubjectToGroup(gid, n.trim());
-      });
-      kids.appendChild(add);
-
-      dndList(kids, { type: "subject", item: "button[data-treekey]", id: function (el) { return el.dataset.treekey; },
-        onDrop: function (drag, index) { libMoved("Moved “" + subjectName(drag.id) + "”", function () { return subjectToGroup(drag.id, gid, index); }); } });
-
-      wrap.appendChild(kids);
-      tree.appendChild(wrap);
-    });
-
-    dndList(tree, { type: "group", item: ".tree-group", handle: ".tree-ghead", id: function (el) { return el.dataset.group; },
+    groupKidsOf(null).forEach(function (gid) { tree.appendChild(treeGroupEl(gid)); });
+    groupListDnd(tree, null);
+  }
+  // a list of sibling folders (the top of the tree, or the folders inside one): long-press a folder to
+  // move it among them, or from anywhere else in the tree into them
+  function groupListDnd(list, parent) {
+    dndList(list, { type: "group", item: ".tree-group", handle: ".tree-ghead", id: function (el) { return el.dataset.group; },
       onDrop: function (drag, index) {
-        libMoved("Moved the group “" + groupName(drag.id) + "”", function () {
-          var ids = allGroupIds().filter(function (x) { return x !== drag.id; });
-          ids.splice(index, 0, drag.id);
-          store.order.etiGroups = ids;
-        });
+        if (parent && groupInside(parent, drag.id)) return;
+        libMoved("Moved the folder “" + groupName(drag.id) + "”" + (parent ? " to " + groupName(parent) : ""), function () { return groupMoveTo(drag.id, parent, index); });
       } });
+  }
+  // one folder: its head, then (while open) its folders and its subjects
+  function treeGroupEl(gid) {
+    var custom = !BUILTIN_GROUPS[gid];
+    var keys = groupSubjectKeys(gid), subs = groupKidsOf(gid);
+    var wrap = document.createElement("div");
+    wrap.className = "tree-group" + (isGroupClosed(gid) ? "" : " open");
+    wrap.dataset.group = gid;
+
+    var head = document.createElement("div");
+    head.className = "tree-ghead" + (gid === folderPage ? " on" : "");
+    head.setAttribute("role", "button");
+    head.tabIndex = 0;
+    head.innerHTML = '<span class="caret" title="fold / unfold">▶</span><span class="ficon">' + groupIcon(gid) + '</span>'
+      + '<span class="gname">' + escapeHtml(groupName(gid)) + '</span>'
+      + '<span class="gcount">' + (keys.length + subs.length) + '</span>';
+    // the ▶ folds it; anywhere else opens the folder's page
+    head.addEventListener("click", function (e) {
+      if (!e.target.closest(".caret")) { selectGroup(gid); return; }
+      var closed = !isGroupClosed(gid);
+      setGroupClosed(gid, closed);
+      wrap.classList.toggle("open", !closed);
+    });
+    if (custom) makeSwipeRow(head, function () { return groupName(gid); }, function () { delGroup(gid); });
+    head.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); head.click(); }
+    });
+    // dropped on a folder's head: a subject or a folder goes inside it, at the end
+    dndInto(head, { accepts: ["subject", "group"],
+      canDrop: function (drag) { return drag.type === "subject" || (drag.id !== gid && !groupInside(gid, drag.id) && groupParentOf(drag.id) !== gid); },
+      onDrop: function (drag) {
+        if (drag.type === "group") libMoved("Moved the folder “" + groupName(drag.id) + "” to " + groupName(gid), function () { return groupMoveTo(drag.id, gid, null); });
+        else libMoved("Moved “" + subjectName(drag.id) + "” to " + groupName(gid), function () { return subjectToGroup(drag.id, gid, null); });
+      } });
+    wrap.appendChild(head);
+
+    var kids = document.createElement("div");
+    kids.className = "tree-kids folderbar";
+    var sub = document.createElement("div");
+    sub.className = "tree-subs";
+    subs.forEach(function (g) { sub.appendChild(treeGroupEl(g)); });
+    groupListDnd(sub, gid);
+    kids.appendChild(sub);
+    keys.forEach(function (k) { var n = subjectNodeForKey(k); if (n) kids.appendChild(n); });
+    if (!keys.length && !subs.length) {
+      var em = document.createElement("div");
+      em.className = "tree-empty";
+      em.textContent = "Empty — drag a subject or a folder here";
+      kids.appendChild(em);
+    }
+    var add = document.createElement("button");
+    add.type = "button";
+    add.className = "add-btn";
+    add.textContent = "+ subject";
+    add.addEventListener("click", function () {
+      var n = prompt("New subject in “" + groupName(gid) + "”:");
+      if (n && n.trim()) addSubjectToGroup(gid, n.trim());
+    });
+    kids.appendChild(add);
+
+    dndList(kids, { type: "subject", item: "button[data-treekey]", id: function (el) { return el.dataset.treekey; },
+      onDrop: function (drag, index) { libMoved("Moved “" + subjectName(drag.id) + "”", function () { return subjectToGroup(drag.id, gid, index); }); } });
+
+    wrap.appendChild(kids);
+    return wrap;
   }
   // keep old call sites working
   function renderGroupbar() { renderEtiTree(); }
@@ -6805,18 +6863,20 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = id;   // its own page
     saveStore();
     renderEtiTree();
     applyView();
   }
-  function addGroup(name) {
-    name = (name || "").trim(); if (!name) return;
+  function addGroup(name, parent) {
+    name = (name || "").trim(); if (!name) return null;
     var g = { id: uid("g_"), name: name };
     store.groups.push(g);
+    if (parent) groupMoveTo(g.id, parent, null);
     setGroupClosed(g.id, false);
     saveStore();
     renderEtiTree();
+    return g.id;
   }
   function addSubjectToGroup(gid, name) {
     var s = { id: uid("s_"), folder: "eti", name: name, group: gid };
@@ -6826,20 +6886,116 @@ function __detabaseMain() {
     renderEtiTree();
     selectSubject(s.id);
   }
+  // a folder's subjects and folders move up into its parent (at the top level: subjects to Base, folders to the top)
   function delGroup(id) {
     if (BUILTIN_GROUPS[id]) return;
-    if (!confirmDelete(groupName(id))) return;   // its subjects move to Base
+    if (!confirmDelete(groupName(id))) return;
+    var up = groupParentOf(id);
     if (store.builtinGroup) Object.keys(store.builtinGroup).forEach(function (f) {
-      if (store.builtinGroup[f] === id) delete store.builtinGroup[f];
+      if (store.builtinGroup[f] !== id) return;
+      if (up) store.builtinGroup[f] = up; else delete store.builtinGroup[f];
     });
-    store.subjects.forEach(function (s) { if (s.folder === "eti" && s.group === id) s.group = "base"; });
+    store.subjects.forEach(function (s) { if (s.folder === "eti" && s.group === id) s.group = up || "base"; });
+    groupKidsOf(id).forEach(function (g) { if (up) store.groupParent[g] = up; else delete store.groupParent[g]; });
+    if (store.groupParent) delete store.groupParent[id];
     store.groups = store.groups.filter(function (g) { return g.id !== id; });
     if (store.order.etiKids) delete store.order.etiKids[id];
     if (store.order.etiGroups) store.order.etiGroups = store.order.etiGroups.filter(function (x) { return x !== id; });
-    if (activeGroup === id) activeGroup = "base";
+    if (activeGroup === id) activeGroup = up || "base";
     saveStore();
     renderEtiTree();
     applyView();
+  }
+
+
+  // ============================================================
+  // FOLDER PAGE — a folder (group) as a page of its own: where it sits, its folders and its subjects as
+  // tiles to open, and adding / renaming / moving / deleting it. Opened from its name in the sidebar
+  // (the ▶ only folds it) or from a tile; address #<group id>. (Its summary and study sheets: B96.)
+  // ============================================================
+  function groupSubjectCount(gid) { return groupSubjectKeys(gid).length + groupKidsOf(gid).reduce(function (n, g) { return n + groupSubjectCount(g); }, 0); }
+  function renderFolderPage() {
+    var host = $("folderPage"), gid = folderPage;
+    if (!host || !groupExists(gid)) return;
+    host.innerHTML = "";
+    var path = document.createElement("nav");
+    path.className = "fp-path";
+    path.appendChild(actBtn("ETI", "ETI's main page", openMiningScreen, "fp-crumb"));
+    groupPath(gid).slice(0, -1).forEach(function (g) {
+      path.insertAdjacentHTML("beforeend", '<span class="fp-sep">›</span>');
+      path.appendChild(actBtn(groupName(g), "open this folder", function () { selectGroup(g); }, "fp-crumb"));
+    });
+    host.appendChild(path);
+    var head = document.createElement("div");
+    head.className = "cp-head";
+    head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
+    head.querySelector("h2").textContent = groupIcon(gid) + " " + groupName(gid);
+    var acts = head.querySelector(".cd-acts");
+    acts.appendChild(actBtn("＋ Folder", "a new folder inside this one", function () {
+      askName("New folder", "Inside “" + groupName(gid) + "”.", "", function (n) { var id = addGroup(n, gid); renderFolderPage(); if (id) libToast("Created the folder “" + n + "”"); });
+    }));
+    acts.appendChild(actBtn("＋ Subject", "a new subject in this folder", function () {
+      askName("New subject", "In “" + groupName(gid) + "”.", "", function (n) { addSubjectToGroup(gid, n); });
+    }, "btn-primary"));
+    var dots = actBtn("⋯", "folder options", function () { folderMenu(dots, gid); }, "btn-quiet lib-dots");
+    acts.appendChild(dots);
+    host.appendChild(head);
+    dndInto(head, { accepts: ["subject", "group"],
+      canDrop: function (drag) { return drag.type === "subject" || (drag.id !== gid && !groupInside(gid, drag.id)); },
+      onDrop: function (drag) {
+        if (drag.type === "group") libMoved("Moved the folder “" + groupName(drag.id) + "” to " + groupName(gid), function () { return groupMoveTo(drag.id, gid, null); });
+        else libMoved("Moved “" + subjectName(drag.id) + "” to " + groupName(gid), function () { return subjectToGroup(drag.id, gid, null); });
+      } });
+
+    var subs = groupKidsOf(gid), keys = groupSubjectKeys(gid);
+    if (subs.length) {
+      host.insertAdjacentHTML("beforeend", '<h3 class="fp-h">Folders <span class="side-count">' + subs.length + '</span></h3>');
+      var fg = document.createElement("div");
+      fg.className = "sums-grid fp-grid";
+      subs.forEach(function (g) {
+        var n = groupSubjectCount(g), nf = groupKidsOf(g).length;
+        var b = actBtn("", "open the folder", function () { selectGroup(g); }, "sum-card fp-tile");
+        b.innerHTML = '<b></b><small>' + n + (n === 1 ? " subject" : " subjects") + (nf ? " · " + nf + (nf === 1 ? " folder" : " folders") : "") + '</small>';
+        b.querySelector("b").textContent = groupIcon(g) + " " + groupName(g);
+        fg.appendChild(b);
+      });
+      host.appendChild(fg);
+    }
+    host.insertAdjacentHTML("beforeend", '<h3 class="fp-h">Subjects <span class="side-count">' + keys.length + '</span></h3>');
+    var sg = document.createElement("div");
+    sg.className = "sums-grid fp-grid";
+    if (!keys.length) sg.innerHTML = '<div class="side-empty sums-empty"><b>No subjects here yet.</b> Tap “＋ Subject”, or drag one onto this folder in the sidebar.</div>';
+    keys.forEach(function (k) {
+      var nc = libKids({ lvl: "s", id: k }).length, nm = psPagesOf(k).length;
+      var b = actBtn("", "open the subject", function () { openSubjectRef(k); }, "sum-card fp-tile");
+      b.innerHTML = '<b></b><small>' + nc + (nc === 1 ? " concept" : " concepts") + ' · ' + nm + (nm === 1 ? " method" : " methods") + '</small>';
+      b.querySelector("b").textContent = subjectName(k);
+      sg.appendChild(b);
+    });
+    host.appendChild(sg);
+  }
+  function folderMenu(anchor, gid) {
+    var custom = !BUILTIN_GROUPS[gid];
+    libMenu(anchor, [
+      custom ? { label: "✎ Rename", run: function () {
+        askName("Rename folder", "", groupName(gid), function (n) { var g = byId(store.groups, gid); if (g) g.name = n; saveStore(); renderEtiTree(); applyView(); });
+      } } : null,
+      { label: "↪ Move to…", run: function () { folderMoveTo(gid); } },
+      custom ? { sep: true } : null,
+      custom ? { label: "Delete folder…", danger: true, run: function () { var up = groupParentOf(gid); delGroup(gid); if (!groupExists(gid)) { if (up) selectGroup(up); else openMiningScreen(); } } } : null
+    ].filter(Boolean));
+  }
+  // where a folder can go: the top, or any folder that is not itself or inside it
+  function folderMoveTo(gid) {
+    var opts = [{ id: "__top", name: "⤒ Top level" }].concat(allGroupIds().filter(function (g) { return g !== gid && !groupInside(g, gid) && g !== groupParentOf(gid); })
+      .map(function (g) { return { id: g, name: new Array(groupPath(g).length).join("   ") + groupIcon(g) + " " + groupName(g) }; }));
+    pickOrNew("Move “" + groupName(gid) + "” to…", "Pick where this folder goes.", opts, "New folder name…", function (id, nn) {
+      var to = id === "__top" ? null : id;
+      libMoved("Moved the folder “" + groupName(gid) + "”", function () {
+        if (!id) { to = uid("g_"); store.groups.push({ id: to, name: nn }); }
+        return groupMoveTo(gid, to, null);
+      });
+    });
   }
 
   function subjectsFor(top) {
@@ -6889,7 +7045,8 @@ function __detabaseMain() {
     var onMining = !onProblem && !onSum && activeTop === "eti" && miningScreen;
     var onPs = !onProblem && !onSum && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
     var onSub = !onProblem && !onSum && !onMining && !onPs && activeTop === "eti" && subOpen();
-    var builtin = !onProblem && !onSum && !onPs && !onMining && !onSub && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onFolder = !onProblem && !onSum && !onMining && !onPs && !onSub && activeTop === "eti" && !activeSubject && !!folderPage && groupExists(folderPage);
+    var builtin = !onProblem && !onSum && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -6906,15 +7063,16 @@ function __detabaseMain() {
     });
     syncGroupButtons();
     $("customPane").hidden = onProblem || onMining || onSum || !activeSubject || activeTop === "eti";
-    $("subjectPage").hidden = !(!onProblem && !onSum && !onPs && !onMining && !onSub && activeTop === "eti" && (!!activeSubject || builtin));
+    $("subjectPage").hidden = !(!onProblem && !onSum && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && (!!activeSubject || builtin));
     $("subPage").hidden = !onSub;
+    $("folderPage").hidden = !onFolder;
     if (!onSub) parkSubPage();
     $("psPane").hidden = !onPs;
     $("sumPane").hidden = !onSum;
     $("miningPane").hidden = !onMining;
     if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || onSub || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -6970,6 +7128,12 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = sm.sub;
       history.replaceState(null, "", "#" + sm.hash);
       renderSubPage();
+    } else if (onFolder) {
+      var fpath = groupPath(folderPage).slice(0, -1);
+      $("pageTitle").textContent = groupName(folderPage);
+      $("pageSubtitle").innerHTML = 'A folder in <b>' + escapeHtml(fpath.length ? groupName(fpath[fpath.length - 1]) : "ETI") + '</b>';
+      history.replaceState(null, "", "#" + folderPage);
+      renderFolderPage();
     } else if (activeSubject) {
       var s = store.subjects.filter(function (x) { return x.id === activeSubject; })[0];
       if (activeTop === "eti") { noteSubject("s:" + activeSubject); renderSubjectPage(); }
@@ -7009,7 +7173,7 @@ function __detabaseMain() {
 
   function selectTop(id) {
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
-    miningScreen = id === "eti";             // ETI's main page is its landing page
+    miningScreen = id === "eti"; folderPage = null;           // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
@@ -7023,7 +7187,7 @@ function __detabaseMain() {
   function selectSubject(id, sub) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null;
     if (s.folder === "eti") noteSubject("s:" + id);
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
@@ -7162,7 +7326,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -12696,7 +12860,7 @@ function __detabaseMain() {
     el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
   }
   function openSubjectRef(key, then, sub) {
-    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; viewingProblem = false;
+    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; viewingProblem = false;
     if (key.slice(0, 2) === "s:") selectSubject(key.slice(2), sub);
     else {
       var fid = key.slice(2);
@@ -12736,10 +12900,11 @@ function __detabaseMain() {
   }
   // ---- problem-solving bank: right rail + page view ----
   var activePsPage = null, miningScreen = true;   // ETI opens on its main page
+  var folderPage = null;                          // a folder's own page (its group id) — FOLDER PAGE
 
   function selectPsPage(id) {
     if (!psPageById(id)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null;
     applyView(); renderEtiTree();
   }
   // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
@@ -13299,7 +13464,7 @@ function __detabaseMain() {
 
   // ---- undo: what a move changed, put back ----
   // Every move touches only the library's shape, so a copy of those parts of the store is the undo.
-  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "order", "subjects", "builtinGroup", "summaries"];
+  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "order", "subjects", "builtinGroup", "groupParent", "summaries"];
   function shapeSnap() {
     var s = {};
     UNDO_KEYS.forEach(function (k) { s[k] = store[k] === undefined ? undefined : JSON.stringify(store[k]); });
@@ -13332,6 +13497,7 @@ function __detabaseMain() {
     if (miningScreen) { try { renderEtiMain(); } catch (e) {} }
     if (activePsPage && !viewingProblem) { try { renderPsPane(); } catch (e) {} }
     if (activeSummary) { try { renderSumPane(); } catch (e) {} }
+    if (folderPage && $("folderPage") && !$("folderPage").hidden) renderFolderPage();
   }
   // a method's parts: their order is the vine's order
   function psPartsDnd(docEl, pg) {
@@ -17478,7 +17644,7 @@ function __detabaseMain() {
   function openSummary(id) {
     var sm = summaryById(id); if (!sm) return;
     if (sumPick) sumPickEnd();
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false; folderPage = null;
     activeSummary = id;
     if (sm.subject.slice(0, 2) === "f:") lastEtiFolder = sm.subject.slice(2);   // its subject stays selected
     applyView(); renderEtiTree();
@@ -17553,12 +17719,12 @@ function __detabaseMain() {
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
-    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary || subOpen()) return null;
+    if (activeTop !== "eti" || viewingProblem || miningScreen || activePsPage || activeSummary || subOpen() || (folderPage && groupExists(folderPage))) return null;
     if (activeSubject) return "s:" + activeSubject;
     return groupHasBuiltins(activeGroup) ? "f:" + lastEtiFolder : null;
   }
   function openMiningScreen() {   // ETI's main page
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null;
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() { renderEtiMain(); }
