@@ -862,6 +862,8 @@
   .sp-seg button { min-height: var(--tap); padding: 0 18px; border: 0; background: none; font: inherit; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
   .sp-seg button + button { border-left: 1px solid var(--border-strong); }
   .sp-seg button.on { background: var(--accent); color: var(--on-accent); }
+  .sp-seg.sp-look button { padding: 0 12px; }
+  .sp-seg.sp-look button.on { background: color-mix(in srgb, var(--accent) 16%, var(--surface-1)); color: var(--text-primary); box-shadow: inset 0 0 0 2px var(--accent); }
   .sp-filter-btn { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 16px; border: 1px solid var(--border-strong); border-radius: var(--r-md);
     background: var(--bg); font: inherit; font-weight: 600; color: var(--text-primary); cursor: pointer; }
   .sp-filter-btn:hover { border-color: var(--accent); }
@@ -4291,7 +4293,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B92</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B93</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -11806,18 +11808,17 @@ function __detabaseMain() {
   // PAGES INSIDE A SUBJECT — a card, a concept, a summary
   // Each is a view of its own (applyView: after the method page, before the subject page) while its
   // subject stays selected in the sidebar. activeSub = { kind, id }:
-  //   card — a card id · concept — a concept (tab) id · summary — a subject key (all its concepts) · csummary — a concept id
-  //   msummary — a subject key (all its methods) · psummary — a method id
+  //   card — a card id · concept — a concept (tab) id · csummary — a concept id · psummary — a method id
+  // (A whole subject's summaries are its Concepts and Methods tabs themselves — A SUBJECT'S PAGE.)
   // The address is #<kind>:<id>, so a reload comes back to the same page.
   // ============================================================
   var activeSub = null, subFocus = null;   // subFocus: what to flash once the page is drawn (a CSS selector)
-  function subRef(sub) { return { lvl: { card: "c", summary: "s", msummary: "s", psummary: "p" }[sub.kind] || "t", id: sub.id }; }
+  function subRef(sub) { return { lvl: { card: "c", psummary: "p" }[sub.kind] || "t", id: sub.id }; }
   function subValid(sub) { if (!sub) return false; var r = subRef(sub); return refExists(r) && !isHiddenRef(r); }
   function subOpen() { return subValid(activeSub); }
   function isSubPage(kind, id) { return !!activeSub && activeSub.kind === kind && activeSub.id === id; }
   function subPageShown() { var p = $("subPage"); return !!p && !p.hidden; }
   function subSubjectOf(sub) {
-    if (sub.kind === "summary" || sub.kind === "msummary") return sub.id;
     if (sub.kind === "psummary") { var pg = psPageById(sub.id); return pg ? pg.subject : null; }
     return libSubjectOf(subRef(sub));
   }
@@ -11837,8 +11838,6 @@ function __detabaseMain() {
     var s = activeSub, key = subSubjectOf(s), sub;
     if (s.kind === "card") sub = 'A card in <b>' + escapeHtml(tabLabel(libPlace(subRef(s)).p)) + '</b>';
     else if (s.kind === "concept") sub = 'A concept in <b>' + escapeHtml(subjectName(key)) + '</b>';
-    else if (s.kind === "summary") sub = 'A summary of all its concepts';
-    else if (s.kind === "msummary") sub = 'A summary of all its methods';
     else if (s.kind === "psummary") sub = 'A summary of <b>' + escapeHtml(psPageById(s.id).name) + '</b>';
     else sub = 'A summary of <b>' + escapeHtml(tabLabel(s.id)) + '</b>';
     return { title: subjectName(key), sub: sub, hash: s.kind + ":" + encodeURIComponent(s.id) };
@@ -11852,8 +11851,8 @@ function __detabaseMain() {
     var k = activeSub.kind;
     if (k === "card") renderCardPage(host);
     else if (k === "concept") renderConceptPage(host);
-    else if (k === "msummary" || k === "psummary") lsumRender(host, methodsSumSpec(subSubjectOf(activeSub), k === "psummary" ? activeSub.id : null));
-    else lsumRender(host, conceptsSumSpec(subSubjectOf(activeSub), k === "csummary" ? activeSub.id : null));
+    else if (k === "psummary") lsumRender(host, methodsSumSpec(subSubjectOf(activeSub), activeSub.id));
+    else lsumRender(host, conceptsSumSpec(subSubjectOf(activeSub), activeSub.id));
     fillAllIn(host);
     try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
     spRefreshTools(host);
@@ -11935,7 +11934,10 @@ function __detabaseMain() {
   // groups left with nothing disappear. (The saved, hand-picked lists are Study sheets — STUDY SHEETS.)
   //   spec = { mem, title, back: { label, title, run }, empty,
   //            filters: [{ id, label, dots, opts: [{ id, name, color }], chip(opt) }],
-  //            groups(off) → [{ kicker, title, open(), items: [element] }] }   kicker: a small line above the title
+  //            groups(off, w) → [{ kicker, title, open(), items: [element] }] }   kicker: a small line above the title; w: content width
+  //   lsumRender(host, spec, bar): with a bar the summary sits inside another page (a subject's Concepts /
+  //   Methods tab): no back button or title of its own, its Filters button goes into that bar, and a
+  //   change redraws that page (spec.redraw) instead of the page inside a subject.
   //   store.ui.lsum[mem] = { off: { <filter id>: { <option id>: 1 } } }
   // ============================================================
   function lsumState(spec) {
@@ -11953,9 +11955,10 @@ function __detabaseMain() {
     });
     return out;
   }
-  function lsumRender(host, spec) {
+  function lsumRedraw(spec) { (spec.redraw || renderSubPage)(); }
+  function lsumRender(host, spec, bar) {
     var st = lsumState(spec), chips = lsumChips(spec, st);
-    var acts = subHeadEl(host, spec.back, spec.title);
+    var acts = bar || subHeadEl(host, spec.back, spec.title);
     acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
     var row = document.createElement("div");
     row.className = "sp-chips";
@@ -11966,19 +11969,20 @@ function __detabaseMain() {
         chip.className = "ps-chip";
         chip.innerHTML = '<span class="ps-chip-go"></span>';
         chip.firstChild.textContent = c.label;
-        chip.appendChild(actBtn("✕", "show it again", function () { c.clear(); saveStore(); renderSubPage(); }, "ps-chip-x"));
+        chip.appendChild(actBtn("✕", "show it again", function () { c.clear(); saveStore(); lsumRedraw(spec); }, "ps-chip-x"));
         row.appendChild(chip);
       });
-      row.appendChild(actBtn("Show all", "", function () { st.off = {}; saveStore(); renderSubPage(); }, "em-clearnarrow"));
+      row.appendChild(actBtn("Show all", "", function () { st.off = {}; saveStore(); lsumRedraw(spec); }, "em-clearnarrow"));
     }
     host.appendChild(row);
     var body = document.createElement("div");
     body.className = "ls-body";
-    var groups = spec.groups(st.off).filter(function (g) { return g.items.length; });
+    var groups = spec.groups(st.off, Math.max(240, libBlockWidth(host) - 60)).filter(function (g) { return g.items.length; });
     if (!groups.length) body.innerHTML = '<p class="muted sp-empty">' + escapeHtml(chips.length ? "Nothing here with these filters." : spec.empty) + '</p>';
     groups.forEach(function (g) {
       var sec = document.createElement("section");
       sec.className = "ls-group";
+      if (g.tab) sec.setAttribute("data-tab", g.tab);     // a concept's group: found like its section (spSectionOf)
       if (g.title || g.kicker) {
         var h = document.createElement("h3");
         h.className = "ls-ghead";
@@ -11996,7 +12000,7 @@ function __detabaseMain() {
     var st = lsumState(spec);
     var box = ovOpen("Filters · " + spec.title, { wide: true });
     box.ov.classList.add("sp-filters");
-    function changed() { saveStore(); renderSubPage(); draw(); }
+    function changed() { saveStore(); lsumRedraw(spec); draw(); }
     function draw() {
       box.body.innerHTML = "";
       spec.filters.forEach(function (f) {
@@ -12032,15 +12036,15 @@ function __detabaseMain() {
     return {
       mem: tabId ? "t|" + tabId : "s|" + key,
       title: "Summary · " + (tabId ? tabLabel(tabId) : "all concepts"),
-      back: tabId ? { label: "‹ " + tabLabel(tabId), title: "back to the concept", run: function () { openConceptPage(tabId); } }
-                  : { label: "‹ " + subjectName(key), title: "back to the subject", run: function () { openSubjectRef(key); } },
+      back: tabId ? { label: "‹ " + tabLabel(tabId), title: "back to the concept", run: function () { openConceptPage(tabId); } } : null,
+      redraw: tabId ? null : renderSubjectPage,   // a subject's: its Concepts tab
       empty: tabId ? "No cards in this concept yet." : "No cards in this subject yet.",
       filters: filters,
       groups: function (off) {
         var tabs = tabId ? [{ lvl: "t", id: tabId }] : libKids({ lvl: "s", id: key }).filter(function (t) { return !off.concept[t.id]; });
         return tabs.map(function (t) {
           return {
-            title: tabId ? null : tabLabel(t.id),
+            title: tabId ? null : tabLabel(t.id), tab: t.id,
             open: function () { openConceptPage(t.id); },
             items: libKids(t).filter(function (c) { var ty = cardTypeOf(c.id); return !off.type[ty ? ty.id : "none"]; }).map(cardSumEl)
           };
@@ -12084,11 +12088,11 @@ function __detabaseMain() {
     return {
       mem: one ? "p|" + one.id : "m|" + key,
       title: "Summary · " + (one ? one.name : "all methods"),
-      back: one ? { label: "‹ " + one.name, title: "back to the method", run: function () { selectPsPage(one.id); } }
-                : { label: "‹ " + subjectName(key), title: "back to the subject's methods", run: function () { spSetView(key, "methods"); openSubjectRef(key); } },
+      back: one ? { label: "‹ " + one.name, title: "back to the method", run: function () { selectPsPage(one.id); } } : null,
+      redraw: one ? null : renderSubjectPage,     // a subject's: its Methods tab
       empty: one ? "This method has no parts yet." : "No methods in this subject yet.",
       filters: filters,
-      groups: function (off) {
+      groups: function (off, w) {
         var pages = one ? [one] : methodsInOrder(key).filter(function (pg) {
           var f = methodFolderOf(pg);
           return !off.kind[pg.kind || "none"] && !off.method[pg.id] && !(off.folder || {})[f ? f.id : "none"];
@@ -12099,14 +12103,14 @@ function __detabaseMain() {
             kicker: !one && desc ? pg.name : null,
             title: one ? desc || null : desc || pg.name,
             open: one ? null : function () { selectPsPage(pg.id); },
-            items: (psDocPresent(pg.id) ? psParts(pg.id) : []).filter(function (p) { return !off.cat[p.cat]; }).map(function (p) { return partSumEl(pg, p); })
+            items: (psDocPresent(pg.id) ? psParts(pg.id) : []).filter(function (p) { return !off.cat[p.cat]; }).map(function (p) { return partSumEl(pg, p, w); })
           };
         });
       }
     };
   }
   // a method part in a summary: its category and name, then its picture and/or text
-  function partSumEl(pg, part) {
+  function partSumEl(pg, part, w) {
     var d = document.createElement("article");
     d.className = "ls-card ls-part";
     d.setAttribute("data-st", part.id);
@@ -12119,7 +12123,7 @@ function __detabaseMain() {
     h.appendChild(cat);
     h.appendChild(actBtn(partLabel(pg.id, part), "what this part uses", function () { openConceptsPopup({ lvl: "st", id: part.id }); }, "ls-ctitle"));
     d.appendChild(h);
-    if (part.clip) d.appendChild(psCropBlock(part.clip, Math.max(240, libBlockWidth($("subPage")) - 60)));
+    if (part.clip) d.appendChild(psCropBlock(part.clip, w));
     if (part.text) d.appendChild(partTextEl(part.text));
     return d;
   }
@@ -12214,6 +12218,24 @@ function __detabaseMain() {
     return s;
   }
   function spSetView(key, view) { if (!key) return; spState(key).view = view; saveStore(); }
+  // the Concepts and Methods tabs show their summary unless switched to tiles (st.look[view] = "tiles");
+  // a summary has filters of its own, so the subject's Filters and chips are for the tiles and Merged only
+  function spSummaryShown(st) { return (st.view === "concepts" || st.view === "methods") && !(st.look && st.look[st.view] === "tiles"); }
+  function spLookEl(key, st) {
+    var seg = document.createElement("div");
+    seg.className = "sp-seg sp-look"; seg.setAttribute("role", "tablist");
+    [["summary", "📋 Summary"], ["tiles", "▦ Tiles"]].forEach(function (o) {
+      var b = actBtn(o[1], o[0] === "summary" ? "everything on one page, with its own filters" : "as squares, to open, move and label", function () {
+        st.look = st.look || {};
+        if (o[0] === "tiles") st.look[st.view] = "tiles"; else delete st.look[st.view];
+        saveStore(); renderSubjectPage();
+      }, "");
+      var on = (o[0] === "summary") === spSummaryShown(st);
+      b.classList.toggle("on", on); b.setAttribute("aria-selected", on);
+      seg.appendChild(b);
+    });
+    return seg;
+  }
   function spTabState(st, tabId) {           // "on" | "some" | "off"
     if (st.off[tabId]) return "off";
     var cs = libKids({ lvl: "t", id: tabId }); if (!cs.length) return "on";
@@ -12314,6 +12336,7 @@ function __detabaseMain() {
       b.addEventListener("click", function () { spSetView(key, b.getAttribute("data-v")); renderSubjectPage(); });
     });
     head.querySelector(".sp-filter-btn").addEventListener("click", function () { spFilters(key); });
+    if (spSummaryShown(st)) head.querySelector(".sp-filter-btn").hidden = true;
     head.querySelector('[data-a="c"]').addEventListener("click", function () { addAssetAt({ lvl: "s", id: key }); });
     head.querySelector('[data-a="m"]').addEventListener("click", function () { newProblemPage(key); });
     return head;
@@ -12518,7 +12541,13 @@ function __detabaseMain() {
     if (sel) sel.allPaints = [];
     var bar = document.createElement("div");
     bar.className = "cc-bar";
-    bar.appendChild(actBtn("📋 Summary", "every card of this subject on one page", function () { openSub("summary", key); }));
+    bar.appendChild(spLookEl(key, st));
+    if (spSummaryShown(st)) {
+      bar.appendChild(actBtn("＋ Concept", "a new concept at the end", function () { newConcept(key); }));
+      host.appendChild(bar);
+      lsumRender(host, conceptsSumSpec(key, null), bar);
+      return;
+    }
     if (tabs.length) bar.appendChild(selectBtn("c|" + key, "cards to give them a type"));
     bar.appendChild(actBtn("＋ Concept", "a new concept at the end", function () { newConcept(key); }));
     host.appendChild(bar);
@@ -12573,7 +12602,12 @@ function __detabaseMain() {
     if (st.need && !needs[st.need]) delete st.need;
     var bar = document.createElement("div");
     bar.className = "cc-bar";
-    bar.appendChild(actBtn("📋 Summary", "every method of this subject on one page", function () { openSub("msummary", key); }));
+    bar.appendChild(spLookEl(key, st));
+    if (spSummaryShown(st)) {
+      host.appendChild(bar);
+      lsumRender(host, methodsSumSpec(key, null), bar);
+      return;
+    }
     if (all.length) bar.appendChild(selectBtn(scope, "methods to move them or set their kind"));
     bar.appendChild(actBtn("＋ 📁 Folder", "a new folder for methods", function () { mfCreate(key); }));
     Object.keys(needs).forEach(function (k) {
@@ -12618,7 +12652,7 @@ function __detabaseMain() {
       spMerged(key, { view: "merged", off: {}, hide: { m: 1 } }, host);
     } else {
       host.appendChild(spHeadEl(key, st));
-      host.appendChild(spChipsEl(key, st));
+      if (!spSummaryShown(st)) host.appendChild(spChipsEl(key, st));
       if (st.view === "concepts") spConceptsView(key, st, host);
       else if (st.view === "methods") spMethodsView(key, st, host);
       else spMerged(key, st, host);
@@ -18335,9 +18369,11 @@ function __detabaseMain() {
   } else if (summaryById(initial)) {
     openSummary(initial);
   } else if (/^(card|concept|summary|csummary|msummary|psummary):/.test(initial)) {
-    var dk = initial.slice(0, initial.indexOf(":"));
-    openSub(dk, decodeURIComponent(initial.slice(dk.length + 1)));
-    if (!activeSub) selectTop("eti");
+    var dk = initial.slice(0, initial.indexOf(":")), did = decodeURIComponent(initial.slice(dk.length + 1));
+    if (dk === "summary" || dk === "msummary") {        // old addresses: a subject's summary is now its tab
+      if (refExists({ lvl: "s", id: did })) { var dst = spState(did); dst.view = dk === "summary" ? "concepts" : "methods"; if (dst.look) delete dst.look[dst.view]; openSubjectRef(did); }
+      else selectTop("eti");
+    } else { openSub(dk, did); if (!activeSub) selectTop("eti"); }
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
