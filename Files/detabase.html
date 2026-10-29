@@ -770,9 +770,9 @@
   .sum-card:hover { border-color: var(--accent); }
   .sum-card:active { transform: translateY(1px); }
   /* dragging to reorder: the list folds to its titles, the held row lifts, a line marks where it lands */
-  .sum-item, .ps-stage { position: relative; }
+  .ps-stage { position: relative; }
   .reordering .ps-stage > .ps-crop, .reordering .ps-stage > .ps-part-text, .reordering .ps-stage > .ps-uses { display: none; }
-  .reordering .sum-item-head, .reordering .ps-stage-head { margin-bottom: 0; }
+  .reordering .ps-stage-head { margin-bottom: 0; }
   /* ---- dragging (one engine): the lifted copy, the gap where it lands, a target that will take it ---- */
   .dnd-ghost { position: fixed; left: 0; top: 0; z-index: 9000; pointer-events: none; max-height: 168px; overflow: hidden; transform-origin: 0 0;
     border-radius: var(--r-md); background: var(--bg); box-shadow: 0 18px 44px rgba(15, 23, 42, .3); outline: 2px solid var(--accent); opacity: .97; }
@@ -782,7 +782,7 @@
   .sp-cards > .dnd-ph { grid-column: 1 / -1; margin: 16px 0; }
   .dnd-hot { outline: 2px solid var(--accent) !important; outline-offset: 2px; background: color-mix(in srgb, var(--accent) 10%, var(--bg)) !important; }
   body.dnd-active, body.dnd-active * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
-  .dnd-handle, .sp-tab-head, .ue-head, .tree-ghead, .tree-kids > button, #topbar > button, .ps-stage-head, .sum-item-head, .pl-tpl-item, .pl-goal-group, .pl-fmt-block-row {
+  .dnd-handle, .sp-tab-head, .ue-head, .tree-ghead, .tree-kids > button, #topbar > button, .ps-stage-head, .pl-tpl-item, .pl-goal-group, .pl-fmt-block-row {
     -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
   /* a summary's own page */
   #sumPane .cp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
@@ -791,15 +791,7 @@
   #sumPane .ps-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .sum-hint { font-size: .84rem; margin: 6px 0 12px; }
   .sum-list { display: flex; flex-direction: column; gap: 12px; max-width: 980px; }
-  .sum-item { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-md); background: var(--surface-1); padding: 10px 12px; }
-  .sum-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .sum-item-name { flex: 1; min-width: 0; min-height: 40px; text-align: left; border: none; background: none; padding: 0 4px; font: inherit; font-size: .95rem; font-weight: 650;
-    color: var(--text-primary); cursor: pointer; }
-  .sum-item-name small { display: block; font-size: .74rem; font-weight: 400; color: var(--text-muted); }
-  .sum-item-name:hover { color: var(--accent); }
   .sum-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
-  .sum-list .sum-item-name { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; cursor: default; }
-  .sum-list .sum-item-name:hover { color: inherit; }
   .sum-list .ls-body { max-width: 980px; }
   /* a study sheet: a method's parts under the card they are connected to; edit mode */
   .ls-mhead { display: flex; flex-direction: column; align-items: flex-start; gap: 0; margin: 10px 0 0 18px; padding: 6px 0 0 12px; border-left: 3px solid var(--accent); }
@@ -808,6 +800,10 @@
   .ls-chead .sh-x { margin-left: auto; min-width: var(--tap); min-height: var(--tap); color: var(--danger, #dc2626); }
   .ls-card .ue-head .sh-elx { display: inline-flex; margin-left: auto; min-width: var(--tap); min-height: 36px; color: var(--danger, #dc2626); }
   .ue-block.sh-off { opacity: .45; }
+  .sh-grip { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; cursor: grab; touch-action: none; color: var(--text-muted); font-size: 1.1rem; }
+  .ls-shead .sh-grip { margin-right: 6px; vertical-align: middle; }
+  #sumList:has(.sh-fold-all) .ls-card > :not(.ls-chead), #sumList:has(.sh-fold-all) .ls-mhead .ls-gtitle, #sumList:has(.sh-fold-all) .sh-hidden { display: none; }
+  .sh-fold-el > .ue-block .ue-body { display: none; }
   .ue-block.sh-off .ue-body { display: none; }
   .ue-block.sh-off .sh-elx { color: var(--accent); opacity: 1; }
   .sh-hidden { font-size: .8rem; margin: 6px 0 0; }
@@ -878,12 +874,13 @@
   @media (max-width: 1100px) { .cd-grid { padding: 8px 6px; gap: 8px; } }
   /* summaries (live): groups, each a sheet of cards laid flat */
   .ls-body { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+  .ls-subj { display: flex; flex-direction: column; gap: 14px; }
   .ls-group { padding: 12px 18px 16px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); }
   .ls-ghead { margin: 0 0 4px; padding: 0; border: 0; }
   .ls-gopen { min-height: var(--tap); padding: 0; border: 0; background: none; font: inherit; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
   .ls-gopen:hover, .ls-ctitle:hover, .ls-kicker:hover { color: var(--accent); }
   .ls-shead { display: block; width: 100%; min-height: var(--tap); margin: 18px 0 0; padding: 4px 2px 6px; border: 0; border-bottom: 2px solid var(--accent); background: none; font: inherit; font-size: 1.35rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
-  .ls-shead:first-child { margin-top: 0; }
+  .ls-subj:first-child > .ls-shead, .ls-body > .ls-shead:first-child { margin-top: 0; }
   .ls-shead:hover { color: var(--accent); }
   .em-libbar { margin: 0 0 12px; }
   .sl-target { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 10px; padding: 10px 14px; border: 1px solid var(--accent); border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 10%, transparent); }
@@ -4302,7 +4299,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B99</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B100</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -12194,11 +12191,17 @@ function __detabaseMain() {
     body.className = "ls-body";
     groups = spec.groups(st.off, Math.max(240, libBlockWidth(host) - 60)).filter(function (g) { return g.items.length; });
     if (!groups.length) body.innerHTML = '<p class="muted sp-empty">' + escapeHtml(chips.length ? "Nothing here with these filters." : spec.empty) + '</p>';
+    var subj = null;                   // the current subject's section (folder / library summaries, study sheets)
     groups.forEach(function (g) {
       var sec = document.createElement("section");
       sec.className = "ls-group";
       if (g.tab) sec.setAttribute("data-tab", g.tab);     // a concept's group: found like its section (spSectionOf)
-      if (g.head) body.appendChild(actBtn(g.head.title, "open it", g.head.open, "ls-shead"));   // a subject's name, above its first group (folder and library summaries)
+      if (g.head) {                    // a subject's name, above its first group — it and its groups in one section
+        subj = document.createElement("div");
+        subj.className = "ls-subj";
+        subj.appendChild(actBtn(g.head.title, "open it", g.head.open, "ls-shead"));
+        body.appendChild(subj);
+      }
       if (g.title || g.kicker) {
         var h = document.createElement("h3");
         h.className = "ls-ghead";
@@ -12208,7 +12211,7 @@ function __detabaseMain() {
         sec.appendChild(h);
       }
       g.items.forEach(function (el) { sec.appendChild(el); });
-      body.appendChild(sec);
+      (subj || body).appendChild(sec);
     });
     host.appendChild(body);
   }
@@ -17616,7 +17619,8 @@ function __detabaseMain() {
       var par = r.lvl === "st" ? refParent(r) : null;
       return !(par && have[refKey(par)]);
     }).map(function (r) { return { lvl: r.lvl, id: r.id }; });
-    sm.items = sm.items.concat(add);
+    if (sm.arranged) add.forEach(function (r) { sheetInsert(sm.items, r); });   // a rearranged sheet: each in its natural place
+    else sm.items = sm.items.concat(add);
     saveStore();
     if (after) after();
     var skipped = refs.length - add.length;
@@ -17698,10 +17702,14 @@ function __detabaseMain() {
   // ---- a study sheet's own page ----
   // Drawn like a summary (lsumRender): subject by subject, each subject's name as its title, then
   // concept / method headings, cards laid flat and parts with their category. A method's part (or a
-  // whole method) connected to a card that is on the sheet sits right under that card. Filters (the
-  // folder summary's set) hide things by their kind, never delete them; they are kept per sheet.
-  //   sheetMode: null | "edit" (✕ takes an item off the sheet, ✕ on a card's element hides it on this
-  //   sheet only: item.hide = { <element id>: 1 }) | "order" (the reorder list, titles only)
+  // whole method) right after a card it is connected to sits under that card. Filters (the folder
+  // summary's set) hide things by their kind, never delete them; they are kept per sheet.
+  // Order: until the owner rearranges a sheet it is laid out automatically (sheetOrder); the first
+  // drag writes that layout into sm.items and sets sm.arranged — from then on the sheet shows exactly
+  // its stored order (sheetArranged), and new things are put in their natural place (sheetInsert).
+  //   sheetMode: null | "edit" — ✕ takes an item off the sheet; ✕ on a card's element hides it on this
+  //   sheet only (item.hide = { <element id>: 1 }); ⠿ drags an item, a subject's section (by its
+  //   title), or an element inside its card (item.eo = { <element id>: position }, this sheet only)
   var sheetMode = null;
   function openSummary(id) {
     var sm = summaryById(id); if (!sm) return;
@@ -17716,15 +17724,17 @@ function __detabaseMain() {
     if (r.lvl === "st") { var sx = psPartById(r.id); return sx ? sx.page : null; }
     return null;
   }
-  // the order a sheet shows: subject by subject (in the order they first appear), each in the sheet's
+  function sheetConnKeys(pg) { return methodCards(pg.id).map(function (x) { return refKey(x.ref); }); }
+  function isHostRef(r) { return r.lvl === "c" || r.lvl === "t"; }
+  // the automatic layout: subject by subject (in the order they first appear), each in the sheet's
   // order — except a method's item connected to a card (or a whole concept) that is on the list: it goes
   // right under it (under the first one, when it is connected to several). → [{ ref, under: ref | null }]
   function sheetOrder(items) {
     var under = {}, moved = {}, conn = {};
     items.forEach(function (r) {
       var pg = sheetMethodOf(r); if (!pg) return;
-      var ks = conn[pg.id] = conn[pg.id] || methodCards(pg.id).map(function (x) { return refKey(x.ref); });
-      var host = items.filter(function (x) { return (x.lvl === "c" || x.lvl === "t") && ks.indexOf(refKey(x)) >= 0; })[0];
+      var ks = conn[pg.id] = conn[pg.id] || sheetConnKeys(pg);
+      var host = items.filter(function (x) { return isHostRef(x) && ks.indexOf(refKey(x)) >= 0; })[0];
       if (host) { (under[refKey(host)] = under[refKey(host)] || []).push(r); moved[refKey(r)] = 1; }
     });
     var subjects = [], bySubj = {};
@@ -17742,6 +17752,44 @@ function __detabaseMain() {
       });
     });
     return out;
+  }
+  // a rearranged sheet: its own order; a method's item sits under the card just before it (past that
+  // card's other method items) when the method is connected to that card
+  function sheetArranged(items) {
+    var out = [], host = null, conn = {};
+    items.forEach(function (r) {
+      var pg = sheetMethodOf(r);
+      if (pg && host && (conn[pg.id] = conn[pg.id] || sheetConnKeys(pg)).indexOf(refKey(host)) >= 0) { out.push({ ref: r, under: host }); return; }
+      host = isHostRef(r) ? r : null;
+      out.push({ ref: r, under: null });
+    });
+    return out;
+  }
+  function sheetLayout(sm, items) { return sm.arranged ? sheetArranged(items) : sheetOrder(items); }
+  // the stored order, made explicit (the first rearrangement keeps what was on screen)
+  function sheetArrange(sm) {
+    if (!sm.arranged) { sm.items = sheetOrder(sm.items).map(function (x) { return x.ref; }); sm.arranged = 1; }
+    return sm.items;
+  }
+  // where a new item goes on a rearranged sheet: a method's item under a card it is connected to (after
+  // that card's method items); anything else after the last item with the same parent (concept / method),
+  // else of its subject — never among the items under a card; otherwise at the end
+  function sheetInsert(items, r) {
+    var at = -1, pg = sheetMethodOf(r), lay = sheetArranged(items);
+    function past(j) { var a = j + 1; while (a < items.length && lay[a].under) a++; return a; }
+    function lastWhere(test) { for (var j = items.length - 1; j >= 0; j--) if (!lay[j].under && test(items[j])) return j; return -1; }
+    if (pg) {
+      var ks = sheetConnKeys(pg);
+      for (var i = 0; i < items.length; i++) if (isHostRef(items[i]) && ks.indexOf(refKey(items[i])) >= 0) { at = past(i); break; }
+    }
+    if (at < 0) {
+      var par = refParent(r), pk = par ? refKey(par) : null, k = libSubjectOf(r);
+      var j = pk ? lastWhere(function (x) { var p2 = refParent(x); return !!p2 && refKey(p2) === pk; }) : -1;
+      if (j < 0) j = lastWhere(function (x) { return libSubjectOf(x) === k; });
+      if (j >= 0) at = past(j);
+    }
+    if (at < 0) at = items.length;
+    items.splice(at, 0, r);
   }
   function sheetPasses(off) {
     return function (r) {
@@ -17769,7 +17817,7 @@ function __detabaseMain() {
       filters: kindFilters(sheetSubjectKeys(sm)),
       groups: function (off, w) {
         var out = [], g = null, lastSubj = null, lastPg = null;
-        sheetOrder(sm.items.filter(sheetPasses(off))).forEach(function (x) {
+        sheetLayout(sm, sm.items.filter(sheetPasses(off))).forEach(function (x) {
           var r = x.ref, pg = sheetMethodOf(r);
           if (x.under) {                                         // under its card: the method's name once, then its parts
             if (pg !== lastPg) g.items.push(sheetMethodHead(pg));
@@ -17788,9 +17836,9 @@ function __detabaseMain() {
             key = "p:" + pg.id;
             head = { kicker: desc ? pg.name : null, title: desc || pg.name, open: function () { selectPsPage(pg.id); } };
           } else { key = refKey(r); head = {}; }
-          if (!g || g.key !== key) {
+          var k = libSubjectOf(r);
+          if (!g || g.key !== key || k !== lastSubj) {
             g = { key: key, kicker: head.kicker, title: head.title, open: head.open, items: [] };
-            var k = libSubjectOf(r);
             if (k !== lastSubj) g.head = { title: subjectName(k), open: function () { openSubjectRef(k); } };
             lastSubj = k;
             out.push(g);
@@ -17810,10 +17858,16 @@ function __detabaseMain() {
     if (desc) { var t = document.createElement("span"); t.className = "ls-gtitle"; t.textContent = desc; h.appendChild(t); }
     return h;
   }
-  // one item on the sheet; in edit mode with its ✕ (and a card's elements with theirs)
+  function sheetGrip(title) {
+    var g = document.createElement("span");
+    g.className = "ps-grip sh-grip no-print";
+    g.title = title; g.textContent = "⠿";
+    return g;
+  }
+  // one item on the sheet; in edit mode with its ⠿ and ✕ (and a card's elements with theirs)
   function sheetItemEl(sm, r, w, under) {
     var edit = sheetMode === "edit", d;
-    if (r.lvl === "c") d = sheetCardEl(r, edit);
+    if (r.lvl === "c") d = sheetCardEl(sm, r, edit);
     else if (r.lvl === "st") { var sx = psPartById(r.id); d = partSumEl(sx.page, sx.part, w); }
     else {
       d = document.createElement("article");
@@ -17824,20 +17878,45 @@ function __detabaseMain() {
       d.appendChild(assetBody(r, w));
     }
     if (under) d.classList.add("ls-under");
-    if (edit) d.querySelector(".ls-chead").appendChild(actBtn("✕", "take it off this study sheet", function () {
-      libMoved("Took “" + refLabel(r) + "” off the sheet", function () { sm.items = sm.items.filter(function (y) { return refKey(y) !== refKey(r); }); });
-    }, "sh-x"));
+    if (edit) {
+      var head = d.querySelector(".ls-chead");
+      head.insertBefore(sheetGrip("drag to move it anywhere on the sheet"), head.firstChild);
+      head.appendChild(actBtn("✕", "take it off this study sheet", function () {
+        libMoved("Took “" + refLabel(r) + "” off the sheet", function () { sm.items = sm.items.filter(function (y) { return refKey(y) !== refKey(r); }); });
+      }, "sh-x"));
+    }
     return d;
   }
-  // a card on the sheet: the elements hidden on this sheet are left out (in edit mode: faded, with ↺)
-  function sheetCardEl(r, edit) {
-    var d = cardSumEl({ lvl: "c", id: r.id }), hide = r.hide || {}, n = 0;
+  // a card on the sheet: its elements in this sheet's order (item.eo); the ones hidden on this sheet are
+  // left out (in edit mode: faded, with ↺). Dragging an element here never moves it in the library.
+  function sheetCardEl(sm, r, edit) {
+    var d = cardSumEl({ lvl: "c", id: r.id }), hide = r.hide || {}, eo = r.eo || {}, n = 0;
+    Array.prototype.forEach.call(d.querySelectorAll(".sp-card"), function (x) { delete x.__dndInto; });   // no dropping library elements in here
+    var boxes = [];
+    Array.prototype.forEach.call(d.querySelectorAll(".ue-block[data-ue]"), function (b) { if (boxes.indexOf(b.parentNode) < 0) boxes.push(b.parentNode); });
+    boxes.forEach(function (box) {
+      delete box.__dndList;                                                    // the library's element drag is off on a sheet
+      var blocks = Array.prototype.filter.call(box.children, function (b) { return b.matches(".ue-block[data-ue]"); });
+      blocks.map(function (b, i) { var p = eo[b.getAttribute("data-ue")]; return { b: b, k: p == null ? 1e6 + i : p }; })
+        .sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { box.appendChild(x.b); });
+      if (edit) dndList(box, { type: "sheetel", item: ".ue-block", grip: ".sh-grip", handle: ".ue-head", fold: "sh-fold-el",
+        canDrop: function (drag) { return drag.list === box; },
+        id: function (el) { return el.getAttribute("data-ue"); },
+        onDrop: function (drag, index) {
+          var ids = Array.prototype.filter.call(box.children, function (b) { return b.matches(".ue-block[data-ue]") && b !== drag.el; })
+            .map(function (b) { return b.getAttribute("data-ue"); });
+          ids.splice(index, 0, drag.id);
+          libMoved("Element order saved on this sheet", function () { r.eo = {}; ids.forEach(function (id, i) { r.eo[id] = i; }); });
+        } });
+    });
     Array.prototype.forEach.call(d.querySelectorAll(".ue-block[data-ue]"), function (b) {
       var id = b.getAttribute("data-ue"), off = !!hide[id];
       if (off) n++;
       if (!edit) { if (off) b.remove(); return; }
       b.classList.toggle("sh-off", off);
-      b.querySelector(".ue-head").appendChild(actBtn(off ? "↺ Show" : "✕", off ? "show it on this sheet again" : "hide it on this sheet (the card itself keeps it)", function () {
+      var uh = b.querySelector(".ue-head");
+      uh.insertBefore(sheetGrip("drag to change the order inside this card (on this sheet only)"), uh.firstChild);
+      uh.appendChild(actBtn(off ? "↺ Show" : "✕", off ? "show it on this sheet again" : "hide it on this sheet (the card itself keeps it)", function () {
         libMoved((off ? "Showing" : "Hid") + " “" + refName({ lvl: "e", id: id }) + "” on this sheet", function () {
           var h = r.hide = r.hide || {};
           if (off) delete h[id]; else h[id] = 1;
@@ -17848,6 +17927,49 @@ function __detabaseMain() {
     if (n && !edit) d.insertAdjacentHTML("beforeend", '<p class="muted sh-hidden">✂ ' + n + (n === 1 ? " element" : " elements") + ' hidden on this sheet</p>');
     return d;
   }
+  // edit mode: drag items (into any group) and subjects' sections (by their title)
+  function sheetEditDnd(sm, list) {
+    function refOf(el) { return el.__ref; }
+    function keyIn(items, ref) { var k = refKey(ref); for (var i = 0; i < items.length; i++) if (refKey(items[i]) === k) return i; return -1; }
+    // move `refs` (in their order) to before `before` (a ref), or after `after` when there is nothing before
+    function place(label, refs, before, after) {
+      libMoved(label, function () {
+        var items = sheetArrange(sm).slice(), ks = refs.map(refKey);
+        var moving = items.filter(function (r) { return ks.indexOf(refKey(r)) >= 0; });
+        items = items.filter(function (r) { return ks.indexOf(refKey(r)) < 0; });
+        var at = before ? keyIn(items, before) : after ? keyIn(items, after) + 1 : items.length;
+        if (at < 0) at = items.length;
+        Array.prototype.splice.apply(items, [at, 0].concat(moving));
+        sm.items = items;
+      });
+    }
+    Array.prototype.forEach.call(list.querySelectorAll(".ls-group"), function (sec) {
+      dndList(sec, { type: "sheetitem", item: ".ls-card", grip: ".sh-grip", handle: ".ls-chead", fold: "sh-fold-all",
+        ghost: function (el) { return el.querySelector(".ls-chead") || el; },
+        id: function (el) { return refKey(el.__ref); },
+        onDrop: function (drag, index, target) {
+          var others = dndItemsOf(target, drag.el);
+          place("Study sheet order saved", [refOf(drag.el)], others[index] ? refOf(others[index]) : null, others.length ? refOf(others[others.length - 1]) : null);
+        } });
+    });
+    var body = list.querySelector(".ls-body");
+    if (!body) return;
+    Array.prototype.forEach.call(body.querySelectorAll(":scope > .ls-subj > .ls-shead"), function (h) { h.insertBefore(sheetGrip("drag to move this subject with everything in it"), h.firstChild); });
+    // a section = its run of items on the sheet, filtered-out ones in between included
+    function runOf(sec) {
+      var vis = Array.prototype.map.call(sec.querySelectorAll(".ls-card"), refOf), items = sheetArrange(sm);
+      var a = keyIn(items, vis[0]), b = keyIn(items, vis[vis.length - 1]);
+      return items.slice(a, b + 1);
+    }
+    dndList(body, { type: "sheetsubj", item: ".ls-subj", grip: ".sh-grip", handle: ".ls-shead", fold: "sh-fold-all",
+      ghost: function (el) { return el.querySelector(".ls-shead") || el; },
+      id: function (el) { return refKey(el.querySelector(".ls-card").__ref); },
+      onDrop: function (drag, index, target) {
+        var others = dndItemsOf(target, drag.el);
+        var next = others[index], prev = others[others.length - 1];
+        place("Study sheet order saved", runOf(drag.el), next ? refOf(next.querySelector(".ls-card")) : null, prev ? runOf(prev).slice(-1)[0] : null);
+      } });
+  }
   // built-in cards are moved into the sheet (like a subject's page) — back to the hidden library before redrawing or leaving
   function parkSumPane() { var h = $("sumList"); if (h && h.firstChild) { spPark(h); h.innerHTML = ""; } }
   function renderSumPane() { keepScroll(drawSumPane); }
@@ -17856,63 +17978,20 @@ function __detabaseMain() {
     $("sumBack").textContent = "‹ " + (sm.subject === "lib" ? "Study sheets" : scopeName(sm.subject));
     $("sumTitle").textContent = sm.name;
     $("pageSubtitle").innerHTML = sheetSubtitle(sm);
-    var list = $("sumList"), bar = $("sumBar"), hint = $("sumHint");
+    var list = $("sumList"), bar = $("sumBar"), hint = $("sumHint"), edit = sheetMode === "edit";
     parkSumPane();
     bar.innerHTML = "";
-    if (sheetMode === "order") {
-      bar.appendChild(actBtn("✓ Done", "back to the sheet", function () { sheetMode = null; renderSumPane(); }, "btn-primary"));
-      hint.textContent = "Drag ⠿ or use ▲▼ to change the order. A method's part connected to a card on this sheet always stays under that card.";
-      hint.hidden = false;
-      sheetOrderList(sm, list);
-      return;
-    }
-    var edit = sheetMode === "edit";
-    bar.appendChild(actBtn(edit ? "✓ Done" : "✂ Edit", edit ? "stop editing" : "take things off the sheet, or hide single elements of a card on this sheet only",
+    list.classList.toggle("sh-editing", edit);
+    bar.appendChild(actBtn(edit ? "✓ Done" : "✂ Edit", edit ? "stop editing" : "rearrange anything by dragging, take things off the sheet, or hide single elements of a card on this sheet only",
       function () { sheetMode = edit ? null : "edit"; renderSumPane(); }, edit ? "btn-primary" : ""));
-    if (!edit && sm.items.length > 1) bar.appendChild(actBtn("⇅ Order", "change the order", function () { sheetMode = "order"; renderSumPane(); }));
-    hint.textContent = edit ? "✕ next to a title takes it off this sheet; ✕ on an element hides it here only — the card in the library keeps it." : "";
+    hint.textContent = edit ? "Drag ⠿ to move a card, a part, a subject (by its title) or an element inside its card. ✕ next to a title takes it off this sheet; ✕ on an element hides it here only — the card in the library keeps it." : "";
     hint.hidden = !edit;
     lsumRender(list, sheetSumSpec(sm), bar);
+    if (edit) sheetEditDnd(sm, list);
     fillAllIn(list);
     try { prettyFractions(list); } catch (e) {}
     try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
     spRefreshTools(list);
-  }
-  // the reorder list: titles only, in the order the sheet shows (a part under a card stays under it)
-  function sheetOrderList(sm, list) {
-    var shown = sheetOrder(sm.items).map(function (x) { return x.ref; });
-    function save(order) { libMoved("Study sheet order saved", function () { sm.items = order; }); }
-    function move(i, dir) {
-      var j = i + dir; if (j < 0 || j >= shown.length) return;
-      var o = shown.slice(), t = o[i]; o[i] = o[j]; o[j] = t;
-      save(o);
-    }
-    shown.forEach(function (ref, i) {
-      var row = document.createElement("div");
-      row.className = "sum-item";
-      row.setAttribute("data-k", refKey(ref));
-      var par = refParent(ref);
-      row.innerHTML =
-        '<div class="sum-item-head">' +
-          '<span class="ps-grip" title="drag to change the order">⠿</span><span class="md-num">' + (i + 1) + '</span>' +
-          '<span class="sum-item-name"><span class="mp-lvl lvl-' + ref.lvl + '">' + (ASSET_LV[ref.lvl] || "") + '</span>' +
-            escapeHtml(refLabel(ref)) + (par ? '<small>' + escapeHtml(refName(par)) + '</small>' : '') + '</span>' +
-          '<span class="ps-stage-btns">' +
-            '<button type="button" data-a="up" title="move up"' + (i ? '' : ' disabled') + '>▲</button>' +
-            '<button type="button" data-a="down" title="move down"' + (i < shown.length - 1 ? '' : ' disabled') + '>▼</button>' +
-          '</span>' +
-        '</div>';
-      row.querySelector('[data-a="up"]').addEventListener("click", function () { move(i, -1); });
-      row.querySelector('[data-a="down"]').addEventListener("click", function () { move(i, 1); });
-      list.appendChild(row);
-    });
-    dndList(list, { type: "sumitem", item: ".sum-item", grip: ".ps-grip", handle: ".sum-item-head",
-      id: function (el) { return el.getAttribute("data-k"); },
-      onDrop: function (drag, index) {
-        var it = shown.filter(function (r) { return refKey(r) === drag.id; })[0]; if (!it) return;
-        var rest = shown.filter(function (r) { return r !== it; }); rest.splice(index, 0, it);
-        save(rest);
-      } });
   }
   function sumRename() {
     var sm = summaryById(activeSummary); if (!sm) return;
@@ -18726,7 +18805,7 @@ function __detabaseMain() {
     openScope(sm.subject); libToast("Open a summary, then “💾 Save to study sheet” → “" + sm.name + "”"); });
   if ($("sumClip")) $("sumClip").addEventListener("click", function () {
     var sm = summaryById(activeSummary); if (!sm) return;
-    var spec = sheetSumSpec(sm), refs = sheetOrder(sm.items.filter(sheetPasses(lsumState(spec).off))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
+    var spec = sheetSumSpec(sm), refs = sheetLayout(sm, sm.items.filter(sheetPasses(lsumState(spec).off))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
     if (!refs.length) { libToast("Nothing to add — this sheet shows nothing with its filters."); return; }
     chooseBoardAndMine(refs, { column: true });   // one under another, as the sheet shows them (with its filters)
   });
