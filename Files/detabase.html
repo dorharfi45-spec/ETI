@@ -943,6 +943,7 @@
   .cd-flat .cp-part > .ue-block:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
   .cp-part { margin-top: 12px; }
   .cp-part:empty { display: none; }
+  .off-desc .cp-part[data-part="desc"], .off-expl .cp-part[data-part="expl"], .off-ill .cp-part[data-part="ill"] { display: none; }
   .cp-part::before { content: attr(data-label); display: block; margin-bottom: 4px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
   .cd-tags { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }
   .cd-tag { padding: 1px 7px; border: 1px solid var(--border); border-radius: 999px; font-size: .68rem; font-weight: 600; font-family: inherit; color: var(--text-secondary); white-space: nowrap; }
@@ -4298,7 +4299,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B101</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B102</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -11791,6 +11792,28 @@ function __detabaseMain() {
         .forEach(function (x) { cardPartEl(host, x.part).appendChild(x.n); });
     });
   }
+  // which parts a card has: { desc: 1, … }
+  function cardPartsOf(cardId) {
+    var o = {}, c = (biEnsure(), BI.cards[cardId]);
+    libElements(cardId).forEach(function (e) { o[elPart(e)] = 1; });
+    if (c) c.nodes.forEach(function (n) {
+      if (n.matches(".card, .subject")) Array.prototype.forEach.call(n.querySelectorAll(".cp-part"), function (sec) {
+        if (sec.querySelector(":scope > :not(.ue-extra)")) o[sec.getAttribute("data-part")] = 1;
+      });
+      else if (!n.matches("h3")) o[biPartOf(n)] = 1;
+    });
+    return o;
+  }
+  // the Show filter (a view only): off = { <part id>: 1 }. A card with nothing left to show drops out.
+  function cardShows(cardId, off) {
+    if (!off || !Object.keys(off).length) return true;
+    var o = cardPartsOf(cardId);
+    return CARD_PARTS.some(function (p) { return o[p.id] && !off[p.id]; });
+  }
+  function cardPartsHide(el, off) { CARD_PARTS.forEach(function (p) { el.classList.toggle("off-" + p.id, !!(off && off[p.id])); }); }
+  function cardPartFilter() {
+    return { id: "part", label: "Show on cards", opts: CARD_PARTS.map(function (p) { return { id: p.id, name: p.name }; }), chip: function (o) { return "no " + o.name; } };
+  }
   function elPartMenu(anchor, id) {
     var e = byId(store.elements, id); if (!e) return;
     libMenu(anchor, [{ head: "Part of the card" }].concat(CARD_PARTS.map(function (p) {
@@ -11960,9 +11983,14 @@ function __detabaseMain() {
     var bd = usedBadge(ref); if (bd) acts.appendChild(bd);
     acts.appendChild(actBtn("＋ Add to it", "add elements to this card", function () { addAssetAt(ref); }));
     acts.appendChild(dotsBtn(ref));
+    var spec = { mem: "k|" + ref.id, title: cardLabel(ref.id), redraw: renderSubPage, filters: [cardPartFilter()] };
+    var off = lsumState(spec).off.part, nOff = Object.keys(off).length;
+    acts.appendChild(actBtn("Filters" + (nOff ? " · " + nOff : ""), "which parts of this card show", function () { lsumFilters(spec); }));
     var sheet = document.createElement("div");
     sheet.className = "cd-sheet cd-flat";
-    sheet.appendChild(cardFlatEl(ref));
+    if (cardShows(ref.id, off)) sheet.appendChild(cardFlatEl(ref));
+    else sheet.innerHTML = '<p class="muted sp-empty">Nothing here with these filters.</p>';
+    cardPartsHide(sheet, off);
     host.appendChild(sheet);
     host.appendChild(subMethodsEl("Connected methods", cardMethodsMap()[ref.id] || [],
       "No method is connected to this card yet. A method connects to it when it uses this card or something in it, or through “＋ Connect to card” on the method."));
@@ -12117,6 +12145,13 @@ function __detabaseMain() {
     spec.filters.forEach(function (f) { s.off[f.id] = s.off[f.id] || {}; });
     return s;
   }
+  // one filter's off-map of a summary, for a view that shares it without being that summary
+  function lsumOff(mem, fid) {
+    store.ui.lsum = store.ui.lsum || {};
+    var s = store.ui.lsum[mem] = store.ui.lsum[mem] || {};
+    s.off = s.off || {};
+    return s.off[fid] = s.off[fid] || {};
+  }
   function lsumChips(spec, st) {
     var out = [];
     spec.filters.forEach(function (f) {
@@ -12129,7 +12164,7 @@ function __detabaseMain() {
   function lsumRender(host, spec, bar) {
     var st = lsumState(spec), chips = lsumChips(spec, st);
     var acts = bar || subHeadEl(host, spec.back, spec.title);
-    if (spec.filters.length) acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
+    acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
     var groups = [];                   // filled below; Save takes what is on screen when it is tapped
     function shownRefs() {
       var refs = [];
@@ -12218,7 +12253,7 @@ function __detabaseMain() {
   }
   // ---- concept summaries: a subject's concepts (tabId null), or one concept ----
   function conceptsSumSpec(key, tabId) {
-    var filters = [];
+    var filters = [cardPartFilter()];
     if (!tabId) filters.push({ id: "concept", label: "Concepts",
       opts: libKids({ lvl: "s", id: key }).map(function (t) { return { id: t.id, name: tabLabel(t.id) }; }),
       chip: function (o) { return "without " + o.name; } });
@@ -12236,16 +12271,17 @@ function __detabaseMain() {
           return {
             title: tabId ? null : tabLabel(t.id), tab: t.id,
             open: function () { openConceptPage(t.id); },
-            items: libKids(t).map(cardSumEl)
+            items: libKids(t).filter(function (c) { return cardShows(c.id, off.part); }).map(function (c) { return cardSumEl(c, off.part); })
           };
         });
       }
     };
   }
   // a card in a summary: its type and title (tap the title for its page), then its content laid flat
-  function cardSumEl(cref) {
+  function cardSumEl(cref, off) {
     var d = document.createElement("article");
     d.className = "ls-card cd-flat";
+    cardPartsHide(d, off);
     d.__ref = { lvl: "c", id: cref.id };          // what "💾 Save to study sheet" saves
     d.setAttribute("data-card", cref.id);
     var h = document.createElement("div");
@@ -12261,7 +12297,7 @@ function __detabaseMain() {
   // only the parts that pass, in order. A method with no description is headed by its name.
   function methodsSumSpec(key, pgId) {
     var one = pgId ? psPageById(pgId) : null;
-    var filters = [{ id: "cat", label: "Part categories", dots: true,
+    var filters = [{ id: "cat", label: "Show on methods", dots: true,
       opts: partCats().map(function (c) { return { id: c.id, name: c.name, color: c.color }; }),
       chip: function (o) { return "no " + o.name + " parts"; } }];
     if (!one) {
@@ -12330,13 +12366,14 @@ function __detabaseMain() {
     return groupKidsOf(gid).reduce(function (out, g) { return out.concat(groupSubjectKeysDeep(g)); }, groupSubjectKeys(gid).slice());
   }
   function scopeValid(scope) { return scope === "lib" || (!!scope && scope.slice(0, 2) === "g:" && groupExists(scope.slice(2))); }
-  // the filters of a folder's or the library's summary, and of a study sheet: Subjects (these), Show, Part categories, Method kinds
+  // the filters of a folder's or the library's summary, and of a study sheet: Subjects (these), Include, Show on cards, Show on methods, Method kinds
   function kindFilters(keys) {
     var one = function (list) { return list.map(function (x) { return { id: x.id, name: x.name, color: x.color }; }); };
     return [
       { id: "subject", label: "Subjects", opts: keys.map(function (k) { return { id: k, name: subjectName(k) }; }), chip: function (o) { return "without " + o.name; } },
-      { id: "show", label: "Show", opts: [{ id: "c", name: "Cards" }, { id: "m", name: "Method parts" }], chip: function (o) { return "no " + o.name.toLowerCase(); } },
-      { id: "cat", label: "Part categories", dots: true, opts: one(partCats()), chip: function (o) { return "no " + o.name + " parts"; } },
+      { id: "show", label: "Include", opts: [{ id: "c", name: "Cards" }, { id: "m", name: "Method parts" }], chip: function (o) { return "no " + o.name.toLowerCase(); } },
+      cardPartFilter(),
+      { id: "cat", label: "Show on methods", dots: true, opts: one(partCats()), chip: function (o) { return "no " + o.name + " parts"; } },
       { id: "kind", label: "Method kinds", dots: true, opts: one(methodKinds()).concat([{ id: "none", name: "No kind yet" }]),
         chip: function (o) { return o.id === "none" ? "no methods without a kind" : "no " + o.name + " methods"; } }
     ];
@@ -12354,7 +12391,7 @@ function __detabaseMain() {
         var out = [];
         keys.filter(function (k) { return !off.subject[k]; }).forEach(function (k) {
           var mine = [];
-          if (!off.show.c) mine = mine.concat(conceptsSumSpec(k, null).groups({ concept: {} }, w));
+          if (!off.show.c) mine = mine.concat(conceptsSumSpec(k, null).groups({ concept: {}, part: off.part }, w));
           if (!off.show.m) mine = mine.concat(methodsSumSpec(k, null).groups({ cat: off.cat, kind: off.kind, method: {}, folder: {} }, w));
           mine = mine.filter(function (g) { return g.items.length; });
           if (mine.length) mine[0].head = { title: subjectName(k), open: function () { openSubjectRef(k); } };
@@ -12554,6 +12591,7 @@ function __detabaseMain() {
       });
     });
     var kinds = { c: "cards", m: "methods" };
+    if (st.view === "merged") { var pOff = lsumOff("s|" + key, "part"); CARD_PARTS.forEach(function (p) { if (pOff[p.id]) out.push({ label: "no " + p.name, clear: function () { delete pOff[p.id]; } }); }); }
     if (st.view === "merged") Object.keys(kinds).forEach(function (k) { if (st.hide[k]) out.push({ label: "no " + kinds[k], clear: function () { delete st.hide[k]; } }); });
     if (st.noUnlinked) out.push({ label: "nothing that is not linked to a card", clear: function () { delete st.noUnlinked; } });
     return out;
@@ -12632,7 +12670,7 @@ function __detabaseMain() {
     });
     var all = document.createElement("button");
     all.type = "button"; all.className = "em-clearnarrow"; all.textContent = "Show all";
-    all.addEventListener("click", function () { var s = spState(key); s.off = {}; s.hide = {}; delete s.noUnlinked; saveStore(); renderSubjectPage(); });
+    all.addEventListener("click", function () { var s = spState(key); s.off = {}; s.hide = {}; delete s.noUnlinked; if (s.view === "merged") lsumOff("s|" + key, "part"), store.ui.lsum["s|" + key].off.part = {}; saveStore(); renderSubjectPage(); });
     row.appendChild(all);
     return row;
   }
@@ -12693,10 +12731,21 @@ function __detabaseMain() {
         kinds.appendChild(r);
       });
       b.appendChild(kinds);
+      if (st.view === "merged") {
+        var pOff = lsumOff("s|" + key, "part");
+        var parts = document.createElement("div");
+        parts.className = "spf-sec";
+        parts.innerHTML = '<div class="md-sechead">Show on cards</div>';
+        CARD_PARTS.forEach(function (p) {
+          var on = !pOff[p.id];
+          parts.appendChild(check(on ? "on" : "off", p.name, function () { if (on) pOff[p.id] = 1; else delete pOff[p.id]; changed(); }));
+        });
+        b.appendChild(parts);
+      }
     }
     draw();
     box.buttons([
-      { label: "Show all", run: function () { st.off = {}; st.hide = {}; delete st.noUnlinked; changed(); } },
+      { label: "Show all", run: function () { st.off = {}; st.hide = {}; delete st.noUnlinked; if (st.view === "merged") lsumOff("s|" + key, "part"), store.ui.lsum["s|" + key].off.part = {}; changed(); } },
       { label: "Done", primary: true, right: true, run: function () { box.close(true); } }
     ]);
   }
@@ -12736,16 +12785,17 @@ function __detabaseMain() {
     var all = items.methods.filter(function () { return show.m; });
     var at = {};
     all.forEach(function (it) { it.here.forEach(function (r) { (at[refKey(r)] = at[refKey(r)] || []).push(it); }); });
-    var filtering = spChips(key, st).length > 0;
+    var filtering = spChips(key, st).length > 0, pOff = lsumOff("s|" + key, "part");
     var body = document.createElement("div");
     body.className = "sp-body";
+    cardPartsHide(body, pOff);
     var tabs = libKids({ lvl: "s", id: key });
     if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No concepts yet — tap “＋ Card” to crop the first card out of a document.</p>';
     tabs.forEach(function (t) {
       if (spTabState(st, t.id) === "off") return;
       var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
       var tabLinks = at[refKey(t)] || [];
-      var shown = cards.filter(function (c) { return show.c || (at[refKey(c)] || []).length; });
+      var shown = cards.filter(function (c) { return (show.c && cardShows(c.id, pOff)) || (at[refKey(c)] || []).length; });
       if (filtering && !shown.length && !tabLinks.length) return;
       body.appendChild(spTabEl(t, key, shown.length, function (tb) {
         if (tabLinks.length) tb.appendChild(spLinksEl(tabLinks, key, t, "For the whole concept"));
@@ -12762,7 +12812,7 @@ function __detabaseMain() {
           wrap.className = "mg-card";
           wrap.setAttribute("data-card", c.id);
           var slot;
-          if (show.c) slot = spCardEl(c);
+          if (show.c && cardShows(c.id, pOff)) slot = spCardEl(c);
           else { slot = document.createElement("div"); slot.className = "mg-title dnd-handle"; slot.appendChild(document.createTextNode(cardLabel(c.id))); slot.appendChild(cardTagsEl(c.id, false)); slot.appendChild(dotsBtn(c)); }
           if (slot.classList.contains("compact") && !links.length) wrap.classList.add("compact");
           wrap.appendChild(slot);
