@@ -888,6 +888,8 @@
   .ls-shead:hover { color: var(--accent); }
   .em-libbar { margin: 0 0 12px; }
   .sl-head { margin: 22px 0 0; font-size: 1.1rem; }
+  .lk-box { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .lk-head { min-width: 74px; font-size: .84rem; }
   .bd-page { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--bg); }
   .bd-page[hidden] { display: none; }
   .bd-bar, .bd-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--surface-1); }
@@ -4175,6 +4177,7 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"]]}</script>
 <script type="application/json" id="biMethods">
 [
 { "id": "pp_bi_fnabs", "v": 2, "subject": "f:fn", "kind": "action",
@@ -4360,7 +4363,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B105</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B106</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6429,6 +6432,7 @@ function __detabaseMain() {
       if (p.cardType) store.cardType = p.cardType;
       if (p.cardTags) store.cardTags = p.cardTags;
       if (p.strats) store.strats = p.strats;
+      if (p.conceptLinks) store.conceptLinks = p.conceptLinks;
       if (p.methodKinds) store.methodKinds = p.methodKinds;
       if (p.partCats) store.partCats = p.partCats;
       if (p.biSeed) store.biSeed = p.biSeed;               // which built-in methods / card types were copied (seedBuiltins)
@@ -11745,7 +11749,10 @@ function __detabaseMain() {
     var seed = store.biSeed || { m: {}, ct: {} };
     var methods = list.filter(function (m) { return !(seed.m[m.id] >= m.v); });
     var typed = Object.keys(BI.cards).filter(function (k) { return !seed.ct[k] && BI.cards[k].nodes[0].getAttribute("data-tags"); });
-    if (!methods.length && !typed.length) return;
+    var bl = JSON.parse($("biLinks").textContent), done = seed.l = seed.l || {};
+    var newLinks = bl.c.map(function (p) { return ["c", p[0], p[1]]; }).concat(bl.m.map(function (p) { return ["m", p[0], p[1]]; }))
+      .filter(function (p) { return !done[p.join(">")]; });
+    if (!methods.length && !typed.length && !newLinks.length) return;
     try {
       if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", localStorage.getItem(LS_KEY) || "");
     } catch (e) {}
@@ -11770,6 +11777,12 @@ function __detabaseMain() {
     typed.forEach(function (k) {
       if (!map[k]) map[k] = BI.cards[k].nodes[0].getAttribute("data-tags").split(",");
       seed.ct[k] = 1;
+    });
+    // built-in "builds on" and "uses" links: each added once, so the owner can remove one for good
+    newLinks.forEach(function (p) {
+      if (p[0] === "c") { var l = conceptLinkMap(), a = l[p[1]] = l[p[1]] || []; if (a.indexOf(p[2]) < 0) a.push(p[2]); }
+      else { var pg = psPageById(p[1]); if (pg) { pg.methodIds = pg.methodIds || []; if (pg.methodIds.indexOf(p[2]) < 0) pg.methodIds.push(p[2]); } }
+      done[p.join(">")] = 1;
     });
     store.biSeed = seed;
     saveStore();
@@ -12219,6 +12232,49 @@ function __detabaseMain() {
     dndInto(host.querySelector(".cp-head"), { accepts: ["card"], onDrop: function (drag) { cardTo(drag, tref.id, null); } });
     var whole = store.ps.pages.filter(function (pg) { return methodCards(pg.id).some(function (x) { return x.ref.lvl === "t" && x.ref.id === tref.id; }); });
     if (whole.length) host.appendChild(subMethodsEl("Methods for the whole concept", whole));
+    host.appendChild(conceptLinksEl(tref.id));
+  }
+  // "builds on": store.conceptLinks = { tabId: [tabId it builds on] }. A builds on B = B comes first.
+  function conceptLinkMap() { if (!store.conceptLinks) store.conceptLinks = {}; return store.conceptLinks; }
+  function conceptBuildsOn(id) { return (conceptLinkMap()[id] || []).filter(function (x) { return refExists({ lvl: "t", id: x }); }); }
+  function conceptUsedBy(id) {
+    var m = conceptLinkMap();
+    return Object.keys(m).filter(function (k) { return m[k].indexOf(id) >= 0 && refExists({ lvl: "t", id: k }); });
+  }
+  function conceptUnlink(a, b) {
+    var m = conceptLinkMap();
+    m[a] = (m[a] || []).filter(function (x) { return x !== b; });
+    if (!m[a].length) delete m[a];
+    saveStore(); renderSubPage();
+  }
+  function conceptLinksEl(id) {
+    var box = document.createElement("div");
+    box.className = "lk-box";
+    function row(title, ids, drop, addBtn) {
+      var r = document.createElement("div");
+      r.className = "ps-chips pc-list";
+      r.innerHTML = '<b class="lk-head"></b>';
+      r.firstChild.textContent = title;
+      if (!ids.length && !addBtn) r.insertAdjacentHTML("beforeend", '<span class="muted">Nothing yet.</span>');
+      ids.forEach(function (x) {
+        var chip = document.createElement("span");
+        chip.className = "ps-chip pc-chip";
+        chip.appendChild(actBtn(tabLabel(x), "open it", function () { openConceptPage(x); }, "ps-chip-go"));
+        if (drop) chip.appendChild(actBtn("✕", "remove this link", function () { drop(x); }, "ps-chip-x"));
+        r.appendChild(chip);
+      });
+      if (addBtn) r.appendChild(addBtn);
+      box.appendChild(r);
+    }
+    row("Builds on", conceptBuildsOn(id), function (x) { conceptUnlink(id, x); }, actBtn("＋ Add", "a concept that comes before this one", function () {
+      pickLibTarget(null, function (x) {
+        var m = conceptLinkMap(), l = m[id] = m[id] || [];
+        if (x !== id && l.indexOf(x) < 0) l.push(x);
+        saveStore(); renderSubPage();
+      }, null, { upTo: "t", title: "Builds on" });
+    }, "ps-attach"));
+    row("Used by", conceptUsedBy(id), function (x) { conceptUnlink(x, id); });
+    return box;
   }
   // a new concept at the end of a subject
   function newConcept(key) {
@@ -13434,43 +13490,54 @@ function __detabaseMain() {
   }
 
   // ---- connected methods: links both ways, across subjects ----
-  // A link is stored on the method it was made from (pg.methodIds); both methods show it.
-  function methodLinksOf(pg) {
-    var out = (pg.methodIds || []).map(psPageById).filter(Boolean);
-    store.ps.pages.forEach(function (o) { if (o !== pg && (o.methodIds || []).indexOf(pg.id) >= 0 && out.indexOf(o) < 0) out.push(o); });
-    return out;
-  }
+  // "uses": a link stored on A (A.methodIds) means A uses B: B is a step of A, or A applies it to something new.
+  function methodUses(pg) { return (pg.methodIds || []).map(psPageById).filter(Boolean); }
+  function methodUsedBy(pg) { return store.ps.pages.filter(function (o) { return o !== pg && (o.methodIds || []).indexOf(pg.id) >= 0; }); }
   function linkMethods(pg, other) {
-    if (other === pg || methodLinksOf(pg).indexOf(other) >= 0) return;
+    if (other === pg || methodUses(pg).indexOf(other) >= 0) return;
     (pg.methodIds = pg.methodIds || []).push(other.id);
     saveStore(); renderPsPane();
   }
-  function unlinkMethods(pg, other) {
-    pg.methodIds = (pg.methodIds || []).filter(function (id) { return id !== other.id; });
-    other.methodIds = (other.methodIds || []).filter(function (id) { return id !== pg.id; });
+  function unlinkMethods(user, used) {
+    user.methodIds = (user.methodIds || []).filter(function (id) { return id !== used.id; });
     saveStore(); renderPsPane();
-    libToast("Unlinked “" + other.name + "”");
+    libToast("Unlinked “" + (user.id === activePsPage ? used.name : user.name) + "”");
+  }
+  function flipMethods(user, used) {
+    user.methodIds = (user.methodIds || []).filter(function (id) { return id !== used.id; });
+    used.methodIds = used.methodIds || [];
+    if (used.methodIds.indexOf(user.id) < 0) used.methodIds.push(user.id);
+    saveStore(); renderPsPane();
   }
   function psMethodLinksEl(pg) {
     var box = document.createElement("div");
-    box.className = "ps-chips pc-list";
-    var linked = methodLinksOf(pg);
-    if (!linked.length) box.innerHTML = '<p class="muted pc-none">Not connected to other methods yet.</p>';
-    linked.forEach(function (o) {
-      var chip = document.createElement("span");
-      chip.className = "ps-chip pc-chip";
-      var go = actBtn("", "open it", function () { selectPsPage(o.id); }, "ps-chip-go");
-      go.innerHTML = '<span class="mp-lvl lvl-p">Method</span> ' + escapeHtml(o.name) +
-        (o.subject !== pg.subject ? '<small class="pc-how">' + escapeHtml(subjectName(o.subject)) + '</small>' : '');
-      chip.appendChild(go);
-      chip.appendChild(actBtn("✕", "unlink this method", function () { unlinkMethods(pg, o); }, "ps-chip-x"));
-      box.appendChild(chip);
-    });
-    box.appendChild(actBtn("＋ Link a method", "connect another method — from any subject", function () {
+    box.className = "lk-box";
+    function row(title, list, pair, addBtn) {
+      var r = document.createElement("div");
+      r.className = "ps-chips pc-list";
+      r.innerHTML = '<b class="lk-head"></b>';
+      r.firstChild.textContent = title;
+      if (!list.length && !addBtn) r.insertAdjacentHTML("beforeend", '<span class="muted">Nothing yet.</span>');
+      list.forEach(function (o) {
+        var chip = document.createElement("span"), p = pair(o);
+        chip.className = "ps-chip pc-chip";
+        var go = actBtn("", "open it", function () { selectPsPage(o.id); }, "ps-chip-go");
+        go.innerHTML = '<span class="mp-lvl lvl-p">Method</span> ' + escapeHtml(o.name) +
+          (o.subject !== pg.subject ? '<small class="pc-how">' + escapeHtml(subjectName(o.subject)) + '</small>' : '');
+        chip.appendChild(go);
+        chip.appendChild(actBtn("⇄", "flip the direction", function () { flipMethods(p[0], p[1]); }, "ps-chip-x"));
+        chip.appendChild(actBtn("✕", "remove this link", function () { unlinkMethods(p[0], p[1]); }, "ps-chip-x"));
+        r.appendChild(chip);
+      });
+      if (addBtn) r.appendChild(addBtn);
+      box.appendChild(r);
+    }
+    row("Uses", methodUses(pg), function (o) { return [pg, o]; }, actBtn("＋ Add", "a method this one uses, from any subject", function () {
       var skip = {}; skip[pg.id] = 1;
-      linked.forEach(function (o) { skip[o.id] = 1; });
-      pickMethod("Link a method to “" + pg.name + "”", "Any method, from any subject.", function (o) { linkMethods(pg, o); }, null, { exclude: skip, firstSubject: pg.subject });
+      methodUses(pg).forEach(function (o) { skip[o.id] = 1; });
+      pickMethod("“" + pg.name + "” uses…", "Any method, from any subject.", function (o) { linkMethods(pg, o); }, null, { exclude: skip, firstSubject: pg.subject });
     }, "ps-attach"));
+    row("Used by", methodUsedBy(pg), function (o) { return [o, pg]; });
     return box;
   }
   // pick one method — searchable, grouped by subject (the given subject first)
@@ -16987,8 +17054,8 @@ function __detabaseMain() {
     });
     var links = [], seen = {};
     out.forEach(function (v) {
-      methodLinksOf(v.pg).forEach(function (o) {
-        var w = byPg[o.id], k = [v.pg.id, o.id].sort().join("~");
+      methodUses(v.pg).forEach(function (o) {
+        var w = byPg[o.id], k = v.pg.id + "~" + o.id;
         if (w && !seen[k]) { seen[k] = 1; links.push({ a: v, b: w }); }
       });
     });
@@ -19155,7 +19222,12 @@ function __detabaseMain() {
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
       if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
-      else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
+      else if (r.lvl === "t") {
+        store.tabs = drop(store.tabs, r.id);
+        var cl = conceptLinkMap();
+        delete cl[r.id];
+        Object.keys(cl).forEach(function (k) { cl[k] = cl[k].filter(function (x) { return x !== r.id; }); });
+      }
       else if (r.lvl === "c") { store.cards = drop(store.cards, r.id); delete cardTagMap()[r.id]; }
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
       else if (r.lvl === "p") { store.ps.pages = drop(store.ps.pages, r.id); killCanvas(r.id); }
