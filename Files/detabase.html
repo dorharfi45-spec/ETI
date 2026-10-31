@@ -888,6 +888,43 @@
   .ls-shead:hover { color: var(--accent); }
   .em-libbar { margin: 0 0 12px; }
   .sl-head { margin: 22px 0 0; font-size: 1.1rem; }
+  .bd-page { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--bg); }
+  .bd-page[hidden] { display: none; }
+  .bd-bar, .bd-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--surface-1); }
+  .bd-sel[hidden] { display: none; }
+  .bd-bar button, .bd-sel button { min-height: 40px; }
+  .bd-bar .ps-back { margin: 0; }
+  .bd-name { font-size: 1.05rem; }
+  .bd-pal { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .bd-sw { width: 34px; height: 34px; min-height: 34px !important; padding: 0; border: 2px solid var(--bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer; }
+  .bd-sw.on { box-shadow: 0 0 0 3px var(--text-primary); }
+  .bd-main { flex: 1; min-height: 0; display: flex; }
+  .bd-side { width: 270px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid var(--border); background: var(--surface-1); }
+  .bd-side[hidden] { display: none; }
+  .bd-q { width: 100%; min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg); color: var(--text-primary); font: inherit; }
+  .bd-list { flex: 1; min-height: 0; overflow-y: auto; }
+  .bd-row { display: flex; align-items: center; gap: 2px; min-height: var(--tap); border-bottom: 1px solid var(--border); }
+  .bd-row .ps-grip { flex-shrink: 0; touch-action: none; min-width: 30px; text-align: center; cursor: grab; color: var(--text-muted); }
+  .bd-caret { flex-shrink: 0; min-width: 32px; min-height: 40px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+  .bd-rname { flex: 1; min-width: 0; min-height: 40px; padding: 2px 4px; border: 0; background: none; color: var(--text-primary); font: inherit; font-size: .84rem; text-align: left; cursor: pointer; }
+  .bd-rname span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bd-rname small { color: var(--text-muted); font-size: .7rem; }
+  .bd-stage { position: relative; flex: 1; min-width: 0; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; background-color: var(--bg); background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 26px 26px; }
+  .bd-world { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
+  .bd-hint { position: absolute; left: 0; right: 0; top: 40%; text-align: center; pointer-events: none; }
+  .bd-lines { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
+  .bd-line { stroke-width: 3; }
+  .bd-hit { stroke: transparent; stroke-width: 26; pointer-events: stroke; cursor: pointer; }
+  .bd-frame { position: absolute; border: 2px solid var(--border-strong); border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .bd-ftitle { padding: 6px 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bd-block { position: absolute; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-1); box-shadow: 0 1px 4px rgba(0,0,0,.14); }
+  .bd-bhead { flex-shrink: 0; padding: 6px 10px; font-size: .82rem; font-weight: 700; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bd-bbody { flex: 1; min-height: 0; overflow: hidden; padding: 6px 8px; pointer-events: none; }
+  .bd-bbody .asset-body { max-width: 100%; }
+  .bd-bbody .asset-card > h4, .bd-bbody .asset-card > div > .card > h4:first-child, .bd-bbody .asset-card > div > details > summary, .bd-bbody .asset-body > h3:first-child, .bd-bbody .asset-body > h4:first-child { display: none; }
+  .bd-block.sel, .bd-frame.sel { outline: 3px solid var(--accent); }
+  .bd-block.linking { outline: 3px dashed var(--accent); }
+  .bd-rs { position: absolute; right: 0; bottom: 0; width: 30px; height: 30px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 60%, var(--text-muted) 60%); }
   #sheetsPane .subj-sums { margin-top: 18px; }
   #bldPanel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 60; width: 300px; max-width: 86vw; display: flex; flex-direction: column; gap: 10px; padding: 14px; overflow-y: auto; background: var(--surface-1); border-left: 1px solid var(--border-strong); box-shadow: -4px 0 18px rgba(0,0,0,.18); }
   #bldPanel[hidden] { display: none; }
@@ -4316,12 +4353,14 @@
 <div id="scopePane" hidden></div>
 <div id="sheetsPane" class="folder-page" hidden></div>
 <aside id="bldPanel" hidden></aside>
+<div id="boardPane" class="bd-page" hidden></div>
+<div id="stratPane" class="bd-page" hidden></div>
 
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B104</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B105</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6389,6 +6428,7 @@ function __detabaseMain() {
       if (p.cardTypes) store.cardTypes = p.cardTypes;
       if (p.cardType) store.cardType = p.cardType;
       if (p.cardTags) store.cardTags = p.cardTags;
+      if (p.strats) store.strats = p.strats;
       if (p.methodKinds) store.methodKinds = p.methodKinds;
       if (p.partCats) store.partCats = p.partCats;
       if (p.biSeed) store.biSeed = p.biSeed;               // which built-in methods / card types were copied (seedBuiltins)
@@ -6885,7 +6925,7 @@ function __detabaseMain() {
     activeGroup = id;
     store.ui.group = id;
     setGroupClosed(id, false);
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = id; scopeSum = null; sheetsLib = false;   // its own page
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = id; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;   // its own page
     saveStore();
     renderEtiTree();
     applyView();
@@ -7091,11 +7131,13 @@ function __detabaseMain() {
     var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
     var onScope = !onProblem && !onSum && activeTop === "eti" && scopeValid(scopeSum);   // a folder's / the library's summary (every other page clears scopeSum)
     var onSheets = !onProblem && !onSum && !onScope && activeTop === "eti" && sheetsLib;   // the Study sheets library
-    var onMining = !onProblem && !onSum && !onScope && !onSheets && activeTop === "eti" && miningScreen;
-    var onPs = !onProblem && !onSum && !onSheets && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
-    var onSub = !onProblem && !onSum && !onSheets && !onMining && !onPs && activeTop === "eti" && subOpen();
-    var onFolder = !onProblem && !onSum && !onScope && !onSheets && !onMining && !onPs && !onSub && activeTop === "eti" && !activeSubject && !!folderPage && groupExists(folderPage);
-    var builtin = !onProblem && !onSum && !onScope && !onSheets && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
+    var onBoard = !onProblem && activeTop === "eti" && boardOpen, onStrat = !onProblem && activeTop === "eti" && !!stratById(stratPage);
+    var onOwn = onSheets || onBoard || onStrat;           // pages that stand alone
+    var onMining = !onProblem && !onSum && !onScope && !onOwn && activeTop === "eti" && miningScreen;
+    var onPs = !onProblem && !onSum && !onOwn && !onMining && activeTop === "eti" && !activeSubject && !!activePsPage && !!psPageById(activePsPage);
+    var onSub = !onProblem && !onSum && !onOwn && !onMining && !onPs && activeTop === "eti" && subOpen();
+    var onFolder = !onProblem && !onSum && !onScope && !onOwn && !onMining && !onPs && !onSub && activeTop === "eti" && !activeSubject && !!folderPage && groupExists(folderPage);
+    var builtin = !onProblem && !onSum && !onScope && !onOwn && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
@@ -7112,11 +7154,13 @@ function __detabaseMain() {
     });
     syncGroupButtons();
     $("customPane").hidden = onProblem || onMining || onSum || !activeSubject || activeTop === "eti";
-    $("subjectPage").hidden = !(!onProblem && !onSum && !onScope && !onSheets && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && (!!activeSubject || builtin));
+    $("subjectPage").hidden = !(!onProblem && !onSum && !onScope && !onOwn && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && (!!activeSubject || builtin));
     $("subPage").hidden = !onSub;
     $("folderPage").hidden = !onFolder;
     $("scopePane").hidden = !onScope;
     $("sheetsPane").hidden = !onSheets;
+    $("boardPane").hidden = !onBoard;
+    $("stratPane").hidden = !onStrat;
     if (!onScope) parkScopePane();
     if (!onSub) parkSubPage();
     $("psPane").hidden = !onPs;
@@ -7125,7 +7169,7 @@ function __detabaseMain() {
     $("miningPane").hidden = !onMining;
     if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onScope || onSheets || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onScope || onOwn || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -7161,6 +7205,12 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = 'Look a method up by the concepts it uses — or search for a method, a concept, or what a method involves.';
       history.replaceState(null, "", "#mining");
       renderMiningScreen();
+    } else if (onBoard) {
+      history.replaceState(null, "", "#board");
+      renderBoard();
+    } else if (onStrat) {
+      history.replaceState(null, "", "#strat:" + stratPage);
+      renderStrat();
     } else if (onSheets) {
       $("pageTitle").textContent = "ETI";
       $("pageSubtitle").innerHTML = 'Every study sheet, by folder.';
@@ -7234,7 +7284,7 @@ function __detabaseMain() {
 
   function selectTop(id) {
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
-    miningScreen = id === "eti"; folderPage = null; scopeSum = null; sheetsLib = false;           // ETI's main page is its landing page
+    miningScreen = id === "eti"; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;           // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     renderSubjectList();
     applyView();
@@ -7248,7 +7298,7 @@ function __detabaseMain() {
   function selectSubject(id, sub) {
     var s = store.subjects.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false;
+    activeTop = s.folder; activeSubject = id; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
     if (s.folder === "eti") noteSubject("s:" + id);
     if (s.folder === "eti") {
       activeGroup = (s.group && groupExists(s.group)) ? s.group : "base";
@@ -7387,7 +7437,7 @@ function __detabaseMain() {
   folderButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       var fid = b.getAttribute("data-folder");
-      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false;
+      lastEtiFolder = fid; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
       activeGroup = effGroupOfBuiltin(fid); store.ui.group = activeGroup;
       setGroupClosed(activeGroup, false);
       saveStore();
@@ -12453,7 +12503,7 @@ function __detabaseMain() {
   }
   function openScopeSummary(scope) {
     if (!scopeValid(scope)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; sheetsLib = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; sheetsLib = false; boardOpen = false; stratPage = null;
     scopeSum = scope;
     applyView(); renderEtiTree();
   }
@@ -13047,7 +13097,7 @@ function __detabaseMain() {
     el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1200);
   }
   function openSubjectRef(key, then, sub) {
-    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; viewingProblem = false;
+    activePsPage = null; activeSummary = null; activeSub = sub || null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null; viewingProblem = false;
     if (key.slice(0, 2) === "s:") selectSubject(key.slice(2), sub);
     else {
       var fid = key.slice(2);
@@ -13091,7 +13141,7 @@ function __detabaseMain() {
 
   function selectPsPage(id) {
     if (!psPageById(id)) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = id; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
     applyView(); renderEtiTree();
   }
   // one crop, drawn from the PDF on this device (or from the page picture the cloud carries)
@@ -13641,6 +13691,7 @@ function __detabaseMain() {
     dndEatClick(c.x, c.y);
     if (!drop || !c.target) return;
     try {
+      c.drag.x = c.x; c.drag.y = c.y;
       if (c.target.__dndInto) c.target.__dndInto.onDrop(c.drag);
       else {
         if (c.target === c.drag.list && c.index === c.origin) return;    // put back where it was
@@ -13687,6 +13738,7 @@ function __detabaseMain() {
     if (folderPage && $("folderPage") && !$("folderPage").hidden) renderFolderPage();
     if (scopeValid(scopeSum) && $("scopePane") && !$("scopePane").hidden) renderScopePane();
     if (sheetsLib && $("sheetsPane") && !$("sheetsPane").hidden) renderSheetsLib();
+    if (boardOpen && bd && bd.ctx) bdRedraw();
   }
   // a method's parts: their order is the vine's order
   function psPartsDnd(docEl, pg) {
@@ -17280,6 +17332,7 @@ function __detabaseMain() {
       '<div class="em-narrow"></div><div class="em-tree"></div><div class="em-res"></div>' +
       '<div class="em-vines"></div>';
     host.querySelector(".em-libbar").appendChild(actBtn("📚 Study sheets and strategies", "every study sheet, and make new ones", openSheetsLib, "btn-primary"));
+    host.querySelector(".em-libbar").appendChild(actBtn("🧷 Clipboard", "a big board to lay out and connect library items", openBoard, "btn-primary"));
     var input = host.querySelector(".em-search");
     input.value = mainQ;
     var st;
@@ -17712,8 +17765,9 @@ function __detabaseMain() {
 
   // ---- a top-level folder's "Study sheets and strategies" ----
   function studySheetsSection(gid) {
-    var sec = sheetsSectionEl("Study sheets and strategies", summariesOf(gid));
-    if (!sec.querySelector(".sum-card")) sec.querySelector(".sums-grid").innerHTML = '<div class="side-empty sums-empty"><b>Nothing filed here yet.</b> Tap “＋ New study sheet” and file it under this folder.</div>';
+    var sec = sheetsSectionEl("Study sheets and strategies", summariesOf(gid)), st = stratsOf(gid);
+    if (!sec.querySelector(".sum-card") && !st.length) sec.querySelector(".sums-grid").innerHTML = '<div class="side-empty sums-empty"><b>Nothing filed here yet.</b> Tap “＋ New study sheet” and file it under this folder.</div>';
+    if (st.length) sec.appendChild(stratsSectionEl(st, "Strategies"));
     return sec;
   }  // a titled grid of sheet tiles, newest first
   function sheetsSectionEl(title, sheets) {
@@ -17747,7 +17801,7 @@ function __detabaseMain() {
   var sheetsLib = false;
   function openSheetsLib() {
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null;
-    sheetsLib = true;
+    sheetsLib = true; boardOpen = false; stratPage = null;
     applyView(); renderEtiTree();
   }
   function renderSheetsLib() {
@@ -17764,6 +17818,15 @@ function __detabaseMain() {
       host.appendChild(sheetsSectionEl(g ? groupName(g) : "No group", mine));
     });
     if (!any) host.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Tap “＋ New study sheet”, or “💾 Save to study sheet” on any summary.</div>');
+    host.insertAdjacentHTML("beforeend", '<h3 class="sl-head">Strategies</h3>');
+    var noneS = true;
+    topGroups().concat([null]).forEach(function (g) {
+      var mine = stratsOf(g);
+      if (!mine.length) return;
+      noneS = false;
+      host.appendChild(stratsSectionEl(mine, g ? groupName(g) : "No group"));
+    });
+    if (noneS) host.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty"><b>No strategies yet.</b> On the Clipboard, join things with lines, press a line, and save the branch.</div>');
   }
 
   // ---- the builder: making or changing a sheet while browsing the library ----
@@ -17866,7 +17929,7 @@ function __detabaseMain() {
   }
   function bldRender() {
     var p = $("bldPanel"); if (!p) return;
-    var sm = bldSheet(), on = !!sm && activeTop === "eti" && !viewingProblem, min = on && !!store.ui.bldMin;
+    var sm = bldSheet(), on = !!sm && activeTop === "eti" && !viewingProblem && !boardOpen && !stratPage, min = on && !!store.ui.bldMin;
     document.body.classList.toggle("bld-open", on && !min);
     p.hidden = !on; p.classList.toggle("min", min);
     p.innerHTML = "";
@@ -17942,7 +18005,7 @@ function __detabaseMain() {
   var sheetMode = null;
   function openSummary(id) {
     var sm = summaryById(id); if (!sm) return;
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
     activeSummary = id; sheetMode = null;
     applyView(); renderEtiTree();
   }
@@ -18265,12 +18328,12 @@ function __detabaseMain() {
   }
   // which subject is on screen, built-in or custom
   function shownSubjectKey() {
-    if (activeTop !== "eti" || viewingProblem || miningScreen || sheetsLib || activePsPage || activeSummary || subOpen() || (folderPage && groupExists(folderPage)) || scopeValid(scopeSum)) return null;
+    if (activeTop !== "eti" || viewingProblem || miningScreen || sheetsLib || boardOpen || stratPage || activePsPage || activeSummary || subOpen() || (folderPage && groupExists(folderPage)) || scopeValid(scopeSum)) return null;
     if (activeSubject) return "s:" + activeSubject;
     return groupHasBuiltins(activeGroup) ? "f:" + lastEtiFolder : null;
   }
   function openMiningScreen() {   // ETI's main page
-    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null; scopeSum = null; sheetsLib = false;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() { renderEtiMain(); }
@@ -18303,6 +18366,560 @@ function __detabaseMain() {
   if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
 
   DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return refExists(r) && (r.lvl === "p" || refKids(r).length > 0); };
+
+  // ============================================================
+  // THE BOARD (UI "Clipboard", code board / bd*) — one big free board inside ETI, and STRATEGIES
+  // Library items are dragged from the left panel (shared drag engine) and sit as live blocks; a concept or a
+  // subject lands as a group: a named frame holding its children as blocks. Any two blocks or groups can be
+  // joined by a colored line. Pressing a line offers "Save branch as strategy": a snapshot of everything
+  // joined to it, kept apart from the board, with its own page and a vine in the tree.
+  //   canvas doc bd_main .ps = { blocks: [{ id, ref, x, y, w, h, g }], groups: [{ id, name, ref?, x, y, w, h }],
+  //                              links: [{ id, a, b, color }] }            (a, b: a block's or a group's id)
+  //   store.strats = [{ id "sg_…", name, color, groupId?, nodes: [{ ref } | { refs: [ref] }], edges: [{ a, b }] }]
+  //     nodes: a block's ref, a whole concept/subject group's ref, or a custom group's member refs; edges index
+  //     nodes. The layout lives in the canvas doc of the same id, .ps as above. Blocks show current content.
+  // ============================================================
+  var BOARD_ID = "bd_main", BD_COLORS = ["#2563eb", "#7c3aed", "#0891b2", "#16a34a", "#dc2626", "#d97706", "#db2777", "#64748b"];
+  var boardOpen = false, stratPage = null, bd = null, bdIdx = null;
+  function emptyBoard() { return { blocks: [], groups: [], links: [] }; }
+  function bdData() { var c = loadCanvas(BOARD_ID); if (!c.ps || !c.ps.blocks) c.ps = emptyBoard(); return c.ps; }
+  function openBoard() {
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; stratPage = null;
+    boardOpen = true;
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(BOARD_ID);
+    applyView(); renderEtiTree();
+  }
+  function nodeOf(ps, id) { return byId(ps.blocks, id) || byId(ps.groups, id); }
+  function membersOf(ps, gid) { return ps.blocks.filter(function (b) { return b.g === gid; }); }
+  // ---- drawing, shared by the board and a strategy's page ----
+  //   ctx = { stage, world, get ps, ro, view: { x, y, k }, cache: {}, sel: {}, onTap(node), onLine(link, el) }
+  function bdContent(ctx, ref, w) {
+    var k = refKey(ref) + "|" + w;
+    if (ctx.cache[k]) return ctx.cache[k];
+    var box = document.createElement("div");
+    box.className = "bd-bbody";
+    if (refExists(ref)) { box.appendChild(assetBody(ref, Math.max(120, w - 20))); try { prettyFractions(box); } catch (e) {} }
+    else box.innerHTML = '<p class="muted">(deleted from the library)</p>';
+    return ctx.cache[k] = box;
+  }
+  function bdApplyView(ctx) { var v = ctx.view; ctx.world.style.transform = "translate(" + v.x + "px," + v.y + "px) scale(" + v.k + ")"; }
+  function bdPlace(el, n) { el.style.left = n.x + "px"; el.style.top = n.y + "px"; el.style.width = n.w + "px"; el.style.height = n.h + "px"; }
+  function bdLines(ctx) {
+    var ps = ctx.ps(), svg = ctx.world.querySelector(".bd-lines");
+    svg.innerHTML = "";
+    ps.links.forEach(function (l) {
+      var a = nodeOf(ps, l.a), b = nodeOf(ps, l.b); if (!a || !b) return;
+      var xy = [a.x + a.w / 2, a.y + (a.h || 0) / 2, b.x + b.w / 2, b.y + (b.h || 0) / 2];
+      ["bd-line", "bd-hit"].forEach(function (cls) {
+        var ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        ln.setAttribute("x1", xy[0]); ln.setAttribute("y1", xy[1]); ln.setAttribute("x2", xy[2]); ln.setAttribute("y2", xy[3]);
+        ln.setAttribute("class", cls);
+        if (cls === "bd-line") ln.setAttribute("stroke", l.color); else ln.setAttribute("data-link", l.id);
+        svg.appendChild(ln);
+      });
+    });
+  }
+  function bdDraw(ctx) {
+    var ps = ctx.ps(), w = ctx.world;
+    w.innerHTML = '<svg class="bd-lines"></svg>';
+    ps.groups.forEach(function (g) {
+      var f = document.createElement("div");
+      f.className = "bd-frame" + (ctx.sel[g.id] ? " sel" : "");
+      f.setAttribute("data-node", g.id);
+      f.innerHTML = '<div class="bd-ftitle"></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
+      f.firstChild.textContent = g.name;
+      bdPlace(f, g);
+      w.appendChild(f);
+    });
+    ps.blocks.forEach(function (b) {
+      var d = document.createElement("div");
+      d.className = "bd-block" + (ctx.sel[b.id] ? " sel" : "") + (ctx.linking === b.id ? " linking" : "");
+      d.setAttribute("data-node", b.id);
+      d.innerHTML = '<div class="bd-bhead"></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
+      d.firstChild.textContent = refExists(b.ref) ? refLabel(b.ref) : "(deleted)";
+      d.insertBefore(bdContent(ctx, b.ref, b.w), d.children[1] || null);
+      w.appendChild(d);
+      if (!b.h) { d.style.width = b.w + "px"; b.h = Math.min(520, Math.max(90, d.firstChild.offsetHeight + d.children[1].scrollHeight + 8)); }
+      bdPlace(d, b);
+    });
+    bdLines(ctx);
+    bdApplyView(ctx);
+  }
+  // move what is on screen without rebuilding it
+  function bdRelayout(ctx) {
+    var ps = ctx.ps();
+    Array.prototype.forEach.call(ctx.world.querySelectorAll("[data-node]"), function (el) {
+      var n = nodeOf(ps, el.getAttribute("data-node")); if (n) bdPlace(el, n);
+    });
+    bdLines(ctx);
+  }
+  // pan, pinch, wheel; on the board also move and resize. One gesture engine for both pages.
+  function bdGestures(ctx) {
+    var st = ctx.stage, ptrs = {}, op = null, pinch = null;
+    function pos(e) { var r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    function zoomAt(px, py, k2) {
+      var v = ctx.view; k2 = Math.max(0.12, Math.min(3, k2));
+      v.x = px - (px - v.x) * k2 / v.k; v.y = py - (py - v.y) * k2 / v.k; v.k = k2;
+      bdApplyView(ctx);
+    }
+    st.addEventListener("wheel", function (e) { e.preventDefault(); var p = pos(e); zoomAt(p.x, p.y, ctx.view.k * (e.deltaY < 0 ? 1.1 : 0.9)); }, { passive: false });
+    st.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      ptrs[e.pointerId] = pos(e);
+      try { st.setPointerCapture(e.pointerId); } catch (x) {}
+      var ids = Object.keys(ptrs);
+      if (ids.length === 2) {
+        if (op && op.timer) clearTimeout(op.timer);
+        op = null;
+        var a = ptrs[ids[0]], b = ptrs[ids[1]];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), k: ctx.view.k };
+        return;
+      }
+      var t = e.target, p = pos(e), hit = t.closest ? t.closest("[data-link]") : null;
+      if (hit) {
+        var lk = byId(ctx.ps().links, hit.getAttribute("data-link"));
+        op = { kind: "line", link: lk, el: hit, p: p };
+        if (!ctx.ro) op.timer = setTimeout(function () { if (op && op.kind === "line") { var o = op; op = null; ctx.onLine(o.link, o.el); } }, 500);
+        return;
+      }
+      var el = t.closest ? t.closest("[data-node]") : null, node = el ? nodeOf(ctx.ps(), el.getAttribute("data-node")) : null;
+      if (node && !ctx.ro && t.classList.contains("bd-rs")) op = { kind: "resize", node: node, p: p, w: node.w, h: node.h, before: ctx.snap() };
+      else if (node) op = { kind: "move", node: node, p: p, last: p, before: ctx.ro ? null : ctx.snap() };
+      else op = { kind: "pan", p: p, vx: ctx.view.x, vy: ctx.view.y };
+    });
+    st.addEventListener("pointermove", function (e) {
+      if (!ptrs[e.pointerId]) return;
+      ptrs[e.pointerId] = pos(e);
+      var ids = Object.keys(ptrs);
+      if (pinch && ids.length >= 2) {
+        var a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y);
+        zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, pinch.k * d / (pinch.d || 1));
+        return;
+      }
+      if (!op) return;
+      var p = pos(e), dx = p.x - op.p.x, dy = p.y - op.p.y;
+      if (!op.moved && Math.hypot(dx, dy) < 6) return;
+      op.moved = true;
+      if (op.timer) { clearTimeout(op.timer); op.timer = null; }
+      var ps = ctx.ps(), k = ctx.view.k;
+      if (op.kind === "pan" || (op.kind === "move" && ctx.ro)) { if (op.kind === "move") { op.kind = "pan"; op.vx = ctx.view.x; op.vy = ctx.view.y; } ctx.view.x = op.vx + dx; ctx.view.y = op.vy + dy; bdApplyView(ctx); }
+      else if (op.kind === "move") {
+        var mx = (p.x - op.last.x) / k, my = (p.y - op.last.y) / k; op.last = p;
+        op.node.x += mx; op.node.y += my;
+        if (ps.groups.indexOf(op.node) >= 0) membersOf(ps, op.node.id).forEach(function (m) { m.x += mx; m.y += my; });
+        bdRelayout(ctx);
+      } else if (op.kind === "resize") {
+        var nw = Math.max(120, op.w + dx / k), nh = Math.max(70, op.h + dy / k), isG = ps.groups.indexOf(op.node) >= 0;
+        if (isG) {                                       // a group resizes as one: its blocks scale inside it
+          var sx = nw / op.node.w, sy = nh / op.node.h;
+          membersOf(ps, op.node.id).forEach(function (m) { m.x = op.node.x + (m.x - op.node.x) * sx; m.y = op.node.y + (m.y - op.node.y) * sy; m.w *= sx; m.h *= sy; });
+        }
+        op.node.w = nw; op.node.h = nh;
+        bdRelayout(ctx);
+      }
+    });
+    function end(e) {
+      if (!ptrs[e.pointerId]) return;
+      delete ptrs[e.pointerId];
+      if (pinch) { if (Object.keys(ptrs).length < 2) pinch = null; return; }
+      var o = op; op = null; if (!o) return;
+      if (o.timer) clearTimeout(o.timer);
+      if (e.type === "pointercancel") return;
+      if (!o.moved) {
+        if (o.kind === "line") ctx.onLine(o.link, o.el);
+        else ctx.onTap(o.node || null);
+      } else if (o.before) ctx.afterEdit(o);
+    }
+    st.addEventListener("pointerup", end);
+    st.addEventListener("pointercancel", end);
+  }
+
+  // ---- the board's page ----
+  function renderBoard() {
+    var host = $("boardPane"); if (!host) return;
+    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, open: {}, multi: false, linking: null, q: "", side: true };
+    bdIdx = null;
+    host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel"></div><div class="bd-main"><div class="bd-side"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
+    var ctx = bd.ctx = {
+      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ps: bdData, ro: false, view: bd.view, cache: bd.cache, sel: bd.sel,
+      linking: null,
+      snap: function () { return JSON.stringify(bdData()); },
+      onTap: bdTap, onLine: bdLineMenu, afterEdit: bdAfterEdit
+    };
+    bdGestures(ctx);
+    dndInto(ctx.stage, { accepts: ["bdasset"], onDrop: function (drag) {
+      var r = ctx.stage.getBoundingClientRect(), v = ctx.view;
+      bdDrop(bdRefOf(drag.id), (drag.x - r.left - v.x) / v.k, (drag.y - r.top - v.y) / v.k);
+    } });
+    bdBar(); bdSide(); bdRedraw();
+  }
+  function bdRefOf(k) { var i = k.indexOf("|"); return { lvl: k.slice(0, i), id: k.slice(i + 1) }; }
+  function bdRedraw() {
+    var c = bd.ctx; c.linking = bd.linking;
+    bdDraw(c);
+    var hint = $("boardPane").querySelector(".bd-hint"), ps = bdData();
+    if (hint) hint.hidden = !!(ps.blocks.length || ps.groups.length);
+    bdBarSel();
+  }
+  function bdSave() { saveCanvas(BOARD_ID); }
+  // every change goes through here (or bdAfterEdit, for a drag), so every change can be undone
+  function bdChange(fn) {
+    var before = JSON.stringify(bdData());
+    fn(bdData());
+    bd.undo.push(before); if (bd.undo.length > 60) bd.undo.shift();
+    bd.redo = [];
+    bdSave(); bdRedraw(); bdBar();
+  }
+  function bdAfterEdit(o) {
+    var ps = bdData();
+    if (o.kind === "move" && ps.blocks.indexOf(o.node) >= 0) bdRegroup(ps, o.node);
+    if (o.kind === "resize") delete o.node.__m;
+    bd.undo.push(o.before); if (bd.undo.length > 60) bd.undo.shift();
+    bd.redo = [];
+    bdSave(); bdRedraw(); bdBar();
+  }
+  // a block dropped inside a frame joins that group (the frame grows to hold it); dropped outside, it leaves
+  function bdRegroup(ps, b) {
+    var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    var f = ps.groups.filter(function (g) { return cx > g.x && cx < g.x + g.w && cy > g.y && cy < g.y + g.h; }).pop();
+    if (f) { b.g = f.id; bdFit(ps, f, true); } else delete b.g;
+  }
+  function bdFit(ps, g, onlyGrow) {
+    var m = membersOf(ps, g.id); if (!m.length) return;
+    var x0 = Math.min.apply(null, m.map(function (b) { return b.x; })) - 16, y0 = Math.min.apply(null, m.map(function (b) { return b.y; })) - 40;
+    var x1 = Math.max.apply(null, m.map(function (b) { return b.x + b.w; })) + 16, y1 = Math.max.apply(null, m.map(function (b) { return b.y + b.h; })) + 16;
+    if (onlyGrow && g.w) { x0 = Math.min(x0, g.x); y0 = Math.min(y0, g.y); x1 = Math.max(x1, g.x + g.w); y1 = Math.max(y1, g.y + g.h); }
+    g.x = x0; g.y = y0; g.w = x1 - x0; g.h = y1 - y0;
+  }
+  function bdNewBlock(ps, ref, x, y, g) {
+    var b = { id: uid("b_"), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: 340 };
+    if (g) b.g = g;
+    ps.blocks.push(b);
+    return b;
+  }
+  // a part of a method lands as its method; a concept or subject as a group of its children
+  function bdDrop(ref, x, y) {
+    if (ref.lvl === "st") ref = refParent(ref);
+    var kids = ref.lvl === "t" || ref.lvl === "s" ? libKids(ref) : [];
+    bdChange(function (ps) {
+      if (!kids.length) { bdNewBlock(ps, ref, x, y); return; }
+      var g = { id: uid("g_"), name: refLabel(ref), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: 0, h: 0 };
+      ps.groups.push(g);
+      kids.forEach(function (c) { bdNewBlock(ps, c, x, y, g.id); });
+    });
+    var ps = bdData(), g = ps.groups[ps.groups.length - 1];
+    if (kids.length) {                                  // heights are known now that they were drawn: lay them out in rows
+      var m = membersOf(ps, g.id), cols = Math.min(3, Math.ceil(Math.sqrt(m.length))), rowY = y + 40, rowH = 0;
+      m.forEach(function (b, i) {
+        if (i && i % cols === 0) { rowY += rowH + 14; rowH = 0; }
+        b.x = x + 16 + (i % cols) * 354; b.y = rowY; rowH = Math.max(rowH, b.h);
+      });
+      bdFit(ps, g);
+      bdSave(); bdRedraw();
+    }
+  }
+  function bdTap(node) {
+    if (bd.linking) {
+      var from = bd.linking; bd.linking = null;
+      if (node && node.id !== from) bdChange(function (ps) { ps.links.push({ id: uid("l_"), a: from, b: node.id, color: bd.color }); });
+      else bdRedraw();
+      return;
+    }
+    if (!bd.multi) Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; });
+    if (node) { if (bd.sel[node.id]) delete bd.sel[node.id]; else bd.sel[node.id] = 1; }
+    bdRedraw();
+  }
+  function bdDeleteSel() {
+    var ids = Object.keys(bd.sel);
+    bdChange(function (ps) {
+      var gone = {};
+      ids.forEach(function (id) { gone[id] = 1; membersOf(ps, id).forEach(function (m) { gone[m.id] = 1; }); });
+      ps.blocks = ps.blocks.filter(function (b) { return !gone[b.id]; });
+      ps.groups = ps.groups.filter(function (g) { return !gone[g.id]; });
+      ps.links = ps.links.filter(function (l) { return !gone[l.a] && !gone[l.b]; });
+      ids.forEach(function (id) { delete bd.sel[id]; });
+    });
+  }
+  function bdGroupSel() {
+    var ids = Object.keys(bd.sel);
+    askName("New group", "A name for these blocks.", "", function (n) {
+      bdChange(function (ps) {
+        var g = { id: uid("g_"), name: n, x: 0, y: 0, w: 0, h: 0 };
+        ps.groups.push(g);
+        ps.blocks.forEach(function (b) { if (ids.indexOf(b.id) >= 0) b.g = g.id; });
+        bdFit(ps, g);
+        ids.forEach(function (id) { delete bd.sel[id]; });
+      });
+    });
+  }
+  function bdUngroup(g) {
+    bdChange(function (ps) {
+      membersOf(ps, g.id).forEach(function (m) { delete m.g; });
+      ps.groups = ps.groups.filter(function (x) { return x.id !== g.id; });
+      ps.links = ps.links.filter(function (l) { return l.a !== g.id && l.b !== g.id; });
+      delete bd.sel[g.id];
+    });
+  }
+  function bdUndoRedo(from, to) {
+    if (!from.length) return;
+    var c = loadCanvas(BOARD_ID);
+    to.push(JSON.stringify(c.ps)); c.ps = JSON.parse(from.pop());
+    Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; });
+    bdSave(); bdRedraw(); bdBar();
+  }
+  function bdBar() {
+    var bar = $("boardPane").querySelector(".bd-bar");
+    bar.innerHTML = "";
+    bar.appendChild(actBtn("‹ ETI", "back to ETI's main page", openMiningScreen, "ps-back"));
+    bar.insertAdjacentHTML("beforeend", '<b class="bd-name">Clipboard</b>');
+    bar.appendChild(actBtn(bd.side ? "◧ Hide library" : "◧ Library", "the library panel", function () { bd.side = !bd.side; bdBar(); bdSide(); }));
+    var u = actBtn("↶", "undo", function () { bdUndoRedo(bd.undo, bd.redo); }), r = actBtn("↷", "redo", function () { bdUndoRedo(bd.redo, bd.undo); });
+    u.disabled = !bd.undo.length; r.disabled = !bd.redo.length;
+    bar.appendChild(u); bar.appendChild(r);
+    bar.appendChild(actBtn(bd.multi ? "✓ Selecting" : "Select", "tap several blocks", function () { bd.multi = !bd.multi; bdBar(); }, bd.multi ? "btn-primary" : ""));
+    var pal = document.createElement("span");
+    pal.className = "bd-pal";
+    BD_COLORS.forEach(function (c) {
+      var s = actBtn("", "line color", function () { bd.color = c; bdBar(); }, "bd-sw" + (bd.color === c ? " on" : ""));
+      s.style.background = c;
+      pal.appendChild(s);
+    });
+    bar.appendChild(pal);
+    bar.appendChild(actBtn("Clear board", "erase everything on it", function () {
+      if (!confirm("Clear the whole board?")) return;
+      bdChange(function (ps) { ps.blocks = []; ps.groups = []; ps.links = []; });
+      Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; });
+    }, "btn-danger"));
+  }
+  function bdBarSel() {
+    var el = $("boardPane").querySelector(".bd-sel"), ids = Object.keys(bd.sel), ps = bdData();
+    el.innerHTML = ""; el.hidden = !ids.length && !bd.linking;
+    if (bd.linking) { el.insertAdjacentHTML("beforeend", '<span>Tap what to connect it to.</span>'); el.appendChild(actBtn("Cancel", "", function () { bd.linking = null; bdRedraw(); })); return; }
+    if (!ids.length) return;
+    var one = ids.length === 1 ? nodeOf(ps, ids[0]) : null, isG = !!one && ps.groups.indexOf(one) >= 0;
+    if (one) el.appendChild(actBtn("🔗 Connect", "join it to another block or group with a line", function () { bd.linking = one.id; Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; }); bdRedraw(); }));
+    if (one && !isG && refExists(one.ref)) el.appendChild(actBtn("↗ Open", "open it in the library", function () { openRef(one.ref); }));
+    if (ids.length > 1 && ids.every(function (id) { return byId(ps.blocks, id); })) el.appendChild(actBtn("▣ Group", "put them in one frame", bdGroupSel));
+    if (isG) {
+      el.appendChild(actBtn("✎ Rename", "", function () { askName("Rename group", "", one.name, function (n) { bdChange(function () { one.name = n; }); }); }));
+      el.appendChild(actBtn("Ungroup", "keep the blocks, remove the frame", function () { bdUngroup(one); }));
+    }
+    el.appendChild(actBtn("🗑 Delete", "", bdDeleteSel, "btn-danger"));
+  }
+  function bdLineMenu(l, el) {
+    if (!l) return;
+    libMenu(el, [
+      { label: "💾 Save branch as strategy", run: function () { bdSaveStrategy(l); } },
+      { label: "🎨 Change color…", run: function () {
+        libMenu(el, BD_COLORS.map(function (c) { return { label: c, dot: c, on: l.color === c, run: function () { bdChange(function (ps) { byId(ps.links, l.id).color = c; }); } }; }));
+      } },
+      { label: "🗑 Delete connection", run: function () { bdChange(function (ps) { ps.links = ps.links.filter(function (x) { return x.id !== l.id; }); }); } }
+    ]);
+  }
+  // ---- the library panel: search (name and kind only) and browsing; each row drags onto the board ----
+  function bdIndex() {
+    if (bdIdx) return bdIdx;
+    var names = { s: "subject", t: "concept", c: "card", p: "method", st: "method part" };
+    bdIdx = materialIndex().filter(function (en) { return en.ref.lvl !== "e"; }).map(function (en) {
+      var text = "";
+      if (en.ref.lvl === "c") {
+        text = cardTagsOf(en.ref.id).join(" ") + " " + libElements(en.ref.id).map(function (e) { return e.name; }).join(" ");
+        var c = BI.cards[en.ref.id];
+        if (c) text += " " + c.nodes.map(cleanText).join(" ");
+      }
+      return { ref: en.ref, name: en.name, kind: names[en.ref.lvl], hay: (en.name + " " + text).toLowerCase() };
+    });
+    store.ps.pages.forEach(function (pg) {
+      var parts = psDocPresent(pg.id) ? psParts(pg.id) : [];
+      bdIdx.push({ ref: { lvl: "p", id: pg.id }, name: pg.name, kind: names.p, hay: [pg.name, pg.description || "", (pg.tags || []).join(" ")].join(" ").toLowerCase() });
+      parts.forEach(function (p) {
+        var nm = partLabel(pg.id, p);
+        bdIdx.push({ ref: { lvl: "st", id: p.id }, name: nm, kind: names.st, hay: (nm + " " + (p.text || "")).toLowerCase() });
+      });
+    });
+    return bdIdx;
+  }
+  function bdRow(ref, name, kind, depth, kids) {
+    var r = document.createElement("div");
+    r.className = "bd-row";
+    r.setAttribute("data-k", refKey(ref));
+    r.style.paddingLeft = (4 + depth * 14) + "px";
+    r.innerHTML = '<span class="ps-grip" title="drag onto the board">⠿</span>';
+    if (kids) r.appendChild(actBtn(bd.open[refKey(ref)] ? "▾" : "▸", "open", function () { bd.open[refKey(ref)] = !bd.open[refKey(ref)]; bdSide(); }, "bd-caret"));
+    var b = actBtn("", "add to the board", function () {
+      var v = bd.ctx.view, s = bd.ctx.stage;
+      bdDrop(ref, (s.clientWidth / 2 - 170 - v.x) / v.k, (s.clientHeight / 3 - v.y) / v.k);
+    }, "bd-rname");
+    b.innerHTML = '<span></span><small></small>';
+    b.firstChild.textContent = name; b.lastChild.textContent = kind;
+    r.appendChild(b);
+    return r;
+  }
+  function bdListDnd(list) {
+    dndList(list, { type: "bdasset", accepts: ["bd-nothing"], item: ".bd-row", grip: ".ps-grip", handle: ".bd-rname", id: function (el) { return el.getAttribute("data-k"); } });
+  }
+  function bdSide() {
+    var side = $("boardPane").querySelector(".bd-side");
+    side.hidden = !bd.side;
+    if (!bd.side) return;
+    if (!side.firstChild) {
+      side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-list"></div>';
+      var q = side.firstChild;
+      q.value = bd.q;
+      q.addEventListener("input", function () { bd.q = q.value; bdSide(); });
+    }
+    var list = side.querySelector(".bd-list");
+    list.innerHTML = "";
+    var q2 = bd.q.trim().toLowerCase();
+    if (q2) {
+      var hits = searchEntries(bdIndex(), q2, function (en) { return en.hay; }).slice(0, 40);
+      if (!hits.length) list.innerHTML = '<p class="muted">Nothing found.</p>';
+      hits.forEach(function (en) { list.appendChild(bdRow(en.ref, en.name, en.kind, 0, false)); });
+    } else allSubjectKeys().forEach(function (k) {
+      var sr = { lvl: "s", id: k }, tabs = libKids(sr), ms = psPagesOf(k);
+      list.appendChild(bdRow(sr, subjectName(k), "subject", 0, true));
+      if (!bd.open[refKey(sr)]) return;
+      tabs.forEach(function (t) {
+        var cs = libKids(t);
+        list.appendChild(bdRow(t, tabLabel(t.id), "concept", 1, cs.length > 0));
+        if (bd.open[refKey(t)]) cs.forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
+      });
+      ms.forEach(function (pg) { list.appendChild(bdRow({ lvl: "p", id: pg.id }, pg.name, "method", 1, false)); });
+    });
+    bdListDnd(list);
+  }
+
+  // ---- strategies ----
+  function stratsAll() { store.strats = store.strats || []; return store.strats; }
+  function stratById(id) { return id ? byId(stratsAll(), id) : null; }
+  function stratGroupOf(s) { return sheetTopGroup(s.groupId); }
+  function stratsOf(gid) { return stratsAll().filter(function (s) { return stratGroupOf(s) === gid; }); }
+  function bdBranch(ps, startId) {
+    var seen = {}, todo = [startId];
+    seen[startId] = 1;
+    while (todo.length) {
+      var id = todo.pop();
+      ps.links.forEach(function (l) {
+        var o = l.a === id ? l.b : l.b === id ? l.a : null;
+        if (o && !seen[o]) { seen[o] = 1; todo.push(o); }
+      });
+    }
+    return seen;
+  }
+  function bdSaveStrategy(link) {
+    var box = ovOpen("Save branch as strategy"), color = link.color;
+    box.body.innerHTML = '<div class="lw-new"><input type="text" maxlength="80" placeholder="Strategy name…"></div><p class="lw-hint">Its color</p><div class="bd-pal"></div><p class="lw-hint">Filed under</p><select class="bld-group"></select>';
+    var pal = box.body.querySelector(".bd-pal");
+    function paint() {
+      pal.innerHTML = "";
+      BD_COLORS.forEach(function (c) { var s = actBtn("", "", function () { color = c; paint(); }, "bd-sw" + (color === c ? " on" : "")); s.style.background = c; pal.appendChild(s); });
+    }
+    paint();
+    var sel = box.body.querySelector("select");
+    [["", "No group"]].concat(topGroups().map(function (g) { return [g, groupName(g)]; })).forEach(function (o) {
+      var x = document.createElement("option"); x.value = o[0]; x.textContent = o[1]; sel.appendChild(x);
+    });
+    box.buttons([
+      { label: "Cancel", run: function () { box.close(); } },
+      { label: "Save", primary: true, right: true, run: function () {
+        var n = box.body.querySelector("input").value.trim(); if (!n) { box.body.querySelector("input").focus(); return; }
+        box.close(true);
+        stratCreate(link, n, color, sel.value);
+      } }
+    ]);
+  }
+  function stratCreate(link, name, color, groupId) {
+    var ps = bdData(), seen = bdBranch(ps, link.a), lay = emptyBoard();
+    lay.groups = ps.groups.filter(function (g) { return seen[g.id]; });
+    lay.blocks = ps.blocks.filter(function (b) { return seen[b.id] || seen[b.g]; });
+    lay.links = ps.links.filter(function (l) { return seen[l.a] && seen[l.b]; });
+    lay = JSON.parse(JSON.stringify(lay));
+    var ends = Object.keys(seen), nodes = ends.map(function (id) {
+      var b = byId(lay.blocks, id), g = byId(lay.groups, id);
+      if (b) return { ref: b.ref };
+      return g.ref ? { ref: g.ref } : { refs: membersOf(lay, g.id).map(function (m) { return m.ref; }) };
+    });
+    var s = { id: uid("sg_"), name: name, color: color, nodes: nodes, edges: lay.links.map(function (l) { return { a: ends.indexOf(l.a), b: ends.indexOf(l.b) }; }), created: Date.now() };
+    if (groupId) s.groupId = groupId;
+    stratsAll().push(s);
+    var c = loadCanvas(s.id); c.ps = lay;
+    saveCanvas(s.id); saveStore();
+    libToast("Saved the strategy “" + name + "”", { label: "Open", run: function () { openStrat(s.id); } });
+  }
+  function openStrat(id) {
+    if (!stratById(id)) return;
+    activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false;
+    stratPage = id;
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
+    applyView(); renderEtiTree();
+  }
+  function stratHome(s) { var g = stratGroupOf(s); if (g) selectGroup(g); else openSheetsLib(); }
+  function stratRename(s) { askName("Rename strategy", "", s.name, function (n) { s.name = n; saveStore(); libAfterMove(); if (stratPage === s.id) renderStrat(); }); }
+  function stratColorMenu(a, s) { libMenu(a, BD_COLORS.map(function (c) { return { label: c, dot: c, on: s.color === c, run: function () { s.color = c; saveStore(); libAfterMove(); if (stratPage === s.id) renderStrat(); } }; })); }
+  function stratGroupMenu(a, s) {
+    var cur = stratGroupOf(s);
+    function set(g) { if (g) s.groupId = g; else delete s.groupId; saveStore(); libAfterMove(); if (stratPage === s.id) renderStrat(); }
+    libMenu(a, [{ head: "File this strategy under" }, { label: "No group", on: !cur, run: function () { set(null); } }]
+      .concat(topGroups().map(function (g) { return { label: groupName(g), on: cur === g, run: function () { set(g); } }; })));
+  }
+  function stratDelete(s) {
+    if (!confirmDelete(s.name)) return;
+    store.strats = stratsAll().filter(function (x) { return x !== s; });
+    killCanvas(s.id);
+    saveStore();
+    if (stratPage === s.id) stratHome(s); else libAfterMove();
+  }
+  function stratMenuItems(a, s) {
+    return [
+      { label: "✎ Rename", run: function () { stratRename(s); } },
+      { label: "🎨 Color…", run: function () { stratColorMenu(a, s); } },
+      { label: "📁 File under…", run: function () { stratGroupMenu(a, s); } },
+      { label: "🗑 Delete", danger: true, run: function () { stratDelete(s); } }
+    ];
+  }
+  function stratsSectionEl(list, title) {
+    var sec = document.createElement("section");
+    sec.className = "subj-sums";
+    sec.innerHTML = '<header class="sums-head"><h3></h3></header><div class="sums-grid"></div>';
+    sec.querySelector("h3").innerHTML = escapeHtml(title) + ' <span class="side-count">' + list.length + '</span>';
+    var grid = sec.querySelector(".sums-grid");
+    list.forEach(function (s) {
+      var b = actBtn("", "open the strategy", function () { openStrat(s.id); }, "sum-card");
+      b.innerHTML = '<b></b><small>' + s.nodes.length + ' pieces</small>';
+      b.firstChild.textContent = s.name;
+      b.style.borderLeft = "5px solid " + s.color;
+      var dots = actBtn("⋯", "more", function () { libMenu(dots, stratMenuItems(dots, s)); }, "lib-dots");
+      grid.appendChild(fpCell(b, dots));
+    });
+    return sec;
+  }
+  function renderStrat() {
+    var host = $("stratPane"), s = stratById(stratPage); if (!host || !s) return;
+    host.innerHTML = '<div class="bd-bar"></div><div class="bd-main"><div class="bd-stage"><div class="bd-world"></div></div></div>';
+    var bar = host.querySelector(".bd-bar");
+    var g = stratGroupOf(s);
+    bar.appendChild(actBtn("‹ " + (g ? groupName(g) : "Study sheets and strategies"), "back", function () { stratHome(s); }, "ps-back"));
+    var nm = document.createElement("b"); nm.className = "bd-name"; nm.textContent = s.name; nm.style.color = s.color; bar.appendChild(nm);
+    var dots = actBtn("⋯", "more", function () { libMenu(dots, stratMenuItems(dots, s)); }, "lib-dots");
+    bar.appendChild(dots);
+    var doc = loadCanvas(s.id);
+    var ctx = {
+      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ro: true, view: { x: 40, y: 20, k: 1 }, cache: {}, sel: {},
+      ps: function () { var p = doc.ps || emptyBoard(); return p; },
+      snap: function () { return null; }, afterEdit: function () {},
+      onTap: function (n) { if (n && n.ref && refExists(n.ref)) openRef(n.ref); }, onLine: function () {}
+    };
+    bdGestures(ctx);
+    var p = ctx.ps(), all = p.blocks.concat(p.groups);
+    if (all.length) {                                   // the whole branch in view
+      bdDraw(ctx);
+      var x0 = Math.min.apply(null, all.map(function (n) { return n.x; })), y0 = Math.min.apply(null, all.map(function (n) { return n.y; }));
+      var x1 = Math.max.apply(null, all.map(function (n) { return n.x + n.w; })), y1 = Math.max.apply(null, all.map(function (n) { return n.y + (n.h || 0); }));
+      var k = Math.min(1, ctx.stage.clientWidth / (x1 - x0 + 60), ctx.stage.clientHeight / (y1 - y0 + 60));
+      ctx.view.k = k; ctx.view.x = 30 - x0 * k; ctx.view.y = 30 - y0 * k;
+      bdApplyView(ctx);
+    } else ctx.world.innerHTML = '<p class="muted">Syncing…</p>';
+  }
 
   // ============================================================
   // ETI MANAGEMENT — rename / delete at every level of both banks (built-ins are renamed / HIDDEN via
@@ -19085,6 +19702,10 @@ function __detabaseMain() {
     selectPsPage(initial);
   } else if (initial === "sheets") {
     openSheetsLib();
+  } else if (initial === "board") {
+    openBoard();
+  } else if (/^strat:/.test(initial) && stratById(initial.slice(6))) {
+    openStrat(initial.slice(6));
   } else if (initial === "lsummary" || /^fsummary:/.test(initial)) {      // a folder's or the library's summary
     openScopeSummary(initial === "lsummary" ? "lib" : "g:" + decodeURIComponent(initial.slice(9)));
     if (!scopeSum) selectTop("eti");
