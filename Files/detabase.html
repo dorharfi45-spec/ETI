@@ -887,10 +887,27 @@
   .ls-subj:first-child > .ls-shead, .ls-body > .ls-shead:first-child { margin-top: 0; }
   .ls-shead:hover { color: var(--accent); }
   .em-libbar { margin: 0 0 12px; }
-  .sl-target { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 10px; padding: 10px 14px; border: 1px solid var(--accent); border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 10%, transparent); }
-  .sl-target > span { flex: 1 1 240px; }
+  .sl-head { margin: 22px 0 0; font-size: 1.1rem; }
   #sheetsPane .subj-sums { margin-top: 18px; }
-  #sheetsPane .sl-exercises { margin-top: 28px; padding-top: 14px; border-top: 2px solid var(--border); }
+  #bldPanel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 60; width: 300px; max-width: 86vw; display: flex; flex-direction: column; gap: 10px; padding: 14px; overflow-y: auto; background: var(--surface-1); border-left: 1px solid var(--border-strong); box-shadow: -4px 0 18px rgba(0,0,0,.18); }
+  #bldPanel[hidden] { display: none; }
+  #bldPanel.min { top: auto; bottom: 16px; width: auto; padding: 0; border: 1px solid var(--accent); border-radius: var(--r-md) 0 0 var(--r-md); overflow: hidden; }
+  body.bld-open .content { padding-right: 300px; }
+  @media (max-width: 900px) { body.bld-open .content { padding-right: 0; } }
+  .bld-tab { min-height: var(--tap); max-width: 70vw; padding: 0 14px; border: 0; background: none; font: inherit; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  .bld-top { display: flex; align-items: center; justify-content: space-between; }
+  .bld-min { min-width: var(--tap); min-height: var(--tap); border: 1px solid var(--border); border-radius: var(--r-sm); background: none; color: inherit; font: inherit; cursor: pointer; }
+  .bld-name, .bld-group { width: 100%; min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg); color: var(--text-primary); font: inherit; }
+  .bld-name { font-weight: 700; }
+  .bld-list { flex: 1; min-height: 60px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+  .bld-add { border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--bg); }
+  .bld-ahead, .bld-item { display: flex; align-items: center; gap: 4px; }
+  .bld-alabel { flex: 1; min-width: 0; min-height: var(--tap); padding: 4px 8px; border: 0; background: none; color: var(--text-primary); font: inherit; font-size: .82rem; font-weight: 600; text-align: left; cursor: pointer; }
+  .bld-item { padding: 0 0 0 20px; font-size: .78rem; border-top: 1px solid var(--border); }
+  .bld-item > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bld-x { flex-shrink: 0; min-width: 40px; min-height: 40px; border: 0; background: none; color: var(--danger); font: inherit; cursor: pointer; }
+  .bld-foot { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bld-foot .btn-primary { flex: 1 1 100%; min-height: var(--tap); }
   .ls-kicker { display: block; min-height: 30px; padding: 0; border: 0; background: none; font: inherit; font-size: .74rem; font-weight: 700; letter-spacing: .04em;
     text-transform: uppercase; color: var(--text-muted); text-align: left; cursor: pointer; }
   .ls-gtitle { display: block; padding-bottom: 4px; font-size: 1.08rem; font-weight: 700; line-height: 1.4; white-space: pre-wrap; color: var(--text-primary); }
@@ -4298,12 +4315,13 @@
 <div id="folderPage" class="folder-page" hidden></div>
 <div id="scopePane" hidden></div>
 <div id="sheetsPane" class="folder-page" hidden></div>
+<aside id="bldPanel" hidden></aside>
 
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B103</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B104</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4319,6 +4337,7 @@
       <button id="psEdit" type="button" class="btn-quiet">✎ Open for editing</button>
       <button id="psRename" type="button" class="btn-quiet">✎ Rename</button>
       <button id="psSummary" type="button" class="btn-quiet">📋 Summary</button>
+      <button id="psBld" type="button" class="btn-primary" hidden>＋ Add to sheet</button>
       <button id="psDelete" type="button" class="btn-danger">🗑 Delete</button>
     </span>
   </div>
@@ -4335,7 +4354,8 @@
   <div class="cp-head sum-head">
     <h2 id="sumTitle">–</h2>
     <span class="ps-actions">
-      <button id="sumMore" type="button" class="btn-quiet">＋ Add more</button>
+      <button id="sumMore" type="button" class="btn-quiet">✎ Add / remove</button>
+      <button id="sumGroup" type="button" class="btn-quiet" title="where this sheet is filed">📁</button>
       <button id="sumClip" type="button" class="btn-quiet">📋 Add to a clipboard</button>
       <button id="sumRename" type="button" class="btn-quiet">✎ Rename</button>
       <button id="sumDelete" type="button" class="btn-danger">🗑 Delete</button>
@@ -6900,7 +6920,7 @@ function __detabaseMain() {
     store.subjects.forEach(function (s) { if (s.folder === "eti" && s.group === id) s.group = up || "base"; });
     groupKidsOf(id).forEach(function (g) { if (up) store.groupParent[g] = up; else delete store.groupParent[g]; });
     if (store.groupParent) delete store.groupParent[id];
-    sumEnsure().forEach(function (sm) { if (sm.subject === "g:" + id) sm.subject = up ? "g:" + up : "lib"; });   // its study sheets: to where its contents went
+    sumEnsure().forEach(function (sm) { if (sm.groupId === id) delete sm.groupId; });   // its study sheets: no group now
     store.groups = store.groups.filter(function (g) { return g.id !== id; });
     if (store.order.etiKids) delete store.order.etiKids[id];
     if (store.order.etiGroups) store.order.etiGroups = store.order.etiGroups.filter(function (x) { return x !== id; });
@@ -6937,6 +6957,7 @@ function __detabaseMain() {
     head.querySelector("h2").addEventListener("click", function () { folderRename(gid); });
     var acts = head.querySelector(".cd-acts");
     acts.appendChild(actBtn("📋 Summary", "everything in this folder on one page, with filters — save it as a study sheet", function () { openScopeSummary("g:" + gid); }));
+    acts.appendChild(actBtn("＋ New study sheet", "pick from the library, then save it as a sheet", function () { sheetNew(sheetTopGroup(gid)); }));
     acts.appendChild(actBtn("＋ Folder", "a new folder inside this one", function () {
       askName("New folder", "Inside “" + groupName(gid) + "”.", "", function (n) { var id = addGroup(n, gid); renderFolderPage(); if (id) libToast("Created the folder “" + n + "”"); });
     }));
@@ -6979,7 +7000,7 @@ function __detabaseMain() {
       sg.appendChild(fpCell(b, dotsBtn({ lvl: "s", id: k })));   // the subject's own ⋯: Rename, Move to…, …
     });
     host.appendChild(sg);
-    host.appendChild(studySheetsSection("g:" + gid));
+    if (!groupParentOf(gid)) host.appendChild(studySheetsSection(gid));
   }
   // a tile with its ⋯ beside it (a button can't hold another button)
   function fpCell(tile, dots) {
@@ -7063,6 +7084,7 @@ function __detabaseMain() {
 
   // ---- master view update ----
   function applyView() {
+    bldRender();
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onPage = onProblem && isPage(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
@@ -7141,12 +7163,12 @@ function __detabaseMain() {
       renderMiningScreen();
     } else if (onSheets) {
       $("pageTitle").textContent = "ETI";
-      $("pageSubtitle").innerHTML = 'Every study sheet, by subject, and the exercises.';
+      $("pageSubtitle").innerHTML = 'Every study sheet, by folder.';
       history.replaceState(null, "", "#sheets");
       renderSheetsLib();
     } else if (onSum) {
       var smx = summaryById(activeSummary);
-      $("pageTitle").textContent = smx.subject === "lib" ? "Study sheets" : scopeName(smx.subject);
+      $("pageTitle").textContent = sheetGroupOf(smx) ? groupName(sheetGroupOf(smx)) : "Study sheets and strategies";
       $("pageSubtitle").innerHTML = sheetSubtitle(smx);
       history.replaceState(null, "", "#" + smx.id);
       renderSumPane();
@@ -11315,6 +11337,20 @@ function __detabaseMain() {
     store.schema = 8;
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
+  // schema 9: a sheet is filed under one top-level folder at most (sm.groupId) instead of a scope, and
+  // Exercises are no longer a kind: they become ordinary sheets with no group. No sheet is removed.
+  (function migrateSheetFiling() {
+    if (store.schema >= 9) return;
+    try { window.DBX.put("__pre_s9", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    (store.summaries || []).forEach(function (sm) {
+      var sc = sm.subject || "lib";
+      var g = sm.kind === "exercise" || sc === "lib" ? null : sc.slice(0, 2) === "g:" ? sheetTopGroup(sc.slice(2)) : keyGroup(sc);
+      if (g) sm.groupId = g;
+      delete sm.subject; delete sm.kind;
+    });
+    store.schema = 9;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
 
   function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function btnLabel(b) {   // "2.2 Unit circle"
@@ -12001,6 +12037,11 @@ function __detabaseMain() {
     var spec = { mem: "k|" + ref.id, title: cardLabel(ref.id), redraw: renderSubPage, filters: [cardPartFilter()] };
     var off = lsumState(spec).off.part, nOff = Object.keys(off).length;
     acts.appendChild(actBtn("Filters" + (nOff ? " · " + nOff : ""), "which parts of this card show", function () { lsumFilters(spec); }));
+    if (bldSheet()) acts.appendChild(actBtn("＋ Add to sheet", "add this card, as it shows here, to the sheet you are making", function () {
+      var r = { lvl: "c", id: ref.id };
+      if (Object.keys(off).length) r.off = off;
+      bldAdd([r], "Card: " + cardLabel(ref.id) + bldShowLabel(off));
+    }, "btn-primary"));
     var sheet = document.createElement("div");
     sheet.className = "cd-sheet cd-flat";
     if (cardShows(ref.id, off)) sheet.appendChild(cardFlatEl(ref));
@@ -12111,6 +12152,7 @@ function __detabaseMain() {
     if (sel) sel.allPaints = [];
     var acts = subHeadEl(host, { label: "‹ " + subjectName(key), title: "back to the subject", run: function () { openTabRef(tref.id); } }, tabLabel(tref.id));
     acts.appendChild(actBtn("📋 Summary", "every card of this concept on one page", function () { openSub("csummary", tref.id); }));
+    acts.appendChild(actBtn("＋ New study sheet", "pick from the library, then save it as a sheet", function () { sheetNew(keyGroup(key)); }));
     if (cards.length) acts.appendChild(selectBtn("t|" + tref.id, "cards to give them a type"));
     acts.appendChild(actBtn("＋ Card", "crop a card out of your notes, or type one in", function () { addAssetAt(tref); }, "btn-primary"));
     var bd = usedBadge(tref); if (bd) acts.appendChild(bd);
@@ -12181,19 +12223,11 @@ function __detabaseMain() {
     var acts = bar || subHeadEl(host, spec.back, spec.title);
     acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
     var groups = [];                   // filled below; Save takes what is on screen when it is tapped
-    function shownRefs() {
+    acts.appendChild(sheetSaveBtn(function () {
       var refs = [];
       groups.forEach(function (g) { g.items.forEach(function (el) { if (el.__ref) refs.push(el.__ref); }); });
       return refs;
-    }
-    if (spec.target) acts.appendChild(actBtn("💾 Add to “" + spec.target.name + "”", "put what this summary shows onto that sheet", function () {
-      var refs = shownRefs();
-      if (!refs.length) { libToast("Nothing to add — this summary shows nothing with these filters."); return; }
-      sumAppend(spec.target, refs, false, function () { lsumRedraw(spec); });
-    }, "btn-primary"));
-    else acts.appendChild(actBtn("💾 Save to study sheet", "save what this summary shows — into a new study sheet or onto one you have", function () {
-      sumSaveRefs(shownRefs(), spec.scope, function () { lsumRedraw(spec); });
-    }));
+    }, function () { return spec.where + bldShowLabel(st.off.part); }));
     var row = document.createElement("div");
     row.className = "sp-chips";
     if (chips.length) {
@@ -12274,7 +12308,7 @@ function __detabaseMain() {
       chip: function (o) { return "without " + o.name; } });
     return {
       mem: tabId ? "t|" + tabId : "s|" + key,
-      scope: key,                                 // where a study sheet saved from it belongs
+      where: subjectName(key) + " › " + (tabId ? tabLabel(tabId) : "Concepts"),   // how the builder names what is added from it
       title: "Summary · " + (tabId ? tabLabel(tabId) : "all concepts"),
       back: tabId ? { label: "‹ " + tabLabel(tabId), title: "back to the concept", run: function () { openConceptPage(tabId); } } : null,
       redraw: tabId ? null : renderSubjectPage,   // a subject's: its Concepts tab
@@ -12330,7 +12364,7 @@ function __detabaseMain() {
     }
     return {
       mem: one ? "p|" + one.id : "m|" + key,
-      scope: key,
+      where: subjectName(key) + " › " + (one ? one.name : "Methods"),
       title: "Summary · " + (one ? one.name : "all methods"),
       back: one ? { label: "‹ " + one.name, title: "back to the method", run: function () { selectPsPage(one.id); } } : null,
       redraw: one ? null : renderSubjectPage,     // a subject's: its Methods tab
@@ -12397,9 +12431,9 @@ function __detabaseMain() {
   function scopeSumSpec(scope) {
     var keys = scope === "lib" ? allSubjectKeys() : groupSubjectKeysDeep(scope.slice(2));
     return {
-      mem: "x|" + scope, scope: scope, redraw: renderScopePane, target: summaryById(sheetTarget),
+      mem: "x|" + scope, redraw: renderScopePane, where: scope === "lib" ? "Whole library" : groupName(scope.slice(2)),
       title: "Summary · " + (scope === "lib" ? "the whole library" : groupName(scope.slice(2))),
-      back: scope === "lib" ? { label: "‹ Study sheets", title: "back to the study sheets", run: openSheetsLib }
+      back: scope === "lib" ? { label: "‹ ETI", title: "back to ETI's main page", run: openMiningScreen }
                             : { label: "‹ " + groupName(scope.slice(2)), title: "back to the folder", run: function () { selectGroup(scope.slice(2)); } },
       empty: keys.length ? "Nothing in these subjects yet." : "No subjects here yet.",
       filters: kindFilters(keys),
@@ -12417,12 +12451,10 @@ function __detabaseMain() {
       }
     };
   }
-  //   sheetTarget: the sheet "Adding to …" — its Save puts what the summary shows straight onto it
-  var sheetTarget = null;
-  function openScopeSummary(scope, target) {
+  function openScopeSummary(scope) {
     if (!scopeValid(scope)) return;
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; sheetsLib = false;
-    scopeSum = scope; sheetTarget = target || null;
+    scopeSum = scope;
     applyView(); renderEtiTree();
   }
   function scopeSumHash(scope) { return scope === "lib" ? "lsummary" : "fsummary:" + encodeURIComponent(scope.slice(2)); }
@@ -12433,16 +12465,7 @@ function __detabaseMain() {
     var host = $("scopePane"); if (!host) return;
     parkScopePane();
     if (!scopeValid(scopeSum)) return;
-    var tg = summaryById(sheetTarget);
-    if (tg) {
-      var strip = document.createElement("div");
-      strip.className = "sl-target";
-      strip.innerHTML = '<span>Adding to <b></b> · ' + tg.items.length + (tg.items.length === 1 ? " item" : " items") + ' on it. Set the filters (none = the whole library), then tap “💾 Add”.</span>';
-      strip.querySelector("b").textContent = (isExercise(tg) ? "the exercise " : "") + "“" + tg.name + "”";
-      strip.appendChild(actBtn("✓ Done — open it", "open the sheet", function () { openSummary(tg.id); }));
-    }
     lsumRender(host, scopeSumSpec(scopeSum));
-    if (tg) host.insertBefore(strip, host.querySelector(".sp-chips"));
     fillAllIn(host);
     try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
     spRefreshTools(host);
@@ -12655,7 +12678,7 @@ function __detabaseMain() {
     var nf = spChips(key, st).length;
     head.innerHTML = '<div class="sp-seg" role="tablist"><button type="button" data-v="concepts">Concepts</button><button type="button" data-v="methods">Methods</button><button type="button" data-v="merged">Merged</button></div>' +
       '<button type="button" class="sp-filter-btn">Filters' + (nf ? ' <span class="sp-badge">' + nf + '</span>' : '') + '</button>' +
-      '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="c">＋ Card</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button></span>';
+      '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="n">＋ New study sheet</button><button type="button" class="btn-quiet" data-a="c">＋ Card</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button></span>';
     Array.prototype.forEach.call(head.querySelectorAll(".sp-seg button"), function (b) {
       var on = b.getAttribute("data-v") === st.view;
       b.classList.toggle("on", on); b.setAttribute("aria-selected", on);
@@ -12663,6 +12686,7 @@ function __detabaseMain() {
     });
     head.querySelector(".sp-filter-btn").addEventListener("click", function () { spFilters(key); });
     if (spSummaryShown(st)) head.querySelector(".sp-filter-btn").hidden = true;
+    head.querySelector('[data-a="n"]').addEventListener("click", function () { sheetNew(keyGroup(key)); });
     head.querySelector('[data-a="c"]').addEventListener("click", function () { addAssetAt({ lvl: "s", id: key }); });
     head.querySelector('[data-a="m"]').addEventListener("click", function () { newProblemPage(key); });
     return head;
@@ -12806,6 +12830,22 @@ function __detabaseMain() {
     body.className = "sp-body";
     cardPartsHide(body, pOff);
     var tabs = libKids({ lvl: "s", id: key });
+    var mbar = document.createElement("div");
+    mbar.className = "cc-bar";
+    mbar.appendChild(sheetSaveBtn(function () {
+      var refs = [];
+      tabs.forEach(function (t) {
+        if (spTabState(st, t.id) === "off") return;
+        if (show.c) libKids(t).filter(function (c) { return spCardOn(st, c) && cardShows(c.id, pOff); }).forEach(function (c) {
+          var r = { lvl: "c", id: c.id };
+          if (Object.keys(pOff).length) r.off = pOff;
+          refs.push(r);
+        });
+      });
+      all.forEach(function (it) { refs.push({ lvl: "p", id: it.obj.id }); });
+      return refs;
+    }, function () { return subjectName(key) + " › Merged" + bldShowLabel(pOff); }));
+    host.appendChild(mbar);
     if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No concepts yet — tap “＋ Card” to crop the first card out of a document.</p>';
     tabs.forEach(function (t) {
       if (spTabState(st, t.id) === "off") return;
@@ -12970,7 +13010,6 @@ function __detabaseMain() {
     if (st.view === "concepts") spConceptsView(key, st, host);
     else if (st.view === "methods") spMethodsView(key, st, host);
     else spMerged(key, st, host);
-    host.appendChild(studySheetsSection(key));
     // a custom subject's notes, under its material, while it has any
     if (key.slice(0, 2) === "s:") {
       var nw = $("cpNotesWrap");
@@ -13795,6 +13834,7 @@ function __detabaseMain() {
     var tags = (pg.tags || []).filter(Boolean);
     $("psCrumb").textContent = tags.join(" · ");   // the subject is in the page subtitle; tags, if any, here
     $("psTitle").textContent = pg.name;
+    $("psBld").hidden = !bldSheet();
     var body = psBody(pg.id), legacy = !body.parts.length && !body.source;
     if ($("psEdit")) $("psEdit").hidden = !legacy;           // only a hand-written method opens in the board editor
     // ---- the header ----
@@ -17239,7 +17279,7 @@ function __detabaseMain() {
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
       '<div class="em-narrow"></div><div class="em-tree"></div><div class="em-res"></div>' +
       '<div class="em-vines"></div>';
-    host.querySelector(".em-libbar").appendChild(actBtn("📚 Study sheets", "every study sheet and exercise — and make new ones from the whole library", openSheetsLib, "btn-primary"));
+    host.querySelector(".em-libbar").appendChild(actBtn("📚 Study sheets and strategies", "every study sheet, and make new ones", openSheetsLib, "btn-primary"));
     var input = host.querySelector(".em-search");
     input.value = mainQ;
     var st;
@@ -17592,20 +17632,32 @@ function __detabaseMain() {
   var activeSummary = null;
   function sumEnsure() { store.summaries = store.summaries || []; return store.summaries; }
   function summaryById(id) { return id ? byId(sumEnsure(), id) : null; }
-  function isExercise(sm) { return sm.kind === "exercise"; }
-  // a subject's / folder's / the whole library's own study sheets (exercises belong to none)
-  function summariesOf(scope) { return sumEnsure().filter(function (s) { return s.subject === scope && !isExercise(s); }); }
   function byName(a, b) { return a.name.localeCompare(b.name); }
-  function scopeName(scope) {
-    if (scope === "lib") return "the whole library";
-    if (scope.slice(0, 2) === "g:") return groupExists(scope.slice(2)) ? groupName(scope.slice(2)) : "(deleted folder)";
-    return subjectName(scope);
+  // filing: one top-level folder at most (a folder that moved inside another counts as the one above it)
+  function sheetTopGroup(gid) { return gid && groupExists(gid) ? groupPath(gid)[0] : null; }
+  function keyGroup(key) {
+    if (!key) return null;
+    if (key.slice(0, 2) === "f:") return sheetTopGroup(effGroupOfBuiltin(key.slice(2)));
+    var s = byId(store.subjects, key.slice(2));
+    return s ? sheetTopGroup(effGroupOfSubject(s)) : null;
   }
-  function openScope(scope) {
-    if (scope === "lib") openSheetsLib();
-    else if (scope.slice(0, 2) === "g:") { if (groupExists(scope.slice(2))) selectGroup(scope.slice(2)); else openMiningScreen(); }
-    else if (refExists({ lvl: "s", id: scope })) openSubjectRef(scope);
-    else openSheetsLib();
+  function sheetGroupOf(sm) { return sheetTopGroup(sm.groupId); }
+  // a folder's finished sheets (null: the ones with no group)
+  function summariesOf(gid) { return sumEnsure().filter(function (s) { return !s.draft && sheetGroupOf(s) === gid; }); }
+  function topGroups() { return allGroupIds().filter(function (g) { return !groupParentOf(g); }); }
+  function openSheetHome(sm) { var g = sheetGroupOf(sm); if (g) selectGroup(g); else openSheetsLib(); }
+  function sheetGroupMenu(anchor, sm) {
+    var cur = sheetGroupOf(sm);
+    libMenu(anchor, [{ head: "File this sheet under" }, { label: "No group", on: !cur, run: function () { delete sm.groupId; saveStore(); libAfterMove(); } }]
+      .concat(topGroups().map(function (g) { return { label: groupName(g), on: cur === g, run: function () { sm.groupId = g; saveStore(); libAfterMove(); } }; })));
+  }
+  // the folder of the page on screen: where a new sheet is filed by default
+  function placeGroup() {
+    if (folderPage && groupExists(folderPage)) return sheetTopGroup(folderPage);
+    if (scopeValid(scopeSum)) return scopeSum === "lib" ? null : sheetTopGroup(scopeSum.slice(2));
+    if (activePsPage) { var pg = psPageById(activePsPage); return pg ? keyGroup(pg.subject) : null; }
+    if (subOpen()) return keyGroup(subSubjectOf(activeSub));
+    return keyGroup(shownSubjectKey());
   }
   // when something is deleted from the library, it leaves every summary too
   function sumStripRefs(keys) {
@@ -17614,24 +17666,28 @@ function __detabaseMain() {
       var n = sm.items.length;
       sm.items = sm.items.filter(function (r) { return !keys[refKey(r)]; });
       if (sm.items.length !== n) hit = true;
+      if (sm.bld) sm.bld.adds.forEach(function (a) { a.items = a.items.filter(function (r) { return !keys[refKey(r)]; }); });
     });
     return hit;
   }
   // "💾 Save to study sheet": what a summary shows, into a new sheet or onto the end of one you have.
   // Whatever is already on that sheet is not added twice (a part neither, when its whole method is there).
-  function sheetGroupName(sm) { return isExercise(sm) ? "Exercises" : scopeName(sm.subject); }
-  function sumSaveRefs(refs, scope, after) {
-    if (!refs.length) { libToast("Nothing to save — this summary shows nothing with these filters."); return; }
-    var opts = sumEnsure().slice().sort(function (a, b) { return sheetGroupName(a).localeCompare(sheetGroupName(b)) || (b.created || 0) - (a.created || 0); })
-      .map(function (sm) { return { id: sm.id, name: sm.name + " · " + sm.items.length, group: sheetGroupName(sm) }; });
-    pickOrNew("Save to a study sheet", refs.length + (refs.length === 1 ? " item" : " items") + ", as this summary shows them. Add them to a sheet you have, or start a new one.",
-      opts, "New study sheet name…", function (id, nn) {
-        var sm = id ? summaryById(id) : null;
-        if (!sm) { sm = { id: uid("sm_"), subject: scope, name: nn || "Study sheet", items: [], created: Date.now() }; sumEnsure().push(sm); }
-        sumAppend(sm, refs, !id, after);
-      });
-  }
-  // what a summary shows onto the end of a sheet — whatever is already on it is not added twice
+  // the quick way: one item straight onto a sheet you have, or a new one, without the builder
+  function sumSaveRefs(refs) {
+    var opts = sumEnsure().filter(function (sm) { return !sm.draft; }).sort(function (a, b) { return (b.created || 0) - (a.created || 0); }).map(function (sm) {
+      var g = sheetGroupOf(sm);
+      return { id: sm.id, name: sm.name + " · " + sm.items.length, group: g ? groupName(g) : "No group" };
+    });
+    pickOrNew("Add to a study sheet", "Add it to a sheet you have, or start a new one.", opts, "New study sheet name…", function (id, nn) {
+      var sm = id ? summaryById(id) : null;
+      if (!sm) {
+        sm = { id: uid("sm_"), name: nn || "Study sheet", items: [], created: Date.now() };
+        var g = placeGroup(); if (g) sm.groupId = g;
+        sumEnsure().push(sm);
+      }
+      sumAppend(sm, refs, !id);
+    });
+  }  // what a summary shows onto the end of a sheet — whatever is already on it is not added twice
   // (a part neither, when its whole method is there)
   function sumAppend(sm, refs, isNew, after) {
     var have = {};
@@ -17654,13 +17710,12 @@ function __detabaseMain() {
       (skipped ? " (" + skipped + " already there)" : ""), { label: "Open", run: function () { openSummary(sm.id); } });
   }
 
-  // ---- the Study sheets section: under a subject's page, a folder's page, and the main page (every sheet) ----
-  function studySheetsSection(scope) {
-    var sec = sheetsSectionEl("Study sheets", summariesOf(scope));
-    if (!sec.querySelector(".sum-card")) sec.querySelector(".sums-grid").innerHTML = '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Open a summary, set its filters, and tap “💾 Save to study sheet” — later summaries can be added to the same sheet.</div>';
+  // ---- a top-level folder's "Study sheets and strategies" ----
+  function studySheetsSection(gid) {
+    var sec = sheetsSectionEl("Study sheets and strategies", summariesOf(gid));
+    if (!sec.querySelector(".sum-card")) sec.querySelector(".sums-grid").innerHTML = '<div class="side-empty sums-empty"><b>Nothing filed here yet.</b> Tap “＋ New study sheet” and file it under this folder.</div>';
     return sec;
-  }
-  // a titled grid of sheet tiles, newest first
+  }  // a titled grid of sheet tiles, newest first
   function sheetsSectionEl(title, sheets) {
     var list = sheets.slice().sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
     var sec = document.createElement("section");
@@ -17671,60 +17726,205 @@ function __detabaseMain() {
     list.forEach(function (sm) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "sum-card";
-      var preview = sm.items.slice(0, 3).map(function (r) { return refLabel(r); }).join(" · ") + (sm.items.length > 3 ? " …" : "");
-      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + sm.items.length + (sm.items.length === 1 ? " item" : " items") + '</small>' +
+      var its = sm.draft ? bldItems(sm) : sm.items;
+      var preview = its.slice(0, 3).map(function (r) { return refLabel(r); }).join(" · ") + (its.length > 3 ? " …" : "");
+      b.innerHTML = '<b>' + escapeHtml(sm.name) + '</b><small>' + its.length + (its.length === 1 ? " item" : " items") + '</small>' +
         (preview ? '<span class="sum-card-preview">' + escapeHtml(preview) + '</span>' : '');
-      b.addEventListener("click", function () { openSummary(sm.id); });
-      grid.appendChild(b);
+      b.addEventListener("click", function () { if (sm.draft) bldStart(sm); else openSummary(sm.id); });
+      var dots = actBtn("⋯", "more", function () {
+        libMenu(dots, [
+          { label: sm.draft ? "✎ Continue it" : "⤢ Open", run: function () { if (sm.draft) bldStart(sm); else openSummary(sm.id); } },
+          { label: "📁 File under…", run: function () { sheetGroupMenu(dots, sm); } }
+        ]);
+      }, "lib-dots");
+      grid.appendChild(fpCell(b, dots));
     });
     return sec;
   }
 
-  // ---- the Study sheets library: its own page in ETI (main page → "📚 Study sheets"; address #sheets) ----
-  // Every study sheet, grouped by what it belongs to (subjects in library order, then folders, then the
-  // whole library), and the exercises — their own group, never under a subject or folder.
-  // "＋ New study sheet" / "＋ New exercise": a name, then the whole library's summary opens with
-  // "Adding to …" — whatever it shows (filters set or not) goes straight onto that sheet.
-  //   sm.kind = "exercise" (no kind = a study sheet); an exercise's scope is "lib"
+  // ---- "Study sheets and strategies": its own page in ETI (main page button; address #sheets) ----
+  // Every sheet, by the top-level folder it is filed under (a folder's page lists only its own).
   var sheetsLib = false;
   function openSheetsLib() {
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null;
     sheetsLib = true;
     applyView(); renderEtiTree();
   }
-  function sheetsLibNew(exercise) {
-    askName(exercise ? "New exercise" : "New study sheet", "Next, the whole library's summary opens: set its filters (or none, for everything) and add it to this sheet.", "", function (n) {
-      var sm = { id: uid("sm_"), subject: "lib", name: n, items: [], created: Date.now() };
-      if (exercise) sm.kind = "exercise";
-      sumEnsure().push(sm);
-      saveStore();
-      openScopeSummary("lib", sm.id);
-    });
-  }
   function renderSheetsLib() {
     var host = $("sheetsPane"); if (!host) return;
-    host.innerHTML = '<div class="cp-head"><h2>Study sheets</h2><span class="ps-actions"></span></div>';
-    var acts = host.querySelector(".ps-actions");
-    acts.appendChild(actBtn("＋ New study sheet", "name it, then choose from the whole library", function () { sheetsLibNew(false); }, "btn-primary"));
-    acts.appendChild(actBtn("＋ New exercise", "an exercise sheet — kept here only, not under any subject", function () { sheetsLibNew(true); }));
-    var all = sumEnsure(), sheets = all.filter(function (sm) { return !isExercise(sm); });
-    var scopes = allSubjectKeys().concat(allGroupIds().map(function (g) { return "g:" + g; }), ["lib"]);
-    sheets.forEach(function (sm) { if (scopes.indexOf(sm.subject) < 0) scopes.push(sm.subject); });   // a scope that no longer exists still shows its sheets
-    var any = false;
-    scopes.forEach(function (sc) {
-      var mine = sheets.filter(function (sm) { return sm.subject === sc; });
+    host.innerHTML = '<div class="cp-head"><h2>Study sheets and strategies</h2><span class="ps-actions"></span></div>';
+    host.querySelector(".ps-actions").appendChild(actBtn("＋ New study sheet", "pick from the library, then save it as a sheet", function () { sheetNew(null, null, true); }, "btn-primary"));
+    var drafts = sumEnsure().filter(function (sm) { return sm.draft; }), any = false;
+    if (drafts.length) host.appendChild(sheetsSectionEl("Drafts", drafts));
+    host.insertAdjacentHTML("beforeend", '<h3 class="sl-head">Study sheets</h3>');
+    topGroups().concat([null]).forEach(function (g) {
+      var mine = summariesOf(g);
       if (!mine.length) return;
       any = true;
-      var sec = sheetsSectionEl(sc === "lib" ? "Whole library" : scopeName(sc), mine);
-      host.appendChild(sec);
+      host.appendChild(sheetsSectionEl(g ? groupName(g) : "No group", mine));
     });
-    if (!any) host.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Tap “＋ New study sheet”, or save any summary with “💾 Save to study sheet”.</div>');
-    var ex = sheetsSectionEl("Exercises", all.filter(isExercise));
-    ex.classList.add("sl-exercises");
-    if (!ex.querySelector(".sum-card")) ex.querySelector(".sums-grid").innerHTML = '<div class="side-empty sums-empty"><b>No exercises yet.</b> Tap “＋ New exercise”.</div>';
-    host.appendChild(ex);
+    if (!any) host.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty"><b>No study sheets yet.</b> Tap “＋ New study sheet”, or “💾 Save to study sheet” on any summary.</div>');
   }
 
+  // ---- the builder: making or changing a sheet while browsing the library ----
+  // A side panel stays open over every ETI page: the sheet's name and folder, and what has been added, by
+  // name only. Every summary then has "＋ Add to sheet" (what is on screen, with its Show filter), and so do
+  // a card's and a method's own pages. Until "Create", a new sheet is a draft (sm.draft), listed in the
+  // library so it can be continued; leaving keeps it.
+  //   store.ui.bld = the sheet being built · sm.bld = { adds: [{ id, label, items: [item] }] }
+  //   Changing a finished sheet works on a copy of its items as the first addition.
+  var bldOpen = {};                                     // additions unfolded in the panel
+  function bldSheet() {
+    var sm = store.ui && store.ui.bld ? summaryById(store.ui.bld) : null;
+    return sm && sm.bld ? sm : null;
+  }
+  function bldItems(sm) { return ((sm.bld || {}).adds || []).reduce(function (out, a) { return out.concat(a.items); }, []); }
+  function bldStart(sm) {
+    store.ui.bld = sm.id; delete store.ui.bldMin;
+    saveStore();
+    libAfterMove(); bldRender();
+  }
+  function sheetNew(groupId, first, toMain) {
+    askName("New study sheet", "Then browse the library and add to it from the panel. Nothing is final until you press Create.", "", function (n) {
+      var sm = { id: uid("sm_"), name: n, items: [], created: Date.now(), draft: 1, bld: { adds: [] } };
+      if (groupId) sm.groupId = groupId;
+      sumEnsure().push(sm);
+      if (first) bldPut(sm, first.refs, first.label);
+      if (toMain) { store.ui.bld = sm.id; saveStore(); openMiningScreen(); } else bldStart(sm);
+    });
+  }
+  // an item is not added twice (a part neither, when its whole method is there)
+  function bldPut(sm, refs, label) {
+    var have = {};
+    bldItems(sm).forEach(function (r) { have[refKey(r)] = 1; });
+    var items = refs.filter(function (r) {
+      var par = r.lvl === "st" ? refParent(r) : null;
+      return !have[refKey(r)] && !(par && have[refKey(par)]);
+    }).map(function (r) {
+      var it = { lvl: r.lvl, id: r.id };
+      if (r.off) it.vis = { parts: JSON.parse(JSON.stringify(r.off)) };
+      return it;
+    });
+    if (items.length) sm.bld.adds.push({ id: uid("ad_"), label: label, items: items });
+    return items.length;
+  }
+  function bldAdd(refs, label) {
+    var sm = bldSheet(); if (!sm) return;
+    var n = bldPut(sm, refs, label), skipped = refs.length - n;
+    saveStore(); bldRender();
+    libToast(n ? "Added " + n + (n === 1 ? " item" : " items") + (skipped ? " (" + skipped + " already there)" : "") : "Already on the sheet");
+  }
+  // what a Show filter leaves, for an addition's label
+  function bldShowLabel(off) {
+    if (!off || !Object.keys(off).length) return "";
+    return ": " + CARD_PARTS.filter(function (p) { return !off[p.id]; }).map(function (p) { return p.name + "s"; }).join(" + ");
+  }
+  function bldCount(items) {
+    var c = items.filter(function (r) { return r.lvl === "c"; }).length, o = items.length - c;
+    return [c ? c + (c === 1 ? " card" : " cards") : "", o ? o + (o === 1 ? " method part" : " method parts") : ""].filter(Boolean).join(", ");
+  }
+  // the summaries' and Merged's button: into the open builder, or starting one with this view in it
+  function sheetSaveBtn(refsFn, labelFn) {
+    var open = !!bldSheet();
+    return actBtn(open ? "＋ Add to sheet" : "💾 Save to study sheet", open ? "add what is on screen to the sheet you are making" : "start a study sheet with what is on screen", function () {
+      var refs = refsFn();
+      if (!refs.length) { libToast("Nothing to add — this shows nothing with these filters."); return; }
+      if (bldSheet()) bldAdd(refs, labelFn() + " · " + bldCount(refs));
+      else sheetNew(placeGroup(), { refs: refs, label: labelFn() + " · " + bldCount(refs) });
+    }, open ? "btn-primary" : "");
+  }
+  // "✎ Add / remove" on a finished sheet
+  function bldEdit(sm) {
+    if (!sm.bld) sm.bld = { adds: sm.items.length ? [{ id: uid("ad_"), label: "On the sheet now · " + bldCount(sm.items), items: JSON.parse(JSON.stringify(sm.items)) }] : [] };
+    bldStart(sm);
+  }
+  function bldFinish() {
+    var sm = bldSheet(); if (!sm) return;
+    var items = bldItems(sm);
+    if (sm.draft) {
+      if (!items.length) { libToast("Add something first."); return; }
+      sm.items = items; delete sm.draft;
+    } else {
+      var keep = {}, have = {};
+      items.forEach(function (r) { keep[refKey(r)] = 1; });
+      sm.items = sm.items.filter(function (r) { have[refKey(r)] = 1; return keep[refKey(r)]; });
+      var fresh = items.filter(function (r) { return !have[refKey(r)]; });
+      if (sm.arranged) fresh.forEach(function (r) { sheetInsert(sm.items, r); });
+      else sm.items = sm.items.concat(fresh);
+    }
+    delete sm.bld; delete store.ui.bld;
+    saveStore();
+    openSummary(sm.id);
+  }
+  function bldLater() { delete store.ui.bld; saveStore(); libAfterMove(); bldRender(); }
+  function bldDiscard() {
+    var sm = bldSheet(); if (!sm) return;
+    if (!confirm(sm.draft ? "Discard the draft “" + sm.name + "”?" : "Discard these changes to “" + sm.name + "”?")) return;
+    if (sm.draft) store.summaries = sumEnsure().filter(function (x) { return x !== sm; }); else delete sm.bld;
+    delete store.ui.bld;
+    saveStore(); libAfterMove(); bldRender();
+  }
+  function bldRender() {
+    var p = $("bldPanel"); if (!p) return;
+    var sm = bldSheet(), on = !!sm && activeTop === "eti" && !viewingProblem, min = on && !!store.ui.bldMin;
+    document.body.classList.toggle("bld-open", on && !min);
+    p.hidden = !on; p.classList.toggle("min", min);
+    p.innerHTML = "";
+    if (!on) return;
+    var items = bldItems(sm);
+    if (min) { p.appendChild(actBtn("‹ " + sm.name + " · " + items.length, "open the sheet panel", function () { delete store.ui.bldMin; saveStore(); bldRender(); }, "bld-tab")); return; }
+    var top = document.createElement("div");
+    top.className = "bld-top";
+    top.innerHTML = '<span class="muted">' + (sm.draft ? "New study sheet" : "Changing a sheet") + '</span>';
+    top.appendChild(actBtn("›", "tuck the panel away", function () { store.ui.bldMin = 1; saveStore(); bldRender(); }, "bld-min"));
+    p.appendChild(top);
+    var name = document.createElement("input");
+    name.type = "text"; name.maxLength = 80; name.value = sm.name; name.className = "bld-name";
+    name.addEventListener("change", function () { var v = name.value.trim(); if (v) { sm.name = v; saveStore(); } else name.value = sm.name; });
+    p.appendChild(name);
+    var sel = document.createElement("select");
+    sel.className = "bld-group"; sel.title = "where the sheet is filed";
+    [[ "", "No group" ]].concat(topGroups().map(function (g) { return [g, groupName(g)]; })).forEach(function (o) {
+      var x = document.createElement("option"); x.value = o[0]; x.textContent = o[1]; sel.appendChild(x);
+    });
+    sel.value = sheetGroupOf(sm) || "";
+    sel.addEventListener("change", function () { if (sel.value) sm.groupId = sel.value; else delete sm.groupId; saveStore(); });
+    p.appendChild(sel);
+    if (activeSubject == null && miningScreen) p.appendChild(actBtn("📋 Whole library", "every subject on one page, with filters", function () { openScopeSummary("lib"); }));
+    var list = document.createElement("div");
+    list.className = "bld-list";
+    if (!sm.bld.adds.length) list.innerHTML = '<p class="muted">Open any subject, folder or summary, set its filters, and tap “＋ Add to sheet”.</p>';
+    sm.bld.adds.forEach(function (a) {
+      var row = document.createElement("div");
+      row.className = "bld-add";
+      var h = document.createElement("div");
+      h.className = "bld-ahead";
+      h.appendChild(actBtn((bldOpen[a.id] ? "▾ " : "▸ ") + a.label, "show what is in it", function () { bldOpen[a.id] = !bldOpen[a.id]; bldRender(); }, "bld-alabel"));
+      h.appendChild(actBtn("✕", "remove this whole addition", function () {
+        sm.bld.adds = sm.bld.adds.filter(function (x) { return x !== a; }); saveStore(); bldRender();
+      }, "bld-x"));
+      row.appendChild(h);
+      if (bldOpen[a.id]) a.items.forEach(function (r) {
+        var it = document.createElement("div");
+        it.className = "bld-item";
+        var t = document.createElement("span"); t.textContent = refExists(r) ? refLabel(r) : "(deleted)"; it.appendChild(t);
+        it.appendChild(actBtn("✕", "remove just this", function () {
+          a.items = a.items.filter(function (x) { return x !== r; });
+          if (!a.items.length) sm.bld.adds = sm.bld.adds.filter(function (x) { return x !== a; });
+          saveStore(); bldRender();
+        }, "bld-x"));
+        row.appendChild(it);
+      });
+      list.appendChild(row);
+    });
+    p.appendChild(list);
+    var foot = document.createElement("div");
+    foot.className = "bld-foot";
+    foot.appendChild(actBtn(sm.draft ? "Create study sheet" : "Save changes", "", bldFinish, "btn-primary"));
+    foot.appendChild(actBtn(sm.draft ? "Keep as draft" : "Later", "close the panel; this stays as it is", bldLater));
+    foot.appendChild(actBtn("Discard", "", bldDiscard, "btn-danger"));
+    p.appendChild(foot);
+  }
   // ---- a study sheet's own page ----
   // Drawn like a summary (lsumRender): subject by subject, each subject's name as its title, then
   // concept / method headings, cards laid flat and parts with their category. A method's part (or a
@@ -17744,10 +17944,9 @@ function __detabaseMain() {
     var sm = summaryById(id); if (!sm) return;
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false;
     activeSummary = id; sheetMode = null;
-    if (sm.subject.slice(0, 2) === "f:") lastEtiFolder = sm.subject.slice(2);   // its subject stays selected
     applyView(); renderEtiTree();
   }
-  function sheetSubtitle(sm) { return (isExercise(sm) ? "Exercise · " : "Study sheet · ") + sm.items.length + (sm.items.length === 1 ? " item" : " items"); }
+  function sheetSubtitle(sm) { return "Study sheet · " + sm.items.length + (sm.items.length === 1 ? " item" : " items"); }
   function sheetMethodOf(r) {
     if (r.lvl === "p") return psPageById(r.id);
     if (r.lvl === "st") { var sx = psPartById(r.id); return sx ? sx.page : null; }
@@ -17852,8 +18051,8 @@ function __detabaseMain() {
   }
   function sheetSumSpec(sm) {
     return {
-      mem: "sh|" + sm.id, scope: sm.subject, title: sm.name, redraw: renderSumPane,
-      empty: "This study sheet is empty. Open a summary and tap “💾 Save to study sheet” to add to it.",
+      mem: "sh|" + sm.id, where: sm.name, title: sm.name, redraw: renderSumPane,
+      empty: "This study sheet is empty. Tap “✎ Add / remove” to add to it.",
       filters: kindFilters(sheetSubjectKeys(sm)),
       groups: function (off, w) {
         var out = [], g = null, lastSubj = null, lastPg = null;
@@ -18030,7 +18229,8 @@ function __detabaseMain() {
   function renderSumPane() { keepScroll(drawSumPane); }
   function drawSumPane() {
     var sm = summaryById(activeSummary); if (!sm) return;
-    $("sumBack").textContent = "‹ " + (sm.subject === "lib" ? "Study sheets" : scopeName(sm.subject));
+    $("sumBack").textContent = "‹ " + (sheetGroupOf(sm) ? groupName(sheetGroupOf(sm)) : "Study sheets and strategies");
+    $("sumGroup").textContent = "📁 " + (sheetGroupOf(sm) ? groupName(sheetGroupOf(sm)) : "No group");
     $("sumTitle").textContent = sm.name;
     $("pageSubtitle").innerHTML = sheetSubtitle(sm);
     var list = $("sumList"), bar = $("sumBar"), hint = $("sumHint"), edit = sheetMode === "edit";
@@ -18057,9 +18257,10 @@ function __detabaseMain() {
     if (!confirmDelete(sm.name)) return;
     store.summaries = sumEnsure().filter(function (x) { return x.id !== sm.id; });
     if (store.ui.lsum) delete store.ui.lsum["sh|" + sm.id];
+    if (store.ui.bld === sm.id) delete store.ui.bld;
     activeSummary = null;
     saveStore();
-    openScope(sm.subject);
+    openSheetHome(sm);
     libToast("Deleted “" + sm.name + "”");
   }
   // which subject is on screen, built-in or custom
@@ -18235,6 +18436,7 @@ function __detabaseMain() {
       ref.lvl === "t" ? { label: "📋 Summary", run: function () { openSub("csummary", ref.id); } } : null,
       { label: "✎ Rename", run: function () { libRename(ref); } },
       ref.lvl === "c" ? { label: "🏷 Tags…", run: function () { cardTagsEdit([ref.id]); } } : null,
+      ref.lvl === "c" || ref.lvl === "p" ? { label: "📄 Add to a study sheet…", run: function () { sumSaveRefs([{ lvl: ref.lvl, id: ref.id }]); } } : null,
       ref.lvl === "e" ? { label: "▤ Part of the card…", run: function () { elPartMenu(anchor, ref.id); } } : null,
       (ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e") ? { label: "↪ Move to…", run: function () { libMoveTo(ref); } } : null,
       addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
@@ -18335,7 +18537,7 @@ function __detabaseMain() {
     sumStripRefs(keys);   // and from every summary that used them
     var drop = function (list, id) { return list.filter(function (x) { return x.id !== id; }); };
     dying.forEach(function (r) {
-      if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
+      if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
       else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
       else if (r.lvl === "c") { store.cards = drop(store.cards, r.id); delete cardTagMap()[r.id]; }
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
@@ -18376,7 +18578,6 @@ function __detabaseMain() {
     pages.forEach(function (pg) { if (psPageById(pg.id)) libDelete({ lvl: "p", id: pg.id }, true); });
     tabs.forEach(function (t) { if (refExists(t)) libDelete({ lvl: "t", id: t.id }, true); });
     store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== key; });     // all empty now
-    store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== key || sm.items.length; });   // study sheets left with nothing
     var sp = (store.ui.sp || {})[key]; if (sp) { sp.off = {}; delete sp.need; }
     saveStore(); leaveIfGone(); refreshAfterManage();
     libToast("Emptied “" + name + "”");
@@ -18851,14 +19052,13 @@ function __detabaseMain() {
     spSetView(pg.subject, "methods"); openSubjectRef(pg.subject);
   });
   if ($("psSummary")) $("psSummary").addEventListener("click", function () { if (activePsPage) openSub("psummary", activePsPage); });
-  if ($("sumBack")) $("sumBack").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) openScope(sm.subject); });
+  if ($("psBld")) $("psBld").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) bldAdd([{ lvl: "p", id: pg.id }], "Method: " + pg.name); });
+  if ($("sumBack")) $("sumBack").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) openSheetHome(sm); });
+  if ($("sumGroup")) $("sumGroup").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) sheetGroupMenu($("sumGroup"), sm); });
   if ($("sumTitle")) $("sumTitle").addEventListener("click", sumRename);
   if ($("sumRename")) $("sumRename").addEventListener("click", sumRename);
   if ($("sumDelete")) $("sumDelete").addEventListener("click", sumDelete);
-  // ＋ Add more: back to where the sheet belongs; any summary there saves onto it ("💾 Save to study sheet")
-  if ($("sumMore")) $("sumMore").addEventListener("click", function () { var sm = summaryById(activeSummary); if (!sm) return;
-    if (sm.subject === "lib") { openScopeSummary("lib", sm.id); return; }
-    openScope(sm.subject); libToast("Open a summary, then “💾 Save to study sheet” → “" + sm.name + "”"); });
+  if ($("sumMore")) $("sumMore").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) bldEdit(sm); });
   if ($("sumClip")) $("sumClip").addEventListener("click", function () {
     var sm = summaryById(activeSummary); if (!sm) return;
     var spec = sheetSumSpec(sm), refs = sheetLayout(sm, sm.items.filter(sheetPasses(lsumState(spec).off, false))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
