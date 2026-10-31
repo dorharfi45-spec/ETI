@@ -807,6 +807,10 @@
   .ue-block.sh-off .ue-body { display: none; }
   .ue-block.sh-off .sh-elx { color: var(--accent); opacity: 1; }
   .sh-hidden { font-size: .8rem; margin: 6px 0 0; }
+  .sh-sw { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+  .sh-swb { min-height: 36px; padding: 0 12px; border: 1px solid var(--accent); border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--text-primary); font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer; }
+  .sh-swb.off { border-color: var(--border-strong); background: none; color: var(--text-muted); }
+  #sumList:has(.sh-fold-all) .sh-sw { display: none; }
   /* the concepts' own row, right above their tabs */
 
   /* ---- method parts: the category picker carries the category's colour ---- */
@@ -4299,7 +4303,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B102</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B103</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -11300,6 +11304,17 @@ function __detabaseMain() {
     store.schema = 7;
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
+  // schema 8: a sheet item's visibility is one setting, item.vis = { parts: { <part or category id>: 1 },
+  // els: { <element id>: 1 } }, both "hidden here"; no vis = shows everything. The old item.hide = els.
+  (function migrateSheetVis() {
+    if (store.schema >= 8) return;
+    try { window.DBX.put("__pre_s8", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    (store.summaries || []).forEach(function (sm) {
+      (sm.items || []).forEach(function (r) { if (r.hide) { r.vis = { els: r.hide }; delete r.hide; } });
+    });
+    store.schema = 8;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
 
   function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function btnLabel(b) {   // "2.2 Unit circle"
@@ -12283,6 +12298,7 @@ function __detabaseMain() {
     d.className = "ls-card cd-flat";
     cardPartsHide(d, off);
     d.__ref = { lvl: "c", id: cref.id };          // what "💾 Save to study sheet" saves
+    if (off && Object.keys(off).length) d.__ref.off = off;   // … with the parts this view hides
     d.setAttribute("data-card", cref.id);
     var h = document.createElement("div");
     h.className = "ls-chead";
@@ -17624,7 +17640,11 @@ function __detabaseMain() {
       if (have[refKey(r)]) return false;
       var par = r.lvl === "st" ? refParent(r) : null;
       return !(par && have[refKey(par)]);
-    }).map(function (r) { return { lvl: r.lvl, id: r.id }; });
+    }).map(function (r) {
+      var it = { lvl: r.lvl, id: r.id };
+      if (r.off) it.vis = { parts: JSON.parse(JSON.stringify(r.off)) };
+      return it;
+    });
     if (sm.arranged) add.forEach(function (r) { sheetInsert(sm.items, r); });   // a rearranged sheet: each in its natural place
     else sm.items = sm.items.concat(add);
     saveStore();
@@ -17713,8 +17733,11 @@ function __detabaseMain() {
   // Order: until the owner rearranges a sheet it is laid out automatically (sheetOrder); the first
   // drag writes that layout into sm.items and sets sm.arranged — from then on the sheet shows exactly
   // its stored order (sheetArranged), and new things are put in their natural place (sheetInsert).
-  //   sheetMode: null | "edit" — ✕ takes an item off the sheet; ✕ on a card's element hides it on this
-  //   sheet only (item.hide = { <element id>: 1 }); ⠿ drags an item, a subject's section (by its
+  // What shows: item.vis = { parts: { <id>: 1 }, els: { <element id>: 1 } } = hidden on this item (copied
+  // from the view it was saved from, then the switches in edit mode); the sheet-wide filters hide on top
+  // of that and never bring back what an item hides.
+  //   sheetMode: null | "edit" — ✕ takes an item off the sheet; switches turn an item's parts on and off;
+  //   ✕ on a card's element hides it on this sheet only; ⠿ drags an item, a subject's section (by its
   //   title), or an element inside its card (item.eo = { <element id>: position }, this sheet only)
   var sheetMode = null;
   function openSummary(id) {
@@ -17797,16 +17820,29 @@ function __detabaseMain() {
     if (at < 0) at = items.length;
     items.splice(at, 0, r);
   }
-  function sheetPasses(off) {
+  function itemPartsOff(r) { return (r.vis && r.vis.parts) || {}; }
+  function itemElsOff(r) { return (r.vis && r.vis.els) || {}; }
+  function offUnion(a, b) { var o = {}; [a, b].forEach(function (x) { Object.keys(x || {}).forEach(function (k) { o[k] = 1; }); }); return o; }
+  // set or clear one hidden id on an item, leaving no empty maps behind
+  function itemVisSet(r, group, id, hidden) {
+    var v = r.vis = r.vis || {}, m = v[group] = v[group] || {};
+    if (hidden) m[id] = 1; else delete m[id];
+    if (!Object.keys(m).length) delete v[group];
+    if (!Object.keys(v).length) delete r.vis;
+  }
+  // in edit mode an item its own switches emptied stays, so it can be switched back on
+  function sheetPasses(off, editing) {
     return function (r) {
       if (!refExists(r) || off.subject[libSubjectOf(r)]) return false;
       var pg = sheetMethodOf(r);
       if (pg) {
         if (off.show.m || off.kind[pg.kind || "none"]) return false;
-        if (r.lvl === "st") { var sx = psPartById(r.id); if (sx && off.cat[sx.part.cat]) return false; }
-        return true;
+        if (r.lvl === "st") { var sx = psPartById(r.id); return !sx || !off.cat[sx.part.cat]; }
+        var hid = editing ? off.cat : offUnion(off.cat, itemPartsOff(r));
+        return psParts(pg.id).some(function (p) { return !hid[p.cat]; });
       }
-      return !off.show.c;
+      if (off.show.c) return false;
+      return r.lvl !== "c" || cardShows(r.id, editing ? off.part : offUnion(off.part, itemPartsOff(r)));
     };
   }
   function sheetSubjectKeys(sm) {
@@ -17821,12 +17857,12 @@ function __detabaseMain() {
       filters: kindFilters(sheetSubjectKeys(sm)),
       groups: function (off, w) {
         var out = [], g = null, lastSubj = null, lastPg = null;
-        sheetLayout(sm, sm.items.filter(sheetPasses(off))).forEach(function (x) {
+        sheetLayout(sm, sm.items.filter(sheetPasses(off, sheetMode === "edit"))).forEach(function (x) {
           var r = x.ref, pg = sheetMethodOf(r);
           if (x.under) {                                         // under its card: the method's name once, then its parts
             if (pg !== lastPg) g.items.push(sheetMethodHead(pg));
             lastPg = pg;
-            g.items.push(sheetItemEl(sm, r, w, true));
+            g.items.push(sheetItemEl(sm, r, w, true, off));
             return;
           }
           lastPg = null;
@@ -17847,7 +17883,7 @@ function __detabaseMain() {
             lastSubj = k;
             out.push(g);
           }
-          g.items.push(sheetItemEl(sm, r, w, false));
+          g.items.push(sheetItemEl(sm, r, w, false, off));
         });
         return out;
       }
@@ -17869,17 +17905,24 @@ function __detabaseMain() {
     return g;
   }
   // one item on the sheet; in edit mode with its ⠿ and ✕ (and a card's elements with theirs)
-  function sheetItemEl(sm, r, w, under) {
-    var edit = sheetMode === "edit", d;
-    if (r.lvl === "c") d = sheetCardEl(sm, r, edit);
-    else if (r.lvl === "st") { var sx = psPartById(r.id); d = partSumEl(sx.page, sx.part, w); }
+  function sheetItemEl(sm, r, w, under, off) {
+    var edit = sheetMode === "edit", d, sw = null;
+    if (r.lvl === "c") {
+      d = sheetCardEl(sm, r, edit, off);
+      var has = cardPartsOf(r.id);
+      sw = CARD_PARTS.filter(function (p) { return has[p.id]; });
+    } else if (r.lvl === "st") { var sx = psPartById(r.id); d = partSumEl(sx.page, sx.part, w); }
     else {
       d = document.createElement("article");
       d.className = "ls-card";
       d.__ref = { lvl: r.lvl, id: r.id };
       d.innerHTML = '<div class="ls-chead"></div>';
       d.firstChild.appendChild(actBtn(refLabel(r), "open it", function () { openRef(r); }, "ls-ctitle"));
-      d.appendChild(assetBody(r, w));
+      if (r.lvl === "p") {                                 // a whole method: its parts, by category
+        var pg = psPageById(r.id), hid = offUnion(off.cat, itemPartsOff(r)), parts = psParts(pg.id);
+        parts.filter(function (p) { return !hid[p.cat]; }).forEach(function (p) { var x = partSumEl(pg, p, w); x.__ref = null; d.appendChild(x); });
+        sw = partCats().filter(function (c) { return parts.some(function (p) { return p.cat === c.id; }); });
+      } else d.appendChild(assetBody(r, w));
     }
     if (under) d.classList.add("ls-under");
     if (edit) {
@@ -17888,13 +17931,25 @@ function __detabaseMain() {
       head.appendChild(actBtn("✕", "take it off this study sheet", function () {
         libMoved("Took “" + refLabel(r) + "” off the sheet", function () { sm.items = sm.items.filter(function (y) { return refKey(y) !== refKey(r); }); });
       }, "sh-x"));
+      if (sw && sw.length) {
+        var row = document.createElement("div");
+        row.className = "sh-sw no-drag";
+        sw.forEach(function (p) {
+          var isOff = !!itemPartsOff(r)[p.id];
+          row.appendChild(actBtn((isOff ? "" : "✓ ") + p.name, isOff ? "show this part on this item" : "hide this part on this item", function () {
+            libMoved((isOff ? "Showing " : "Hid ") + p.name + " on this item", function () { itemVisSet(r, "parts", p.id, !isOff); });
+          }, isOff ? "sh-swb off" : "sh-swb"));
+        });
+        head.parentNode.insertBefore(row, head.nextSibling);
+      }
     }
     return d;
   }
   // a card on the sheet: its elements in this sheet's order (item.eo); the ones hidden on this sheet are
   // left out (in edit mode: faded, with ↺). Dragging an element here never moves it in the library.
-  function sheetCardEl(sm, r, edit) {
-    var d = cardSumEl({ lvl: "c", id: r.id }), hide = r.hide || {}, eo = r.eo || {}, n = 0;
+  function sheetCardEl(sm, r, edit, off) {
+    var d = cardSumEl({ lvl: "c", id: r.id }, offUnion(off.part, itemPartsOff(r))), hide = itemElsOff(r), eo = r.eo || {}, n = 0;
+    if (d.__ref) delete d.__ref.off;
     Array.prototype.forEach.call(d.querySelectorAll(".sp-card"), function (x) { delete x.__dndInto; });   // no dropping library elements in here
     var boxes = [];
     Array.prototype.forEach.call(d.querySelectorAll(".ue-block[data-ue]"), function (b) { if (boxes.indexOf(b.parentNode) < 0) boxes.push(b.parentNode); });
@@ -17914,18 +17969,14 @@ function __detabaseMain() {
         } });
     });
     Array.prototype.forEach.call(d.querySelectorAll(".ue-block[data-ue]"), function (b) {
-      var id = b.getAttribute("data-ue"), off = !!hide[id];
-      if (off) n++;
-      if (!edit) { if (off) b.remove(); return; }
-      b.classList.toggle("sh-off", off);
+      var id = b.getAttribute("data-ue"), elOff = !!hide[id];
+      if (elOff) n++;
+      if (!edit) { if (elOff) b.remove(); return; }
+      b.classList.toggle("sh-off", elOff);
       var uh = b.querySelector(".ue-head");
       uh.insertBefore(sheetGrip("drag to change the order inside this card (on this sheet only)"), uh.firstChild);
-      uh.appendChild(actBtn(off ? "↺ Show" : "✕", off ? "show it on this sheet again" : "hide it on this sheet (the card itself keeps it)", function () {
-        libMoved((off ? "Showing" : "Hid") + " “" + refName({ lvl: "e", id: id }) + "” on this sheet", function () {
-          var h = r.hide = r.hide || {};
-          if (off) delete h[id]; else h[id] = 1;
-          if (!Object.keys(h).length) delete r.hide;
-        });
+      uh.appendChild(actBtn(elOff ? "↺ Show" : "✕", elOff ? "show it on this sheet again" : "hide it on this sheet (the card itself keeps it)", function () {
+        libMoved((elOff ? "Showing" : "Hid") + " “" + refName({ lvl: "e", id: id }) + "” on this sheet", function () { itemVisSet(r, "els", id, !elOff); });
       }, "sh-elx"));
     });
     if (n && !edit) d.insertAdjacentHTML("beforeend", '<p class="muted sh-hidden">✂ ' + n + (n === 1 ? " element" : " elements") + ' hidden on this sheet</p>');
@@ -17988,7 +18039,7 @@ function __detabaseMain() {
     list.classList.toggle("sh-editing", edit);
     bar.appendChild(actBtn(edit ? "✓ Done" : "✂ Edit", edit ? "stop editing" : "rearrange anything by dragging, take things off the sheet, or hide single elements of a card on this sheet only",
       function () { sheetMode = edit ? null : "edit"; renderSumPane(); }, edit ? "btn-primary" : ""));
-    hint.textContent = edit ? "Drag ⠿ to move a card, a part, a subject (by its title) or an element inside its card. ✕ next to a title takes it off this sheet; ✕ on an element hides it here only — the card in the library keeps it." : "";
+    hint.textContent = edit ? "Drag ⠿ to move a card, a part, a subject (by its title) or an element inside its card. ✕ next to a title takes it off this sheet; the switches under a title turn its parts on and off; ✕ on an element hides it here only — the card in the library keeps it." : "";
     hint.hidden = !edit;
     lsumRender(list, sheetSumSpec(sm), bar);
     if (edit) sheetEditDnd(sm, list);
@@ -18810,7 +18861,7 @@ function __detabaseMain() {
     openScope(sm.subject); libToast("Open a summary, then “💾 Save to study sheet” → “" + sm.name + "”"); });
   if ($("sumClip")) $("sumClip").addEventListener("click", function () {
     var sm = summaryById(activeSummary); if (!sm) return;
-    var spec = sheetSumSpec(sm), refs = sheetLayout(sm, sm.items.filter(sheetPasses(lsumState(spec).off))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
+    var spec = sheetSumSpec(sm), refs = sheetLayout(sm, sm.items.filter(sheetPasses(lsumState(spec).off, false))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
     if (!refs.length) { libToast("Nothing to add — this sheet shows nothing with its filters."); return; }
     chooseBoardAndMine(refs, { column: true });   // one under another, as the sheet shows them (with its filters)
   });
