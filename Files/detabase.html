@@ -1133,8 +1133,13 @@
   .ct-stem { stroke-width: 2.4; stroke-linecap: round; opacity: .9; pointer-events: none; }
   .ct-link { fill: none; stroke-width: 1.6; opacity: .5; pointer-events: none; transition: opacity .2s; }
   .ct-link.also { stroke-dasharray: 7 5; stroke-width: 1.8; opacity: .75; }
-  .ct-mlink { fill: none; stroke: var(--text-secondary); stroke-width: 2.2; opacity: .6; pointer-events: none; }
-  .ct-link.hot, .ct-mlink.hot, .ct-stem.hot { opacity: 1; stroke-width: 3; }
+  .ct-arrow { fill: none; stroke-width: 2; opacity: .75; pointer-events: none; }
+  .ct-vine { fill: none; stroke-width: 3; opacity: .9; pointer-events: none; }
+  .ct-vhit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
+  .ct-link.hot, .ct-arrow.hot, .ct-stem.hot { opacity: 1; stroke-width: 3; }
+  .ct-views { position: absolute; top: 10px; left: 10px; right: 64px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+  .ct-vbtn { pointer-events: auto; min-height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-muted); font: inherit; font-size: .74rem; font-weight: 600; cursor: pointer; }
+  .ct-vbtn.on { border-color: var(--ct); color: var(--text-primary); box-shadow: inset 0 -3px 0 var(--ct); }
   .ct-mlbl { font-size: calc(10.5px * var(--ctu, 1)); font-weight: 700; }
   .ps-stage.flash { box-shadow: 0 0 0 3px var(--accent); }
   /* a method's cards: on its page, and on every vine row */
@@ -4363,7 +4368,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B106</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B107</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -17059,7 +17064,45 @@ function __detabaseMain() {
         if (w && !seen[k]) { seen[k] = 1; links.push({ a: v, b: w }); }
       });
     });
-    return { nodes: out, links: links };
+    return { nodes: out, links: links, byPg: byPg };
+  }
+  // the tree's views: layers of lines the owner switches on and off (all on by default; a strategy can be
+  // switched off on its own). store.ui.treeOff = { cc, mm, cm, st: 1 }, store.ui.treeStratOff = { id: 1 }
+  var CT_LAYERS = [{ id: "cc", name: "Concept → concept", color: "#0891b2" }, { id: "mm", name: "Method → method", color: "#7c3aed" },
+                   { id: "cm", name: "Concept – method", color: "#64748b" }, { id: "st", name: "Strategies", color: "#d97706" }];
+  function ctOn(id) { return !(store.ui.treeOff || {})[id]; }
+  // where a line starting at a tree point `a` meets the edge of `b` (and the other way)
+  function ctEdge(a, b) {
+    var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len, ra = Math.min(a.r || 0, len / 3), rb = Math.min(b.r || 0, len / 3);
+    return [[a.x + ux * ra, a.y + uy * ra], [b.x - ux * rb, b.y - uy * rb]];
+  }
+  // the tree points of a strategy's node: its ring or circle, or a method's square; a custom group: each member
+  function ctNodePoints(model, methods, node) {
+    return (node.ref ? [node.ref] : node.refs || []).map(function (r) {
+      if (r.lvl === "p") { var v = methods.byPg[r.id]; return v ? { x: v.x, y: v.y, r: CT_MR } : null; }
+      return model.nodes[refKey(r)] || null;
+    }).filter(Boolean);
+  }
+  function ctViewsEl(box, pages) {
+    var d = document.createElement("div");
+    d.className = "ct-views";
+    function toggle(on, label, color, run) {
+      var b = actBtn(label, on ? "hide these lines" : "show these lines", run, "ct-vbtn" + (on ? " on" : ""));
+      b.style.setProperty("--ct", color);
+      d.appendChild(b);
+    }
+    CT_LAYERS.forEach(function (l) {
+      toggle(ctOn(l.id), l.name, l.color, function () {
+        var o = store.ui.treeOff = store.ui.treeOff || {};
+        if (o[l.id]) delete o[l.id]; else o[l.id] = 1;
+        saveStore(); ctRender(box, pages);
+      });
+    });
+    if (ctOn("st")) stratsAll().forEach(function (s) {
+      var o = store.ui.treeStratOff = store.ui.treeStratOff || {};
+      toggle(!o[s.id], s.name, s.color, function () { if (o[s.id]) delete o[s.id]; else o[s.id] = 1; saveStore(); ctRender(box, pages); });
+    });
+    return d;
   }
   function ctInside(t, ring) { for (var p = t; p; p = p.parent) if (p === ring) return true; return false; }
   // where a line meets a circle: a concept's centre, a ring's rim on the side facing p
@@ -17188,14 +17231,16 @@ function __detabaseMain() {
   }
   function ctHitAt(x, y) {
     var t = document.elementFromPoint(x, y);
-    t = t && t.closest && t.closest("[data-k], [data-v]");
+    t = t && t.closest && t.closest("[data-k], [data-v], [data-strat]");
     if (!t || !ctEls || !ctEls.svg.contains(t)) return null;
+    if (t.hasAttribute("data-strat")) return { strat: t.getAttribute("data-strat") };
     if (t.hasAttribute("data-v")) return { method: t.getAttribute("data-v") };
     return ctEls.model.nodes[t.getAttribute("data-k")] || null;
   }
   function ctTap(x, y) {
     var h = ctHitAt(x, y);
     if (!h) return;
+    if (h.strat) { openStrat(h.strat); return; }
     if (h.method) {
       // a square too small to aim at: zoom into its subject first
       var pg = psPageById(h.method), sn = pg && ctEls.model.nodes["s|" + pg.subject];
@@ -17308,7 +17353,9 @@ function __detabaseMain() {
     var methods = ctMethods(model, dark);
     var marks = ctMark(model, pages);
     var NS = "http://www.w3.org/2000/svg";
-    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings"></g><g class="ct-links"></g>' +
+    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><defs>' + ['cc', 'mm'].map(function (id) {
+        return '<marker id="ctArrow' + id + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="' + byId(CT_LAYERS, id).color + '"/></marker>';
+      }).join('') + '</defs><g class="ct-world"><g class="ct-rings"></g><g class="ct-links"></g>' +
       '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
@@ -17340,17 +17387,41 @@ function __detabaseMain() {
       }
       n.kids.forEach(walk);
     })(model.root);
-    // linked methods: one line between the two squares
-    methods.links.forEach(function (l) {
-      var off = marks && !(marks.vis[l.a.pg.id] && marks.vis[l.b.pg.id]);
-      el("path", { d: ctCurve([l.a.x, l.a.y], [l.b.x, l.b.y]), "class": "ct-mlink" + (off ? " off" : ""), "data-vv": l.a.pg.id + " " + l.b.pg.id }, gLinks);
+    // "builds on": an arrow from the earlier concept to the one built on it
+    if (ctOn("cc")) Object.keys(conceptLinkMap()).forEach(function (id) {
+      var b = model.nodes["t|" + id]; if (!b) return;
+      conceptBuildsOn(id).forEach(function (x) {
+        var a = model.nodes["t|" + x]; if (!a) return;
+        var e = ctEdge(a, b);
+        el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow" + (marks && !(a.any && b.any) ? " off" : ""), stroke: byId(CT_LAYERS, "cc").color, "marker-end": "url(#ctArrowcc)" }, gLinks);
+      });
+    });
+    // "uses": an arrow from the method used to the one using it
+    if (ctOn("mm")) methods.links.forEach(function (l) {
+      var off = marks && !(marks.vis[l.a.pg.id] && marks.vis[l.b.pg.id]), e = ctEdge({ x: l.b.x, y: l.b.y, r: CT_MR }, { x: l.a.x, y: l.a.y, r: CT_MR });
+      el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow" + (off ? " off" : ""), stroke: byId(CT_LAYERS, "mm").color, "marker-end": "url(#ctArrowmm)", "data-vv": l.a.pg.id + " " + l.b.pg.id }, gLinks);
+    });
+    // strategies: each one's lines in its color; tapping a vine opens the strategy
+    if (ctOn("st")) stratsAll().forEach(function (s) {
+      if ((store.ui.treeStratOff || {})[s.id]) return;
+      s.edges.forEach(function (ed) {
+        ctNodePoints(model, methods, s.nodes[ed.a]).forEach(function (a) {
+          ctNodePoints(model, methods, s.nodes[ed.b]).forEach(function (b) {
+            var e = ctEdge(a, b), d = ctCurve(e[0], e[1]);
+            el("path", { d: d, "class": "ct-vine" + (marks ? " dim" : ""), stroke: s.color }, gLinks);
+            el("path", { d: d, "class": "ct-vhit", "data-strat": s.id }, gLinks);
+          });
+        });
+      });
     });
     methods.nodes.forEach(function (v) {
       var off = marks && !marks.vis[v.pg.id];
-      v.lines.forEach(function (L) {
-        el("path", { d: ctCurve([v.x, v.y], L.to), "class": "ct-link" + (L.also ? " also" : "") + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
-      });
-      el("line", { x1: ctF(v.x), y1: ctF(v.y), x2: ctF(v.rim[0]), y2: ctF(v.rim[1]), "class": "ct-stem" + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+      if (ctOn("cm")) {
+        v.lines.forEach(function (L) {
+          el("path", { d: ctCurve([v.x, v.y], L.to), "class": "ct-link" + (L.also ? " also" : "") + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+        });
+        el("line", { x1: ctF(v.x), y1: ctF(v.y), x2: ctF(v.rim[0]), y2: ctF(v.rim[1]), "class": "ct-stem" + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+      }
       el("rect", { x: ctF(v.x - CT_MR - 9), y: ctF(v.y - CT_MR - 9), width: 2 * CT_MR + 18, height: 2 * CT_MR + 18, "class": "ct-mhit" + (off ? " off" : ""), "data-v": v.pg.id }, gMethods);   // a finger-sized target
       var sq = el("rect", { x: ctF(v.x - CT_MR), y: ctF(v.y - CT_MR), width: 2 * CT_MR, height: 2 * CT_MR, rx: 3, fill: v.color,
         "class": "ct-method" + (v.pg.kind ? "" : " nokind") + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gMethods);
@@ -17359,6 +17430,7 @@ function __detabaseMain() {
       labels.push({ el: lb, r: CT_MR, leaf: false, lvl: "p", full: v.pg.name, hit: !!(marks && !off) });
       if (marks && !off) focusBox = ctUnion(focusBox, [v.x - 30, v.y - 30, v.x + 30, v.y + 30]);
     });
+    box.appendChild(ctViewsEl(box, pages));
     var E = ctEls = { box: box, svg: svg, world: world, labels: labels, model: model,
       allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
     ctWire(E);
