@@ -322,12 +322,6 @@
   /* ---- notebook bank (the main Notebook screen = a library of pages) ---- */
   .nb-bank-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .nb-bank-head h2 { margin: 0; border: none; padding: 0; }
-  /* PDFs / clipboards switch */
-  .nb-tabs { display: inline-flex; gap: 4px; background: var(--surface-2); padding: 3px; border-radius: 11px; border: 1px solid var(--border); }
-  .nb-tab { border: none; background: transparent; color: var(--text-muted); font: inherit; font-size: .88rem;
-    padding: 6px 13px; border-radius: 8px; cursor: pointer; }
-  .nb-tab.on { background: var(--surface-1); color: var(--text-primary); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-  .nb-storage { margin-left: auto; font-size: .72rem; color: var(--text-muted); white-space: nowrap; }
   .nb-card .nb-pdf-thumb { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: top center;
     display: block; background: #fff; border-bottom: 1px solid var(--border); }
   .nb-card .nb-sub { flex: 1 1 100%; font-size: .72rem; color: var(--text-muted); }
@@ -2310,7 +2304,7 @@
 <aside class="sidebar">
   <div class="sidebar-label">Folders</div>
   <nav class="topbar" id="topbar">
-    <button data-top="notebook"><span class="ficon">📓</span>Clipboards</button>
+    <button data-top="notebook"><span class="ficon">📄</span>PDFs</button>
     <button data-top="eti" class="on"><span class="ficon">📚</span>ETI</button>
     <button data-top="planner"><span class="ficon">🗓️</span>Planner</button>
     <button data-top="coath"><span class="ficon">🎓</span>Coath Inc.</button>
@@ -4368,7 +4362,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B107</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B108</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4403,7 +4397,7 @@
     <span class="ps-actions">
       <button id="sumMore" type="button" class="btn-quiet">✎ Add / remove</button>
       <button id="sumGroup" type="button" class="btn-quiet" title="where this sheet is filed">📁</button>
-      <button id="sumClip" type="button" class="btn-quiet">📋 Add to a clipboard</button>
+      <button id="sumClip" type="button" class="btn-quiet">🧷 Add to Clipboard</button>
       <button id="sumRename" type="button" class="btn-quiet">✎ Rename</button>
       <button id="sumDelete" type="button" class="btn-danger">🗑 Delete</button>
     </span>
@@ -4423,19 +4417,14 @@
 
 <div id="nbBank" hidden>
   <div class="nb-bank-head">
-    <h2>Notebook</h2>
-    <div class="nb-tabs">
-      <button type="button" class="nb-tab on" data-nbtab="pdfs">📄 PDFs</button>
-      <button type="button" class="nb-tab" data-nbtab="pages">✏️ Clipboards</button>
-    </div>
+    <h2>PDFs</h2>
     <button id="nbImportPdf" type="button" class="tool-btn">＋ Import PDF or picture</button>
-    <button id="nbNewPage" type="button" class="tool-btn" hidden>＋ New clipboard</button>
     <span id="nbStorage" class="nb-storage" title="how much room the app is using on this device"></span>
   </div>
   <input type="file" id="nbPdfFile" accept="application/pdf,.pdf,image/*" multiple hidden>
   <input id="nbBankSearch" class="nb-bank-search" placeholder="Filter by name…" autocomplete="off">
+  <div id="nbOldBoards" hidden></div>
   <div id="nbPdfGrid" class="nb-bank-grid"></div>
-  <div id="nbBankGrid" class="nb-bank-grid" hidden></div>
 </div>
 <!-- full-screen PDF reader: continuous scroll, pages rendered only as they come into view -->
 <div id="pdfView" hidden>
@@ -7135,7 +7124,6 @@ function __detabaseMain() {
   function applyView() {
     bldRender();
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
-    var onPage = onProblem && isPage(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
     var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
     var onScope = !onProblem && !onSum && activeTop === "eti" && scopeValid(scopeSum);   // a folder's / the library's summary (every other page clears scopeSum)
@@ -7156,7 +7144,7 @@ function __detabaseMain() {
     document.body.classList.toggle("is-planner", activeTop === "planner");
     Array.prototype.slice.call(document.querySelectorAll("#topbar button")).forEach(function (b) {
       var t = b.getAttribute("data-top");
-      b.classList.toggle("on", (onPage && t === "notebook") || (!onProblem && t === activeTop));
+      b.classList.toggle("on", !onProblem && t === activeTop);
     });
     Array.prototype.slice.call($("customSubjectList").children).forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-subject") === activeSubject);
@@ -7187,10 +7175,11 @@ function __detabaseMain() {
       try { renderLibBar(); } catch (e) {}
     }, 0);
     if (onNbBank) {
-      nbTab(store.ui.nbTab || "pdfs");
+      renderPdfShelf();
+      renderOldBoards();
       renderStorageNote();
-      $("pageTitle").textContent = "Clipboards";
-      $("pageSubtitle").innerHTML = "PDFs and pictures you brought in, and the clipboards you collect things onto.";
+      $("pageTitle").textContent = "PDFs";
+      $("pageSubtitle").innerHTML = "PDFs and pictures you brought in, to read and cut.";
       history.replaceState(null, "", "#notebook");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -7198,13 +7187,8 @@ function __detabaseMain() {
 
     if (onProblem) {
       var pb = curProblem();
-      if (onPage) {
-        $("pageTitle").textContent = pb ? (pb.name || "Untitled page") : "Page";
-        $("pageSubtitle").innerHTML = 'A clipboard — collect cards and method parts onto it, and write around them with the pencil.';
-      } else {
-        $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
-        $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Method' : 'Library element';
-      }
+      $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
+      $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Method' : 'Library element';
       renderProblemPage();
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -9916,66 +9900,37 @@ function __detabaseMain() {
   }
 
   // ============================================================
-  // NOTEBOOK BANK  —  the main Notebook screen = a library of pages
+  // OLD CLIPBOARDS — retired in B108: nothing can open them. Until the owner presses the button they stay
+  // untouched on the device; the button saves them (a file, and the local DBX key __pre_s10), then deletes them.
   // ============================================================
-  function canvasThumb(id) {
-    var c = loadCanvas(id) || {};
-    var ink = c.ink || [], items = c.items || [];
-    var b = [1e9, 1e9, -1e9, -1e9], any = false;
-    ink.forEach(function (s) { (s.pts || []).forEach(function (q) { any = true; b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); }); });
-    items.forEach(function (it) { any = true; var x = it.x || 0, y = it.y || 0, w = it.w || 200, h = it.h || 140; b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x + w); b[3] = Math.max(b[3], y + h); });
-    if (!any) return '<svg viewBox="0 0 100 62" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><text x="50" y="34" text-anchor="middle" font-size="9" fill="#94a3b8">empty page</text></svg>';
-    var pad = 18, cw = Math.max(1, b[2] - b[0]), ch = Math.max(1, b[3] - b[1]);
-    var vb = (b[0] - pad) + ' ' + (b[1] - pad) + ' ' + (cw + pad * 2) + ' ' + (ch + pad * 2);
-    var g = "";
-    items.forEach(function (it) {
-      g += '<rect x="' + (it.x || 0) + '" y="' + (it.y || 0) + '" width="' + (it.w || 200) + '" height="' + (it.h || 140) + '" rx="6" fill="rgba(37,99,235,.10)" stroke="rgba(37,99,235,.45)" stroke-width="2"/>';
-    });
-    ink.forEach(function (s) { if (s.hi) g += inkPathMarkup(s, ""); });      // same outlines as the board,
-    ink.forEach(function (s) { if (!s.hi) g += inkPathMarkup(s, ""); });     // just scaled down (highlighter first)
-    return '<svg viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">' + g + '</svg>';
+  function renderOldBoards() {
+    var box = $("nbOldBoards"), list = store.canvases || [];
+    if (!box) return;
+    box.hidden = !list.length; box.innerHTML = "";
+    if (!list.length) return;
+    box.className = "side-empty";
+    box.innerHTML = '<b>' + list.length + (list.length === 1 ? " old clipboard is" : " old clipboards are") + ' still stored here.</b> They were replaced by the Clipboard in ETI and can no longer be opened. ';
+    box.appendChild(actBtn("Download a backup, then delete them", "", retireOldBoards, "btn-danger"));
   }
-  function renderNbBank() {
-    var grid = $("nbBankGrid"); if (!grid) return;
-    store.canvases = store.canvases || [];
-    var box = $("nbBankSearch");
-    if (box) box.hidden = !store.canvases.length;
-    var q = ((box || {}).value || "").trim().toLowerCase();
-    var pages = store.canvases.filter(function (p) { return !q || (p.name || "untitled").toLowerCase().indexOf(q) >= 0; });
-    grid.innerHTML = "";
-    if (!store.canvases.length) { grid.innerHTML = '<p class="muted">No clipboards yet — tap “＋ New clipboard”.</p>'; return; }
-    if (!pages.length) { grid.innerHTML = '<p class="muted">No page matches “' + escapeHtml(q) + '”.</p>'; return; }
-    var recentId = (store.ui.lastPage && isPage(store.ui.lastPage)) ? store.ui.lastPage : null;
-    var ordered = pages.slice().sort(function (a, b) {
-      if (a.id === recentId) return -1; if (b.id === recentId) return 1;
-      return (b.created || 0) - (a.created || 0);
-    });
-    ordered.forEach(function (p, i) {
-      var recent = !q && p.id === recentId && i === 0;
-      var card = document.createElement("div");
-      card.className = "nb-card" + (recent ? " recent" : "");
-      card.innerHTML =
-        '<div class="nb-thumb">' + canvasThumb(p.id) + '</div>' +
-        '<div class="nb-meta">' +
-          (recent ? '<span class="nb-bank-tag">Most recent</span>' : '') +
-          '<span class="nb-name">' + escapeHtml(p.name || "Untitled") + '</span>' +
-          '<button class="nb-ren" title="rename">✎</button>' +
-          '<button class="nb-x" title="delete">✕</button>' +
-        '</div>';
-      card.addEventListener("click", function (e) {
-        if (e.target.closest(".nb-x")) { e.stopPropagation(); delCanvasDoc(p.id); return; }
-        if (e.target.closest(".nb-ren")) {
-          e.stopPropagation();
-          var n = prompt("Rename page:", p.name || "");
-          if (n && n.trim()) { p.name = n.trim(); saveStore(); renderNbBank(); }
-          return;
-        }
-        selectPage(p.id);
-      });
-      grid.appendChild(card);
-    });
+  function retireOldBoards() {
+    var list = (store.canvases || []).slice(), docs = {};
+    list.forEach(function (p) { var c = loadCanvas(p.id); docs[p.id] = { items: c.items, ink: c.ink, ps: c.ps, ts: c.ts }; });
+    var payload = JSON.stringify({ _detabase: LS_KEY, kind: "old-clipboards", exportedAt: new Date().toISOString(), canvases: list, docs: docs }, null, 2);
+    try { window.DBX.put("__pre_s10", { json: payload, ts: Date.now() }); }
+    catch (e) { alert("The backup could not be saved, so nothing was deleted."); return; }
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([payload], { type: "application/json" }));
+    a.download = "detabase-old-clipboards-" + toISODate(new Date()) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
+    if (!confirm("Did the backup file download? Press OK to delete the " + list.length + " old clipboards for good, handwriting and everything on them.")) return;
+    list.forEach(function (p) { killCanvas(p.id); });
+    store.canvases = [];
+    delete store.ui.lastPage;
+    saveStore();
+    renderOldBoards(); renderStorageNote();
+    libToast("Old clipboards deleted. A copy stays on this device.");
   }
-
   // ============================================================
   // PDF SHELF — notes written in Notability come in as PDFs, get read here, and
   // (from P2 on) get cut into assets. The file itself lives in the binary store
@@ -10175,18 +10130,6 @@ function __detabaseMain() {
       });
     });
   }
-  function nbTab(which) {
-    store.ui.nbTab = which; saveStore();
-    Array.prototype.forEach.call(document.querySelectorAll(".nb-tab"), function (b) { b.classList.toggle("on", b.getAttribute("data-nbtab") === which); });
-    var pdfs = which !== "pages";
-    $("nbPdfGrid").hidden = !pdfs;
-    $("nbBankGrid").hidden = pdfs;
-    $("nbImportPdf").hidden = !pdfs;
-    $("nbNewPage").hidden = pdfs;
-    var s = $("nbBankSearch"); if (s) s.placeholder = pdfs ? "Filter PDFs by name…" : "Filter clipboards by name…";
-    if (pdfs) renderPdfShelf(); else renderNbBank();
-  }
-
   // ---- the reader ----
   // Pages are laid out at their real shape straight away and only drawn when they come near the
   // viewport, so a 200-page file opens as fast as a 2-page one and never holds more than a
@@ -11138,36 +11081,9 @@ function __detabaseMain() {
   // a "canvas doc" that opens in the board editor — notebook pages, custom library elements, problem-solving pages
   function canvasDocs() { libEnsure(); return (store.canvases || []).concat(store.elements, store.ps.pages); }
   function canvasDocById(id) { return canvasDocs().filter(function (p) { return p.id === id; })[0]; }
-  function isPage(id) { return (store.canvases || []).some(function (p) { return p.id === id; }); }
   // the board that is open in the editor, or null — never creates one behind the user's back
   function curProblem() { return bindBench(canvasDocById(activeProblem)); }
   function ensureProblem() { return curProblem(); }
-
-  function addPage(name) {
-    store.canvases = store.canvases || [];
-    var p = { id: uid("pg_"), kind: "page", name: (name || "").trim() || ("Clipboard " + (store.canvases.length + 1)), created: Date.now() };
-    store.canvases.push(p);
-    bindBench(p);
-    saveStore();
-    selectPage(p.id);
-  }
-  function delCanvasDoc(id) {
-    var p = canvasDocById(id); if (!p) return;
-    if (!confirmDelete(p.name || "Untitled")) return;
-    store.canvases = (store.canvases || []).filter(function (x) { return x.id !== id; });
-    killCanvas(id);
-    saveStore();
-    if (activeProblem === id) { activeProblem = null; viewingProblem = false; }
-    selectTop("notebook");
-  }
-  function selectPage(id) {
-    activeProblem = id; viewingProblem = true; activeSubject = null; activeTop = "notebook";
-    store.ui.lastPage = id; saveStore();
-    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
-    applyView();
-    history.replaceState(null, "", "#" + id);
-    if (typeof window.enterInkFull === "function") window.enterInkFull();
-  }
 
   // ============================================================
   // LIBRARY — the two banks
@@ -13931,7 +13847,7 @@ function __detabaseMain() {
     }
     draw();
     box.buttons([
-      { label: "＋ Add to a clipboard", run: function () { closeConcepts(); chooseBoardAndMine([{ lvl: ref.lvl, id: ref.id }]); } },
+      { label: "🧷 Add to Clipboard", run: function () { closeConcepts(); bdAddRefs([{ lvl: ref.lvl, id: ref.id }]); } },
       // a part's popup can take you to its method — unless that method is already what is on screen
       t.part && !(activePsPage === t.pg.id && !miningScreen) ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
       { label: "Done", primary: true, right: true, run: function () { closeConcepts(); } }
@@ -15445,7 +15361,7 @@ function __detabaseMain() {
       viewingProblem = false; activeProblem = null;
       if (wasNotebook) openNotebook();
       else { activeTop = "eti"; applyView(); }
-      if (editedId && !isPage(editedId)) { try { refreshLibDoc(editedId); } catch (e) {} }   // an edited library doc
+      if (editedId) { try { refreshLibDoc(editedId); } catch (e) {} }   // an edited library doc
       if (typeof window.__detabaseFlushRemote === "function") window.__detabaseFlushRemote();
     }
     window.enterInkFull = enterInkFull;
@@ -16669,18 +16585,6 @@ function __detabaseMain() {
     renderCanvas();
   }
   // opts.column: one under another, in the given order (a summary), rather than in rows
-  function mineToBoard(refs, opts) {
-    var p = curProblem(); if (!p || !refs.length) return;
-    inkSnapshot(p);
-    var cv = $("ppCanvas"), z = navScale || 1;
-    var x0 = Math.max(0, (40 - navTx) / z), y0 = Math.max(0, (40 - navTy) / z), rowW = Math.max(320, ((cv.clientWidth || 900) - 80) / z);
-    if (opts && opts.column) rowW = 1;
-    var items = refs.map(makeAssetItem);
-    layoutBlocks(items, x0, y0, rowW);
-    items.forEach(function (it) { p.bench.push(it); });
-    saveStore();
-    selectGroupOnBoard(p, [], items.map(function (it) { return it.id; }));
-  }
   // decompose: Subject → Tabs → Cards → Elements; a problem page → its content back on the board
   DECOMPOSE.asset = function (p, clip) {
     var ref = clip.ref || {};
@@ -16799,8 +16703,8 @@ function __detabaseMain() {
     var acts = document.createElement("div");
     acts.className = "vine-acts";
     var add = document.createElement("button");
-    add.type = "button"; add.title = "add this method to a clipboard"; add.textContent = "＋";
-    add.addEventListener("click", function () { chooseBoardAndMine([{ lvl: "p", id: pg.id }]); });
+    add.type = "button"; add.title = "add this method to the Clipboard"; add.textContent = "＋";
+    add.addEventListener("click", function () { bdAddRefs([{ lvl: "p", id: pg.id }]); });
     var info = document.createElement("button");
     info.type = "button"; info.title = "connected concepts"; info.textContent = "🔗";
     info.addEventListener("click", function () { openConceptsPopup({ lvl: "p", id: pg.id }); });
@@ -16861,7 +16765,7 @@ function __detabaseMain() {
         var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id) : [];
         hitRow(en.name, (tg.length ? tg.join(" · ") + " · " : "") + refPath(en.ref), function () { narrowAdd(en.ref); }, [
           { label: "↗", title: "open it", run: function () { openRef(en.ref); } },
-          { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
+          { label: "＋", title: "add to the Clipboard", run: function () { bdAddRefs([en.ref]); } }
         ], en.ref.lvl);
       });
     });
@@ -16872,7 +16776,7 @@ function __detabaseMain() {
       section("Methods");
       pages.forEach(function (en) {
         hitRow(en.name, [en.kind || "needs a kind", en.path].concat(en.assets ? ["uses " + en.assets] : []).join(" · "), function () { selectPsPage(en.ref.id); }, [
-          { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
+          { label: "＋", title: "add to the Clipboard", run: function () { bdAddRefs([en.ref]); } }
         ], "p");
       });
     }
@@ -16884,7 +16788,7 @@ function __detabaseMain() {
       parts.forEach(function (en) {
         var snip = en.text ? " · “" + (en.text.length > 70 ? en.text.slice(0, 69) + "…" : en.text) + "”" : "";
         hitRow(en.name, en.cat + " in " + en.pg.name + snip, function () { openRef(en.ref); }, [
-          { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
+          { label: "＋", title: "add to the Clipboard", run: function () { bdAddRefs([en.ref]); } }
         ], "st");
       });
     }
@@ -17508,8 +17412,8 @@ function __detabaseMain() {
       if (mainNarrow.length) {
         var addAll = document.createElement("button");
         addAll.type = "button"; addAll.className = "ps-attach";
-        addAll.textContent = "＋ Add these to a clipboard";
-        addAll.addEventListener("click", function () { chooseBoardAndMine(mainNarrow.slice()); });
+        addAll.textContent = "＋ Add these to the Clipboard";
+        addAll.addEventListener("click", function () { bdAddRefs(mainNarrow.slice()); });
         nb.appendChild(addAll);
       }
       var clr = document.createElement("button");
@@ -18476,32 +18380,6 @@ function __detabaseMain() {
     applyView(); renderEtiTree();
   }
   function renderMiningScreen() { renderEtiMain(); }
-  function chooseBoardAndMine(refs, opts) {
-    var ov = document.createElement("div");
-    ov.className = "lw-overlay";
-    ov.innerHTML = '<div class="lw-box"><div class="lw-head"><b>Add ' + refs.length + ' asset' + (refs.length === 1 ? '' : 's') + ' to…</b><button type="button" class="lw-x" title="cancel">✕</button></div>' +
-      '<div class="lw-body"><div class="lw-new"><input type="text" maxlength="60" placeholder="New clipboard name…"><button type="button" class="lw-primary">＋ New clipboard</button></div>' +
-      '<div class="lw-group" style="margin-top:14px">Existing clipboards</div><div class="mb-grid"></div></div></div>';
-    document.body.appendChild(ov);
-    function close() { ov.remove(); }
-    function go(openBoard) { close(); openBoard(); mineToBoard(refs, opts); libToast("Added " + refs.length + " asset" + (refs.length === 1 ? "" : "s") + " — drag them into place"); }
-    ov.querySelector(".lw-x").addEventListener("click", function () { close(); });
-    var inp = ov.querySelector(".lw-new input");
-    function makeNew() { var n = inp.value.trim(); go(function () { addPage(n); }); }
-    ov.querySelector(".lw-new button").addEventListener("click", makeNew);
-    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") makeNew(); });
-    var grid = ov.querySelector(".mb-grid"), pages = (store.canvases || []).slice();
-    var recent = store.ui.lastPage;
-    pages.sort(function (a, b) { if (a.id === recent) return -1; if (b.id === recent) return 1; return (b.created || 0) - (a.created || 0); });
-    if (!pages.length) grid.innerHTML = '<p class="muted">No clipboards yet — create one above.</p>';
-    pages.forEach(function (pg) {
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "mb-card";
-      b.innerHTML = '<div class="nb-thumb">' + canvasThumb(pg.id) + '</div><span>' + escapeHtml(pg.name || "Untitled") + '</span>';
-      b.addEventListener("click", function () { go(function () { selectPage(pg.id); }); });
-      grid.appendChild(b);
-    });
-  }
   if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
 
   DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return refExists(r) && (r.lvl === "p" || refKids(r).length > 0); };
@@ -18676,7 +18554,7 @@ function __detabaseMain() {
   // ---- the board's page ----
   function renderBoard() {
     var host = $("boardPane"); if (!host) return;
-    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, open: {}, multi: false, linking: null, q: "", side: true };
+    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700 };
     bdIdx = null;
     host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel"></div><div class="bd-main"><div class="bd-side"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
     var ctx = bd.ctx = {
@@ -18729,6 +18607,27 @@ function __detabaseMain() {
     var x1 = Math.max.apply(null, m.map(function (b) { return b.x + b.w; })) + 16, y1 = Math.max.apply(null, m.map(function (b) { return b.y + b.h; })) + 16;
     if (onlyGrow && g.w) { x0 = Math.min(x0, g.x); y0 = Math.min(y0, g.y); x1 = Math.max(x1, g.x + g.w); y1 = Math.max(y1, g.y + g.h); }
     g.x = x0; g.y = y0; g.w = x1 - x0; g.h = y1 - y0;
+  }
+  // from a sheet, the search, a concept's popup: blocks in rows below what is there, and the board opens on them
+  function bdAddRefs(refs) {
+    openBoard();
+    var ps = bdData(), y0 = ps.blocks.concat(ps.groups).reduce(function (m, n) { return Math.max(m, n.y + (n.h || 0)); }, 0) + (ps.blocks.length ? 40 : 0), seen = {}, made = [];
+    bdChange(function (p) {
+      refs.forEach(function (r) {
+        if (r.lvl === "st") r = refParent(r);
+        if (!r || seen[refKey(r)]) return;
+        seen[refKey(r)] = 1;
+        made.push(bdNewBlock(p, r, 0, y0));
+      });
+    });
+    var rowY = y0, rowH = 0;
+    made.forEach(function (b, i) {
+      if (i && i % 3 === 0) { rowY += rowH + 14; rowH = 0; }
+      b.x = (i % 3) * 354; b.y = rowY; rowH = Math.max(rowH, b.h || 0);
+    });
+    bd.view.x = 40; bd.view.y = 20 - y0 * bd.view.k;
+    bdSave(); bdRedraw();
+    libToast("Added " + made.length + (made.length === 1 ? " item" : " items") + " to the Clipboard");
   }
   function bdNewBlock(ps, ref, x, y, g) {
     var b = { id: uid("b_"), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: 340 };
@@ -19415,14 +19314,8 @@ function __detabaseMain() {
   }, true);
 
 
-  if ($("nbNewPage")) $("nbNewPage").addEventListener("click", function () { addPage(); });
-  if ($("nbBankSearch")) $("nbBankSearch").addEventListener("input", function () {
-    if (store.ui.nbTab === "pages") renderNbBank(); else renderPdfShelf();
-  });
+  if ($("nbBankSearch")) $("nbBankSearch").addEventListener("input", renderPdfShelf);
   // ---- PDF shelf + reader wiring ----
-  Array.prototype.forEach.call(document.querySelectorAll(".nb-tab"), function (b) {
-    b.addEventListener("click", function () { nbTab(b.getAttribute("data-nbtab")); });
-  });
   // an open row closes itself as soon as you touch anything else
   document.addEventListener("pointerdown", function (e) {
     if (!swipeOpen) return;
@@ -19824,7 +19717,7 @@ function __detabaseMain() {
     var sm = summaryById(activeSummary); if (!sm) return;
     var spec = sheetSumSpec(sm), refs = sheetLayout(sm, sm.items.filter(sheetPasses(lsumState(spec).off, false))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
     if (!refs.length) { libToast("Nothing to add — this sheet shows nothing with its filters."); return; }
-    chooseBoardAndMine(refs, { column: true });   // one under another, as the sheet shows them (with its filters)
+    bdAddRefs(refs);                              // as the sheet shows them (with its filters)
   });
   if ($("psTitle")) $("psTitle").addEventListener("click", function () { if (activePsPage) openConceptsPopup({ lvl: "p", id: activePsPage }); });
   if ($("psAddPart")) $("psAddPart").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) psAddPart(pg); });
@@ -19838,8 +19731,6 @@ function __detabaseMain() {
   var initial = (location.hash || "").replace("#", "");
   if (initial === "notebook") {
     selectTop("notebook");
-  } else if (isPage(initial)) {
-    selectPage(initial);
   } else if (initial === "mining") {
     openMiningScreen();
   } else if (psPageById(initial)) {
