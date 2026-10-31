@@ -910,7 +910,7 @@
   span.ct-label { cursor: default; }
   .card > h4 > .ct-label, .subject > summary > .ct-label, .tool-title > .ct-label, h3 > .ct-label, .mg-title > .ct-label { margin-right: 8px; }
   .cd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 10px; }
-  .cd-tile { position: relative; display: flex; flex-direction: column; aspect-ratio: 1 / 1; min-width: 0; border: 1px solid var(--border); border-top: 4px solid var(--ct);
+  .cd-tile { position: relative; display: flex; flex-direction: column; aspect-ratio: 1 / 1; min-width: 0; border: 1px solid var(--border); border-top: 4px solid var(--ct, var(--border-strong));
     border-radius: var(--r-md); background: var(--surface-1); }
   .cd-top { display: flex; align-items: center; gap: 4px; min-width: 0; padding: 6px 6px 0; }
   .cd-top .ct-label { flex: 0 1 auto; min-width: 0; }
@@ -940,20 +940,19 @@
   .cd-flat .sp-card.compact > .card { height: auto; }
   .cd-flat .ue-card > h4, .cd-flat .sp-card.bi > .card > h4:first-child, .cd-flat .sp-card.bi > details.subject > summary, .cd-flat .sp-card.bi > h3:first-child { display: none; }
   .cd-flat .ue-block { margin: 12px 0 0; padding: 10px 0 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
-  .cd-flat .ue-card > .ue-block:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .cd-flat .cp-part > .ue-block:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .cp-part { margin-top: 12px; }
+  .cp-part:empty { display: none; }
+  .cp-part::before { content: attr(data-label); display: block; margin-bottom: 4px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+  .cd-tags { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }
+  .cd-tag { padding: 1px 7px; border: 1px solid var(--border); border-radius: 999px; font-size: .68rem; font-weight: 600; font-family: inherit; color: var(--text-secondary); white-space: nowrap; }
+  .cd-top .cd-tags { overflow: hidden; flex-wrap: nowrap; }
+  .ps-actions .cd-tagbtn { min-height: 36px; }
   .cd-flat .ue-name { font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
   .cd-flat .clip.note { border: 0; border-radius: 0; background: none; box-shadow: none; }
   .cd-flat .clip.note .note-ta { border: 0; background: none; padding: 0; resize: none; }
   .cd-flat .clip-resize { display: none; }
   .cd-methods { margin-top: 18px; }
-  .ct-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-  .ct-row { display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 6px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
-  .ct-row .ct-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
-  .ct-row > button[data-a] { min-width: 40px; min-height: 40px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--bg); color: var(--text-secondary); font: inherit; cursor: pointer; }
-  .ct-row > button.danger { color: var(--danger); }
-  .ct-swatch { flex-shrink: 0; width: 30px; height: 30px; padding: 0; border: 2px solid var(--bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer; }
-  .ct-swatch.on { box-shadow: 0 0 0 3px var(--text-primary); }
-  .ct-palette { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 8px 10px 52px; }
   .lib-menu .lm-dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; vertical-align: middle; }
   .lib-menu .lm-dot.none { border: 1.5px dashed var(--border-strong); }
   .lib-menu button.on { font-weight: 700; }
@@ -3330,7 +3329,7 @@
   <summary>Absolute value inside logs — <code>log_a(x²)</code><span class="stag">domain</span></summary>
   <div class="subject-body">
     <p><code>log_a(x²)</code> is defined for every <code>x ≠ 0</code>. Writing it as <code>2·log_a(x)</code> silently loses <code>x &lt; 0</code>. The fix: <code>log_a(x²) = 2·log_a|x|</code>.</p>
-    <p><b>Rule of thumb:</b> pulling an <b>even</b> exponent out of a log ⇒ wrap the base in <code>|·|</code>. Odd exponent ⇒ not needed.</p>
+    <p data-cpart="expl"><b>Rule of thumb:</b> pulling an <b>even</b> exponent out of a log ⇒ wrap the base in <code>|·|</code>. Odd exponent ⇒ not needed.</p>
     <svg id="logSqLine" class="numline" viewBox="0 0 520 90"></svg>
   </div>
 </details>
@@ -3656,7 +3655,7 @@
 <!-- ===== FN1 · WHAT IS A FUNCTION ===== -->
 <section class="pane on" id="pane-fn1">
 <h2><span class="num">1</span>What is a function</h2>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Function</h4>
   <p>A <b>function</b> <code>f</code> gives <b>each</b> input <code>x</code> of its domain <b>exactly one</b> output <code>f(x)</code>.</p>
   <ul class="idlist">
@@ -3675,7 +3674,7 @@
     <text class="sm" x="315" y="172" text-anchor="middle">not a function — hit twice</text>
   </svg>
 </div>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Domain and range</h4>
   <ul class="idlist">
     <li><b>Domain</b> — every <code>x</code> the rule is allowed on.</li>
@@ -3699,7 +3698,7 @@
 <!-- ===== FN2 · PIECEWISE FUNCTIONS ===== -->
 <section class="pane" id="pane-fn2">
 <h2><span class="num">2</span>Piecewise functions</h2>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Piecewise function</h4>
   <p>A different rule on each part of the domain:</p>
   <p><span class="pw"><code>f(x) =</code><span class="pw-b"><code>g(x)</code><code>x &lt; a</code><code>h(x)</code><code>x ≥ a</code></span></span></p>
@@ -3722,11 +3721,11 @@
     <text class="sm" x="212" y="52">● x ≥ a</text>
   </svg>
 </div>
-<div class="card" data-ctype="formula">
+<div class="card" data-tags="Formula">
   <h4>Absolute value as a piecewise function</h4>
   <p><span class="pw"><code>|x| =</code><span class="pw-b"><code>x</code><code>x ≥ 0</code><code>−x</code><code>x &lt; 0</code></span></span></p>
   <p><span class="pw"><code>|g(x)| =</code><span class="pw-b"><code>g(x)</code><code>g(x) ≥ 0</code><code>−g(x)</code><code>g(x) &lt; 0</code></span></span></p>
-  <p>The pieces meet where the inside is <code>0</code>.</p>
+  <p data-cpart="expl">The pieces meet where the inside is <code>0</code>.</p>
   <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the V graph of |x|: y = −x on the left, y = x on the right">
     <path class="ax" d="M20 180 H400 M210 195 V12"/>
     <path class="cv2" d="M60 30 L210 180"/>
@@ -3745,7 +3744,7 @@
 <!-- ===== FN3 · TRIG FUNCTIONS WITH AN INNER ARGUMENT ===== -->
 <section class="pane" id="pane-fn3">
 <h2><span class="num">3</span>Trig functions with an inner argument</h2>
-<div class="card" data-ctype="explanation">
+<div class="card" data-tags="Explanation">
   <h4>The argument is the angle</h4>
   <p>In <code>sin(2x − π/3)</code> the angle is the <b>whole argument</b> <code>u = 2x − π/3</code>, not <code>x</code>. Every fact about <code>sin u</code> holds for <code>u</code>: write the condition on <code>u</code> first, then solve for <code>x</code>.</p>
   <p><code>sin(2x) = 0</code> → <code>2x = πk</code> → <code>x = πk/2</code> &nbsp;(not <code>x = πk</code>).</p>
@@ -3768,7 +3767,7 @@
   <p class="muted"><code>sin 2x</code> (green) runs twice as fast: zeros every <code>π/2</code>, not every <code>π</code>.</p>
   <p class="muted">General solutions: Trig base › 2.6 · periods: Trig base › 2.5.</p>
 </div>
-<div class="card" data-ctype="formula">
+<div class="card" data-tags="Formula">
   <h4>Zeros, max and min of sin, cos, tan</h4>
   <table>
     <thead><tr><th></th><th>zero</th><th>max</th><th>min</th></tr></thead>
@@ -3780,7 +3779,7 @@
   </table>
   <p class="muted"><code>k</code> = any integer. Max and min together: <code>sin u = ±1</code> at <code>u = π/2 + πk</code>.</p>
 </div>
-<div class="card" data-ctype="formula">
+<div class="card" data-tags="Formula">
   <h4>Period, amplitude and shifts</h4>
   <p><code>y = A·sin(Bx + C) + D</code> &nbsp;(same for <code>cos</code>), <code>B &gt; 0</code>:</p>
   <ul class="idlist">
@@ -3809,7 +3808,7 @@
 <!-- ===== FN4 · COMPOSITION ===== -->
 <section class="pane" id="pane-fn4">
 <h2><span class="num">4</span>Composition of functions</h2>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Composition</h4>
   <p><code>(f∘g)(x) = f(g(x))</code> — first <code>g</code> (inner), then <code>f</code> (outer) on its result.</p>
   <svg class="ill" viewBox="0 0 420 80" role="img" aria-label="x goes into g, g(x) goes into f, out comes f(g(x))">
@@ -3825,14 +3824,14 @@
     <text class="sm" x="98" y="76" text-anchor="middle">inner</text>
     <text class="sm" x="290" y="76" text-anchor="middle">outer</text>
   </svg>
-  <p><code>f(x) = x²</code>, <code>g(x) = x + 1</code>: &nbsp;<code>f(g(x)) = (x + 1)²</code>, &nbsp;<code>g(f(x)) = x² + 1</code>.</p>
+  <p data-cpart="expl"><code>f(x) = x²</code>, <code>g(x) = x + 1</code>: &nbsp;<code>f(g(x)) = (x + 1)²</code>, &nbsp;<code>g(f(x)) = x² + 1</code>.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Domain of a composition</h4>
   <p><code>x</code> is in the domain of <code>f∘g</code> ⇔ <code>x</code> is in the domain of <code>g</code> <b>AND</b> <code>g(x)</code> is in the domain of <code>f</code>.</p>
   <p class="muted">Find it from these two conditions, not from the simplified formula.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Rules of composition</h4>
   <ul class="idlist">
     <li>Order matters: in general <code>f∘g ≠ g∘f</code></li>
@@ -3849,7 +3848,7 @@
 <!-- ===== LM1 · WHAT IS A LIMIT ===== -->
 <section class="pane on" id="pane-lm1">
 <h2><span class="num">1</span>What is a limit</h2>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Limit of a function</h4>
   <p><code>lim_(x→a) f(x) = L</code> — as <code>x</code> gets close to <code>a</code> (with <code>x ≠ a</code>), <code>f(x)</code> gets as close to <code>L</code> as we want.</p>
   <p><b>Full notation (ε–δ):</b></p>
@@ -3870,7 +3869,7 @@
   </svg>
   <p class="muted">For <b>every</b> band <code>L ± ε</code> (blue) there is a band <code>a ± δ</code> (green) where the graph — except at <code>a</code> itself — stays inside the blue band.</p>
 </div>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>One-sided limits</h4>
   <ul class="idlist">
     <li><code>lim_(x→a⁻) f(x)</code> — from the left (<code>x &lt; a</code>) &nbsp;·&nbsp; <code>lim_(x→a⁺) f(x)</code> — from the right (<code>x &gt; a</code>)</li>
@@ -3889,7 +3888,7 @@
   </svg>
   <p class="muted">Left limit <code>L₁</code> ≠ right limit <code>L₂</code> → no limit at <code>a</code>. Typical at the breakpoint of a piecewise function or <code>|·|</code> (Functions › 2).</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Properties of a limit</h4>
   <ul class="idlist">
     <li><b>The value at the point doesn't matter.</b> <code>f(a)</code> may be anything, or not exist — the limit only looks at <code>x</code> near <code>a</code>.</li>
@@ -3908,7 +3907,7 @@
   </svg>
   <p class="muted">Here <code>lim_(x→a) f(x) = L</code> even though <code>f(a) ≠ L</code>.</p>
 </div>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Infinite limits and limits at infinity</h4>
   <ul class="idlist">
     <li><code>lim_(x→∞) f(x) = L &nbsp;⇔&nbsp; ∀ε &gt; 0 ∃M : x &gt; M ⇒ |f(x) − L| &lt; ε</code></li>
@@ -3921,7 +3920,7 @@
 <!-- ===== LM2 · ARITHMETIC OF LIMITS ===== -->
 <section class="pane" id="pane-lm2">
 <h2><span class="num">2</span>Arithmetic of limits</h2>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Arithmetic of limits</h4>
   <p>If <code>lim_(x→a) f(x) = L</code> and <code>lim_(x→a) g(x) = M</code> with <code>L, M ∈ ℝ</code> (both exist and are finite), then:</p>
   <ul class="idlist">
@@ -3932,7 +3931,7 @@
   </ul>
   <p class="muted">In words: when both limits exist (finite), you may split the limit over <code>+ − · ÷</code>.</p>
 </div>
-<div class="card" data-ctype="explanation">
+<div class="card" data-tags="Explanation">
   <h4>When you can't use the arithmetic</h4>
   <ul class="idlist">
     <li><b>One exists, one doesn't</b> ⇒ the sum has <b>no</b> limit: <code>lim f</code> exists, <code>lim g</code> doesn't ⇒ <code>lim (f + g)</code> doesn't (else <code>g = (f + g) − f</code> would have one).</li>
@@ -3941,7 +3940,7 @@
     <li><b>Not indeterminate:</b> <code>L/∞ = 0</code>, &nbsp;<code>∞ + ∞ = ∞</code>, &nbsp;<code>L·∞ = ±∞</code> (<code>L ≠ 0</code>), &nbsp;<code>L/0</code> (<code>L ≠ 0</code>) <code>= ±∞</code> — check the sign from each side.</li>
   </ul>
 </div>
-<div class="card" data-ctype="note">
+<div class="card" data-tags="Note">
   <h4>No limits apart, a limit together</h4>
   <p><b>Sum</b> — at <code>a = 0</code>: <code>f(x) = 1/x</code>, <code>g(x) = −1/x</code> have no limit, but <code>f(x) + g(x) = 0</code> → limit <code>0</code>.</p>
   <p><b>Product</b> — at <code>a = 0</code>, the sign function</p>
@@ -3949,7 +3948,7 @@
   <p>has a jump (no limit), but <code>f(x)·g(x) = 1</code> → limit <code>1</code>. Same for <code>f(x)/g(x) = 1</code>.</p>
   <p class="muted">So <code>lim (f + g)</code> existing does <b>not</b> mean <code>lim f</code> and <code>lim g</code> exist — never split a limit before you know both parts exist.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Zero times bounded</h4>
   <p><code>lim_(x→a) f(x) = 0</code> and <code>∃K &gt; 0 : |g(x)| ≤ K</code> near <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x)·g(x) = 0</code></p>
   <p class="muted">Even when <code>lim g</code> doesn't exist: <code>lim_(x→0) x·sin(1/x) = 0</code>, since <code>|sin(1/x)| ≤ 1</code>.</p>
@@ -3959,13 +3958,13 @@
 <!-- ===== LM3 · CALCULATING LIMITS ===== -->
 <section class="pane" id="pane-lm3">
 <h2><span class="num">3</span>Calculating limits</h2>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>When plugging in works</h4>
   <p><code>f</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
   <p>Every elementary function is continuous on its domain: polynomials, rational functions (denominator <code>≠ 0</code>), roots, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>aˣ</code>, <code>ln</code> — and their sums, products, quotients and compositions (concepts 6–7).</p>
   <p class="muted">Plugging in gives <code>0/0</code>, <code>∞/∞</code>… → <code>a</code> is not in the domain: rewrite first.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Polynomials and the biggest power</h4>
   <ul class="idlist">
     <li><code>lim_(x→a) p(x) = p(a)</code></li>
@@ -3973,7 +3972,7 @@
     <li>Rational <code>p(x)/q(x)</code> at <code>±∞</code>: deg <code>p</code> &lt; deg <code>q</code> → <code>0</code> · equal → ratio of the leading coefficients · deg <code>p</code> &gt; deg <code>q</code> → <code>±∞</code></li>
   </ul>
 </div>
-<div class="card" data-ctype="formula">
+<div class="card" data-tags="Formula">
   <h4>Shortened multiplication formulas</h4>
   <ul class="idlist">
     <li><code>a² − b² = (a − b)(a + b)</code></li>
@@ -3983,7 +3982,7 @@
   </ul>
   <p class="muted">Read right-to-left they factor; left-to-right they build the "partner" that cancels a root.</p>
 </div>
-<div class="card" data-ctype="explanation">
+<div class="card" data-tags="Explanation">
   <h4>Multiplying by 1</h4>
   <p>Multiplying by <code>A/A</code> (= 1, for <code>A ≠ 0</code>) changes the <b>form</b>, not the value:</p>
   <ul class="idlist">
@@ -3996,14 +3995,14 @@
 <!-- ===== LM4 · L'HÔPITAL ===== -->
 <section class="pane" id="pane-lm4">
 <h2><span class="num">4</span>L'Hôpital's rule</h2>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>L'Hôpital's rule</h4>
   <p>If <code>f, g</code> are differentiable near <code>a</code> (except maybe at <code>a</code>), <code>g'(x) ≠ 0</code> near <code>a</code>,</p>
   <p><code>lim_(x→a) f(x) = lim_(x→a) g(x) = 0</code> &nbsp;(or both <code>±∞</code>), &nbsp;and <code>lim_(x→a) f'(x)/g'(x) = L</code> (<code>L</code> finite or <code>±∞</code>)</p>
   <p>⇒ &nbsp;<code>lim_(x→a) f(x)/g(x) = lim_(x→a) f'(x)/g'(x) = L</code></p>
   <p class="muted">Also for <code>x → ±∞</code> and one-sided limits. Only for <code>0/0</code> or <code>∞/∞</code>. Differentiate top and bottom <b>separately</b> — not the quotient rule. Derivatives: Precalc › 1 Derivatives, 3 Trig calculus, 4 Exp &amp; log calculus.</p>
 </div>
-<div class="card" data-ctype="formula">
+<div class="card" data-tags="Formula">
   <h4>Other forms into 0/0 or ∞/∞</h4>
   <ul class="idlist">
     <li><code>0·∞</code>: &nbsp;<code>f·g = f/(1/g)</code></li>
@@ -4016,7 +4015,7 @@
 <!-- ===== LM5 · CONTINUITY ===== -->
 <section class="pane" id="pane-lm5">
 <h2><span class="num">5</span>Continuity</h2>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>Continuity at a point</h4>
   <p><code>f</code> is continuous at <code>a</code> &nbsp;⇔&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
   <p><b>Full notation:</b> <code>∀ε &gt; 0 ∃δ &gt; 0 : |x − a| &lt; δ ⇒ |f(x) − f(a)| &lt; ε</code></p>
@@ -4036,7 +4035,7 @@
     <text class="sm" x="350" y="145" text-anchor="middle">f(a) ≠ limit</text>
   </svg>
 </div>
-<div class="card" data-ctype="definition">
+<div class="card" data-tags="Definition">
   <h4>One-sided continuity and intervals</h4>
   <ul class="idlist">
     <li>From the right: <code>lim_(x→a⁺) f(x) = f(a)</code> &nbsp;·&nbsp; from the left: <code>lim_(x→a⁻) f(x) = f(a)</code></li>
@@ -4049,12 +4048,12 @@
 <!-- ===== LM6 · ARITHMETIC OF CONTINUITY ===== -->
 <section class="pane" id="pane-lm6">
 <h2><span class="num">6</span>Arithmetic of continuity</h2>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Arithmetic of continuous functions</h4>
   <p><code>f, g</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>f ± g</code>, <code>c·f</code>, <code>f·g</code> continuous at <code>a</code>, and <code>f/g</code> too if <code>g(a) ≠ 0</code>.</p>
   <p class="muted"><code>x² + sin x</code> is continuous everywhere; <code>(x + 1)/(x − 2)</code> for every <code>x ≠ 2</code>.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Continuous and not continuous</h4>
   <ul class="idlist">
     <li><code>f</code> continuous at <code>a</code>, <code>g</code> not &nbsp;⇒&nbsp; <code>f ± g</code> <b>not</b> continuous at <code>a</code></li>
@@ -4068,12 +4067,12 @@
 <!-- ===== LM7 · COMPOSITION ===== -->
 <section class="pane" id="pane-lm7">
 <h2><span class="num">7</span>Composition and continuity</h2>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Composition of continuous functions</h4>
   <p><code>g</code> continuous at <code>a</code> and <code>f</code> continuous at <code>g(a)</code> &nbsp;⇒&nbsp; <code>f∘g</code> continuous at <code>a</code></p>
   <p class="muted"><code>sin(x²)</code>, <code>√(x² + 1)</code>, <code>e<sup>cos x</sup></code> — continuous wherever defined. Composition itself: Functions › 4.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Limit of a composition</h4>
   <ul class="idlist">
     <li><code>lim_(x→a) g(x) = b</code> and <code>f</code> continuous at <code>b</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = f(lim_(x→a) g(x)) = f(b)</code></li>
@@ -4086,7 +4085,7 @@
 <!-- ===== LM8 · INTERMEDIATE VALUE THEOREM ===== -->
 <section class="pane" id="pane-lm8">
 <h2><span class="num">8</span>Intermediate value theorem</h2>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>Intermediate value theorem</h4>
   <p><code>f</code> continuous on <code>[a, b]</code> and <code>y</code> between <code>f(a)</code> and <code>f(b)</code> &nbsp;⇒&nbsp; <code>∃c ∈ [a, b] : f(c) = y</code></p>
   <svg class="ill" viewBox="0 0 420 235" role="img" aria-label="a continuous curve from f(a) to f(b) crosses the level y at c">
@@ -4106,7 +4105,7 @@
   </svg>
   <p class="muted">A continuous graph can't get from <code>f(a)</code> to <code>f(b)</code> without crossing every level in between.</p>
 </div>
-<div class="card" data-ctype="theorem">
+<div class="card" data-tags="Theorem">
   <h4>A root between a sign change</h4>
   <p><code>f</code> continuous on <code>[a, b]</code> and <code>f(a)·f(b) &lt; 0</code> &nbsp;⇒&nbsp; <code>∃c ∈ (a, b) : f(c) = 0</code></p>
   <p class="muted">Says a root <b>exists</b> — not where, not how many. Continuity on the whole <code>[a, b]</code> is a must: <code>1/x</code> on <code>[−1, 1]</code> changes sign with no root.</p>
@@ -4299,7 +4298,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B100</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B101</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6364,6 +6363,7 @@ function __detabaseMain() {
       if (p.examples) store.examples = p.examples;          // read only by the schema-6 migration, which turns them into methods
       if (p.cardTypes) store.cardTypes = p.cardTypes;
       if (p.cardType) store.cardType = p.cardType;
+      if (p.cardTags) store.cardTags = p.cardTags;
       if (p.methodKinds) store.methodKinds = p.methodKinds;
       if (p.partCats) store.partCats = p.partCats;
       if (p.biSeed) store.biSeed = p.biSeed;               // which built-in methods / card types were copied (seedBuiltins)
@@ -11258,7 +11258,7 @@ function __detabaseMain() {
     var exs = store.examples || [], docs = {};
     store.ps.pages.concat(exs).forEach(function (x) { var d = window.DBX.get(x.id); if (d) docs[x.id] = JSON.parse(JSON.stringify(d)); });
     if (Object.keys(docs).length && !window.DBX.get("__pre_parts")) window.DBX.put("__pre_parts", { docs: docs, examples: exs, ts: Date.now() });
-    cardTypes(); cardTypeMap(); methodKinds(); partCats();
+    methodKinds(); partCats();
     exs.forEach(function (ex) {
       if (psPageById(ex.id)) return;
       store.ps.pages.push({ id: ex.id, subject: ex.subject, name: ex.name, tags: (ex.tags || []).slice(), assets: [],
@@ -11275,6 +11275,28 @@ function __detabaseMain() {
       psSyncCache(pg);
     });
     store.schema = 6;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+  // schema 7: cards are made of parts — every element starts as a Description — and card types become
+  // tags: each card's type name is now a tag on it (store.cardTags), then the types go. The backup is an
+  // IndexedDB key: a second copy of the store could fill localStorage, where saves fail silently.
+  (function migrateCardParts() {
+    if (store.schema >= 7) return;
+    try { window.DBX.put("__pre_s7", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    var names = { definition: "Definition", theorem: "Theorem", formula: "Formula", explanation: "Explanation", proof: "Proof", note: "Note" };
+    (store.cardTypes || []).forEach(function (t) { names[t.id] = t.name; });
+    var map = store.cardType || {}, tags = store.cardTags = store.cardTags || {};
+    Object.keys(map).forEach(function (id) {
+      var n = names[map[id]]; if (!n) return;
+      tags[id] = tags[id] || [];
+      if (tags[id].indexOf(n) < 0) tags[id].push(n);
+    });
+    (store.elements || []).forEach(function (e) { if (!e.part) e.part = "desc"; });
+    delete store.cardTypes; delete store.cardType;
+    var ui = store.ui || {};
+    Object.keys(ui.sp || {}).forEach(function (k) { delete ui.sp[k].offType; });
+    Object.keys(ui.lsum || {}).forEach(function (k) { if (ui.lsum[k].off) delete ui.lsum[k].off.type; });
+    store.schema = 7;
     try { localStorage.setItem(LS_KEY, JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
@@ -11384,7 +11406,7 @@ function __detabaseMain() {
   }
   function libTabs(subjectKey) { return libKids({ lvl: "s", id: subjectKey }).map(function (r) { return { id: r.id, name: tabLabel(r.id) }; }); }
   function libCards(tabId) { return libKids({ lvl: "t", id: tabId }).map(function (r) { return { id: r.id, name: cardLabel(r.id) }; }); }
-  function libElements(cardId) { return libKids({ lvl: "c", id: cardId }).map(function (r) { var e = byId(store.elements, r.id); return { id: e.id, name: e.name }; }); }
+  function libElements(cardId) { return libKids({ lvl: "c", id: cardId }).map(function (r) { var e = byId(store.elements, r.id); return { id: e.id, name: e.name, part: e.part }; }); }
   // the subject a tab / card / element is in, wherever it has been moved to
   function libSubjectOf(ref) {
     var r = ref, guard = 0;
@@ -11543,16 +11565,9 @@ function __detabaseMain() {
 
   // ---- the lists the owner can extend: card types, method kinds, part categories ----
   // the starting entries (functions, not vars: the schema-6 migration runs before this part of the file)
-  function CARD_TYPES0() { return [
-    { id: "definition", name: "Definition", color: "#2563eb" }, { id: "theorem", name: "Theorem", color: "#7c3aed" },
-    { id: "formula", name: "Formula", color: "#0891b2" }, { id: "explanation", name: "Explanation", color: "#16a34a" },
-    { id: "proof", name: "Proof", color: "#dc2626" }, { id: "note", name: "Note", color: "#d97706" }
-  ]; }
   function METHOD_KINDS0() { return [{ id: "problem", name: "Problem solving", color: "#7c3aed" }, { id: "action", name: "Action", color: "#0891b2" }]; }
   function PART_CATS0() { return [{ id: "stage", name: "Stage", color: "#2563eb" }, { id: "explanation", name: "Explanation", color: "#16a34a" }, { id: "example", name: "Example", color: "#d97706" }]; }
   function listCopy(l) { return l.map(function (x) { return { id: x.id, name: x.name, color: x.color }; }); }
-  function cardTypes() { if (!store.cardTypes) store.cardTypes = listCopy(CARD_TYPES0()); return store.cardTypes; }
-  function cardTypeMap() { if (!store.cardType) store.cardType = {}; return store.cardType; }   // { cardId: typeId } — absent = Unlabeled
   function methodKinds() { if (!store.methodKinds) store.methodKinds = listCopy(METHOD_KINDS0()); return store.methodKinds; }
   function partCats() { if (!store.partCats) store.partCats = listCopy(PART_CATS0()); return store.partCats; }
   function partCatName(id) { var c = byId(partCats(), id); return c ? c.name : "Part"; }
@@ -11619,15 +11634,15 @@ function __detabaseMain() {
   // Each has fixed ids (method pp_bi_…, parts st_bi_…) and a version v. store.biSeed records what was
   // copied: {m: {methodId: v}, ct: {cardId: 1}}. A method is (re)written when its v is higher than the
   // recorded one — name, kind, description, subject, parts, concepts; the owner's folder, order, links
-  // and connected subjects stay. One the owner deleted stays deleted. A built-in card's data-ctype is
-  // its starting type, set once and only on a card with no type yet. Nothing new → nothing is saved.
+  // and connected subjects stay. One the owner deleted stays deleted. A built-in card's data-tags are
+  // its starting tags, set once and only on a card with no tags yet. Nothing new → nothing is saved.
   function seedBuiltins() {
     var src = $("biMethods");
     var list = src ? JSON.parse(src.textContent) : [];
     libEnsure(); biEnsure();
     var seed = store.biSeed || { m: {}, ct: {} };
     var methods = list.filter(function (m) { return !(seed.m[m.id] >= m.v); });
-    var typed = Object.keys(BI.cards).filter(function (k) { return !seed.ct[k] && BI.cards[k].nodes[0].getAttribute("data-ctype"); });
+    var typed = Object.keys(BI.cards).filter(function (k) { return !seed.ct[k] && BI.cards[k].nodes[0].getAttribute("data-tags"); });
     if (!methods.length && !typed.length) return;
     try {
       if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", localStorage.getItem(LS_KEY) || "");
@@ -11649,10 +11664,9 @@ function __detabaseMain() {
       saveCanvas(m.id);
       seed.m[m.id] = m.v;
     });
-    var types = cardTypes(), map = cardTypeMap();
+    var map = cardTagMap();
     typed.forEach(function (k) {
-      var t = BI.cards[k].nodes[0].getAttribute("data-ctype");
-      if (!map[k] && byId(types, t)) map[k] = t;
+      if (!map[k]) map[k] = BI.cards[k].nodes[0].getAttribute("data-tags").split(",");
       seed.ct[k] = 1;
     });
     store.biSeed = seed;
@@ -11737,28 +11751,62 @@ function __detabaseMain() {
     d.innerHTML = '<h4>' + escapeHtml(c.name) + '</h4>';
     var els = libElements(c.id);
     if (!els.length) d.insertAdjacentHTML("beforeend", '<p class="muted">No elements yet.</p>');
-    els.forEach(function (e) { d.appendChild(libElementBlock(e)); });
+    els.forEach(function (e) { cardPartEl(d, elPart(e)).appendChild(libElementBlock(e)); });
     return d;
+  }
+  // ---- a card's three parts: drawn the same everywhere, in this order, each under its heading ----
+  //   custom: element.part · built-in: each block's data-cpart, or by what it is (biPartOf)
+  var CARD_PARTS = [{ id: "desc", name: "Description" }, { id: "expl", name: "Explanation" }, { id: "ill", name: "Illustration" }];
+  function elPart(e) { return e.part || "desc"; }
+  // the section of a part inside a card, made in its place if it isn't there yet
+  function cardPartEl(host, part) {
+    var sec = host.querySelector(':scope > .cp-part[data-part="' + part + '"]');
+    if (sec) return sec;
+    sec = document.createElement("div");
+    sec.className = "cp-part";
+    sec.setAttribute("data-part", part);
+    sec.setAttribute("data-label", CARD_PARTS.filter(function (p) { return p.id === part; })[0].name);
+    var later = CARD_PARTS.slice(CARD_PARTS.map(function (p) { return p.id; }).indexOf(part) + 1), next = null;
+    later.forEach(function (p) { next = next || host.querySelector(':scope > .cp-part[data-part="' + p.id + '"]'); });
+    host.insertBefore(sec, next);
+    return sec;
+  }
+  // a card's elements, part by part
+  function cardElsByPart(cardId) {
+    var els = libElements(cardId);
+    return CARD_PARTS.reduce(function (out, p) { return out.concat(els.filter(function (e) { return elPart(e) === p.id; })); }, []);
+  }
+  function biPartOf(n) {
+    var m = n.getAttribute("data-cpart"); if (m) return m;
+    if (n.matches("svg, .tool, figure") || (n.matches(".btnrow") && n.nextElementSibling && n.nextElementSibling.matches(".tool"))) return "ill";
+    return n.matches("p.muted, details.note, .note, .callout") ? "expl" : "desc";
+  }
+  // once at boot: a built-in card's blocks go into their part sections (cards made of loose blocks, and
+  // tools, are sorted when placed — spCardEl). Ids and titles are not touched.
+  function biPartsBuild() {
+    Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti section.pane .card[data-el], #topfolder-eti section.pane .subject[data-el]"), function (c) {
+      var host = c.matches(".subject") ? c.querySelector(":scope > .subject-body") : c; if (!host) return;
+      Array.prototype.filter.call(host.children, function (n) { return !n.matches("h4"); })
+        .map(function (n) { return { n: n, part: biPartOf(n) }; })
+        .forEach(function (x) { cardPartEl(host, x.part).appendChild(x.n); });
+    });
+  }
+  function elPartMenu(anchor, id) {
+    var e = byId(store.elements, id); if (!e) return;
+    libMenu(anchor, [{ head: "Part of the card" }].concat(CARD_PARTS.map(function (p) {
+      return { label: p.name, on: elPart(e) === p.id, run: function () { e.part = p.id; saveStore(); libAfterMove(); } };
+    })));
   }
   function fillAllIn(host) { Array.prototype.forEach.call(host.querySelectorAll(".ue-block"), fillLibBlock); }
   // ============================================================
-  // CARDS — card types, the card tile and the card page
-  // Every card, built-in or custom, can carry one type from the owner's own list:
-  //   store.cardTypes = [{ id, name, color }]     store.cardType = { cardId: typeId } (no entry = Unlabeled)
-  // The type is set from the card's label (a quick menu), or for many cards at once by selecting
-  // tiles. A card shows as a square tile — type label, big title — in a wrapping grid; tapping a
-  // tile opens the card's own page: its content as one sheet, its type, the methods connected to it.
+  // CARDS — tags, the card tile and the card page
+  // Every card, built-in or custom, can carry tags: store.cardTags = { cardId: [word] }. They are set on
+  // the card page, or for many cards at once by selecting tiles. A card shows as a square tile — tags,
+  // big title — in a wrapping grid; tapping a tile opens the card's own page: its content as one sheet,
+  // its tags, the methods connected to it.
   // ============================================================
-  var CT_COLORS = ["#2563eb", "#7c3aed", "#0891b2", "#16a34a", "#dc2626", "#d97706", "#db2777", "#4f46e5", "#0d9488", "#65a30d", "#ea580c", "#64748b"];
   // picking tiles (cards or methods) to act on several at once: { key: scope, ids: { id: 1 }, paint(), allPaints: [] }
   var tileSel = null;
-  function cardTypeOf(cardId) { var id = cardTypeMap()[cardId]; return id ? byId(cardTypes(), id) : null; }
-  // how many cards that still exist carry each type
-  function cardTypeCounts() {
-    var m = cardTypeMap(), n = {};
-    Object.keys(m).forEach(function (id) { if (refExists({ lvl: "c", id: id })) n[m[id]] = (n[m[id]] || 0) + 1; });
-    return n;
-  }
   // which methods each card is connected to (the same connections the method page lists)
   function cardMethodsMap() {
     var out = {};
@@ -11772,140 +11820,64 @@ function __detabaseMain() {
     if (subPageShown()) renderSubPage();
   }
 
-  // ---- the type: a small colored label; tapping it picks the type ----
-  function cardTypeLabel(cardId, editable) {
-    var t = cardTypeOf(cardId);
-    var b = document.createElement(editable ? "button" : "span");
-    b.className = "ct-label no-drag" + (t ? "" : " none");
-    if (t) b.style.setProperty("--ct", t.color);
-    b.innerHTML = '<span class="ct-txt"></span>';           // the text in a span: it can be cut with "…" while the button's tap area reaches past it
-    b.firstChild.textContent = t ? t.name : editable ? "＋ Type" : "Unlabeled";
-    if (editable) {
-      b.type = "button"; b.title = "card type";
-      b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); cardTypeMenu(b, [cardId]); });
-    }
-    return b;
+  // ---- tags: small words on a card ----
+  function cardTagMap() { if (!store.cardTags) store.cardTags = {}; return store.cardTags; }
+  function cardTagsOf(cardId) { return cardTagMap()[cardId] || []; }
+  function cardTagsEl(cardId, editable) {
+    var d = document.createElement("span");
+    d.className = "cd-tags no-drag";
+    cardTagsOf(cardId).forEach(function (t) {
+      var x = document.createElement("span");
+      x.className = "cd-tag"; x.textContent = t;
+      d.appendChild(x);
+    });
+    if (editable) d.appendChild(actBtn("🏷 Tags", "add or remove tags", function () { cardTagsEdit([cardId]); }, "cd-tagbtn"));
+    return d;
   }
-  function cardTypeMenu(anchor, ids) {
-    var cur = ids.length === 1 ? ((cardTypeOf(ids[0]) || {}).id || "") : null;
-    libMenu(anchor, [{ head: ids.length === 1 ? "Card type" : "Type for " + ids.length + " cards" }]
-      .concat(cardTypes().map(function (t) { return { label: t.name, dot: t.color, on: cur === t.id, run: function () { setCardTypes(ids, t.id); } }; }))
-      .concat([
-        { label: "Unlabeled", dot: "", on: cur === "", run: function () { setCardTypes(ids, null); } },
-        { sep: true },
-        { label: "⚙ Manage types…", run: ctManage }
-      ]));
-  }
-  function setCardTypes(ids, typeId) {
-    var m = cardTypeMap(), before = {};
-    ids.forEach(function (id) { before[id] = m[id] || null; if (typeId) m[id] = typeId; else delete m[id]; });
-    tileSel = null;
-    saveStore(); cardsRedraw();
-    if (ids.length < 2) return;
-    var t = typeId && byId(cardTypes(), typeId);
-    libToast(t ? "Labeled " + ids.length + " cards “" + t.name + "”" : "Took the type off " + ids.length + " cards", { label: "Undo", run: function () {
-      Object.keys(before).forEach(function (id) { if (before[id]) m[id] = before[id]; else delete m[id]; });
-      saveStore(); cardsRedraw();
-    } });
-  }
-
-  // ---- managing the list: add, rename, recolor, reorder, delete ----
-  function ctManage() {
-    var box = ovOpen("Card types", { onCancel: cardsRedraw });
-    box.ov.classList.add("ct-manage");
-    var colorsOf = null;                     // the type whose color choices are open
-    function changed() { saveStore(); draw(); }
+  // one card: its tags, ✕ to remove; several cards: a tag to add to all of them
+  function cardTagsEdit(ids) {
+    var one = ids.length === 1, map = cardTagMap();
+    var box = ovOpen(one ? "Tags · " + cardLabel(ids[0]) : "Add a tag to " + ids.length + " cards");
     function draw() {
-      var n = cardTypeCounts();
-      box.body.innerHTML = '<p class="lw-hint">Every card can carry one type. Drag ⠿ to reorder; tap a color to change it.</p><div class="ct-list"></div>';
-      var list = box.body.querySelector(".ct-list");
-      cardTypes().forEach(function (t) {
-        var row = document.createElement("div");
-        row.className = "ct-row";
-        row.setAttribute("data-ct", t.id);
-        row.innerHTML = '<span class="ps-grip" title="drag to reorder">⠿</span><button type="button" class="ct-swatch" title="color"></button>' +
-          '<span class="ct-name"></span><span class="side-count" title="cards with this type">' + (n[t.id] || 0) + '</span>' +
-          '<button type="button" data-a="ren" title="rename">✎</button><button type="button" data-a="del" class="danger" title="delete this type">🗑</button>';
-        row.querySelector(".ct-swatch").style.background = t.color;
-        row.querySelector(".ct-name").textContent = t.name;
-        row.querySelector(".ct-swatch").addEventListener("click", function () { colorsOf = colorsOf === t.id ? null : t.id; draw(); });
-        row.querySelector('[data-a="ren"]').addEventListener("click", function () {
-          askName("Rename the type", "", t.name, function (v) { t.name = v; changed(); });
-        });
-        row.querySelector('[data-a="del"]').addEventListener("click", function () { ctDelete(t, changed); });
-        list.appendChild(row);
-        if (colorsOf !== t.id) return;
-        var pal = document.createElement("div");
-        pal.className = "ct-palette";
-        CT_COLORS.forEach(function (c) {
-          var s = document.createElement("button");
-          s.type = "button"; s.className = "ct-swatch" + (c === t.color ? " on" : ""); s.style.background = c; s.title = c;
-          s.addEventListener("click", function () { t.color = c; colorsOf = null; changed(); });
-          pal.appendChild(s);
-        });
-        list.appendChild(pal);
+      box.body.innerHTML = '<div class="sp-chips"></div><div class="lw-new"><input type="text" maxlength="40" placeholder="New tag…"><button type="button" class="lw-primary">Add</button></div>';
+      if (one) cardTagsOf(ids[0]).forEach(function (t) {
+        var chip = document.createElement("span");
+        chip.className = "ps-chip";
+        chip.innerHTML = '<span class="ps-chip-go"></span>';
+        chip.firstChild.textContent = t;
+        chip.appendChild(actBtn("✕", "remove this tag", function () {
+          map[ids[0]] = cardTagsOf(ids[0]).filter(function (x) { return x !== t; });
+          if (!map[ids[0]].length) delete map[ids[0]];
+          saveStore(); cardsRedraw(); draw();
+        }, "ps-chip-x"));
+        box.body.querySelector(".sp-chips").appendChild(chip);
       });
-      if (!cardTypes().length) list.innerHTML = '<p class="muted">No types yet.</p>';
-      dndList(list, { type: "ctype", item: ".ct-row", grip: ".ps-grip", handle: ".ct-name", id: function (el) { return el.getAttribute("data-ct"); },
-        onDrop: function (drag, index) {
-          var l = cardTypes(), t = byId(l, drag.id); if (!t) return;
-          l.splice(l.indexOf(t), 1); l.splice(index, 0, t); changed();
-        } });
-      var add = document.createElement("button");
-      add.type = "button"; add.className = "ps-attach"; add.textContent = "＋ New type";
-      add.addEventListener("click", function () {
-        askName("New card type", "For example: Definition, Theorem, Formula…", "", function (v) {
-          var used = {}; cardTypes().forEach(function (x) { used[x.color] = 1; });
-          var color = CT_COLORS.filter(function (c) { return !used[c]; })[0] || CT_COLORS[cardTypes().length % CT_COLORS.length];
-          cardTypes().push({ id: uid("ct_"), name: v, color: color });
-          changed();
-        });
-      });
-      box.body.appendChild(add);
+      var inp = box.body.querySelector("input");
+      function add() {
+        var v = inp.value.trim(); if (!v) return;
+        ids.forEach(function (id) { var l = map[id] = map[id] || []; if (l.indexOf(v) < 0) l.push(v); });
+        saveStore(); cardsRedraw();
+        if (one) { draw(); box.body.querySelector("input").focus(); } else box.close(true);
+      }
+      box.body.querySelector("button.lw-primary").addEventListener("click", add);
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") add(); });
     }
     draw();
-    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); cardsRedraw(); } }]);
+    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
   }
-  // deleting a type: its cards move to another type, or are left Unlabeled
-  function ctDelete(t, after) {
-    var n = cardTypeCounts()[t.id] || 0;
-    function drop(to) {
-      var m = cardTypeMap();
-      Object.keys(m).forEach(function (id) { if (m[id] === t.id) { if (to) m[id] = to; else delete m[id]; } });
-      store.cardTypes = cardTypes().filter(function (x) { return x !== t; });
-      Object.keys((store.ui && store.ui.sp) || {}).forEach(function (k) { var o = store.ui.sp[k].offType; if (o) delete o[t.id]; });
-      Object.keys((store.ui && store.ui.lsum) || {}).forEach(function (k) { var o = (store.ui.lsum[k].off || {}).type; if (o) delete o[t.id]; });
-      after();
-    }
-    if (!n) { if (confirm("Delete the type “" + t.name + "”? No card has it.")) drop(null); return; }
-    var them = n === 1 ? "it" : "them";
-    var box = ovOpen("Delete “" + t.name + "”");
-    box.body.innerHTML = '<p class="lw-hint">' + n + (n === 1 ? " card has" : " cards have") + ' this type. What should ' + (n === 1 ? "it" : "they") + ' become?</p><div class="lw-opts"></div>';
-    var opts = box.body.querySelector(".lw-opts");
-    cardTypes().filter(function (x) { return x !== t; }).concat([{ id: null }]).forEach(function (o) {
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "lw-opt";
-      b.textContent = o.id ? "Make " + them + " “" + o.name + "”" : "Leave " + them + " Unlabeled";
-      b.addEventListener("click", function () { box.close(true); drop(o.id); });
-      opts.appendChild(b);
-    });
-    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
-  }
-
-  // ---- the tile: type label, big title, what is in it ----
+  // ---- the tile: tags, big title, what is in it ----
   //   opts: { sel: tileSel while picking tiles, methods: cardMethodsMap() }
   function cardTileEl(cref, opts) {
     opts = opts || {};
-    var sel = opts.sel, ty = cardTypeOf(cref.id);
+    var sel = opts.sel;
     var t = document.createElement("div");
     t.className = "cd-tile" + (sel ? " selecting" : "") + (sel && sel.ids[cref.id] ? " picked" : "");
     t.setAttribute("data-card", cref.id);
-    t.style.setProperty("--ct", ty ? ty.color : "var(--border-strong)");
     t.innerHTML = '<div class="cd-top"></div><button type="button" class="cd-open"><span class="cd-title"></span></button><div class="cd-bottom"><span class="cd-foot"></span></div>';
     t.querySelector(".cd-title").textContent = cardLabel(cref.id);
     var top = t.querySelector(".cd-top");
     if (sel) top.insertAdjacentHTML("beforeend", '<span class="cd-check" aria-hidden="true"></span>');
-    top.appendChild(cardTypeLabel(cref.id, !sel));
+    top.appendChild(cardTagsEl(cref.id, false));
     if (!sel) t.querySelector(".cd-bottom").appendChild(dotsBtn(cref));
     var bits = [], ne = libElements(cref.id).length, nm = ((opts.methods || {})[cref.id] || []).length;
     if (!isBuiltinRef(cref)) bits.push(ne ? ne + (ne === 1 ? " element" : " elements") : "empty");
@@ -11963,7 +11935,7 @@ function __detabaseMain() {
     };
     return bar;
   }
-  function cardSelActions() { return [{ label: "🏷 Set type…", run: function (ids, b) { cardTypeMenu(b, ids); } }]; }
+  function cardSelActions() { return [{ label: "🏷 Add a tag…", run: function (ids) { cardTagsEdit(ids); } }]; }
   // every tile of one group at once
   function selAllBtn(sel, ids, scopeEl) {
     var ab = document.createElement("button");
@@ -11984,7 +11956,7 @@ function __detabaseMain() {
   function renderCardPage(host) {
     var ref = { lvl: "c", id: activeSub.id }, pl = libPlace(ref);
     var acts = subHeadEl(host, { label: "‹ " + tabLabel(pl.p), title: "back to the concept", run: function () { openConceptPage(pl.p, ref.id); } }, cardLabel(ref.id));
-    acts.appendChild(cardTypeLabel(ref.id, true));
+    acts.appendChild(cardTagsEl(ref.id, true));
     var bd = usedBadge(ref); if (bd) acts.appendChild(bd);
     acts.appendChild(actBtn("＋ Add to it", "add elements to this card", function () { addAssetAt(ref); }));
     acts.appendChild(dotsBtn(ref));
@@ -12157,7 +12129,7 @@ function __detabaseMain() {
   function lsumRender(host, spec, bar) {
     var st = lsumState(spec), chips = lsumChips(spec, st);
     var acts = bar || subHeadEl(host, spec.back, spec.title);
-    acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
+    if (spec.filters.length) acts.appendChild(actBtn("Filters" + (chips.length ? " · " + chips.length : ""), "what this summary shows", function () { lsumFilters(spec); }));
     var groups = [];                   // filled below; Save takes what is on screen when it is tapped
     function shownRefs() {
       var refs = [];
@@ -12246,9 +12218,7 @@ function __detabaseMain() {
   }
   // ---- concept summaries: a subject's concepts (tabId null), or one concept ----
   function conceptsSumSpec(key, tabId) {
-    var filters = [{ id: "type", label: "Card types", dots: true,
-      opts: cardTypes().map(function (t) { return { id: t.id, name: t.name, color: t.color }; }).concat([{ id: "none", name: "Unlabeled" }]),
-      chip: function (o) { return "no " + (o.id === "none" ? "unlabeled cards" : o.name); } }];
+    var filters = [];
     if (!tabId) filters.push({ id: "concept", label: "Concepts",
       opts: libKids({ lvl: "s", id: key }).map(function (t) { return { id: t.id, name: tabLabel(t.id) }; }),
       chip: function (o) { return "without " + o.name; } });
@@ -12266,7 +12236,7 @@ function __detabaseMain() {
           return {
             title: tabId ? null : tabLabel(t.id), tab: t.id,
             open: function () { openConceptPage(t.id); },
-            items: libKids(t).filter(function (c) { var ty = cardTypeOf(c.id); return !off.type[ty ? ty.id : "none"]; }).map(cardSumEl)
+            items: libKids(t).map(cardSumEl)
           };
         });
       }
@@ -12280,8 +12250,8 @@ function __detabaseMain() {
     d.setAttribute("data-card", cref.id);
     var h = document.createElement("div");
     h.className = "ls-chead";
-    h.appendChild(cardTypeLabel(cref.id, true));
     h.appendChild(actBtn(cardLabel(cref.id), "open the card", function () { openCardPage(cref.id); }, "ls-ctitle"));
+    h.appendChild(cardTagsEl(cref.id, false));
     d.appendChild(h);
     d.appendChild(cardFlatEl(cref));
     return d;
@@ -12360,14 +12330,12 @@ function __detabaseMain() {
     return groupKidsOf(gid).reduce(function (out, g) { return out.concat(groupSubjectKeysDeep(g)); }, groupSubjectKeys(gid).slice());
   }
   function scopeValid(scope) { return scope === "lib" || (!!scope && scope.slice(0, 2) === "g:" && groupExists(scope.slice(2))); }
-  // the filters of a folder's or the library's summary, and of a study sheet: Subjects (these), Show, Card types, Part categories, Method kinds
+  // the filters of a folder's or the library's summary, and of a study sheet: Subjects (these), Show, Part categories, Method kinds
   function kindFilters(keys) {
     var one = function (list) { return list.map(function (x) { return { id: x.id, name: x.name, color: x.color }; }); };
     return [
       { id: "subject", label: "Subjects", opts: keys.map(function (k) { return { id: k, name: subjectName(k) }; }), chip: function (o) { return "without " + o.name; } },
       { id: "show", label: "Show", opts: [{ id: "c", name: "Cards" }, { id: "m", name: "Method parts" }], chip: function (o) { return "no " + o.name.toLowerCase(); } },
-      { id: "type", label: "Card types", dots: true, opts: one(cardTypes()).concat([{ id: "none", name: "Unlabeled" }]),
-        chip: function (o) { return "no " + (o.id === "none" ? "unlabeled cards" : o.name); } },
       { id: "cat", label: "Part categories", dots: true, opts: one(partCats()), chip: function (o) { return "no " + o.name + " parts"; } },
       { id: "kind", label: "Method kinds", dots: true, opts: one(methodKinds()).concat([{ id: "none", name: "No kind yet" }]),
         chip: function (o) { return o.id === "none" ? "no methods without a kind" : "no " + o.name + " methods"; } }
@@ -12386,7 +12354,7 @@ function __detabaseMain() {
         var out = [];
         keys.filter(function (k) { return !off.subject[k]; }).forEach(function (k) {
           var mine = [];
-          if (!off.show.c) mine = mine.concat(conceptsSumSpec(k, null).groups({ type: off.type, concept: {} }, w));
+          if (!off.show.c) mine = mine.concat(conceptsSumSpec(k, null).groups({ concept: {} }, w));
           if (!off.show.m) mine = mine.concat(methodsSumSpec(k, null).groups({ cat: off.cat, kind: off.kind, method: {}, folder: {} }, w));
           mine = mine.filter(function (g) { return g.items.length; });
           if (mine.length) mine[0].head = { title: subjectName(k), open: function () { openSubjectRef(k); } };
@@ -12437,7 +12405,7 @@ function __detabaseMain() {
   // Filters are the subject's concepts and cards, card types (and, in Merged, cards / methods). A method
   // disappears only when every card it is connected to is filtered out; one connected to no card at
   // all sits in "Not linked to a card", which can be switched off. View and filters are kept per subject.
-  //   store.ui.sp[key] = { view: "concepts" | "methods" | "merged", off: { <tab or card id>: 1 }, offType: { <card type id> | "none": 1 }, hide: { c, m }, noUnlinked }
+  //   store.ui.sp[key] = { view: "concepts" | "methods" | "merged", off: { <tab or card id>: 1 }, hide: { c, m }, noUnlinked }
   // ============================================================
   function spShown() { var p = $("subjectPage"); return !!p && !p.hidden; }
   // every built-in block inside `host` back into the hidden library, and the user elements added inside it out
@@ -12448,7 +12416,7 @@ function __detabaseMain() {
       var c = BI.cards[slot.getAttribute("data-card")]; if (!c) return;
       var home = BI.tabs[c.origin].pane;
       c.nodes.forEach(function (n) {
-        if (n.parentNode !== slot) return;      // it has been placed somewhere newer since
+        if (!slot.contains(n)) return;          // it has been placed somewhere newer since
         Array.prototype.forEach.call(n.querySelectorAll(".ue-extra"), function (x) { x.remove(); });
         Array.prototype.forEach.call(n.querySelectorAll(".dnd-handle"), function (x) { x.classList.remove("dnd-handle"); });
         n.classList.remove("dnd-handle");
@@ -12469,36 +12437,48 @@ function __detabaseMain() {
       box.classList.add("sp-card");
       box.setAttribute("data-card", uc.id);
       box.querySelector(":scope > h4").classList.add("dnd-handle");
-      spElementsDnd(box, uc.id);
+      Array.prototype.forEach.call(box.querySelectorAll(":scope > .cp-part"), function (sec) { spElementsDnd(sec, uc.id); });
       return box;
     }
     var c = BI.cards[ref.id];
     var slot = document.createElement("div");
     slot.className = "sp-card bi" + (c.compact ? " compact" : "");
     slot.setAttribute("data-card", ref.id);
-    c.nodes.forEach(function (n) { slot.appendChild(n); });
-    (cardTitleEl(c.nodes[0]) || c.nodes[0]).classList.add("dnd-handle");
-    // elements saved into a built-in card: inside it, at its bottom
-    var els = libElements(ref.id);
-    if (els.length) {
+    var first = c.nodes[0], whole = c.nodes.length === 1 && first.matches(".card, .subject");
+    if (whole) slot.appendChild(first);
+    else c.nodes.forEach(function (n) { (n.matches("h3") ? slot : cardPartEl(slot, biPartOf(n))).appendChild(n); });
+    (cardTitleEl(first) || first).classList.add("dnd-handle");
+    // elements saved into a built-in card: inside it, at the end of their part
+    var host = !whole ? slot : first.matches(".subject") ? first.querySelector(":scope > .subject-body") : first;
+    CARD_PARTS.forEach(function (p) {
+      var els = libElements(ref.id).filter(function (e) { return elPart(e) === p.id; });
+      if (!els.length) return;
       var extra = document.createElement("div");
       extra.className = "ue-extra ue-extra-in";
+      extra.setAttribute("data-part", p.id);
       els.forEach(function (e) { extra.appendChild(libElementBlock(e)); });
-      var last = c.nodes[c.nodes.length - 1];
-      var inside = last.matches(".card, .tool") ? last : last.matches(".subject") ? (last.querySelector(".subject-body") || last) : null;
-      (inside || slot).appendChild(extra);
+      cardPartEl(host, p.id).appendChild(extra);
       spElementsDnd(extra, ref.id);
-    }
+    });
     // an element dropped anywhere on the card goes in at its end
     dndInto(slot, { accepts: ["element"], onDrop: function (drag) { elementTo(drag, ref.id, null); } });
     return slot;
   }
-  function elementTo(drag, cardId, index) {
-    libMoved("Moved “" + refName({ lvl: "e", id: drag.id }) + "” to " + cardLabel(cardId), function () { libMove({ lvl: "e", id: drag.id }, cardId, index); });
+  function elementTo(drag, cardId, index, part) {
+    libMoved("Moved “" + refName({ lvl: "e", id: drag.id }) + "” to " + cardLabel(cardId), function () {
+      libMove({ lvl: "e", id: drag.id }, cardId, index);
+      if (part) byId(store.elements, drag.id).part = part;
+    });
   }
+  // a part's elements: reorder them, or drop one from another part (it takes on that part) or another card
   function spElementsDnd(listEl, cardId) {
     dndList(listEl, { type: "element", item: ".ue-block", handle: ".ue-head", id: function (el) { return el.getAttribute("data-ue"); },
-      onDrop: function (drag, index) { elementTo(drag, cardId, index); } });
+      onDrop: function (drag, index) {
+        var others = dndItemsOf(listEl, drag.el), ids = libElements(cardId).map(function (e) { return e.id; }).filter(function (id) { return id !== drag.id; });
+        var at = others[index] ? ids.indexOf(others[index].getAttribute("data-ue"))
+          : others.length ? ids.indexOf(others[others.length - 1].getAttribute("data-ue")) + 1 : ids.length;
+        elementTo(drag, cardId, at, listEl.getAttribute("data-part"));
+      } });
   }
   function cardTo(drag, tabId, index) {
     libMoved("Moved “" + cardLabel(drag.id) + "” to " + tabLabel(tabId), function () { libMove({ lvl: "c", id: drag.id }, tabId, index); });
@@ -12513,7 +12493,7 @@ function __detabaseMain() {
     var s = store.ui.sp[key] = store.ui.sp[key] || {};
     if (s.view === "separate") s.view = "concepts";                 // the old two-box view
     if (["concepts", "methods", "merged"].indexOf(s.view) < 0) s.view = "concepts";
-    s.off = s.off || {}; s.hide = s.hide || {}; s.offType = s.offType || {};
+    s.off = s.off || {}; s.hide = s.hide || {};
     return s;
   }
   function spSetView(key, view) { if (!key) return; spState(key).view = view; saveStore(); }
@@ -12542,14 +12522,11 @@ function __detabaseMain() {
     return !n ? "on" : n === cs.length ? "off" : "some";
   }
   function spCardOn(st, cref) { var pl = libPlace(cref); return !!pl && !st.off[pl.p] && !st.off[cref.id]; }
-  function spTypeOn(st, cardId) { var t = cardTypeOf(cardId); return !(st.offType || {})[t ? t.id : "none"]; }
-  // on screen: its concept and itself are on, and so is its type
-  function spCardShown(st, cref) { return spCardOn(st, cref) && spTypeOn(st, cref.id); }
   // is something a method is connected to still on screen? A card or concept of another
   // subject is not this page's to filter, so it always counts.
   function spLinkOn(st, key, ref) {
     if (libSubjectOf(ref) !== key) return true;
-    return ref.lvl === "t" ? spTabState(st, ref.id) !== "off" : spCardShown(st, ref);
+    return ref.lvl === "t" ? spTabState(st, ref.id) !== "off" : spCardOn(st, ref);
   }
   function spSetTab(st, tabId, on) {
     libKids({ lvl: "t", id: tabId }).forEach(function (c) { delete st.off[c.id]; });
@@ -12576,10 +12553,6 @@ function __detabaseMain() {
         if (st.off[c.id]) out.push({ label: cardLabel(c.id), clear: function () { delete st.off[c.id]; } });
       });
     });
-    var offT = st.offType || {}, types = cardTypes().concat([{ id: "none", name: "unlabeled cards" }]);
-    var offs = types.filter(function (t) { return offT[t.id]; });
-    if (offs.length && offs.length === types.length - 1 && !offT.none) out.push({ label: "only Unlabeled cards", clear: function () { st.offType = {}; } });
-    else offs.forEach(function (t) { out.push({ label: "no " + t.name, clear: function () { delete st.offType[t.id]; } }); });
     var kinds = { c: "cards", m: "methods" };
     if (st.view === "merged") Object.keys(kinds).forEach(function (k) { if (st.hide[k]) out.push({ label: "no " + kinds[k], clear: function () { delete st.hide[k]; } }); });
     if (st.noUnlinked) out.push({ label: "nothing that is not linked to a card", clear: function () { delete st.noUnlinked; } });
@@ -12659,7 +12632,7 @@ function __detabaseMain() {
     });
     var all = document.createElement("button");
     all.type = "button"; all.className = "em-clearnarrow"; all.textContent = "Show all";
-    all.addEventListener("click", function () { var s = spState(key); s.off = {}; s.offType = {}; s.hide = {}; delete s.noUnlinked; saveStore(); renderSubjectPage(); });
+    all.addEventListener("click", function () { var s = spState(key); s.off = {}; s.hide = {}; delete s.noUnlinked; saveStore(); renderSubjectPage(); });
     row.appendChild(all);
     return row;
   }
@@ -12704,23 +12677,6 @@ function __detabaseMain() {
         });
         tabsEl.appendChild(grp);
       });
-      var types = document.createElement("div");
-      types.className = "spf-sec";
-      types.innerHTML = '<div class="md-sechead">Card types</div>';
-      cardTypes().concat([{ id: "none", name: "Unlabeled" }]).forEach(function (t) {
-        var on = !st.offType[t.id];
-        var r = check(on ? "on" : "off", t.name, function () { if (on) st.offType[t.id] = 1; else delete st.offType[t.id]; changed(); }, "type");
-        if (t.color) r.style.setProperty("--ct", t.color);
-        types.appendChild(r);
-      });
-      var only = document.createElement("button");
-      only.type = "button"; only.className = "spf-more"; only.textContent = "Only Unlabeled cards";
-      only.addEventListener("click", function () { st.offType = {}; cardTypes().forEach(function (t) { st.offType[t.id] = 1; }); changed(); });
-      var man = document.createElement("button");
-      man.type = "button"; man.className = "spf-more"; man.textContent = "⚙ Manage types…";
-      man.addEventListener("click", ctManage);
-      types.appendChild(only); types.appendChild(man);
-      b.appendChild(types);
       var more = document.createElement("div");
       more.className = "spf-sec";
       more.innerHTML = '<div class="md-sechead">Methods</div>';
@@ -12740,7 +12696,7 @@ function __detabaseMain() {
     }
     draw();
     box.buttons([
-      { label: "Show all", run: function () { st.off = {}; st.offType = {}; st.hide = {}; delete st.noUnlinked; changed(); } },
+      { label: "Show all", run: function () { st.off = {}; st.hide = {}; delete st.noUnlinked; changed(); } },
       { label: "Done", primary: true, right: true, run: function () { box.close(true); } }
     ]);
   }
@@ -12787,7 +12743,7 @@ function __detabaseMain() {
     if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No concepts yet — tap “＋ Card” to crop the first card out of a document.</p>';
     tabs.forEach(function (t) {
       if (spTabState(st, t.id) === "off") return;
-      var cards = libKids(t).filter(function (c) { return spCardShown(st, c); });
+      var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
       var tabLinks = at[refKey(t)] || [];
       var shown = cards.filter(function (c) { return show.c || (at[refKey(c)] || []).length; });
       if (filtering && !shown.length && !tabLinks.length) return;
@@ -12807,7 +12763,7 @@ function __detabaseMain() {
           wrap.setAttribute("data-card", c.id);
           var slot;
           if (show.c) slot = spCardEl(c);
-          else { slot = document.createElement("div"); slot.className = "mg-title dnd-handle"; slot.appendChild(cardTypeLabel(c.id, true)); slot.appendChild(document.createTextNode(cardLabel(c.id))); slot.appendChild(dotsBtn(c)); }
+          else { slot = document.createElement("div"); slot.className = "mg-title dnd-handle"; slot.appendChild(document.createTextNode(cardLabel(c.id))); slot.appendChild(cardTagsEl(c.id, false)); slot.appendChild(dotsBtn(c)); }
           if (slot.classList.contains("compact") && !links.length) wrap.classList.add("compact");
           wrap.appendChild(slot);
           if (links.length) wrap.appendChild(spLinksEl(links, key, c));
@@ -12855,7 +12811,7 @@ function __detabaseMain() {
     list.className = "cc-list";
     if (!tabs.length) list.innerHTML = '<div class="side-empty"><b>No concepts yet.</b> Tap “＋ Concept”, or “＋ Card” to crop the first card out of your notes.</div>';
     tabs.forEach(function (t) {
-      var cards = libKids(t).filter(function (c) { return spCardShown(st, c); });
+      var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
       if (filtering && !cards.length) return;           // filtering: only the concepts that still have cards
       var closed = !!(store.ui.spClosed || {})[t.id];
       var sec = document.createElement("section");
@@ -14061,7 +14017,7 @@ function __detabaseMain() {
         var made = [];
         parts.forEach(function (p) {
           var id = uid("ue_");
-          store.elements.push({ id: id, card: cardId, name: p.name.trim(), created: Date.now() });
+          store.elements.push({ id: id, card: cardId, name: p.name.trim(), part: "desc", created: Date.now() });
           writeLibDoc(id, p.content);
           made.push(id);
         });
@@ -14279,7 +14235,7 @@ function __detabaseMain() {
         box.close(true);
         pickLibTarget(startRef, function (cardId) {
           var id = uid("ue_");
-          store.elements.push({ id: id, card: cardId, name: n, created: Date.now() });
+          store.elements.push({ id: id, card: cardId, name: n, part: "desc", created: Date.now() });
           writeLibDoc(id, { ink: [], items: [{ id: uid("it_"), kind: "note", text: body.value, x: 12, y: 12, w: 360, h: 180, z: 1 }] });
           saveStore();
           libRefreshAll();
@@ -16387,7 +16343,7 @@ function __detabaseMain() {
       var box = document.createElement("div"); box.className = "asset-card";
       if (uc) box.insertAdjacentHTML("beforeend", '<h4>' + escapeHtml(uc.name) + '</h4>');
       else box.appendChild(cloneForAsset(Array.prototype.slice.call(document.querySelectorAll('[data-el="' + cardId + '"]'))));
-      libElements(cardId).forEach(function (e) {
+      cardElsByPart(cardId).forEach(function (e) {
         var eb = document.createElement("div"); eb.className = "asset-el";
         eb.appendChild(docStaticFor(e.id, inner - 12));
         box.appendChild(eb);
@@ -16659,11 +16615,11 @@ function __detabaseMain() {
       });
       box.appendChild(row);
     }
-    // the library — subjects and concepts, then cards (found by their title or their type) and elements;
+    // the library — subjects and concepts, then cards (found by their title or their tags) and elements;
     // tapping one narrows the methods to those that use it
     var lib = searchEntries(materialIndex(), q, function (en) {
-      var ty = en.ref.lvl === "c" && cardTypeOf(en.ref.id);
-      return (en.name + " " + refPath(en.ref) + (ty ? " " + ty.name : "")).toLowerCase();
+      var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id) : [];
+      return (en.name + " " + refPath(en.ref) + " " + tg.join(" ")).toLowerCase();
     });
     var found = 0;
     [["Concepts", ["s", "t"]], ["Cards", ["c", "e"]]].forEach(function (g) {
@@ -16672,8 +16628,8 @@ function __detabaseMain() {
       found += list.length;
       section(g[0]);
       list.forEach(function (en) {
-        var ty = en.ref.lvl === "c" && cardTypeOf(en.ref.id);
-        hitRow(en.name, (ty ? ty.name + " · " : "") + refPath(en.ref), function () { narrowAdd(en.ref); }, [
+        var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id) : [];
+        hitRow(en.name, (tg.length ? tg.join(" · ") + " · " : "") + refPath(en.ref), function () { narrowAdd(en.ref); }, [
           { label: "↗", title: "open it", run: function () { openRef(en.ref); } },
           { label: "＋", title: "add to a clipboard", run: function () { chooseBoardAndMine([en.ref]); } }
         ], en.ref.lvl);
@@ -17800,9 +17756,7 @@ function __detabaseMain() {
         if (r.lvl === "st") { var sx = psPartById(r.id); if (sx && off.cat[sx.part.cat]) return false; }
         return true;
       }
-      if (off.show.c) return false;
-      if (r.lvl === "c") { var ty = cardTypeOf(r.id); if (off.type[ty ? ty.id : "none"]) return false; }
-      return true;
+      return !off.show.c;
     };
   }
   function sheetSubjectKeys(sm) {
@@ -18118,13 +18072,13 @@ function __detabaseMain() {
     Array.prototype.forEach.call(document.querySelectorAll("#subjectPage [data-el]"), function (n) {
       var key = n.getAttribute("data-el"); if (seen[key]) return; seen[key] = 1;
       var ref = { lvl: "c", id: key }, host = cardTitleEl(n) || n, bd = usedBadge(ref);
-      host.insertBefore(deco(cardTypeLabel(key, true)), host.firstChild);
+      host.appendChild(deco(cardTagsEl(key, false)));
       if (bd) host.appendChild(deco(bd));
       host.appendChild(deco(dotsBtn(ref)));
     });
     Array.prototype.forEach.call(document.querySelectorAll("#paneHost .ue-card"), function (d) {
       var ref = { lvl: "c", id: d.getAttribute("data-uc") }, h = d.querySelector(":scope > h4"); if (!h) return;
-      h.insertBefore(deco(cardTypeLabel(ref.id, true)), h.firstChild);
+      h.appendChild(deco(cardTagsEl(ref.id, false)));
       var bd = usedBadge(ref); if (bd) h.appendChild(deco(bd));
       h.appendChild(deco(dotsBtn(ref)));
     });
@@ -18179,7 +18133,8 @@ function __detabaseMain() {
       ref.lvl === "t" && !isSubPage("concept", ref.id) ? { label: "⤢ Open the concept", run: function () { openConceptPage(ref.id); } } : null,
       ref.lvl === "t" ? { label: "📋 Summary", run: function () { openSub("csummary", ref.id); } } : null,
       { label: "✎ Rename", run: function () { libRename(ref); } },
-      ref.lvl === "c" ? { label: "🏷 Card type…", run: function () { cardTypeMenu(anchor, [ref.id]); } } : null,
+      ref.lvl === "c" ? { label: "🏷 Tags…", run: function () { cardTagsEdit([ref.id]); } } : null,
+      ref.lvl === "e" ? { label: "▤ Part of the card…", run: function () { elPartMenu(anchor, ref.id); } } : null,
       (ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e") ? { label: "↪ Move to…", run: function () { libMoveTo(ref); } } : null,
       addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
       ref.lvl === "s" ? { label: "🧩 New method here", run: function () { newProblemPage(ref.id); } } : null,
@@ -18281,7 +18236,7 @@ function __detabaseMain() {
     dying.forEach(function (r) {
       if (r.lvl === "s") { store.methodFolders = mfEnsure().filter(function (f) { return f.subject !== r.id; }); store.summaries = sumEnsure().filter(function (sm) { return sm.subject !== r.id; }); var sid = r.id.slice(2); store.subjects = drop(store.subjects, sid); delete store.notes[sid]; if (store.ui.cpTab) delete store.ui.cpTab[sid]; }
       else if (r.lvl === "t") store.tabs = drop(store.tabs, r.id);
-      else if (r.lvl === "c") { store.cards = drop(store.cards, r.id); delete cardTypeMap()[r.id]; }
+      else if (r.lvl === "c") { store.cards = drop(store.cards, r.id); delete cardTagMap()[r.id]; }
       else if (r.lvl === "e") { store.elements = drop(store.elements, r.id); killCanvas(r.id); }
       else if (r.lvl === "p") { store.ps.pages = drop(store.ps.pages, r.id); killCanvas(r.id); }
     });
@@ -18781,7 +18736,7 @@ function __detabaseMain() {
     makeSortable($("plFormatList"), { itemSel: "> .pl-tpl-item", axis: "y", keyOf: function (it) { return it.getAttribute("data-id"); }, onDrop: function (ids) { store.order.plFormats = ids; saveStore(); } });
     makeSortable($("plGoalList"), { itemSel: "> .pl-goal-group", axis: "y", keyOf: function (it) { return it.getAttribute("data-id"); }, onDrop: function (ids) { store.order.plGoals = ids; saveStore(); } });
   } catch (e) { if (window.console) console.error("planner sortables:", e); }
-  try { tagBuiltinElements(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
+  try { tagBuiltinElements(); biPartsBuild(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
   try { migratePlacement(); } catch (e) { if (window.console) console.error("migratePlacement:", e); }
   try { seedBuiltins(); } catch (e) { if (window.console) console.error("seedBuiltins:", e); }
   try { initSortables(); } catch (e) { if (window.console) console.error("initSortables:", e); }
