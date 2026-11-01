@@ -875,7 +875,16 @@
   .ls-body { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
   .ls-subj { display: flex; flex-direction: column; gap: 14px; }
   .ls-group { padding: 12px 18px 16px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); }
-  .ls-ghead { margin: 0 0 4px; padding: 0; border: 0; }
+  .ls-ghead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 4px; padding: 0; border: 0; }
+  .ls-caret { position: relative; flex-shrink: 0; width: 36px; height: 36px; border: 0; background: none; color: var(--text-muted); cursor: pointer; }
+  .ls-caret::before { content: "▸"; display: block; font-size: 1rem; transform: rotate(90deg); transition: transform .14s ease; }
+  .ls-caret::after { content: ""; position: absolute; inset: -6px; }
+  .ls-group.closed .ls-caret::before { transform: none; }
+  .ls-group.closed { padding-bottom: 8px; }
+  .ls-group.closed > :not(.ls-ghead) { display: none; }
+  .ls-group:not(.closed) > :not(.ls-ghead) { animation: lsOpen .14s ease-out; }
+  @keyframes lsOpen { from { opacity: 0; transform: translateY(-4px); } }
+  @media (prefers-reduced-motion: reduce) { .ls-caret::before { transition: none; } .ls-group > * { animation: none !important; } }
   .ls-gopen { min-height: var(--tap); padding: 0; border: 0; background: none; font: inherit; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
   .ls-gopen:hover, .ls-ctitle:hover, .ls-kicker:hover { color: var(--accent); }
   .ls-shead { display: block; width: 100%; min-height: var(--tap); margin: 18px 0 0; padding: 4px 2px 6px; border: 0; border-bottom: 2px solid var(--accent); background: none; font: inherit; font-size: 1.35rem; font-weight: 800; color: var(--text-primary); text-align: left; cursor: pointer; }
@@ -5191,7 +5200,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B110</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B111</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -13110,6 +13119,8 @@ function __detabaseMain() {
       var sec = document.createElement("section");
       sec.className = "ls-group";
       if (g.tab) sec.setAttribute("data-tab", g.tab);     // a concept's group: found like its section (spSectionOf)
+      var fold = g.tab && g.title;                        // it collapses to its title; its items stay in place, so Save still takes them
+      if (fold && conceptClosed(spec.mem, g.tab)) sec.classList.add("closed");
       if (g.head) {                    // a subject's name, above its first group — it and its groups in one section
         subj = document.createElement("div");
         subj.className = "ls-subj";
@@ -13119,15 +13130,20 @@ function __detabaseMain() {
       if (g.title || g.kicker) {
         var h = document.createElement("h3");
         h.className = "ls-ghead";
+        if (fold) h.appendChild(actBtn("", "collapse or expand this concept", function () { conceptToggle(spec.mem, g.tab); sec.classList.toggle("closed"); }, "ls-caret"));
         if (g.kicker) h.appendChild(actBtn(g.kicker, "open it", g.open, "ls-kicker"));
         if (g.title && g.open && !g.kicker) h.appendChild(actBtn(g.title, "open it", g.open, "ls-gopen"));
         else if (g.title) { var gt = document.createElement("span"); gt.className = "ls-gtitle"; gt.textContent = g.title; h.appendChild(gt); }
+        if (fold) h.insertAdjacentHTML("beforeend", '<span class="side-count">' + g.items.filter(function (el) { return el.__ref; }).length + '</span>');
         sec.appendChild(h);
       }
       g.items.forEach(function (el) { sec.appendChild(el); });
       (subj || body).appendChild(sec);
     });
     host.appendChild(body);
+    var folds = {};
+    groups.forEach(function (g) { if (g.tab && g.title) folds[g.tab] = 1; });
+    if (Object.keys(folds).length) acts.appendChild(collapseAllBtn(spec.mem, Object.keys(folds), function () { lsumRedraw(spec); }));
   }
   function lsumFilters(spec) {
     var st = lsumState(spec);
@@ -13649,8 +13665,25 @@ function __detabaseMain() {
   }
 
   // ---- Merged: tab by tab, card by card ----
+  // collapsing a concept: a view only, per view. store.ui.closed = { <view>: { <tab id>: 1 } }
+  //   views: "tiles", "merged", or a summary's mem
+  function closedMap(view) {
+    var u = store.ui;
+    if (u.spClosed) { u.closed = u.closed || {}; u.closed.tiles = u.spClosed; u.closed.merged = JSON.parse(JSON.stringify(u.spClosed)); delete u.spClosed; }
+    u.closed = u.closed || {};
+    return u.closed[view] = u.closed[view] || {};
+  }
+  function conceptClosed(view, id) { return !!closedMap(view)[id]; }
+  function conceptToggle(view, id) { var m = closedMap(view); if (m[id]) delete m[id]; else m[id] = 1; saveStore(); }
+  function collapseAllBtn(view, ids, redraw) {
+    var m = closedMap(view), all = ids.length > 0 && ids.every(function (id) { return m[id]; });
+    return actBtn(all ? "▾ Expand all" : "▸ Collapse all", "every concept in this view", function () {
+      ids.forEach(function (id) { if (all) delete m[id]; else m[id] = 1; });
+      saveStore(); redraw();
+    });
+  }
   function spTabEl(tref, key, count, fill) {
-    var closed = !!(store.ui.spClosed || {})[tref.id];
+    var closed = conceptClosed("merged", tref.id);
     var sec = document.createElement("section");
     sec.className = "sp-tab" + (closed ? " closed" : "");
     sec.setAttribute("data-tab", tref.id);
@@ -13662,9 +13695,7 @@ function __detabaseMain() {
     var bd = usedBadge(tref); if (bd) head.appendChild(bd);
     head.appendChild(dotsBtn(tref));
     sec.querySelector(".sp-caret").addEventListener("click", function () {
-      store.ui.spClosed = store.ui.spClosed || {};
-      if (closed) delete store.ui.spClosed[tref.id]; else store.ui.spClosed[tref.id] = 1;
-      saveStore();
+      conceptToggle("merged", tref.id);
       renderSubjectPage();
     });
     dndInto(head, { accepts: ["card"], onDrop: function (drag) { cardTo(drag, tref.id, null); } });   // onto the tab's title: at its end
@@ -13690,6 +13721,7 @@ function __detabaseMain() {
     var tabs = libKids({ lvl: "s", id: key });
     var mbar = document.createElement("div");
     mbar.className = "cc-bar";
+    if (tabs.length) mbar.appendChild(collapseAllBtn("merged", tabs.map(function (t) { return t.id; }), renderSubjectPage));
     mbar.appendChild(sheetSaveBtn(function () {
       var refs = [];
       tabs.forEach(function (t) {
@@ -13769,6 +13801,7 @@ function __detabaseMain() {
     }
     if (tabs.length) bar.appendChild(selectBtn("c|" + key, "cards to give them a type"));
     bar.appendChild(actBtn("＋ Concept", "a new concept at the end", function () { newConcept(key); }));
+    if (tabs.length) bar.appendChild(collapseAllBtn("tiles", tabs.map(function (t) { return t.id; }), renderSubjectPage));
     host.appendChild(bar);
     if (sel) host.appendChild(selBarEl(cardSelActions()));
     var list = document.createElement("div");
@@ -13777,7 +13810,7 @@ function __detabaseMain() {
     tabs.forEach(function (t) {
       var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
       if (filtering && !cards.length) return;           // filtering: only the concepts that still have cards
-      var closed = !!(store.ui.spClosed || {})[t.id];
+      var closed = conceptClosed("tiles", t.id);
       var sec = document.createElement("section");
       sec.className = "cc-sec" + (closed ? " closed" : "");
       sec.setAttribute("data-tab", t.id);
@@ -13787,8 +13820,7 @@ function __detabaseMain() {
         '<button type="button" class="cc-name" title="open the concept"><span class="cc-title"></span><span class="side-count">' + cards.length + '</span></button>';
       head.querySelector(".cc-title").textContent = tabLabel(t.id);
       head.querySelector(".cc-caret").addEventListener("click", function () {
-        store.ui.spClosed = store.ui.spClosed || {};
-        if (closed) delete store.ui.spClosed[t.id]; else store.ui.spClosed[t.id] = 1;
+        conceptToggle("tiles", t.id);
         saveStore(); renderSubjectPage();
       });
       head.querySelector(".cc-name").addEventListener("click", function () { openConceptPage(t.id); });
@@ -13881,8 +13913,12 @@ function __detabaseMain() {
   function spRefresh() { if (spShown()) renderSubjectPage(); }
   function spSectionOf(tabId) { return document.querySelector('#subjectPage [data-tab="' + tabId + '"]'); }   // a concept's section, in Concepts or Merged
   function spOpenTab(tabId) {
-    if (store.ui.spClosed && store.ui.spClosed[tabId]) { delete store.ui.spClosed[tabId]; saveStore(); return true; }
-    return false;
+    // a hit inside a collapsed concept opens it, in whichever view holds it
+    closedMap("tiles");
+    var hit = false, all = store.ui.closed;
+    Object.keys(all).forEach(function (v) { if (all[v][tabId]) { delete all[v][tabId]; hit = true; } });
+    if (hit) saveStore();
+    return hit;
   }
   // a library doc's content arrived / changed
   function refreshLibDoc(id) {
@@ -19014,7 +19050,7 @@ function __detabaseMain() {
           } else { key = refKey(r); head = {}; }
           var k = libSubjectOf(r);
           if (!g || g.key !== key || k !== lastSubj) {
-            g = { key: key, kicker: head.kicker, title: head.title, open: head.open, items: [] };
+            g = { key: key, kicker: head.kicker, title: head.title, open: head.open, tab: r.lvl === "c" && refParent(r) ? refParent(r).id : null, items: [] };
             if (k !== lastSubj) g.head = { title: subjectName(k), open: function () { openSubjectRef(k); } };
             lastSubj = k;
             out.push(g);
