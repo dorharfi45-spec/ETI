@@ -86,6 +86,7 @@
   }
   @media (max-width: 760px) {
     .layout { flex-direction: column; gap: 12px; }
+    .content { width: 100%; }
     .sidebar { position: static; width: auto; }
     .sidebar-label { display: none; }
   }
@@ -2340,6 +2341,7 @@
     <button data-folder="precalc" data-group="base"><span class="ficon">∫</span>Precalc</button>
     <button data-folder="fn" data-group="calc"><span class="ficon">ƒ</span>Functions</button>
     <button data-folder="lim" data-group="calc"><span class="ficon">→</span>Limits and continuity</button>
+    <button data-folder="der" data-group="calc"><span class="ficon">′</span>Derivatives</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2407,6 +2409,16 @@
   <button data-target="lm6"><span class="tnum">6</span>Arithmetic of continuity</button>
   <button data-target="lm7"><span class="tnum">7</span>Composition and continuity</button>
   <button data-target="lm8"><span class="tnum">8</span>Intermediate value theorem</button>
+</nav>
+<nav class="tabbar" data-folder="der" id="tabbar-der">
+  <button data-target="dv1" class="on"><span class="tnum">1</span>What is a derivative</button>
+  <button data-target="dv2"><span class="tnum">2</span>Differentiation formulas</button>
+  <button data-target="dv3"><span class="tnum">3</span>Differentiability</button>
+  <button data-target="dv4"><span class="tnum">4</span>Arithmetic of differentiability</button>
+  <button data-target="dv5"><span class="tnum">5</span>Local extrema</button>
+  <button data-target="dv6"><span class="tnum">6</span>Absolute extrema</button>
+  <button data-target="dv7"><span class="tnum">7</span>Rolle's theorem and the mean value theorem</button>
+  <button data-target="dv8"><span class="tnum">8</span>Convexity and concavity</button>
 </nav>
 
 <main id="paneHost">
@@ -4174,9 +4186,614 @@
 
 </div><!-- /folder-lim -->
 
+<div class="folder" id="folder-der">
+
+<!-- ===== DV1 · WHAT IS A DERIVATIVE ===== -->
+<section class="pane on" id="pane-dv1">
+<h2><span class="num">1</span>What is a derivative</h2>
+<div class="card" data-tags="Definition">
+  <h4>Derivative at a point</h4>
+  <p><code>f'(a) = lim_(h→0) (f(a + h) − f(a))/h</code></p>
+  <p>Same limit, written with <code>x = a + h</code>:</p>
+  <p><code>f'(a) = lim_(x→a) (f(x) − f(a))/(x − a)</code></p>
+  <p>If this limit exists and is <b>finite</b>, <code>f</code> is <b>differentiable</b> at <code>a</code> and the limit is the derivative. The <b>derivative function</b> <code>f'</code> gives this number at every <code>x</code> where it exists. Other notation: <code>y'</code>, <code>df/dx</code>.</p>
+  <svg class="ill" viewBox="0 0 420 250" role="img" aria-label="a secant through two points of a curve turning into the tangent as the second point moves closer">
+    <path class="ax" d="M50 235 H405 M50 235 V12"/>
+    <path class="cv" d="M60 210 Q260 210 390 30"/>
+    <path class="cv2" d="M120 227 L385 64"/>
+    <path class="gd" d="M90 219 L380 132"/>
+    <path class="gd" d="M174 194 H335 V95"/>
+    <circle class="dot" cx="174" cy="194" r="5"/>
+    <circle class="dot warn" cx="335" cy="95" r="5"/>
+    <text x="174" y="180" text-anchor="end">a</text>
+    <text x="347" y="104">a + h</text>
+    <text x="255" y="212" text-anchor="middle">h</text>
+    <text class="sm" x="388" y="62" text-anchor="end">secant</text>
+    <text class="sm" x="388" y="150" text-anchor="end">tangent</text>
+  </svg>
+  <p class="muted">The quotient is the slope of the <b>secant</b> (green) through two points of the graph. As <code>h → 0</code> the second point slides to the first, and the secant turns into the <b>tangent</b> (dashed). Try it live in Precalc › Derivatives › Secant → tangent.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>What the derivative tells you</h4>
+  <ul class="idlist">
+    <li><b>Slope:</b> <code>f'(a)</code> is the slope of the tangent to the graph at <code>a</code>.</li>
+    <li><b>Tangent line:</b> <code>y = f(a) + f'(a)·(x − a)</code></li>
+    <li><b>Rate of change:</b> how fast <code>f</code> changes at <code>a</code>. Near <code>a</code>: <code>f(a + h) ≈ f(a) + f'(a)·h</code></li>
+    <li><b>Direction:</b> <code>f' &gt; 0</code> on an interval → rising; <code>f' &lt; 0</code> → falling; <code>f'(a) = 0</code> → horizontal tangent (Derivatives › 7).</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a curve with a rising tangent, a horizontal tangent at the top, and a falling tangent">
+    <path class="ax" d="M30 170 H405"/>
+    <path class="cv" d="M50 150 C130 150 170 40 215 40 S300 150 380 150"/>
+    <path class="gd" d="M85 130 L185 62"/>
+    <path class="gd" d="M165 40 H265"/>
+    <path class="gd" d="M245 62 L345 130"/>
+    <circle class="dot" cx="134" cy="96" r="4"/>
+    <circle class="dot" cx="215" cy="40" r="4"/>
+    <circle class="dot" cx="296" cy="96" r="4"/>
+    <text x="118" y="70" text-anchor="end">f' &gt; 0</text>
+    <text x="215" y="28" text-anchor="middle">f' = 0</text>
+    <text x="312" y="70">f' &lt; 0</text>
+  </svg>
+  <p class="muted"><b>From the definition:</b> for <code>f(x) = x²</code>, <code>(f(x + h) − f(x))/h = (2xh + h²)/h = 2x + h → 2x</code>. So <code>f'(x) = 2x</code>: the slope at each point of the parabola.</p>
+</div>
+</section>
+
+<!-- ===== DV2 · DIFFERENTIATION FORMULAS ===== -->
+<section class="pane" id="pane-dv2">
+<h2><span class="num">2</span>Differentiation formulas</h2>
+<div class="card" data-tags="Formula">
+  <h4>Powers, polynomials and roots</h4>
+  <ul class="idlist">
+    <li><code>(c)' = 0</code> &nbsp;·&nbsp; <code>(c·f)' = c·f'</code> &nbsp;·&nbsp; <code>(f + g)' = f' + g'</code></li>
+    <li><code>(xⁿ)' = n·xⁿ⁻¹</code></li>
+    <li><code>(√x)' = 1/(2√x)</code> &nbsp;(<code>x &gt; 0</code>)</li>
+    <li><code>(ⁿ√x)' = 1/(n·ⁿ√(xⁿ⁻¹))</code></li>
+    <li>Any real power, <code>x &gt; 0</code>: <code>(xʳ)' = r·xʳ⁻¹</code>. A root or a fraction is a power: <code>1/x² = x⁻²</code>, so <code>(1/x²)' = −2x⁻³ = −2/x³</code></li>
+    <li>Polynomial, term by term: <code>(4x³ − 5x + 7)' = 12x² − 5</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="the parabola y equals x squared with tangents at x equals 1 and x equals 2, of slope 2 and 4">
+    <path class="ax" d="M40 205 H405 M120 205 V12"/>
+    <path class="cv" d="M120 205 Q200 205 280 15"/>
+    <path class="gd" d="M150 205 L260 107"/>
+    <path class="gd" d="M200 169 L280 27"/>
+    <circle class="dot" cx="180" cy="178" r="4"/>
+    <circle class="dot" cx="240" cy="98" r="4"/>
+    <text x="196" y="190">slope 2</text>
+    <text x="252" y="102">slope 4</text>
+    <text x="292" y="30">y = x²</text>
+  </svg>
+  <p class="muted">The slope grows with <code>x</code>: the derivative of <code>x²</code> is the straight line <code>2x</code>. Differentiating lowers a power by one.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li><b>Powers:</b> by the binomial formula <code>(x + h)ⁿ = xⁿ + n·xⁿ⁻¹·h + h²·(…)</code>, so</li>
+    <li><code>((x + h)ⁿ − xⁿ)/h = n·xⁿ⁻¹ + h·(…) → n·xⁿ⁻¹</code></li>
+    <li><b>Root</b> (multiply by the conjugate, Limits › 3):</li>
+    <li>With <code>s = √(x + h) + √x</code>: <code>(√(x + h) − √x)/h = ((x + h) − x)/(h·s) = 1/s</code></li>
+    <li>As <code>h → 0</code>, <code>s → 2√x</code>, so the limit is <code>1/(2√x)</code>.</li>
+    <li><b>Sum and constant:</b> split the quotient and use the arithmetic of limits.</li>
+    <li><b>Real power:</b> <code>xʳ = e<sup>r·ln x</sup></code>, so by the chain rule <code>(xʳ)' = xʳ·(r/x) = r·xʳ⁻¹</code>.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Product and quotient</h4>
+  <ul class="idlist">
+    <li><b>Product:</b> <code>(f·g)' = f'·g + f·g'</code></li>
+    <li><b>Quotient:</b> <code>(f/g)' = (f'·g − f·g')/g²</code> &nbsp;(<code>g ≠ 0</code>)</li>
+    <li><b>Reciprocal:</b> <code>(1/g)' = −g'/g²</code></li>
+  </ul>
+  <p>Example: <code>(x²·sin x)' = 2x·sin x + x²·cos x</code></p>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="a rectangle of sides f and g growing by strips f times delta g and g times delta f">
+    <rect class="box" x="90" y="60" width="210" height="125"/>
+    <rect class="band2" x="300" y="60" width="50" height="125"/>
+    <rect class="band" x="90" y="25" width="210" height="35"/>
+    <path class="ax" d="M300 25 H350 V60 H300 Z"/>
+    <text x="195" y="128" text-anchor="middle">f·g</text>
+    <text x="325" y="128" text-anchor="middle">Δf·g</text>
+    <text x="195" y="48" text-anchor="middle">f·Δg</text>
+    <text x="195" y="204" text-anchor="middle">f</text>
+    <text x="325" y="204" text-anchor="middle">Δf</text>
+    <text x="80" y="128" text-anchor="end">g</text>
+    <text x="80" y="48" text-anchor="end">Δg</text>
+  </svg>
+  <p class="muted">Think of <code>f·g</code> as an area. When both sides grow, the area gains two strips, <code>Δf·g</code> and <code>f·Δg</code>. The small corner <code>Δf·Δg</code> disappears in the limit. That is the two terms of the product rule.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li><b>Product:</b> add and subtract <code>f(x + h)·g(x)</code> in the numerator:</li>
+    <li><code>f(x + h)g(x + h) − f(x)g(x)</code></li>
+    <li><code>= f(x + h)·(g(x + h) − g(x)) + (f(x + h) − f(x))·g(x)</code></li>
+    <li>Divide by <code>h</code> and let <code>h → 0</code>. Since <code>f</code> is differentiable it is continuous, so <code>f(x + h) → f(x)</code>, and the result is <code>f·g' + f'·g</code>.</li>
+    <li><b>Reciprocal:</b> <code>(1/g(x + h) − 1/g(x))/h = −(g(x + h) − g(x))/h · 1/(g(x + h)·g(x)) → −g'/g²</code></li>
+    <li><b>Quotient:</b> <code>f/g = f·(1/g)</code>, so <code>(f/g)' = f'/g − f·g'/g² = (f'·g − f·g')/g²</code></li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Composite functions (chain rule)</h4>
+  <p><code>(f(g(x)))' = f'(g(x))·g'(x)</code></p>
+  <p>The derivative of the outer function, at the inner function, times the derivative of the inner function.</p>
+  <ul class="idlist">
+    <li><code>((3x² + 1)⁵)' = 5(3x² + 1)⁴·6x</code></li>
+    <li><code>(√(x² + 1))' = 2x/(2√(x² + 1)) = x/√(x² + 1)</code></li>
+    <li><code>(sin(x³))' = cos(x³)·3x²</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 120" role="img" aria-label="x goes into g, which multiplies changes by g prime, then into f, which multiplies changes by f prime">
+    <rect class="box" x="115" y="35" width="70" height="50" rx="6"/>
+    <rect class="box" x="260" y="35" width="70" height="50" rx="6"/>
+    <path class="ax" d="M50 60 H113 M187 60 H258 M332 60 H395"/>
+    <path class="arr" d="M115 60 l-9 -5 v10 Z M260 60 l-9 -5 v10 Z M397 60 l-9 -5 v10 Z"/>
+    <text x="150" y="65" text-anchor="middle">g</text>
+    <text x="295" y="65" text-anchor="middle">f</text>
+    <text x="42" y="65" text-anchor="end">x</text>
+    <text x="222" y="50" text-anchor="middle">g(x)</text>
+    <text x="150" y="108" text-anchor="middle">× g'(x)</text>
+    <text x="295" y="108" text-anchor="middle">× f'(g(x))</text>
+  </svg>
+  <p class="muted">A small change in <code>x</code> is multiplied by <code>g'</code> on the way through <code>g</code>, and that result is multiplied by <code>f'</code> on the way through <code>f</code>. Rates multiply.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li>Write <code>t = g(x + h)</code> and <code>b = g(x)</code>. Multiply by 1, as long as <code>t ≠ b</code>:</li>
+    <li><code>(f(t) − f(b))/h = (f(t) − f(b))/(t − b) · (t − b)/h</code></li>
+    <li><code>t → b</code> because <code>g</code> is continuous. The first quotient → <code>f'(g(x))</code>, the second → <code>g'(x)</code>.</li>
+    <li>The case <code>g(x + h) = g(x)</code> near <code>x</code> needs a small extra argument in a full proof; the formula stays the same.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Trigonometric functions</h4>
+  <ul class="idlist">
+    <li><code>(sin x)' = cos x</code></li>
+    <li><code>(cos x)' = −sin x</code></li>
+    <li><code>(tan x)' = 1/cos²x = 1 + tan²x</code></li>
+    <li>With an inner function <code>g</code>: <code>(sin g)' = cos g·g'</code> &nbsp;·&nbsp; <code>(cos g)' = −sin g·g'</code> &nbsp;·&nbsp; <code>(tan g)' = g'/cos²g</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="sin x and cos x together: where sin is flat cos is zero, where sin rises fastest cos is largest">
+    <path class="ax" d="M30 95 H405"/>
+    <path class="cv" d="M50 95 C85 95 95 35 130 35 S175 95 210 95 S255 155 290 155 S335 95 370 95"/>
+    <path class="cv2" d="M50 35 C85 35 95 95 130 95 S175 155 210 155 S255 95 290 95 S335 35 370 35"/>
+    <path class="gd" d="M130 20 V175 M290 20 V175"/>
+    <text x="378" y="99">sin x</text>
+    <text x="378" y="40">cos x</text>
+    <text class="sm" x="130" y="185" text-anchor="middle">π/2</text>
+    <text class="sm" x="290" y="185" text-anchor="middle">3π/2</text>
+  </svg>
+  <p class="muted">The green curve is the slope of the blue one. At the top of <code>sin x</code> the tangent is flat, and <code>cos x = 0</code> there.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li>Two base limits: <code>lim_(h→0) (sin h)/h = 1</code> and <code>lim_(h→0) (cos h − 1)/h = 0</code></li>
+    <li><b>Sine:</b> use <code>sin(x + h) = sin x·cos h + cos x·sin h</code> (Trig base › Identities):</li>
+    <li><code>(sin(x + h) − sin x)/h = sin x·(cos h − 1)/h + cos x·(sin h)/h → cos x</code></li>
+    <li><b>Cosine:</b> use <code>cos(x + h) = cos x·cos h − sin x·sin h</code>:</li>
+    <li><code>(cos(x + h) − cos x)/h = cos x·(cos h − 1)/h − sin x·(sin h)/h → −sin x</code></li>
+    <li><b>Tangent:</b> the quotient rule on <code>sin x / cos x</code> gives <code>(cos²x + sin²x)/cos²x = 1/cos²x</code></li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Exponential and logarithmic functions</h4>
+  <ul class="idlist">
+    <li><code>(eˣ)' = eˣ</code></li>
+    <li><code>(aˣ)' = aˣ·ln a</code> &nbsp;(<code>a &gt; 0</code>)</li>
+    <li><code>(ln x)' = 1/x</code> &nbsp;(<code>x &gt; 0</code>)</li>
+    <li><code>(log_a x)' = 1/(x·ln a)</code></li>
+    <li>With an inner function <code>f</code>: <code>(e<sup>f</sup>)' = e<sup>f</sup>·f'</code> &nbsp;·&nbsp; <code>(a<sup>f</sup>)' = a<sup>f</sup>·ln a·f'</code> &nbsp;·&nbsp; <code>(ln f)' = f'/f</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="e to the x and ln x, mirror images in the line y equals x, each with slope 1 where it meets an axis">
+    <path class="ax" d="M30 170 H405 M140 228 V10"/>
+    <path class="gd" d="M82 228 L300 10"/>
+    <path class="cv" d="M36.5 165.5 L42.4 164.9 L48.2 164.1 L54.0 163.3 L59.9 162.4 L65.7 161.4 L71.6 160.2 L77.4 158.8 L83.3 157.2 L89.1 155.5 L95.0 153.4 L100.8 151.1 L106.7 148.5 L112.5 145.5 L118.4 142.2 L124.2 138.3 L130.1 133.9 L135.9 128.9 L141.8 123.2 L147.6 116.7 L153.5 109.3 L159.3 100.8 L165.2 91.2 L171.0 80.3 L176.9 67.8 L182.7 53.6 L188.6 37.5 L194.4 19.1"/>
+    <path class="cv2" d="M152.5 227.6 L153.8 223.1 L155.3 218.6 L156.9 214.1 L158.7 209.6 L160.6 205.1 L162.8 200.6 L165.2 196.1 L167.8 191.6 L170.8 187.1 L174.0 182.6 L177.6 178.1 L181.5 173.6 L185.9 169.1 L190.7 164.6 L196.1 160.1 L202.0 155.6 L208.5 151.1 L215.7 146.6 L223.7 142.1 L232.4 137.6 L242.2 133.1 L252.9 128.6 L264.8 124.1 L277.9 119.6 L292.4 115.1 L308.5 110.6 L326.2 106.1 L345.8 101.6 L367.4 97.1"/>
+    <circle class="dot" cx="140" cy="125" r="4"/>
+    <circle class="dot" cx="185" cy="170" r="4"/>
+    <text x="222" y="24">eˣ</text>
+    <text x="340" y="84">ln x</text>
+    <text class="sm" x="132" y="122" text-anchor="end">1</text>
+    <text class="sm" x="185" y="186" text-anchor="middle">1</text>
+    <text class="sm" x="300" y="24">y = x</text>
+  </svg>
+  <p class="muted"><code>eˣ</code> and <code>ln x</code> mirror each other in <code>y = x</code>. <code>eˣ</code> has slope <code>1</code> at <code>x = 0</code>, and <code>ln x</code> has slope <code>1</code> at <code>x = 1</code>.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li><b>eˣ:</b> <code>(eˣ⁺ʰ − eˣ)/h = eˣ·(eʰ − 1)/h → eˣ</code>, because <code>lim_(h→0) (eʰ − 1)/h = 1</code>. That is what makes <code>e</code> special: the tangent at <code>0</code> has slope <code>1</code> (Precalc › Exp &amp; log calculus).</li>
+    <li><b>aˣ:</b> <code>aˣ = e<sup>x·ln a</sup></code>, so the chain rule gives <code>aˣ·ln a</code>.</li>
+    <li><b>ln x:</b> <code>(ln(x + h) − ln x)/h = ln(1 + h/x)/h</code>. With <code>t = h/x</code> this is <code>(1/x)·ln(1 + t)/t → 1/x</code>, because <code>lim_(t→0) ln(1 + t)/t = 1</code>.</li>
+    <li><b>log_a x:</b> <code>log_a x = ln x / ln a</code>, a constant times <code>ln x</code>.</li>
+    <li><b>ln f:</b> the chain rule with outer <code>ln</code> and inner <code>f</code>.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== DV3 · DIFFERENTIABILITY ===== -->
+<section class="pane" id="pane-dv3">
+<h2><span class="num">3</span>Differentiability</h2>
+<div class="card" data-tags="Definition">
+  <h4>Differentiable at a point</h4>
+  <p><code>f</code> differentiable at <code>a</code> &nbsp;⇔&nbsp; <code>lim_(h→0) (f(a + h) − f(a))/h</code> exists and is finite.</p>
+  <p><b>One-sided derivatives:</b></p>
+  <ul class="idlist">
+    <li><code>f'₋(a) = lim_(h→0⁻) (f(a + h) − f(a))/h</code></li>
+    <li><code>f'₊(a) = lim_(h→0⁺) (f(a + h) − f(a))/h</code></li>
+    <li><code>f</code> differentiable at <code>a</code> &nbsp;⇔&nbsp; <code>f'₋(a) = f'₊(a)</code>, both finite</li>
+  </ul>
+  <p class="muted">Differentiable on <code>(a, b)</code>: at every point. On <code>[a, b]</code>: also one-sided at the ends.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Differentiable implies continuous</h4>
+  <p><code>f</code> differentiable at <code>a</code> &nbsp;⇒&nbsp; <code>f</code> continuous at <code>a</code></p>
+  <p>The other way is false: <code>f(x) = |x|</code> is continuous at <code>0</code> and not differentiable there.</p>
+  <p class="muted"><b>Proof:</b> <code>f(x) − f(a) = (f(x) − f(a))/(x − a) · (x − a) → f'(a)·0 = 0</code>, so <code>f(x) → f(a)</code>.</p>
+  <p class="muted">Use it backwards: not continuous at <code>a</code> ⇒ not differentiable at <code>a</code>. No calculation needed.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Where a function is not differentiable</h4>
+  <p>Four ways the limit of the quotient can fail:</p>
+  <ul class="idlist">
+    <li><b>Not continuous:</b> a jump or a hole. Example: <code>f(x)</code> jumps at <code>a</code>.</li>
+    <li><b>Corner:</b> <code>f'₋(a) ≠ f'₊(a)</code>. Example: <code>|x|</code> at <code>0</code>.</li>
+    <li><b>Vertical tangent or cusp:</b> the quotient → <code>±∞</code>. Examples: <code>∛x</code> and <code>∛(x²)</code> at <code>0</code>.</li>
+    <li><b>Oscillation:</b> the quotient has no limit. Example: <code>x·sin(1/x)</code> at <code>0</code>, with <code>f(0) = 0</code>.</li>
+  </ul>
+  <p>Also, of course: a point outside the domain.</p>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="four small graphs: a jump, a corner, a vertical tangent and an oscillation">
+    <path class="ax" d="M20 90 H195 M108 12 V100"/>
+    <path class="cv" d="M30 80 L108 62"/>
+    <path class="cv" d="M108 32 L185 16"/>
+    <circle class="hole" cx="108" cy="62" r="4"/>
+    <circle class="dot" cx="108" cy="32" r="4"/>
+    <text class="sm" x="108" y="110" text-anchor="middle">jump</text>
+    <path class="ax" d="M225 90 H400 M312 12 V100"/>
+    <path class="cv" d="M240 20 L312 85 L385 20"/>
+    <circle class="dot warn" cx="312" cy="85" r="4"/>
+    <text class="sm" x="312" y="110" text-anchor="middle">corner</text>
+    <path class="ax" d="M20 170 H195 M108 125 V215"/>
+    <path class="cv" d="M30 200 C80 195 100 185 108 170 S135 145 185 140"/>
+    <circle class="dot warn" cx="108" cy="170" r="4"/>
+    <text class="sm" x="108" y="226" text-anchor="middle">vertical tangent</text>
+    <path class="ax" d="M225 170 H400 M312 125 V215"/>
+    <path class="cv" d="M235 150 L255 190 L272 155 L285 185 L295 160 L302 180 L307 165 L312 170 L317 175 L322 160 L329 180 L339 155 L352 185 L369 150 L389 190"/>
+    <circle class="dot warn" cx="312" cy="170" r="4"/>
+    <text class="sm" x="312" y="226" text-anchor="middle">oscillation</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Limit of the derivative</h4>
+  <p><code>f</code> continuous at <code>a</code>, differentiable for <code>x ≠ a</code> near <code>a</code>, and <code>lim_(x→a) f'(x) = L</code>:</p>
+  <ul class="idlist">
+    <li><code>L</code> finite &nbsp;⇒&nbsp; <code>f</code> differentiable at <code>a</code> and <code>f'(a) = L</code></li>
+    <li><code>L = ±∞</code> &nbsp;⇒&nbsp; <code>f</code> not differentiable at <code>a</code></li>
+    <li>One-sided too: <code>lim_(x→a⁻) f'(x) = f'₋(a)</code> and <code>lim_(x→a⁺) f'(x) = f'₊(a)</code></li>
+  </ul>
+  <p><b>Consequence:</b> if <code>f'(a)</code> exists and <code>lim_(x→a) f'(x)</code> exists, then the two are equal, so <code>f'</code> is continuous at <code>a</code>. A derivative function can't have a hole or a jump.</p>
+  <p class="muted">Why: by the mean value theorem (Derivatives › 7), <code>(f(x) − f(a))/(x − a) = f'(c)</code> for some <code>c</code> between <code>a</code> and <code>x</code>. As <code>x → a</code>, <code>c → a</code>, so the quotient has the same limit as <code>f'</code>.</p>
+  <p class="muted"><b>Continuity of <code>f</code> at <code>a</code> is required.</b> If <code>lim_(x→a) f'(x)</code> does not exist, the theorem says nothing: go to the definition. Example: <code>x²·sin(1/x)</code>, <code>f(0) = 0</code>, has <code>f'(0) = 0</code>, yet <code>lim_(x→0) f'(x)</code> does not exist.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When the derivative formula is undefined at a point</h4>
+  <p>If the formula for <code>f'</code> has a denominator that is <code>0</code> at <code>a</code>, or is undefined at <code>a</code> in any other way, treat it as a <b>warning sign</b>. It is not yet a verdict: the formula only holds where the rules were allowed.</p>
+  <ul class="idlist">
+    <li><b>Usually not differentiable:</b> <code>f = ∛x</code>, <code>f' = 1/(3∛(x²))</code> → <code>+∞</code> at <code>0</code>. Not differentiable.</li>
+    <li><b>But not always:</b> <code>f = √(x⁴)</code>, <code>f' = 4x³/(2√(x⁴))</code> is undefined at <code>0</code>, yet <code>f = x²</code> is differentiable there.</li>
+  </ul>
+  <p>Decide with the limit of the derivative (if <code>f</code> is continuous at <code>a</code>), or with the definition.</p>
+  <p class="muted">Method: Is a function differentiable at a point?</p>
+</div>
+</section>
+
+<!-- ===== DV4 · ARITHMETIC OF DIFFERENTIABILITY ===== -->
+<section class="pane" id="pane-dv4">
+<h2><span class="num">4</span>Arithmetic of differentiability</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Arithmetic of differentiable functions</h4>
+  <p><code>f, g</code> differentiable at <code>a</code> &nbsp;⇒&nbsp; these are differentiable at <code>a</code>:</p>
+  <ul class="idlist">
+    <li><code>f ± g</code>, with <code>(f ± g)'(a) = f'(a) ± g'(a)</code></li>
+    <li><code>c·f</code>, with <code>(c·f)'(a) = c·f'(a)</code></li>
+    <li><code>f·g</code>, with <code>(f·g)'(a) = f'(a)·g(a) + f(a)·g'(a)</code></li>
+    <li><code>f/g</code>, if <code>g(a) ≠ 0</code>, with <code>(f/g)'(a) = (f'(a)·g(a) − f(a)·g'(a))/g(a)²</code></li>
+  </ul>
+  <p><b>Composition:</b> <code>g</code> differentiable at <code>a</code> and <code>f</code> differentiable at <code>g(a)</code> &nbsp;⇒&nbsp; <code>f∘g</code> differentiable at <code>a</code>, with <code>(f∘g)'(a) = f'(g(a))·g'(a)</code></p>
+  <p class="muted">Differentiable on their whole domain: polynomials, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>eˣ</code>, <code>aˣ</code>, <code>ln</code>. Roots: on <code>x &gt; 0</code>, not at <code>0</code>. <code>|x|</code>: everywhere except <code>0</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When you can't use the arithmetic</h4>
+  <p>The theorem only works in one direction: all parts differentiable ⇒ the result is differentiable. If one part is <b>not</b> differentiable at <code>a</code>, the theorem says <b>nothing</b>. Go to the definition.</p>
+  <ul class="idlist">
+    <li><b>Sum:</b> <code>f</code> differentiable, <code>g</code> not ⇒ <code>f + g</code> not. If it were, <code>g = (f + g) − f</code> would be differentiable.</li>
+    <li><b>Both not differentiable, sum is:</b> <code>|x| + (−|x|) = 0</code></li>
+    <li><b>Product is differentiable:</b> <code>x·|x|</code> at <code>0</code>, and <code>|x|·|x| = x²</code></li>
+    <li><b>Product is not:</b> <code>1·|x|</code> at <code>0</code></li>
+    <li><b>Composition:</b> <code>|x|²</code> is differentiable at <code>0</code>, <code>|sin x|</code> and <code>sin|x|</code> are not.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="absolute value of x with a corner at zero, next to x times absolute value of x which is smooth at zero">
+    <path class="ax" d="M20 100 H195 M108 12 V180"/>
+    <path class="cv" d="M35 27 L108 100 L181 27"/>
+    <circle class="dot warn" cx="108" cy="100" r="4"/>
+    <text class="sm" x="108" y="186" text-anchor="end">|x|: corner</text>
+    <path class="ax" d="M225 100 H400 M312 12 V180"/>
+    <path class="cv" d="M250 170 Q290 100 312 100 Q334 100 374 30"/>
+    <circle class="dot" cx="312" cy="100" r="4"/>
+    <text class="sm" x="400" y="186" text-anchor="end">x·|x|: smooth</text>
+  </svg>
+  <p class="muted">The factor <code>x</code> flattens the corner: <code>x·|x|</code> has tangent slope <code>0</code> from both sides of <code>0</code>.</p>
+</div>
+</section>
+
+<!-- ===== DV5 · LOCAL EXTREMA ===== -->
+<section class="pane" id="pane-dv5">
+<h2><span class="num">5</span>Local extrema</h2>
+<div class="card" data-tags="Definition">
+  <h4>Local extremum point</h4>
+  <ul class="idlist">
+    <li><b>Local maximum</b> at <code>a</code>: <code>∃δ &gt; 0 : |x − a| &lt; δ ⇒ f(x) ≤ f(a)</code></li>
+    <li><b>Local minimum</b> at <code>a</code>: <code>∃δ &gt; 0 : |x − a| &lt; δ ⇒ f(x) ≥ f(a)</code></li>
+  </ul>
+  <p class="muted">"Local" means compared only with nearby points. A local maximum can be lower than a local minimum somewhere else.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Fermat's theorem</h4>
+  <p><code>f</code> has a local extremum at an interior point <code>a</code> and <code>f</code> is differentiable at <code>a</code> &nbsp;⇒&nbsp; <code>f'(a) = 0</code></p>
+  <p>The other way is false: <code>f(x) = x³</code> has <code>f'(0) = 0</code> and no extremum at <code>0</code>.</p>
+  <p class="muted"><b>Proof (maximum):</b> near <code>a</code>, <code>f(x) − f(a) ≤ 0</code>. So the quotient <code>(f(x) − f(a))/(x − a)</code> is <code>≥ 0</code> from the left and <code>≤ 0</code> from the right. Both one-sided limits equal <code>f'(a)</code>, so <code>f'(a) = 0</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Critical points and the first derivative test</h4>
+  <p>A <b>critical point</b> is an interior point of the domain where <code>f'(a) = 0</code> or <code>f'(a)</code> does not exist. Every local extremum is at a critical point, but not every critical point is an extremum.</p>
+  <p><b>First derivative test</b> (<code>f</code> continuous at <code>a</code>):</p>
+  <ul class="idlist">
+    <li><code>f'</code> changes from <code>+</code> to <code>−</code> at <code>a</code> ⇒ local maximum</li>
+    <li><code>f'</code> changes from <code>−</code> to <code>+</code> at <code>a</code> ⇒ local minimum</li>
+    <li>No sign change ⇒ no extremum</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 205" role="img" aria-label="a curve with a local maximum, a local minimum, a flat point that is no extremum, and a corner">
+    <path class="ax" d="M25 190 H405"/>
+    <path class="cv" d="M35 150 C60 70 95 60 120 95 S160 150 185 125 C205 100 205 88 225 88 C245 88 245 75 262 50 L310 130 L392 30"/>
+    <circle class="dot" cx="88" cy="72" r="4"/>
+    <circle class="dot" cx="161" cy="137" r="4"/>
+    <circle class="dot warn" cx="225" cy="88" r="4"/>
+    <circle class="dot" cx="310" cy="130" r="4"/>
+    <text class="sm" x="88" y="60" text-anchor="middle">max, f' = 0</text>
+    <text class="sm" x="161" y="156" text-anchor="middle">min, f' = 0</text>
+    <text class="sm" x="225" y="176" text-anchor="middle">f' = 0, no extremum</text>
+    <text class="sm" x="310" y="152" text-anchor="middle">min, no f'</text>
+  </svg>
+  <p class="muted">The test works because the sign of <code>f'</code> tells where <code>f</code> rises and falls (Derivatives › 7, Monotonicity).</p>
+</div>
+</section>
+
+<!-- ===== DV6 · ABSOLUTE EXTREMA ===== -->
+<section class="pane" id="pane-dv6">
+<h2><span class="num">6</span>Absolute extrema</h2>
+<div class="card" data-tags="Definition">
+  <h4>Absolute extremum point</h4>
+  <ul class="idlist">
+    <li><b>Absolute maximum</b> of <code>f</code> on <code>D</code> at <code>a ∈ D</code>: <code>∀x ∈ D : f(x) ≤ f(a)</code></li>
+    <li><b>Absolute minimum</b> of <code>f</code> on <code>D</code> at <code>a ∈ D</code>: <code>∀x ∈ D : f(x) ≥ f(a)</code></li>
+  </ul>
+  <ul class="idlist">
+    <li><b>The value is unique</b> on a given domain: one largest value, one smallest value.</li>
+    <li><b>The point need not be:</b> <code>sin x</code> reaches its maximum <code>1</code> at infinitely many points.</li>
+    <li><b>It may not exist.</b></li>
+    <li><b>Where to look:</b> a critical point inside the domain, or an end of the domain.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a curve on a closed interval: the absolute maximum is at the right end, the absolute minimum is at an interior point">
+    <path class="ax" d="M40 170 H405"/>
+    <path class="gd" d="M80 170 V95 M350 170 V25"/>
+    <path class="cv" d="M80 95 C110 60 140 60 165 90 S215 150 245 130 S320 90 350 25"/>
+    <circle class="dot" cx="80" cy="95" r="4"/>
+    <circle class="dot warn" cx="350" cy="25" r="5"/>
+    <circle class="dot warn" cx="218" cy="137" r="5"/>
+    <text x="80" y="186" text-anchor="middle">a</text>
+    <text x="350" y="186" text-anchor="middle">b</text>
+    <text class="sm" x="340" y="25" text-anchor="end">absolute max, at the end</text>
+    <text class="sm" x="218" y="158" text-anchor="middle">absolute min, f' = 0</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Extreme value theorem</h4>
+  <p><code>f</code> continuous on a closed interval <code>[a, b]</code> &nbsp;⇒&nbsp; <code>∃c, d ∈ [a, b] : ∀x ∈ [a, b] : f(c) ≤ f(x) ≤ f(d)</code></p>
+  <p>A continuous function on a closed interval reaches an absolute minimum and an absolute maximum.</p>
+  <p><b>Both conditions are needed. Functions with no absolute extremum:</b></p>
+  <ul class="idlist">
+    <li>Open interval: <code>f(x) = x</code> on <code>(0, 1)</code> has neither.</li>
+    <li>Open at one end: <code>f(x) = 1/x</code> on <code>(0, 1]</code> has no maximum.</li>
+    <li>Not bounded domain: <code>f(x) = eˣ</code> on <code>ℝ</code> has neither.</li>
+    <li>Not continuous: <code>f(x) = x</code> on <code>[0, 1)</code>, <code>f(1) = 0</code>, has no maximum.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="left: x on an open interval with two empty end points. Right: one over x going up with no top">
+    <path class="ax" d="M25 145 H195 M45 145 V15"/>
+    <path class="cv" d="M70 125 L170 35"/>
+    <circle class="hole" cx="70" cy="125" r="4"/>
+    <circle class="hole" cx="170" cy="35" r="4"/>
+    <text class="sm" x="120" y="164" text-anchor="middle">(0, 1): ends not reached</text>
+    <path class="ax" d="M235 145 H400 M255 145 V15"/>
+    <path class="cv" d="M272 15 C285 90 320 118 385 125"/>
+    <circle class="dot" cx="385" cy="125" r="4"/>
+    <text class="sm" x="318" y="164" text-anchor="middle">1/x on (0, 1]: no top</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Functions that go to infinity at both ends</h4>
+  <p><code>f</code> continuous on <code>(a, b)</code> (<code>a</code>, <code>b</code> may be <code>±∞</code>):</p>
+  <ul class="idlist">
+    <li><code>lim_(x→a⁺) f(x) = lim_(x→b⁻) f(x) = +∞</code> &nbsp;⇒&nbsp; absolute minimum, no absolute maximum</li>
+    <li><code>lim_(x→a⁺) f(x) = lim_(x→b⁻) f(x) = −∞</code> &nbsp;⇒&nbsp; absolute maximum, no absolute minimum</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="a curve coming down from infinity and going back up to infinity, with an absolute minimum between">
+    <path class="ax" d="M25 160 H405"/>
+    <path class="cv" d="M70 12 C110 110 150 90 185 100 S240 145 280 110 S335 40 350 12"/>
+    <circle class="dot warn" cx="247" cy="130" r="5"/>
+    <text class="sm" x="247" y="150" text-anchor="middle">absolute minimum</text>
+    <text class="sm" x="80" y="14">→ +∞</text>
+    <text class="sm" x="362" y="14">→ +∞</text>
+  </svg>
+  <p class="muted"><b>Why:</b> take any point <code>x₀</code>. Near the ends <code>f &gt; f(x₀)</code>, so outside some closed interval <code>[c, d]</code> containing <code>x₀</code> the function is above <code>f(x₀)</code>. On <code>[c, d]</code> the extreme value theorem gives a minimum, and it is the minimum everywhere.</p>
+  <p class="muted"><b>Same idea with a finite limit:</b> if both end limits are finite and some <code>f(x₀)</code> is below both, there is an absolute minimum (above both: an absolute maximum).</p>
+</div>
+</section>
+
+<!-- ===== DV7 · ROLLE AND THE MEAN VALUE THEOREM ===== -->
+<section class="pane" id="pane-dv7">
+<h2><span class="num">7</span>Rolle's theorem and the mean value theorem</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Rolle's theorem</h4>
+  <p>If:</p>
+  <ol class="idlist">
+    <li><code>f</code> is continuous on <code>[a, b]</code></li>
+    <li><code>f</code> is differentiable on <code>(a, b)</code></li>
+    <li><code>f(a) = f(b)</code></li>
+  </ol>
+  <p>then <code>∃c ∈ (a, b) : f'(c) = 0</code></p>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a curve with equal height at both ends and a horizontal tangent at its top">
+    <path class="ax" d="M40 170 H405"/>
+    <path class="gd" d="M90 170 V130 M340 170 V130 M60 130 H370"/>
+    <path class="cv" d="M90 130 C140 10 290 10 340 130"/>
+    <path class="cv2" d="M140 40 H290"/>
+    <circle class="dot" cx="90" cy="130" r="4"/>
+    <circle class="dot" cx="340" cy="130" r="4"/>
+    <circle class="dot warn" cx="215" cy="40" r="5"/>
+    <text x="90" y="186" text-anchor="middle">a</text>
+    <text x="215" y="186" text-anchor="middle">c</text>
+    <text x="340" y="186" text-anchor="middle">b</text>
+    <text class="sm" x="300" y="36">f'(c) = 0</text>
+  </svg>
+  <p class="muted">A graph that leaves a height and comes back must turn around somewhere, and at the turn the tangent is horizontal.</p>
+  <p class="muted"><b>Proof:</b> by the extreme value theorem, <code>f</code> reaches a maximum and a minimum on <code>[a, b]</code>. If both are at the ends, <code>f</code> is constant and any <code>c</code> works. Otherwise one is at an interior point <code>c</code>, and Fermat's theorem gives <code>f'(c) = 0</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When a condition of Rolle's theorem fails</h4>
+  <p>Drop any one condition and the conclusion can fail:</p>
+  <ul class="idlist">
+    <li><b>Not continuous at an end:</b> <code>f(x) = x</code> on <code>[0, 1)</code>, <code>f(1) = 0</code>. Then <code>f(0) = f(1)</code>, but <code>f' = 1</code> everywhere inside.</li>
+    <li><b>Not differentiable inside:</b> <code>f(x) = |x|</code> on <code>[−1, 1]</code>. Then <code>f(−1) = f(1)</code>, but <code>f' = ±1</code>.</li>
+    <li><b>Different end values:</b> <code>f(x) = x</code> on <code>[0, 1]</code>. Then <code>f' = 1</code> everywhere.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="three small graphs, one for each failed condition of Rolle's theorem">
+    <path class="ax" d="M15 120 H135"/>
+    <path class="cv" d="M30 120 L115 30"/>
+    <circle class="hole" cx="115" cy="30" r="4"/>
+    <circle class="dot" cx="115" cy="120" r="4"/>
+    <circle class="dot" cx="30" cy="120" r="4"/>
+    <text class="sm" x="75" y="142" text-anchor="middle">not continuous</text>
+    <path class="ax" d="M150 120 H270"/>
+    <path class="cv" d="M165 30 L210 110 L255 30"/>
+    <circle class="dot warn" cx="210" cy="110" r="4"/>
+    <text class="sm" x="210" y="142" text-anchor="middle">corner</text>
+    <path class="ax" d="M285 120 H405"/>
+    <path class="cv" d="M300 110 L390 30"/>
+    <circle class="dot" cx="300" cy="110" r="4"/>
+    <circle class="dot" cx="390" cy="30" r="4"/>
+    <text class="sm" x="345" y="142" text-anchor="middle">f(a) ≠ f(b)</text>
+  </svg>
+  <p class="muted">The conditions are sufficient, not necessary: when one fails, a point with <code>f' = 0</code> may still exist. The theorem just doesn't promise it.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Mean value theorem</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and differentiable on <code>(a, b)</code> &nbsp;⇒&nbsp; <code>∃c ∈ (a, b) : f'(c) = (f(b) − f(a))/(b − a)</code></p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a curve, the chord between its ends, and a parallel tangent at a point c">
+    <path class="ax" d="M40 190 H405"/>
+    <path class="cv" d="M80 180 C130 60 250 70 350 60"/>
+    <path class="cv2" d="M80 180 L350 60"/>
+    <path class="gd" d="M100 119 L240 57"/>
+    <circle class="dot" cx="80" cy="180" r="4"/>
+    <circle class="dot" cx="350" cy="60" r="4"/>
+    <circle class="dot warn" cx="168" cy="89" r="5"/>
+    <text x="168" y="78" text-anchor="middle">c</text>
+    <text x="72" y="176" text-anchor="end">a</text>
+    <text x="358" y="58">b</text>
+  </svg>
+  <p class="muted">Somewhere the tangent is parallel to the chord: the instant rate equals the average rate. Rolle's theorem is the case <code>f(a) = f(b)</code>.</p>
+  <p class="muted"><b>Proof:</b> apply Rolle's theorem to <code>h(x) = f(x) − (f(b) − f(a))/(b − a)·(x − a)</code>, which has <code>h(a) = h(b) = f(a)</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Monotonicity</h4>
+  <p><code>f</code> continuous on an interval <code>I</code> and differentiable inside it:</p>
+  <ul class="idlist">
+    <li><code>f' &gt; 0</code> inside <code>I</code> ⇒ <code>f</code> strictly increasing on <code>I</code></li>
+    <li><code>f' &lt; 0</code> inside <code>I</code> ⇒ <code>f</code> strictly decreasing on <code>I</code></li>
+    <li><code>f' = 0</code> inside <code>I</code> ⇒ <code>f</code> constant on <code>I</code></li>
+    <li><code>f' = g'</code> inside <code>I</code> ⇒ <code>f = g + c</code> on <code>I</code></li>
+    <li>Comparing: <code>f(a) ≥ g(a)</code> and <code>f' &gt; g'</code> for <code>x &gt; a</code> ⇒ <code>f(x) &gt; g(x)</code> for <code>x &gt; a</code></li>
+  </ul>
+  <p class="muted"><b>Why:</b> for <code>x₁ &lt; x₂</code> the mean value theorem gives <code>f(x₂) − f(x₁) = f'(c)·(x₂ − x₁)</code>. The sign of <code>f'(c)</code> decides.</p>
+  <p class="muted"><b>It must be an interval.</b> <code>1/x</code> has <code>f' &lt; 0</code> on its domain but is not decreasing there. The converse is weaker: <code>x³</code> is strictly increasing with <code>f'(0) = 0</code>. A <code>f'</code> that is <code>0</code> only at single points doesn't spoil strict increase.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Roots of f and roots of f'</h4>
+  <ul class="idlist">
+    <li>Between two roots of <code>f</code> there is a root of <code>f'</code> (Rolle).</li>
+    <li><code>f</code> has <code>n</code> roots ⇒ <code>f'</code> has at least <code>n − 1</code> roots</li>
+    <li><code>f'</code> has <code>k</code> roots ⇒ <code>f</code> has at most <code>k + 1</code> roots</li>
+    <li><code>f'</code> has no roots ⇒ <code>f</code> has at most one root</li>
+    <li>A polynomial of degree <code>n</code> has at most <code>n</code> real roots; if <code>n</code> is odd, at least one.</li>
+  </ul>
+  <p class="muted">These count <b>at most</b>. To show a root really exists, use the intermediate value theorem (Limits › 8). All of this assumes <code>f</code> is differentiable on the whole interval.</p>
+</div>
+</section>
+
+<!-- ===== DV8 · CONVEXITY AND CONCAVITY ===== -->
+<section class="pane" id="pane-dv8">
+<h2><span class="num">8</span>Convexity and concavity</h2>
+<div class="card" data-tags="Definition">
+  <h4>Convex and concave</h4>
+  <p>The <b>second derivative</b> is the derivative of the derivative: <code>f'' = (f')'</code>.</p>
+  <p><code>f</code> differentiable on an interval <code>I</code>:</p>
+  <ul class="idlist">
+    <li><b>Convex</b> on <code>I</code>: <code>f'</code> increasing. The graph bends upward, lies above its tangents and below its chords.</li>
+    <li><b>Concave</b> on <code>I</code>: <code>f'</code> decreasing. The graph bends downward, lies below its tangents and above its chords.</li>
+  </ul>
+  <p><b>Test:</b> <code>f'' &gt; 0</code> on <code>I</code> ⇒ convex &nbsp;·&nbsp; <code>f'' &lt; 0</code> on <code>I</code> ⇒ concave</p>
+  <svg class="ill" viewBox="0 0 420 165" role="img" aria-label="a convex curve above its tangent and a concave curve below its tangent">
+    <path class="cv" d="M30 25 Q105 170 180 25"/>
+    <path class="gd" d="M45 105 H165" transform="translate(0,-8)"/>
+    <text x="105" y="150" text-anchor="middle">convex, f'' &gt; 0</text>
+    <path class="cv" d="M240 125 Q315 -20 390 125"/>
+    <path class="gd" d="M255 53 H375"/>
+    <text x="315" y="150" text-anchor="middle">concave, f'' &lt; 0</text>
+  </svg>
+  <p class="muted">On a convex stretch the slope keeps growing; on a concave stretch it keeps shrinking. That is why the sign of <code>f''</code>, the rate of change of the slope, decides.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Inflection point</h4>
+  <p><code>a</code> is an <b>inflection point</b> of <code>f</code> if <code>f</code> is continuous at <code>a</code>, has a tangent there, and changes from convex to concave (or the other way) at <code>a</code>.</p>
+  <ul class="idlist">
+    <li>Candidates: <code>f''(a) = 0</code> or <code>f''(a)</code> undefined, with <code>a</code> in the domain.</li>
+    <li><code>f''(a) = 0</code> is <b>not enough</b>: <code>x⁴</code> has <code>f''(0) = 0</code> and is convex on both sides. The sign of <code>f''</code> must change.</li>
+    <li><code>f''</code> may be undefined at an inflection point: <code>∛x</code> at <code>0</code>, with a vertical tangent.</li>
+    <li>A sign change at a point outside the domain is not an inflection point: <code>1/x</code> at <code>0</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="a curve that is concave on the left and convex on the right, crossing its tangent at the inflection point">
+    <path class="ax" d="M30 165 H405"/>
+    <path class="cv" d="M50 150 C130 40 170 40 215 90 S300 140 380 30"/>
+    <path class="gd" d="M150 30 L280 150"/>
+    <circle class="dot warn" cx="215" cy="90" r="5"/>
+    <text class="sm" x="100" y="42">concave</text>
+    <text class="sm" x="300" y="150">convex</text>
+    <text class="sm" x="228" y="84">inflection point</text>
+  </svg>
+  <p class="muted">At an inflection point the graph crosses its own tangent.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Second derivative test</h4>
+  <p><code>f'(a) = 0</code> and <code>f''(a)</code> exists:</p>
+  <ul class="idlist">
+    <li><code>f''(a) &gt; 0</code> ⇒ local minimum</li>
+    <li><code>f''(a) &lt; 0</code> ⇒ local maximum</li>
+    <li><code>f''(a) = 0</code> ⇒ no conclusion: <code>x⁴</code> (minimum), <code>−x⁴</code> (maximum), <code>x³</code> (neither)</li>
+  </ul>
+  <p class="muted">A horizontal tangent on a convex stretch can only be a bottom, on a concave stretch only a top.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Inequalities from convexity</h4>
+  <ul class="idlist">
+    <li><b>Convex</b> on <code>I</code>, <code>a ∈ I</code>: <code>f(x) ≥ f(a) + f'(a)·(x − a)</code> for all <code>x ∈ I</code></li>
+    <li><b>Concave</b> on <code>I</code>, <code>a ∈ I</code>: <code>f(x) ≤ f(a) + f'(a)·(x − a)</code> for all <code>x ∈ I</code></li>
+    <li><b>Convex</b> on <code>[a, b]</code>: below the chord between <code>a</code> and <code>b</code>. <b>Concave:</b> above it.</li>
+  </ul>
+  <p class="muted">The right side is the tangent line at <code>a</code>. If one side of an inequality is a line, it is often a tangent or a chord of the other side.</p>
+</div>
+</section>
+
+</div><!-- /folder-der -->
+
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"]]}</script>
 <script type="application/json" id="biMethods">
 [
 { "id": "pp_bi_fnabs", "v": 2, "subject": "f:fn", "kind": "action",
@@ -4333,6 +4950,218 @@
     { "id": "st_bi_lmivt4", "cat": "stage", "name": "Conclude", "text": "By the IVT, `∃c ∈ (a, b) : g(c) = 0`, i.e. `f(c) = h(c)`. ∎" },
     { "id": "st_bi_lmivt5", "cat": "example", "name": "Example", "text": "`x³ + x − 1 = 0` has a root in `(0, 1)`.\n1. `g(x) = x³ + x − 1`\n2. a polynomial → continuous on `[0, 1]`\n3. `g(0) = −1 < 0`, `g(1) = 1 > 0`\n4. `∃c ∈ (0, 1) : g(c) = 0`. ∎" },
     { "id": "st_bi_lmivt6", "cat": "example", "name": "Example — two sides", "text": "`cos x = x` has a solution.\n1. `g(x) = cos x − x`\n2. difference of continuous functions → continuous on `[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎" }
+  ] },
+{ "id": "pp_bi_dvrule", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Is a function differentiable at a point?",
+  "description": "Go through the rules in order and decide, with an example for each rule.",
+  "uses": [["c", "dv3", "Differentiable at a point"], ["c", "dv3", "Differentiable implies continuous"], ["c", "dv3", "Where a function is not differentiable"], ["c", "dv3", "Limit of the derivative"], ["c", "dv3", "When the derivative formula is undefined at a point"], ["c", "dv4", "Arithmetic of differentiable functions"], ["c", "dv4", "When you can't use the arithmetic"]],
+  "parts": [
+    { "id": "st_bi_dvrule1", "cat": "stage", "name": "Defined and continuous?", "text": "`a` outside the domain, or `f` not continuous at `a` → **not differentiable**. Stop." },
+    { "id": "st_bi_dvrule2", "cat": "stage", "name": "Can you use the arithmetic?", "text": "Near `a`, `f` is built from functions differentiable at `a` (no denominator `0`, no root of `0`, no `|·|` of `0`, no breakpoint) → **differentiable**. Stop." },
+    { "id": "st_bi_dvrule3", "cat": "stage", "name": "A breakpoint or |·|?", "text": "Compare the one-sided derivatives. Different → corner, **not differentiable**. Use the method for a breakpoint." },
+    { "id": "st_bi_dvrule4", "cat": "stage", "name": "Formula undefined at a?", "text": "A denominator `0` or an undefined value in `f'` is a warning, not a verdict. `f` is continuous at `a`, so take `lim_(x→a) f'(x)`:\n- finite `L` → differentiable, `f'(a) = L`\n- `±∞` → **not differentiable**\n- no limit → next stage" },
+    { "id": "st_bi_dvrule5", "cat": "stage", "name": "Otherwise, the definition", "text": "Calculate `lim_(x→a) (f(x) − f(a))/(x − a)`. It always decides." },
+    { "id": "st_bi_dvrule6", "cat": "example", "name": "Example — not continuous", "text": "f(x) = { x + 1 ; x ≥ 0\n{ x ; x < 0\nAt `0`: left limit `0`, `f(0) = 1`. Not continuous, so not differentiable." },
+    { "id": "st_bi_dvrule7", "cat": "example", "name": "Example — arithmetic", "text": "`f(x) = x²·sin x + eˣ` is built from functions differentiable everywhere, so it is differentiable everywhere." },
+    { "id": "st_bi_dvrule8", "cat": "example", "name": "Example — corner", "text": "`f(x) = |x − 1|` at `1`.\nRight: `f = x − 1`, slope `1`. Left: `f = 1 − x`, slope `−1`. Different, so not differentiable." },
+    { "id": "st_bi_dvrule9", "cat": "example", "name": "Example — vertical tangent", "text": "`f(x) = ∛x` at `0`. Continuous.\n`f'(x) = 1/(3∛(x²)) → +∞`, so not differentiable." },
+    { "id": "st_bi_dvrule10", "cat": "example", "name": "Example — cusp", "text": "`f(x) = ∛(x²)` at `0`. Continuous.\n`f'(x) = 2/(3∛x)` → `+∞` from the right, `−∞` from the left. Not differentiable." },
+    { "id": "st_bi_dvrule11", "cat": "example", "name": "Example — undefined formula, still differentiable", "text": "`f(x) = √(x⁴)` at `0`.\nThe chain rule gives `4x³/(2√(x⁴))`, undefined at `0`. But `√(x⁴) = x²`, and `lim_(x→0) f'(x) = 0`, so `f'(0) = 0`. Differentiable." },
+    { "id": "st_bi_dvrule12", "cat": "example", "name": "Example — oscillation, by definition", "text": "`f(x) = x·sin(1/x)`, `f(0) = 0`.\nQuotient: `(f(x) − 0)/(x − 0) = sin(1/x)`, no limit. Not differentiable.\n\n`f(x) = x²·sin(1/x)`, `f(0) = 0`.\nQuotient: `x·sin(1/x) → 0` (zero times bounded), so `f'(0) = 0`, although `f'(x) = 2x·sin(1/x) − cos(1/x)` has no limit at `0`." }
+  ] },
+{ "id": "pp_bi_dvpiece", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Differentiability at a breakpoint",
+  "description": "When the arithmetic can't be used: differentiate each piece and compare the limits where the pieces connect.",
+  "uses": [["c", "dv3", "Limit of the derivative"], ["c", "dv3", "Differentiable implies continuous"], ["c", "dv4", "When you can't use the arithmetic"], ["c", "fn2", "Piecewise function"], ["c", "fn2", "Absolute value as a piecewise function"], ["c", "lm5", "Continuity at a point"]],
+  "parts": [
+    { "id": "st_bi_dvpiece1", "cat": "stage", "name": "Continuity first", "text": "Check `f` is continuous at the breakpoint `a`: both one-sided limits equal `f(a)`. If not → **not differentiable**, even if the slopes match." },
+    { "id": "st_bi_dvpiece2", "cat": "stage", "name": "Differentiate each piece", "text": "Find `f'` on each open side of `a`, with the usual formulas. Not at `a` itself." },
+    { "id": "st_bi_dvpiece3", "cat": "stage", "name": "Limit from each side", "text": "Calculate `lim_(x→a⁻) f'(x)` and `lim_(x→a⁺) f'(x)`." },
+    { "id": "st_bi_dvpiece4", "cat": "stage", "name": "Compare", "text": "Equal and finite → **differentiable**, `f'(a)` = that limit.\nDifferent → corner, **not differentiable**.\nInfinite → **not differentiable**.\nNo limit → use the definition." },
+    { "id": "st_bi_dvpiece5", "cat": "example", "name": "Example — differentiable", "text": "f(x) = { x² ; x ≤ 1\n{ 2x − 1 ; x > 1\nContinuous: `1` from both sides. Left: `2x → 2`. Right: `2`. So `f'(1) = 2`." },
+    { "id": "st_bi_dvpiece6", "cat": "example", "name": "Example — corner", "text": "f(x) = { x² ; x ≤ 1\n{ 3x − 2 ; x > 1\nContinuous: `1` from both sides. Left: `2`. Right: `3`. Not differentiable at `1`." },
+    { "id": "st_bi_dvpiece7", "cat": "example", "name": "Example — the slopes match but it jumps", "text": "f(x) = { x² ; x ≤ 1\n{ x² + 1 ; x > 1\nSlopes: `2` and `2`. But left limit `1`, right limit `2`: not continuous, so not differentiable." },
+    { "id": "st_bi_dvpiece8", "cat": "example", "name": "Example — find the parameters", "text": "f(x) = { x² + a ; x ≤ 1\n{ b·x ; x > 1\nContinuity: `1 + a = b`. Slopes: `2 = b`. So `b = 2`, `a = 1`." },
+    { "id": "st_bi_dvpiece9", "cat": "example", "name": "Example — absolute value", "text": "`f(x) = x·|x|` at `0`. The arithmetic can't be used, because `|x|` is not differentiable at `0`.\nf(x) = { x² ; x ≥ 0\n{ −x² ; x < 0\nContinuous. Right: `2x → 0`. Left: `−2x → 0`. So `f'(0) = 0`." }
+  ] },
+{ "id": "pp_bi_dvlong", "v": 1, "subject": "f:der", "kind": "action",
+  "name": "Derivative at a point of a very long function",
+  "description": "Name part of the function as its own function, so the long part cancels and never has to be differentiated.",
+  "uses": [["c", "dv2", "Product and quotient"], ["c", "dv2", "Composite functions (chain rule)"], ["c", "dv1", "Derivative at a point"], ["c", "lm2", "Zero times bounded"]],
+  "parts": [
+    { "id": "st_bi_dvlong1", "cat": "stage", "name": "Name the parts", "text": "Write `f(x) = u(x)·v(x)` with `u` the short factor and `v` the long one. Or `f(x) = h(g(x))` with `g` the long inner function." },
+    { "id": "st_bi_dvlong2", "cat": "stage", "name": "Write the rule at the point only", "text": "Product: `f'(a) = u'(a)·v(a) + u(a)·v'(a)`\nChain: `f'(a) = h'(g(a))·g'(a)`" },
+    { "id": "st_bi_dvlong3", "cat": "stage", "name": "Look for zeros", "text": "`u(a) = 0` → `f'(a) = u'(a)·v(a)`: only the value of `v` is needed.\n`u(a) = 0` and `u'(a) = 0` → `f'(a) = 0`, whatever `v` is.\n`h'(g(a)) = 0` → `f'(a) = 0`, whatever `g'` is." },
+    { "id": "st_bi_dvlong4", "cat": "stage", "name": "If v is not differentiable at a", "text": "The product rule can't be used. With `u(a) = 0`, use the definition:\n`f'(a) = lim_(x→a) u(x)/(x − a) · v(x) = u'(a)·v(a)`\nThis only needs `v` continuous at `a`." },
+    { "id": "st_bi_dvlong5", "cat": "example", "name": "Example — the short part and its derivative are zero", "text": "`f(x) = sin²x·(eˣ + x⁷ + ln(x + 2))⁵` at `0`.\n`u = sin²x`: `u(0) = 0`, `u'(x) = 2·sin x·cos x`, so `u'(0) = 0`.\nTherefore `f'(0) = 0`, whatever the long term is.\nNote: `sin x` alone has `u(0) = 0` but `u'(0) = 1`, so with `sin x` the long term's value is still needed." },
+    { "id": "st_bi_dvlong6", "cat": "example", "name": "Example — only the short part is zero", "text": "`f(x) = (x − 1)·(x⁹ + 3x⁵ − x + 1)` at `1`.\n`u = x − 1`: `u(1) = 0`, `u' = 1`.\n`f'(1) = 1·v(1) = 1 + 3 − 1 + 1 = 4`" },
+    { "id": "st_bi_dvlong7", "cat": "example", "name": "Example — many factors", "text": "`f(x) = x(x − 1)(x − 2)…(x − 10)` at `0`.\n`u = x`, `v = (x − 1)…(x − 10)`.\n`f'(0) = 1·v(0) = (−1)(−2)…(−10) = 10!`" },
+    { "id": "st_bi_dvlong8", "cat": "example", "name": "Example — long inner function", "text": "`f(x) = (x⁵ + 3x³ + x − 5)⁶` at `1`.\n`g = x⁵ + 3x³ + x − 5`, `h = t⁶`, and `g(1) = 0`.\n`f'(1) = 6·g(1)⁵·g'(1) = 0`" },
+    { "id": "st_bi_dvlong9", "cat": "example", "name": "Example — v not differentiable", "text": "`f(x) = sin x·|x|` at `0`. `|x|` is not differentiable at `0`, so use the definition:\n`f(x)/x = (sin x)/x·|x| → 1·0 = 0`, so `f'(0) = 0`." }
+  ] },
+{ "id": "pp_bi_dvineq", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an inequality on an interval",
+  "description": "Compare the two sides at the start of the interval, then compare their derivatives.",
+  "uses": [["c", "dv7", "Monotonicity"], ["c", "dv7", "Mean value theorem"], ["c", "dv2", "Trigonometric functions"], ["c", "dv2", "Exponential and logarithmic functions"]],
+  "parts": [
+    { "id": "st_bi_dvineq1", "cat": "stage", "name": "One function", "text": "To prove `f(x) > g(x)` on `x > a`, define `h(x) = f(x) − g(x)` and prove `h > 0`. `h` must be continuous at the start `a`." },
+    { "id": "st_bi_dvineq2", "cat": "stage", "name": "Value at the start", "text": "Calculate `h(a)`. You need `h(a) ≥ 0`." },
+    { "id": "st_bi_dvineq3", "cat": "stage", "name": "Sign of the derivative", "text": "Show `h'(x) > 0` for `x > a`. `h' = 0` at single points is allowed.\nCan't see the sign of `h'`? Repeat the method on `h'`: check `h'(a)`, then the sign of `h''`." },
+    { "id": "st_bi_dvineq4", "cat": "stage", "name": "Conclude", "text": "`h` is strictly increasing, so `h(x) > h(a) ≥ 0` for `x > a`.\nThe opposite case: if `h(a) ≤ 0` and `h' < 0`, then `h < 0`." },
+    { "id": "st_bi_dvineq5", "cat": "example", "name": "Example — exponential", "text": "`eˣ > 1 + x` for `x > 0`.\n`h = eˣ − 1 − x`, `h(0) = 0`.\n`h' = eˣ − 1 > 0` for `x > 0`. So `h > 0`." },
+    { "id": "st_bi_dvineq6", "cat": "example", "name": "Example — sine", "text": "`sin x < x` for `x > 0`.\n`h = x − sin x`, `h(0) = 0`.\n`h' = 1 − cos x ≥ 0`, zero only at single points. So `h` is strictly increasing and `h > 0`." },
+    { "id": "st_bi_dvineq7", "cat": "example", "name": "Example — logarithm", "text": "`ln(1 + x) < x` for `x > 0`.\n`h = x − ln(1 + x)`, `h(0) = 0`.\n`h' = 1 − 1/(1 + x) = x/(1 + x) > 0`. So `h > 0`." },
+    { "id": "st_bi_dvineq8", "cat": "example", "name": "Example — needs the second derivative", "text": "`cos x > 1 − x²/2` for `x > 0`.\n`h = cos x − 1 + x²/2`, `h(0) = 0`.\n`h' = x − sin x`, `h'(0) = 0`.\n`h'' = 1 − cos x ≥ 0`, so `h' > 0` for `x > 0`, so `h > 0`." }
+  ] },
+{ "id": "pp_bi_dvloc", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Find the local extrema",
+  "description": "Find the critical points, then use the sign of the derivative on each side to decide maximum or minimum.",
+  "uses": [["c", "dv5", "Local extremum point"], ["c", "dv5", "Fermat's theorem"], ["c", "dv5", "Critical points and the first derivative test"], ["c", "dv7", "Monotonicity"], ["c", "c2", "Increasing / decreasing & sign charts"]],
+  "parts": [
+    { "id": "st_bi_dvloc1", "cat": "stage", "name": "Domain", "text": "Write the domain of `f`." },
+    { "id": "st_bi_dvloc2", "cat": "stage", "name": "Derivative", "text": "Find `f'` and factor it as far as you can." },
+    { "id": "st_bi_dvloc3", "cat": "stage", "name": "Critical points", "text": "Solve `f'(x) = 0`. Add the points of the domain where `f'` is undefined, including breakpoints." },
+    { "id": "st_bi_dvloc4", "cat": "stage", "name": "Sign table", "text": "Mark the critical points and domain gaps on a number line. Plug one value from each interval into `f'` and write `+` or `−`." },
+    { "id": "st_bi_dvloc5", "cat": "stage", "name": "Decide", "text": "`+` to `−`: maximum. `−` to `+`: minimum. Same sign: no extremum. Calculate `f` at each extremum to get the point." },
+    { "id": "st_bi_dvloc6", "cat": "example", "name": "Example — polynomial", "text": "`f(x) = x³ − 3x`, `f' = 3(x − 1)(x + 1)`.\nCritical: `x = ±1`.\nSigns: `x < −1`: `+` · `−1 < x < 1`: `−` · `x > 1`: `+`\nMaximum `(−1, 2)`, minimum `(1, −2)`." },
+    { "id": "st_bi_dvloc7", "cat": "example", "name": "Example — a critical point that is no extremum", "text": "`f(x) = x⁴ − 4x³`, `f' = 4x²(x − 3)`.\nCritical: `x = 0`, `x = 3`.\nSigns: `x < 0`: `−` · `0 < x < 3`: `−` · `x > 3`: `+`\n`x = 0`: no sign change, no extremum. Minimum `(3, −27)`." },
+    { "id": "st_bi_dvloc8", "cat": "example", "name": "Example — derivative undefined", "text": "`f(x) = ∛(x²)`, `f' = 2/(3∛x)`.\n`f'` is never `0` and is undefined at `0`, which is in the domain.\nSigns: `x < 0`: `−` · `x > 0`: `+`\nMinimum `(0, 0)`." },
+    { "id": "st_bi_dvloc9", "cat": "example", "name": "Example — absolute value", "text": "`f(x) = |x² − 1|`.\nf'(x) = { 2x ; |x| > 1\n{ −2x ; |x| < 1\nCritical: `x = 0` (`f' = 0`), `x = ±1` (undefined).\nSigns: `−`, `+`, `−`, `+`\nMinimum at `(−1, 0)` and `(1, 0)`, maximum `(0, 1)`." }
+  ] },
+{ "id": "pp_bi_dvabs", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Absolute extrema on a closed interval",
+  "description": "Compare the critical points and the two ends.",
+  "uses": [["c", "dv6", "Absolute extremum point"], ["c", "dv6", "Extreme value theorem"], ["c", "dv5", "Critical points and the first derivative test"]],
+  "parts": [
+    { "id": "st_bi_dvabs1", "cat": "stage", "name": "Conditions", "text": "Check `f` is continuous on the closed interval `[a, b]`. By the extreme value theorem, both absolute extrema exist." },
+    { "id": "st_bi_dvabs2", "cat": "stage", "name": "Candidates", "text": "Critical points inside `(a, b)`, plus `a` and `b`. No sign table needed." },
+    { "id": "st_bi_dvabs3", "cat": "stage", "name": "Compare values", "text": "Calculate `f` at every candidate. The largest value is the absolute maximum, the smallest is the absolute minimum." },
+    { "id": "st_bi_dvabs4", "cat": "example", "name": "Example — maximum at the end", "text": "`f(x) = x³ − 3x` on `[0, 3]`.\nCritical inside: `x = 1`.\n`f(0) = 0`, `f(1) = −2`, `f(3) = 18`\nAbsolute maximum `18` at `x = 3`, absolute minimum `−2` at `x = 1`." },
+    { "id": "st_bi_dvabs5", "cat": "example", "name": "Example — product", "text": "`f(x) = x·e⁻ˣ` on `[0, 2]`.\n`f' = (1 − x)·e⁻ˣ`, critical: `x = 1`.\n`f(0) = 0`, `f(1) = 1/e`, `f(2) = 2/e²`\nAbsolute maximum `1/e` at `x = 1`, absolute minimum `0` at `x = 0`." }
+  ] },
+{ "id": "pp_bi_dvinf", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Absolute extrema on an open interval or on ℝ",
+  "description": "The extreme value theorem doesn't apply, so use the limits at the ends of the domain.",
+  "uses": [["c", "dv6", "Functions that go to infinity at both ends"], ["c", "dv6", "Absolute extremum point"], ["c", "lm1", "Infinite limits and limits at infinity"], ["c", "lm3", "Polynomials and the biggest power"]],
+  "parts": [
+    { "id": "st_bi_dvinf1", "cat": "stage", "name": "Limits at the ends", "text": "Calculate the limit of `f` at both ends of the domain." },
+    { "id": "st_bi_dvinf2", "cat": "stage", "name": "What exists?", "text": "Both `+∞`: absolute minimum, no absolute maximum.\nBoth `−∞`: absolute maximum, no absolute minimum.\n`+∞` and `−∞`: neither.\nFinite limit: compare it with the values you find." },
+    { "id": "st_bi_dvinf3", "cat": "stage", "name": "Critical points", "text": "Find the critical points and calculate `f` at each." },
+    { "id": "st_bi_dvinf4", "cat": "stage", "name": "Conclude", "text": "The extremum that exists is at the critical point with the smallest (or largest) value." },
+    { "id": "st_bi_dvinf5", "cat": "example", "name": "Example — on ℝ, two minimum points", "text": "`f(x) = x⁴ − 2x²`. Both limits `+∞`, so there is an absolute minimum and no absolute maximum.\n`f' = 4x(x − 1)(x + 1)`, critical: `0`, `±1`.\n`f(0) = 0`, `f(±1) = −1`\nAbsolute minimum `−1`, reached at two points." },
+    { "id": "st_bi_dvinf6", "cat": "example", "name": "Example — open interval", "text": "`f(x) = x + 1/x` on `(0, ∞)`. Both limits `+∞`.\n`f' = 1 − 1/x²`, critical: `x = 1`, `f(1) = 2`.\nAbsolute minimum `2`. This proves `x + 1/x ≥ 2` for `x > 0`." },
+    { "id": "st_bi_dvinf7", "cat": "example", "name": "Example — no absolute extrema", "text": "`f(x) = x³ − 3x` on `ℝ`. Limits `−∞` and `+∞`, so neither exists. The local extrema at `±1` are only local." },
+    { "id": "st_bi_dvinf8", "cat": "example", "name": "Example — a finite limit", "text": "`f(x) = x·e⁻ˣ` on `ℝ`. `lim_(x→−∞) f = −∞`, so no absolute minimum.\n`lim_(x→∞) f = 0` and `f(1) = 1/e > 0`, so there is an absolute maximum. Only critical point: `x = 1`. Maximum `1/e`." },
+    { "id": "st_bi_dvinf9", "cat": "example", "name": "Example — using it in a proof", "text": "Prove `x⁴ − 2x² + 2 > 0` for all `x`.\nThe left side is `f + 2` with `f` from the first example. Its absolute minimum is `−1 + 2 = 1 > 0`." }
+  ] },
+{ "id": "pp_bi_dvconv", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Find convexity and inflection points",
+  "description": "Use the sign of the second derivative.",
+  "uses": [["c", "dv8", "Convex and concave"], ["c", "dv8", "Inflection point"]],
+  "parts": [
+    { "id": "st_bi_dvconv1", "cat": "stage", "name": "Domain and f''", "text": "Write the domain, then find `f'` and `f''`." },
+    { "id": "st_bi_dvconv2", "cat": "stage", "name": "Candidates", "text": "Solve `f''(x) = 0`, and add the points of the domain where `f''` is undefined." },
+    { "id": "st_bi_dvconv3", "cat": "stage", "name": "Sign table", "text": "Mark the candidates and domain gaps. Plug one value from each interval into `f''`. `+` convex, `−` concave." },
+    { "id": "st_bi_dvconv4", "cat": "stage", "name": "Inflection points", "text": "A candidate is an inflection point only if the sign changes and the point is in the domain." },
+    { "id": "st_bi_dvconv5", "cat": "example", "name": "Example — polynomial", "text": "`f(x) = x³ − 3x²`, `f'' = 6x − 6`.\nConcave for `x < 1`, convex for `x > 1`. Inflection point `(1, −2)`." },
+    { "id": "st_bi_dvconv6", "cat": "example", "name": "Example — no inflection", "text": "`f(x) = x⁴`, `f'' = 12x²`. Zero at `0`, but `+` on both sides. Convex everywhere, no inflection point." },
+    { "id": "st_bi_dvconv7", "cat": "example", "name": "Example — exponential", "text": "`f(x) = x·eˣ`, `f' = (x + 1)·eˣ`, `f'' = (x + 2)·eˣ`.\nConcave for `x < −2`, convex for `x > −2`. Inflection at `x = −2`." },
+    { "id": "st_bi_dvconv8", "cat": "example", "name": "Example — change outside the domain", "text": "`f(x) = 1/x`, `f'' = 2/x³`. Concave for `x < 0`, convex for `x > 0`. `0` is not in the domain, so no inflection point." }
+  ] },
+{ "id": "pp_bi_dv2nd", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Classify a critical point with the second derivative",
+  "description": "A quick alternative to the sign table.",
+  "uses": [["c", "dv8", "Second derivative test"], ["c", "dv5", "Critical points and the first derivative test"]],
+  "parts": [
+    { "id": "st_bi_dv2nd1", "cat": "stage", "name": "Critical points", "text": "Solve `f'(x) = 0`." },
+    { "id": "st_bi_dv2nd2", "cat": "stage", "name": "Plug into f''", "text": "`f''(a) > 0`: minimum. `f''(a) < 0`: maximum." },
+    { "id": "st_bi_dv2nd3", "cat": "stage", "name": "If f''(a) = 0", "text": "No conclusion. Go back to the sign table of `f'`." },
+    { "id": "st_bi_dv2nd4", "cat": "example", "name": "Example", "text": "`f(x) = x³ − 3x`, `f'' = 6x`.\n`f''(1) = 6 > 0`: minimum. `f''(−1) = −6 < 0`: maximum." },
+    { "id": "st_bi_dv2nd5", "cat": "example", "name": "Example — no conclusion", "text": "`f(x) = x⁴`: `f'(0) = 0`, `f''(0) = 0`. The sign table of `f' = 4x³` gives `−` then `+`: minimum." }
+  ] },
+{ "id": "pp_bi_dvcvx", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an inequality with convexity",
+  "description": "When one side is a line: it is a tangent or a chord of the other side.",
+  "uses": [["c", "dv8", "Inequalities from convexity"], ["c", "dv8", "Convex and concave"], ["c", "dv1", "What the derivative tells you"]],
+  "parts": [
+    { "id": "st_bi_dvcvx1", "cat": "stage", "name": "Spot the line", "text": "One side is a curve `f`, the other is a line. Find where the line touches the curve (tangent) or where it meets it (chord)." },
+    { "id": "st_bi_dvcvx2", "cat": "stage", "name": "Sign of f''", "text": "Show `f'' > 0` or `f'' < 0` on the interval." },
+    { "id": "st_bi_dvcvx3", "cat": "stage", "name": "Conclude", "text": "Convex: above its tangents, below its chords.\nConcave: below its tangents, above its chords." },
+    { "id": "st_bi_dvcvx4", "cat": "example", "name": "Example — tangent, convex", "text": "`eˣ ≥ 1 + x` for all `x`.\n`f = eˣ`, `f'' > 0`, convex. The tangent at `0` is `y = 1 + x`. So `f` is above it." },
+    { "id": "st_bi_dvcvx5", "cat": "example", "name": "Example — tangent, concave", "text": "`ln x ≤ x − 1` for `x > 0`.\n`f = ln x`, `f'' = −1/x² < 0`, concave. The tangent at `1` is `y = x − 1`. So `f` is below it." },
+    { "id": "st_bi_dvcvx6", "cat": "example", "name": "Example — chord", "text": "`sin x ≥ 2x/π` on `[0, π/2]`.\n`f = sin x`, `f'' = −sin x ≤ 0`, concave. The line joins `(0, 0)` and `(π/2, 1)`: it is a chord. So `f` is above it." }
+  ] },
+{ "id": "pp_bi_dvsketch", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Investigate a function and sketch it",
+  "description": "Put everything together: domain, limits, extrema, convexity, graph.",
+  "uses": [["c", "dv5", "Critical points and the first derivative test"], ["c", "dv8", "Convex and concave"], ["c", "dv8", "Inflection point"], ["c", "dv7", "Monotonicity"], ["c", "lm1", "Infinite limits and limits at infinity"], ["c", "fn1", "Domain and range"]],
+  "parts": [
+    { "id": "st_bi_dvsketch1", "cat": "stage", "name": "Domain and roots", "text": "Domain, intersections with the axes, and whether `f` is even or odd." },
+    { "id": "st_bi_dvsketch2", "cat": "stage", "name": "Limits", "text": "Limits at the ends of the domain and at domain gaps. They give the asymptotes." },
+    { "id": "st_bi_dvsketch3", "cat": "stage", "name": "First derivative", "text": "Sign table of `f'`: rising, falling, local extrema." },
+    { "id": "st_bi_dvsketch4", "cat": "stage", "name": "Second derivative", "text": "Sign table of `f''`: convex, concave, inflection points." },
+    { "id": "st_bi_dvsketch5", "cat": "stage", "name": "Draw", "text": "Mark the points, draw the asymptotes, join them following the tables." },
+    { "id": "st_bi_dvsketch6", "cat": "example", "name": "Example", "text": "`f(x) = x/(x² + 1)`\nDomain `ℝ`, odd, root at `0`, limits `0` at `±∞`.\n`f' = (1 − x²)/(x² + 1)²`: minimum `(−1, −1/2)`, maximum `(1, 1/2)`.\n`f'' = 2x(x² − 3)/(x² + 1)³`: inflection at `0`, `±√3`.\nConcave for `x < −√3`, convex on `(−√3, 0)`, concave on `(0, √3)`, convex for `x > √3`." }
+  ] },
+{ "id": "pp_bi_dvrol", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Check Rolle's conditions",
+  "description": "Check all three conditions, then find the point, or show why it doesn't exist.",
+  "uses": [["c", "dv7", "Rolle's theorem"], ["c", "dv7", "When a condition of Rolle's theorem fails"]],
+  "parts": [
+    { "id": "st_bi_dvrol1", "cat": "stage", "name": "Three conditions", "text": "1. Continuous on `[a, b]`, ends included.\n2. Differentiable on `(a, b)`.\n3. `f(a) = f(b)`." },
+    { "id": "st_bi_dvrol2", "cat": "stage", "name": "All hold", "text": "Rolle gives `c`. To find it, solve `f'(c) = 0` inside `(a, b)`." },
+    { "id": "st_bi_dvrol3", "cat": "stage", "name": "One fails", "text": "Rolle says nothing. Check `f'` directly: there may or may not be such a point." },
+    { "id": "st_bi_dvrol4", "cat": "example", "name": "Example — all hold", "text": "`f(x) = x² − 2x` on `[0, 2]`. Polynomial, `f(0) = f(2) = 0`.\n`f' = 2x − 2 = 0` → `c = 1`." },
+    { "id": "st_bi_dvrol5", "cat": "example", "name": "Example — not differentiable inside", "text": "`f(x) = |x − 1|` on `[0, 2]`. `f(0) = f(2) = 1`, but no derivative at `1`.\n`f' = ±1`: no such `c`." },
+    { "id": "st_bi_dvrol6", "cat": "example", "name": "Example — different end values, the point still exists", "text": "`f(x) = x²` on `[−1, 2]`. `f(−1) = 1`, `f(2) = 4`, so the theorem doesn't apply.\nStill `f'(0) = 0`: the theorem doesn't promise it, but it doesn't forbid it." }
+  ] },
+{ "id": "pp_bi_dvrolpr", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an equation with f' has a solution",
+  "description": "Build a helper function whose derivative is the expression, then apply Rolle's theorem.",
+  "uses": [["c", "dv7", "Rolle's theorem"], ["c", "dv7", "Mean value theorem"], ["c", "dv2", "Product and quotient"]],
+  "parts": [
+    { "id": "st_bi_dvrolpr1", "cat": "stage", "name": "Write it as = 0", "text": "Move everything to one side: the claim is `∃c :` expression `= 0`." },
+    { "id": "st_bi_dvrolpr2", "cat": "stage", "name": "Find the helper g", "text": "Choose `g` whose derivative is that expression, up to a nonzero factor:\n`f'(c) + f(c) = 0` ← `g = eˣ·f`\n`c·f'(c) + f(c) = 0` ← `g = x·f`\n`f'(c) = k` ← `g = f − k·x`" },
+    { "id": "st_bi_dvrolpr3", "cat": "stage", "name": "Apply Rolle to g", "text": "Check the three conditions for `g`, then `g'(c) = 0` gives the claim." },
+    { "id": "st_bi_dvrolpr4", "cat": "example", "name": "Example — e^x as a helper", "text": "`f` continuous on `[0, 1]`, differentiable on `(0, 1)`, `f(0) = f(1) = 0`. Prove `∃c : f'(c) + f(c) = 0`.\n`g = eˣ·f`, `g(0) = g(1) = 0`.\nRolle: `g'(c) = eᶜ·(f'(c) + f(c)) = 0`. Since `eᶜ ≠ 0`, done." },
+    { "id": "st_bi_dvrolpr5", "cat": "example", "name": "Example — x as a helper", "text": "`f` as above with `f(1) = 0`. Prove `∃c : c·f'(c) + f(c) = 0`.\n`g = x·f`, `g(0) = 0`, `g(1) = 0`. Rolle: `g'(c) = f(c) + c·f'(c) = 0`." },
+    { "id": "st_bi_dvrolpr6", "cat": "example", "name": "Example — twice", "text": "`f` twice differentiable, `f(a) = f(b) = f(d)` with `a < b < d`. Prove `∃c : f''(c) = 0`.\nRolle on `[a, b]` and `[b, d]`: `f'(c₁) = f'(c₂) = 0`.\nRolle on `f'` on `[c₁, c₂]`: `f''(c) = 0`." }
+  ] },
+{ "id": "pp_bi_dvr1", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an equation has exactly one root",
+  "description": "Existence from the intermediate value theorem, uniqueness from the derivative.",
+  "uses": [["c", "dv7", "Roots of f and roots of f'"], ["c", "dv7", "Monotonicity"], ["c", "lm8", "A root between a sign change"]],
+  "parts": [
+    { "id": "st_bi_dvr11", "cat": "stage", "name": "Make it = 0", "text": "Define `h(x) = 0` by moving everything to one side." },
+    { "id": "st_bi_dvr12", "cat": "stage", "name": "At least one", "text": "Find `a`, `b` with `h(a)·h(b) < 0`, or use the limits at the ends. By the IVT there is a root." },
+    { "id": "st_bi_dvr13", "cat": "stage", "name": "At most one", "text": "Show `h' > 0` everywhere, or `h' < 0` everywhere. `h` is strictly monotonic, so it can't hit `0` twice.\nBy contradiction: two roots would give a root of `h'` by Rolle." },
+    { "id": "st_bi_dvr14", "cat": "example", "name": "Example — polynomial", "text": "`x³ + x − 1 = 0`.\n`h(0) = −1`, `h(1) = 1`: a root exists.\n`h' = 3x² + 1 > 0`: exactly one." },
+    { "id": "st_bi_dvr15", "cat": "example", "name": "Example — exponential", "text": "`eˣ + x = 0`.\n`h(−1) = 1/e − 1 < 0`, `h(0) = 1 > 0`.\n`h' = eˣ + 1 > 0`: exactly one." },
+    { "id": "st_bi_dvr16", "cat": "example", "name": "Example — two sides", "text": "`cos x = 2x`. `h = cos x − 2x`.\n`h(0) = 1 > 0`, `h(1) = cos 1 − 2 < 0`.\n`h' = −sin x − 2 < 0`: exactly one." }
+  ] },
+{ "id": "pp_bi_dvr2", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Count roots with the derivative's roots",
+  "description": "Rolle bounds the number of roots from above, the IVT from below.",
+  "uses": [["c", "dv7", "Roots of f and roots of f'"], ["c", "dv7", "Rolle's theorem"], ["c", "lm8", "A root between a sign change"]],
+  "parts": [
+    { "id": "st_bi_dvr21", "cat": "stage", "name": "Roots of f'", "text": "Differentiate and count the roots of `f'`, say `k`. Still hard? Differentiate again: each derivative raises the bound by one." },
+    { "id": "st_bi_dvr22", "cat": "stage", "name": "Upper bound", "text": "`f` has at most `k + 1` roots." },
+    { "id": "st_bi_dvr23", "cat": "stage", "name": "Lower bound", "text": "Find points with opposite signs. Each sign change gives a root by the IVT." },
+    { "id": "st_bi_dvr24", "cat": "stage", "name": "Conclude", "text": "If both bounds match, that is the exact number of roots." },
+    { "id": "st_bi_dvr25", "cat": "example", "name": "Example — exactly three", "text": "`f(x) = x⁵ − 5x + 1`.\n`f' = 5x⁴ − 5`, roots `±1`, so at most `3`.\n`f(−2) = −21`, `f(0) = 1`, `f(1) = −3`, `f(2) = 23`: three sign changes.\nExactly `3` roots." },
+    { "id": "st_bi_dvr26", "cat": "example", "name": "Example — differentiate three times", "text": "`f(x) = eˣ − ax² − bx − c` has at most `3` roots, for any `a`, `b`, `c`.\n`f''' = eˣ` has no roots, so `f''` has at most `1`, `f'` at most `2`, `f` at most `3`." },
+    { "id": "st_bi_dvr27", "cat": "example", "name": "Example — a polynomial with all real roots", "text": "`P` of degree `n` has `n` different real roots. Then `P'` has `n − 1` different real roots.\nRolle gives one between each neighbouring pair, and `P'` has degree `n − 1`, so there are no others." }
+  ] },
+{ "id": "pp_bi_dvr3", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Number of roots with a parameter",
+  "description": "Separate the parameter, then read the number of solutions from the shape of the function.",
+  "uses": [["c", "dv5", "Critical points and the first derivative test"], ["c", "dv7", "Monotonicity"], ["c", "lm8", "Intermediate value theorem"], ["c", "lm1", "Infinite limits and limits at infinity"]],
+  "parts": [
+    { "id": "st_bi_dvr31", "cat": "stage", "name": "Separate", "text": "Write the equation as `f(x) = k`, with the parameter alone on one side." },
+    { "id": "st_bi_dvr32", "cat": "stage", "name": "Shape of f", "text": "Find the intervals of increase and decrease, the local extrema, and the limits at the ends." },
+    { "id": "st_bi_dvr33", "cat": "stage", "name": "Count", "text": "On each monotonic interval, `f(x) = k` has one solution if `k` is between the end values, none otherwise. Add them up for each range of `k`." },
+    { "id": "st_bi_dvr34", "cat": "example", "name": "Example — cubic", "text": "`x³ − 3x = k`. Maximum `(−1, 2)`, minimum `(1, −2)`, limits `−∞` and `+∞`.\n`k > 2` or `k < −2`: `1` root\n`k = ±2`: `2` roots\n`−2 < k < 2`: `3` roots" },
+    { "id": "st_bi_dvr35", "cat": "example", "name": "Example — quartic", "text": "`x⁴ − 4x³ + k = 0`, so `f(x) = x⁴ − 4x³ = −k`.\n`f` decreases until `x = 3`, then increases. Minimum `−27`, limits `+∞`.\n`k > 27`: no roots · `k = 27`: `1` root · `k < 27`: `2` roots" }
   ] }
 ]
 </script>
@@ -4362,7 +5191,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B109</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B110</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6388,7 +7217,9 @@ function __detabaseMain() {
     fn: { title: "Functions — for Calculus 1",
       sub: 'What a function is, piecewise and absolute-value functions, trig with an inner argument, composition.' },
     lim: { title: "Limits and continuity — for Calculus 1",
-      sub: 'Limits, their arithmetic and calculation, L\'Hôpital, continuity and the intermediate value theorem.' }
+      sub: 'Limits, their arithmetic and calculation, L\'Hôpital, continuity and the intermediate value theorem.' },
+    der: { title: "Derivatives — for Calculus 1",
+      sub: 'The derivative, its formulas, differentiability, extrema, Rolle and the mean value theorem, convexity.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
