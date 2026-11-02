@@ -893,6 +893,21 @@
   .em-libbar { margin: 0 0 12px; }
   .sl-head { margin: 22px 0 0; font-size: 1.1rem; }
   .cc-credit { margin-top: 18px; font-size: .74rem; }
+  .course-sw { align-self: flex-start; min-height: 40px; margin: 6px 0; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-secondary); font: inherit; font-size: .84rem; font-weight: 600; cursor: pointer; }
+  .course-sw.on { border-color: var(--ct); background: color-mix(in srgb, var(--ct) 18%, var(--surface-1)); color: var(--text-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--ct) 35%, transparent); }
+  .cs-ctl { min-height: 36px; font-size: .8rem; }
+  .cs-badges { display: inline-flex; gap: 3px; flex-shrink: 0; }
+  .cs-badges:empty { display: none; }
+  .cs-extra, .cs-chip { padding: 0 6px; border-radius: 999px; font-size: .64rem; font-weight: 700; letter-spacing: .03em; line-height: 1.6; white-space: nowrap; }
+  .cs-extra { border: 1px dashed var(--border-strong); color: var(--text-muted); }
+  .cs-chip { border: 1px solid var(--ct); color: var(--text-secondary); background: color-mix(in srgb, var(--ct) 12%, transparent); }
+  .cs-row, .cs-srow, .cs-ghead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 4px 0; }
+  .cs-row b { flex: 1; }
+  .cs-ghead { margin-top: 12px; border-bottom: 1px solid var(--border); }
+  .cs-srow > span { flex: 1 1 160px; }
+  .cs-pick { min-height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: .8rem; cursor: pointer; }
+  .cs-pick.on { border-color: var(--ct, var(--accent)); background: color-mix(in srgb, var(--ct, var(--accent)) 16%, transparent); font-weight: 700; }
+  .cs-hint { margin: 6px 0 0; font-size: .8rem; }
   .ue-plain > .ue-head { display: none; }
   .ed-on .ue-plain > .ue-head, .sh-editing .ue-plain > .ue-head { display: flex; }
   .bi-over .cp-part > :not(.ue-extra) { display: none; }
@@ -2349,6 +2364,7 @@
     <button data-top="planner"><span class="ficon">🗓️</span>Planner</button>
     <button data-top="coath"><span class="ficon">🎓</span>Coath Inc.</button>
   </nav>
+  <button type="button" id="courseSw" class="course-sw" title="show one course only, or everything">🎓 Everything</button>
   <div class="add-row" id="addFolderRow">
     <button class="add-btn" data-add="folder">+ Folder</button>
     <form class="add-form" hidden>
@@ -2489,7 +2505,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B114</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B115</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -2504,6 +2520,7 @@
       <button id="psSource" type="button" class="btn-quiet">🖼 Source picture</button>
       <button id="psEdit" type="button" class="btn-quiet">✎ Open for editing</button>
       <button id="psRename" type="button" class="btn-quiet">✎ Rename</button>
+      <button id="psCourse" type="button" class="btn-quiet cs-ctl" hidden></button>
       <button id="psSummary" type="button" class="btn-quiet">📋 Summary</button>
       <button id="psBld" type="button" class="btn-primary" hidden>＋ Add to sheet</button>
       <button id="psOver" type="button" class="btn-quiet" hidden>↺ Reset to original</button>
@@ -2828,6 +2845,7 @@ var pe=Object.defineProperty;var ge=e=>pe(e,"__esModule",{value:!0});var de=(e,t
 <script>
 function __detabaseMain() {
   "use strict";
+  var bootHash = location.hash;          // read before anything redraws: a redraw rewrites the address
   var TAU = Math.PI * 2;
   var $ = function (id) { return document.getElementById(id); };
 
@@ -4522,6 +4540,8 @@ function __detabaseMain() {
       if (p.cardTags) store.cardTags = p.cardTags;
       if (p.strats) store.strats = p.strats;
       if (p.biOver) store.biOver = p.biOver;
+      if (p.courses) store.courses = p.courses;
+      if (p.courseOf) store.courseOf = p.courseOf;
       if (p.conceptLinks) store.conceptLinks = p.conceptLinks;
       if (p.methodKinds) store.methodKinds = p.methodKinds;
       if (p.partCats) store.partCats = p.partCats;
@@ -4953,7 +4973,7 @@ function __detabaseMain() {
   // one folder: its head, then (while open) its folders and its subjects
   function treeGroupEl(gid) {
     var custom = !BUILTIN_GROUPS[gid];
-    var keys = groupSubjectKeys(gid), subs = groupKidsOf(gid);
+    var keys = groupSubjectKeys(gid).filter(function (k) { return courseSubjectOn(k); }), subs = groupKidsOf(gid);
     var wrap = document.createElement("div");
     wrap.className = "tree-group" + (isGroupClosed(gid) ? "" : " open");
     wrap.dataset.group = gid;
@@ -5113,7 +5133,7 @@ function __detabaseMain() {
         else libMoved("Moved “" + subjectName(drag.id) + "” to " + groupName(gid), function () { return subjectToGroup(drag.id, gid, null); });
       } });
 
-    var subs = groupKidsOf(gid), keys = groupSubjectKeys(gid);
+    var subs = groupKidsOf(gid), keys = groupSubjectKeys(gid).filter(function (k) { return courseSubjectOn(k); });
     if (subs.length) {
       host.insertAdjacentHTML("beforeend", '<h3 class="fp-h">Folders <span class="side-count">' + subs.length + '</span></h3>');
       var fg = document.createElement("div");
@@ -5166,6 +5186,7 @@ function __detabaseMain() {
     libMenu(anchor, [
       { label: "✎ Rename", run: function () { folderRename(gid); } },
       { label: "↪ Move to…", run: function () { folderMoveTo(gid); } },
+      { label: "🎓 Course for all its subjects…", run: function () { var ks = groupSubjectKeysDeep(gid); if (ks.length) courseMenu(anchor, ks.map(function (k) { return { lvl: "s", id: k }; })); } },
       custom ? { sep: true } : null,
       custom ? { label: "Delete folder…", danger: true, run: function () { var up = groupParentOf(gid); delGroup(gid); if (!groupExists(gid)) { if (up) selectGroup(up); else openMiningScreen(); } } } : null
     ].filter(Boolean));
@@ -5223,7 +5244,7 @@ function __detabaseMain() {
 
   // ---- master view update ----
   function applyView() {
-    bldRender();
+    bldRender(); courseSwRender();
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
     var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
@@ -10029,6 +10050,7 @@ function __detabaseMain() {
   function cardTagsEl(cardId, editable) {
     var d = document.createElement("span");
     d.className = "cd-tags no-drag";
+    d.appendChild(courseBadgeEl({ lvl: "c", id: cardId }));
     cardTagsOf(cardId).forEach(function (t) {
       var x = document.createElement("span");
       x.className = "cd-tag"; x.textContent = t;
@@ -10138,7 +10160,8 @@ function __detabaseMain() {
     };
     return bar;
   }
-  function cardSelActions() { return [{ label: "🏷 Add a tag…", run: function (ids) { cardTagsEdit(ids); } }]; }
+  function cardSelActions() { return [{ label: "🏷 Add a tag…", run: function (ids) { cardTagsEdit(ids); } },
+    { label: "🎓 Set course…", run: function (ids, b) { courseMenu(b, ids.map(function (id) { return { lvl: "c", id: id }; })); } }]; }
   // every tile of one group at once
   function selAllBtn(sel, ids, scopeEl) {
     var ab = document.createElement("button");
@@ -10160,6 +10183,7 @@ function __detabaseMain() {
     var ref = { lvl: "c", id: activeSub.id }, pl = libPlace(ref);
     var acts = subHeadEl(host, { label: "‹ " + tabLabel(pl.p), title: "back to the concept", run: function () { openConceptPage(pl.p, ref.id); } }, cardLabel(ref.id));
     acts.appendChild(cardTagsEl(ref.id, true));
+    acts.appendChild(courseCtlEl(ref));
     var editing = cardEditing === ref.id, over = biOverOf(ref.id);
     acts.appendChild(actBtn(editing ? "✓ Done" : "✎ Edit", editing ? "stop editing" : "change this card", function () {
       if (editing) { edFinish(); return; }
@@ -10290,7 +10314,7 @@ function __detabaseMain() {
   // ============================================================
   function renderConceptPage(host) {
     var tref = { lvl: "t", id: activeSub.id }, key = subSubjectOf(activeSub);
-    var cards = libKids(tref), sel = selecting("t|" + tref.id);
+    var cards = libKids(tref).filter(function (c) { return courseIs(c); }), sel = selecting("t|" + tref.id);
     if (sel) sel.allPaints = [];
     var acts = subHeadEl(host, { label: "‹ " + subjectName(key), title: "back to the subject", run: function () { openTabRef(tref.id); } }, tabLabel(tref.id));
     acts.appendChild(actBtn("📋 Summary", "every card of this concept on one page", function () { openSub("csummary", tref.id); }));
@@ -10459,6 +10483,7 @@ function __detabaseMain() {
         if (g.kicker) h.appendChild(actBtn(g.kicker, "open it", g.open, "ls-kicker"));
         if (g.title && g.open && !g.kicker) h.appendChild(actBtn(g.title, "open it", g.open, "ls-gopen"));
         else if (g.title) { var gt = document.createElement("span"); gt.className = "ls-gtitle"; gt.textContent = g.title; h.appendChild(gt); }
+        if (fold) h.appendChild(courseBadgeEl({ lvl: "t", id: g.tab }));
         if (fold) h.insertAdjacentHTML("beforeend", '<span class="side-count">' + g.items.filter(function (el) { return el.__ref; }).length + '</span>');
         sec.appendChild(h);
       }
@@ -10514,12 +10539,12 @@ function __detabaseMain() {
       empty: tabId ? "No cards in this concept yet." : "No cards in this subject yet.",
       filters: filters,
       groups: function (off) {
-        var tabs = tabId ? [{ lvl: "t", id: tabId }] : libKids({ lvl: "s", id: key }).filter(function (t) { return !off.concept[t.id]; });
+        var tabs = tabId ? [{ lvl: "t", id: tabId }] : libKids({ lvl: "s", id: key }).filter(function (t) { return !off.concept[t.id] && courseTabOn(t); });
         return tabs.map(function (t) {
           return {
             title: tabId ? null : tabLabel(t.id), tab: t.id,
             open: function () { openConceptPage(t.id); },
-            items: libKids(t).filter(function (c) { return cardShows(c.id, off.part); }).map(function (c) { return cardSumEl(c, off.part); })
+            items: libKids(t).filter(function (c) { return courseIs(c) && cardShows(c.id, off.part); }).map(function (c) { return cardSumEl(c, off.part); })
           };
         });
       }
@@ -10571,6 +10596,7 @@ function __detabaseMain() {
       filters: filters,
       groups: function (off, w) {
         var pages = one ? [one] : methodsInOrder(key).filter(function (pg) {
+          if (!courseIs({ lvl: "p", id: pg.id })) return false;
           var f = methodFolderOf(pg);
           return !off.kind[pg.kind || "none"] && !off.method[pg.id] && !(off.folder || {})[f ? f.id : "none"];
         });
@@ -10639,7 +10665,7 @@ function __detabaseMain() {
       filters: kindFilters(keys),
       groups: function (off, w) {
         var out = [];
-        keys.filter(function (k) { return !off.subject[k]; }).forEach(function (k) {
+        keys.filter(function (k) { return !off.subject[k] && courseSubjectOn(k); }).forEach(function (k) {
           var mine = [];
           if (!off.show.c) mine = mine.concat(conceptsSumSpec(k, null).groups({ concept: {}, part: off.part }, w));
           if (!off.show.m) mine = mine.concat(methodsSumSpec(k, null).groups({ cat: off.cat, kind: off.kind, method: {}, folder: {} }, w));
@@ -10845,6 +10871,7 @@ function __detabaseMain() {
       return { kind: kind, obj: obj, links: links, here: here, own: obj.subject === key };
     }
     function shown(it) {
+      if (!courseIs({ lvl: "p", id: it.obj.id })) return false;
       if (!it.links.length) return it.own && !st.noUnlinked;
       // one of this subject's own: hidden only when every card it is connected to is filtered out (a card of
       // another subject is never filtered here); another subject's: shown by its cards here, so hidden with them
@@ -11054,7 +11081,7 @@ function __detabaseMain() {
       var refs = [];
       tabs.forEach(function (t) {
         if (spTabState(st, t.id) === "off") return;
-        if (show.c) libKids(t).filter(function (c) { return spCardOn(st, c) && cardShows(c.id, pOff); }).forEach(function (c) {
+        if (show.c) libKids(t).filter(function (c) { return spCardOn(st, c) && courseIs(c) && cardShows(c.id, pOff); }).forEach(function (c) {
           var r = { lvl: "c", id: c.id };
           if (Object.keys(pOff).length) r.off = pOff;
           refs.push(r);
@@ -11067,7 +11094,7 @@ function __detabaseMain() {
     if (!tabs.length) body.innerHTML = '<p class="muted sp-empty">No concepts yet — tap “＋ Card” to crop the first card out of a document.</p>';
     tabs.forEach(function (t) {
       if (spTabState(st, t.id) === "off") return;
-      var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
+      var cards = libKids(t).filter(function (c) { return spCardOn(st, c) && courseIs(c); });
       var tabLinks = at[refKey(t)] || [];
       var shown = cards.filter(function (c) { return (show.c && cardShows(c.id, pOff)) || (at[refKey(c)] || []).length; });
       if (filtering && !shown.length && !tabLinks.length) return;
@@ -11115,7 +11142,7 @@ function __detabaseMain() {
   // ---- Concepts: every concept with its cards as tiles ----
   function spConceptsView(key, st, host) {
     var filtering = spChips(key, st).length > 0;
-    var tabs = libKids({ lvl: "s", id: key }).filter(function (t) { return spTabState(st, t.id) !== "off"; });
+    var tabs = libKids({ lvl: "s", id: key }).filter(function (t) { return spTabState(st, t.id) !== "off" && courseTabOn(t); });
     var sel = selecting("c|" + key), methods = cardMethodsMap();
     if (sel) sel.allPaints = [];
     var bar = document.createElement("div");
@@ -11136,7 +11163,7 @@ function __detabaseMain() {
     list.className = "cc-list";
     if (!tabs.length) list.innerHTML = '<div class="side-empty"><b>No concepts yet.</b> Tap “＋ Concept”, or “＋ Card” to crop the first card out of your notes.</div>';
     tabs.forEach(function (t) {
-      var cards = libKids(t).filter(function (c) { return spCardOn(st, c); });
+      var cards = libKids(t).filter(function (c) { return spCardOn(st, c) && courseIs(c); });
       if (filtering && !cards.length) return;           // filtering: only the concepts that still have cards
       var closed = conceptClosed("tiles", t.id);
       var sec = document.createElement("section");
@@ -11147,6 +11174,7 @@ function __detabaseMain() {
       head.innerHTML = '<button type="button" class="cc-caret" aria-expanded="' + !closed + '" title="' + (closed ? "show" : "hide") + ' its cards"><span class="caret">▸</span></button>' +
         '<button type="button" class="cc-name" title="open the concept"><span class="cc-title"></span><span class="side-count">' + cards.length + '</span></button>';
       head.querySelector(".cc-title").textContent = tabLabel(t.id);
+      head.querySelector(".cc-name").appendChild(courseBadgeEl(t));
       head.querySelector(".cc-caret").addEventListener("click", function () {
         conceptToggle("tiles", t.id);
         saveStore(); renderSubjectPage();
@@ -11197,12 +11225,14 @@ function __detabaseMain() {
     host.appendChild(bar);
     if (sel) host.appendChild(selBarEl([
       { label: "↪ Move to subject…", run: function (ids) { methodPickSubject(ids.map(psPageById).filter(Boolean)); } },
-      { label: "Kind…", run: function (ids, b) { methodKindMenu(b, ids); } }
+      { label: "Kind…", run: function (ids, b) { methodKindMenu(b, ids); } },
+      { label: "🎓 Set course…", run: function (ids, b) { courseMenu(b, ids.map(function (id) { return { lvl: "p", id: id }; })); } }
     ]));
     if (!all.length && !mfOf(key).length) {
       host.insertAdjacentHTML("beforeend", '<div class="side-empty cc-list"><b>No methods yet.</b> Tap “＋ Method” to crop one out of a document, cut it into parts and attach the concepts it uses.</div>');
     } else {
-      var keep = st.need ? needs[st.need].test : null;
+      var need = st.need ? needs[st.need].test : null, cw = courseSw() !== "all";
+      var keep = need || cw ? function (pg) { return (!need || need(pg)) && courseIs({ lvl: "p", id: pg.id }); } : null;
       if (keep && !all.some(keep)) host.insertAdjacentHTML("beforeend", '<div class="side-empty cc-list"><b>' + (st.need === "kind" ? "Every method here has a kind." : "Every method here has a description.") + '</b> Tap “' + needs[st.need].label + '” again to see them all.</div>');
       else host.appendChild(methodsByFolderEl(key, { keep: keep, sel: sel }));
     }
@@ -12064,6 +12094,8 @@ function __detabaseMain() {
     $("psCrumb").textContent = tags.join(" · ");   // the subject is in the page subtitle; tags, if any, here
     $("psTitle").textContent = pg.name;
     $("psBld").hidden = !bldSheet();
+    var cctl = courseCtlEl({ lvl: "p", id: pg.id });
+    $("psCourse").hidden = !courses().length; $("psCourse").textContent = cctl.textContent;
     $("psOver").hidden = !pg.over;
     $("psOver").textContent = pg.overNew ? "↺ Reset to original (it changed in a newer build)" : "↺ Reset to original";
     var body = psBody(pg.id), legacy = !body.parts.length && !body.source;
@@ -14933,10 +14965,13 @@ function __detabaseMain() {
     }
     // the library — subjects and concepts, then cards (found by their title or their tags) and elements;
     // tapping one narrows the methods to those that use it
+    var hiddenN = 0;
+    function swOn(en) { var on = courseRefOn(en.ref); if (!on) hiddenN++; return on; }
     var lib = searchEntries(materialIndex(), q, function (en) {
       var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id).concat(libElements(en.ref.id).map(function (e) { return elWords(e.id); })) : [];
       return (en.name + " " + refPath(en.ref) + " " + tg.join(" ")).toLowerCase();
     });
+    lib = lib.filter(swOn);
     var found = 0;
     [["Concepts", ["s", "t"]], ["Cards", ["c", "e"]]].forEach(function (g) {
       var list = lib.filter(function (en) { return g[1].indexOf(en.ref.lvl) >= 0; }).slice(0, 8);
@@ -14952,7 +14987,8 @@ function __detabaseMain() {
       });
     });
     // methods — by name, description, kind, subject › folder, tags and the concepts they use
-    var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).slice(0, 8);
+    var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).filter(swOn).slice(0, 8);
+    if (hiddenN) box.insertAdjacentHTML("beforeend", '<p class="muted cs-hint">' + hiddenN + (hiddenN === 1 ? " more result is" : " more results are") + ' hidden by “' + escapeHtml(courseSwName(courseSw())) + '”.</p>');
     if (pages.length) {
       found += pages.length;
       section("Methods");
@@ -15030,15 +15066,15 @@ function __detabaseMain() {
     }
     // every concept the same size, so the map does not shift about as methods come and go
     function leaf(ref, name) { var n = node(ref, name); n.leaf = true; n.r = CT_LEAF; return n; }
-    var subjects = allSubjectKeys().map(function (sk) {
-      var sn = node({ lvl: "s", id: sk }, subjectName(sk), libTabs(sk).map(function (t) {
-        return node({ lvl: "t", id: t.id }, t.name, libCards(t.id).map(function (c) {
+    var subjects = allSubjectKeys().filter(function (sk) { return courseSubjectOn(sk); }).map(function (sk) {
+      var sn = node({ lvl: "s", id: sk }, subjectName(sk), libTabs(sk).filter(function (t) { return courseTabOn({ lvl: "t", id: t.id }); }).map(function (t) {
+        return node({ lvl: "t", id: t.id }, t.name, libCards(t.id).filter(function (c) { return courseIs({ lvl: "c", id: c.id }); }).map(function (c) {
           var ref = { lvl: "c", id: c.id };
           if (!byId(store.cards, c.id)) return leaf(ref, c.name);
           return node(ref, c.name, libElements(c.id).map(function (e) { return leaf({ lvl: "e", id: e.id }, e.name); }));
         }));
       }));
-      sn.methods = psPagesOf(sk).slice().sort(byName);     // its own methods: they sit inside its ring
+      sn.methods = psPagesOf(sk).filter(function (pg) { return courseIs({ lvl: "p", id: pg.id }); }).sort(byName);     // its own methods: they sit inside its ring
       return sn;
     });
     var root = node({ lvl: "root", id: "" }, "", subjects);
@@ -15806,6 +15842,7 @@ function __detabaseMain() {
     var top = t.querySelector(".cd-top");
     if (sel) top.insertAdjacentHTML("beforeend", '<span class="cd-check" aria-hidden="true"></span>');
     top.appendChild(methodKindLabel(pg, !sel));
+    top.appendChild(courseBadgeEl({ lvl: "p", id: pg.id }));
     if (!sel) {
       var dots = actBtn("⋯", "this method", function (e) { e.stopPropagation(); methodMenu(pg, dots); }, "lib-dots");
       t.querySelector(".cd-bottom").appendChild(dots);
@@ -15977,6 +16014,7 @@ function __detabaseMain() {
     }).map(function (r) {
       var it = { lvl: r.lvl, id: r.id };
       if (r.off) it.vis = { parts: JSON.parse(JSON.stringify(r.off)) };
+      if (courseSw() !== "all") (it.vis = it.vis || {}).course = courseSw();
       return it;
     });
     if (sm.arranged) add.forEach(function (r) { sheetInsert(sm.items, r); });   // a rearranged sheet: each in its natural place
@@ -16091,8 +16129,10 @@ function __detabaseMain() {
     }).map(function (r) {
       var it = { lvl: r.lvl, id: r.id };
       if (r.off) it.vis = { parts: JSON.parse(JSON.stringify(r.off)) };
+      if (courseSw() !== "all") (it.vis = it.vis || {}).course = courseSw();
       return it;
     });
+    if (courseSw() !== "all") label = label.replace(/ · (\d)/, " · " + courseSwName(courseSw()) + " · $1");
     if (items.length) sm.bld.adds.push({ id: uid("ad_"), label: label, items: items });
     return items.length;
   }
@@ -16321,6 +16361,7 @@ function __detabaseMain() {
   function sheetPasses(off, editing) {
     return function (r) {
       if (!refExists(r) || off.subject[libSubjectOf(r)]) return false;
+      if (!editing && r.vis && r.vis.course && !courseIs(r, r.vis.course)) return false;   // its course, as it was added
       var pg = sheetMethodOf(r);
       if (pg) {
         if (off.show.m || off.kind[pg.kind || "none"]) return false;
@@ -16418,10 +16459,19 @@ function __detabaseMain() {
       head.appendChild(actBtn("✕", "take it off this study sheet", function () {
         libMoved("Took “" + refLabel(r) + "” off the sheet", function () { sm.items = sm.items.filter(function (y) { return refKey(y) !== refKey(r); }); });
       }, "sh-x"));
-      if (sw && sw.length) {
+      if ((sw && sw.length) || courses().length) {
         var row = document.createElement("div");
         row.className = "sh-sw no-drag";
-        sw.forEach(function (p) {
+        if (courses().length) {
+          var cv = (r.vis && r.vis.course) || "all", cb = actBtn("🎓 " + courseSwName(cv), "which course this item shows", function () {
+            libMenu(cb, [{ head: "This item shows" }, { label: "Everything", on: cv === "all", run: function () { setC("all"); } }]
+              .concat(courses().map(function (c) { return { label: c.name + " only", dot: c.color, on: cv === c.id, run: function () { setC(c.id); } }; }))
+              .concat([{ label: "Extra only", on: cv === "x", run: function () { setC("x"); } }]));
+          }, "sh-swb" + (cv === "all" ? " off" : ""));
+          function setC(v) { libMoved("Course set on this item", function () { r.vis = r.vis || {}; if (v === "all") delete r.vis.course; else r.vis.course = v; if (!Object.keys(r.vis).length) delete r.vis; }); }
+          row.appendChild(cb);
+        }
+        (sw || []).forEach(function (p) {
           var isOff = !!itemPartsOff(r)[p.id];
           row.appendChild(actBtn((isOff ? "" : "✓ ") + p.name, isOff ? "show this part on this item" : "hide this part on this item", function () {
             libMoved((isOff ? "Showing " : "Hid ") + p.name + " on this item", function () { itemVisSet(r, "parts", p.id, !isOff); });
@@ -16565,6 +16615,193 @@ function __detabaseMain() {
   if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
 
   DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return refExists(r) && (r.lvl === "p" || refKids(r).length > 0); };
+
+  // ============================================================
+  // COURSES — what each course covers, and one switch that shows a course only
+  //   store.courses = [{ id, name, color }]
+  //   store.courseOf = { "<lvl>|<id>": [course id, …] | "x" }   "x" = Extra on purpose; none = take the parent's
+  //     (card → concept → subject, method → its subject, a part → its method); a subject with none = Extra
+  //   store.ui.course = "all" | a course id | "x" (Extra only) — a view only, it never changes anything
+  //   A sheet item made under the switch keeps it: item.vis.course.
+  // ============================================================
+  var COURSE_COLORS = ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#db2777", "#0891b2", "#dc2626", "#64748b"];
+  function courses() { store.courses = store.courses || []; return store.courses; }
+  function courseMap() { store.courseOf = store.courseOf || {}; return store.courseOf; }
+  function courseParent(ref) {
+    if (ref.lvl === "p") { var pg = psPageById(ref.id); return pg && pg.subject ? { lvl: "s", id: pg.subject } : null; }
+    return ref.lvl === "s" ? null : refParent(ref);
+  }
+  // → { ids: its courses (none = Extra), from: the ref the label is set on (null: nothing set anywhere) }
+  function courseLabel(ref) {
+    for (var r = ref, g = 0; r && g < 6; r = courseParent(r), g++) {
+      var o = courseMap()[refKey(r)];
+      if (o) return { ids: o === "x" ? [] : o.filter(function (id) { return byId(courses(), id); }), from: r };
+    }
+    return { ids: [], from: null };
+  }
+  function courseSw() { var s = store.ui && store.ui.course; return s && (s === "x" || byId(courses(), s)) ? s : "all"; }
+  function courseIs(ref, sw) {
+    sw = sw || courseSw();
+    if (sw === "all") return true;
+    var ids = courseLabel(ref).ids;
+    return sw === "x" ? !ids.length : ids.indexOf(sw) >= 0;
+  }
+  // a container stays when something inside it matches
+  function courseTabOn(t, sw) { sw = sw || courseSw(); return sw === "all" || courseIs(t, sw) || libKids(t).some(function (c) { return courseIs(c, sw); }); }
+  function courseSubjectOn(k, sw) {
+    sw = sw || courseSw();
+    if (sw === "all") return true;
+    var s = { lvl: "s", id: k };
+    return courseIs(s, sw) || libKids(s).some(function (t) { return courseTabOn(t, sw); }) || psPagesOf(k).some(function (pg) { return courseIs({ lvl: "p", id: pg.id }, sw); });
+  }
+  function courseRefOn(ref, sw) { return ref.lvl === "s" ? courseSubjectOn(ref.id, sw) : ref.lvl === "t" ? courseTabOn(ref, sw) : courseIs(ref, sw); }
+  function courseSwName(sw) { return sw === "all" ? "Everything" : sw === "x" ? "Extra only" : (byId(courses(), sw) || { name: "?" }).name + " only"; }
+  function courseSet(sw) {
+    store.ui.course = sw;
+    saveStore();
+    courseSwRender(); applyView(); libAfterMove();
+  }
+  function courseSwRender() {
+    var b = $("courseSw"); if (!b) return;
+    var sw = courseSw(), c = sw !== "all" && sw !== "x" ? byId(courses(), sw) : null;
+    b.textContent = "🎓 " + courseSwName(sw);
+    b.classList.toggle("on", sw !== "all");
+    b.style.setProperty("--ct", c ? c.color : "var(--accent)");
+  }
+  function courseSwMenu(anchor) {
+    var sw = courseSw();
+    libMenu(anchor, [{ head: "Show" }, { label: "Everything", on: sw === "all", run: function () { courseSet("all"); } }]
+      .concat(courses().map(function (c) { return { label: c.name + " only", dot: c.color, on: sw === c.id, run: function () { courseSet(c.id); } }; }))
+      .concat([{ label: "Extra only", on: sw === "x", run: function () { courseSet("x"); } }, { sep: true },
+        { label: "⚙ Manage courses…", run: courseManage },
+        { label: "🎓 Label your subjects…", disabled: !courses().length, run: courseLabelSubjects }]));
+  }
+  function courseManage() {
+    var box = ovOpen("Courses");
+    function changed() { saveStore(); courseSwRender(); draw(); libAfterMove(); }
+    function draw() {
+      box.body.innerHTML = '<p class="lw-hint">A course you take (Calc 1, Physics 1…). Anything without one is Extra.</p><div class="cs-list"></div>' +
+        '<div class="lw-new"><input type="text" maxlength="40" placeholder="New course…"><button type="button" class="lw-primary">＋ Add</button></div>';
+      var list = box.body.querySelector(".cs-list");
+      courses().forEach(function (c, i) {
+        var row = document.createElement("div");
+        row.className = "cs-row";
+        var sw = actBtn("", "change its color", function () { c.color = COURSE_COLORS[(COURSE_COLORS.indexOf(c.color) + 1) % COURSE_COLORS.length]; changed(); }, "bd-sw");
+        sw.style.background = c.color;
+        row.appendChild(sw);
+        var nm = document.createElement("b"); nm.textContent = c.name; row.appendChild(nm);
+        row.appendChild(actBtn("✎", "rename", function () { askName("Rename course", "", c.name, function (n) { c.name = n; changed(); }); }, "ed-btn"));
+        var up = actBtn("▲", "move up", function () { courses().splice(i, 1); courses().splice(i - 1, 0, c); changed(); }, "ed-btn"); up.disabled = !i; row.appendChild(up);
+        var dn = actBtn("▼", "move down", function () { courses().splice(i, 1); courses().splice(i + 1, 0, c); changed(); }, "ed-btn"); dn.disabled = i === courses().length - 1; row.appendChild(dn);
+        row.appendChild(actBtn("🗑", "delete this course", function () { courseDelete(c); changed(); }, "ed-btn"));
+        list.appendChild(row);
+      });
+      var inp = box.body.querySelector("input");
+      function add() {
+        var v = inp.value.trim(); if (!v) return;
+        var first = !courses().length;
+        courses().push({ id: uid("co_"), name: v, color: COURSE_COLORS[courses().length % COURSE_COLORS.length] });
+        changed();
+        if (first && !(store.oneTime || {}).courseLabels) { box.close(true); courseLabelSubjects(); }
+      }
+      box.body.querySelector("button.lw-primary").addEventListener("click", add);
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") add(); });
+    }
+    draw();
+    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
+  }
+  // its items become Extra; nothing else changes
+  function courseDelete(c) {
+    if (!confirm("Delete the course “" + c.name + "”? What was labelled with it becomes Extra. Nothing else is deleted.")) return;
+    var m = courseMap();
+    Object.keys(m).forEach(function (k) {
+      if (m[k] === "x") return;
+      var had = m[k].indexOf(c.id) >= 0;
+      m[k] = m[k].filter(function (id) { return id !== c.id; });
+      if (!m[k].length) { if (had && k.slice(0, 2) !== "s|") m[k] = "x"; else delete m[k]; }
+    });
+    store.courses = courses().filter(function (x) { return x !== c; });
+    if (store.ui.course === c.id) store.ui.course = "all";
+    sumEnsure().forEach(function (sm) { sm.items.forEach(function (r) { if (r.vis && r.vis.course === c.id) { delete r.vis.course; if (!Object.keys(r.vis).length) delete r.vis; } }); });
+  }
+  // set a label on one or many: "inherit" | "x" | a course id to switch on or off
+  function courseApply(refs, v) {
+    var m = courseMap(), first = m[refKey(refs[0])], on = first && first !== "x" && first.indexOf(v) >= 0;
+    refs.forEach(function (r) {
+      var k = refKey(r);
+      if (v === "inherit") delete m[k];
+      else if (v === "x") { if (r.lvl === "s") delete m[k]; else m[k] = "x"; }
+      else {
+        var l = m[k] && m[k] !== "x" ? m[k].slice() : [];
+        if (on) l = l.filter(function (id) { return id !== v; }); else if (l.indexOf(v) < 0) l.push(v);
+        if (l.length) m[k] = l; else if (r.lvl === "s") delete m[k]; else m[k] = "x";
+      }
+    });
+    saveStore(); libAfterMove(); applyView();
+  }
+  function courseMenu(anchor, refs) {
+    if (!courses().length) { courseManage(); return; }
+    var r0 = refs[0], own = courseMap()[refKey(r0)], par = courseParent(r0), inh = par ? courseLabel(par) : { ids: [] };
+    var inhName = inh.ids.length ? inh.ids.map(function (id) { return byId(courses(), id).name; }).join(" + ") : "Extra";
+    libMenu(anchor, [{ head: refs.length > 1 ? "Course for " + refs.length : "Course" }]
+      .concat(r0.lvl === "s" ? [] : [{ label: "Same as above (" + inhName + ")", on: !own, run: function () { courseApply(refs, "inherit"); } }])
+      .concat(courses().map(function (c) { return { label: c.name, dot: c.color, on: !!own && own !== "x" && own.indexOf(c.id) >= 0, run: function () { courseApply(refs, c.id); } }; }))
+      .concat([{ label: "Extra", on: own === "x" || (r0.lvl === "s" && !own), run: function () { courseApply(refs, "x"); } }]));
+  }
+  // the small control on a page: its label, and where it comes from
+  function courseCtlEl(ref) {
+    if (!courses().length) return document.createElement("span");
+    var l = courseLabel(ref), name = l.ids.length ? l.ids.map(function (id) { return byId(courses(), id).name; }).join(" + ") : "Extra";
+    var from = l.from && refKey(l.from) !== refKey(ref) ? " · from the " + ({ s: "subject", t: "concept", c: "card", p: "method" }[l.from.lvl] || "") : "";
+    var b = actBtn("🎓 " + name + from, "which course this is part of", function () { courseMenu(b, [ref]); }, "cs-ctl no-drag");
+    return b;
+  }
+  // a quiet badge: "Extra", or the course chips when there is more than one course
+  function courseBadgeEl(ref) {
+    var d = document.createElement("span");
+    d.className = "cs-badges no-drag";
+    if (!courses().length) return d;
+    var ids = courseLabel(ref).ids;
+    if (!ids.length) d.insertAdjacentHTML("beforeend", '<span class="cs-extra">Extra</span>');
+    else if (courses().length > 1) ids.forEach(function (id) {
+      var c = byId(courses(), id), x = document.createElement("span");
+      x.className = "cs-chip"; x.textContent = c.name; x.style.setProperty("--ct", c.color);
+      d.appendChild(x);
+    });
+    return d;
+  }
+  // the one-time screen (and later from the switch's menu): every subject, by folder, with its course
+  function courseLabelSubjects() {
+    store.oneTime = store.oneTime || {}; store.oneTime.courseLabels = Date.now(); saveStore();
+    var box = ovOpen("Label your subjects", { wide: true });
+    function draw() {
+      box.body.innerHTML = '<p class="lw-hint">Pick each subject’s course. Its concepts, cards and methods follow it, unless you set one of them differently. A subject with none is Extra.</p>';
+      topGroups().forEach(function (g) {
+        var keys = groupSubjectKeysDeep(g); if (!keys.length) return;
+        var head = document.createElement("div");
+        head.className = "cs-ghead";
+        head.innerHTML = '<b></b><span class="muted">all of them:</span>';
+        head.firstChild.textContent = groupName(g);
+        courses().forEach(function (c) { head.appendChild(actBtn(c.name, "label every subject in this folder", function () { keys.forEach(function (k) { courseMap()["s|" + k] = [c.id]; }); saveStore(); draw(); }, "cs-pick")); });
+        head.appendChild(actBtn("Extra", "", function () { keys.forEach(function (k) { delete courseMap()["s|" + k]; }); saveStore(); draw(); }, "cs-pick"));
+        box.body.appendChild(head);
+        keys.forEach(function (k) {
+          var row = document.createElement("div"), own = courseMap()["s|" + k] || [];
+          row.className = "cs-srow";
+          var nm = document.createElement("span"); nm.textContent = subjectName(k); row.appendChild(nm);
+          courses().forEach(function (c) {
+            var on = own !== "x" && own.indexOf(c.id) >= 0;
+            var b = actBtn((on ? "✓ " : "") + c.name, "", function () { courseApply([{ lvl: "s", id: k }], c.id); draw(); }, "cs-pick" + (on ? " on" : ""));
+            b.style.setProperty("--ct", c.color);
+            row.appendChild(b);
+          });
+          box.body.appendChild(row);
+        });
+      });
+    }
+    draw();
+    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); libAfterMove(); } }]);
+  }
 
   // ============================================================
   // THE CONTENT EDITOR — elements as data, the card editor, a method part's content, the graph tool,
@@ -17471,7 +17708,7 @@ function __detabaseMain() {
   function bdIndex() {
     if (bdIdx) return bdIdx;
     var names = { s: "subject", t: "concept", c: "card", p: "method", st: "method part" };
-    bdIdx = materialIndex().filter(function (en) { return en.ref.lvl !== "e"; }).map(function (en) {
+    bdIdx = materialIndex().filter(function (en) { return en.ref.lvl !== "e" && courseRefOn(en.ref); }).map(function (en) {
       var text = "";
       if (en.ref.lvl === "c") {
         text = cardTagsOf(en.ref.id).join(" ") + " " + libElements(en.ref.id).map(function (e) { return e.name + " " + elWords(e.id); }).join(" ");
@@ -17481,6 +17718,7 @@ function __detabaseMain() {
       return { ref: en.ref, name: en.name, kind: names[en.ref.lvl], hay: (en.name + " " + text).toLowerCase() };
     });
     store.ps.pages.forEach(function (pg) {
+      if (!courseIs({ lvl: "p", id: pg.id })) return;
       var parts = psDocPresent(pg.id) ? psParts(pg.id) : [];
       bdIdx.push({ ref: { lvl: "p", id: pg.id }, name: pg.name, kind: names.p, hay: [pg.name, pg.description || "", (pg.tags || []).join(" ")].join(" ").toLowerCase() });
       parts.forEach(function (p) {
@@ -17526,14 +17764,14 @@ function __detabaseMain() {
       var hits = searchEntries(bdIndex(), q2, function (en) { return en.hay; }).slice(0, 40);
       if (!hits.length) list.innerHTML = '<p class="muted">Nothing found.</p>';
       hits.forEach(function (en) { list.appendChild(bdRow(en.ref, en.name, en.kind, 0, false)); });
-    } else allSubjectKeys().forEach(function (k) {
-      var sr = { lvl: "s", id: k }, tabs = libKids(sr), ms = psPagesOf(k);
+    } else allSubjectKeys().filter(function (k) { return courseSubjectOn(k); }).forEach(function (k) {
+      var sr = { lvl: "s", id: k }, tabs = libKids(sr).filter(function (t) { return courseTabOn(t); }), ms = psPagesOf(k).filter(function (pg) { return courseIs({ lvl: "p", id: pg.id }); });
       list.appendChild(bdRow(sr, subjectName(k), "subject", 0, true));
       if (!bd.open[refKey(sr)]) return;
       tabs.forEach(function (t) {
         var cs = libKids(t);
         list.appendChild(bdRow(t, tabLabel(t.id), "concept", 1, cs.length > 0));
-        if (bd.open[refKey(t)]) cs.forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
+        if (bd.open[refKey(t)]) cs.filter(function (c) { return courseIs(c); }).forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
       });
       ms.forEach(function (pg) { list.appendChild(bdRow({ lvl: "p", id: pg.id }, pg.name, "method", 1, false)); });
     });
@@ -18013,6 +18251,7 @@ function __detabaseMain() {
       var del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = isBuiltinRef(ref) ? "🙈" : "🗑"; del.title = isBuiltinRef(ref) ? "hide from ETI" : "delete";
       del.addEventListener("click", function () { libDelete(ref); });
       row.appendChild(ren);
+      row.appendChild(courseCtlEl(ref));
       var bd = usedBadge(ref); if (bd) row.appendChild(bd);
       if (ref.lvl === "s") row.appendChild(dotsBtn(ref));   // the subject's menu: add, new method, empty it, …
       row.appendChild(del);
@@ -18405,7 +18644,8 @@ function __detabaseMain() {
     makeSortable($("plFormatList"), { itemSel: "> .pl-tpl-item", axis: "y", keyOf: function (it) { return it.getAttribute("data-id"); }, onDrop: function (ids) { store.order.plFormats = ids; saveStore(); } });
     makeSortable($("plGoalList"), { itemSel: "> .pl-goal-group", axis: "y", keyOf: function (it) { return it.getAttribute("data-id"); }, onDrop: function (ids) { store.order.plGoals = ids; saveStore(); } });
   } catch (e) { if (window.console) console.error("planner sortables:", e); }
-  try { tagBuiltinElements(); biPartsBuild(); } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
+  // anything that read the built-in cards before they had their ids (a filtered sidebar does) is read again
+  try { tagBuiltinElements(); biPartsBuild(); BI = null; } catch (e) { if (window.console) console.error("tagBuiltinElements:", e); }
   try { migratePlacement(); } catch (e) { if (window.console) console.error("migratePlacement:", e); }
   try { seedBuiltins(); } catch (e) { if (window.console) console.error("seedBuiltins:", e); }
   try { initSortables(); } catch (e) { if (window.console) console.error("initSortables:", e); }
@@ -18419,6 +18659,8 @@ function __detabaseMain() {
     spSetView(pg.subject, "methods"); openSubjectRef(pg.subject);
   });
   if ($("psSummary")) $("psSummary").addEventListener("click", function () { if (activePsPage) openSub("psummary", activePsPage); });
+  if ($("courseSw")) $("courseSw").addEventListener("click", function () { courseSwMenu($("courseSw")); });
+  if ($("psCourse")) $("psCourse").addEventListener("click", function () { if (activePsPage) courseMenu($("psCourse"), [{ lvl: "p", id: activePsPage }]); });
   if ($("psOver")) $("psOver").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) methodReset(pg); });
   if ($("psBld")) $("psBld").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) bldAdd([{ lvl: "p", id: pg.id }], "Method: " + pg.name); });
   if ($("sumBack")) $("sumBack").addEventListener("click", function () { var sm = summaryById(activeSummary); if (sm) openSheetHome(sm); });
@@ -18442,7 +18684,7 @@ function __detabaseMain() {
   try { buildIndex(); } catch (e) { if (window.console) console.error("buildIndex:", e); }
 
   // deep link: #<tab> (built-in), #<top-folder id>, #<custom-subject id>, or #<problem id>
-  var initial = (location.hash || "").replace("#", "");
+  var initial = (bootHash || "").replace("#", "");
   if (initial === "notebook") {
     selectTop("notebook");
   } else if (initial === "mining") {
