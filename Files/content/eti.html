@@ -1,0 +1,2743 @@
+<!-- ETI built-in content: loaded into detabase.html at boot (replaces #etiContentSlot). Built-in card ids come from titles: never rename a title here. -->
+<div class="topfolder" id="topfolder-eti">
+
+<div class="folder on" id="folder-trig">
+
+<!-- ============ 2.1 IDENTITIES ============ -->
+<section class="pane on" id="pane-s1">
+<h2 id="s1"><span class="num">2.1</span>Identities</h2>
+<div class="grid2">
+  <div class="card">
+    <h4>Pythagorean</h4>
+    <ul class="idlist">
+      <li><code>sin²θ + cos²θ = 1</code></li>
+      <li><code>1 + tan²θ = sec²θ</code></li>
+      <li><code>1 + cot²θ = csc²θ</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Quotient &amp; reciprocal</h4>
+    <ul class="idlist">
+      <li><code>tan θ = sin θ / cos θ</code></li>
+      <li><code>cot θ = cos θ / sin θ = 1/tan θ</code></li>
+      <li><code>csc θ = 1/sin θ</code>,&nbsp; <code>sec θ = 1/cos θ</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Sum / difference</h4>
+    <ul class="idlist">
+      <li><code>sin(A ± B) = sin A cos B ± cos A sin B</code></li>
+      <li><code>cos(A ± B) = cos A cos B ∓ sin A sin B</code></li>
+      <li><code>tan(A ± B) = (tan A ± tan B) / (1 ∓ tan A tan B)</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Double angle</h4>
+    <ul class="idlist">
+      <li><code>sin 2θ = 2 sin θ cos θ</code></li>
+      <li><code>cos 2θ = cos²θ − sin²θ = 2cos²θ − 1 = 1 − 2sin²θ</code></li>
+      <li><code>tan 2θ = 2 tan θ / (1 − tan²θ)</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Half angle</h4>
+    <ul class="idlist">
+      <li><code>sin²(θ/2) = (1 − cos θ) / 2</code></li>
+      <li><code>cos²(θ/2) = (1 + cos θ) / 2</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Co-function &amp; even/odd</h4>
+    <ul class="idlist">
+      <li><code>sin(90° − θ) = cos θ</code>,&nbsp; <code>cos(90° − θ) = sin θ</code></li>
+      <li><code>sin(−θ) = −sin θ</code> (odd)</li>
+      <li><code>cos(−θ) = cos θ</code> (even),&nbsp; <code>tan(−θ) = −tan θ</code> (odd)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="tool">
+  <p class="tool-title">Identity checker</p>
+  <p class="muted" style="margin-top:0">Pick an identity and an angle — both sides are evaluated numerically so you can see they always match.</p>
+  <div class="btnrow" id="idPick"></div>
+  <label class="muted">θ = <span id="idAngleLbl" class="mono"></span></label>
+  <input type="range" id="idAngle" min="0" max="360" step="1" value="37">
+  <div class="readout">
+    <span class="k">left-hand side</span><span class="v" id="idLHS">–</span>
+    <span class="k">right-hand side</span><span class="v" id="idRHS">–</span>
+    <span class="k">match?</span><span class="v" id="idMatch">–</span>
+  </div>
+</div>
+
+</section>
+
+<!-- ============ 2.2 UNIT CIRCLE ============ -->
+<section class="pane" id="pane-s2">
+<h2 id="s2"><span class="num">2.2</span>The unit circle</h2>
+<p>A circle of <b>radius 1</b> centred at the origin. For an angle <code>θ</code> measured <b>counter-clockwise</b> from the positive x-axis, the terminal side meets the circle at <code>(cos θ, sin θ)</code>. So <code>cos θ</code> is the <b>x-coordinate</b>, <code>sin θ</code> is the <b>y-coordinate</b>, and <code>tan θ = sin θ / cos θ</code> is undefined wherever <code>cos θ = 0</code>.</p>
+<p><b>Quadrant signs</b> ("All Students Take Calculus", I → II → III → IV): QI all positive; QII only <code>sin</code>; QIII only <code>tan</code>; QIV only <code>cos</code>.</p>
+<p><b>Where <code>tan θ</code> sits:</b> draw the vertical tangent line at <code>(1, 0)</code>; extend the radius for <code>θ</code> until it crosses that line — the segment from <code>(1,0)</code> to the crossing is exactly <code>tan θ</code>. That's where the name comes from.</p>
+
+<div class="tool">
+  <p class="tool-title">Drag the circle</p>
+  <div class="flex">
+    <svg id="uc" viewBox="0 0 340 400" width="340" height="400" style="flex-shrink:0;">
+      <rect x="1" y="1" width="338" height="398" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>
+      <path id="quadFill" d="" fill="color-mix(in srgb, var(--angle) 14%, transparent)"/>
+      <line x1="30" y1="200" x2="320" y2="200" stroke="var(--border-strong)" stroke-width="1.6"/>
+      <line x1="170" y1="380" x2="170" y2="60" stroke="var(--border-strong)" stroke-width="1.6"/>
+      <text x="250" y="88" font-size="11" fill="var(--text-muted)" text-anchor="middle">I</text>
+      <text x="92" y="88" font-size="11" fill="var(--text-muted)" text-anchor="middle">II</text>
+      <text x="92" y="322" font-size="11" fill="var(--text-muted)" text-anchor="middle">III</text>
+      <text x="250" y="322" font-size="11" fill="var(--text-muted)" text-anchor="middle">IV</text>
+      <circle cx="170" cy="200" r="120" fill="none" stroke="var(--border-strong)" stroke-width="2"/>
+      <line x1="290" y1="24" x2="290" y2="376" stroke="var(--text-muted)" stroke-width="1.1" stroke-dasharray="2,3"/>
+      <text x="290" y="16" font-size="10" fill="var(--text-muted)" text-anchor="middle">x = 1</text>
+      <path id="arcTheta" d="" fill="none" stroke="var(--angle)" stroke-width="3"/>
+      <line id="radiusExt" x1="170" y1="200" x2="170" y2="200" stroke="var(--angle)" stroke-width="1.3" stroke-dasharray="3,3"/>
+      <line id="cosLine" x1="170" y1="200" x2="170" y2="200" stroke="var(--cos)" stroke-width="2.4"/>
+      <line id="sinLine" x1="170" y1="200" x2="170" y2="200" stroke="var(--sin)" stroke-width="2.4"/>
+      <line id="tanSeg" x1="290" y1="200" x2="290" y2="200" stroke="var(--tan)" stroke-width="3"/>
+      <line id="radius" x1="170" y1="200" x2="170" y2="200" stroke="var(--angle)" stroke-width="2.4"/>
+      <circle cx="290" cy="200" r="2.6" fill="var(--text-secondary)"/>
+      <text x="296" y="214" font-size="10" fill="var(--text-muted)">(1,0)</text>
+      <g id="tanPointGroup" style="cursor:grab;">
+        <circle id="tanPointHit" cx="290" cy="200" r="18" fill="transparent"/>
+        <circle id="tanPointVisual" cx="290" cy="200" r="8" fill="var(--tan)" stroke="var(--surface-1)" stroke-width="2" style="pointer-events:none;"/>
+      </g>
+      <g id="anglePointGroup" style="cursor:grab;">
+        <circle id="anglePointHit" cx="290" cy="80" r="18" fill="transparent"/>
+        <circle id="anglePointVisual" cx="290" cy="80" r="8" fill="var(--angle)" stroke="var(--surface-1)" stroke-width="2" style="pointer-events:none;"/>
+      </g>
+    </svg>
+    <div class="panel">
+      <div class="btnrow" id="ucUnit">
+        <button data-unit="deg" class="on">Degrees</button>
+        <button data-unit="rad">Radians</button>
+      </div>
+      <div class="readout">
+        <span class="k">θ</span><span class="v" id="valTheta">–</span>
+        <span class="k"><i class="dot" style="background:var(--sin)"></i>sin θ</span><span class="v" id="valSin">–</span>
+        <span class="k"><i class="dot" style="background:var(--cos)"></i>cos θ</span><span class="v" id="valCos">–</span>
+        <span class="k"><i class="dot" style="background:var(--tan)"></i>tan θ</span><span class="v" id="valTan">–</span>
+        <span class="k">quadrant</span><span class="v" id="valQuad">–</span>
+        <span class="k">signs (sin,cos,tan)</span><span class="v" id="valSigns">–</span>
+      </div>
+      <div class="btnrow" id="ucPresets" style="margin-top:14px;">
+        <button data-deg="0">0°</button><button data-deg="30">30°</button>
+        <button data-deg="45">45°</button><button data-deg="60">60°</button>
+        <button data-deg="90">90°</button><button data-deg="135">135°</button>
+        <button data-deg="180">180°</button><button data-deg="225">225°</button>
+        <button data-deg="270">270°</button><button data-deg="315">315°</button>
+      </div>
+      <p class="muted">Drag the <span style="color:var(--angle);font-weight:600">purple</span> point around the circle, or the <span style="color:var(--tan);font-weight:600">green</span> point along the tangent line.</p>
+    </div>
+  </div>
+</div>
+
+<h3>Exact values</h3>
+<p class="muted">Click a column to place that angle on the circle above.</p>
+<table id="exactTable">
+  <thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
+  <tbody>
+    <tr><th>sin θ</th><td>0</td><td>1/2</td><td>√2/2</td><td>√3/2</td><td>1</td></tr>
+    <tr><th>cos θ</th><td>1</td><td>√3/2</td><td>√2/2</td><td>1/2</td><td>0</td></tr>
+    <tr><th>tan θ</th><td>0</td><td>√3/3</td><td>1</td><td>√3</td><td>undef.</td></tr>
+  </tbody>
+</table>
+
+</section>
+
+<!-- ============ 2.3 RADIANS ============ -->
+<section class="pane" id="pane-s3">
+<h2 id="s3"><span class="num">2.3</span>Radians</h2>
+<p>A <b>radian</b> is the angle whose arc length equals the radius (<code>arc = r</code>). A full circle is <code>360° = 2π rad</code>. Degrees → radians: <code>× π/180</code>. Radians → degrees: <code>× 180/π</code>.</p>
+
+<div class="tool">
+  <p class="tool-title">Degree / radian converter</p>
+  <div class="flex">
+    <svg id="radSvg" viewBox="0 0 300 300" width="260" height="260" style="flex-shrink:0;">
+      <rect x="1" y="1" width="298" height="298" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>
+      <circle cx="150" cy="150" r="110" fill="none" stroke="var(--border-strong)" stroke-width="2"/>
+      <line x1="150" y1="150" x2="260" y2="150" stroke="var(--border-strong)" stroke-width="1.4"/>
+      <path id="radArc" d="" fill="none" stroke="var(--accent)" stroke-width="5"/>
+      <line id="radRadius" x1="150" y1="150" x2="260" y2="150" stroke="var(--angle)" stroke-width="2.4"/>
+      <circle id="radDot" cx="260" cy="150" r="6" fill="var(--angle)"/>
+    </svg>
+    <div class="panel">
+      <label class="muted">angle</label>
+      <input type="range" id="radRange" min="0" max="720" step="1" value="60">
+      <div class="readout">
+        <span class="k">degrees</span><span class="v"><span id="radDeg">60</span>°</span>
+        <span class="k">radians (decimal)</span><span class="v" id="radDec">1.047</span>
+        <span class="k">radians (× π)</span><span class="v" id="radPi">π/3</span>
+        <span class="k">arc length (r = 1)</span><span class="v" id="radArcLen">1.047</span>
+      </div>
+      <div class="btnrow" style="margin-top:12px;">
+        <button data-deg="30">30°</button><button data-deg="45">45°</button>
+        <button data-deg="60">60°</button><button data-deg="90">90°</button>
+        <button data-deg="180">180°</button><button data-deg="270">270°</button>
+        <button data-deg="360">360°</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>Degrees</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>180°</th><th>270°</th><th>360°</th></tr></thead>
+  <tbody><tr><th>Radians</th><td>0</td><td>π/6</td><td>π/4</td><td>π/3</td><td>π/2</td><td>π</td><td>3π/2</td><td>2π</td></tr></tbody>
+</table>
+
+</section>
+
+<!-- ============ 2.4 INVERSE TRIG ============ -->
+<section class="pane" id="pane-s4">
+<h2 id="s4"><span class="num">2.4</span>Inverse trig — arcsin, arccos, arctan</h2>
+<p><code>sin</code>, <code>cos</code>, <code>tan</code> are <b>not one-to-one</b> over all reals, so each is first <b>restricted to a monotonic interval</b>. The inverses return a single <b>principal value</b>, not every angle with that ratio.</p>
+<table>
+  <thead><tr><th>Function</th><th>Domain</th><th>Range (principal values)</th></tr></thead>
+  <tbody>
+    <tr><td><code>arcsin(k)</code></td><td><code>k ∈ [−1, 1]</code></td><td><code>[−π/2, π/2]</code> — right half of the circle</td></tr>
+    <tr><td><code>arccos(k)</code></td><td><code>k ∈ [−1, 1]</code></td><td><code>[0, π]</code> — top half of the circle</td></tr>
+    <tr><td><code>arctan(k)</code></td><td><code>k ∈ ℝ</code></td><td><code>(−π/2, π/2)</code> — <b>open</b>, since <code>tan(±π/2)</code> is undefined</td></tr>
+  </tbody>
+</table>
+
+<div class="tool">
+  <p class="tool-title">Principal-value explorer</p>
+  <div class="btnrow" id="invPick">
+    <button data-fn="asin" class="on">arcsin</button>
+    <button data-fn="acos">arccos</button>
+    <button data-fn="atan">arctan</button>
+  </div>
+  <label class="muted">k = <span id="invKLbl" class="mono">0.50</span></label>
+  <input type="range" id="invK" min="-4" max="4" step="0.01" value="0.5">
+  <div class="flex" style="margin-top:8px;">
+    <svg id="invSvg" viewBox="0 0 220 220" width="200" height="200" style="flex-shrink:0;">
+      <rect x="1" y="1" width="218" height="218" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>
+      <circle cx="110" cy="110" r="80" fill="none" stroke="var(--border)" stroke-width="2"/>
+      <line x1="22" y1="110" x2="198" y2="110" stroke="var(--border)" stroke-width="1.2"/>
+      <line x1="110" y1="22" x2="110" y2="198" stroke="var(--border)" stroke-width="1.2"/>
+      <path id="invRangeArc" d="" fill="none" stroke="var(--accent)" stroke-width="4"/>
+      <line id="invRadius" x1="110" y1="110" x2="190" y2="110" stroke="var(--angle)" stroke-width="2.4"/>
+      <circle id="invDot" cx="190" cy="110" r="5" fill="var(--angle)"/>
+    </svg>
+    <div class="panel">
+      <div class="readout">
+        <span class="k">defined for this k?</span><span class="v" id="invDefined">yes</span>
+        <span class="k">principal value</span><span class="v" id="invVal">–</span>
+        <span class="k">in degrees</span><span class="v" id="invValDeg">–</span>
+      </div>
+      <p class="muted" id="invNote"></p>
+    </div>
+  </div>
+</div>
+
+<p class="muted">Because each arc-function hands back only <b>one</b> representative angle, they don't by themselves solve <code>sin x = k</code> — that's why the general solutions below add <code>+2πn</code> and a second mirrored branch.</p>
+
+</section>
+
+<!-- ============ 2.5 PERIODICITY ============ -->
+<section class="pane" id="pane-s5">
+<h2 id="s5"><span class="num">2.5</span>Periodicity</h2>
+<p><code>sin</code> and <code>cos</code> repeat every <code>2π</code> (360°): <code>sin(θ + 2πn) = sin θ</code>. <code>tan</code> repeats every <code>π</code> (180°): <code>tan(θ + πn) = tan θ</code>.</p>
+
+<div class="tool">
+  <p class="tool-title">See the repeat</p>
+  <div class="btnrow" id="perPick">
+    <button data-fn="sin" class="on">sin</button>
+    <button data-fn="cos">cos</button>
+    <button data-fn="tan">tan</button>
+  </div>
+  <svg id="perSvg" viewBox="0 0 640 260" width="100%" style="max-width:640px;">
+    <rect x="1" y="1" width="638" height="258" rx="12" fill="var(--surface-1)" stroke="var(--border)"/>
+    <g id="perGrid"></g>
+    <path id="perCurve" d="" fill="none" stroke="var(--cos)" stroke-width="2.2"/>
+    <rect id="perWindow" x="0" y="20" width="0" height="220" fill="color-mix(in srgb, var(--accent) 12%, transparent)"/>
+    <line id="perX1" x1="0" y1="20" x2="0" y2="240" stroke="var(--angle)" stroke-width="1.6" stroke-dasharray="4,3"/>
+    <line id="perX2" x1="0" y1="20" x2="0" y2="240" stroke="var(--tan)" stroke-width="1.6" stroke-dasharray="4,3"/>
+    <circle id="perDot1" r="4.5" fill="var(--angle)"/>
+    <circle id="perDot2" r="4.5" fill="var(--tan)"/>
+  </svg>
+  <label class="muted">x = <span id="perXLbl" class="mono">0</span></label>
+  <input type="range" id="perX" min="-628" max="628" step="2" value="90">
+  <div class="readout">
+    <span class="k"><i class="dot" style="background:var(--angle)"></i>f(x)</span><span class="v" id="perV1">–</span>
+    <span class="k"><i class="dot" style="background:var(--tan)"></i>f(x + period)</span><span class="v" id="perV2">–</span>
+    <span class="k">period used</span><span class="v" id="perP">2π</span>
+  </div>
+</div>
+
+</section>
+
+<!-- ============ 2.6 SOLVING ============ -->
+<section class="pane" id="pane-s6">
+<h2 id="s6"><span class="num">2.6</span>Solving trig equations</h2>
+<p>General solutions (<code>n</code> is any integer):</p>
+<ul class="idlist" style="max-width:560px">
+  <li><code>sin x = k</code> → <code>x = arcsin k + 2πn</code> &nbsp;<b>or</b>&nbsp; <code>x = π − arcsin k + 2πn</code></li>
+  <li><code>cos x = k</code> → <code>x = ± arccos k + 2πn</code></li>
+  <li><code>tan x = k</code> → <code>x = arctan k + πn</code> &nbsp;(one family — <code>tan</code> has period <code>π</code>)</li>
+</ul>
+
+<div class="tool">
+  <p class="tool-title">General-solution generator</p>
+  <div class="flex" style="align-items:center; gap:12px;">
+    <div class="btnrow" id="solPick" style="margin:0">
+      <button data-fn="sin" class="on">sin</button>
+      <button data-fn="cos">cos</button>
+      <button data-fn="tan">tan</button>
+    </div>
+    <label>( &nbsp;<span id="solArgLbl" class="mono">x</span>&nbsp; ) = &nbsp;
+      <input type="number" id="solK" value="0.5" step="0.1" style="width:80px">
+    </label>
+    <div class="btnrow" id="solUnit" style="margin:0">
+      <button data-u="rad" class="on">rad</button>
+      <button data-u="deg">deg</button>
+    </div>
+  </div>
+  <details class="note">
+    <summary>Use a compound argument <code>a·x + b</code></summary>
+    <label class="muted">a = <input type="number" id="solA" value="1" step="1" style="width:60px"></label>
+    &nbsp;&nbsp;
+    <label class="muted">b (in <span class="solUnitTxt">rad</span>) = <input type="number" id="solB" value="0" step="0.0001" style="width:90px"></label>
+    <p class="muted">e.g. for <code>sin(2x + π/3) = ½</code> set a = 2, b ≈ 1.0472.</p>
+  </details>
+  <div class="eqout" id="solOut"></div>
+</div>
+
+<div class="callout">
+  <b>Trivial zero cases</b> need only one family each: <code>sin x = 0 → x = πn</code>;&nbsp;
+  <code>cos x = 0 → x = π/2 + πn</code>;&nbsp; <code>tan x = 0 → x = πn</code>.
+  At <code>x = πn</code>: <code>sin = 0</code> and <code>cos = (−1)ⁿ</code>. At <code>x = π/2 + πn</code>: it flips — <code>cos = 0</code> and <code>sin = (−1)ⁿ</code>.
+</div>
+
+<details class="note">
+  <summary>Worked example — <code>sin(2x + π/3) = 1/2</code></summary>
+  <p>Let <code>u = 2x + π/3</code>. Then <code>sin u = 1/2</code> → <code>u = π/6 + 2πn</code> <b>or</b> <code>u = 5π/6 + 2πn</code>.</p>
+  <p><b>Branch 1:</b> <code>2x + π/3 = π/6 + 2πn</code> → <code>2x = −π/6 + 2πn</code> → <code>x = −π/12 + πn</code>.</p>
+  <p><b>Branch 2:</b> <code>2x + π/3 = 5π/6 + 2πn</code> → <code>2x = π/2 + 2πn</code> → <code>x = π/4 + πn</code>.</p>
+  <p><b>Answer:</b> <code>x = −π/12 + πn</code> or <code>x = π/4 + πn</code>. The period in <code>x</code> shrank to <code>π = 2π/2</code> because of the coefficient 2.</p>
+</details>
+</section>
+
+</div><!-- /folder-trig -->
+
+<div class="folder" id="folder-algebra">
+
+<!-- ============ A. ABSOLUTE VALUE ============ -->
+<section class="pane on" id="pane-a1">
+<h2><span class="num">A</span>Absolute value</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="a1">Expand all</button>
+  <button data-acc="close" data-scope="a1">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Solving equations with <code>|·|</code><span class="stag">method + solver</span></summary>
+  <div class="subject-body">
+    <ol class="steps">
+      <li><b>Isolate the absolute value</b> so it stands alone: <code>|expression| = k</code>.</li>
+      <li><b>Check <code>k</code>.</b> If <code>k &lt; 0</code> → <b>no solution</b> (an absolute value is never negative).</li>
+      <li>If <code>k = 0</code> → exactly <b>one case</b>: <code>expression = 0</code>.</li>
+      <li>If <code>k &gt; 0</code> → <b>split into two cases</b>: <code>expression = k</code> <b>or</b> <code>expression = −k</code>.</li>
+      <li><b>Solve each</b> equation separately.</li>
+      <li><b>Check</b> both solutions in the original — extra steps or a variable outside the <code>|·|</code> can introduce extraneous roots.</li>
+    </ol>
+    <p>Special case — two absolute values: <code>|A| = |B|</code> → <code>A = B</code> <b>or</b> <code>A = −B</code>.</p>
+
+    <div class="tool">
+      <p class="tool-title">Solver — <span class="mono">| a·x + b | = k</span></p>
+      <div class="flex" style="align-items:center;gap:8px;">
+        <span>|</span>
+        <input type="number" id="avA" value="2" step="1" style="width:52px"> <span>·x +</span>
+        <input type="number" id="avB" value="-3" step="1" style="width:52px">
+        <span>| =</span>
+        <input type="number" id="avK" value="7" step="1" style="width:52px">
+      </div>
+      <div id="avOut" class="eqout"></div>
+      <svg id="avLine" class="numline" viewBox="0 0 520 90"></svg>
+    </div>
+
+    <p class="muted"><b>Example.</b> <code>|2x − 3| = 7</code> → <code>2x − 3 = 7</code> or <code>2x − 3 = −7</code> → <code>x = 5</code> or <code>x = −2</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>The idea: distance from zero<span class="stag">visual</span></summary>
+  <div class="subject-body">
+    <p><code>|x| = a</code> asks "which points are exactly distance <code>a</code> from 0?" — for <code>a &gt; 0</code> there are two: <code>x = a</code> and <code>x = −a</code>.</p>
+    <div class="tool">
+      <p class="tool-title">Distance <code>a</code> from 0</p>
+      <label class="muted">a = <span id="avDistLbl" class="mono">3</span></label>
+      <input type="range" id="avDist" min="0" max="8" step="0.5" value="3">
+      <svg id="avDistLine" class="numline" viewBox="0 0 520 80"></svg>
+      <p class="muted" id="avDistNote"></p>
+    </div>
+  </div>
+</details>
+</section>
+
+<!-- ============ B. INEQUALITIES ============ -->
+<section class="pane" id="pane-a2">
+<h2><span class="num">B</span>Inequalities</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="a2">Expand all</button>
+  <button data-acc="close" data-scope="a2">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>1 · Multiplying / dividing by a number<span class="stag">flip demo</span></summary>
+  <div class="subject-body">
+    <p>Multiply or divide both sides by a <b>positive</b> number → direction <b>unchanged</b>. By a <b>negative</b> number → direction <b>flips</b>.</p>
+    <div class="tool">
+      <p class="tool-title">Divide <code>2x &lt; 6</code> by <code>d</code></p>
+      <label class="muted">d = <span id="ineqDLbl" class="mono">2</span></label>
+      <input type="range" id="ineqD" min="-5" max="5" step="0.5" value="2">
+      <div class="eqout" id="ineqDOut"></div>
+      <svg id="ineqDLine" class="numline" viewBox="0 0 520 80"></svg>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>2 · Dividing by an expression of unknown sign<span class="stag">case split</span></summary>
+  <div class="subject-body">
+    <p>You <b>cannot</b> multiply/divide an inequality by <code>x</code> unless you know its sign. Fix — <b>case split</b>:</p>
+    <ol class="steps">
+      <li><b>Case 1: assume <code>x &gt; 0</code></b>. Divide normally (keep direction). Combine with <code>x &gt; 0</code> using <span class="tag-and">AND</span>.</li>
+      <li><b>Case 2: assume <code>x &lt; 0</code></b>. Divide and <b>flip</b>. Combine with <code>x &lt; 0</code> using <span class="tag-and">AND</span>.</li>
+      <li><b>Final answer</b> = Case 1 <span class="tag-or">OR</span> Case 2 (<code>x = 0</code> checked separately).</li>
+    </ol>
+    <p class="muted">Alternative for rational inequalities: move everything to one side over a common denominator and build a sign chart — avoids dividing by the variable entirely.</p>
+
+    <div class="tool">
+      <p class="tool-title">Solver — <span class="mono">1 / x  ▸  c</span></p>
+      <div class="flex" style="align-items:center;gap:10px;">
+        <label>1 / x
+          <select id="ratRel"><option value="gt">&gt;</option><option value="lt">&lt;</option><option value="ge">≥</option><option value="le">≤</option></select>
+          <input type="number" id="ratC" value="2" step="0.5" style="width:64px"></label>
+      </div>
+      <div class="eqout" id="ratOut"></div>
+      <svg id="ratLine" class="numline" viewBox="0 0 520 90"></svg>
+      <p class="muted" id="ratCheck"></p>
+    </div>
+
+    <p class="muted"><b>Worked example.</b> <code>1/x &gt; 2</code>: Case 1 (<code>x&gt;0</code>) → <code>1 &gt; 2x</code> → <code>x &lt; ½</code>, AND <code>x&gt;0</code> → <code>0 &lt; x &lt; ½</code>. Case 2 (<code>x&lt;0</code>) → <code>1 &lt; 2x</code> → <code>x &gt; ½</code>, AND <code>x&lt;0</code> → empty. Final: <code>0 &lt; x &lt; ½</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>3 · Square roots in inequalities<span class="stag">domain + solver</span></summary>
+  <div class="subject-body">
+    <p><b>Always start with the domain</b>: whatever is under the root must be <code>≥ 0</code>, combined with everything else using <span class="tag-and">AND</span>.</p>
+    <ul class="idlist" style="max-width:560px">
+      <li><code>√(f(x)) &lt; k</code>: if <code>k ≤ 0</code> → no solution. If <code>k &gt; 0</code> → <code>f(x) ≥ 0</code> <span class="tag-and">AND</span> <code>f(x) &lt; k²</code>.</li>
+      <li><code>√(f(x)) &gt; k</code>: if <code>k &lt; 0</code> → all of the domain <code>f(x) ≥ 0</code>. If <code>k ≥ 0</code> → <code>f(x) &gt; k²</code> (domain automatic).</li>
+      <li><code>√A &lt; √B</code> → <code>A ≥ 0</code> <span class="tag-and">AND</span> <code>B ≥ 0</code> <span class="tag-and">AND</span> <code>A &lt; B</code>.</li>
+    </ul>
+    <div class="tool">
+      <p class="tool-title">Solver — <span class="mono">√(x + p)  ▸  k</span></p>
+      <div class="flex" style="align-items:center;gap:8px;">
+        <span>√( x +</span>
+        <input type="number" id="sqrtP" value="-2" step="1" style="width:52px">
+        <span>)</span>
+        <select id="sqrtRel"><option value="lt">&lt;</option><option value="gt">&gt;</option></select>
+        <input type="number" id="sqrtK" value="3" step="1" style="width:52px">
+      </div>
+      <div class="eqout" id="sqrtOut"></div>
+      <svg id="sqrtLine" class="numline" viewBox="0 0 520 100"></svg>
+    </div>
+    <p class="muted"><b>Examples.</b> <code>√(x−2) &lt; 3</code> → domain <code>x ≥ 2</code>, square <code>x &lt; 11</code>, AND → <code>2 ≤ x &lt; 11</code>. &nbsp; <code>√(x+1) &gt; 2</code> → <code>x + 1 &gt; 4</code> → <code>x &gt; 3</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>4 · Absolute-value inequalities<span class="stag">visualizer</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:560px">
+      <li><code>|f(x)| &lt; k</code> (k&gt;0) → <code>−k &lt; f(x) &lt; k</code> — one bounded range, <span class="tag-and">AND</span>. If <code>k ≤ 0</code> → no solution.</li>
+      <li><code>|f(x)| &gt; k</code> (k≥0) → <code>f(x) &lt; −k</code> <span class="tag-or">or</span> <code>f(x) &gt; k</code> — two disjoint rays. If <code>k &lt; 0</code> → true for all <code>x</code>.</li>
+      <li><code>≤ / ≥</code> — same, with closed endpoints.</li>
+    </ul>
+    <div class="tool">
+      <p class="tool-title">Visualizer — <span class="mono">| x − c |  ▸  k</span></p>
+      <div class="flex" style="align-items:center;gap:14px;">
+        <label class="muted">c = <span id="aviCLbl" class="mono">1</span></label>
+        <div class="btnrow" id="aviRel" style="margin:0">
+          <button data-r="lt" class="on">&lt; k</button>
+          <button data-r="gt">&gt; k</button>
+        </div>
+      </div>
+      <input type="range" id="aviC" min="-6" max="6" step="0.5" value="1">
+      <label class="muted">k = <span id="aviKLbl" class="mono">3</span></label>
+      <input type="range" id="aviK" min="-2" max="7" step="0.5" value="3">
+      <div class="eqout" id="aviOut"></div>
+      <svg id="aviLine" class="numline" viewBox="0 0 520 80"></svg>
+    </div>
+    <p class="muted"><b>Examples.</b> <code>|3x−1| &lt; 5</code> → <code>−4/3 &lt; x &lt; 2</code>. &nbsp; <code>|3x−1| ≥ 5</code> → <code>x ≤ −4/3</code> or <code>x ≥ 2</code>.</p>
+  </div>
+</details>
+</section>
+
+<!-- ============ C. AND vs OR ============ -->
+<section class="pane" id="pane-a3">
+<h2><span class="num">C</span>When to use "and" vs "or"</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="a3">Expand all</button>
+  <button data-acc="close" data-scope="a3">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Quick reference<span class="stag">rule</span></summary>
+  <div class="subject-body">
+    <p><span class="tag-and">Use AND</span> when every condition must hold <b>at the same point</b> and the result is one intersected region: a domain restriction with a derived inequality, the double inequality from <code>|f(x)| &lt; k</code>, or a case assumption (<code>x &gt; 0</code>) with the inequality solved under it.</p>
+    <p><span class="tag-or">Use OR</span> when the solution is <b>separate alternatives</b>, any one enough on its own: the two cases of an absolute-value equation, the two branches of <code>|f(x)| &gt; k</code>, or merging the results of separate case-split branches.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Interactive — intersect (AND) vs union (OR)<span class="stag">two intervals</span></summary>
+  <div class="subject-body">
+    <p>Set two intervals and see how <span class="tag-and">AND</span> (overlap only) and <span class="tag-or">OR</span> (everything covered) differ.</p>
+    <div class="tool">
+      <p class="tool-title">Two intervals on the line</p>
+      <div class="flex">
+        <div class="panel">
+          <label class="muted">Interval 1: [ <span id="i1aLbl">-4</span> , <span id="i1bLbl">1</span> ]</label>
+          <input type="range" id="i1a" min="-10" max="10" step="0.5" value="-4">
+          <input type="range" id="i1b" min="-10" max="10" step="0.5" value="1">
+        </div>
+        <div class="panel">
+          <label class="muted">Interval 2: [ <span id="i2aLbl">-1</span> , <span id="i2bLbl">5</span> ]</label>
+          <input type="range" id="i2a" min="-10" max="10" step="0.5" value="-1">
+          <input type="range" id="i2b" min="-10" max="10" step="0.5" value="5">
+        </div>
+      </div>
+      <svg id="andorLine" class="numline" viewBox="0 0 520 150" style="max-width:520px"></svg>
+      <div class="readout">
+        <span class="k"><span class="tag-and">AND</span> (intersection)</span><span class="v" id="andOut">–</span>
+        <span class="k"><span class="tag-or">OR</span> (union)</span><span class="v" id="orOut">–</span>
+      </div>
+    </div>
+  </div>
+</details>
+</section>
+
+</div><!-- /folder-algebra -->
+
+<div class="folder" id="folder-geo">
+
+<!-- ===== G1 · PARALLEL LINES ===== -->
+<section class="pane on" id="pane-g1">
+<h2><span class="num">1</span>Angles from parallel lines &amp; a transversal</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="g1">Expand all</button>
+  <button data-acc="close" data-scope="g1">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>The angle pairs<span class="stag">visualizer</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:560px">
+      <li><b>Corresponding</b> — same position at each crossing → <b>equal</b>.</li>
+      <li><b>Alternate interior</b> — opposite sides of the transversal, between the lines → <b>equal</b>.</li>
+      <li><b>Alternate exterior</b> — opposite sides, outside the lines → <b>equal</b>.</li>
+      <li><b>Co-interior</b> (same-side interior) → <b>supplementary</b>, <code>a + b = 180°</code>.</li>
+      <li><b>Vertical</b> angles (at one crossing) → always <b>equal</b>.</li>
+    </ul>
+    <div class="tool">
+      <p class="tool-title">Drag the transversal angle</p>
+      <label class="muted">angle = <span id="plAngleLbl" class="mono">55°</span></label>
+      <input type="range" id="plAngle" min="20" max="160" step="1" value="55">
+      <svg id="plSvg" viewBox="0 0 460 300" style="max-width:460px"></svg>
+      <div class="readout">
+        <span class="k">acute angles</span><span class="v" id="plAcute">–</span>
+        <span class="k">obtuse angles</span><span class="v" id="plObtuse">–</span>
+        <span class="k">co-interior sum</span><span class="v" id="plSum">–</span>
+      </div>
+    </div>
+    <p class="muted"><b>Converse:</b> if any of these equalities holds, the two lines <em>are</em> parallel — the standard way to prove parallelism.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== G2 · TRIANGLES ===== -->
+<section class="pane" id="pane-g2">
+<h2><span class="num">2</span>Triangles</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="g2">Expand all</button>
+  <button data-acc="close" data-scope="g2">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Triangle solver — 3 sides<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p>Angle sum = <b>180°</b>. Triangle inequality: each side &lt; sum of the other two. Largest side faces the largest angle.</p>
+    <div class="tool">
+      <p class="tool-title">Set the three sides</p>
+      <div class="flex">
+        <svg id="triSvg" viewBox="0 0 300 240" style="max-width:300px;flex-shrink:0"></svg>
+        <div class="panel">
+          <label class="muted">a = <span id="triALbl" class="mono">6</span></label><input type="range" id="triA" min="1" max="12" step="0.5" value="6">
+          <label class="muted">b = <span id="triBLbl" class="mono">5</span></label><input type="range" id="triB" min="1" max="12" step="0.5" value="5">
+          <label class="muted">c = <span id="triCLbl" class="mono">5</span></label><input type="range" id="triC" min="1" max="12" step="0.5" value="5">
+        </div>
+      </div>
+      <div id="triOut" class="eqout"></div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Every-triangle rules<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:600px">
+      <li><b>Exterior angle</b> = sum of the two remote interior angles; exterior angles sum to <b>360°</b>.</li>
+      <li><b>Midsegment</b> (joins two midpoints) — parallel to the third side, half its length.</li>
+      <li><b>Centroid</b> (medians) divides each median <b>2:1</b>. <b>Orthocenter</b> = altitudes. <b>Circumcenter</b> = perpendicular bisectors. <b>Incenter</b> = angle bisectors.</li>
+      <li><b>Area:</b> <code>½·base·height</code> = <code>½·a·b·sin C</code> = <code>√(s(s−a)(s−b)(s−c))</code> (Heron, <code>s = (a+b+c)/2</code>).</li>
+    </ul>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Congruence &amp; similarity<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <p><b>Congruent</b> if: <code>SSS</code>, <code>SAS</code>, <code>ASA</code>, <code>AAS</code>, or <code>HL</code> (right triangles). <code>SSA</code> is <b>not</b> valid — the ambiguous case.</p>
+    <p><b>Similar</b> if: <code>AA</code>, <code>SSS~</code>, or <code>SAS~</code>. Corresponding sides proportional; ratio of areas = (ratio of sides)².</p>
+  </div>
+</details>
+
+<details class="subject" open>
+  <summary>Triangle types — sketch &amp; rules<span class="stag">gallery</span></summary>
+  <div class="subject-body">
+    <p>Pick a type — the sketch on the left, its attributes &amp; formulas on the right.</p>
+    <div class="btnrow" id="triGalPick"></div>
+    <div class="tool gallery">
+      <svg id="triGalSvg" viewBox="0 0 260 240"></svg>
+      <div class="gallery-rules">
+        <h4 id="triGalName">–</h4>
+        <ul class="idlist" id="triGalRules"></ul>
+        <label class="muted" id="triGalSliderLbl" style="display:none">shape</label>
+        <input type="range" id="triGalSlider" min="20" max="80" step="1" value="50" style="display:none">
+      </div>
+    </div>
+  </div>
+</details>
+</section>
+
+<!-- ===== G3 · QUADRILATERALS & POLYGONS ===== -->
+<section class="pane" id="pane-g3">
+<h2><span class="num">3</span>Quadrilaterals &amp; polygons</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="g3">Expand all</button>
+  <button data-acc="close" data-scope="g3">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Polygon angle calculator<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p>Convex <code>n</code>-gon: interior sum <code>(n−2)·180°</code>; exterior sum always <code>360°</code>; diagonals <code>n(n−3)/2</code>.</p>
+    <div class="tool">
+      <p class="tool-title">Number of sides</p>
+      <div class="flex">
+        <svg id="polySvg" viewBox="0 0 240 240" style="max-width:240px;flex-shrink:0"></svg>
+        <div class="panel">
+          <label class="muted">n = <span id="polyNLbl" class="mono">5</span></label>
+          <input type="range" id="polyN" min="3" max="12" step="1" value="5">
+          <div class="readout">
+            <span class="k">interior angle sum</span><span class="v" id="polySum">–</span>
+            <span class="k">each interior (regular)</span><span class="v" id="polyInt">–</span>
+            <span class="k">each exterior (regular)</span><span class="v" id="polyExt">–</span>
+            <span class="k">diagonals</span><span class="v" id="polyDiag">–</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject" open>
+  <summary>Quadrilateral types — sketch &amp; rules<span class="stag">gallery</span></summary>
+  <div class="subject-body">
+    <p>Interior angles of any quadrilateral sum to <b>360°</b>. Pick a type:</p>
+    <div class="btnrow" id="quadGalPick"></div>
+    <div class="tool gallery">
+      <svg id="quadGalSvg" viewBox="0 0 260 240"></svg>
+      <div class="gallery-rules">
+        <h4 id="quadGalName">–</h4>
+        <ul class="idlist" id="quadGalRules"></ul>
+        <label class="muted" id="quadGalSliderLbl" style="display:none">shape</label>
+        <input type="range" id="quadGalSlider" min="20" max="80" step="1" value="50" style="display:none">
+      </div>
+    </div>
+  </div>
+</details>
+</section>
+
+<!-- ===== G4 · CIRCLES ===== -->
+<section class="pane" id="pane-g4">
+<h2><span class="num">4</span>Circles</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="g4">Expand all</button>
+  <button data-acc="close" data-scope="g4">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Inscribed vs central angle<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p>A <b>central angle</b> equals its arc. An <b>inscribed angle</b> is <b>half</b> the central angle on the same arc — so all inscribed angles on one arc are equal, and an angle in a semicircle is 90°.</p>
+    <div class="tool">
+      <p class="tool-title">Change the arc</p>
+      <div class="flex">
+        <svg id="inscSvg" viewBox="0 0 260 260" style="max-width:260px;flex-shrink:0"></svg>
+        <div class="panel">
+          <label class="muted">arc AB = <span id="inscArcLbl" class="mono">120°</span></label>
+          <input type="range" id="inscArc" min="20" max="330" step="2" value="120">
+          <div class="readout">
+            <span class="k">central angle ∠AOB</span><span class="v" id="inscCent">–</span>
+            <span class="k">inscribed angle ∠APB</span><span class="v" id="inscInsc">–</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Chords<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:600px">
+      <li>A radius/diameter <b>perpendicular to a chord bisects it</b> (and its arc).</li>
+      <li><b>Equal chords</b> are equidistant from the center; longer chords sit closer to the center.</li>
+      <li><b>Intersecting chords:</b> <code>AP·PB = CP·PD</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Tangents &amp; power of a point<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:600px">
+      <li>A tangent is <b>perpendicular to the radius</b> at the point of tangency.</li>
+      <li><b>Two tangents from one external point</b> are equal; the line to the center bisects the angle between them.</li>
+      <li><b>Tangent–chord angle</b> = half the intercepted arc.</li>
+      <li><b>Two secants:</b> <code>PA·PB = PC·PD</code>. &nbsp; <b>Tangent–secant:</b> <code>PT² = PA·PB</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Cyclic quadrilateral<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <p>A quadrilateral inscribed in a circle: <b>opposite angles are supplementary</b> (<code>∠A + ∠C = 180°</code>). An exterior angle equals the opposite interior angle.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== G5 · THALES ===== -->
+<section class="pane" id="pane-g5">
+<h2><span class="num">5</span>Thales' theorem</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="g5">Expand all</button>
+  <button data-acc="close" data-scope="g5">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Thales' theorem — every form<span class="stag">gallery</span></summary>
+  <div class="subject-body">
+    <p>Pick a form — the sketch on the left, its rules &amp; formulas on the right. Drag the slider to see the ratio hold.</p>
+    <div class="btnrow" id="thalesPick"></div>
+    <div class="tool gallery">
+      <svg id="thalesSvg" viewBox="0 0 260 240"></svg>
+      <div class="gallery-rules">
+        <h4 id="thalesName">–</h4>
+        <ul class="idlist" id="thalesRules"></ul>
+        <label class="muted" id="thalesSliderLbl">adjust</label>
+        <input type="range" id="thalesSlider" min="15" max="85" step="1" value="45">
+        <div class="resultbox" id="thalesOut">–</div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Quick recap — the four forms<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:640px">
+      <li><b>Small Thales</b> (segment ratio): <code>DE ∥ BC</code> ⇒ <code>AD/DB = AE/EC</code></li>
+      <li><b>Big Thales</b> (whole-side ratio, △ADE ~ △ABC): <code>AD/AB = AE/AC = DE/BC</code></li>
+      <li><b>Sand-clock Thales</b> (hourglass through a point P): <code>AB ∥ DE</code> ⇒ <code>PA/PD = PB/PE = AB/DE</code></li>
+      <li><b>Intercept theorem</b>: parallel lines cut two transversals proportionally: <code>AB/BC = A'B'/B'C'</code></li>
+      <li><b>Converse</b> (all forms): equal ratios ⇒ the lines are parallel</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ===== G6 · TRIG GEOMETRY ===== -->
+<section class="pane" id="pane-g6">
+<h2><span class="num">6</span>Trigonometric geometry</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="g6">Expand all</button>
+  <button data-acc="close" data-scope="g6">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Right triangle — SOH-CAH-TOA<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:460px">
+      <li><b>SOH:</b> <code>sin θ = opposite / hypotenuse</code></li>
+      <li><b>CAH:</b> <code>cos θ = adjacent / hypotenuse</code></li>
+      <li><b>TOA:</b> <code>tan θ = opposite / adjacent = sin θ / cos θ</code></li>
+    </ul>
+    <div class="tool gallery">
+      <svg id="sohSvg" viewBox="0 0 260 220"></svg>
+      <div class="gallery-rules">
+        <h4>Drag the angle</h4>
+        <label class="muted">θ = <span id="sohLbl" class="mono">37°</span></label>
+        <input type="range" id="sohAngle" min="10" max="80" step="1" value="37">
+        <div class="readout">
+          <span class="k">opposite (hyp = 1)</span><span class="v" id="sohOpp">–</span>
+          <span class="k">adjacent</span><span class="v" id="sohAdj">–</span>
+          <span class="k"><i class="dot" style="background:var(--sin)"></i>sin θ</span><span class="v" id="sohSin">–</span>
+          <span class="k"><i class="dot" style="background:var(--cos)"></i>cos θ</span><span class="v" id="sohCos">–</span>
+          <span class="k"><i class="dot" style="background:var(--tan)"></i>tan θ</span><span class="v" id="sohTan">–</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Right-triangle facts<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:560px">
+      <li><b>Pythagoras:</b> <code>a² + b² = c²</code> (c = hypotenuse)</li>
+      <li>Altitude to the hypotenuse: <code>h² = p·q</code>; each leg is the geometric mean of the hypotenuse and its adjacent segment</li>
+      <li>Median to the hypotenuse <code>= c/2 = R</code> (circumradius)</li>
+      <li>Special: <code>45-45-90 → 1 : 1 : √2</code>, &nbsp; <code>30-60-90 → 1 : √3 : 2</code></li>
+    </ul>
+  </div>
+</details>
+
+<details class="subject" open>
+  <summary>Law of Sines &amp; Law of Cosines<span class="stag">interactive + reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:640px">
+      <li><b>Law of Sines:</b> <code>a/sin A = b/sin B = c/sin C = 2R</code> &nbsp;(<code>R</code> = circumradius)</li>
+      <li><b>Law of Cosines:</b> <code>c² = a² + b² − 2ab·cos C</code></li>
+      <li>rearranged for an angle: <code>cos C = (a² + b² − c²)/(2ab)</code></li>
+      <li><b>Area:</b> <code>½·a·b·sin C</code> &nbsp;or&nbsp; <code>(a²·sin B·sin C)/(2 sin A)</code></li>
+    </ul>
+
+    <p style="margin-top:18px">Every triangle has one <b>circumcircle</b> through all three vertices, centre <code>O</code>, radius <code>R</code>. The Law of Sines just says each side over the sine of its opposite angle equals that circle's <b>diameter</b>:</p>
+    <div class="tool gallery">
+      <svg id="losSvg" viewBox="0 0 260 250"></svg>
+      <div class="gallery-rules">
+        <h4>Drag angle A (moves B and C along the circle)</h4>
+        <label class="muted">arc BC = <span id="losArcLbl" class="mono">120°</span></label>
+        <input type="range" id="losArc" min="30" max="300" step="2" value="120">
+        <div class="readout">
+          <span class="k">R (circumradius)</span><span class="v" id="losR">–</span>
+          <span class="k"><i class="dot" style="background:var(--sin)"></i>side a = BC</span><span class="v" id="losA">–</span>
+          <span class="k"><i class="dot" style="background:var(--tan)"></i>angle A</span><span class="v" id="losAng">–</span>
+          <span class="k">a / sin A</span><span class="v" id="losRatio">–</span>
+          <span class="k">2R</span><span class="v" id="los2R">–</span>
+        </div>
+        <p class="muted">Angle A is the <b>inscribed angle</b> on arc BC, so it's half that arc — while <code>a/sin A</code> stays pinned to <code>2R</code>.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>SSA — the ambiguous case<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <p>Two sides and a <b>non-included</b> angle can give <b>0, 1, or 2</b> triangles. After solving with the Law of Sines, check each candidate: angles must sum to 180° and all sides stay positive.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Which tool for a triangle?<span class="stag">decision helper</span></summary>
+  <div class="subject-body">
+    <p>Pick what you're given:</p>
+    <div class="btnrow" id="lawPick">
+      <button data-c="sss" class="on">SSS</button>
+      <button data-c="sas">SAS</button>
+      <button data-c="asa">ASA / AAS</button>
+      <button data-c="ssa">SSA</button>
+      <button data-c="right">right triangle</button>
+    </div>
+    <div class="resultbox" id="lawOut"></div>
+  </div>
+</details>
+</section>
+
+</div><!-- /folder-geo -->
+
+<div class="folder" id="folder-powlog">
+
+<!-- ===== P1 · POWERS ===== -->
+<section class="pane on" id="pane-p1">
+<h2><span class="num">1</span>Powers</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="p1">Expand all</button>
+  <button data-acc="close" data-scope="p1">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Rules of powers<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:520px">
+      <li><code>aᵐ·aⁿ = aᵐ⁺ⁿ</code>,&nbsp; <code>aᵐ/aⁿ = aᵐ⁻ⁿ</code>,&nbsp; <code>(aᵐ)ⁿ = aᵐⁿ</code></li>
+      <li><code>(ab)ⁿ = aⁿbⁿ</code>,&nbsp; <code>(a/b)ⁿ = aⁿ/bⁿ</code></li>
+      <li><code>a⁰ = 1</code>,&nbsp; <code>a⁻ⁿ = 1/aⁿ</code> &nbsp;(<code>a ≠ 0</code>)</li>
+      <li><code>a^(1/n) = ⁿ√a</code>,&nbsp; <code>a^(m/n) = ⁿ√(aᵐ)</code>. If <code>n</code> is even, need <code>a ≥ 0</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Solving <code>aˣ = aʸ</code> — match the base<span class="stag">solver</span></summary>
+  <div class="subject-body">
+    <p>Rewrite both sides as powers of one base, then <b>equate the exponents</b> (valid since <code>aˣ</code> is one-to-one for <code>a &gt; 0, a ≠ 1</code>).</p>
+    <div class="tool">
+      <p class="tool-title">Solver — <span class="mono">L^(p·x+q) = R^(r·x+s)</span></p>
+      <div class="flex" style="align-items:center;gap:6px;flex-wrap:wrap;">
+        <input type="number" id="peL" value="4" step="1" style="width:46px"><span>^(</span>
+        <input type="number" id="peP" value="1" step="1" style="width:42px"><span>x +</span>
+        <input type="number" id="peQ" value="1" step="1" style="width:42px"><span>) =</span>
+        <input type="number" id="peR" value="8" step="1" style="width:46px"><span>^(</span>
+        <input type="number" id="peRr" value="1" step="1" style="width:42px"><span>x +</span>
+        <input type="number" id="peS" value="-2" step="1" style="width:42px"><span>)</span>
+      </div>
+      <div id="peOut" class="eqout"></div>
+    </div>
+    <p class="muted"><b>Example.</b> <code>4^(x+1) = 8^(x−2)</code> → <code>2^(2x+2) = 2^(3x−6)</code> → <code>2x+2 = 3x−6</code> → <code>x = 8</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Solving by substitution <code>t = aˣ</code><span class="stag">method</span></summary>
+  <div class="subject-body">
+    <ol class="steps">
+      <li>Set <code>t = aˣ</code>; rewrite <code>a²ˣ → t²</code>, <code>a⁻ˣ → 1/t</code>, etc.</li>
+      <li>Solve for <code>t</code> (often a quadratic).</li>
+      <li><b>Reject any <code>t ≤ 0</code></b> — <code>aˣ &gt; 0</code> always.</li>
+      <li>Back-substitute <code>aˣ = t</code> and solve for <code>x</code>.</li>
+    </ol>
+    <p class="muted"><b>Example.</b> <code>4ˣ − 6·2ˣ + 8 = 0</code>, <code>t = 2ˣ</code> → <code>t² − 6t + 8 = 0</code> → <code>t = 2, 4</code> → <code>x = 1, 2</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Power inequalities — flip by base<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p>If <code>a &gt; 1</code>: <code>aˣ &lt; aʸ ⟺ x &lt; y</code> (keep). If <code>0 &lt; a &lt; 1</code>: <code>aˣ &lt; aʸ ⟺ x &gt; y</code> (flip).</p>
+    <div class="tool">
+      <p class="tool-title">The function <code>y = aˣ</code></p>
+      <label class="muted">a = <span id="powBaseLbl" class="mono">2</span></label>
+      <input type="range" id="powBase" min="0.2" max="4" step="0.1" value="2">
+      <svg id="powIneqSvg" viewBox="0 0 320 220" style="max-width:320px"></svg>
+      <div class="resultbox" id="powIneqOut"></div>
+    </div>
+    <p class="muted"><b>Examples.</b> <code>(1/2)ˣ &lt; (1/2)³ → x &gt; 3</code>. &nbsp; <code>3ˣ &gt; 3⁵ → x &gt; 5</code>.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== P2 · LOGS ===== -->
+<section class="pane" id="pane-p2">
+<h2><span class="num">2</span>Logs</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="p2">Expand all</button>
+  <button data-acc="close" data-scope="p2">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Definition, rules, identities<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:560px">
+      <li><b>Definition:</b> <code>log_a(b) = c ⟺ aᶜ = b</code> &nbsp;(<code>a &gt; 0, a ≠ 1, b &gt; 0</code>)</li>
+      <li><code>log_a(1) = 0</code>,&nbsp; <code>log_a(a) = 1</code></li>
+      <li><code>log_a(MN) = log_a M + log_a N</code>,&nbsp; <code>log_a(M/N) = log_a M − log_a N</code></li>
+      <li><code>log_a(Mᵏ) = k·log_a M</code></li>
+      <li><b>Change of base:</b> <code>log_a(b) = log_c(b)/log_c(a)</code>,&nbsp; <code>log_a(b) = 1/log_b(a)</code></li>
+      <li><b>Inverse:</b> <code>a^(log_a b) = b</code>,&nbsp; <code>log_a(aᵏ) = k</code></li>
+    </ul>
+    <p>Turn a number into a log: <code>k = log_a(aᵏ)</code> — e.g. <code>2 = log_3(9)</code>, so it can merge with other <code>log_3</code> terms.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Absolute value inside logs — <code>log_a(x²)</code><span class="stag">domain</span></summary>
+  <div class="subject-body">
+    <p><code>log_a(x²)</code> is defined for every <code>x ≠ 0</code>. Writing it as <code>2·log_a(x)</code> silently loses <code>x &lt; 0</code>. The fix: <code>log_a(x²) = 2·log_a|x|</code>.</p>
+    <p data-cpart="expl"><b>Rule of thumb:</b> pulling an <b>even</b> exponent out of a log ⇒ wrap the base in <code>|·|</code>. Odd exponent ⇒ not needed.</p>
+    <svg id="logSqLine" class="numline" viewBox="0 0 520 90"></svg>
+  </div>
+</details>
+
+<details class="subject" open>
+  <summary>Solving <code>log_a(x + p) = c</code><span class="stag">solver</span></summary>
+  <div class="subject-body">
+    <ol class="steps">
+      <li>Domain: argument <code>&gt; 0</code>.</li>
+      <li>Definition: argument <code>= aᶜ</code>.</li>
+      <li>Solve, then check against the domain.</li>
+    </ol>
+    <div class="tool">
+      <p class="tool-title">Solver — <span class="mono">log_b(x + p) = c</span></p>
+      <div class="flex" style="align-items:center;gap:6px;">
+        <span>log</span><input type="number" id="leBase" value="2" step="1" style="width:46px">
+        <span>( x +</span><input type="number" id="leP" value="-1" step="1" style="width:46px"><span>) =</span>
+        <input type="number" id="leC" value="3" step="1" style="width:46px">
+      </div>
+      <div id="leOut" class="eqout"></div>
+      <svg id="leLine" class="numline" viewBox="0 0 520 90"></svg>
+    </div>
+    <p class="muted"><b>Example.</b> <code>log_2(x − 1) = 3</code> → <code>x − 1 = 8</code> → <code>x = 9</code> (<code>9 &gt; 1</code> ✓).</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Solving <code>log_a(b) = log_a(c)</code><span class="stag">method</span></summary>
+  <div class="subject-body">
+    <ol class="steps">
+      <li>Domain: <code>b &gt; 0</code> <span class="tag-and">AND</span> <code>c &gt; 0</code>.</li>
+      <li><code>log_a</code> is one-to-one → <b>equate arguments</b>: <code>b = c</code>.</li>
+      <li>Solve, then check the domain.</li>
+    </ol>
+    <p class="muted"><b>Example.</b> <code>log(x+3) = log(2x−1)</code> → domain <code>x &gt; 1/2</code> → <code>x + 3 = 2x − 1</code> → <code>x = 4</code> ✓.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Log inequalities<span class="stag">solver</span></summary>
+  <div class="subject-body">
+    <p>Two conditions with <span class="tag-and">AND</span>: the <b>domain</b> (every argument <code>&gt; 0</code>) and the <b>direction rule</b> by base.</p>
+    <ul class="idlist" style="max-width:560px">
+      <li><code>a &gt; 1</code>: <code>log_a b &lt; log_a c ⟺ 0 &lt; b &lt; c</code>.</li>
+      <li><code>0 &lt; a &lt; 1</code>: <code>log_a b &lt; log_a c ⟺ b &gt; c &gt; 0</code>.</li>
+    </ul>
+    <div class="tool">
+      <p class="tool-title">Solver — <span class="mono">log_b(x + p) ▸ log_b(k)</span></p>
+      <div class="flex" style="align-items:center;gap:6px;">
+        <span>log</span><input type="number" id="liBase" value="2" step="0.5" style="width:52px">
+        <span>( x +</span><input type="number" id="liP" value="-1" step="1" style="width:44px"><span>)</span>
+        <select id="liRel"><option value="lt">&lt;</option><option value="gt">&gt;</option></select>
+        <span>log</span><span class="mono" id="liBase2">2</span><span>(</span>
+        <input type="number" id="liK" value="5" step="1" style="width:44px"><span>)</span>
+      </div>
+      <div id="liOut" class="eqout"></div>
+      <svg id="liLine" class="numline" viewBox="0 0 520 100"></svg>
+    </div>
+    <p class="muted"><b>Example.</b> <code>log_2(x−1) &lt; log_2(5)</code> → <code>x &gt; 1</code> AND <code>x &lt; 6</code> → <code>1 &lt; x &lt; 6</code>.</p>
+  </div>
+</details>
+</section>
+
+</div><!-- /folder-powlog -->
+
+<div class="folder" id="folder-precalc">
+
+<!-- ===== C1 · DOMAIN ===== -->
+<section class="pane on" id="pane-c1">
+<h2><span class="num">0</span>Domain of definition</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="c1">Expand all</button>
+  <button data-acc="close" data-scope="c1">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Risky forms &amp; their conditions<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <table>
+      <thead><tr><th>Form</th><th>Domain requirement</th></tr></thead>
+      <tbody>
+        <tr><td><code>1/f(x)</code></td><td><code>f(x) ≠ 0</code></td></tr>
+        <tr><td><code>x⁻ⁿ</code></td><td><code>x ≠ 0</code></td></tr>
+        <tr><td><code>√f(x)</code>, <code>ⁿ√f(x)</code> (n even)</td><td><code>f(x) ≥ 0</code></td></tr>
+        <tr><td><code>aˣ</code></td><td>always <code>&gt; 0</code> (never 0, never negative)</td></tr>
+        <tr><td><code>log_b(a)</code></td><td><code>a &gt; 0</code> and <code>b &gt; 0, b ≠ 1</code></td></tr>
+        <tr><td><code>tan(f(x))</code></td><td><code>cos(f(x)) ≠ 0</code></td></tr>
+      </tbody>
+    </table>
+    <p>Write each condition, then <b>intersect (AND)</b> them all. A root in a <b>denominator</b> tightens <code>≥ 0</code> to <code>&gt; 0</code>.</p>
+  </div>
+</details>
+
+<details class="subject" open>
+  <summary>Domain builder<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p>Add the conditions your expression forces; the intersection is the domain.</p>
+    <div class="tool">
+      <p class="tool-title">Intersect conditions</p>
+      <div id="domRows"></div>
+      <div class="btnrow"><button id="domAdd">+ add condition</button></div>
+      <svg id="domLine" class="numline" viewBox="0 0 520 120" style="max-width:520px"></svg>
+      <div class="resultbox" id="domOut">–</div>
+    </div>
+    <p class="muted"><b>Example.</b> <code>ln(x−1) / √(5−x)</code> → <code>x &gt; 1</code> AND <code>x &lt; 5</code> → domain <code>1 &lt; x &lt; 5</code>.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== C2 · DERIVATIVES ===== -->
+<section class="pane" id="pane-c2">
+<h2><span class="num">1</span>Derivatives</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="c2">Expand all</button>
+  <button data-acc="close" data-scope="c2">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Secant → tangent<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p><code>f'(x) = lim_(h→0) [f(x+h) − f(x)] / h</code> — the secant slope collapses to the tangent slope.</p>
+    <div class="tool">
+      <p class="tool-title">Shrink <code>h</code> toward 0 &nbsp;(<code>f(x) = ¼x²</code>, at <code>x = 2</code>)</p>
+      <label class="muted">h = <span id="secHLbl" class="mono">2.0</span></label>
+      <input type="range" id="secH" min="0.05" max="3" step="0.05" value="2">
+      <svg id="secSvg" viewBox="0 0 340 260" style="max-width:340px"></svg>
+      <div class="readout">
+        <span class="k">secant slope</span><span class="v" id="secSlope">–</span>
+        <span class="k">true f'(2)</span><span class="v">1.000</span>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Differentiation rules<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:560px">
+      <li><code>d/dx[xⁿ] = n·xⁿ⁻¹</code>,&nbsp; <code>d/dx[c] = 0</code>,&nbsp; <code>d/dx[c·f] = c·f'</code></li>
+      <li><code>d/dx[f ± g] = f' ± g'</code></li>
+      <li><b>Product:</b> <code>d/dx[f·g] = f'g + fg'</code></li>
+      <li><b>Quotient:</b> <code>d/dx[f/g] = (f'g − fg') / g²</code></li>
+      <li><b>Chain:</b> <code>d/dx[f(g(x))] = f'(g(x))·g'(x)</code></li>
+      <li><b>Roots:</b> convert first — <code>√x = x^(1/2)</code> → <code>1/(2√x)</code>.</li>
+    </ul>
+    <p class="muted"><b>Examples.</b> <code>d/dx[(3x²+1)⁵] = 30x(3x²+1)⁴</code>. &nbsp; <code>d/dx[√(x²+1)] = x/√(x²+1)</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Derivative playground<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <div class="tool">
+      <p class="tool-title">f and f′, with the tangent line</p>
+      <div class="btnrow" id="dvFn">
+        <button data-f="sq" class="on">x²</button>
+        <button data-f="cube">x³</button>
+        <button data-f="sqrt">√x</button>
+        <button data-f="sin">sin x</button>
+        <button data-f="exp">eˣ</button>
+        <button data-f="ln">ln x</button>
+        <button data-f="inv">1/x</button>
+      </div>
+      <svg id="dvSvg" viewBox="0 0 420 280" style="max-width:420px"></svg>
+      <label class="muted">x = <span id="dvXLbl" class="mono">1.0</span></label>
+      <input type="range" id="dvX" min="-4" max="4" step="0.05" value="1">
+      <div class="readout">
+        <span class="k"><i class="dot" style="background:var(--cos)"></i>f(x)</span><span class="v" id="dvF">–</span>
+        <span class="k"><i class="dot" style="background:var(--sin)"></i>f′(x) = tangent slope</span><span class="v" id="dvD">–</span>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Increasing / decreasing &amp; sign charts<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <p><code>f</code> increases where <code>f'(x) &gt; 0</code>, decreases where <code>f'(x) &lt; 0</code>. <b>Critical points:</b> <code>f'(x) = 0</code> or undefined. Build a sign chart of <code>f'</code> with those as boundaries and test each interval.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== C3 · INTEGRALS ===== -->
+<section class="pane" id="pane-c3">
+<h2><span class="num">2</span>Integrals</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="c3">Expand all</button>
+  <button data-acc="close" data-scope="c3">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Definite integral &amp; signed area<span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p>If <code>F' = f</code> then <code>∫f dx = F + C</code>, and <code>∫[a,b] f dx = F(b) − F(a)</code> (FTC) = <b>signed</b> area (below the axis counts negative).</p>
+    <div class="tool">
+      <p class="tool-title">Area under a curve</p>
+      <div class="btnrow" id="intFn">
+        <button data-f="sq" class="on">x²</button>
+        <button data-f="cube">x³</button>
+        <button data-f="sin">sin x</button>
+        <button data-f="line">x − 1</button>
+        <button data-f="exp">eˣ</button>
+      </div>
+      <svg id="intSvg" viewBox="0 0 420 260" style="max-width:420px"></svg>
+      <label class="muted">a = <span id="intALbl" class="mono">0</span></label><input type="range" id="intA" min="-4" max="4" step="0.1" value="0">
+      <label class="muted">b = <span id="intBLbl" class="mono">2</span></label><input type="range" id="intB" min="-4" max="4" step="0.1" value="2">
+      <div class="readout">
+        <span class="k">∫[a,b] f dx (signed)</span><span class="v" id="intSigned">–</span>
+        <span class="k">geometric area (|·| pieces)</span><span class="v" id="intGeom">–</span>
+      </div>
+    </div>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Geometric area when part dips below<span class="stag">method</span></summary>
+  <div class="subject-body">
+    <ol class="steps">
+      <li>Find where <code>f(x) = 0</code> inside <code>[a,b]</code> — these split it into constant-sign pieces.</li>
+      <li>Integrate each piece separately.</li>
+      <li><b>Take the absolute value</b> of any negative piece.</li>
+      <li>Sum: <code>total area = Σ |∫ over each sub-interval|</code>.</li>
+    </ol>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>u-substitution / reverse chain rule<span class="stag">method</span></summary>
+  <div class="subject-body">
+    <ol class="steps">
+      <li>Let <code>t</code> = the inner expression; <code>dt = (inner)' dx</code> → isolate <code>dx</code>.</li>
+      <li>Substitute so everything is in <code>t</code>.</li>
+      <li>Integrate w.r.t. <code>t</code>, then substitute back.</li>
+    </ol>
+    <p><b>Shortcut:</b> <code>∫ g'(x)·[g(x)]ⁿ dx = [g(x)]ⁿ⁺¹/(n+1) + C</code> — undoing the chain rule.</p>
+    <p class="muted"><b>Example.</b> <code>∫2x(x²+1)⁴ dx</code>, <code>t = x²+1</code> → <code>∫t⁴ dt = (x²+1)⁵/5 + C</code>.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== C4 · TRIG CALCULUS ===== -->
+<section class="pane" id="pane-c4">
+<h2><span class="num">3</span>Trigonometric derivatives &amp; integrals</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="c4">Expand all</button>
+  <button data-acc="close" data-scope="c4">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Derivatives<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:520px">
+      <li><code>d/dx[sin x] = cos x</code></li>
+      <li><code>d/dx[cos x] = −sin x</code></li>
+      <li><code>d/dx[tan x] = 1/cos²x</code></li>
+    </ul>
+    <p><b>Chain versions</b> (argument <code>g(x)</code>):</p>
+    <ul class="idlist" style="max-width:520px">
+      <li><code>d/dx[sin(g)] = cos(g)·g'</code></li>
+      <li><code>d/dx[cos(g)] = −sin(g)·g'</code></li>
+      <li><code>d/dx[tan(g)] = g'/cos²(g)</code></li>
+    </ul>
+    <p class="muted"><b>Example.</b> <code>d/dx[sin(3x²)] = 6x·cos(3x²)</code>.</p>
+  </div>
+</details>
+
+<details class="subject">
+  <summary>Integrals<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:520px">
+      <li><code>∫sin x dx = −cos x + C</code></li>
+      <li><code>∫cos x dx = sin x + C</code></li>
+      <li><code>∫1/cos²x dx = tan x + C</code></li>
+    </ul>
+    <p>For an inner <code>g(x)</code>: <code>∫g'(x)·cos(g(x)) dx = sin(g(x)) + C</code>, etc.</p>
+  </div>
+</details>
+</section>
+
+<!-- ===== C5 · EXP & LOG CALCULUS ===== -->
+<section class="pane" id="pane-c5">
+<h2><span class="num">4</span>Exponential &amp; logarithmic calculus</h2>
+<div class="accordion-controls">
+  <button data-acc="open" data-scope="c5">Expand all</button>
+  <button data-acc="close" data-scope="c5">Collapse all</button>
+</div>
+
+<details class="subject" open>
+  <summary>Derivatives &amp; integrals<span class="stag">reference</span></summary>
+  <div class="subject-body">
+    <ul class="idlist" style="max-width:560px">
+      <li><code>d/dx[eˣ] = eˣ</code>,&nbsp; <code>d/dx[aˣ] = aˣ·ln a</code></li>
+      <li><code>d/dx[ln x] = 1/x</code>,&nbsp; <code>d/dx[log_a x] = 1/(x·ln a)</code></li>
+      <li><b>Chain:</b> <code>d/dx[e^g] = e^g·g'</code>,&nbsp; <code>d/dx[ln g] = g'/g</code></li>
+      <li><code>∫eˣ dx = eˣ + C</code>,&nbsp; <code>∫aˣ dx = aˣ/ln a + C</code></li>
+      <li><code>∫(1/x) dx = ln|x| + C</code> — the <code>|·|</code> matches the full domain <code>x ≠ 0</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="subject" open>
+  <summary>The number <code>e</code><span class="stag">interactive</span></summary>
+  <div class="subject-body">
+    <p><code>e = lim_(n→∞) (1 + 1/n)ⁿ ≈ 2.71828</code> — the unique base where the tangent to <code>y = aˣ</code> at <code>x = 0</code> has slope exactly 1, which is why <code>eˣ</code> is its own derivative.</p>
+    <div class="tool">
+      <p class="tool-title">Watch <code>(1 + 1/n)ⁿ</code> approach <code>e</code></p>
+      <label class="muted">n = <span id="eNLbl" class="mono">10</span></label>
+      <input type="range" id="eN" min="1" max="1000" step="1" value="10">
+      <div class="readout">
+        <span class="k">(1 + 1/n)ⁿ</span><span class="v" id="eVal">–</span>
+        <span class="k">e</span><span class="v">2.718281828</span>
+        <span class="k">difference</span><span class="v" id="eDiff">–</span>
+      </div>
+    </div>
+  </div>
+</details>
+</section>
+
+</div><!-- /folder-precalc -->
+
+<div class="folder" id="folder-fn">
+
+<!-- ===== FN1 · WHAT IS A FUNCTION ===== -->
+<section class="pane on" id="pane-fn1">
+<h2><span class="num">1</span>What is a function</h2>
+<div class="card" data-tags="Definition">
+  <h4>Function</h4>
+  <p>A <b>function</b> <code>f</code> gives <b>each</b> input <code>x</code> of its domain <b>exactly one</b> output <code>f(x)</code>.</p>
+  <ul class="idlist">
+    <li><code>x</code> = input,&nbsp; <code>y = f(x)</code> = output</li>
+    <li>On a graph: every vertical line meets it <b>at most once</b>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="vertical line test: a parabola is hit once, a circle twice">
+    <path class="ax" d="M15 150 H195 M105 160 V15 M225 150 H405 M315 160 V15"/>
+    <path class="cv" d="M45 40 Q105 240 165 40"/>
+    <circle class="cv" cx="315" cy="85" r="55"/>
+    <path class="gd" d="M135 20 V150 M345 20 V150"/>
+    <circle class="dot" cx="135" cy="115" r="5"/>
+    <circle class="dot warn" cx="345" cy="38.9" r="5"/>
+    <circle class="dot warn" cx="345" cy="131.1" r="5"/>
+    <text class="sm" x="105" y="172" text-anchor="middle">function — hit once</text>
+    <text class="sm" x="315" y="172" text-anchor="middle">not a function — hit twice</text>
+  </svg>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Domain and range</h4>
+  <ul class="idlist">
+    <li><b>Domain</b> — every <code>x</code> the rule is allowed on.</li>
+    <li><b>Range</b> — every value <code>f(x)</code> actually takes.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="domain on the x-axis, range on the y-axis">
+    <rect class="band" x="110" y="184" width="220" height="12"/>
+    <rect class="band2" x="64" y="60" width="12" height="80"/>
+    <path class="ax" d="M70 190 H405 M70 200 V12"/>
+    <path class="gd" d="M110 140 V190 M330 60 V190 M70 60 H330 M70 140 H110"/>
+    <path class="cv" d="M110 140 C170 60 230 170 330 60"/>
+    <circle class="dot" cx="110" cy="140" r="4.5"/>
+    <circle class="dot" cx="330" cy="60" r="4.5"/>
+    <text x="220" y="210" text-anchor="middle">domain</text>
+    <text x="58" y="104" text-anchor="end">range</text>
+  </svg>
+  <p class="muted">Finding a domain: Precalc › 0 Domain.</p>
+</div>
+</section>
+
+<!-- ===== FN2 · PIECEWISE FUNCTIONS ===== -->
+<section class="pane" id="pane-fn2">
+<h2><span class="num">2</span>Piecewise functions</h2>
+<div class="card" data-tags="Definition">
+  <h4>Piecewise function</h4>
+  <p>A different rule on each part of the domain:</p>
+  <p><span class="pw"><code>f(x) =</code><span class="pw-b"><code>g(x)</code><code>x &lt; a</code><code>h(x)</code><code>x ≥ a</code></span></span></p>
+  <ul class="idlist">
+    <li>The conditions never overlap — every <code>x</code> gets one rule.</li>
+    <li><code>f(c)</code>: find the piece whose condition <code>c</code> meets, use only that rule.</li>
+    <li>Graph: <code>≤ ≥</code> = full dot (included), <code>&lt; &gt;</code> = empty dot.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="two pieces meeting at x = a: an empty dot and a full dot">
+    <path class="ax" d="M40 190 H405 M40 200 V12"/>
+    <path class="gd" d="M200 190 V60"/>
+    <path class="cv" d="M60 160 L200 100"/>
+    <path class="cv2" d="M200 60 L390 130"/>
+    <circle class="hole" cx="200" cy="100" r="5.5"/>
+    <circle class="dot" cx="200" cy="60" r="5.5" style="fill:#16a34a"/>
+    <text x="110" y="118" text-anchor="middle">g(x)</text>
+    <text x="320" y="88" text-anchor="middle">h(x)</text>
+    <text x="200" y="208" text-anchor="middle">a</text>
+    <text class="sm" x="212" y="114">○ x &lt; a</text>
+    <text class="sm" x="212" y="52">● x ≥ a</text>
+  </svg>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Absolute value as a piecewise function</h4>
+  <p><span class="pw"><code>|x| =</code><span class="pw-b"><code>x</code><code>x ≥ 0</code><code>−x</code><code>x &lt; 0</code></span></span></p>
+  <p><span class="pw"><code>|g(x)| =</code><span class="pw-b"><code>g(x)</code><code>g(x) ≥ 0</code><code>−g(x)</code><code>g(x) &lt; 0</code></span></span></p>
+  <p data-cpart="expl">The pieces meet where the inside is <code>0</code>.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the V graph of |x|: y = −x on the left, y = x on the right">
+    <path class="ax" d="M20 180 H400 M210 195 V12"/>
+    <path class="cv2" d="M60 30 L210 180"/>
+    <path class="cv" d="M210 180 L360 30"/>
+    <circle class="dot" cx="210" cy="180" r="4.5"/>
+    <text x="110" y="100" text-anchor="end">y = −x</text>
+    <text x="310" y="100">y = x</text>
+    <text class="sm" x="120" y="122" text-anchor="end">x &lt; 0</text>
+    <text class="sm" x="300" y="122">x ≥ 0</text>
+    <text x="210" y="200" text-anchor="middle">0</text>
+  </svg>
+  <p class="muted">Solving <code>|·|</code> equations: Algebra base › A Absolute value.</p>
+</div>
+</section>
+
+<!-- ===== FN3 · TRIG FUNCTIONS WITH AN INNER ARGUMENT ===== -->
+<section class="pane" id="pane-fn3">
+<h2><span class="num">3</span>Trig functions with an inner argument</h2>
+<div class="card" data-tags="Explanation">
+  <h4>The argument is the angle</h4>
+  <p>In <code>sin(2x − π/3)</code> the angle is the <b>whole argument</b> <code>u = 2x − π/3</code>, not <code>x</code>. Every fact about <code>sin u</code> holds for <code>u</code>: write the condition on <code>u</code> first, then solve for <code>x</code>.</p>
+  <p><code>sin(2x) = 0</code> → <code>2x = πk</code> → <code>x = πk/2</code> &nbsp;(not <code>x = πk</code>).</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="sin x and sin 2x: sin 2x repeats twice as fast and has twice as many zeros">
+    <path class="ax" d="M40 100 H410 M40 175 V25"/>
+    <path class="gd" d="M130 30 V170 M220 30 V170 M310 30 V170 M400 30 V170"/>
+    <path class="cv" d="M40.0 100.0 L50.0 89.6 60.0 79.5 70.0 70.0 80.0 61.4 90.0 54.0 100.0 48.0 110.0 43.6 120.0 40.9 130.0 40.0 140.0 40.9 150.0 43.6 160.0 48.0 170.0 54.0 180.0 61.4 190.0 70.0 200.0 79.5 210.0 89.6 220.0 100.0 230.0 110.4 240.0 120.5 250.0 130.0 260.0 138.6 270.0 146.0 280.0 152.0 290.0 156.4 300.0 159.1 310.0 160.0 320.0 159.1 330.0 156.4 340.0 152.0 350.0 146.0 360.0 138.6 370.0 130.0 380.0 120.5 390.0 110.4 400.0 100.0"/>
+    <path class="cv2" d="M40.0 100.0 L45.0 89.6 50.0 79.5 55.0 70.0 60.0 61.4 65.0 54.0 70.0 48.0 75.0 43.6 80.0 40.9 85.0 40.0 90.0 40.9 95.0 43.6 100.0 48.0 105.0 54.0 110.0 61.4 115.0 70.0 120.0 79.5 125.0 89.6 130.0 100.0 135.0 110.4 140.0 120.5 145.0 130.0 150.0 138.6 155.0 146.0 160.0 152.0 165.0 156.4 170.0 159.1 175.0 160.0 180.0 159.1 185.0 156.4 190.0 152.0 195.0 146.0 200.0 138.6 205.0 130.0 210.0 120.5 215.0 110.4 220.0 100.0 225.0 89.6 230.0 79.5 235.0 70.0 240.0 61.4 245.0 54.0 250.0 48.0 255.0 43.6 260.0 40.9 265.0 40.0 270.0 40.9 275.0 43.6 280.0 48.0 285.0 54.0 290.0 61.4 295.0 70.0 300.0 79.5 305.0 89.6 310.0 100.0 315.0 110.4 320.0 120.5 325.0 130.0 330.0 138.6 335.0 146.0 340.0 152.0 345.0 156.4 350.0 159.1 355.0 160.0 360.0 159.1 365.0 156.4 370.0 152.0 375.0 146.0 380.0 138.6 385.0 130.0 390.0 120.5 395.0 110.4 400.0 100.0"/>
+    <circle class="dot" cx="220" cy="100" r="4"/>
+    <circle class="dot" cx="400" cy="100" r="4"/>
+    <circle class="dot" cx="130" cy="100" r="4" style="fill:#16a34a"/>
+    <circle class="dot" cx="310" cy="100" r="4" style="fill:#16a34a"/>
+    <text class="sm" x="130" y="190" text-anchor="middle">π/2</text>
+    <text class="sm" x="220" y="190" text-anchor="middle">π</text>
+    <text class="sm" x="310" y="190" text-anchor="middle">3π/2</text>
+    <text class="sm" x="400" y="190" text-anchor="middle">2π</text>
+    <text x="150" y="30" style="fill:var(--accent)">sin x</text>
+    <text x="60" y="30" style="fill:#16a34a">sin 2x</text>
+  </svg>
+  <p class="muted"><code>sin 2x</code> (green) runs twice as fast: zeros every <code>π/2</code>, not every <code>π</code>.</p>
+  <p class="muted">General solutions: Trig base › 2.6 · periods: Trig base › 2.5.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Zeros, max and min of sin, cos, tan</h4>
+  <table>
+    <thead><tr><th></th><th>zero</th><th>max</th><th>min</th></tr></thead>
+    <tbody>
+      <tr><td><code>sin u</code></td><td><code>u = πk</code></td><td><code>1</code> at <code>u = π/2 + 2πk</code></td><td><code>−1</code> at <code>u = −π/2 + 2πk</code></td></tr>
+      <tr><td><code>cos u</code></td><td><code>u = π/2 + πk</code></td><td><code>1</code> at <code>u = 2πk</code></td><td><code>−1</code> at <code>u = π + 2πk</code></td></tr>
+      <tr><td><code>tan u</code></td><td><code>u = πk</code></td><td colspan="2">none — undefined (asymptote) at <code>u = π/2 + πk</code></td></tr>
+    </tbody>
+  </table>
+  <p class="muted"><code>k</code> = any integer. Max and min together: <code>sin u = ±1</code> at <code>u = π/2 + πk</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Period, amplitude and shifts</h4>
+  <p><code>y = A·sin(Bx + C) + D</code> &nbsp;(same for <code>cos</code>), <code>B &gt; 0</code>:</p>
+  <ul class="idlist">
+    <li>period <code>T = 2π/B</code> &nbsp;·&nbsp; for <code>tan(Bx + C)</code>: <code>T = π/B</code></li>
+    <li>amplitude <code>|A|</code> &nbsp;·&nbsp; midline <code>y = D</code></li>
+    <li>max <code>D + |A|</code> &nbsp;·&nbsp; min <code>D − |A|</code></li>
+    <li>shift: the cycle starts where <code>Bx + C = 0</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 225" role="img" aria-label="y = A sin x + D: midline D, max D + |A|, min D − |A|, one period T">
+    <path class="ax" d="M70 200 V20"/>
+    <path class="gd" d="M70 60 H410 M70 180 H410"/>
+    <path class="gd" d="M70 120 H410" style="stroke: var(--accent)"/>
+    <path class="cv" d="M70.0 120.0 L80.0 109.0 90.0 98.3 100.0 88.4 110.0 79.6 120.0 72.1 130.0 66.3 140.0 62.3 150.0 60.3 155.0 60.0 160.0 60.3 170.0 62.3 180.0 66.3 190.0 72.1 200.0 79.6 210.0 88.4 220.0 98.3 230.0 109.0 240.0 120.0 250.0 131.0 260.0 141.7 270.0 151.6 280.0 160.4 290.0 167.9 300.0 173.7 310.0 177.7 320.0 179.7 325.0 180.0 330.0 179.7 340.0 177.7 350.0 173.7 360.0 167.9 370.0 160.4 380.0 151.6 390.0 141.7 400.0 131.0 410.0 120.0"/>
+    <path d="M155 64 V116" style="stroke:#16a34a; stroke-width:2"/>
+    <text x="162" y="95" style="fill:#16a34a">|A|</text>
+    <path d="M70 210 H410" style="stroke: var(--text-muted); stroke-width:1.3"/>
+    <path d="M70 204 V216 M410 204 V216" style="stroke: var(--text-muted); stroke-width:1.3"/>
+    <text x="240" y="222" text-anchor="middle" class="sm">one period T</text>
+    <text x="64" y="124" text-anchor="end">D</text>
+    <text class="sm" x="64" y="64" text-anchor="end">D+|A|</text>
+    <text class="sm" x="64" y="184" text-anchor="end">D−|A|</text>
+  </svg>
+</div>
+</section>
+
+<!-- ===== FN4 · COMPOSITION ===== -->
+<section class="pane" id="pane-fn4">
+<h2><span class="num">4</span>Composition of functions</h2>
+<div class="card" data-tags="Definition">
+  <h4>Composition</h4>
+  <p><code>(f∘g)(x) = f(g(x))</code> — first <code>g</code> (inner), then <code>f</code> (outer) on its result.</p>
+  <svg class="ill" viewBox="0 0 420 80" role="img" aria-label="x goes into g, g(x) goes into f, out comes f(g(x))">
+    <rect class="box" x="70" y="18" width="56" height="44" rx="8"/>
+    <rect class="box" x="262" y="18" width="56" height="44" rx="8"/>
+    <path class="ax" d="M36 40 H62 M126 40 H160 M232 40 H254 M318 40 H336"/>
+    <path class="arr" d="M70 40 l-9 -5 v10 z M169 40 l-9 -5 v10 z M262 40 l-9 -5 v10 z M345 40 l-9 -5 v10 z"/>
+    <text x="22" y="45" text-anchor="middle">x</text>
+    <text x="98" y="45" text-anchor="middle">g</text>
+    <text x="200" y="45" text-anchor="middle">g(x)</text>
+    <text x="290" y="45" text-anchor="middle">f</text>
+    <text x="382" y="45" text-anchor="middle">f(g(x))</text>
+    <text class="sm" x="98" y="76" text-anchor="middle">inner</text>
+    <text class="sm" x="290" y="76" text-anchor="middle">outer</text>
+  </svg>
+  <p data-cpart="expl"><code>f(x) = x²</code>, <code>g(x) = x + 1</code>: &nbsp;<code>f(g(x)) = (x + 1)²</code>, &nbsp;<code>g(f(x)) = x² + 1</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Domain of a composition</h4>
+  <p><code>x</code> is in the domain of <code>f∘g</code> ⇔ <code>x</code> is in the domain of <code>g</code> <b>AND</b> <code>g(x)</code> is in the domain of <code>f</code>.</p>
+  <p class="muted">Find it from these two conditions, not from the simplified formula.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Rules of composition</h4>
+  <ul class="idlist">
+    <li>Order matters: in general <code>f∘g ≠ g∘f</code></li>
+    <li>Brackets don't: <code>(f∘g)∘h = f∘(g∘h)</code></li>
+    <li>Identity <code>id(x) = x</code>: <code>f∘id = id∘f = f</code></li>
+  </ul>
+</div>
+</section>
+
+</div><!-- /folder-fn -->
+
+<div class="folder" id="folder-lim">
+
+<!-- ===== LM1 · WHAT IS A LIMIT ===== -->
+<section class="pane on" id="pane-lm1">
+<h2><span class="num">1</span>What is a limit</h2>
+<div class="card" data-tags="Definition">
+  <h4>Limit of a function</h4>
+  <p><code>lim_(x→a) f(x) = L</code> — as <code>x</code> gets close to <code>a</code> (with <code>x ≠ a</code>), <code>f(x)</code> gets as close to <code>L</code> as we want.</p>
+  <p><b>Full notation (ε–δ):</b></p>
+  <p><code>lim_(x→a) f(x) = L &nbsp;⇔&nbsp; ∀ε &gt; 0 ∃δ &gt; 0 : 0 &lt; |x − a| &lt; δ ⇒ |f(x) − L| &lt; ε</code></p>
+  <svg class="ill" viewBox="0 0 420 260" role="img" aria-label="epsilon band around L and delta band around a">
+    <rect class="band" x="60" y="90" width="345" height="60"/>
+    <rect class="band2" x="190" y="15" width="60" height="215"/>
+    <path class="ax" d="M60 230 H405 M60 230 V12"/>
+    <path class="cv" d="M75 215 C150 185 185 150 220 120 S300 60 395 35"/>
+    <path class="gd" d="M220 120 V230 M60 120 H220"/>
+    <circle class="hole" cx="220" cy="120" r="5"/>
+    <text x="54" y="124" text-anchor="end">L</text>
+    <text class="sm" x="54" y="94" text-anchor="end">L+ε</text>
+    <text class="sm" x="54" y="154" text-anchor="end">L−ε</text>
+    <text x="220" y="250" text-anchor="middle">a</text>
+    <text class="sm" x="186" y="250" text-anchor="middle">a−δ</text>
+    <text class="sm" x="254" y="250" text-anchor="middle">a+δ</text>
+  </svg>
+  <p class="muted">For <b>every</b> band <code>L ± ε</code> (blue) there is a band <code>a ± δ</code> (green) where the graph — except at <code>a</code> itself — stays inside the blue band.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>One-sided limits</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→a⁻) f(x)</code> — from the left (<code>x &lt; a</code>) &nbsp;·&nbsp; <code>lim_(x→a⁺) f(x)</code> — from the right (<code>x &gt; a</code>)</li>
+    <li><code>lim_(x→a) f(x) = L &nbsp;⇔&nbsp; lim_(x→a⁻) f(x) = lim_(x→a⁺) f(x) = L</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a jump: different left and right limits">
+    <path class="ax" d="M50 195 H405 M50 195 V12"/>
+    <path class="gd" d="M50 125 H210 M50 70 H210 M210 195 V70"/>
+    <path class="cv" d="M65 165 C120 155 170 138 210 125"/>
+    <path class="cv" d="M210 70 C260 60 320 50 395 44"/>
+    <circle class="hole" cx="210" cy="125" r="5"/>
+    <circle class="dot" cx="210" cy="70" r="5"/>
+    <text x="44" y="129" text-anchor="end">L₁</text>
+    <text x="44" y="74" text-anchor="end">L₂</text>
+    <text x="210" y="213" text-anchor="middle">a</text>
+  </svg>
+  <p class="muted">Left limit <code>L₁</code> ≠ right limit <code>L₂</code> → no limit at <code>a</code>. Typical at the breakpoint of a piecewise function or <code>|·|</code> (Functions › 2).</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Properties of a limit</h4>
+  <ul class="idlist">
+    <li><b>The value at the point doesn't matter.</b> <code>f(a)</code> may be anything, or not exist — the limit only looks at <code>x</code> near <code>a</code>.</li>
+    <li><b>Unique:</b> <code>lim_(x→a) f(x) = L₁</code> and <code>lim_(x→a) f(x) = L₂</code> ⇒ <code>L₁ = L₂</code></li>
+    <li><b>Local:</b> <code>f(x) = g(x)</code> for all <code>x ≠ a</code> near <code>a</code> ⇒ <code>lim_(x→a) f(x) = lim_(x→a) g(x)</code> &nbsp;(this is why cancelling works)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="hole at the limit, f(a) elsewhere">
+    <path class="ax" d="M50 185 H405 M50 185 V12"/>
+    <path class="gd" d="M50 120 H210 M50 55 H210 M210 185 V55"/>
+    <path class="cv" d="M65 170 C130 150 170 132 210 120 S300 95 395 85"/>
+    <circle class="hole" cx="210" cy="120" r="5"/>
+    <circle class="dot" cx="210" cy="55" r="5"/>
+    <text x="44" y="124" text-anchor="end">L</text>
+    <text x="44" y="59" text-anchor="end">f(a)</text>
+    <text x="210" y="203" text-anchor="middle">a</text>
+  </svg>
+  <p class="muted">Here <code>lim_(x→a) f(x) = L</code> even though <code>f(a) ≠ L</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Infinite limits and limits at infinity</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→∞) f(x) = L &nbsp;⇔&nbsp; ∀ε &gt; 0 ∃M : x &gt; M ⇒ |f(x) − L| &lt; ε</code></li>
+    <li><code>lim_(x→a) f(x) = ∞ &nbsp;⇔&nbsp; ∀M ∃δ &gt; 0 : 0 &lt; |x − a| &lt; δ ⇒ f(x) &gt; M</code></li>
+  </ul>
+  <p class="muted">A limit of <code>±∞</code> is not a finite limit — the arithmetic of limits needs finite ones.</p>
+</div>
+</section>
+
+<!-- ===== LM2 · ARITHMETIC OF LIMITS ===== -->
+<section class="pane" id="pane-lm2">
+<h2><span class="num">2</span>Arithmetic of limits</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Arithmetic of limits</h4>
+  <p>If <code>lim_(x→a) f(x) = L</code> and <code>lim_(x→a) g(x) = M</code> with <code>L, M ∈ ℝ</code> (both exist and are finite), then:</p>
+  <ul class="idlist">
+    <li><code>lim_(x→a) [f(x) ± g(x)] = L ± M</code></li>
+    <li><code>lim_(x→a) c·f(x) = c·L</code></li>
+    <li><code>lim_(x→a) [f(x)·g(x)] = L·M</code></li>
+    <li><code>lim_(x→a) f(x)/g(x) = L/M</code> &nbsp;if <code>M ≠ 0</code></li>
+  </ul>
+  <p class="muted">In words: when both limits exist (finite), you may split the limit over <code>+ − · ÷</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When you can't use the arithmetic</h4>
+  <ul class="idlist">
+    <li><b>One exists, one doesn't</b> ⇒ the sum has <b>no</b> limit: <code>lim f</code> exists, <code>lim g</code> doesn't ⇒ <code>lim (f + g)</code> doesn't (else <code>g = (f + g) − f</code> would have one).</li>
+    <li><b>Neither exists</b> ⇒ can't tell — the sum or product may still have a limit (examples next card).</li>
+    <li><b>Indeterminate forms</b> — unknown until you rewrite the expression: <code>0/0</code>, <code>∞/∞</code>, <code>∞ − ∞</code>, <code>0·∞</code>, <code>1<sup>∞</sup></code>, <code>0<sup>0</sup></code>, <code>∞<sup>0</sup></code></li>
+    <li><b>Not indeterminate:</b> <code>L/∞ = 0</code>, &nbsp;<code>∞ + ∞ = ∞</code>, &nbsp;<code>L·∞ = ±∞</code> (<code>L ≠ 0</code>), &nbsp;<code>L/0</code> (<code>L ≠ 0</code>) <code>= ±∞</code> — check the sign from each side.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Note">
+  <h4>No limits apart, a limit together</h4>
+  <p><b>Sum</b> — at <code>a = 0</code>: <code>f(x) = 1/x</code>, <code>g(x) = −1/x</code> have no limit, but <code>f(x) + g(x) = 0</code> → limit <code>0</code>.</p>
+  <p><b>Product</b> — at <code>a = 0</code>, the sign function</p>
+  <p><span class="pw"><code>f(x) = g(x) =</code><span class="pw-b"><code>1</code><code>x ≥ 0</code><code>−1</code><code>x &lt; 0</code></span></span></p>
+  <p>has a jump (no limit), but <code>f(x)·g(x) = 1</code> → limit <code>1</code>. Same for <code>f(x)/g(x) = 1</code>.</p>
+  <p class="muted">So <code>lim (f + g)</code> existing does <b>not</b> mean <code>lim f</code> and <code>lim g</code> exist — never split a limit before you know both parts exist.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Zero times bounded</h4>
+  <p><code>lim_(x→a) f(x) = 0</code> and <code>∃K &gt; 0 : |g(x)| ≤ K</code> near <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x)·g(x) = 0</code></p>
+  <p class="muted">Even when <code>lim g</code> doesn't exist: <code>lim_(x→0) x·sin(1/x) = 0</code>, since <code>|sin(1/x)| ≤ 1</code>.</p>
+</div>
+</section>
+
+<!-- ===== LM3 · CALCULATING LIMITS ===== -->
+<section class="pane" id="pane-lm3">
+<h2><span class="num">3</span>Calculating limits</h2>
+<div class="card" data-tags="Theorem">
+  <h4>When plugging in works</h4>
+  <p><code>f</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
+  <p>Every elementary function is continuous on its domain: polynomials, rational functions (denominator <code>≠ 0</code>), roots, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>aˣ</code>, <code>ln</code> — and their sums, products, quotients and compositions (concepts 6–7).</p>
+  <p class="muted">Plugging in gives <code>0/0</code>, <code>∞/∞</code>… → <code>a</code> is not in the domain: rewrite first.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Polynomials and the biggest power</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→a) p(x) = p(a)</code></li>
+    <li><code>p(x) = aₙxⁿ + … + a₁x + a₀</code>, <code>aₙ ≠ 0</code>: &nbsp;<code>lim_(x→±∞) p(x) = lim_(x→±∞) aₙxⁿ</code></li>
+    <li>Rational <code>p(x)/q(x)</code> at <code>±∞</code>: deg <code>p</code> &lt; deg <code>q</code> → <code>0</code> · equal → ratio of the leading coefficients · deg <code>p</code> &gt; deg <code>q</code> → <code>±∞</code></li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Shortened multiplication formulas</h4>
+  <ul class="idlist">
+    <li><code>a² − b² = (a − b)(a + b)</code></li>
+    <li><code>(a ± b)² = a² ± 2ab + b²</code></li>
+    <li><code>a³ − b³ = (a − b)(a² + ab + b²)</code></li>
+    <li><code>a³ + b³ = (a + b)(a² − ab + b²)</code></li>
+  </ul>
+  <p class="muted">Read right-to-left they factor; left-to-right they build the "partner" that cancels a root.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Multiplying by 1</h4>
+  <p>Multiplying by <code>A/A</code> (= 1, for <code>A ≠ 0</code>) changes the <b>form</b>, not the value:</p>
+  <ul class="idlist">
+    <li><code>(1/xⁿ)/(1/xⁿ)</code> — divide top and bottom by the biggest power (<code>x → ∞</code>)</li>
+    <li><code>(√x + 2)/(√x + 2)</code> — the conjugate: <code>(√x − 2)(√x + 2) = x − 4</code> removes the root</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== LM4 · L'HÔPITAL ===== -->
+<section class="pane" id="pane-lm4">
+<h2><span class="num">4</span>L'Hôpital's rule</h2>
+<div class="card" data-tags="Theorem">
+  <h4>L'Hôpital's rule</h4>
+  <p>If <code>f, g</code> are differentiable near <code>a</code> (except maybe at <code>a</code>), <code>g'(x) ≠ 0</code> near <code>a</code>,</p>
+  <p><code>lim_(x→a) f(x) = lim_(x→a) g(x) = 0</code> &nbsp;(or both <code>±∞</code>), &nbsp;and <code>lim_(x→a) f'(x)/g'(x) = L</code> (<code>L</code> finite or <code>±∞</code>)</p>
+  <p>⇒ &nbsp;<code>lim_(x→a) f(x)/g(x) = lim_(x→a) f'(x)/g'(x) = L</code></p>
+  <p class="muted">Also for <code>x → ±∞</code> and one-sided limits. Only for <code>0/0</code> or <code>∞/∞</code>. Differentiate top and bottom <b>separately</b> — not the quotient rule. Derivatives: Precalc › 1 Derivatives, 3 Trig calculus, 4 Exp &amp; log calculus.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Other forms into 0/0 or ∞/∞</h4>
+  <ul class="idlist">
+    <li><code>0·∞</code>: &nbsp;<code>f·g = f/(1/g)</code></li>
+    <li><code>∞ − ∞</code>: &nbsp;common denominator, or the conjugate</li>
+    <li><code>1<sup>∞</sup></code>, <code>0<sup>0</sup></code>, <code>∞<sup>0</sup></code>: &nbsp;<code>f<sup>g</sup> = e<sup>g·ln f</sup></code> → find <code>lim g·ln f</code></li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== LM5 · CONTINUITY ===== -->
+<section class="pane" id="pane-lm5">
+<h2><span class="num">5</span>Continuity</h2>
+<div class="card" data-tags="Definition">
+  <h4>Continuity at a point</h4>
+  <p><code>f</code> is continuous at <code>a</code> &nbsp;⇔&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
+  <p><b>Full notation:</b> <code>∀ε &gt; 0 ∃δ &gt; 0 : |x − a| &lt; δ ⇒ |f(x) − f(a)| &lt; ε</code></p>
+  <p>Three conditions: <code>f(a)</code> exists · <code>lim_(x→a) f(x)</code> exists · they are equal. One fails → not continuous:</p>
+  <svg class="ill" viewBox="0 0 420 155" role="img" aria-label="three ways to fail: hole, jump, moved point">
+    <path class="ax" d="M10 125 H130 M150 125 H270 M290 125 H410"/>
+    <path class="cv" d="M15 110 Q70 60 125 30"/>
+    <circle class="hole" cx="70" cy="65" r="5"/>
+    <path class="cv" d="M155 105 L210 85 M210 50 L265 35"/>
+    <circle class="hole" cx="210" cy="85" r="5"/>
+    <circle class="dot" cx="210" cy="50" r="5"/>
+    <path class="cv" d="M295 110 Q350 60 405 30"/>
+    <circle class="hole" cx="350" cy="65" r="5"/>
+    <circle class="dot" cx="350" cy="25" r="5"/>
+    <text class="sm" x="70" y="145" text-anchor="middle">no f(a)</text>
+    <text class="sm" x="210" y="145" text-anchor="middle">no limit (jump)</text>
+    <text class="sm" x="350" y="145" text-anchor="middle">f(a) ≠ limit</text>
+  </svg>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>One-sided continuity and intervals</h4>
+  <ul class="idlist">
+    <li>From the right: <code>lim_(x→a⁺) f(x) = f(a)</code> &nbsp;·&nbsp; from the left: <code>lim_(x→a⁻) f(x) = f(a)</code></li>
+    <li>On <code>(a, b)</code>: continuous at every point.</li>
+    <li>On <code>[a, b]</code>: on <code>(a, b)</code> + from the right at <code>a</code> + from the left at <code>b</code>.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== LM6 · ARITHMETIC OF CONTINUITY ===== -->
+<section class="pane" id="pane-lm6">
+<h2><span class="num">6</span>Arithmetic of continuity</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Arithmetic of continuous functions</h4>
+  <p><code>f, g</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>f ± g</code>, <code>c·f</code>, <code>f·g</code> continuous at <code>a</code>, and <code>f/g</code> too if <code>g(a) ≠ 0</code>.</p>
+  <p class="muted"><code>x² + sin x</code> is continuous everywhere; <code>(x + 1)/(x − 2)</code> for every <code>x ≠ 2</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Continuous and not continuous</h4>
+  <ul class="idlist">
+    <li><code>f</code> continuous at <code>a</code>, <code>g</code> not &nbsp;⇒&nbsp; <code>f ± g</code> <b>not</b> continuous at <code>a</code></li>
+    <li>… and if also <code>f(a) ≠ 0</code> &nbsp;⇒&nbsp; <code>f·g</code>, <code>g/f</code> <b>not</b> continuous at <code>a</code></li>
+    <li>Both not continuous ⇒ can't tell.</li>
+  </ul>
+  <p class="muted"><code>x + sgn x</code> is not continuous at 0; but <code>x·sgn x = |x|</code> is (there <code>f(0) = 0</code>). Proved by contradiction — see the method.</p>
+</div>
+</section>
+
+<!-- ===== LM7 · COMPOSITION ===== -->
+<section class="pane" id="pane-lm7">
+<h2><span class="num">7</span>Composition and continuity</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Composition of continuous functions</h4>
+  <p><code>g</code> continuous at <code>a</code> and <code>f</code> continuous at <code>g(a)</code> &nbsp;⇒&nbsp; <code>f∘g</code> continuous at <code>a</code></p>
+  <p class="muted"><code>sin(x²)</code>, <code>√(x² + 1)</code>, <code>e<sup>cos x</sup></code> — continuous wherever defined. Composition itself: Functions › 4.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Limit of a composition</h4>
+  <ul class="idlist">
+    <li><code>lim_(x→a) g(x) = b</code> and <code>f</code> continuous at <code>b</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = f(lim_(x→a) g(x)) = f(b)</code></li>
+    <li><b>Substitution:</b> <code>lim_(x→a) g(x) = b</code>, <code>g(x) ≠ b</code> near <code>a</code>, <code>lim_(t→b) f(t) = L</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = L</code></li>
+  </ul>
+  <p class="muted">The limit goes inside a continuous function: <code>lim_(x→0) cos(x² + π) = cos π = −1</code>. The second line is why a help variable <code>t</code> works.</p>
+</div>
+</section>
+
+<!-- ===== LM8 · INTERMEDIATE VALUE THEOREM ===== -->
+<section class="pane" id="pane-lm8">
+<h2><span class="num">8</span>Intermediate value theorem</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Intermediate value theorem</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and <code>y</code> between <code>f(a)</code> and <code>f(b)</code> &nbsp;⇒&nbsp; <code>∃c ∈ [a, b] : f(c) = y</code></p>
+  <svg class="ill" viewBox="0 0 420 235" role="img" aria-label="a continuous curve from f(a) to f(b) crosses the level y at c">
+    <path class="ax" d="M50 205 H405 M50 205 V12"/>
+    <path class="gd" d="M50 170 H80 V205 M50 50 H360 V205 M250 110 V205"/>
+    <path class="gd" d="M50 110 H405" style="stroke: var(--accent)"/>
+    <path class="cv" d="M80 170 C150 190 200 60 250 110 S330 70 360 50"/>
+    <circle class="dot" cx="80" cy="170" r="4"/>
+    <circle class="dot" cx="360" cy="50" r="4"/>
+    <circle class="dot warn" cx="250" cy="110" r="5"/>
+    <text x="44" y="174" text-anchor="end">f(a)</text>
+    <text x="44" y="54" text-anchor="end">f(b)</text>
+    <text x="44" y="114" text-anchor="end">y</text>
+    <text x="80" y="223" text-anchor="middle">a</text>
+    <text x="250" y="223" text-anchor="middle">c</text>
+    <text x="360" y="223" text-anchor="middle">b</text>
+  </svg>
+  <p class="muted">A continuous graph can't get from <code>f(a)</code> to <code>f(b)</code> without crossing every level in between.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>A root between a sign change</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and <code>f(a)·f(b) &lt; 0</code> &nbsp;⇒&nbsp; <code>∃c ∈ (a, b) : f(c) = 0</code></p>
+  <p class="muted">Says a root <b>exists</b> — not where, not how many. Continuity on the whole <code>[a, b]</code> is a must: <code>1/x</code> on <code>[−1, 1]</code> changes sign with no root.</p>
+</div>
+</section>
+
+</div><!-- /folder-lim -->
+
+<div class="folder" id="folder-der">
+
+<!-- ===== DV1 · WHAT IS A DERIVATIVE ===== -->
+<section class="pane on" id="pane-dv1">
+<h2><span class="num">1</span>What is a derivative</h2>
+<div class="card" data-tags="Definition">
+  <h4>Derivative at a point</h4>
+  <p><code>f'(a) = lim_(h→0) (f(a + h) − f(a))/h</code></p>
+  <p>Same limit, written with <code>x = a + h</code>:</p>
+  <p><code>f'(a) = lim_(x→a) (f(x) − f(a))/(x − a)</code></p>
+  <p>If this limit exists and is <b>finite</b>, <code>f</code> is <b>differentiable</b> at <code>a</code> and the limit is the derivative. The <b>derivative function</b> <code>f'</code> gives this number at every <code>x</code> where it exists. Other notation: <code>y'</code>, <code>df/dx</code>.</p>
+  <svg class="ill" viewBox="0 0 420 250" role="img" aria-label="a secant through two points of a curve turning into the tangent as the second point moves closer">
+    <path class="ax" d="M50 235 H405 M50 235 V12"/>
+    <path class="cv" d="M60 210 Q260 210 390 30"/>
+    <path class="cv2" d="M120 227 L385 64"/>
+    <path class="gd" d="M90 219 L380 132"/>
+    <path class="gd" d="M174 194 H335 V95"/>
+    <circle class="dot" cx="174" cy="194" r="5"/>
+    <circle class="dot warn" cx="335" cy="95" r="5"/>
+    <text x="174" y="180" text-anchor="end">a</text>
+    <text x="347" y="104">a + h</text>
+    <text x="255" y="212" text-anchor="middle">h</text>
+    <text class="sm" x="388" y="62" text-anchor="end">secant</text>
+    <text class="sm" x="388" y="150" text-anchor="end">tangent</text>
+  </svg>
+  <p class="muted">The quotient is the slope of the <b>secant</b> (green) through two points of the graph. As <code>h → 0</code> the second point slides to the first, and the secant turns into the <b>tangent</b> (dashed). Try it live in Precalc › Derivatives › Secant → tangent.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>What the derivative tells you</h4>
+  <ul class="idlist">
+    <li><b>Slope:</b> <code>f'(a)</code> is the slope of the tangent to the graph at <code>a</code>.</li>
+    <li><b>Tangent line:</b> <code>y = f(a) + f'(a)·(x − a)</code></li>
+    <li><b>Rate of change:</b> how fast <code>f</code> changes at <code>a</code>. Near <code>a</code>: <code>f(a + h) ≈ f(a) + f'(a)·h</code></li>
+    <li><b>Direction:</b> <code>f' &gt; 0</code> on an interval → rising; <code>f' &lt; 0</code> → falling; <code>f'(a) = 0</code> → horizontal tangent (Derivatives › 7).</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a curve with a rising tangent, a horizontal tangent at the top, and a falling tangent">
+    <path class="ax" d="M30 170 H405"/>
+    <path class="cv" d="M50 150 C130 150 170 40 215 40 S300 150 380 150"/>
+    <path class="gd" d="M85 130 L185 62"/>
+    <path class="gd" d="M165 40 H265"/>
+    <path class="gd" d="M245 62 L345 130"/>
+    <circle class="dot" cx="134" cy="96" r="4"/>
+    <circle class="dot" cx="215" cy="40" r="4"/>
+    <circle class="dot" cx="296" cy="96" r="4"/>
+    <text x="118" y="70" text-anchor="end">f' &gt; 0</text>
+    <text x="215" y="28" text-anchor="middle">f' = 0</text>
+    <text x="312" y="70">f' &lt; 0</text>
+  </svg>
+  <p class="muted"><b>From the definition:</b> for <code>f(x) = x²</code>, <code>(f(x + h) − f(x))/h = (2xh + h²)/h = 2x + h → 2x</code>. So <code>f'(x) = 2x</code>: the slope at each point of the parabola.</p>
+</div>
+</section>
+
+<!-- ===== DV2 · DIFFERENTIATION FORMULAS ===== -->
+<section class="pane" id="pane-dv2">
+<h2><span class="num">2</span>Differentiation formulas</h2>
+<div class="card" data-tags="Formula">
+  <h4>Powers, polynomials and roots</h4>
+  <ul class="idlist">
+    <li><code>(c)' = 0</code> &nbsp;·&nbsp; <code>(c·f)' = c·f'</code> &nbsp;·&nbsp; <code>(f + g)' = f' + g'</code></li>
+    <li><code>(xⁿ)' = n·xⁿ⁻¹</code></li>
+    <li><code>(√x)' = 1/(2√x)</code> &nbsp;(<code>x &gt; 0</code>)</li>
+    <li><code>(ⁿ√x)' = 1/(n·ⁿ√(xⁿ⁻¹))</code></li>
+    <li>Any real power, <code>x &gt; 0</code>: <code>(xʳ)' = r·xʳ⁻¹</code>. A root or a fraction is a power: <code>1/x² = x⁻²</code>, so <code>(1/x²)' = −2x⁻³ = −2/x³</code></li>
+    <li>Polynomial, term by term: <code>(4x³ − 5x + 7)' = 12x² − 5</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="the parabola y equals x squared with tangents at x equals 1 and x equals 2, of slope 2 and 4">
+    <path class="ax" d="M40 205 H405 M120 205 V12"/>
+    <path class="cv" d="M120 205 Q200 205 280 15"/>
+    <path class="gd" d="M150 205 L260 107"/>
+    <path class="gd" d="M200 169 L280 27"/>
+    <circle class="dot" cx="180" cy="178" r="4"/>
+    <circle class="dot" cx="240" cy="98" r="4"/>
+    <text x="196" y="190">slope 2</text>
+    <text x="252" y="102">slope 4</text>
+    <text x="292" y="30">y = x²</text>
+  </svg>
+  <p class="muted">The slope grows with <code>x</code>: the derivative of <code>x²</code> is the straight line <code>2x</code>. Differentiating lowers a power by one.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li><b>Powers:</b> by the binomial formula <code>(x + h)ⁿ = xⁿ + n·xⁿ⁻¹·h + h²·(…)</code>, so</li>
+    <li><code>((x + h)ⁿ − xⁿ)/h = n·xⁿ⁻¹ + h·(…) → n·xⁿ⁻¹</code></li>
+    <li><b>Root</b> (multiply by the conjugate, Limits › 3):</li>
+    <li>With <code>s = √(x + h) + √x</code>: <code>(√(x + h) − √x)/h = ((x + h) − x)/(h·s) = 1/s</code></li>
+    <li>As <code>h → 0</code>, <code>s → 2√x</code>, so the limit is <code>1/(2√x)</code>.</li>
+    <li><b>Sum and constant:</b> split the quotient and use the arithmetic of limits.</li>
+    <li><b>Real power:</b> <code>xʳ = e<sup>r·ln x</sup></code>, so by the chain rule <code>(xʳ)' = xʳ·(r/x) = r·xʳ⁻¹</code>.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Product and quotient</h4>
+  <ul class="idlist">
+    <li><b>Product:</b> <code>(f·g)' = f'·g + f·g'</code></li>
+    <li><b>Quotient:</b> <code>(f/g)' = (f'·g − f·g')/g²</code> &nbsp;(<code>g ≠ 0</code>)</li>
+    <li><b>Reciprocal:</b> <code>(1/g)' = −g'/g²</code></li>
+  </ul>
+  <p>Example: <code>(x²·sin x)' = 2x·sin x + x²·cos x</code></p>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="a rectangle of sides f and g growing by strips f times delta g and g times delta f">
+    <rect class="box" x="90" y="60" width="210" height="125"/>
+    <rect class="band2" x="300" y="60" width="50" height="125"/>
+    <rect class="band" x="90" y="25" width="210" height="35"/>
+    <path class="ax" d="M300 25 H350 V60 H300 Z"/>
+    <text x="195" y="128" text-anchor="middle">f·g</text>
+    <text x="325" y="128" text-anchor="middle">Δf·g</text>
+    <text x="195" y="48" text-anchor="middle">f·Δg</text>
+    <text x="195" y="204" text-anchor="middle">f</text>
+    <text x="325" y="204" text-anchor="middle">Δf</text>
+    <text x="80" y="128" text-anchor="end">g</text>
+    <text x="80" y="48" text-anchor="end">Δg</text>
+  </svg>
+  <p class="muted">Think of <code>f·g</code> as an area. When both sides grow, the area gains two strips, <code>Δf·g</code> and <code>f·Δg</code>. The small corner <code>Δf·Δg</code> disappears in the limit. That is the two terms of the product rule.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li><b>Product:</b> add and subtract <code>f(x + h)·g(x)</code> in the numerator:</li>
+    <li><code>f(x + h)g(x + h) − f(x)g(x)</code></li>
+    <li><code>= f(x + h)·(g(x + h) − g(x)) + (f(x + h) − f(x))·g(x)</code></li>
+    <li>Divide by <code>h</code> and let <code>h → 0</code>. Since <code>f</code> is differentiable it is continuous, so <code>f(x + h) → f(x)</code>, and the result is <code>f·g' + f'·g</code>.</li>
+    <li><b>Reciprocal:</b> <code>(1/g(x + h) − 1/g(x))/h = −(g(x + h) − g(x))/h · 1/(g(x + h)·g(x)) → −g'/g²</code></li>
+    <li><b>Quotient:</b> <code>f/g = f·(1/g)</code>, so <code>(f/g)' = f'/g − f·g'/g² = (f'·g − f·g')/g²</code></li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Composite functions (chain rule)</h4>
+  <p><code>(f(g(x)))' = f'(g(x))·g'(x)</code></p>
+  <p>The derivative of the outer function, at the inner function, times the derivative of the inner function.</p>
+  <ul class="idlist">
+    <li><code>((3x² + 1)⁵)' = 5(3x² + 1)⁴·6x</code></li>
+    <li><code>(√(x² + 1))' = 2x/(2√(x² + 1)) = x/√(x² + 1)</code></li>
+    <li><code>(sin(x³))' = cos(x³)·3x²</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 120" role="img" aria-label="x goes into g, which multiplies changes by g prime, then into f, which multiplies changes by f prime">
+    <rect class="box" x="115" y="35" width="70" height="50" rx="6"/>
+    <rect class="box" x="260" y="35" width="70" height="50" rx="6"/>
+    <path class="ax" d="M50 60 H113 M187 60 H258 M332 60 H395"/>
+    <path class="arr" d="M115 60 l-9 -5 v10 Z M260 60 l-9 -5 v10 Z M397 60 l-9 -5 v10 Z"/>
+    <text x="150" y="65" text-anchor="middle">g</text>
+    <text x="295" y="65" text-anchor="middle">f</text>
+    <text x="42" y="65" text-anchor="end">x</text>
+    <text x="222" y="50" text-anchor="middle">g(x)</text>
+    <text x="150" y="108" text-anchor="middle">× g'(x)</text>
+    <text x="295" y="108" text-anchor="middle">× f'(g(x))</text>
+  </svg>
+  <p class="muted">A small change in <code>x</code> is multiplied by <code>g'</code> on the way through <code>g</code>, and that result is multiplied by <code>f'</code> on the way through <code>f</code>. Rates multiply.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li>Write <code>t = g(x + h)</code> and <code>b = g(x)</code>. Multiply by 1, as long as <code>t ≠ b</code>:</li>
+    <li><code>(f(t) − f(b))/h = (f(t) − f(b))/(t − b) · (t − b)/h</code></li>
+    <li><code>t → b</code> because <code>g</code> is continuous. The first quotient → <code>f'(g(x))</code>, the second → <code>g'(x)</code>.</li>
+    <li>The case <code>g(x + h) = g(x)</code> near <code>x</code> needs a small extra argument in a full proof; the formula stays the same.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Trigonometric functions</h4>
+  <ul class="idlist">
+    <li><code>(sin x)' = cos x</code></li>
+    <li><code>(cos x)' = −sin x</code></li>
+    <li><code>(tan x)' = 1/cos²x = 1 + tan²x</code></li>
+    <li>With an inner function <code>g</code>: <code>(sin g)' = cos g·g'</code> &nbsp;·&nbsp; <code>(cos g)' = −sin g·g'</code> &nbsp;·&nbsp; <code>(tan g)' = g'/cos²g</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="sin x and cos x together: where sin is flat cos is zero, where sin rises fastest cos is largest">
+    <path class="ax" d="M30 95 H405"/>
+    <path class="cv" d="M50 95 C85 95 95 35 130 35 S175 95 210 95 S255 155 290 155 S335 95 370 95"/>
+    <path class="cv2" d="M50 35 C85 35 95 95 130 95 S175 155 210 155 S255 95 290 95 S335 35 370 35"/>
+    <path class="gd" d="M130 20 V175 M290 20 V175"/>
+    <text x="378" y="99">sin x</text>
+    <text x="378" y="40">cos x</text>
+    <text class="sm" x="130" y="185" text-anchor="middle">π/2</text>
+    <text class="sm" x="290" y="185" text-anchor="middle">3π/2</text>
+  </svg>
+  <p class="muted">The green curve is the slope of the blue one. At the top of <code>sin x</code> the tangent is flat, and <code>cos x = 0</code> there.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li>Two base limits: <code>lim_(h→0) (sin h)/h = 1</code> and <code>lim_(h→0) (cos h − 1)/h = 0</code></li>
+    <li><b>Sine:</b> use <code>sin(x + h) = sin x·cos h + cos x·sin h</code> (Trig base › Identities):</li>
+    <li><code>(sin(x + h) − sin x)/h = sin x·(cos h − 1)/h + cos x·(sin h)/h → cos x</code></li>
+    <li><b>Cosine:</b> use <code>cos(x + h) = cos x·cos h − sin x·sin h</code>:</li>
+    <li><code>(cos(x + h) − cos x)/h = cos x·(cos h − 1)/h − sin x·(sin h)/h → −sin x</code></li>
+    <li><b>Tangent:</b> the quotient rule on <code>sin x / cos x</code> gives <code>(cos²x + sin²x)/cos²x = 1/cos²x</code></li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Exponential and logarithmic functions</h4>
+  <ul class="idlist">
+    <li><code>(eˣ)' = eˣ</code></li>
+    <li><code>(aˣ)' = aˣ·ln a</code> &nbsp;(<code>a &gt; 0</code>)</li>
+    <li><code>(ln x)' = 1/x</code> &nbsp;(<code>x &gt; 0</code>)</li>
+    <li><code>(log_a x)' = 1/(x·ln a)</code></li>
+    <li>With an inner function <code>f</code>: <code>(e<sup>f</sup>)' = e<sup>f</sup>·f'</code> &nbsp;·&nbsp; <code>(a<sup>f</sup>)' = a<sup>f</sup>·ln a·f'</code> &nbsp;·&nbsp; <code>(ln f)' = f'/f</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="e to the x and ln x, mirror images in the line y equals x, each with slope 1 where it meets an axis">
+    <path class="ax" d="M30 170 H405 M140 228 V10"/>
+    <path class="gd" d="M82 228 L300 10"/>
+    <path class="cv" d="M36.5 165.5 L42.4 164.9 L48.2 164.1 L54.0 163.3 L59.9 162.4 L65.7 161.4 L71.6 160.2 L77.4 158.8 L83.3 157.2 L89.1 155.5 L95.0 153.4 L100.8 151.1 L106.7 148.5 L112.5 145.5 L118.4 142.2 L124.2 138.3 L130.1 133.9 L135.9 128.9 L141.8 123.2 L147.6 116.7 L153.5 109.3 L159.3 100.8 L165.2 91.2 L171.0 80.3 L176.9 67.8 L182.7 53.6 L188.6 37.5 L194.4 19.1"/>
+    <path class="cv2" d="M152.5 227.6 L153.8 223.1 L155.3 218.6 L156.9 214.1 L158.7 209.6 L160.6 205.1 L162.8 200.6 L165.2 196.1 L167.8 191.6 L170.8 187.1 L174.0 182.6 L177.6 178.1 L181.5 173.6 L185.9 169.1 L190.7 164.6 L196.1 160.1 L202.0 155.6 L208.5 151.1 L215.7 146.6 L223.7 142.1 L232.4 137.6 L242.2 133.1 L252.9 128.6 L264.8 124.1 L277.9 119.6 L292.4 115.1 L308.5 110.6 L326.2 106.1 L345.8 101.6 L367.4 97.1"/>
+    <circle class="dot" cx="140" cy="125" r="4"/>
+    <circle class="dot" cx="185" cy="170" r="4"/>
+    <text x="222" y="24">eˣ</text>
+    <text x="340" y="84">ln x</text>
+    <text class="sm" x="132" y="122" text-anchor="end">1</text>
+    <text class="sm" x="185" y="186" text-anchor="middle">1</text>
+    <text class="sm" x="300" y="24">y = x</text>
+  </svg>
+  <p class="muted"><code>eˣ</code> and <code>ln x</code> mirror each other in <code>y = x</code>. <code>eˣ</code> has slope <code>1</code> at <code>x = 0</code>, and <code>ln x</code> has slope <code>1</code> at <code>x = 1</code>.</p>
+  <p data-cpart="expl"><b>Why, from the definition</b></p>
+  <ul class="idlist" data-cpart="expl">
+    <li><b>eˣ:</b> <code>(eˣ⁺ʰ − eˣ)/h = eˣ·(eʰ − 1)/h → eˣ</code>, because <code>lim_(h→0) (eʰ − 1)/h = 1</code>. That is what makes <code>e</code> special: the tangent at <code>0</code> has slope <code>1</code> (Precalc › Exp &amp; log calculus).</li>
+    <li><b>aˣ:</b> <code>aˣ = e<sup>x·ln a</sup></code>, so the chain rule gives <code>aˣ·ln a</code>.</li>
+    <li><b>ln x:</b> <code>(ln(x + h) − ln x)/h = ln(1 + h/x)/h</code>. With <code>t = h/x</code> this is <code>(1/x)·ln(1 + t)/t → 1/x</code>, because <code>lim_(t→0) ln(1 + t)/t = 1</code>.</li>
+    <li><b>log_a x:</b> <code>log_a x = ln x / ln a</code>, a constant times <code>ln x</code>.</li>
+    <li><b>ln f:</b> the chain rule with outer <code>ln</code> and inner <code>f</code>.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== DV3 · DIFFERENTIABILITY ===== -->
+<section class="pane" id="pane-dv3">
+<h2><span class="num">3</span>Differentiability</h2>
+<div class="card" data-tags="Definition">
+  <h4>Differentiable at a point</h4>
+  <p><code>f</code> differentiable at <code>a</code> &nbsp;⇔&nbsp; <code>lim_(h→0) (f(a + h) − f(a))/h</code> exists and is finite.</p>
+  <p><b>One-sided derivatives:</b></p>
+  <ul class="idlist">
+    <li><code>f'₋(a) = lim_(h→0⁻) (f(a + h) − f(a))/h</code></li>
+    <li><code>f'₊(a) = lim_(h→0⁺) (f(a + h) − f(a))/h</code></li>
+    <li><code>f</code> differentiable at <code>a</code> &nbsp;⇔&nbsp; <code>f'₋(a) = f'₊(a)</code>, both finite</li>
+  </ul>
+  <p class="muted">Differentiable on <code>(a, b)</code>: at every point. On <code>[a, b]</code>: also one-sided at the ends.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Differentiable implies continuous</h4>
+  <p><code>f</code> differentiable at <code>a</code> &nbsp;⇒&nbsp; <code>f</code> continuous at <code>a</code></p>
+  <p>The other way is false: <code>f(x) = |x|</code> is continuous at <code>0</code> and not differentiable there.</p>
+  <p class="muted"><b>Proof:</b> <code>f(x) − f(a) = (f(x) − f(a))/(x − a) · (x − a) → f'(a)·0 = 0</code>, so <code>f(x) → f(a)</code>.</p>
+  <p class="muted">Use it backwards: not continuous at <code>a</code> ⇒ not differentiable at <code>a</code>. No calculation needed.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Where a function is not differentiable</h4>
+  <p>Four ways the limit of the quotient can fail:</p>
+  <ul class="idlist">
+    <li><b>Not continuous:</b> a jump or a hole. Example: <code>f(x)</code> jumps at <code>a</code>.</li>
+    <li><b>Corner:</b> <code>f'₋(a) ≠ f'₊(a)</code>. Example: <code>|x|</code> at <code>0</code>.</li>
+    <li><b>Vertical tangent or cusp:</b> the quotient → <code>±∞</code>. Examples: <code>∛x</code> and <code>∛(x²)</code> at <code>0</code>.</li>
+    <li><b>Oscillation:</b> the quotient has no limit. Example: <code>x·sin(1/x)</code> at <code>0</code>, with <code>f(0) = 0</code>.</li>
+  </ul>
+  <p>Also, of course: a point outside the domain.</p>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="four small graphs: a jump, a corner, a vertical tangent and an oscillation">
+    <path class="ax" d="M20 90 H195 M108 12 V100"/>
+    <path class="cv" d="M30 80 L108 62"/>
+    <path class="cv" d="M108 32 L185 16"/>
+    <circle class="hole" cx="108" cy="62" r="4"/>
+    <circle class="dot" cx="108" cy="32" r="4"/>
+    <text class="sm" x="108" y="110" text-anchor="middle">jump</text>
+    <path class="ax" d="M225 90 H400 M312 12 V100"/>
+    <path class="cv" d="M240 20 L312 85 L385 20"/>
+    <circle class="dot warn" cx="312" cy="85" r="4"/>
+    <text class="sm" x="312" y="110" text-anchor="middle">corner</text>
+    <path class="ax" d="M20 170 H195 M108 125 V215"/>
+    <path class="cv" d="M30 200 C80 195 100 185 108 170 S135 145 185 140"/>
+    <circle class="dot warn" cx="108" cy="170" r="4"/>
+    <text class="sm" x="108" y="226" text-anchor="middle">vertical tangent</text>
+    <path class="ax" d="M225 170 H400 M312 125 V215"/>
+    <path class="cv" d="M235 150 L255 190 L272 155 L285 185 L295 160 L302 180 L307 165 L312 170 L317 175 L322 160 L329 180 L339 155 L352 185 L369 150 L389 190"/>
+    <circle class="dot warn" cx="312" cy="170" r="4"/>
+    <text class="sm" x="312" y="226" text-anchor="middle">oscillation</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Limit of the derivative</h4>
+  <p><code>f</code> continuous at <code>a</code>, differentiable for <code>x ≠ a</code> near <code>a</code>, and <code>lim_(x→a) f'(x) = L</code>:</p>
+  <ul class="idlist">
+    <li><code>L</code> finite &nbsp;⇒&nbsp; <code>f</code> differentiable at <code>a</code> and <code>f'(a) = L</code></li>
+    <li><code>L = ±∞</code> &nbsp;⇒&nbsp; <code>f</code> not differentiable at <code>a</code></li>
+    <li>One-sided too: <code>lim_(x→a⁻) f'(x) = f'₋(a)</code> and <code>lim_(x→a⁺) f'(x) = f'₊(a)</code></li>
+  </ul>
+  <p><b>Consequence:</b> if <code>f'(a)</code> exists and <code>lim_(x→a) f'(x)</code> exists, then the two are equal, so <code>f'</code> is continuous at <code>a</code>. A derivative function can't have a hole or a jump.</p>
+  <p class="muted">Why: by the mean value theorem (Derivatives › 7), <code>(f(x) − f(a))/(x − a) = f'(c)</code> for some <code>c</code> between <code>a</code> and <code>x</code>. As <code>x → a</code>, <code>c → a</code>, so the quotient has the same limit as <code>f'</code>.</p>
+  <p class="muted"><b>Continuity of <code>f</code> at <code>a</code> is required.</b> If <code>lim_(x→a) f'(x)</code> does not exist, the theorem says nothing: go to the definition. Example: <code>x²·sin(1/x)</code>, <code>f(0) = 0</code>, has <code>f'(0) = 0</code>, yet <code>lim_(x→0) f'(x)</code> does not exist.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When the derivative formula is undefined at a point</h4>
+  <p>If the formula for <code>f'</code> has a denominator that is <code>0</code> at <code>a</code>, or is undefined at <code>a</code> in any other way, treat it as a <b>warning sign</b>. It is not yet a verdict: the formula only holds where the rules were allowed.</p>
+  <ul class="idlist">
+    <li><b>Usually not differentiable:</b> <code>f = ∛x</code>, <code>f' = 1/(3∛(x²))</code> → <code>+∞</code> at <code>0</code>. Not differentiable.</li>
+    <li><b>But not always:</b> <code>f = √(x⁴)</code>, <code>f' = 4x³/(2√(x⁴))</code> is undefined at <code>0</code>, yet <code>f = x²</code> is differentiable there.</li>
+  </ul>
+  <p>Decide with the limit of the derivative (if <code>f</code> is continuous at <code>a</code>), or with the definition.</p>
+  <p class="muted">Method: Is a function differentiable at a point?</p>
+</div>
+</section>
+
+<!-- ===== DV4 · ARITHMETIC OF DIFFERENTIABILITY ===== -->
+<section class="pane" id="pane-dv4">
+<h2><span class="num">4</span>Arithmetic of differentiability</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Arithmetic of differentiable functions</h4>
+  <p><code>f, g</code> differentiable at <code>a</code> &nbsp;⇒&nbsp; these are differentiable at <code>a</code>:</p>
+  <ul class="idlist">
+    <li><code>f ± g</code>, with <code>(f ± g)'(a) = f'(a) ± g'(a)</code></li>
+    <li><code>c·f</code>, with <code>(c·f)'(a) = c·f'(a)</code></li>
+    <li><code>f·g</code>, with <code>(f·g)'(a) = f'(a)·g(a) + f(a)·g'(a)</code></li>
+    <li><code>f/g</code>, if <code>g(a) ≠ 0</code>, with <code>(f/g)'(a) = (f'(a)·g(a) − f(a)·g'(a))/g(a)²</code></li>
+  </ul>
+  <p><b>Composition:</b> <code>g</code> differentiable at <code>a</code> and <code>f</code> differentiable at <code>g(a)</code> &nbsp;⇒&nbsp; <code>f∘g</code> differentiable at <code>a</code>, with <code>(f∘g)'(a) = f'(g(a))·g'(a)</code></p>
+  <p class="muted">Differentiable on their whole domain: polynomials, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>eˣ</code>, <code>aˣ</code>, <code>ln</code>. Roots: on <code>x &gt; 0</code>, not at <code>0</code>. <code>|x|</code>: everywhere except <code>0</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When you can't use the arithmetic</h4>
+  <p>The theorem only works in one direction: all parts differentiable ⇒ the result is differentiable. If one part is <b>not</b> differentiable at <code>a</code>, the theorem says <b>nothing</b>. Go to the definition.</p>
+  <ul class="idlist">
+    <li><b>Sum:</b> <code>f</code> differentiable, <code>g</code> not ⇒ <code>f + g</code> not. If it were, <code>g = (f + g) − f</code> would be differentiable.</li>
+    <li><b>Both not differentiable, sum is:</b> <code>|x| + (−|x|) = 0</code></li>
+    <li><b>Product is differentiable:</b> <code>x·|x|</code> at <code>0</code>, and <code>|x|·|x| = x²</code></li>
+    <li><b>Product is not:</b> <code>1·|x|</code> at <code>0</code></li>
+    <li><b>Composition:</b> <code>|x|²</code> is differentiable at <code>0</code>, <code>|sin x|</code> and <code>sin|x|</code> are not.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="absolute value of x with a corner at zero, next to x times absolute value of x which is smooth at zero">
+    <path class="ax" d="M20 100 H195 M108 12 V180"/>
+    <path class="cv" d="M35 27 L108 100 L181 27"/>
+    <circle class="dot warn" cx="108" cy="100" r="4"/>
+    <text class="sm" x="108" y="186" text-anchor="end">|x|: corner</text>
+    <path class="ax" d="M225 100 H400 M312 12 V180"/>
+    <path class="cv" d="M250 170 Q290 100 312 100 Q334 100 374 30"/>
+    <circle class="dot" cx="312" cy="100" r="4"/>
+    <text class="sm" x="400" y="186" text-anchor="end">x·|x|: smooth</text>
+  </svg>
+  <p class="muted">The factor <code>x</code> flattens the corner: <code>x·|x|</code> has tangent slope <code>0</code> from both sides of <code>0</code>.</p>
+</div>
+</section>
+
+<!-- ===== DV5 · LOCAL EXTREMA ===== -->
+<section class="pane" id="pane-dv5">
+<h2><span class="num">5</span>Local extrema</h2>
+<div class="card" data-tags="Definition">
+  <h4>Local extremum point</h4>
+  <ul class="idlist">
+    <li><b>Local maximum</b> at <code>a</code>: <code>∃δ &gt; 0 : |x − a| &lt; δ ⇒ f(x) ≤ f(a)</code></li>
+    <li><b>Local minimum</b> at <code>a</code>: <code>∃δ &gt; 0 : |x − a| &lt; δ ⇒ f(x) ≥ f(a)</code></li>
+  </ul>
+  <p class="muted">"Local" means compared only with nearby points. A local maximum can be lower than a local minimum somewhere else.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Fermat's theorem</h4>
+  <p><code>f</code> has a local extremum at an interior point <code>a</code> and <code>f</code> is differentiable at <code>a</code> &nbsp;⇒&nbsp; <code>f'(a) = 0</code></p>
+  <p>The other way is false: <code>f(x) = x³</code> has <code>f'(0) = 0</code> and no extremum at <code>0</code>.</p>
+  <p class="muted"><b>Proof (maximum):</b> near <code>a</code>, <code>f(x) − f(a) ≤ 0</code>. So the quotient <code>(f(x) − f(a))/(x − a)</code> is <code>≥ 0</code> from the left and <code>≤ 0</code> from the right. Both one-sided limits equal <code>f'(a)</code>, so <code>f'(a) = 0</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Critical points and the first derivative test</h4>
+  <p>A <b>critical point</b> is an interior point of the domain where <code>f'(a) = 0</code> or <code>f'(a)</code> does not exist. Every local extremum is at a critical point, but not every critical point is an extremum.</p>
+  <p><b>First derivative test</b> (<code>f</code> continuous at <code>a</code>):</p>
+  <ul class="idlist">
+    <li><code>f'</code> changes from <code>+</code> to <code>−</code> at <code>a</code> ⇒ local maximum</li>
+    <li><code>f'</code> changes from <code>−</code> to <code>+</code> at <code>a</code> ⇒ local minimum</li>
+    <li>No sign change ⇒ no extremum</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 205" role="img" aria-label="a curve with a local maximum, a local minimum, a flat point that is no extremum, and a corner">
+    <path class="ax" d="M25 190 H405"/>
+    <path class="cv" d="M35 150 C60 70 95 60 120 95 S160 150 185 125 C205 100 205 88 225 88 C245 88 245 75 262 50 L310 130 L392 30"/>
+    <circle class="dot" cx="88" cy="72" r="4"/>
+    <circle class="dot" cx="161" cy="137" r="4"/>
+    <circle class="dot warn" cx="225" cy="88" r="4"/>
+    <circle class="dot" cx="310" cy="130" r="4"/>
+    <text class="sm" x="88" y="60" text-anchor="middle">max, f' = 0</text>
+    <text class="sm" x="161" y="156" text-anchor="middle">min, f' = 0</text>
+    <text class="sm" x="225" y="176" text-anchor="middle">f' = 0, no extremum</text>
+    <text class="sm" x="310" y="152" text-anchor="middle">min, no f'</text>
+  </svg>
+  <p class="muted">The test works because the sign of <code>f'</code> tells where <code>f</code> rises and falls (Derivatives › 7, Monotonicity).</p>
+</div>
+</section>
+
+<!-- ===== DV6 · ABSOLUTE EXTREMA ===== -->
+<section class="pane" id="pane-dv6">
+<h2><span class="num">6</span>Absolute extrema</h2>
+<div class="card" data-tags="Definition">
+  <h4>Absolute extremum point</h4>
+  <ul class="idlist">
+    <li><b>Absolute maximum</b> of <code>f</code> on <code>D</code> at <code>a ∈ D</code>: <code>∀x ∈ D : f(x) ≤ f(a)</code></li>
+    <li><b>Absolute minimum</b> of <code>f</code> on <code>D</code> at <code>a ∈ D</code>: <code>∀x ∈ D : f(x) ≥ f(a)</code></li>
+  </ul>
+  <ul class="idlist">
+    <li><b>The value is unique</b> on a given domain: one largest value, one smallest value.</li>
+    <li><b>The point need not be:</b> <code>sin x</code> reaches its maximum <code>1</code> at infinitely many points.</li>
+    <li><b>It may not exist.</b></li>
+    <li><b>Where to look:</b> a critical point inside the domain, or an end of the domain.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a curve on a closed interval: the absolute maximum is at the right end, the absolute minimum is at an interior point">
+    <path class="ax" d="M40 170 H405"/>
+    <path class="gd" d="M80 170 V95 M350 170 V25"/>
+    <path class="cv" d="M80 95 C110 60 140 60 165 90 S215 150 245 130 S320 90 350 25"/>
+    <circle class="dot" cx="80" cy="95" r="4"/>
+    <circle class="dot warn" cx="350" cy="25" r="5"/>
+    <circle class="dot warn" cx="218" cy="137" r="5"/>
+    <text x="80" y="186" text-anchor="middle">a</text>
+    <text x="350" y="186" text-anchor="middle">b</text>
+    <text class="sm" x="340" y="25" text-anchor="end">absolute max, at the end</text>
+    <text class="sm" x="218" y="158" text-anchor="middle">absolute min, f' = 0</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Extreme value theorem</h4>
+  <p><code>f</code> continuous on a closed interval <code>[a, b]</code> &nbsp;⇒&nbsp; <code>∃c, d ∈ [a, b] : ∀x ∈ [a, b] : f(c) ≤ f(x) ≤ f(d)</code></p>
+  <p>A continuous function on a closed interval reaches an absolute minimum and an absolute maximum.</p>
+  <p><b>Both conditions are needed. Functions with no absolute extremum:</b></p>
+  <ul class="idlist">
+    <li>Open interval: <code>f(x) = x</code> on <code>(0, 1)</code> has neither.</li>
+    <li>Open at one end: <code>f(x) = 1/x</code> on <code>(0, 1]</code> has no maximum.</li>
+    <li>Not bounded domain: <code>f(x) = eˣ</code> on <code>ℝ</code> has neither.</li>
+    <li>Not continuous: <code>f(x) = x</code> on <code>[0, 1)</code>, <code>f(1) = 0</code>, has no maximum.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="left: x on an open interval with two empty end points. Right: one over x going up with no top">
+    <path class="ax" d="M25 145 H195 M45 145 V15"/>
+    <path class="cv" d="M70 125 L170 35"/>
+    <circle class="hole" cx="70" cy="125" r="4"/>
+    <circle class="hole" cx="170" cy="35" r="4"/>
+    <text class="sm" x="120" y="164" text-anchor="middle">(0, 1): ends not reached</text>
+    <path class="ax" d="M235 145 H400 M255 145 V15"/>
+    <path class="cv" d="M272 15 C285 90 320 118 385 125"/>
+    <circle class="dot" cx="385" cy="125" r="4"/>
+    <text class="sm" x="318" y="164" text-anchor="middle">1/x on (0, 1]: no top</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Functions that go to infinity at both ends</h4>
+  <p><code>f</code> continuous on <code>(a, b)</code> (<code>a</code>, <code>b</code> may be <code>±∞</code>):</p>
+  <ul class="idlist">
+    <li><code>lim_(x→a⁺) f(x) = lim_(x→b⁻) f(x) = +∞</code> &nbsp;⇒&nbsp; absolute minimum, no absolute maximum</li>
+    <li><code>lim_(x→a⁺) f(x) = lim_(x→b⁻) f(x) = −∞</code> &nbsp;⇒&nbsp; absolute maximum, no absolute minimum</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="a curve coming down from infinity and going back up to infinity, with an absolute minimum between">
+    <path class="ax" d="M25 160 H405"/>
+    <path class="cv" d="M70 12 C110 110 150 90 185 100 S240 145 280 110 S335 40 350 12"/>
+    <circle class="dot warn" cx="247" cy="130" r="5"/>
+    <text class="sm" x="247" y="150" text-anchor="middle">absolute minimum</text>
+    <text class="sm" x="80" y="14">→ +∞</text>
+    <text class="sm" x="362" y="14">→ +∞</text>
+  </svg>
+  <p class="muted"><b>Why:</b> take any point <code>x₀</code>. Near the ends <code>f &gt; f(x₀)</code>, so outside some closed interval <code>[c, d]</code> containing <code>x₀</code> the function is above <code>f(x₀)</code>. On <code>[c, d]</code> the extreme value theorem gives a minimum, and it is the minimum everywhere.</p>
+  <p class="muted"><b>Same idea with a finite limit:</b> if both end limits are finite and some <code>f(x₀)</code> is below both, there is an absolute minimum (above both: an absolute maximum).</p>
+</div>
+</section>
+
+<!-- ===== DV7 · ROLLE AND THE MEAN VALUE THEOREM ===== -->
+<section class="pane" id="pane-dv7">
+<h2><span class="num">7</span>Rolle's theorem and the mean value theorem</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Rolle's theorem</h4>
+  <p>If:</p>
+  <ol class="idlist">
+    <li><code>f</code> is continuous on <code>[a, b]</code></li>
+    <li><code>f</code> is differentiable on <code>(a, b)</code></li>
+    <li><code>f(a) = f(b)</code></li>
+  </ol>
+  <p>then <code>∃c ∈ (a, b) : f'(c) = 0</code></p>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a curve with equal height at both ends and a horizontal tangent at its top">
+    <path class="ax" d="M40 170 H405"/>
+    <path class="gd" d="M90 170 V130 M340 170 V130 M60 130 H370"/>
+    <path class="cv" d="M90 130 C140 10 290 10 340 130"/>
+    <path class="cv2" d="M140 40 H290"/>
+    <circle class="dot" cx="90" cy="130" r="4"/>
+    <circle class="dot" cx="340" cy="130" r="4"/>
+    <circle class="dot warn" cx="215" cy="40" r="5"/>
+    <text x="90" y="186" text-anchor="middle">a</text>
+    <text x="215" y="186" text-anchor="middle">c</text>
+    <text x="340" y="186" text-anchor="middle">b</text>
+    <text class="sm" x="300" y="36">f'(c) = 0</text>
+  </svg>
+  <p class="muted">A graph that leaves a height and comes back must turn around somewhere, and at the turn the tangent is horizontal.</p>
+  <p class="muted"><b>Proof:</b> by the extreme value theorem, <code>f</code> reaches a maximum and a minimum on <code>[a, b]</code>. If both are at the ends, <code>f</code> is constant and any <code>c</code> works. Otherwise one is at an interior point <code>c</code>, and Fermat's theorem gives <code>f'(c) = 0</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>When a condition of Rolle's theorem fails</h4>
+  <p>Drop any one condition and the conclusion can fail:</p>
+  <ul class="idlist">
+    <li><b>Not continuous at an end:</b> <code>f(x) = x</code> on <code>[0, 1)</code>, <code>f(1) = 0</code>. Then <code>f(0) = f(1)</code>, but <code>f' = 1</code> everywhere inside.</li>
+    <li><b>Not differentiable inside:</b> <code>f(x) = |x|</code> on <code>[−1, 1]</code>. Then <code>f(−1) = f(1)</code>, but <code>f' = ±1</code>.</li>
+    <li><b>Different end values:</b> <code>f(x) = x</code> on <code>[0, 1]</code>. Then <code>f' = 1</code> everywhere.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="three small graphs, one for each failed condition of Rolle's theorem">
+    <path class="ax" d="M15 120 H135"/>
+    <path class="cv" d="M30 120 L115 30"/>
+    <circle class="hole" cx="115" cy="30" r="4"/>
+    <circle class="dot" cx="115" cy="120" r="4"/>
+    <circle class="dot" cx="30" cy="120" r="4"/>
+    <text class="sm" x="75" y="142" text-anchor="middle">not continuous</text>
+    <path class="ax" d="M150 120 H270"/>
+    <path class="cv" d="M165 30 L210 110 L255 30"/>
+    <circle class="dot warn" cx="210" cy="110" r="4"/>
+    <text class="sm" x="210" y="142" text-anchor="middle">corner</text>
+    <path class="ax" d="M285 120 H405"/>
+    <path class="cv" d="M300 110 L390 30"/>
+    <circle class="dot" cx="300" cy="110" r="4"/>
+    <circle class="dot" cx="390" cy="30" r="4"/>
+    <text class="sm" x="345" y="142" text-anchor="middle">f(a) ≠ f(b)</text>
+  </svg>
+  <p class="muted">The conditions are sufficient, not necessary: when one fails, a point with <code>f' = 0</code> may still exist. The theorem just doesn't promise it.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Mean value theorem</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and differentiable on <code>(a, b)</code> &nbsp;⇒&nbsp; <code>∃c ∈ (a, b) : f'(c) = (f(b) − f(a))/(b − a)</code></p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a curve, the chord between its ends, and a parallel tangent at a point c">
+    <path class="ax" d="M40 190 H405"/>
+    <path class="cv" d="M80 180 C130 60 250 70 350 60"/>
+    <path class="cv2" d="M80 180 L350 60"/>
+    <path class="gd" d="M100 119 L240 57"/>
+    <circle class="dot" cx="80" cy="180" r="4"/>
+    <circle class="dot" cx="350" cy="60" r="4"/>
+    <circle class="dot warn" cx="168" cy="89" r="5"/>
+    <text x="168" y="78" text-anchor="middle">c</text>
+    <text x="72" y="176" text-anchor="end">a</text>
+    <text x="358" y="58">b</text>
+  </svg>
+  <p class="muted">Somewhere the tangent is parallel to the chord: the instant rate equals the average rate. Rolle's theorem is the case <code>f(a) = f(b)</code>.</p>
+  <p class="muted"><b>Proof:</b> apply Rolle's theorem to <code>h(x) = f(x) − (f(b) − f(a))/(b − a)·(x − a)</code>, which has <code>h(a) = h(b) = f(a)</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Monotonicity</h4>
+  <p><code>f</code> continuous on an interval <code>I</code> and differentiable inside it:</p>
+  <ul class="idlist">
+    <li><code>f' &gt; 0</code> inside <code>I</code> ⇒ <code>f</code> strictly increasing on <code>I</code></li>
+    <li><code>f' &lt; 0</code> inside <code>I</code> ⇒ <code>f</code> strictly decreasing on <code>I</code></li>
+    <li><code>f' = 0</code> inside <code>I</code> ⇒ <code>f</code> constant on <code>I</code></li>
+    <li><code>f' = g'</code> inside <code>I</code> ⇒ <code>f = g + c</code> on <code>I</code></li>
+    <li>Comparing: <code>f(a) ≥ g(a)</code> and <code>f' &gt; g'</code> for <code>x &gt; a</code> ⇒ <code>f(x) &gt; g(x)</code> for <code>x &gt; a</code></li>
+  </ul>
+  <p class="muted"><b>Why:</b> for <code>x₁ &lt; x₂</code> the mean value theorem gives <code>f(x₂) − f(x₁) = f'(c)·(x₂ − x₁)</code>. The sign of <code>f'(c)</code> decides.</p>
+  <p class="muted"><b>It must be an interval.</b> <code>1/x</code> has <code>f' &lt; 0</code> on its domain but is not decreasing there. The converse is weaker: <code>x³</code> is strictly increasing with <code>f'(0) = 0</code>. A <code>f'</code> that is <code>0</code> only at single points doesn't spoil strict increase.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Roots of f and roots of f'</h4>
+  <ul class="idlist">
+    <li>Between two roots of <code>f</code> there is a root of <code>f'</code> (Rolle).</li>
+    <li><code>f</code> has <code>n</code> roots ⇒ <code>f'</code> has at least <code>n − 1</code> roots</li>
+    <li><code>f'</code> has <code>k</code> roots ⇒ <code>f</code> has at most <code>k + 1</code> roots</li>
+    <li><code>f'</code> has no roots ⇒ <code>f</code> has at most one root</li>
+    <li>A polynomial of degree <code>n</code> has at most <code>n</code> real roots; if <code>n</code> is odd, at least one.</li>
+  </ul>
+  <p class="muted">These count <b>at most</b>. To show a root really exists, use the intermediate value theorem (Limits › 8). All of this assumes <code>f</code> is differentiable on the whole interval.</p>
+</div>
+</section>
+
+<!-- ===== DV8 · CONVEXITY AND CONCAVITY ===== -->
+<section class="pane" id="pane-dv8">
+<h2><span class="num">8</span>Convexity and concavity</h2>
+<div class="card" data-tags="Definition">
+  <h4>Convex and concave</h4>
+  <p>The <b>second derivative</b> is the derivative of the derivative: <code>f'' = (f')'</code>.</p>
+  <p><code>f</code> differentiable on an interval <code>I</code>:</p>
+  <ul class="idlist">
+    <li><b>Convex</b> on <code>I</code>: <code>f'</code> increasing. The graph bends upward, lies above its tangents and below its chords.</li>
+    <li><b>Concave</b> on <code>I</code>: <code>f'</code> decreasing. The graph bends downward, lies below its tangents and above its chords.</li>
+  </ul>
+  <p><b>Test:</b> <code>f'' &gt; 0</code> on <code>I</code> ⇒ convex &nbsp;·&nbsp; <code>f'' &lt; 0</code> on <code>I</code> ⇒ concave</p>
+  <svg class="ill" viewBox="0 0 420 165" role="img" aria-label="a convex curve above its tangent and a concave curve below its tangent">
+    <path class="cv" d="M30 25 Q105 170 180 25"/>
+    <path class="gd" d="M45 105 H165" transform="translate(0,-8)"/>
+    <text x="105" y="150" text-anchor="middle">convex, f'' &gt; 0</text>
+    <path class="cv" d="M240 125 Q315 -20 390 125"/>
+    <path class="gd" d="M255 53 H375"/>
+    <text x="315" y="150" text-anchor="middle">concave, f'' &lt; 0</text>
+  </svg>
+  <p class="muted">On a convex stretch the slope keeps growing; on a concave stretch it keeps shrinking. That is why the sign of <code>f''</code>, the rate of change of the slope, decides.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Inflection point</h4>
+  <p><code>a</code> is an <b>inflection point</b> of <code>f</code> if <code>f</code> is continuous at <code>a</code>, has a tangent there, and changes from convex to concave (or the other way) at <code>a</code>.</p>
+  <ul class="idlist">
+    <li>Candidates: <code>f''(a) = 0</code> or <code>f''(a)</code> undefined, with <code>a</code> in the domain.</li>
+    <li><code>f''(a) = 0</code> is <b>not enough</b>: <code>x⁴</code> has <code>f''(0) = 0</code> and is convex on both sides. The sign of <code>f''</code> must change.</li>
+    <li><code>f''</code> may be undefined at an inflection point: <code>∛x</code> at <code>0</code>, with a vertical tangent.</li>
+    <li>A sign change at a point outside the domain is not an inflection point: <code>1/x</code> at <code>0</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="a curve that is concave on the left and convex on the right, crossing its tangent at the inflection point">
+    <path class="ax" d="M30 165 H405"/>
+    <path class="cv" d="M50 150 C130 40 170 40 215 90 S300 140 380 30"/>
+    <path class="gd" d="M150 30 L280 150"/>
+    <circle class="dot warn" cx="215" cy="90" r="5"/>
+    <text class="sm" x="100" y="42">concave</text>
+    <text class="sm" x="300" y="150">convex</text>
+    <text class="sm" x="228" y="84">inflection point</text>
+  </svg>
+  <p class="muted">At an inflection point the graph crosses its own tangent.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Second derivative test</h4>
+  <p><code>f'(a) = 0</code> and <code>f''(a)</code> exists:</p>
+  <ul class="idlist">
+    <li><code>f''(a) &gt; 0</code> ⇒ local minimum</li>
+    <li><code>f''(a) &lt; 0</code> ⇒ local maximum</li>
+    <li><code>f''(a) = 0</code> ⇒ no conclusion: <code>x⁴</code> (minimum), <code>−x⁴</code> (maximum), <code>x³</code> (neither)</li>
+  </ul>
+  <p class="muted">A horizontal tangent on a convex stretch can only be a bottom, on a concave stretch only a top.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Inequalities from convexity</h4>
+  <ul class="idlist">
+    <li><b>Convex</b> on <code>I</code>, <code>a ∈ I</code>: <code>f(x) ≥ f(a) + f'(a)·(x − a)</code> for all <code>x ∈ I</code></li>
+    <li><b>Concave</b> on <code>I</code>, <code>a ∈ I</code>: <code>f(x) ≤ f(a) + f'(a)·(x − a)</code> for all <code>x ∈ I</code></li>
+    <li><b>Convex</b> on <code>[a, b]</code>: below the chord between <code>a</code> and <code>b</code>. <b>Concave:</b> above it.</li>
+  </ul>
+  <p class="muted">The right side is the tangent line at <code>a</code>. If one side of an inequality is a line, it is often a tangent or a chord of the other side.</p>
+</div>
+</section>
+
+</div><!-- /folder-der -->
+
+<!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
+     Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"]]}</script>
+<script type="application/json" id="biMethods">
+[
+{ "id": "pp_bi_fnabs", "v": 2, "subject": "f:fn", "kind": "action",
+  "name": "Absolute value → piecewise",
+  "description": "Rewrite a function with |·| as a piecewise function with no absolute values.",
+  "uses": [["c", "fn2", "Absolute value as a piecewise function"], ["c", "fn2", "Piecewise function"], ["t", "b:a1"]],
+  "parts": [
+    { "id": "st_bi_fnabs1", "cat": "stage", "name": "Find the breakpoints", "text": "Set each expression inside `|·|` equal to `0` and solve. These `x` values cut the number line into intervals." },
+    { "id": "st_bi_fnabs2", "cat": "stage", "name": "Sign of each inside", "text": "On each interval, test one point: is each inside **≥ 0** or **< 0**?" },
+    { "id": "st_bi_fnabs3", "cat": "stage", "name": "Drop the bars", "text": "Inside `≥ 0`: `|g| = g`\nInside `< 0`: `|g| = −(g)` — keep the brackets!" },
+    { "id": "st_bi_fnabs4", "cat": "stage", "name": "Simplify and write", "text": "Simplify each interval's rule and write the piecewise function. The breakpoint itself (`=`) goes into one of the pieces." },
+    { "id": "st_bi_fnabs5", "cat": "example", "name": "Example — one absolute value", "text": "`f(x) = |x − 2| + x`\n1. Breakpoint: `x − 2 = 0` → `x = 2`\n2. `x ≥ 2`: inside `≥ 0` · `x < 2`: inside `< 0`\n3. `x ≥ 2`: `(x − 2) + x` · `x < 2`: `−(x − 2) + x`\n4.\nf(x) = { 2x − 2 ; x ≥ 2\n{ 2 ; x < 2" },
+    { "id": "st_bi_fnabs6", "cat": "example", "name": "Example — two absolute values", "text": "`f(x) = |x − 1| + |x + 2|`\n1. Breakpoints: `x = 1` and `x = −2` → three intervals\n2. `x < −2`: both `< 0` · `−2 ≤ x < 1`: `x + 2 ≥ 0`, `x − 1 < 0` · `x ≥ 1`: both `≥ 0`\n3. `−(x − 1) − (x + 2)` · `−(x − 1) + (x + 2)` · `(x − 1) + (x + 2)`\n4.\nf(x) = { −2x − 1 ; x < −2\n{ 3 ; −2 ≤ x < 1\n{ 2x + 1 ; x ≥ 1" }
+  ] },
+{ "id": "pp_bi_fntrz", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Roots of a trig function with an inner argument",
+  "description": "Find where sin, cos or tan of an expression is 0 — optionally inside an interval.",
+  "uses": [["c", "fn3", "The argument is the angle"], ["c", "fn3", "Zeros, max and min of sin, cos, tan"], ["t", "b:s6"]],
+  "parts": [
+    { "id": "st_bi_fntrz1", "cat": "stage", "name": "Name the argument", "text": "Call the whole argument `u` — e.g. `u = 2x − π/3`." },
+    { "id": "st_bi_fntrz2", "cat": "stage", "name": "Zero condition on u", "text": "`sin u = 0` → `u = πk`\n`cos u = 0` → `u = π/2 + πk`\n`tan u = 0` → `u = πk`\n(`k` = any integer)" },
+    { "id": "st_bi_fntrz3", "cat": "stage", "name": "Solve for x", "text": "Put the argument back for `u` and solve for `x`. Divide **every** term — `πk` too." },
+    { "id": "st_bi_fntrz4", "cat": "stage", "name": "Pick k (if there is an interval)", "text": "Try `k = 0, 1, −1, 2, …` and keep only the `x` values inside the interval." },
+    { "id": "st_bi_fntrz5", "cat": "example", "name": "Example", "text": "`f(x) = sin(2x − π/3)`, `0 ≤ x ≤ π`\n1. `u = 2x − π/3`\n2. `2x − π/3 = πk`\n3. `2x = π/3 + πk` → `x = π/6 + πk/2`\n4. `k = 0`: `x = π/6` ✓ · `k = 1`: `x = 2π/3` ✓ · `k = 2`: `x = 7π/6 > π` ✗ · `k = −1`: `x = −π/3 < 0` ✗\nRoots: `x = π/6` and `x = 2π/3`" }
+  ] },
+{ "id": "pp_bi_fntrm", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Max and min points of a trig function with an inner argument",
+  "description": "Find the maximum and minimum points of A·sin(Bx + C) + D or A·cos(Bx + C) + D.",
+  "uses": [["c", "fn3", "The argument is the angle"], ["c", "fn3", "Zeros, max and min of sin, cos, tan"], ["c", "fn3", "Period, amplitude and shifts"]],
+  "parts": [
+    { "id": "st_bi_fntrm1", "cat": "stage", "name": "Name the argument", "text": "`u = Bx + C`" },
+    { "id": "st_bi_fntrm2", "cat": "stage", "name": "Max / min condition on u", "text": "`sin u`: max at `u = π/2 + 2πk`, min at `u = −π/2 + 2πk`\n`cos u`: max at `u = 2πk`, min at `u = π + 2πk`" },
+    { "id": "st_bi_fntrm3", "cat": "stage", "name": "Check the sign of A", "text": "`A > 0`: `f` is max where `sin u` is max.\n`A < 0`: they swap — `f` is max where `sin u` is min." },
+    { "id": "st_bi_fntrm4", "cat": "stage", "name": "Solve for x", "text": "Put the argument back for `u` and solve for `x`. Divide **every** term — `2πk` too." },
+    { "id": "st_bi_fntrm5", "cat": "stage", "name": "The y values", "text": "`y = D + |A|` at a max, `y = D − |A|` at a min." },
+    { "id": "st_bi_fntrm6", "cat": "example", "name": "Example", "text": "`f(x) = 2·sin(3x) + 1`\n1. `u = 3x`\n2. max: `3x = π/2 + 2πk` · min: `3x = −π/2 + 2πk`\n3. `A = 2 > 0` → no swap\n4. max: `x = π/6 + 2πk/3` · min: `x = −π/6 + 2πk/3`\n5. max `y = 1 + 2 = 3` · min `y = 1 − 2 = −1`\nMax points `(π/6 + 2πk/3, 3)`, min points `(−π/6 + 2πk/3, −1)`" }
+  ] },
+{ "id": "pp_bi_fncomp", "v": 1, "subject": "f:fn", "kind": "action",
+  "name": "Compose two functions and find the domain",
+  "description": "Build f(g(x)) from f and g, simplify it, and find where it is defined.",
+  "uses": [["c", "fn4", "Composition"], ["c", "fn4", "Domain of a composition"], ["t", "b:c1"]],
+  "parts": [
+    { "id": "st_bi_fncomp1", "cat": "stage", "name": "Inner and outer", "text": "In `f(g(x))`: `g` is the inner function (first), `f` the outer one." },
+    { "id": "st_bi_fncomp2", "cat": "stage", "name": "Substitute", "text": "Write the rule of `f` and replace every `x` in it by `(g(x))` — in brackets." },
+    { "id": "st_bi_fncomp3", "cat": "stage", "name": "Simplify", "text": "Simplify the result." },
+    { "id": "st_bi_fncomp4", "cat": "stage", "name": "Domain", "text": "Both, **AND**: `x` in the domain of `g`, and `g(x)` in the domain of `f`. Use these — not the simplified formula." },
+    { "id": "st_bi_fncomp5", "cat": "example", "name": "Example — order matters", "text": "`f(x) = √x`, `g(x) = x − 3`\n1. `f(g(x))`: inner `g`, outer `f`\n2. `f(g(x)) = √(x − 3)`\n3. nothing to simplify\n4. any `x` (domain of `g`) **AND** `x − 3 ≥ 0` → `x ≥ 3`\nThe other order: `g(f(x)) = √x − 3`, domain `x ≥ 0` — a different function." },
+    { "id": "st_bi_fncomp6", "cat": "example", "name": "Example — the formula hides the domain", "text": "`f(x) = x²`, `g(x) = √x`\n2–3. `f(g(x)) = (√x)² = x`\n4. `g` needs `x ≥ 0` → domain `x ≥ 0`, not every `x`." }
+  ] },
+
+{ "id": "pp_bi_lmgen", "v": 2, "subject": "f:lim", "kind": "problem",
+  "name": "Calculate a limit — the general procedure",
+  "description": "Decide whether you may plug in, and which tool to use when you can't.",
+  "uses": [["c", "lm3", "When plugging in works"], ["c", "lm2", "When you can't use the arithmetic"], ["c", "lm1", "One-sided limits"], ["c", "lm3", "Polynomials and the biggest power"]],
+  "parts": [
+    { "id": "st_bi_lmgen1", "cat": "stage", "name": "Plug in", "text": "Put `x = a` into the expression." },
+    { "id": "st_bi_lmgen2", "cat": "stage", "name": "A number?", "text": "You got a number → that is the limit (the function is continuous there)." },
+    { "id": "st_bi_lmgen3", "cat": "stage", "name": "L/0 with L ≠ 0?", "text": "→ the answer is `+∞`, `−∞` or no limit. Find the sign of the denominator from each side (`a⁻`, `a⁺`): equal signs → that infinity; different → no limit." },
+    { "id": "st_bi_lmgen4", "cat": "stage", "name": "Indeterminate? Pick a tool", "text": "`0/0`, `∞/∞`, `∞ − ∞`, `0·∞`… → rewrite, by what you see:\n• polynomials → **factor and cancel**\n• a root → **multiply by the conjugate**\n• `x → ±∞` → **divide by the biggest power**\n• a repeating chunk → **help variable t**\n• easy derivatives → **L'Hôpital**" },
+    { "id": "st_bi_lmgen5", "cat": "stage", "name": "A breakpoint?", "text": "Piecewise function or `|·|` at the point where the rule changes → find the two one-sided limits; equal → that is the limit." },
+    { "id": "st_bi_lmgen6", "cat": "example", "name": "Examples", "text": "`lim_(x→3) (x² + 1)` → `10` (stage 2)\n`lim_(x→1) 1/(x − 1)²` → `1/0`, denominator `> 0` from both sides → `+∞` (stage 3)\n`lim_(x→1) 1/(x − 1)` → `1/0`, `−` from the left, `+` from the right → no limit (stage 3)\n`lim_(x→2) (x² − 4)/(x − 2)` → `0/0`, polynomials → factor (stage 4)" }
+  ] },
+{ "id": "pp_bi_lmfac", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit of 0/0 — factor and cancel",
+  "description": "Remove a 0/0 by factoring out (x − a) with the shortened multiplication formulas and cancelling it.",
+  "uses": [["c", "lm3", "Shortened multiplication formulas"], ["c", "lm1", "Properties of a limit"]],
+  "parts": [
+    { "id": "st_bi_lmfac1", "cat": "stage", "name": "Check the form", "text": "Plug in `x = a`: `0/0` → both top and bottom have the factor `(x − a)`." },
+    { "id": "st_bi_lmfac2", "cat": "stage", "name": "Factor", "text": "Factor top and bottom (shortened multiplication formulas, common factor, or the roots of a quadratic) so `(x − a)` shows." },
+    { "id": "st_bi_lmfac3", "cat": "stage", "name": "Cancel", "text": "Cancel `(x − a)` — allowed because `x ≠ a` inside a limit." },
+    { "id": "st_bi_lmfac4", "cat": "stage", "name": "Plug in again", "text": "Put `x = a` into what is left. Still `0/0` → factor again." },
+    { "id": "st_bi_lmfac5", "cat": "example", "name": "Example", "text": "`lim_(x→2) (x² − 4)/(x − 2)`\n1. `0/0`\n2. `x² − 4 = (x − 2)(x + 2)`\n3. `= lim_(x→2) (x + 2)`\n4. `= 4`" },
+    { "id": "st_bi_lmfac6", "cat": "example", "name": "Example — cubes", "text": "`lim_(x→1) (x³ − 1)/(x² − 1)`\n1. `0/0`\n2. `(x − 1)(x² + x + 1)` over `(x − 1)(x + 1)`\n3. `= lim_(x→1) (x² + x + 1)/(x + 1)`\n4. `= 3/2`" }
+  ] },
+{ "id": "pp_bi_lmcon", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit with a root — multiply by the conjugate",
+  "description": "Remove a root that causes 0/0 or ∞ − ∞ by multiplying by its conjugate over itself.",
+  "uses": [["c", "lm3", "Multiplying by 1"], ["c", "lm3", "Shortened multiplication formulas"]],
+  "parts": [
+    { "id": "st_bi_lmcon1", "cat": "stage", "name": "Find the root expression", "text": "The part `√A − B` (or `√A + B`) that makes `0/0` or `∞ − ∞`." },
+    { "id": "st_bi_lmcon2", "cat": "stage", "name": "Multiply by 1", "text": "Multiply top and bottom by the conjugate: `(√A + B)/(√A + B)`." },
+    { "id": "st_bi_lmcon3", "cat": "stage", "name": "Use a² − b²", "text": "`(√A − B)(√A + B) = A − B²` — the root is gone. Leave the other side unexpanded." },
+    { "id": "st_bi_lmcon4", "cat": "stage", "name": "Cancel and plug in", "text": "Cancel the common factor (or divide by the biggest power if `x → ∞`), then plug in." },
+    { "id": "st_bi_lmcon5", "cat": "example", "name": "Example — 0/0", "text": "`lim_(x→4) (√x − 2)/(x − 4)`\n1. `0/0`, root expression `√x − 2`\n2. multiply by `(√x + 2)/(√x + 2)`\n3. `= lim_(x→4) (x − 4)/((x − 4)(√x + 2))`\n4. `= lim_(x→4) 1/(√x + 2) = 1/4`" },
+    { "id": "st_bi_lmcon6", "cat": "example", "name": "Example — ∞ − ∞", "text": "`lim_(x→∞) (√(x² + x) − x)`\n1. `∞ − ∞`\n2. multiply by `(√(x² + x) + x)/(√(x² + x) + x)`\n3. `= lim_(x→∞) x/(√(x² + x) + x)`\n4. divide by `x`: `= lim_(x→∞) 1/(√(1 + 1/x) + 1) = 1/2`" }
+  ] },
+{ "id": "pp_bi_lmbig", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit at infinity — divide by the biggest power",
+  "description": "For x → ±∞: multiply by (1/xⁿ)/(1/xⁿ) so every term but the leading ones goes to 0.",
+  "uses": [["c", "lm3", "Polynomials and the biggest power"], ["c", "lm3", "Multiplying by 1"], ["c", "lm1", "Infinite limits and limits at infinity"]],
+  "parts": [
+    { "id": "st_bi_lmbig1", "cat": "stage", "name": "Find the biggest power", "text": "The biggest power of `x` in the **denominator**: `xⁿ`." },
+    { "id": "st_bi_lmbig2", "cat": "stage", "name": "Multiply by 1", "text": "Multiply top and bottom by `1/xⁿ` (divide every term by `xⁿ`). Under a root `√(…)`, `x` comes in as `√(x²)` (careful: `√(x²) = |x|`, so `= −x` when `x → −∞`)." },
+    { "id": "st_bi_lmbig3", "cat": "stage", "name": "Drop what goes to 0", "text": "`c/xᵏ → 0` for `k > 0`." },
+    { "id": "st_bi_lmbig4", "cat": "stage", "name": "Read the limit", "text": "What is left gives the limit: a number, `0`, or `±∞`." },
+    { "id": "st_bi_lmbig5", "cat": "example", "name": "Example", "text": "`lim_(x→∞) (3x² − x)/(2x² + 5)`\n1. `x²`\n2. `= lim_(x→∞) (3 − 1/x)/(2 + 5/x²)`\n3. `1/x → 0`, `5/x² → 0`\n4. `= 3/2`" },
+    { "id": "st_bi_lmbig6", "cat": "example", "name": "Example — shortcut", "text": "Same answer from the biggest-power rule: equal degrees → ratio of the leading coefficients `3/2`. Degree on top bigger, e.g. `(x³ + 1)/(x² − 4)` → `∞`." }
+  ] },
+{ "id": "pp_bi_lmsub", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Limit with a help variable t",
+  "description": "Replace a repeating chunk by t to turn the limit into one you can factor or recognize.",
+  "uses": [["c", "lm7", "Limit of a composition"], ["c", "lm3", "Shortened multiplication formulas"]],
+  "parts": [
+    { "id": "st_bi_lmsub1", "cat": "stage", "name": "Choose t", "text": "Let `t` = the chunk that repeats or makes it hard (a root, `eˣ`, `ln x`, `1/x`…)." },
+    { "id": "st_bi_lmsub2", "cat": "stage", "name": "Where does t go?", "text": "Find what `t` tends to as `x → a`: `t → b`." },
+    { "id": "st_bi_lmsub3", "cat": "stage", "name": "Rewrite in t", "text": "Write the whole expression with `t` only — no `x` left." },
+    { "id": "st_bi_lmsub4", "cat": "stage", "name": "Solve the new limit", "text": "`lim_(t→b)` of the new expression, with any other tool." },
+    { "id": "st_bi_lmsub5", "cat": "example", "name": "Example", "text": "`lim_(x→1) (∛x − 1)/(x − 1)`\n1. `t = ∛x`, so `x = t³`\n2. `x → 1` ⇒ `t → 1`\n3. `= lim_(t→1) (t − 1)/(t³ − 1)`\n4. `t³ − 1 = (t − 1)(t² + t + 1)` → `= lim_(t→1) 1/(t² + t + 1) = 1/3`" }
+  ] },
+{ "id": "pp_bi_lmlho", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "L'Hôpital's rule",
+  "description": "For 0/0 or ∞/∞: replace f/g by f′/g′ and take the limit again.",
+  "uses": [["c", "lm4", "L'Hôpital's rule"], ["c", "lm4", "Other forms into 0/0 or ∞/∞"], ["c", "c2", "Differentiation rules"], ["c", "c4", "Derivatives"], ["c", "c5", "Derivatives & integrals"]],
+  "parts": [
+    { "id": "st_bi_lmlho1", "cat": "stage", "name": "Check the form", "text": "Plug in: only `0/0` or `∞/∞` allowed. Another form → turn it into one first (`0·∞`, `∞ − ∞`, powers — see the card)." },
+    { "id": "st_bi_lmlho2", "cat": "stage", "name": "Differentiate separately", "text": "Derivative of the top, derivative of the bottom — **not** the quotient rule." },
+    { "id": "st_bi_lmlho3", "cat": "stage", "name": "New limit", "text": "Take `lim f'(x)/g'(x)` — plug in." },
+    { "id": "st_bi_lmlho4", "cat": "stage", "name": "Repeat if needed", "text": "Still `0/0` or `∞/∞` → back to stage 2." },
+    { "id": "st_bi_lmlho5", "cat": "example", "name": "Example", "text": "`lim_(x→0) (eˣ − 1)/x`\n1. `0/0` ✓\n2. `(eˣ − 1)' = eˣ`, `(x)' = 1`\n3. `= lim_(x→0) eˣ/1 = 1`" },
+    { "id": "st_bi_lmlho6", "cat": "example", "name": "Example — twice", "text": "`lim_(x→∞) x²/eˣ`\n1. `∞/∞` ✓\n2–3. `= lim_(x→∞) 2x/eˣ` — still `∞/∞`\n4. `= lim_(x→∞) 2/eˣ = 0`" },
+    { "id": "st_bi_lmlho7", "cat": "example", "name": "Example — when not to", "text": "`lim_(x→0⁺) (x + 1)/x` is `1/0`, not `0/0`. L'Hôpital would give `1` — wrong. The real answer: `+∞`." }
+  ] },
+{ "id": "pp_bi_lmcpt", "v": 2, "subject": "f:lim", "kind": "problem",
+  "name": "Check continuity at a point (or find a parameter)",
+  "description": "Check the three conditions at a point — typically the breakpoint of a piecewise function.",
+  "uses": [["c", "lm5", "Continuity at a point"], ["c", "lm1", "One-sided limits"], ["c", "fn2", "Piecewise function"]],
+  "parts": [
+    { "id": "st_bi_lmcpt1", "cat": "stage", "name": "f(a)", "text": "Compute `f(a)` from the piece that contains `a`. Undefined → not continuous." },
+    { "id": "st_bi_lmcpt2", "cat": "stage", "name": "One-sided limits", "text": "`lim_(x→a⁻) f(x)` with the left piece, `lim_(x→a⁺) f(x)` with the right piece." },
+    { "id": "st_bi_lmcpt3", "cat": "stage", "name": "Compare", "text": "Continuous ⇔ left limit = right limit = `f(a)`. With a parameter: set them equal and solve." },
+    { "id": "st_bi_lmcpt4", "cat": "example", "name": "Example — find a", "text": "For which `a` is `f` continuous at `x = 2`?\nf(x) = { ax + 1 ; x < 2\n{ x² ; x ≥ 2\n1. `f(2) = 4`\n2. left: `2a + 1` · right: `4`\n3. `2a + 1 = 4` → `a = 3/2`" }
+  ] },
+{ "id": "pp_bi_lmcontra", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Proof by contradiction",
+  "description": "A general way to prove a claim: assume it is false and show that leads to something impossible. Here: (dis)continuity and limits.",
+  "uses": [["c", "lm6", "Continuous and not continuous"], ["c", "lm6", "Arithmetic of continuous functions"], ["c", "lm2", "When you can't use the arithmetic"]],
+  "parts": [
+    { "id": "st_bi_lmcontra1", "cat": "stage", "name": "State the claim", "text": "Write exactly what you want to prove — e.g. \"`h` is **not** continuous at `a`\"." },
+    { "id": "st_bi_lmcontra2", "cat": "stage", "name": "Assume the opposite", "text": "\"Suppose, on the contrary, that `h` **is** continuous at `a`.\"" },
+    { "id": "st_bi_lmcontra3", "cat": "stage", "name": "Build from the assumption", "text": "Combine the assumption with what is given, using theorems (arithmetic of limits / continuity, composition). Typical move: write the bad function from the good ones — `g = (f + g) − f`." },
+    { "id": "st_bi_lmcontra4", "cat": "stage", "name": "Hit a contradiction", "text": "Reach something that contradicts a given fact or a known truth (\"so `g` is continuous — but we were told it isn't\")." },
+    { "id": "st_bi_lmcontra5", "cat": "stage", "name": "Conclude", "text": "The assumption was false, so the claim is true. ∎" },
+    { "id": "st_bi_lmcontra6", "cat": "example", "name": "Example — not continuous", "text": "`f(x) = x²` is continuous at 0, `g(x) = sgn x` is not. Prove `f + g` is not continuous at 0.\n1. Claim: `f + g` not continuous at 0.\n2. Suppose `f + g` is continuous at 0.\n3. `g = (f + g) − f`: a difference of two functions continuous at 0 → continuous at 0 (arithmetic of continuity).\n4. But `g` is not continuous at 0 — contradiction.\n5. So `f + g` is not continuous at 0. ∎" },
+    { "id": "st_bi_lmcontra7", "cat": "example", "name": "Example — no limit", "text": "Prove `lim_(x→0) [x + sin(1/x)]` does not exist.\n1. Claim: no limit.\n2. Suppose it exists: `= L`.\n3. `lim_(x→0) x = 0` exists, so `sin(1/x) = [x + sin(1/x)] − x` would have limit `L − 0` (arithmetic of limits).\n4. But `lim_(x→0) sin(1/x)` does not exist — contradiction.\n5. So the limit does not exist. ∎" }
+  ] },
+{ "id": "pp_bi_lmivt", "v": 1, "subject": "f:lim", "kind": "problem",
+  "name": "Prove an equation has a root (IVT)",
+  "description": "Show f(x) = 0 (or f(x) = h(x)) has a solution in an interval with the intermediate value theorem.",
+  "uses": [["c", "lm8", "A root between a sign change"], ["c", "lm8", "Intermediate value theorem"], ["c", "lm6", "Arithmetic of continuous functions"]],
+  "parts": [
+    { "id": "st_bi_lmivt1", "cat": "stage", "name": "Make it = 0", "text": "`f(x) = h(x)` → define `g(x) = f(x) − h(x)`; a root of `g` solves the equation." },
+    { "id": "st_bi_lmivt2", "cat": "stage", "name": "Continuity", "text": "Show `g` is continuous on `[a, b]` (elementary functions, arithmetic and composition of continuous functions)." },
+    { "id": "st_bi_lmivt3", "cat": "stage", "name": "Opposite signs", "text": "Find `a`, `b` with `g(a)·g(b) < 0` — try easy points: `0`, `±1`, `π/2`, the interval's ends." },
+    { "id": "st_bi_lmivt4", "cat": "stage", "name": "Conclude", "text": "By the IVT, `∃c ∈ (a, b) : g(c) = 0`, i.e. `f(c) = h(c)`. ∎" },
+    { "id": "st_bi_lmivt5", "cat": "example", "name": "Example", "text": "`x³ + x − 1 = 0` has a root in `(0, 1)`.\n1. `g(x) = x³ + x − 1`\n2. a polynomial → continuous on `[0, 1]`\n3. `g(0) = −1 < 0`, `g(1) = 1 > 0`\n4. `∃c ∈ (0, 1) : g(c) = 0`. ∎" },
+    { "id": "st_bi_lmivt6", "cat": "example", "name": "Example — two sides", "text": "`cos x = x` has a solution.\n1. `g(x) = cos x − x`\n2. difference of continuous functions → continuous on `[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎" }
+  ] },
+{ "id": "pp_bi_dvrule", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Is a function differentiable at a point?",
+  "description": "Go through the rules in order and decide, with an example for each rule.",
+  "uses": [["c", "dv3", "Differentiable at a point"], ["c", "dv3", "Differentiable implies continuous"], ["c", "dv3", "Where a function is not differentiable"], ["c", "dv3", "Limit of the derivative"], ["c", "dv3", "When the derivative formula is undefined at a point"], ["c", "dv4", "Arithmetic of differentiable functions"], ["c", "dv4", "When you can't use the arithmetic"]],
+  "parts": [
+    { "id": "st_bi_dvrule1", "cat": "stage", "name": "Defined and continuous?", "text": "`a` outside the domain, or `f` not continuous at `a` → **not differentiable**. Stop." },
+    { "id": "st_bi_dvrule2", "cat": "stage", "name": "Can you use the arithmetic?", "text": "Near `a`, `f` is built from functions differentiable at `a` (no denominator `0`, no root of `0`, no `|·|` of `0`, no breakpoint) → **differentiable**. Stop." },
+    { "id": "st_bi_dvrule3", "cat": "stage", "name": "A breakpoint or |·|?", "text": "Compare the one-sided derivatives. Different → corner, **not differentiable**. Use the method for a breakpoint." },
+    { "id": "st_bi_dvrule4", "cat": "stage", "name": "Formula undefined at a?", "text": "A denominator `0` or an undefined value in `f'` is a warning, not a verdict. `f` is continuous at `a`, so take `lim_(x→a) f'(x)`:\n- finite `L` → differentiable, `f'(a) = L`\n- `±∞` → **not differentiable**\n- no limit → next stage" },
+    { "id": "st_bi_dvrule5", "cat": "stage", "name": "Otherwise, the definition", "text": "Calculate `lim_(x→a) (f(x) − f(a))/(x − a)`. It always decides." },
+    { "id": "st_bi_dvrule6", "cat": "example", "name": "Example — not continuous", "text": "f(x) = { x + 1 ; x ≥ 0\n{ x ; x < 0\nAt `0`: left limit `0`, `f(0) = 1`. Not continuous, so not differentiable." },
+    { "id": "st_bi_dvrule7", "cat": "example", "name": "Example — arithmetic", "text": "`f(x) = x²·sin x + eˣ` is built from functions differentiable everywhere, so it is differentiable everywhere." },
+    { "id": "st_bi_dvrule8", "cat": "example", "name": "Example — corner", "text": "`f(x) = |x − 1|` at `1`.\nRight: `f = x − 1`, slope `1`. Left: `f = 1 − x`, slope `−1`. Different, so not differentiable." },
+    { "id": "st_bi_dvrule9", "cat": "example", "name": "Example — vertical tangent", "text": "`f(x) = ∛x` at `0`. Continuous.\n`f'(x) = 1/(3∛(x²)) → +∞`, so not differentiable." },
+    { "id": "st_bi_dvrule10", "cat": "example", "name": "Example — cusp", "text": "`f(x) = ∛(x²)` at `0`. Continuous.\n`f'(x) = 2/(3∛x)` → `+∞` from the right, `−∞` from the left. Not differentiable." },
+    { "id": "st_bi_dvrule11", "cat": "example", "name": "Example — undefined formula, still differentiable", "text": "`f(x) = √(x⁴)` at `0`.\nThe chain rule gives `4x³/(2√(x⁴))`, undefined at `0`. But `√(x⁴) = x²`, and `lim_(x→0) f'(x) = 0`, so `f'(0) = 0`. Differentiable." },
+    { "id": "st_bi_dvrule12", "cat": "example", "name": "Example — oscillation, by definition", "text": "`f(x) = x·sin(1/x)`, `f(0) = 0`.\nQuotient: `(f(x) − 0)/(x − 0) = sin(1/x)`, no limit. Not differentiable.\n\n`f(x) = x²·sin(1/x)`, `f(0) = 0`.\nQuotient: `x·sin(1/x) → 0` (zero times bounded), so `f'(0) = 0`, although `f'(x) = 2x·sin(1/x) − cos(1/x)` has no limit at `0`." }
+  ] },
+{ "id": "pp_bi_dvpiece", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Differentiability at a breakpoint",
+  "description": "When the arithmetic can't be used: differentiate each piece and compare the limits where the pieces connect.",
+  "uses": [["c", "dv3", "Limit of the derivative"], ["c", "dv3", "Differentiable implies continuous"], ["c", "dv4", "When you can't use the arithmetic"], ["c", "fn2", "Piecewise function"], ["c", "fn2", "Absolute value as a piecewise function"], ["c", "lm5", "Continuity at a point"]],
+  "parts": [
+    { "id": "st_bi_dvpiece1", "cat": "stage", "name": "Continuity first", "text": "Check `f` is continuous at the breakpoint `a`: both one-sided limits equal `f(a)`. If not → **not differentiable**, even if the slopes match." },
+    { "id": "st_bi_dvpiece2", "cat": "stage", "name": "Differentiate each piece", "text": "Find `f'` on each open side of `a`, with the usual formulas. Not at `a` itself." },
+    { "id": "st_bi_dvpiece3", "cat": "stage", "name": "Limit from each side", "text": "Calculate `lim_(x→a⁻) f'(x)` and `lim_(x→a⁺) f'(x)`." },
+    { "id": "st_bi_dvpiece4", "cat": "stage", "name": "Compare", "text": "Equal and finite → **differentiable**, `f'(a)` = that limit.\nDifferent → corner, **not differentiable**.\nInfinite → **not differentiable**.\nNo limit → use the definition." },
+    { "id": "st_bi_dvpiece5", "cat": "example", "name": "Example — differentiable", "text": "f(x) = { x² ; x ≤ 1\n{ 2x − 1 ; x > 1\nContinuous: `1` from both sides. Left: `2x → 2`. Right: `2`. So `f'(1) = 2`." },
+    { "id": "st_bi_dvpiece6", "cat": "example", "name": "Example — corner", "text": "f(x) = { x² ; x ≤ 1\n{ 3x − 2 ; x > 1\nContinuous: `1` from both sides. Left: `2`. Right: `3`. Not differentiable at `1`." },
+    { "id": "st_bi_dvpiece7", "cat": "example", "name": "Example — the slopes match but it jumps", "text": "f(x) = { x² ; x ≤ 1\n{ x² + 1 ; x > 1\nSlopes: `2` and `2`. But left limit `1`, right limit `2`: not continuous, so not differentiable." },
+    { "id": "st_bi_dvpiece8", "cat": "example", "name": "Example — find the parameters", "text": "f(x) = { x² + a ; x ≤ 1\n{ b·x ; x > 1\nContinuity: `1 + a = b`. Slopes: `2 = b`. So `b = 2`, `a = 1`." },
+    { "id": "st_bi_dvpiece9", "cat": "example", "name": "Example — absolute value", "text": "`f(x) = x·|x|` at `0`. The arithmetic can't be used, because `|x|` is not differentiable at `0`.\nf(x) = { x² ; x ≥ 0\n{ −x² ; x < 0\nContinuous. Right: `2x → 0`. Left: `−2x → 0`. So `f'(0) = 0`." }
+  ] },
+{ "id": "pp_bi_dvlong", "v": 1, "subject": "f:der", "kind": "action",
+  "name": "Derivative at a point of a very long function",
+  "description": "Name part of the function as its own function, so the long part cancels and never has to be differentiated.",
+  "uses": [["c", "dv2", "Product and quotient"], ["c", "dv2", "Composite functions (chain rule)"], ["c", "dv1", "Derivative at a point"], ["c", "lm2", "Zero times bounded"]],
+  "parts": [
+    { "id": "st_bi_dvlong1", "cat": "stage", "name": "Name the parts", "text": "Write `f(x) = u(x)·v(x)` with `u` the short factor and `v` the long one. Or `f(x) = h(g(x))` with `g` the long inner function." },
+    { "id": "st_bi_dvlong2", "cat": "stage", "name": "Write the rule at the point only", "text": "Product: `f'(a) = u'(a)·v(a) + u(a)·v'(a)`\nChain: `f'(a) = h'(g(a))·g'(a)`" },
+    { "id": "st_bi_dvlong3", "cat": "stage", "name": "Look for zeros", "text": "`u(a) = 0` → `f'(a) = u'(a)·v(a)`: only the value of `v` is needed.\n`u(a) = 0` and `u'(a) = 0` → `f'(a) = 0`, whatever `v` is.\n`h'(g(a)) = 0` → `f'(a) = 0`, whatever `g'` is." },
+    { "id": "st_bi_dvlong4", "cat": "stage", "name": "If v is not differentiable at a", "text": "The product rule can't be used. With `u(a) = 0`, use the definition:\n`f'(a) = lim_(x→a) u(x)/(x − a) · v(x) = u'(a)·v(a)`\nThis only needs `v` continuous at `a`." },
+    { "id": "st_bi_dvlong5", "cat": "example", "name": "Example — the short part and its derivative are zero", "text": "`f(x) = sin²x·(eˣ + x⁷ + ln(x + 2))⁵` at `0`.\n`u = sin²x`: `u(0) = 0`, `u'(x) = 2·sin x·cos x`, so `u'(0) = 0`.\nTherefore `f'(0) = 0`, whatever the long term is.\nNote: `sin x` alone has `u(0) = 0` but `u'(0) = 1`, so with `sin x` the long term's value is still needed." },
+    { "id": "st_bi_dvlong6", "cat": "example", "name": "Example — only the short part is zero", "text": "`f(x) = (x − 1)·(x⁹ + 3x⁵ − x + 1)` at `1`.\n`u = x − 1`: `u(1) = 0`, `u' = 1`.\n`f'(1) = 1·v(1) = 1 + 3 − 1 + 1 = 4`" },
+    { "id": "st_bi_dvlong7", "cat": "example", "name": "Example — many factors", "text": "`f(x) = x(x − 1)(x − 2)…(x − 10)` at `0`.\n`u = x`, `v = (x − 1)…(x − 10)`.\n`f'(0) = 1·v(0) = (−1)(−2)…(−10) = 10!`" },
+    { "id": "st_bi_dvlong8", "cat": "example", "name": "Example — long inner function", "text": "`f(x) = (x⁵ + 3x³ + x − 5)⁶` at `1`.\n`g = x⁵ + 3x³ + x − 5`, `h = t⁶`, and `g(1) = 0`.\n`f'(1) = 6·g(1)⁵·g'(1) = 0`" },
+    { "id": "st_bi_dvlong9", "cat": "example", "name": "Example — v not differentiable", "text": "`f(x) = sin x·|x|` at `0`. `|x|` is not differentiable at `0`, so use the definition:\n`f(x)/x = (sin x)/x·|x| → 1·0 = 0`, so `f'(0) = 0`." }
+  ] },
+{ "id": "pp_bi_dvineq", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an inequality on an interval",
+  "description": "Compare the two sides at the start of the interval, then compare their derivatives.",
+  "uses": [["c", "dv7", "Monotonicity"], ["c", "dv7", "Mean value theorem"], ["c", "dv2", "Trigonometric functions"], ["c", "dv2", "Exponential and logarithmic functions"]],
+  "parts": [
+    { "id": "st_bi_dvineq1", "cat": "stage", "name": "One function", "text": "To prove `f(x) > g(x)` on `x > a`, define `h(x) = f(x) − g(x)` and prove `h > 0`. `h` must be continuous at the start `a`." },
+    { "id": "st_bi_dvineq2", "cat": "stage", "name": "Value at the start", "text": "Calculate `h(a)`. You need `h(a) ≥ 0`." },
+    { "id": "st_bi_dvineq3", "cat": "stage", "name": "Sign of the derivative", "text": "Show `h'(x) > 0` for `x > a`. `h' = 0` at single points is allowed.\nCan't see the sign of `h'`? Repeat the method on `h'`: check `h'(a)`, then the sign of `h''`." },
+    { "id": "st_bi_dvineq4", "cat": "stage", "name": "Conclude", "text": "`h` is strictly increasing, so `h(x) > h(a) ≥ 0` for `x > a`.\nThe opposite case: if `h(a) ≤ 0` and `h' < 0`, then `h < 0`." },
+    { "id": "st_bi_dvineq5", "cat": "example", "name": "Example — exponential", "text": "`eˣ > 1 + x` for `x > 0`.\n`h = eˣ − 1 − x`, `h(0) = 0`.\n`h' = eˣ − 1 > 0` for `x > 0`. So `h > 0`." },
+    { "id": "st_bi_dvineq6", "cat": "example", "name": "Example — sine", "text": "`sin x < x` for `x > 0`.\n`h = x − sin x`, `h(0) = 0`.\n`h' = 1 − cos x ≥ 0`, zero only at single points. So `h` is strictly increasing and `h > 0`." },
+    { "id": "st_bi_dvineq7", "cat": "example", "name": "Example — logarithm", "text": "`ln(1 + x) < x` for `x > 0`.\n`h = x − ln(1 + x)`, `h(0) = 0`.\n`h' = 1 − 1/(1 + x) = x/(1 + x) > 0`. So `h > 0`." },
+    { "id": "st_bi_dvineq8", "cat": "example", "name": "Example — needs the second derivative", "text": "`cos x > 1 − x²/2` for `x > 0`.\n`h = cos x − 1 + x²/2`, `h(0) = 0`.\n`h' = x − sin x`, `h'(0) = 0`.\n`h'' = 1 − cos x ≥ 0`, so `h' > 0` for `x > 0`, so `h > 0`." }
+  ] },
+{ "id": "pp_bi_dvloc", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Find the local extrema",
+  "description": "Find the critical points, then use the sign of the derivative on each side to decide maximum or minimum.",
+  "uses": [["c", "dv5", "Local extremum point"], ["c", "dv5", "Fermat's theorem"], ["c", "dv5", "Critical points and the first derivative test"], ["c", "dv7", "Monotonicity"], ["c", "c2", "Increasing / decreasing & sign charts"]],
+  "parts": [
+    { "id": "st_bi_dvloc1", "cat": "stage", "name": "Domain", "text": "Write the domain of `f`." },
+    { "id": "st_bi_dvloc2", "cat": "stage", "name": "Derivative", "text": "Find `f'` and factor it as far as you can." },
+    { "id": "st_bi_dvloc3", "cat": "stage", "name": "Critical points", "text": "Solve `f'(x) = 0`. Add the points of the domain where `f'` is undefined, including breakpoints." },
+    { "id": "st_bi_dvloc4", "cat": "stage", "name": "Sign table", "text": "Mark the critical points and domain gaps on a number line. Plug one value from each interval into `f'` and write `+` or `−`." },
+    { "id": "st_bi_dvloc5", "cat": "stage", "name": "Decide", "text": "`+` to `−`: maximum. `−` to `+`: minimum. Same sign: no extremum. Calculate `f` at each extremum to get the point." },
+    { "id": "st_bi_dvloc6", "cat": "example", "name": "Example — polynomial", "text": "`f(x) = x³ − 3x`, `f' = 3(x − 1)(x + 1)`.\nCritical: `x = ±1`.\nSigns: `x < −1`: `+` · `−1 < x < 1`: `−` · `x > 1`: `+`\nMaximum `(−1, 2)`, minimum `(1, −2)`." },
+    { "id": "st_bi_dvloc7", "cat": "example", "name": "Example — a critical point that is no extremum", "text": "`f(x) = x⁴ − 4x³`, `f' = 4x²(x − 3)`.\nCritical: `x = 0`, `x = 3`.\nSigns: `x < 0`: `−` · `0 < x < 3`: `−` · `x > 3`: `+`\n`x = 0`: no sign change, no extremum. Minimum `(3, −27)`." },
+    { "id": "st_bi_dvloc8", "cat": "example", "name": "Example — derivative undefined", "text": "`f(x) = ∛(x²)`, `f' = 2/(3∛x)`.\n`f'` is never `0` and is undefined at `0`, which is in the domain.\nSigns: `x < 0`: `−` · `x > 0`: `+`\nMinimum `(0, 0)`." },
+    { "id": "st_bi_dvloc9", "cat": "example", "name": "Example — absolute value", "text": "`f(x) = |x² − 1|`.\nf'(x) = { 2x ; |x| > 1\n{ −2x ; |x| < 1\nCritical: `x = 0` (`f' = 0`), `x = ±1` (undefined).\nSigns: `−`, `+`, `−`, `+`\nMinimum at `(−1, 0)` and `(1, 0)`, maximum `(0, 1)`." }
+  ] },
+{ "id": "pp_bi_dvabs", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Absolute extrema on a closed interval",
+  "description": "Compare the critical points and the two ends.",
+  "uses": [["c", "dv6", "Absolute extremum point"], ["c", "dv6", "Extreme value theorem"], ["c", "dv5", "Critical points and the first derivative test"]],
+  "parts": [
+    { "id": "st_bi_dvabs1", "cat": "stage", "name": "Conditions", "text": "Check `f` is continuous on the closed interval `[a, b]`. By the extreme value theorem, both absolute extrema exist." },
+    { "id": "st_bi_dvabs2", "cat": "stage", "name": "Candidates", "text": "Critical points inside `(a, b)`, plus `a` and `b`. No sign table needed." },
+    { "id": "st_bi_dvabs3", "cat": "stage", "name": "Compare values", "text": "Calculate `f` at every candidate. The largest value is the absolute maximum, the smallest is the absolute minimum." },
+    { "id": "st_bi_dvabs4", "cat": "example", "name": "Example — maximum at the end", "text": "`f(x) = x³ − 3x` on `[0, 3]`.\nCritical inside: `x = 1`.\n`f(0) = 0`, `f(1) = −2`, `f(3) = 18`\nAbsolute maximum `18` at `x = 3`, absolute minimum `−2` at `x = 1`." },
+    { "id": "st_bi_dvabs5", "cat": "example", "name": "Example — product", "text": "`f(x) = x·e⁻ˣ` on `[0, 2]`.\n`f' = (1 − x)·e⁻ˣ`, critical: `x = 1`.\n`f(0) = 0`, `f(1) = 1/e`, `f(2) = 2/e²`\nAbsolute maximum `1/e` at `x = 1`, absolute minimum `0` at `x = 0`." }
+  ] },
+{ "id": "pp_bi_dvinf", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Absolute extrema on an open interval or on ℝ",
+  "description": "The extreme value theorem doesn't apply, so use the limits at the ends of the domain.",
+  "uses": [["c", "dv6", "Functions that go to infinity at both ends"], ["c", "dv6", "Absolute extremum point"], ["c", "lm1", "Infinite limits and limits at infinity"], ["c", "lm3", "Polynomials and the biggest power"]],
+  "parts": [
+    { "id": "st_bi_dvinf1", "cat": "stage", "name": "Limits at the ends", "text": "Calculate the limit of `f` at both ends of the domain." },
+    { "id": "st_bi_dvinf2", "cat": "stage", "name": "What exists?", "text": "Both `+∞`: absolute minimum, no absolute maximum.\nBoth `−∞`: absolute maximum, no absolute minimum.\n`+∞` and `−∞`: neither.\nFinite limit: compare it with the values you find." },
+    { "id": "st_bi_dvinf3", "cat": "stage", "name": "Critical points", "text": "Find the critical points and calculate `f` at each." },
+    { "id": "st_bi_dvinf4", "cat": "stage", "name": "Conclude", "text": "The extremum that exists is at the critical point with the smallest (or largest) value." },
+    { "id": "st_bi_dvinf5", "cat": "example", "name": "Example — on ℝ, two minimum points", "text": "`f(x) = x⁴ − 2x²`. Both limits `+∞`, so there is an absolute minimum and no absolute maximum.\n`f' = 4x(x − 1)(x + 1)`, critical: `0`, `±1`.\n`f(0) = 0`, `f(±1) = −1`\nAbsolute minimum `−1`, reached at two points." },
+    { "id": "st_bi_dvinf6", "cat": "example", "name": "Example — open interval", "text": "`f(x) = x + 1/x` on `(0, ∞)`. Both limits `+∞`.\n`f' = 1 − 1/x²`, critical: `x = 1`, `f(1) = 2`.\nAbsolute minimum `2`. This proves `x + 1/x ≥ 2` for `x > 0`." },
+    { "id": "st_bi_dvinf7", "cat": "example", "name": "Example — no absolute extrema", "text": "`f(x) = x³ − 3x` on `ℝ`. Limits `−∞` and `+∞`, so neither exists. The local extrema at `±1` are only local." },
+    { "id": "st_bi_dvinf8", "cat": "example", "name": "Example — a finite limit", "text": "`f(x) = x·e⁻ˣ` on `ℝ`. `lim_(x→−∞) f = −∞`, so no absolute minimum.\n`lim_(x→∞) f = 0` and `f(1) = 1/e > 0`, so there is an absolute maximum. Only critical point: `x = 1`. Maximum `1/e`." },
+    { "id": "st_bi_dvinf9", "cat": "example", "name": "Example — using it in a proof", "text": "Prove `x⁴ − 2x² + 2 > 0` for all `x`.\nThe left side is `f + 2` with `f` from the first example. Its absolute minimum is `−1 + 2 = 1 > 0`." }
+  ] },
+{ "id": "pp_bi_dvconv", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Find convexity and inflection points",
+  "description": "Use the sign of the second derivative.",
+  "uses": [["c", "dv8", "Convex and concave"], ["c", "dv8", "Inflection point"]],
+  "parts": [
+    { "id": "st_bi_dvconv1", "cat": "stage", "name": "Domain and f''", "text": "Write the domain, then find `f'` and `f''`." },
+    { "id": "st_bi_dvconv2", "cat": "stage", "name": "Candidates", "text": "Solve `f''(x) = 0`, and add the points of the domain where `f''` is undefined." },
+    { "id": "st_bi_dvconv3", "cat": "stage", "name": "Sign table", "text": "Mark the candidates and domain gaps. Plug one value from each interval into `f''`. `+` convex, `−` concave." },
+    { "id": "st_bi_dvconv4", "cat": "stage", "name": "Inflection points", "text": "A candidate is an inflection point only if the sign changes and the point is in the domain." },
+    { "id": "st_bi_dvconv5", "cat": "example", "name": "Example — polynomial", "text": "`f(x) = x³ − 3x²`, `f'' = 6x − 6`.\nConcave for `x < 1`, convex for `x > 1`. Inflection point `(1, −2)`." },
+    { "id": "st_bi_dvconv6", "cat": "example", "name": "Example — no inflection", "text": "`f(x) = x⁴`, `f'' = 12x²`. Zero at `0`, but `+` on both sides. Convex everywhere, no inflection point." },
+    { "id": "st_bi_dvconv7", "cat": "example", "name": "Example — exponential", "text": "`f(x) = x·eˣ`, `f' = (x + 1)·eˣ`, `f'' = (x + 2)·eˣ`.\nConcave for `x < −2`, convex for `x > −2`. Inflection at `x = −2`." },
+    { "id": "st_bi_dvconv8", "cat": "example", "name": "Example — change outside the domain", "text": "`f(x) = 1/x`, `f'' = 2/x³`. Concave for `x < 0`, convex for `x > 0`. `0` is not in the domain, so no inflection point." }
+  ] },
+{ "id": "pp_bi_dv2nd", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Classify a critical point with the second derivative",
+  "description": "A quick alternative to the sign table.",
+  "uses": [["c", "dv8", "Second derivative test"], ["c", "dv5", "Critical points and the first derivative test"]],
+  "parts": [
+    { "id": "st_bi_dv2nd1", "cat": "stage", "name": "Critical points", "text": "Solve `f'(x) = 0`." },
+    { "id": "st_bi_dv2nd2", "cat": "stage", "name": "Plug into f''", "text": "`f''(a) > 0`: minimum. `f''(a) < 0`: maximum." },
+    { "id": "st_bi_dv2nd3", "cat": "stage", "name": "If f''(a) = 0", "text": "No conclusion. Go back to the sign table of `f'`." },
+    { "id": "st_bi_dv2nd4", "cat": "example", "name": "Example", "text": "`f(x) = x³ − 3x`, `f'' = 6x`.\n`f''(1) = 6 > 0`: minimum. `f''(−1) = −6 < 0`: maximum." },
+    { "id": "st_bi_dv2nd5", "cat": "example", "name": "Example — no conclusion", "text": "`f(x) = x⁴`: `f'(0) = 0`, `f''(0) = 0`. The sign table of `f' = 4x³` gives `−` then `+`: minimum." }
+  ] },
+{ "id": "pp_bi_dvcvx", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an inequality with convexity",
+  "description": "When one side is a line: it is a tangent or a chord of the other side.",
+  "uses": [["c", "dv8", "Inequalities from convexity"], ["c", "dv8", "Convex and concave"], ["c", "dv1", "What the derivative tells you"]],
+  "parts": [
+    { "id": "st_bi_dvcvx1", "cat": "stage", "name": "Spot the line", "text": "One side is a curve `f`, the other is a line. Find where the line touches the curve (tangent) or where it meets it (chord)." },
+    { "id": "st_bi_dvcvx2", "cat": "stage", "name": "Sign of f''", "text": "Show `f'' > 0` or `f'' < 0` on the interval." },
+    { "id": "st_bi_dvcvx3", "cat": "stage", "name": "Conclude", "text": "Convex: above its tangents, below its chords.\nConcave: below its tangents, above its chords." },
+    { "id": "st_bi_dvcvx4", "cat": "example", "name": "Example — tangent, convex", "text": "`eˣ ≥ 1 + x` for all `x`.\n`f = eˣ`, `f'' > 0`, convex. The tangent at `0` is `y = 1 + x`. So `f` is above it." },
+    { "id": "st_bi_dvcvx5", "cat": "example", "name": "Example — tangent, concave", "text": "`ln x ≤ x − 1` for `x > 0`.\n`f = ln x`, `f'' = −1/x² < 0`, concave. The tangent at `1` is `y = x − 1`. So `f` is below it." },
+    { "id": "st_bi_dvcvx6", "cat": "example", "name": "Example — chord", "text": "`sin x ≥ 2x/π` on `[0, π/2]`.\n`f = sin x`, `f'' = −sin x ≤ 0`, concave. The line joins `(0, 0)` and `(π/2, 1)`: it is a chord. So `f` is above it." }
+  ] },
+{ "id": "pp_bi_dvsketch", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Investigate a function and sketch it",
+  "description": "Put everything together: domain, limits, extrema, convexity, graph.",
+  "uses": [["c", "dv5", "Critical points and the first derivative test"], ["c", "dv8", "Convex and concave"], ["c", "dv8", "Inflection point"], ["c", "dv7", "Monotonicity"], ["c", "lm1", "Infinite limits and limits at infinity"], ["c", "fn1", "Domain and range"]],
+  "parts": [
+    { "id": "st_bi_dvsketch1", "cat": "stage", "name": "Domain and roots", "text": "Domain, intersections with the axes, and whether `f` is even or odd." },
+    { "id": "st_bi_dvsketch2", "cat": "stage", "name": "Limits", "text": "Limits at the ends of the domain and at domain gaps. They give the asymptotes." },
+    { "id": "st_bi_dvsketch3", "cat": "stage", "name": "First derivative", "text": "Sign table of `f'`: rising, falling, local extrema." },
+    { "id": "st_bi_dvsketch4", "cat": "stage", "name": "Second derivative", "text": "Sign table of `f''`: convex, concave, inflection points." },
+    { "id": "st_bi_dvsketch5", "cat": "stage", "name": "Draw", "text": "Mark the points, draw the asymptotes, join them following the tables." },
+    { "id": "st_bi_dvsketch6", "cat": "example", "name": "Example", "text": "`f(x) = x/(x² + 1)`\nDomain `ℝ`, odd, root at `0`, limits `0` at `±∞`.\n`f' = (1 − x²)/(x² + 1)²`: minimum `(−1, −1/2)`, maximum `(1, 1/2)`.\n`f'' = 2x(x² − 3)/(x² + 1)³`: inflection at `0`, `±√3`.\nConcave for `x < −√3`, convex on `(−√3, 0)`, concave on `(0, √3)`, convex for `x > √3`." }
+  ] },
+{ "id": "pp_bi_dvrol", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Check Rolle's conditions",
+  "description": "Check all three conditions, then find the point, or show why it doesn't exist.",
+  "uses": [["c", "dv7", "Rolle's theorem"], ["c", "dv7", "When a condition of Rolle's theorem fails"]],
+  "parts": [
+    { "id": "st_bi_dvrol1", "cat": "stage", "name": "Three conditions", "text": "1. Continuous on `[a, b]`, ends included.\n2. Differentiable on `(a, b)`.\n3. `f(a) = f(b)`." },
+    { "id": "st_bi_dvrol2", "cat": "stage", "name": "All hold", "text": "Rolle gives `c`. To find it, solve `f'(c) = 0` inside `(a, b)`." },
+    { "id": "st_bi_dvrol3", "cat": "stage", "name": "One fails", "text": "Rolle says nothing. Check `f'` directly: there may or may not be such a point." },
+    { "id": "st_bi_dvrol4", "cat": "example", "name": "Example — all hold", "text": "`f(x) = x² − 2x` on `[0, 2]`. Polynomial, `f(0) = f(2) = 0`.\n`f' = 2x − 2 = 0` → `c = 1`." },
+    { "id": "st_bi_dvrol5", "cat": "example", "name": "Example — not differentiable inside", "text": "`f(x) = |x − 1|` on `[0, 2]`. `f(0) = f(2) = 1`, but no derivative at `1`.\n`f' = ±1`: no such `c`." },
+    { "id": "st_bi_dvrol6", "cat": "example", "name": "Example — different end values, the point still exists", "text": "`f(x) = x²` on `[−1, 2]`. `f(−1) = 1`, `f(2) = 4`, so the theorem doesn't apply.\nStill `f'(0) = 0`: the theorem doesn't promise it, but it doesn't forbid it." }
+  ] },
+{ "id": "pp_bi_dvrolpr", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an equation with f' has a solution",
+  "description": "Build a helper function whose derivative is the expression, then apply Rolle's theorem.",
+  "uses": [["c", "dv7", "Rolle's theorem"], ["c", "dv7", "Mean value theorem"], ["c", "dv2", "Product and quotient"]],
+  "parts": [
+    { "id": "st_bi_dvrolpr1", "cat": "stage", "name": "Write it as = 0", "text": "Move everything to one side: the claim is `∃c :` expression `= 0`." },
+    { "id": "st_bi_dvrolpr2", "cat": "stage", "name": "Find the helper g", "text": "Choose `g` whose derivative is that expression, up to a nonzero factor:\n`f'(c) + f(c) = 0` ← `g = eˣ·f`\n`c·f'(c) + f(c) = 0` ← `g = x·f`\n`f'(c) = k` ← `g = f − k·x`" },
+    { "id": "st_bi_dvrolpr3", "cat": "stage", "name": "Apply Rolle to g", "text": "Check the three conditions for `g`, then `g'(c) = 0` gives the claim." },
+    { "id": "st_bi_dvrolpr4", "cat": "example", "name": "Example — e^x as a helper", "text": "`f` continuous on `[0, 1]`, differentiable on `(0, 1)`, `f(0) = f(1) = 0`. Prove `∃c : f'(c) + f(c) = 0`.\n`g = eˣ·f`, `g(0) = g(1) = 0`.\nRolle: `g'(c) = eᶜ·(f'(c) + f(c)) = 0`. Since `eᶜ ≠ 0`, done." },
+    { "id": "st_bi_dvrolpr5", "cat": "example", "name": "Example — x as a helper", "text": "`f` as above with `f(1) = 0`. Prove `∃c : c·f'(c) + f(c) = 0`.\n`g = x·f`, `g(0) = 0`, `g(1) = 0`. Rolle: `g'(c) = f(c) + c·f'(c) = 0`." },
+    { "id": "st_bi_dvrolpr6", "cat": "example", "name": "Example — twice", "text": "`f` twice differentiable, `f(a) = f(b) = f(d)` with `a < b < d`. Prove `∃c : f''(c) = 0`.\nRolle on `[a, b]` and `[b, d]`: `f'(c₁) = f'(c₂) = 0`.\nRolle on `f'` on `[c₁, c₂]`: `f''(c) = 0`." }
+  ] },
+{ "id": "pp_bi_dvr1", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Prove an equation has exactly one root",
+  "description": "Existence from the intermediate value theorem, uniqueness from the derivative.",
+  "uses": [["c", "dv7", "Roots of f and roots of f'"], ["c", "dv7", "Monotonicity"], ["c", "lm8", "A root between a sign change"]],
+  "parts": [
+    { "id": "st_bi_dvr11", "cat": "stage", "name": "Make it = 0", "text": "Define `h(x) = 0` by moving everything to one side." },
+    { "id": "st_bi_dvr12", "cat": "stage", "name": "At least one", "text": "Find `a`, `b` with `h(a)·h(b) < 0`, or use the limits at the ends. By the IVT there is a root." },
+    { "id": "st_bi_dvr13", "cat": "stage", "name": "At most one", "text": "Show `h' > 0` everywhere, or `h' < 0` everywhere. `h` is strictly monotonic, so it can't hit `0` twice.\nBy contradiction: two roots would give a root of `h'` by Rolle." },
+    { "id": "st_bi_dvr14", "cat": "example", "name": "Example — polynomial", "text": "`x³ + x − 1 = 0`.\n`h(0) = −1`, `h(1) = 1`: a root exists.\n`h' = 3x² + 1 > 0`: exactly one." },
+    { "id": "st_bi_dvr15", "cat": "example", "name": "Example — exponential", "text": "`eˣ + x = 0`.\n`h(−1) = 1/e − 1 < 0`, `h(0) = 1 > 0`.\n`h' = eˣ + 1 > 0`: exactly one." },
+    { "id": "st_bi_dvr16", "cat": "example", "name": "Example — two sides", "text": "`cos x = 2x`. `h = cos x − 2x`.\n`h(0) = 1 > 0`, `h(1) = cos 1 − 2 < 0`.\n`h' = −sin x − 2 < 0`: exactly one." }
+  ] },
+{ "id": "pp_bi_dvr2", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Count roots with the derivative's roots",
+  "description": "Rolle bounds the number of roots from above, the IVT from below.",
+  "uses": [["c", "dv7", "Roots of f and roots of f'"], ["c", "dv7", "Rolle's theorem"], ["c", "lm8", "A root between a sign change"]],
+  "parts": [
+    { "id": "st_bi_dvr21", "cat": "stage", "name": "Roots of f'", "text": "Differentiate and count the roots of `f'`, say `k`. Still hard? Differentiate again: each derivative raises the bound by one." },
+    { "id": "st_bi_dvr22", "cat": "stage", "name": "Upper bound", "text": "`f` has at most `k + 1` roots." },
+    { "id": "st_bi_dvr23", "cat": "stage", "name": "Lower bound", "text": "Find points with opposite signs. Each sign change gives a root by the IVT." },
+    { "id": "st_bi_dvr24", "cat": "stage", "name": "Conclude", "text": "If both bounds match, that is the exact number of roots." },
+    { "id": "st_bi_dvr25", "cat": "example", "name": "Example — exactly three", "text": "`f(x) = x⁵ − 5x + 1`.\n`f' = 5x⁴ − 5`, roots `±1`, so at most `3`.\n`f(−2) = −21`, `f(0) = 1`, `f(1) = −3`, `f(2) = 23`: three sign changes.\nExactly `3` roots." },
+    { "id": "st_bi_dvr26", "cat": "example", "name": "Example — differentiate three times", "text": "`f(x) = eˣ − ax² − bx − c` has at most `3` roots, for any `a`, `b`, `c`.\n`f''' = eˣ` has no roots, so `f''` has at most `1`, `f'` at most `2`, `f` at most `3`." },
+    { "id": "st_bi_dvr27", "cat": "example", "name": "Example — a polynomial with all real roots", "text": "`P` of degree `n` has `n` different real roots. Then `P'` has `n − 1` different real roots.\nRolle gives one between each neighbouring pair, and `P'` has degree `n − 1`, so there are no others." }
+  ] },
+{ "id": "pp_bi_dvr3", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Number of roots with a parameter",
+  "description": "Separate the parameter, then read the number of solutions from the shape of the function.",
+  "uses": [["c", "dv5", "Critical points and the first derivative test"], ["c", "dv7", "Monotonicity"], ["c", "lm8", "Intermediate value theorem"], ["c", "lm1", "Infinite limits and limits at infinity"]],
+  "parts": [
+    { "id": "st_bi_dvr31", "cat": "stage", "name": "Separate", "text": "Write the equation as `f(x) = k`, with the parameter alone on one side." },
+    { "id": "st_bi_dvr32", "cat": "stage", "name": "Shape of f", "text": "Find the intervals of increase and decrease, the local extrema, and the limits at the ends." },
+    { "id": "st_bi_dvr33", "cat": "stage", "name": "Count", "text": "On each monotonic interval, `f(x) = k` has one solution if `k` is between the end values, none otherwise. Add them up for each range of `k`." },
+    { "id": "st_bi_dvr34", "cat": "example", "name": "Example — cubic", "text": "`x³ − 3x = k`. Maximum `(−1, 2)`, minimum `(1, −2)`, limits `−∞` and `+∞`.\n`k > 2` or `k < −2`: `1` root\n`k = ±2`: `2` roots\n`−2 < k < 2`: `3` roots" },
+    { "id": "st_bi_dvr35", "cat": "example", "name": "Example — quartic", "text": "`x⁴ − 4x³ + k = 0`, so `f(x) = x⁴ − 4x³ = −k`.\n`f` decreases until `x = 3`, then increases. Minimum `−27`, limits `+∞`.\n`k > 27`: no roots · `k = 27`: `1` root · `k < 27`: `2` roots" }
+  ] }
+]
+</script>
+
+</div><!-- /topfolder-eti -->
