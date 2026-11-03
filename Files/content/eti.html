@@ -6,54 +6,110 @@
 <!-- ============ 2.1 IDENTITIES ============ -->
 <section class="pane on" id="pane-s1">
 <h2 id="s1"><span class="num">2.1</span>Identities</h2>
-<div class="grid2">
-  <div class="card">
-    <h4>Pythagorean</h4>
-    <ul class="idlist">
-      <li><code>sin²θ + cos²θ = 1</code></li>
-      <li><code>1 + tan²θ = sec²θ</code></li>
-      <li><code>1 + cot²θ = csc²θ</code></li>
-    </ul>
-  </div>
-  <div class="card">
-    <h4>Quotient &amp; reciprocal</h4>
-    <ul class="idlist">
-      <li><code>tan θ = sin θ / cos θ</code></li>
-      <li><code>cot θ = cos θ / sin θ = 1/tan θ</code></li>
-      <li><code>csc θ = 1/sin θ</code>,&nbsp; <code>sec θ = 1/cos θ</code></li>
-    </ul>
-  </div>
-  <div class="card">
-    <h4>Sum / difference</h4>
-    <ul class="idlist">
-      <li><code>sin(A ± B) = sin A cos B ± cos A sin B</code></li>
-      <li><code>cos(A ± B) = cos A cos B ∓ sin A sin B</code></li>
-      <li><code>tan(A ± B) = (tan A ± tan B) / (1 ∓ tan A tan B)</code></li>
-    </ul>
-  </div>
-  <div class="card">
-    <h4>Double angle</h4>
-    <ul class="idlist">
-      <li><code>sin 2θ = 2 sin θ cos θ</code></li>
-      <li><code>cos 2θ = cos²θ − sin²θ = 2cos²θ − 1 = 1 − 2sin²θ</code></li>
-      <li><code>tan 2θ = 2 tan θ / (1 − tan²θ)</code></li>
-    </ul>
-  </div>
-  <div class="card">
-    <h4>Half angle</h4>
-    <ul class="idlist">
-      <li><code>sin²(θ/2) = (1 − cos θ) / 2</code></li>
-      <li><code>cos²(θ/2) = (1 + cos θ) / 2</code></li>
-    </ul>
-  </div>
-  <div class="card">
-    <h4>Co-function &amp; even/odd</h4>
-    <ul class="idlist">
-      <li><code>sin(90° − θ) = cos θ</code>,&nbsp; <code>cos(90° − θ) = sin θ</code></li>
-      <li><code>sin(−θ) = −sin θ</code> (odd)</li>
-      <li><code>cos(−θ) = cos θ</code> (even),&nbsp; <code>tan(−θ) = −tan θ</code> (odd)</li>
-    </ul>
-  </div>
+<div class="card" data-tags="Definition">
+  <h4>What an identity is</h4>
+  <p>An <b>identity</b> is an equation that is true for <b>every</b> angle where both sides are defined. Example: <code>sin²θ + cos²θ = 1</code>.</p>
+  <p class="muted">Compare it with an ordinary equation like <code>sin θ = 1/2</code>, which is true only for some angles. An identity is never something you solve. It's a tool: it lets you swap one expression for another that's equal to it, so you can simplify an expression, solve an equation, or find an exact value.</p>
+  <p class="muted">Every identity on these cards comes from the unit circle (2.2): the point at angle <code>θ</code> is <code>(cos θ, sin θ)</code>. Use the Identity checker below to see both sides give the same number for any angle.</p>
+</div>
+<div class="card" data-key="pythagorean" data-tags="Formula">
+  <h4>Pythagorean identities</h4>
+  <ul class="idlist">
+    <li><code>sin²θ + cos²θ = 1</code></li>
+    <li><code>1 + tan²θ = 1/(cos²θ)</code> &nbsp;(<code>cos θ ≠ 0</code>)</li>
+    <li><code>1 + cot²θ = 1/(sin²θ)</code> &nbsp;(<code>sin θ ≠ 0</code>)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="a right triangle inside the unit circle with legs cos theta and sin theta and hypotenuse 1">
+    <path class="ax" d="M20 200 H400 M140 230 V20"/>
+    <path class="gd" d="M300 200 A160 160 0 0 0 140 40"/>
+    <path class="cv" d="M140 200 L262.6 97.1"/>
+    <path class="cv2" d="M140 200 H262.6 V97.1"/>
+    <path class="gd" d="M250.6 200 V188 H262.6"/>
+    <path class="ax" d="M170 200 A30 30 0 0 0 163 180.7"/>
+    <circle class="dot" cx="262.6" cy="97.1" r="4"/>
+    <text x="180" y="194">θ</text>
+    <text x="196" y="140" text-anchor="end">1</text>
+    <text x="201" y="220" text-anchor="middle">cos θ</text>
+    <text x="270" y="155">sin θ</text>
+    <text x="290" y="60">cos²θ + sin²θ = 1²</text>
+  </svg>
+  <p class="muted"><b>Why it's true:</b> the point on the unit circle makes a right triangle with legs <code>cos θ</code> and <code>sin θ</code> and hypotenuse <code>1</code> (the radius). Pythagoras says leg² + leg² = hypotenuse², and that's the first identity.</p>
+  <p class="muted"><b>The other two</b> come from the first: divide every term by <code>cos²θ</code> to get <code>tan²θ + 1 = 1/(cos²θ)</code>, or by <code>sin²θ</code> to get <code>1 + cot²θ = 1/(sin²θ)</code>.</p>
+  <p class="muted"><b>Use it to swap:</b> <code>sin²θ = 1 − cos²θ</code> and <code>cos²θ = 1 − sin²θ</code>. That's how an equation with both <code>sin</code> and <code>cos</code> becomes an equation in one of them.</p>
+</div>
+<div class="card" data-key="quotient-reciprocal" data-tags="Definition">
+  <h4>Quotient and reciprocal identities</h4>
+  <ul class="idlist">
+    <li><code>tan θ = (sin θ)/(cos θ)</code> &nbsp;·&nbsp; <code>cot θ = (cos θ)/(sin θ) = 1/(tan θ)</code></li>
+    <li><code>sec θ = 1/(cos θ)</code> &nbsp;·&nbsp; <code>csc θ = 1/(sin θ)</code></li>
+  </ul>
+  <p class="muted">These are really the <b>definitions</b> of the other four functions: everything is built from <code>sin</code> and <code>cos</code>. Each one is undefined where its bottom is <code>0</code>: <code>tan</code> and <code>sec</code> where <code>cos θ = 0</code> (at <code>90°</code>, <code>270°</code>, …), <code>cot</code> and <code>csc</code> where <code>sin θ = 0</code> (at <code>0°</code>, <code>180°</code>, …).</p>
+  <p class="muted"><b>Tip:</b> when an expression looks messy, rewrite everything in <code>sin</code> and <code>cos</code> first. Usually things cancel. See the method "Simplifying with identities".</p>
+</div>
+<div class="card" data-key="sum-difference" data-tags="Formula">
+  <h4>Sum and difference formulas</h4>
+  <ul class="idlist">
+    <li><code>sin(A + B) = sin A cos B + cos A sin B</code></li>
+    <li><code>sin(A − B) = sin A cos B − cos A sin B</code></li>
+    <li><code>cos(A + B) = cos A cos B − sin A sin B</code></li>
+    <li><code>cos(A − B) = cos A cos B + sin A sin B</code></li>
+    <li><code>tan(A ± B) = (tan A ± tan B)/(1 ∓ tan A tan B)</code></li>
+  </ul>
+  <p class="muted"><b>Careful:</b> <code>sin(A + B)</code> is <b>not</b> <code>sin A + sin B</code>. Check with <code>A = B = 90°</code>: <code>sin 180° = 0</code>, but <code>sin 90° + sin 90° = 2</code>.</p>
+  <p class="muted"><b>How to remember them:</b> <code>sin</code> mixes the two functions (sin·cos + cos·sin) and keeps the sign. <code>cos</code> keeps them together (cos·cos, sin·sin) and <b>flips</b> the sign.</p>
+  <p class="muted"><b>Example:</b> <code>cos 75° = cos(45° + 30°) = cos 45° cos 30° − sin 45° sin 30° = (√2)/2 · (√3)/2 − (√2)/2 · 1/2 = (√6 − √2)/4</code>.</p>
+</div>
+<div class="card" data-key="double-angle" data-tags="Formula">
+  <h4>Double-angle formulas</h4>
+  <ul class="idlist">
+    <li><code>sin 2θ = 2 sin θ cos θ</code></li>
+    <li><code>cos 2θ = cos²θ − sin²θ = 2cos²θ − 1 = 1 − 2sin²θ</code></li>
+    <li><code>tan 2θ = (2 tan θ)/(1 − tan²θ)</code></li>
+  </ul>
+  <p class="muted"><b>Where they come from:</b> put <code>A = B = θ</code> in the sum formulas. <code>sin(θ + θ) = sin θ cos θ + cos θ sin θ = 2 sin θ cos θ</code>.</p>
+  <p class="muted"><b>Three versions of <code>cos 2θ</code>:</b> the first one, with <code>sin²θ = 1 − cos²θ</code> swapped in, gives the second; with <code>cos²θ = 1 − sin²θ</code>, the third. Pick the one that leaves only the function you want: only <code>cos</code>, or only <code>sin</code>.</p>
+  <p class="muted"><b>Example:</b> solve <code>sin 2x = sin x</code>. Write <code>2 sin x cos x = sin x</code>, then <code>sin x (2cos x − 1) = 0</code>, so <code>sin x = 0</code> or <code>cos x = 1/2</code>. (Never divide by <code>sin x</code>: you'd lose the solutions where it's <code>0</code>.)</p>
+</div>
+<div class="card" data-key="half-angle" data-tags="Formula">
+  <h4>Half-angle formulas</h4>
+  <ul class="idlist">
+    <li><code>sin²(θ/2) = (1 − cos θ)/2</code></li>
+    <li><code>cos²(θ/2) = (1 + cos θ)/2</code></li>
+  </ul>
+  <p class="muted"><b>Where they come from:</b> the double-angle formula <code>cos 2α = 1 − 2sin²α</code>, solved for <code>sin²α</code>, with <code>α = θ/2</code>. Same for <code>cos²</code> from <code>cos 2α = 2cos²α − 1</code>.</p>
+  <p class="muted"><b>They lower a power:</b> a square becomes a first power of a double angle. That's why they're useful for integrals like <code>∫ sin²x dx</code>.</p>
+  <p class="muted"><b>Example:</b> <code>sin²15° = (1 − cos 30°)/2 = (1 − (√3)/2)/2 = (2 − √3)/4</code>. Since <code>sin 15° &gt; 0</code>, take the positive root: <code>sin 15° = (√(2 − √3))/2</code>.</p>
+</div>
+<div class="card" data-key="co-function-even-odd" data-tags="Formula">
+  <h4>Co-function and even/odd identities</h4>
+  <ul class="idlist">
+    <li><code>sin(90° − θ) = cos θ</code> &nbsp;·&nbsp; <code>cos(90° − θ) = sin θ</code></li>
+    <li><code>cos(−θ) = cos θ</code> (cos is <b>even</b>)</li>
+    <li><code>sin(−θ) = −sin θ</code>, <code>tan(−θ) = −tan θ</code> (sin and tan are <b>odd</b>)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="a right triangle with acute angles theta and 90 degrees minus theta">
+    <path class="cv" d="M60 200 H340 V60 Z"/>
+    <path class="gd" d="M325 200 V185 H340"/>
+    <text x="102" y="192">θ</text>
+    <text x="330" y="96" text-anchor="end">90° − θ</text>
+    <text x="200" y="220" text-anchor="middle">adjacent to θ</text>
+    <text x="350" y="134">opposite θ</text>
+  </svg>
+  <p class="muted"><b>Co-function:</b> a right triangle's two acute angles add up to <code>90°</code>. The side <b>opposite</b> <code>θ</code> is the side <b>adjacent</b> to <code>90° − θ</code>, so the sine of one angle is the cosine of the other. ("Co-sine" literally means "sine of the complementary angle".)</p>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="the angles theta and minus theta on the unit circle: the points are mirror images across the x-axis">
+    <path class="ax" d="M95 120 H325 M210 15 V225"/>
+    <circle class="ax" cx="210" cy="120" r="95"/>
+    <path class="cv" d="M210 120 L287.8 65.5"/>
+    <path class="cv2" d="M210 120 L287.8 174.5"/>
+    <path class="gd" d="M287.8 65.5 V174.5"/>
+    <circle class="dot" cx="287.8" cy="65.5" r="4"/>
+    <circle class="dot" cx="287.8" cy="174.5" r="4"/>
+    <text x="240" y="110">θ</text>
+    <text x="240" y="144">−θ</text>
+    <text x="296" y="58">(cos θ, sin θ)</text>
+    <text x="296" y="192">(cos θ, −sin θ)</text>
+  </svg>
+  <p class="muted"><b>Even/odd:</b> the angle <code>−θ</code> is <code>θ</code> measured clockwise. Its point is the mirror image across the x-axis: same x (so <code>cos</code> stays the same), opposite y (so <code>sin</code> flips sign). <code>tan = sin/cos</code> then flips too.</p>
 </div>
 
 <div class="tool">
@@ -74,9 +130,60 @@
 <!-- ============ 2.2 UNIT CIRCLE ============ -->
 <section class="pane" id="pane-s2">
 <h2 id="s2"><span class="num">2.2</span>The unit circle</h2>
-<p>A circle of <b>radius 1</b> centred at the origin. For an angle <code>θ</code> measured <b>counter-clockwise</b> from the positive x-axis, the terminal side meets the circle at <code>(cos θ, sin θ)</code>. So <code>cos θ</code> is the <b>x-coordinate</b>, <code>sin θ</code> is the <b>y-coordinate</b>, and <code>tan θ = sin θ / cos θ</code> is undefined wherever <code>cos θ = 0</code>.</p>
-<p><b>Quadrant signs</b> ("All Students Take Calculus", I → II → III → IV): QI all positive; QII only <code>sin</code>; QIII only <code>tan</code>; QIV only <code>cos</code>.</p>
-<p><b>Where <code>tan θ</code> sits:</b> draw the vertical tangent line at <code>(1, 0)</code>; extend the radius for <code>θ</code> until it crosses that line — the segment from <code>(1,0)</code> to the crossing is exactly <code>tan θ</code>. That's where the name comes from.</p>
+<div class="card" data-key="a-circle-of-radius-1-centred-at-the-orig" data-tags="Definition">
+  <h4>The unit circle</h4>
+  <p>The <b>unit circle</b> is the circle of radius <code>1</code> around the origin. For an angle <code>θ</code>, measured <b>counter-clockwise</b> from the positive x-axis, the point on the circle is <code>(cos θ, sin θ)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 250" role="img" aria-label="the unit circle with a radius at angle theta ending at the point cos theta, sin theta">
+    <path class="ax" d="M50 125 H300 M170 15 V240"/>
+    <circle class="ax" cx="170" cy="125" r="100"/>
+    <path class="cv" d="M170 125 L234.3 48.4"/>
+    <path class="gd" d="M234.3 48.4 V125 M170 48.4 H234.3"/>
+    <path class="ax" d="M195 125 A25 25 0 0 0 186.1 105.8"/>
+    <circle class="dot" cx="234.3" cy="48.4" r="4"/>
+    <text x="200" y="117">θ</text>
+    <text x="196" y="80" text-anchor="end">1</text>
+    <text x="202" y="143" text-anchor="middle">cos θ</text>
+    <text x="242" y="94">sin θ</text>
+    <text x="244" y="40">(cos θ, sin θ)</text>
+    <text class="sm" x="305" y="129">x</text>
+    <text class="sm" x="176" y="22">y</text>
+  </svg>
+  <p class="muted"><b>In words:</b> <code>cos θ</code> is how far <b>right</b> (or left, if negative) the point is, and <code>sin θ</code> is how far <b>up</b> (or down). Because the radius is <code>1</code>, these are the same as "adjacent / hypotenuse" and "opposite / hypotenuse" in a right triangle, but now they work for <b>any</b> angle, even <code>200°</code> or <code>−30°</code>.</p>
+  <p class="muted"><b>Why this is useful:</b> both values are always between <code>−1</code> and <code>1</code>, and you can read their signs straight from the picture. Turning one full circle brings you back to the same point, which is why <code>sin</code> and <code>cos</code> repeat (2.5).</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Signs in the four quadrants</h4>
+  <p>QI: all positive · QII: only <code>sin</code> positive · QIII: only <code>tan</code> positive · QIV: only <code>cos</code> positive.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the four quadrants with which functions are positive in each">
+    <path class="ax" d="M100 105 H320 M210 15 V195"/>
+    <circle class="ax" cx="210" cy="105" r="80"/>
+    <text x="330" y="55">I · all +</text>
+    <text x="90" y="55" text-anchor="end">II · sin +</text>
+    <text x="90" y="165" text-anchor="end">III · tan +</text>
+    <text x="330" y="165">IV · cos +</text>
+  </svg>
+  <p class="muted"><b>Why:</b> <code>cos</code> is the x-coordinate, so it's positive on the right (I, IV). <code>sin</code> is the y-coordinate, so it's positive on top (I, II). <code>tan = sin/cos</code> is positive when both have the same sign (I, III).</p>
+  <p class="muted"><b>Memory aid:</b> "<b>A</b>ll <b>S</b>tudents <b>T</b>ake <b>C</b>alculus", going I → II → III → IV: All, Sin, Tan, Cos.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Where tan θ sits on the circle</h4>
+  <p>Draw the vertical line <code>x = 1</code> (it touches the circle at <code>(1, 0)</code>). Extend the radius until it meets that line. The height of the meeting point is <code>tan θ</code>.</p>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="the radius extended to the vertical tangent line x equals 1; the height there is tan theta">
+    <path class="ax" d="M15 130 H300 M120 25 V235"/>
+    <circle class="ax" cx="120" cy="130" r="90"/>
+    <path class="gd" d="M210 15 V235"/>
+    <path class="cv" d="M120 130 L210 67"/>
+    <path class="cv2" d="M210 130 V67"/>
+    <circle class="dot" cx="193.7" cy="78.4" r="4"/>
+    <circle class="dot" cx="210" cy="67" r="4"/>
+    <text x="220" y="104">tan θ</text>
+    <text x="216" y="148">(1, 0)</text>
+    <text x="216" y="30">x = 1</text>
+    <text class="sm" x="184" y="64" text-anchor="end">(cos θ, sin θ)</text>
+  </svg>
+  <p class="muted"><b>Why:</b> the small triangle (legs <code>cos θ</code>, <code>sin θ</code>) and the big one (legs <code>1</code>, <code>tan θ</code>) have the same angles, so their sides are in the same ratio: <code>tan θ / 1 = sin θ / cos θ</code>. That vertical line is a <b>tangent</b> to the circle, which is where the name "tangent" comes from.</p>
+  <p class="muted">At <code>90°</code> the radius points straight up and never meets the line, which is why <code>tan 90°</code> is undefined.</p>
+</div>
 
 <div class="tool">
   <p class="tool-title">Drag the circle</p>
@@ -135,23 +242,76 @@
   </div>
 </div>
 
-<h3>Exact values</h3>
-<p class="muted">Click a column to place that angle on the circle above.</p>
-<table id="exactTable">
-  <thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
-  <tbody>
-    <tr><th>sin θ</th><td>0</td><td>1/2</td><td>√2/2</td><td>√3/2</td><td>1</td></tr>
-    <tr><th>cos θ</th><td>1</td><td>√3/2</td><td>√2/2</td><td>1/2</td><td>0</td></tr>
-    <tr><th>tan θ</th><td>0</td><td>√3/3</td><td>1</td><td>√3</td><td>undef.</td></tr>
-  </tbody>
-</table>
-
+<div class="card" data-key="exact-values" data-tags="Formula">
+  <h4>Exact values of the special angles</h4>
+  <table id="exactTable">
+    <thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
+    <tbody>
+      <tr><th>sin θ</th><td>0</td><td>1/2</td><td>√2/2</td><td>√3/2</td><td>1</td></tr>
+      <tr><th>cos θ</th><td>1</td><td>√3/2</td><td>√2/2</td><td>1/2</td><td>0</td></tr>
+      <tr><th>tan θ</th><td>0</td><td>√3/3</td><td>1</td><td>√3</td><td>undef.</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Tap a column to place that angle on the circle above.</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the 45-45-90 triangle with sides 1, 1, root 2 and the 30-60-90 triangle with sides 1, root 3, 2">
+    <path class="cv" d="M30 170 H160 V40 Z"/>
+    <path class="gd" d="M148 170 V158 H160"/>
+    <text x="64" y="162">45°</text>
+    <text x="95" y="188" text-anchor="middle">1</text>
+    <text x="170" y="110">1</text>
+    <text x="86" y="98" text-anchor="end">√2</text>
+    <path class="cv2" d="M230 170 H380 V83.4 Z"/>
+    <path class="gd" d="M368 170 V158 H380"/>
+    <text x="272" y="162">30°</text>
+    <text x="372" y="108" text-anchor="end">60°</text>
+    <text x="305" y="188" text-anchor="middle">√3</text>
+    <text x="390" y="132">1</text>
+    <text x="298" y="118" text-anchor="end">2</text>
+  </svg>
+  <p class="muted"><b>Where the numbers come from:</b> two triangles. Half a square gives the 45° triangle with legs <code>1</code>, <code>1</code> and hypotenuse <code>√2</code>, so <code>sin 45° = 1/(√2) = (√2)/2</code>. Half an equilateral triangle with side <code>2</code> gives the 30°–60° triangle with sides <code>1</code>, <code>√3</code>, <code>2</code>, so <code>sin 30° = 1/2</code> and <code>sin 60° = (√3)/2</code>.</p>
+  <p class="muted"><b>A pattern to remember the sin row:</b> <code>(√0)/2, (√1)/2, (√2)/2, (√3)/2, (√4)/2</code>. The cos row is the same list backwards.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Reference angles: values past 90°</h4>
+  <p>The <b>reference angle</b> is the acute angle between the radius and the x-axis. <code>sin</code>, <code>cos</code>, <code>tan</code> of any angle equal those of its reference angle, up to a sign that the quadrant decides.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="the angles 30 and 150 degrees on the unit circle at the same height">
+    <path class="ax" d="M100 120 H320 M210 20 V215"/>
+    <circle class="ax" cx="210" cy="120" r="90"/>
+    <path class="cv" d="M210 120 L287.9 75"/>
+    <path class="cv2" d="M210 120 L132.1 75"/>
+    <path class="gd" d="M132.1 75 H287.9"/>
+    <circle class="dot" cx="287.9" cy="75" r="4"/>
+    <circle class="dot" cx="132.1" cy="75" r="4"/>
+    <text x="296" y="68">30°</text>
+    <text x="124" y="68" text-anchor="end">150°</text>
+    <text class="sm" x="210" y="66" text-anchor="middle">same height</text>
+  </svg>
+  <p class="muted"><b>Example:</b> <code>150°</code> is <code>30°</code> short of <code>180°</code>, so its reference angle is <code>30°</code>. Its point is the mirror image of the <code>30°</code> point: same height, opposite side. So <code>sin 150° = sin 30° = 1/2</code> and <code>cos 150° = −cos 30° = −(√3)/2</code>.</p>
+  <p class="muted"><b>Finding the reference angle</b> (for <code>0° ≤ θ &lt; 360°</code>): QII: <code>180° − θ</code> · QIII: <code>θ − 180°</code> · QIV: <code>360° − θ</code>. The full steps are the method "Exact value of any angle".</p>
+</div>
 </section>
 
 <!-- ============ 2.3 RADIANS ============ -->
 <section class="pane" id="pane-s3">
 <h2 id="s3"><span class="num">2.3</span>Radians</h2>
-<p>A <b>radian</b> is the angle whose arc length equals the radius (<code>arc = r</code>). A full circle is <code>360° = 2π rad</code>. Degrees → radians: <code>× π/180</code>. Radians → degrees: <code>× 180/π</code>.</p>
+<div class="card" data-key="a-radian-is-the-angle-whose-arc-length-e" data-tags="Definition">
+  <h4>What a radian is</h4>
+  <p>An angle of <b>1 radian</b> cuts off an arc whose length equals the radius. A full turn is <code>360° = 2π rad</code>, so <code>180° = π rad</code>.</p>
+  <p>Degrees → radians: multiply by <code>π/180</code>. Radians → degrees: multiply by <code>180/π</code>.</p>
+  <svg class="ill" viewBox="0 0 420 250" role="img" aria-label="a circle with two radii one radian apart; the arc between them is as long as the radius">
+    <circle class="ax" cx="150" cy="130" r="100"/>
+    <path class="cv" d="M150 130 H250 M150 130 L204 45.9"/>
+    <path class="cv2" d="M250 130 A100 100 0 0 0 204 45.9" style="stroke-width:5"/>
+    <text x="200" y="148" text-anchor="middle">r</text>
+    <text x="170" y="86" text-anchor="end">r</text>
+    <text x="244" y="74">arc = r</text>
+    <text x="172" y="122">1 rad</text>
+    <text class="sm" x="290" y="150">1 rad ≈ 57.3°</text>
+  </svg>
+  <p class="muted"><b>Why use radians?</b> They measure an angle by a length: on the unit circle the angle in radians <b>is</b> the arc length. That makes calculus formulas clean: <code>(sin x)' = cos x</code> is true only when <code>x</code> is in radians.</p>
+  <p class="muted"><b>Why <code>2π</code>?</b> The whole circumference is <code>2πr</code>, so <code>2π</code> radius-lengths fit around the circle.</p>
+  <p class="muted"><b>Example:</b> <code>45° = 45 · π/180 = π/4</code>. And <code>(5π)/6 = (5π)/6 · 180/π = 150°</code>.</p>
+</div>
 
 <div class="tool">
   <p class="tool-title">Degree / radian converter</p>
@@ -183,25 +343,46 @@
   </div>
 </div>
 
-<table>
-  <thead><tr><th>Degrees</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>180°</th><th>270°</th><th>360°</th></tr></thead>
-  <tbody><tr><th>Radians</th><td>0</td><td>π/6</td><td>π/4</td><td>π/3</td><td>π/2</td><td>π</td><td>3π/2</td><td>2π</td></tr></tbody>
-</table>
-
+<div class="card" data-key="degrees0-30-45-60-90-180-270-360-radians" data-tags="Formula">
+  <h4>Common angles in radians</h4>
+  <table>
+    <thead><tr><th>Degrees</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>180°</th><th>270°</th><th>360°</th></tr></thead>
+    <tbody><tr><th>Radians</th><td>0</td><td>π/6</td><td>π/4</td><td>π/3</td><td>π/2</td><td>π</td><td>3π/2</td><td>2π</td></tr></tbody>
+  </table>
+  <p class="muted"><b>Think in pieces of <code>π</code>:</b> <code>π</code> is half a turn (<code>180°</code>). Then <code>30°</code> is a sixth of that, <code>π/6</code>; <code>45°</code> a quarter, <code>π/4</code>; <code>60°</code> a third, <code>π/3</code>.</p>
+  <p class="muted"><b>Bigger angles are multiples:</b> <code>150° = 5 · 30° = (5π)/6</code>, <code>225° = 5 · 45° = (5π)/4</code>, <code>300° = 5 · 60° = (5π)/3</code>.</p>
+</div>
 </section>
 
 <!-- ============ 2.4 INVERSE TRIG ============ -->
 <section class="pane" id="pane-s4">
 <h2 id="s4"><span class="num">2.4</span>Inverse trig — arcsin, arccos, arctan</h2>
-<p><code>sin</code>, <code>cos</code>, <code>tan</code> are <b>not one-to-one</b> over all reals, so each is first <b>restricted to a monotonic interval</b>. The inverses return a single <b>principal value</b>, not every angle with that ratio.</p>
-<table>
-  <thead><tr><th>Function</th><th>Domain</th><th>Range (principal values)</th></tr></thead>
-  <tbody>
-    <tr><td><code>arcsin(k)</code></td><td><code>k ∈ [−1, 1]</code></td><td><code>[−π/2, π/2]</code> — right half of the circle</td></tr>
-    <tr><td><code>arccos(k)</code></td><td><code>k ∈ [−1, 1]</code></td><td><code>[0, π]</code> — top half of the circle</td></tr>
-    <tr><td><code>arctan(k)</code></td><td><code>k ∈ ℝ</code></td><td><code>(−π/2, π/2)</code> — <b>open</b>, since <code>tan(±π/2)</code> is undefined</td></tr>
-  </tbody>
-</table>
+<div class="card" data-key="sin-cos-tan-are-not-one-to-one-over-all-" data-tags="Definition">
+  <h4>arcsin, arccos and arctan</h4>
+  <p><code>arcsin k</code> is the angle in <code>[−π/2, π/2]</code> whose sine is <code>k</code>. <code>arccos k</code> is the angle in <code>[0, π]</code> whose cosine is <code>k</code>. <code>arctan k</code> is the angle in <code>(−π/2, π/2)</code> whose tangent is <code>k</code>.</p>
+  <table>
+    <thead><tr><th>Function</th><th>Allowed k</th><th>Answer lies in</th></tr></thead>
+    <tbody>
+      <tr><td><code>arcsin(k)</code></td><td><code>−1 ≤ k ≤ 1</code></td><td><code>[−π/2, π/2]</code>: right half of the circle</td></tr>
+      <tr><td><code>arccos(k)</code></td><td><code>−1 ≤ k ≤ 1</code></td><td><code>[0, π]</code>: top half of the circle</td></tr>
+      <tr><td><code>arctan(k)</code></td><td>any real <code>k</code></td><td><code>(−π/2, π/2)</code>: open, since <code>tan(±π/2)</code> is undefined</td></tr>
+    </tbody>
+  </table>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the graph of sine from minus pi to pi; the rising piece from minus pi over 2 to pi over 2 is highlighted">
+    <path class="ax" d="M25 100 H400 M210 15 V190"/>
+    <path class="gd" d="M37.2 100.0 L46.8 110.4 L56.4 120.5 L66.0 130.0 L75.6 138.6 L85.2 146.0 L94.8 152.0 L104.4 156.4 L114.0 159.1 L123.6 160.0 L133.2 159.1 L142.8 156.4 L152.4 152.0 L162.0 146.0 L171.6 138.6 L181.2 130.0 L190.8 120.5 L200.4 110.4 L210.0 100.0 L219.6 89.6 L229.2 79.5 L238.8 70.0 L248.4 61.4 L258.0 54.0 L267.6 48.0 L277.2 43.6 L286.8 40.9 L296.4 40.0 L306.0 40.9 L315.6 43.6 L325.2 48.0 L334.8 54.0 L344.4 61.4 L354.0 70.0 L363.6 79.5 L373.2 89.6 L382.8 100.0"/>
+    <path class="cv" d="M123.6 160.0 L133.2 159.1 L142.8 156.4 L152.4 152.0 L162.0 146.0 L171.6 138.6 L181.2 130.0 L190.8 120.5 L200.4 110.4 L210.0 100.0 L219.6 89.6 L229.2 79.5 L238.8 70.0 L248.4 61.4 L258.0 54.0 L267.6 48.0 L277.2 43.6 L286.8 40.9 L296.4 40.0"/>
+    <path class="gd" d="M123.6 100 V160 M296.4 100 V40"/>
+    <text x="123.6" y="90" text-anchor="middle">−π/2</text>
+    <text x="296.4" y="118" text-anchor="middle">π/2</text>
+    <text x="37" y="118" text-anchor="middle">−π</text>
+    <text x="383" y="90" text-anchor="middle">π</text>
+    <text class="sm" x="300" y="30">the piece arcsin uses</text>
+  </svg>
+  <p class="muted"><b>The problem:</b> many angles have the same sine. <code>sin 30°</code>, <code>sin 150°</code> and <code>sin 390°</code> are all <code>1/2</code>. To "undo" sine and get <b>one</b> answer, we keep only one piece of the graph where every height appears exactly once: the rising piece from <code>−π/2</code> to <code>π/2</code>. On that piece, sine is <b>one-to-one</b>, so it can be reversed.</p>
+  <p class="muted">Same idea for the others: <code>cos</code> is reversed on <code>[0, π]</code>, where it goes down once from <code>1</code> to <code>−1</code>; <code>tan</code> on <code>(−π/2, π/2)</code>, where it rises once through every real number.</p>
+  <p class="muted"><b>Examples:</b> <code>arcsin(1/2) = π/6</code> · <code>arccos(−1/2) = (2π)/3</code> · <code>arctan(−1) = −π/4</code> · <code>arcsin 2</code> doesn't exist, since a sine is never <code>2</code>.</p>
+</div>
 
 <div class="tool">
   <p class="tool-title">Principal-value explorer</p>
@@ -233,14 +414,34 @@
   </div>
 </div>
 
-<p class="muted">Because each arc-function hands back only <b>one</b> representative angle, they don't by themselves solve <code>sin x = k</code> — that's why the general solutions below add <code>+2πn</code> and a second mirrored branch.</p>
-
+<div class="card" data-key="because-each-arc-function-hands-back-onl" data-tags="Explanation">
+  <h4>One answer, not all answers</h4>
+  <p><code>arcsin</code>, <code>arccos</code> and <code>arctan</code> give <b>one</b> angle (the principal value). An equation like <code>sin x = k</code> usually has infinitely many solutions.</p>
+  <p class="muted"><b>Example:</b> <code>arcsin(1/2) = π/6</code>, but <code>sin x = 1/2</code> is also true at <code>(5π)/6</code>, and at both of those plus any number of full turns. That's why the general solutions in 2.6 add <code>+ 2πn</code> and a second, mirrored family.</p>
+  <p class="muted"><b>Calculator warning:</b> a calculator's <code>sin⁻¹</code> button is <code>arcsin</code>. It shows only the principal value, never the second family.</p>
+</div>
 </section>
 
 <!-- ============ 2.5 PERIODICITY ============ -->
 <section class="pane" id="pane-s5">
 <h2 id="s5"><span class="num">2.5</span>Periodicity</h2>
-<p><code>sin</code> and <code>cos</code> repeat every <code>2π</code> (360°): <code>sin(θ + 2πn) = sin θ</code>. <code>tan</code> repeats every <code>π</code> (180°): <code>tan(θ + πn) = tan θ</code>.</p>
+<div class="card" data-key="sin-and-cos-repeat-every-2-360-sin-2" data-tags="Definition">
+  <h4>Period of sin, cos and tan</h4>
+  <p><code>sin(θ + 2πn) = sin θ</code> and <code>cos(θ + 2πn) = cos θ</code>: period <code>2π</code> (<code>360°</code>).</p>
+  <p><code>tan(θ + πn) = tan θ</code>: period <code>π</code> (<code>180°</code>). Here <code>n</code> is any integer.</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the sine graph over two full periods; one period of length 2 pi is shaded">
+    <rect class="band" x="30" y="35" width="185" height="130"/>
+    <path class="ax" d="M20 100 H405 M30 20 V185"/>
+    <path class="cv" d="M30.0 100.0 L35.8 89.3 L41.6 79.0 L47.3 69.4 L53.1 61.1 L58.9 54.3 L64.7 49.2 L70.5 46.1 L76.2 45.0 L82.0 46.1 L87.8 49.2 L93.6 54.3 L99.4 61.1 L105.1 69.4 L110.9 79.0 L116.7 89.3 L122.5 100.0 L128.3 110.7 L134.0 121.0 L139.8 130.6 L145.6 138.9 L151.4 145.7 L157.2 150.8 L163.0 153.9 L168.7 155.0 L174.5 153.9 L180.3 150.8 L186.1 145.7 L191.9 138.9 L197.6 130.6 L203.4 121.0 L209.2 110.7 L215.0 100.0 L220.8 89.3 L226.5 79.0 L232.3 69.4 L238.1 61.1 L243.9 54.3 L249.7 49.2 L255.4 46.1 L261.2 45.0 L267.0 46.1 L272.8 49.2 L278.6 54.3 L284.3 61.1 L290.1 69.4 L295.9 79.0 L301.7 89.3 L307.5 100.0 L313.2 110.7 L319.0 121.0 L324.8 130.6 L330.6 138.9 L336.4 145.7 L342.1 150.8 L347.9 153.9 L353.7 155.0 L359.5 153.9 L365.3 150.8 L371.1 145.7 L376.8 138.9 L382.6 130.6 L388.4 121.0 L394.2 110.7 L400.0 100.0"/>
+    <text x="215" y="118" text-anchor="middle">2π</text>
+    <text x="400" y="118" text-anchor="middle">4π</text>
+    <text class="sm" x="122" y="180" text-anchor="middle">one period</text>
+    <text class="sm" x="307" y="180" text-anchor="middle">the same again</text>
+  </svg>
+  <p class="muted"><b>Why:</b> adding <code>2π</code> to an angle is one full turn around the unit circle, back to the same point, so <code>sin</code> and <code>cos</code> come back to the same values. For <code>tan</code>, half a turn is enough: the point moves to the opposite side of the circle, both coordinates flip sign, and <code>sin/cos</code> stays the same.</p>
+  <p class="muted"><b>Why it matters:</b> an equation like <code>sin x = 1/2</code> has a solution in every period, so its answer is a whole family: <code>x = π/6 + 2πn</code>, and so on (2.6).</p>
+  <p class="muted"><b>An inner coefficient changes the period:</b> <code>sin(Bx)</code> repeats every <code>(2π)/(|B|)</code>. Example: <code>sin 3x</code> has period <code>(2π)/3</code>. (More in Functions › 3.)</p>
+</div>
 
 <div class="tool">
   <p class="tool-title">See the repeat</p>
@@ -273,12 +474,30 @@
 <!-- ============ 2.6 SOLVING ============ -->
 <section class="pane" id="pane-s6">
 <h2 id="s6"><span class="num">2.6</span>Solving trig equations</h2>
-<p>General solutions (<code>n</code> is any integer):</p>
-<ul class="idlist" style="max-width:560px">
-  <li><code>sin x = k</code> → <code>x = arcsin k + 2πn</code> &nbsp;<b>or</b>&nbsp; <code>x = π − arcsin k + 2πn</code></li>
-  <li><code>cos x = k</code> → <code>x = ± arccos k + 2πn</code></li>
-  <li><code>tan x = k</code> → <code>x = arctan k + πn</code> &nbsp;(one family — <code>tan</code> has period <code>π</code>)</li>
-</ul>
+<div class="card" data-key="general-solutions-n-is-any-integer" data-tags="Formula">
+  <h4>General solutions</h4>
+  <ul class="idlist">
+    <li><code>sin x = k</code> → <code>x = arcsin k + 2πn</code> &nbsp;<b>or</b>&nbsp; <code>x = π − arcsin k + 2πn</code></li>
+    <li><code>cos x = k</code> → <code>x = arccos k + 2πn</code> &nbsp;<b>or</b>&nbsp; <code>x = −arccos k + 2πn</code></li>
+    <li><code>tan x = k</code> → <code>x = arctan k + πn</code></li>
+  </ul>
+  <p><code>n</code> is any integer. For <code>sin</code> and <code>cos</code> there is no solution when <code>k &gt; 1</code> or <code>k &lt; −1</code>.</p>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="the line y equals k crosses the unit circle at two points, at angle arcsin k and pi minus arcsin k">
+    <path class="ax" d="M100 120 H320 M210 20 V220"/>
+    <circle class="ax" cx="210" cy="120" r="90"/>
+    <path class="gd" d="M80 75 H340"/>
+    <path class="cv" d="M210 120 L287.9 75"/>
+    <path class="cv2" d="M210 120 L132.1 75"/>
+    <circle class="dot" cx="287.9" cy="75" r="4"/>
+    <circle class="dot" cx="132.1" cy="75" r="4"/>
+    <text x="344" y="79">y = k</text>
+    <text x="296" y="66">arcsin k</text>
+    <text x="124" y="66" text-anchor="end">π − arcsin k</text>
+  </svg>
+  <p class="muted"><b>Why two families for sin:</b> <code>sin x</code> is the height on the unit circle. A horizontal line at height <code>k</code> crosses the circle at <b>two</b> points, mirror images across the y-axis: one at <code>arcsin k</code>, the other at <code>π − arcsin k</code>. Then <code>+ 2πn</code> adds every full turn.</p>
+  <p class="muted"><b>Why two families for cos:</b> <code>cos x</code> is the x-coordinate. A vertical line at <code>x = k</code> crosses the circle at two points, mirror images across the x-axis: <code>arccos k</code> and <code>−arccos k</code>. That's why it's written <code>x = ± arccos k + 2πn</code>.</p>
+  <p class="muted"><b>Why one family for tan:</b> its period is <code>π</code>, and <code>+ πn</code> already reaches both points (they're opposite each other on the circle).</p>
+</div>
 
 <div class="tool">
   <p class="tool-title">General-solution generator</p>
@@ -306,23 +525,19 @@
   <div class="eqout" id="solOut"></div>
 </div>
 
-<div class="callout">
-  <b>Trivial zero cases</b> need only one family each: <code>sin x = 0 → x = πn</code>;&nbsp;
-  <code>cos x = 0 → x = π/2 + πn</code>;&nbsp; <code>tan x = 0 → x = πn</code>.
-  At <code>x = πn</code>: <code>sin = 0</code> and <code>cos = (−1)ⁿ</code>. At <code>x = π/2 + πn</code>: it flips — <code>cos = 0</code> and <code>sin = (−1)ⁿ</code>.
+<div class="card" data-key="trivial-zero-cases-need-only-one-family-" data-tags="Formula">
+  <h4>Special cases: k = 0, 1 or −1</h4>
+  <ul class="idlist">
+    <li><code>sin x = 0</code> → <code>x = πn</code> &nbsp;·&nbsp; <code>sin x = 1</code> → <code>x = π/2 + 2πn</code> &nbsp;·&nbsp; <code>sin x = −1</code> → <code>x = −π/2 + 2πn</code></li>
+    <li><code>cos x = 0</code> → <code>x = π/2 + πn</code> &nbsp;·&nbsp; <code>cos x = 1</code> → <code>x = 2πn</code> &nbsp;·&nbsp; <code>cos x = −1</code> → <code>x = π + 2πn</code></li>
+    <li><code>tan x = 0</code> → <code>x = πn</code></li>
+  </ul>
+  <p class="muted"><b>Why just one family:</b> for these values the line meets the circle at a single point (<code>±1</code>: the top, bottom, left or right of the circle), or at two opposite points that one family with step <code>π</code> covers (<code>0</code>). The two-family formula still works, it just repeats the same angles.</p>
+  <p class="muted"><b>Useful values:</b> at <code>x = πn</code>, <code>sin x = 0</code> and <code>cos x = (−1)ⁿ</code>. At <code>x = π/2 + πn</code> it's the other way round: <code>cos x = 0</code> and <code>sin x = (−1)ⁿ</code>.</p>
 </div>
-
-<details class="note">
-  <summary>Worked example — <code>sin(2x + π/3) = 1/2</code></summary>
-  <p>Let <code>u = 2x + π/3</code>. Then <code>sin u = 1/2</code> → <code>u = π/6 + 2πn</code> <b>or</b> <code>u = 5π/6 + 2πn</code>.</p>
-  <p><b>Branch 1:</b> <code>2x + π/3 = π/6 + 2πn</code> → <code>2x = −π/6 + 2πn</code> → <code>x = −π/12 + πn</code>.</p>
-  <p><b>Branch 2:</b> <code>2x + π/3 = 5π/6 + 2πn</code> → <code>2x = π/2 + 2πn</code> → <code>x = π/4 + πn</code>.</p>
-  <p><b>Answer:</b> <code>x = −π/12 + πn</code> or <code>x = π/4 + πn</code>. The period in <code>x</code> shrank to <code>π = 2π/2</code> because of the coefficient 2.</p>
-</details>
 </section>
 
 </div><!-- /folder-trig -->
-
 <div class="folder" id="folder-algebra">
 
 <!-- ============ A. ABSOLUTE VALUE ============ -->
@@ -2884,9 +3099,63 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_trexact", "v": 1, "subject": "f:trig", "kind": "problem",
+  "name": "Exact value of any angle",
+  "description": "Find sin, cos or tan of an angle like 210°, 135° or 13π/6 without a calculator.",
+  "uses": [["c", "s2", "Reference angles: values past 90°"], ["c", "s2", "Exact values"], ["c", "s2", "Signs in the four quadrants"], ["c", "s5", "sin-and-cos-repeat-every-2-360-sin-2"]],
+  "parts": [
+    { "id": "st_bi_trexact1", "cat": "stage", "name": "Bring the angle into one turn", "text": "Add or subtract full turns (`360°` or `2π`) until the angle is between `0°` and `360°`. The value doesn't change, because sin and cos repeat every full turn." },
+    { "id": "st_bi_trexact2", "cat": "stage", "name": "Find the quadrant", "text": "QI: `0°`–`90°` · QII: `90°`–`180°` · QIII: `180°`–`270°` · QIV: `270°`–`360°`" },
+    { "id": "st_bi_trexact3", "cat": "stage", "name": "Find the reference angle", "text": "The acute angle to the x-axis:\nQII: `180° − θ` · QIII: `θ − 180°` · QIV: `360° − θ`" },
+    { "id": "st_bi_trexact4", "cat": "stage", "name": "Read the value", "text": "Take the value of the reference angle from the exact-values table (`30°`, `45°` or `60°`)." },
+    { "id": "st_bi_trexact5", "cat": "stage", "name": "Put the sign on", "text": "The quadrant decides the sign: **A**ll, **S**in, **T**an, **C**os are positive in I, II, III, IV." },
+    { "id": "st_bi_trexact6", "cat": "example", "name": "Example — sin 210°", "text": "1. Already between `0°` and `360°`.\n2. `210°` is between `180°` and `270°`: QIII.\n3. Reference angle: `210° − 180° = 30°`.\n4. `sin 30° = 1/2`\n5. In QIII only tan is positive, so sin is negative.\n`sin 210° = −1/2`" },
+    { "id": "st_bi_trexact7", "cat": "example", "name": "Example — tan 135°", "text": "1. Already in one turn.\n2. `135°` is in QII.\n3. Reference angle: `180° − 135° = 45°`.\n4. `tan 45° = 1`\n5. In QII only sin is positive, so tan is negative.\n`tan 135° = −1`" },
+    { "id": "st_bi_trexact8", "cat": "example", "name": "Example — cos(13π/6)", "text": "1. `(13π)/6 = 2π + π/6`: take away one full turn, leaving `π/6` (that's `30°`).\n2. QI.\n3. The reference angle is the angle itself: `30°`.\n4. `cos 30° = (√3)/2`\n5. QI: all positive.\n`cos((13π)/6) = (√3)/2`" }
+  ] },
+{ "id": "pp_bi_trsolve", "v": 1, "subject": "f:trig", "kind": "problem",
+  "name": "Solving a trig equation",
+  "description": "Solve sin(u) = k, cos(u) = k or tan(u) = k, where u can be x or an expression like 2x + π/3, and pick the answers in an interval.",
+  "uses": [["c", "s6", "general-solutions-n-is-any-integer"], ["c", "s6", "trivial-zero-cases-need-only-one-family-"], ["c", "s4", "sin-cos-tan-are-not-one-to-one-over-all-"], ["c", "s2", "Exact values"]],
+  "parts": [
+    { "id": "st_bi_trsolve1", "cat": "stage", "name": "Get the trig function alone", "text": "Move everything else to the other side so you have `sin(u) = k`, `cos(u) = k` or `tan(u) = k`.\nFor sin and cos: if `k > 1` or `k < −1`, there is **no solution**." },
+    { "id": "st_bi_trsolve2", "cat": "stage", "name": "Name the argument", "text": "Call everything inside the function `u`. For `sin(2x + π/3)`, `u = 2x + π/3`. If it's just `x`, then `u = x`." },
+    { "id": "st_bi_trsolve3", "cat": "stage", "name": "Find one angle", "text": "Find one angle with that value: from the exact-values table if `k` is a special value, otherwise `arcsin k`, `arccos k` or `arctan k`." },
+    { "id": "st_bi_trsolve4", "cat": "stage", "name": "Write all the solutions for u", "text": "sin: `u = α + 2πn` or `u = π − α + 2πn`\ncos: `u = α + 2πn` or `u = −α + 2πn`\ntan: `u = α + πn`\n(`α` = the angle from step 3, `n` = any integer. For `k = 0, ±1` one family is enough.)" },
+    { "id": "st_bi_trsolve5", "cat": "stage", "name": "Solve for x", "text": "Put the expression back in place of `u` and solve each family for `x`. When you divide, divide **every** term, `2πn` too: that's how the period shrinks." },
+    { "id": "st_bi_trsolve6", "cat": "stage", "name": "Pick n (if there is an interval)", "text": "Try `n = 0, 1, −1, 2, …` in each family and keep only the `x` values inside the interval." },
+    { "id": "st_bi_trsolve7", "cat": "example", "name": "Example — 2 sin x − 1 = 0", "text": "1. `2 sin x = 1` → `sin x = 1/2`. `1/2` is between `−1` and `1`, so there are solutions.\n2. `u = x`\n3. `sin(π/6) = 1/2`, so `α = π/6`.\n4. `x = π/6 + 2πn` or `x = π − π/6 + 2πn = (5π)/6 + 2πn`\n5. Already solved for `x`.\nAnswer: `x = π/6 + 2πn` or `x = (5π)/6 + 2πn`" },
+    { "id": "st_bi_trsolve8", "cat": "example", "name": "Example — sin(2x + π/3) = 1/2", "text": "1. Already alone: `k = 1/2`.\n2. `u = 2x + π/3`\n3. `α = π/6`\n4. `u = π/6 + 2πn` or `u = (5π)/6 + 2πn`\n5. First family: `2x + π/3 = π/6 + 2πn` → `2x = −π/6 + 2πn` → `x = −π/12 + πn`\nSecond family: `2x + π/3 = (5π)/6 + 2πn` → `2x = π/2 + 2πn` → `x = π/4 + πn`\nAnswer: `x = −π/12 + πn` or `x = π/4 + πn`. The step is `π`, not `2π`, because we divided `2πn` by `2`." },
+    { "id": "st_bi_trsolve9", "cat": "example", "name": "Example — cos x = −1/2 in [0, 2π]", "text": "1. `k = −1/2`, between `−1` and `1`.\n2. `u = x`\n3. `arccos(−1/2) = (2π)/3`\n4. `x = (2π)/3 + 2πn` or `x = −(2π)/3 + 2πn`\n6. First family, `n = 0`: `(2π)/3` ✓ (`n = 1` is past `2π`).\nSecond family, `n = 0`: `−(2π)/3` ✗ (negative) · `n = 1`: `−(2π)/3 + 2π = (4π)/3` ✓\nAnswer: `x = (2π)/3` and `x = (4π)/3`" }
+  ] },
+{ "id": "pp_bi_trquad", "v": 1, "subject": "f:trig", "kind": "problem",
+  "name": "Trig equation that is a quadratic",
+  "description": "Solve an equation like 2sin²x − sin x − 1 = 0 by substituting t = sin x.",
+  "uses": [["c", "s1", "Pythagorean"], ["c", "s6", "general-solutions-n-is-any-integer"], ["c", "s6", "trivial-zero-cases-need-only-one-family-"]],
+  "parts": [
+    { "id": "st_bi_trquad1", "cat": "stage", "name": "Use one function only", "text": "If both `sin` and `cos` appear, use `sin²x + cos²x = 1` to swap the squared one: `cos²x = 1 − sin²x` (or `sin²x = 1 − cos²x`)." },
+    { "id": "st_bi_trquad2", "cat": "stage", "name": "Substitute", "text": "Let `t = sin x` (or `t = cos x`). The equation becomes an ordinary quadratic in `t`." },
+    { "id": "st_bi_trquad3", "cat": "stage", "name": "Solve the quadratic", "text": "Factor it or use the quadratic formula. Throw away any `t` with `t > 1` or `t < −1`: sin and cos never reach those values." },
+    { "id": "st_bi_trquad4", "cat": "stage", "name": "Go back to x", "text": "For each remaining `t`, solve `sin x = t` (or `cos x = t`) with the method \"Solving a trig equation\". Collect every family." },
+    { "id": "st_bi_trquad5", "cat": "example", "name": "Example — 2sin²x − sin x − 1 = 0", "text": "1. Only `sin` appears.\n2. `t = sin x`: `2t² − t − 1 = 0`\n3. `(2t + 1)(t − 1) = 0` → `t = 1` or `t = −1/2`. Both are between `−1` and `1`.\n4. `sin x = 1` → `x = π/2 + 2πn`\n`sin x = −1/2` → `α = −π/6`: `x = −π/6 + 2πn` or `x = π + π/6 + 2πn = (7π)/6 + 2πn`\nAnswer: `x = π/2 + 2πn`, `x = −π/6 + 2πn`, `x = (7π)/6 + 2πn`" },
+    { "id": "st_bi_trquad6", "cat": "example", "name": "Example — with cos² in it", "text": "`2cos²x + 3 sin x − 3 = 0`\n1. `cos²x = 1 − sin²x`: `2(1 − sin²x) + 3 sin x − 3 = 0` → `−2sin²x + 3 sin x − 1 = 0` → multiply by `−1`: `2sin²x − 3 sin x + 1 = 0`\n2. `t = sin x`: `2t² − 3t + 1 = 0`\n3. `(2t − 1)(t − 1) = 0` → `t = 1/2` or `t = 1`\n4. `sin x = 1/2` → `x = π/6 + 2πn` or `x = (5π)/6 + 2πn`\n`sin x = 1` → `x = π/2 + 2πn`" }
+  ] },
+{ "id": "pp_bi_trsimp", "v": 1, "subject": "f:trig", "kind": "action",
+  "name": "Simplifying with identities",
+  "description": "Turn a messy trig expression into a short one, or show that two expressions are equal.",
+  "uses": [["c", "s1", "quotient-reciprocal"], ["c", "s1", "Pythagorean"], ["c", "s1", "Double angle"]],
+  "parts": [
+    { "id": "st_bi_trsimp1", "cat": "stage", "name": "Write everything in sin and cos", "text": "Replace `tan x = (sin x)/(cos x)`, `cot x = (cos x)/(sin x)`, `sec x = 1/(cos x)`, `csc x = 1/(sin x)`. Replace `sin 2x` and `cos 2x` with the double-angle formulas if the angles differ." },
+    { "id": "st_bi_trsimp2", "cat": "stage", "name": "Make one fraction", "text": "If there are several fractions, bring them to a common denominator and add them." },
+    { "id": "st_bi_trsimp3", "cat": "stage", "name": "Look for sin² + cos²", "text": "Spot `sin²x + cos²x` (it's `1`), `1 − sin²x` (it's `cos²x`) or `1 − cos²x` (it's `sin²x`)." },
+    { "id": "st_bi_trsimp4", "cat": "stage", "name": "Factor and cancel", "text": "Take out common factors and cancel what's the same on top and bottom. Write down what can't be `0` (the denominators you cancelled)." },
+    { "id": "st_bi_trsimp5", "cat": "example", "name": "Example — a fraction", "text": "`(1 − cos²x)/(sin x cos x)`\n1. Already in sin and cos.\n3. `1 − cos²x = sin²x`, so it's `(sin²x)/(sin x cos x)`\n4. Cancel one `sin x`: `(sin x)/(cos x) = tan x`\n(for `sin x ≠ 0` and `cos x ≠ 0`)" },
+    { "id": "st_bi_trsimp6", "cat": "example", "name": "Example — with tan", "text": "`tan x · cos x + sin x`\n1. `(sin x)/(cos x) · cos x + sin x`\n4. The `cos x` cancels: `sin x + sin x = 2 sin x`\n(for `cos x ≠ 0`)" },
+    { "id": "st_bi_trsimp7", "cat": "example", "name": "Example — showing an identity", "text": "Show that `(sin 2x)/(1 + cos 2x) = tan x`.\n1. `sin 2x = 2 sin x cos x` and `cos 2x = 2cos²x − 1` (this version, because the `+1` then cancels).\n3. Bottom: `1 + 2cos²x − 1 = 2cos²x`\n4. `(2 sin x cos x)/(2cos²x) = (sin x)/(cos x) = tan x` ✓" }
+  ] },
 { "id": "pp_bi_fnabs", "v": 2, "subject": "f:fn", "kind": "action",
   "name": "Absolute value → piecewise",
   "description": "Rewrite a function with |·| as a piecewise function with no absolute values.",

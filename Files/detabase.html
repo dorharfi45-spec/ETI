@@ -2517,7 +2517,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B116</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B117</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -7985,11 +7985,15 @@ function __detabaseMain() {
     var t = cleanText(node);
     return t.length > 48 ? t.slice(0, 46) + "…" : t;
   }
+  // a built-in card's key: data-key when set (the old key, kept when a title is renamed, so saved links stay attached), else the title's slug
+  // elKey: a value that already is a key (lowercase slug, at most 40 characters) is used as is, anything else is slugged
+  function elKey(s) { s = String(s || ""); return /^[a-z0-9-]{1,40}$/.test(s) ? s : elSlug(s); }
+  function biKeyOf(node) { return elKey(node.getAttribute("data-key") || builtinElTitle(node)); }
   function tagBuiltinElements() {
     document.querySelectorAll("#topfolder-eti section.pane:not(.ue-pane)").forEach(function (pane) {
       var target = pane.id.replace("pane-", ""), used = {}, runKey = null;
-      function keyFor(title) {
-        var base = target + ":" + elSlug(title), k = base, n = 2;
+      function keyFor(key) {
+        var base = target + ":" + key, k = base, n = 2;
         while (used[k]) k = base + "~" + (n++);
         used[k] = 1;
         return k;
@@ -7999,11 +8003,11 @@ function __detabaseMain() {
         if (ch.matches("h2, .accordion-controls")) { runKey = null; return; }
         if (ch.matches(".grid2")) {
           runKey = null;
-          ch.querySelectorAll(":scope > .card").forEach(function (c) { c.setAttribute("data-el", keyFor(builtinElTitle(c))); });
+          ch.querySelectorAll(":scope > .card").forEach(function (c) { c.setAttribute("data-el", keyFor(biKeyOf(c))); });
           return;
         }
-        if (ch.matches(".subject, .card, .tool")) { runKey = null; ch.setAttribute("data-el", keyFor(builtinElTitle(ch))); return; }
-        if (ch.matches("h3") || !runKey) runKey = keyFor(builtinElTitle(ch));
+        if (ch.matches(".subject, .card, .tool")) { runKey = null; ch.setAttribute("data-el", keyFor(biKeyOf(ch))); return; }
+        if (ch.matches("h3") || !runKey) runKey = keyFor(biKeyOf(ch));
         ch.setAttribute("data-el", runKey);
       });
     });
@@ -9866,7 +9870,7 @@ function __detabaseMain() {
     try {
       if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", mainRead() || "");
     } catch (e) {}
-    function ref(r) { return r[0] === "c" ? { lvl: "c", id: r[1] + ":" + elSlug(r[2]) } : { lvl: r[0], id: r[1] }; }
+    function ref(r) { return r[0] === "c" ? { lvl: "c", id: r[1] + ":" + elKey(r[2]) } : { lvl: r[0], id: r[1] }; }
     methods.forEach(function (m) {
       var pg = psPageById(m.id);
       if (!pg && seed.m[m.id] != null) { seed.m[m.id] = m.v; return; }   // deleted by the owner
