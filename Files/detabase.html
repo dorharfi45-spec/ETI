@@ -1417,6 +1417,13 @@
 
   code[data-fx] { padding: 0; border: 0; background: none; font-family: inherit; font-size: 1.08em; }
   .tex-bad { font-family: ui-monospace, monospace; }
+  /* a formula wider than its text block scrolls sideways instead of running off the card. Only in text blocks:
+     in a shrink-to-fit box (piecewise brace, tool title, table cell) the 100% would squeeze it. The padding,
+     taken back by the margin, keeps tall fractions and leaning letters inside the scroll box. */
+  :is(p:not(.tool-title), li, .mt-line, .fm-block) .ML__latex:not(.pw .ML__latex) {
+    max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle;
+    padding: .4em .15em; margin: -.4em -.15em; scrollbar-width: thin;
+  }
   /* an illustration inside a built-in card */
   svg.ill { display: block; width: 100%; max-width: 420px; height: auto; margin: 10px auto; }
   svg.ill text { font: 13px Georgia, serif; fill: var(--text-primary); }
@@ -2517,7 +2524,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B125</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B126</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
