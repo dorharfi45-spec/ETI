@@ -1467,161 +1467,192 @@
 <!-- ===== P1 · POWERS ===== -->
 <section class="pane on" id="pane-p1">
 <h2><span class="num">1</span>Powers</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="p1">Expand all</button>
-  <button data-acc="close" data-scope="p1">Collapse all</button>
+<div class="card" data-tags="Definition">
+  <h4>What a power is</h4>
+  <p><code>aⁿ = a · a · … · a</code> (<code>n</code> times). <code>a</code> is the <b>base</b>, <code>n</code> the <b>exponent</b>.</p>
+  <ul class="idlist">
+    <li><code>a⁰ = 1</code> &nbsp;·&nbsp; <code>a⁻ⁿ = 1/(aⁿ)</code> &nbsp;(<code>a ≠ 0</code>)</li>
+    <li><code>a^(1/n) = ⁿ√a</code> &nbsp;·&nbsp; <code>a^(m/n) = ⁿ√(aᵐ)</code></li>
+  </ul>
+  <p class="muted"><b>Why <code>a⁰ = 1</code>:</b> go down the list <code>2³ = 8</code>, <code>2² = 4</code>, <code>2¹ = 2</code>. Each step down divides by <code>2</code>. One more step: <code>2⁰ = 2/2 = 1</code>. Keep going: <code>2⁻¹ = 1/2</code>, <code>2⁻² = 1/4</code>. That's why a negative exponent means "one over".</p>
+  <p class="muted"><b>Why a fraction exponent is a root:</b> <code>(9^(1/2))² = 9^(1/2 · 2) = 9¹ = 9</code>, so <code>9^(1/2)</code> is the number whose square is <code>9</code>: <code>√9 = 3</code>. Likewise <code>8^(2/3) = (∛8)² = 2² = 4</code>.</p>
+  <p class="muted"><b>Careful with roots:</b> an even root of a negative number isn't a real number, so with an even <code>n</code> you need <code>a ≥ 0</code>.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Rules of powers<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:520px">
-      <li><code>aᵐ·aⁿ = aᵐ⁺ⁿ</code>,&nbsp; <code>aᵐ/aⁿ = aᵐ⁻ⁿ</code>,&nbsp; <code>(aᵐ)ⁿ = aᵐⁿ</code></li>
-      <li><code>(ab)ⁿ = aⁿbⁿ</code>,&nbsp; <code>(a/b)ⁿ = aⁿ/bⁿ</code></li>
-      <li><code>a⁰ = 1</code>,&nbsp; <code>a⁻ⁿ = 1/aⁿ</code> &nbsp;(<code>a ≠ 0</code>)</li>
-      <li><code>a^(1/n) = ⁿ√a</code>,&nbsp; <code>a^(m/n) = ⁿ√(aᵐ)</code>. If <code>n</code> is even, need <code>a ≥ 0</code>.</li>
-    </ul>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Solving <code>aˣ = aʸ</code> — match the base<span class="stag">solver</span></summary>
-  <div class="subject-body">
-    <p>Rewrite both sides as powers of one base, then <b>equate the exponents</b> (valid since <code>aˣ</code> is one-to-one for <code>a &gt; 0, a ≠ 1</code>).</p>
-    <div class="tool">
-      <p class="tool-title">Solver — <span class="mono">L^(p·x+q) = R^(r·x+s)</span></p>
-      <div class="flex" style="align-items:center;gap:6px;flex-wrap:wrap;">
-        <input type="number" id="peL" value="4" step="1" style="width:46px"><span>^(</span>
-        <input type="number" id="peP" value="1" step="1" style="width:42px"><span>x +</span>
-        <input type="number" id="peQ" value="1" step="1" style="width:42px"><span>) =</span>
-        <input type="number" id="peR" value="8" step="1" style="width:46px"><span>^(</span>
-        <input type="number" id="peRr" value="1" step="1" style="width:42px"><span>x +</span>
-        <input type="number" id="peS" value="-2" step="1" style="width:42px"><span>)</span>
-      </div>
-      <div id="peOut" class="eqout"></div>
+<div class="card" data-key="rules-of-powers" data-tags="Formula">
+  <h4>Rules of powers</h4>
+  <ul class="idlist">
+    <li><code>aᵐ · aⁿ = aᵐ⁺ⁿ</code> &nbsp;·&nbsp; <code>(aᵐ)/(aⁿ) = aᵐ⁻ⁿ</code> &nbsp;·&nbsp; <code>(aᵐ)ⁿ = aᵐⁿ</code></li>
+    <li><code>(ab)ⁿ = aⁿbⁿ</code> &nbsp;·&nbsp; <code>(a/b)ⁿ = (aⁿ)/(bⁿ)</code></li>
+  </ul>
+  <p class="muted"><b>Why they work, by counting:</b> <code>a³ · a² = (a·a·a)·(a·a)</code> is five <code>a</code>'s: <code>a⁵</code>. <code>(a³)² = a³ · a³</code> is six: <code>a⁶</code>. Dividing cancels: <code>(a⁵)/(a²) = a³</code>.</p>
+  <p class="muted"><b>Classic mistakes:</b></p>
+  <ul class="muted" data-cpart="expl">
+    <li><code>(a + b)²</code> is <b>not</b> <code>a² + b²</code>; it's <code>a² + 2ab + b²</code>. The rules only work for multiplying and dividing, never for adding.</li>
+    <li><code>2³ · 3²</code> can't be combined: the bases are different.</li>
+    <li><code>−2²</code> is <code>−4</code> (the power comes first), but <code>(−2)² = 4</code>.</li>
+  </ul>
+  <p class="muted"><b>Example:</b> <code>(4³ · 2⁻¹)/(8) = (2⁶ · 2⁻¹)/(2³) = 2^(6 − 1 − 3) = 2² = 4</code>. Writing everything with the same base (here <code>2</code>) is the trick.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>The exponential function y = aˣ</h4>
+  <p>For a base <code>a &gt; 0</code>, <code>a ≠ 1</code>:</p>
+  <ul>
+    <li>It's defined for every <code>x</code>, and always <b>positive</b>: <code>aˣ &gt; 0</code>.</li>
+    <li>It passes through <code>(0, 1)</code>, since <code>a⁰ = 1</code>.</li>
+    <li><code>a &gt; 1</code>: increasing. <code>0 &lt; a &lt; 1</code>: decreasing.</li>
+    <li>It's <b>one-to-one</b>: <code>aˣ = aʸ</code> only when <code>x = y</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the graphs of 2 to the x, rising, and one half to the x, falling; both pass through (0, 1) and stay above the x-axis">
+    <path class="ax" d="M60 180 H370 M210 15 V200"/>
+    <path class="cv" d="M75.0 177.8 L84.0 177.4 L93.0 177.0 L102.0 176.6 L111.0 176.1 L120.0 175.5 L129.0 174.8 L138.0 174.1 L147.0 173.2 L156.0 172.2 L165.0 171.0 L174.0 169.7 L183.0 168.1 L192.0 166.4 L201.0 164.3 L210.0 162.0 L219.0 159.3 L228.0 156.2 L237.0 152.7 L246.0 148.7 L255.0 144.0 L264.0 138.6 L273.0 132.5 L282.0 125.4 L291.0 117.3 L300.0 108.0 L309.0 97.3 L318.0 85.0 L327.0 70.9 L336.0 54.6 L345.0 36.0"/>
+    <path class="cv2" d="M75.0 36.0 L84.0 54.6 L93.0 70.9 L102.0 85.0 L111.0 97.3 L120.0 108.0 L129.0 117.3 L138.0 125.4 L147.0 132.5 L156.0 138.6 L165.0 144.0 L174.0 148.7 L183.0 152.7 L192.0 156.2 L201.0 159.3 L210.0 162.0 L219.0 164.3 L228.0 166.4 L237.0 168.1 L246.0 169.7 L255.0 171.0 L264.0 172.2 L273.0 173.2 L282.0 174.1 L291.0 174.8 L300.0 175.5 L309.0 176.1 L318.0 176.6 L327.0 177.0 L336.0 177.4 L345.0 177.8"/>
+    <circle class="dot" cx="210" cy="162" r="4"/>
+    <text x="218" y="154">(0, 1)</text>
+    <text x="350" y="40">y = 2ˣ</text>
+    <text x="70" y="30" text-anchor="end">y = (½)ˣ</text>
+  </svg>
+  <p class="muted"><b>What "one-to-one" buys you:</b> if two powers of the same base are equal, their exponents are equal. That's the whole idea behind solving <code>2^(x + 1) = 2⁵</code>: <code>x + 1 = 5</code>.</p>
+  <p class="muted"><b>What "increasing" buys you:</b> for <code>a &gt; 1</code>, a bigger exponent gives a bigger value, so inequalities keep their direction. For <code>0 &lt; a &lt; 1</code> the graph goes down, so they flip.</p>
+</div>
+<div class="card" data-key="solving-a-a-match-the-base" data-tags="Theorem">
+  <h4>Exponential equations: same base</h4>
+  <p>Write both sides as powers of the <b>same base</b>, then set the exponents equal: <code>a^(f(x)) = a^(g(x))</code> → <code>f(x) = g(x)</code>.</p>
+  <p class="muted"><b>Why it's allowed:</b> <code>y = aˣ</code> is one-to-one, so equal values mean equal exponents.</p>
+  <p class="muted"><b>Example:</b> <code>4^(x + 1) = 8^(x − 2)</code>. Both are powers of <code>2</code>: <code>(2²)^(x + 1) = (2³)^(x − 2)</code>, so <code>2^(2x + 2) = 2^(3x − 6)</code>. Then <code>2x + 2 = 3x − 6</code>, so <code>x = 8</code>.</p>
+  <p class="muted"><b>When the bases don't match</b> (like <code>2ˣ = 5</code>), take a log of both sides: <code>x = log₂5</code> (Logs below).</p>
+  <div class="tool">
+    <p class="tool-title">Solver — <span class="mono">L^(p·x+q) = R^(r·x+s)</span></p>
+    <div class="flex" style="align-items:center;gap:6px;flex-wrap:wrap;">
+      <input type="number" id="peL" value="4" step="1" style="width:46px"><span>^(</span>
+      <input type="number" id="peP" value="1" step="1" style="width:42px"><span>x +</span>
+      <input type="number" id="peQ" value="1" step="1" style="width:42px"><span>) =</span>
+      <input type="number" id="peR" value="8" step="1" style="width:46px"><span>^(</span>
+      <input type="number" id="peRr" value="1" step="1" style="width:42px"><span>x +</span>
+      <input type="number" id="peS" value="-2" step="1" style="width:42px"><span>)</span>
     </div>
-    <p class="muted"><b>Example.</b> <code>4^(x+1) = 8^(x−2)</code> → <code>2^(2x+2) = 2^(3x−6)</code> → <code>2x+2 = 3x−6</code> → <code>x = 8</code>.</p>
+    <div id="peOut" class="eqout"></div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Solving by substitution <code>t = aˣ</code><span class="stag">method</span></summary>
-  <div class="subject-body">
-    <ol class="steps">
-      <li>Set <code>t = aˣ</code>; rewrite <code>a²ˣ → t²</code>, <code>a⁻ˣ → 1/t</code>, etc.</li>
-      <li>Solve for <code>t</code> (often a quadratic).</li>
-      <li><b>Reject any <code>t ≤ 0</code></b> — <code>aˣ &gt; 0</code> always.</li>
-      <li>Back-substitute <code>aˣ = t</code> and solve for <code>x</code>.</li>
-    </ol>
-    <p class="muted"><b>Example.</b> <code>4ˣ − 6·2ˣ + 8 = 0</code>, <code>t = 2ˣ</code> → <code>t² − 6t + 8 = 0</code> → <code>t = 2, 4</code> → <code>x = 1, 2</code>.</p>
+</div>
+<div class="card" data-key="solving-by-substitution-t-a" data-tags="Theorem">
+  <h4>Exponential equations: substitution</h4>
+  <p>When the same power shows up in different forms (<code>4ˣ</code> and <code>2ˣ</code>, or <code>3ˣ</code> and <code>3⁻ˣ</code>), set <code>t = aˣ</code>. The equation turns into an ordinary one in <code>t</code>, often a quadratic. Only <code>t &gt; 0</code> can be kept.</p>
+  <p class="muted"><b>How to spot it:</b> <code>4ˣ = (2²)ˣ = (2ˣ)² = t²</code>; <code>2^(x + 1) = 2 · 2ˣ = 2t</code>; <code>2⁻ˣ = 1/(2ˣ) = 1/(t)</code>.</p>
+  <p class="muted"><b>Why <code>t &gt; 0</code>:</b> a power of a positive base is always positive, so <code>2ˣ = −3</code> has no solution. Throw away any negative (or zero) <code>t</code>.</p>
+  <p class="muted"><b>Example:</b> <code>4ˣ − 6 · 2ˣ + 8 = 0</code>. With <code>t = 2ˣ</code>: <code>t² − 6t + 8 = 0</code>, so <code>t = 2</code> or <code>t = 4</code>. Back: <code>2ˣ = 2</code> → <code>x = 1</code>; <code>2ˣ = 4</code> → <code>x = 2</code>. The full steps are the method "Exponential equation by substitution".</p>
+</div>
+<div class="card" data-key="power-inequalities-flip-by-base" data-tags="Theorem">
+  <h4>Exponential inequalities</h4>
+  <ul>
+    <li><code>a &gt; 1</code>: <code>aˣ &lt; aʸ</code> exactly when <code>x &lt; y</code> (keep the direction).</li>
+    <li><code>0 &lt; a &lt; 1</code>: <code>aˣ &lt; aʸ</code> exactly when <code>x &gt; y</code> (flip it).</li>
+  </ul>
+  <p class="muted"><b>Why:</b> with <code>a &gt; 1</code> the graph goes up, so a bigger exponent gives a bigger value. With <code>0 &lt; a &lt; 1</code> it goes down, so a bigger exponent gives a <b>smaller</b> value. Drag <code>a</code> below past <code>1</code> to watch it turn.</p>
+  <p class="muted"><b>Examples:</b> <code>3ˣ &gt; 3⁵</code> → <code>x &gt; 5</code>. <code>(1/2)ˣ &lt; (1/2)³</code> → flip: <code>x &gt; 3</code>. <code>(1/2)ˣ &lt; 8</code>: write <code>8 = (1/2)⁻³</code>, then <code>x &gt; −3</code>.</p>
+  <div class="tool">
+    <p class="tool-title">The function <code>y = aˣ</code></p>
+    <label class="muted">a = <span id="powBaseLbl" class="mono">2</span></label>
+    <input type="range" id="powBase" min="0.2" max="4" step="0.1" value="2">
+    <svg id="powIneqSvg" viewBox="0 0 320 220" style="max-width:320px"></svg>
+    <div class="resultbox" id="powIneqOut"></div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Power inequalities — flip by base<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p>If <code>a &gt; 1</code>: <code>aˣ &lt; aʸ ⟺ x &lt; y</code> (keep). If <code>0 &lt; a &lt; 1</code>: <code>aˣ &lt; aʸ ⟺ x &gt; y</code> (flip).</p>
-    <div class="tool">
-      <p class="tool-title">The function <code>y = aˣ</code></p>
-      <label class="muted">a = <span id="powBaseLbl" class="mono">2</span></label>
-      <input type="range" id="powBase" min="0.2" max="4" step="0.1" value="2">
-      <svg id="powIneqSvg" viewBox="0 0 320 220" style="max-width:320px"></svg>
-      <div class="resultbox" id="powIneqOut"></div>
-    </div>
-    <p class="muted"><b>Examples.</b> <code>(1/2)ˣ &lt; (1/2)³ → x &gt; 3</code>. &nbsp; <code>3ˣ &gt; 3⁵ → x &gt; 5</code>.</p>
-  </div>
-</details>
+</div>
 </section>
 
 <!-- ===== P2 · LOGS ===== -->
 <section class="pane" id="pane-p2">
 <h2><span class="num">2</span>Logs</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="p2">Expand all</button>
-  <button data-acc="close" data-scope="p2">Collapse all</button>
+<div class="card" data-key="definition-rules-identities" data-tags="Definition">
+  <h4>What a logarithm is</h4>
+  <p><code>log_a(b)</code> is the exponent you put on <code>a</code> to get <code>b</code>:</p>
+  <p><code>log_a(b) = c</code> &nbsp;⟺&nbsp; <code>aᶜ = b</code> &nbsp;(<code>a &gt; 0</code>, <code>a ≠ 1</code>, <code>b &gt; 0</code>)</p>
+  <ul class="idlist">
+    <li><code>log_a(1) = 0</code> &nbsp;·&nbsp; <code>log_a(a) = 1</code></li>
+    <li><code>a^(log_a(b)) = b</code> &nbsp;·&nbsp; <code>log_a(aᵏ) = k</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="the graphs of 2 to the x and log base 2 of x are mirror images across the line y equals x">
+    <path class="ax" d="M10 150 H400 M130 10 V235"/>
+    <path class="gd" d="M46 234 L270 10"/>
+    <path class="cv" d="M18.0 148.2 L23.9 148.0 L29.8 147.7 L35.6 147.3 L41.5 146.9 L47.4 146.4 L53.3 145.8 L59.2 145.2 L65.0 144.4 L70.9 143.5 L76.8 142.5 L82.7 141.3 L88.6 140.0 L94.4 138.4 L100.3 136.6 L106.2 134.5 L112.1 132.0 L118.0 129.2 L123.8 126.0 L129.7 122.2 L135.6 117.8 L141.5 112.8 L147.4 107.0 L153.2 100.2 L159.1 92.4 L165.0 83.4 L170.9 73.0 L176.8 60.9 L182.6 46.9 L188.5 30.8 L194.4 12.1"/>
+    <path class="cv2" d="M135.0 219.3 L140.5 189.6 L146.0 172.6 L151.5 160.7 L156.9 151.6 L162.4 144.1 L167.9 137.8 L173.4 132.3 L178.8 127.5 L184.3 123.2 L189.8 119.4 L195.3 115.8 L200.7 112.6 L206.2 109.6 L211.7 106.8 L217.2 104.1 L222.6 101.7 L228.1 99.4 L233.6 97.2 L239.0 95.1 L244.5 93.1 L250.0 91.2 L255.5 89.4 L260.9 87.7 L266.4 86.0 L271.9 84.4 L277.4 82.9 L282.8 81.4 L288.3 80.0 L293.8 78.6 L299.3 77.3 L304.7 76.0 L310.2 74.8 L315.7 73.6 L321.2 72.4 L326.6 71.3 L332.1 70.2 L337.6 69.1 L343.1 68.0 L348.5 67.0 L354.0 66.0"/>
+    <circle class="dot" cx="130" cy="122" r="4"/>
+    <circle class="dot" cx="158" cy="150" r="4"/>
+    <text x="200" y="20">y = 2ˣ</text>
+    <text x="360" y="62">y = log₂x</text>
+    <text class="sm" x="276" y="20">y = x</text>
+    <text class="sm" x="122" y="116" text-anchor="end">(0, 1)</text>
+    <text class="sm" x="162" y="168">(1, 0)</text>
+  </svg>
+  <p class="muted"><b>In words:</b> <code>log₂8</code> asks "2 to what power gives 8?" The answer is <code>3</code>, because <code>2³ = 8</code>. A log is an <b>exponent</b>. <code>log₁₀1000 = 3</code>, <code>log₃(1/9) = −2</code>.</p>
+  <p class="muted"><b>Log undoes power:</b> <code>log_a</code> and <code>aˣ</code> cancel each other. That's why their graphs are mirror images across the line <code>y = x</code>: swap the coordinates of a point on one and you get a point on the other.</p>
+  <p class="muted"><b>Why <code>b &gt; 0</code>:</b> a positive base to any power is positive, so no power gives <code>0</code> or a negative number. <code>log₂(−4)</code> doesn't exist. That's where log domains come from.</p>
+  <p class="muted"><b>Notation:</b> <code>log</code> with no base usually means base <code>10</code>, and <code>ln</code> means base <code>e ≈ 2.718</code>.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Definition, rules, identities<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:560px">
-      <li><b>Definition:</b> <code>log_a(b) = c ⟺ aᶜ = b</code> &nbsp;(<code>a &gt; 0, a ≠ 1, b &gt; 0</code>)</li>
-      <li><code>log_a(1) = 0</code>,&nbsp; <code>log_a(a) = 1</code></li>
-      <li><code>log_a(MN) = log_a M + log_a N</code>,&nbsp; <code>log_a(M/N) = log_a M − log_a N</code></li>
-      <li><code>log_a(Mᵏ) = k·log_a M</code></li>
-      <li><b>Change of base:</b> <code>log_a(b) = log_c(b)/log_c(a)</code>,&nbsp; <code>log_a(b) = 1/log_b(a)</code></li>
-      <li><b>Inverse:</b> <code>a^(log_a b) = b</code>,&nbsp; <code>log_a(aᵏ) = k</code></li>
-    </ul>
-    <p>Turn a number into a log: <code>k = log_a(aᵏ)</code> — e.g. <code>2 = log_3(9)</code>, so it can merge with other <code>log_3</code> terms.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Absolute value inside logs — <code>log_a(x²)</code><span class="stag">domain</span></summary>
-  <div class="subject-body">
-    <p><code>log_a(x²)</code> is defined for every <code>x ≠ 0</code>. Writing it as <code>2·log_a(x)</code> silently loses <code>x &lt; 0</code>. The fix: <code>log_a(x²) = 2·log_a|x|</code>.</p>
-    <p data-cpart="expl"><b>Rule of thumb:</b> pulling an <b>even</b> exponent out of a log ⇒ wrap the base in <code>|·|</code>. Odd exponent ⇒ not needed.</p>
-    <svg id="logSqLine" class="numline" viewBox="0 0 520 90"></svg>
-  </div>
-</details>
-
-<details class="subject" open>
-  <summary>Solving <code>log_a(x + p) = c</code><span class="stag">solver</span></summary>
-  <div class="subject-body">
-    <ol class="steps">
-      <li>Domain: argument <code>&gt; 0</code>.</li>
-      <li>Definition: argument <code>= aᶜ</code>.</li>
-      <li>Solve, then check against the domain.</li>
-    </ol>
-    <div class="tool">
-      <p class="tool-title">Solver — <span class="mono">log_b(x + p) = c</span></p>
-      <div class="flex" style="align-items:center;gap:6px;">
-        <span>log</span><input type="number" id="leBase" value="2" step="1" style="width:46px">
-        <span>( x +</span><input type="number" id="leP" value="-1" step="1" style="width:46px"><span>) =</span>
-        <input type="number" id="leC" value="3" step="1" style="width:46px">
-      </div>
-      <div id="leOut" class="eqout"></div>
-      <svg id="leLine" class="numline" viewBox="0 0 520 90"></svg>
+<div class="card" data-tags="Formula">
+  <h4>Rules of logarithms</h4>
+  <ul class="idlist">
+    <li><code>log_a(M · N) = log_a(M) + log_a(N)</code></li>
+    <li><code>log_a(M/N) = log_a(M) − log_a(N)</code></li>
+    <li><code>log_a(Mᵏ) = k · log_a(M)</code></li>
+    <li>Change of base: <code>log_a(b) = (log_c(b))/(log_c(a))</code> &nbsp;·&nbsp; <code>log_a(b) = 1/(log_b(a))</code></li>
+  </ul>
+  <p class="muted"><b>Why:</b> logs are exponents, so they follow the power rules. Multiplying powers <b>adds</b> exponents (<code>2³ · 2⁴ = 2⁷</code>), so the log of a product is the <b>sum</b> of the logs.</p>
+  <p class="muted"><b>Turning a number into a log</b> lets it join the other terms: <code>2 = log₃(9)</code>, so <code>log₃(x) + 2 = log₃(x) + log₃(9) = log₃(9x)</code>.</p>
+  <p class="muted"><b>Classic mistakes:</b> <code>log(M + N)</code> is <b>not</b> <code>log M + log N</code> (nothing simplifies a log of a sum). And <code>(log M)/(log N)</code> is <b>not</b> <code>log M − log N</code>.</p>
+  <p class="muted"><b>Example:</b> <code>log₂(40) − log₂(5) = log₂(40/5) = log₂(8) = 3</code>. And on a calculator: <code>log₂(5) = (ln 5)/(ln 2) ≈ 2.32</code>.</p>
+</div>
+<div class="card" data-key="absolute-value-inside-logs-log-a-x" data-tags="Theorem">
+  <h4>Even powers inside a log</h4>
+  <p><code>log_a(x²) = 2 · log_a|x|</code>, defined for every <code>x ≠ 0</code>.</p>
+  <p data-cpart="expl"><b>Why the absolute value:</b> <code>log_a(x²)</code> works for negative <code>x</code> too, since <code>x²</code> is positive. But <code>2 · log_a(x)</code> needs <code>x &gt; 0</code>. Writing it without <code>|·|</code> quietly throws away all the negative <code>x</code> values. The absolute value keeps them.</p>
+  <p data-cpart="expl"><b>Rule of thumb:</b> when you pull an <b>even</b> exponent out of a log, put <code>|·|</code> around what's left. With an odd exponent it isn't needed: <code>log_a(x³)</code> already needs <code>x &gt; 0</code>.</p>
+  <p data-cpart="expl"><b>Example:</b> solve <code>log₂(x²) = 4</code>. Correct: <code>x² = 16</code>, so <code>x = 4</code> or <code>x = −4</code> (both work). Wrong: <code>2 log₂(x) = 4</code> gives only <code>x = 4</code>.</p>
+  <svg id="logSqLine" class="numline" viewBox="0 0 520 90"></svg>
+</div>
+<div class="card" data-key="solving-log-a-x-p-c" data-tags="Theorem">
+  <h4>Log equations: a log equals a number</h4>
+  <p><code>log_a(f(x)) = c</code> → <code>f(x) = aᶜ</code>, keeping only answers with <code>f(x) &gt; 0</code>.</p>
+  <p class="muted"><b>Why:</b> that's just the definition of the log, read backwards: "the exponent is <code>c</code>" means "<code>a</code> to the <code>c</code> is the inside".</p>
+  <p class="muted"><b>Example:</b> <code>log₂(x − 1) = 3</code>. Domain: <code>x − 1 &gt; 0</code>, so <code>x &gt; 1</code>. Then <code>x − 1 = 2³ = 8</code>, so <code>x = 9</code>. Check: <code>9 &gt; 1</code> ✓. Full steps: the method "Solving a log equation".</p>
+  <div class="tool">
+    <p class="tool-title">Solver — <span class="mono">log_b(x + p) = c</span></p>
+    <div class="flex" style="align-items:center;gap:6px;">
+      <span>log</span><input type="number" id="leBase" value="2" step="1" style="width:46px">
+      <span>( x +</span><input type="number" id="leP" value="-1" step="1" style="width:46px"><span>) =</span>
+      <input type="number" id="leC" value="3" step="1" style="width:46px">
     </div>
-    <p class="muted"><b>Example.</b> <code>log_2(x − 1) = 3</code> → <code>x − 1 = 8</code> → <code>x = 9</code> (<code>9 &gt; 1</code> ✓).</p>
+    <div id="leOut" class="eqout"></div>
+    <svg id="leLine" class="numline" viewBox="0 0 520 90"></svg>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Solving <code>log_a(b) = log_a(c)</code><span class="stag">method</span></summary>
-  <div class="subject-body">
-    <ol class="steps">
-      <li>Domain: <code>b &gt; 0</code> <span class="tag-and">AND</span> <code>c &gt; 0</code>.</li>
-      <li><code>log_a</code> is one-to-one → <b>equate arguments</b>: <code>b = c</code>.</li>
-      <li>Solve, then check the domain.</li>
-    </ol>
-    <p class="muted"><b>Example.</b> <code>log(x+3) = log(2x−1)</code> → domain <code>x &gt; 1/2</code> → <code>x + 3 = 2x − 1</code> → <code>x = 4</code> ✓.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Log inequalities<span class="stag">solver</span></summary>
-  <div class="subject-body">
-    <p>Two conditions with <span class="tag-and">AND</span>: the <b>domain</b> (every argument <code>&gt; 0</code>) and the <b>direction rule</b> by base.</p>
-    <ul class="idlist" style="max-width:560px">
-      <li><code>a &gt; 1</code>: <code>log_a b &lt; log_a c ⟺ 0 &lt; b &lt; c</code>.</li>
-      <li><code>0 &lt; a &lt; 1</code>: <code>log_a b &lt; log_a c ⟺ b &gt; c &gt; 0</code>.</li>
-    </ul>
-    <div class="tool">
-      <p class="tool-title">Solver — <span class="mono">log_b(x + p) ▸ log_b(k)</span></p>
-      <div class="flex" style="align-items:center;gap:6px;">
-        <span>log</span><input type="number" id="liBase" value="2" step="0.5" style="width:52px">
-        <span>( x +</span><input type="number" id="liP" value="-1" step="1" style="width:44px"><span>)</span>
-        <select id="liRel"><option value="lt">&lt;</option><option value="gt">&gt;</option></select>
-        <span>log</span><span class="mono" id="liBase2">2</span><span>(</span>
-        <input type="number" id="liK" value="5" step="1" style="width:44px"><span>)</span>
-      </div>
-      <div id="liOut" class="eqout"></div>
-      <svg id="liLine" class="numline" viewBox="0 0 520 100"></svg>
+</div>
+<div class="card" data-key="solving-log-a-b-log-a-c" data-tags="Theorem">
+  <h4>Log equations: a log equals a log</h4>
+  <p><code>log_a(f(x)) = log_a(g(x))</code> → <code>f(x) = g(x)</code>, keeping only answers with <code>f(x) &gt; 0</code> <span class="tag-and">AND</span> <code>g(x) &gt; 0</code>.</p>
+  <p class="muted"><b>Why:</b> <code>log_a</code> is one-to-one (like <code>aˣ</code>), so equal logs with the same base mean equal insides.</p>
+  <p class="muted"><b>First combine:</b> if one side has several logs, merge them with the rules into one log (<code>log M + log N = log(MN)</code>) before dropping the logs.</p>
+  <p class="muted"><b>Example:</b> <code>log(x + 3) = log(2x − 1)</code>. Domain: <code>x &gt; −3</code> and <code>x &gt; 1/2</code>, so <code>x &gt; 1/2</code>. Then <code>x + 3 = 2x − 1</code>, so <code>x = 4</code> ✓.</p>
+</div>
+<div class="card" data-key="log-inequalities" data-tags="Theorem">
+  <h4>Log inequalities</h4>
+  <ul>
+    <li><code>a &gt; 1</code>: <code>log_a(b) &lt; log_a(c)</code> exactly when <code>0 &lt; b &lt; c</code> (keep the direction).</li>
+    <li><code>0 &lt; a &lt; 1</code>: <code>log_a(b) &lt; log_a(c)</code> exactly when <code>b &gt; c &gt; 0</code> (flip it).</li>
+  </ul>
+  <p class="muted"><b>Two conditions, joined with AND:</b> the domain (every inside <code>&gt; 0</code>) and the inequality between the insides. Forgetting the domain is the usual mistake.</p>
+  <p class="muted"><b>Why it can flip:</b> <code>log_a</code> rises when <code>a &gt; 1</code> and falls when <code>0 &lt; a &lt; 1</code>, just like <code>aˣ</code>.</p>
+  <p class="muted"><b>Example:</b> <code>log₂(x − 1) &lt; log₂(5)</code>. Domain <code>x &gt; 1</code>; base <code>2 &gt; 1</code>, keep: <code>x − 1 &lt; 5</code>, so <code>x &lt; 6</code>. Answer: <code>1 &lt; x &lt; 6</code>. With base <code>1/2</code> instead, it flips: <code>x − 1 &gt; 5</code>, so <code>x &gt; 6</code>.</p>
+  <div class="tool">
+    <p class="tool-title">Solver — <span class="mono">log_b(x + p) ▸ log_b(k)</span></p>
+    <div class="flex" style="align-items:center;gap:6px;">
+      <span>log</span><input type="number" id="liBase" value="2" step="0.5" style="width:52px">
+      <span>( x +</span><input type="number" id="liP" value="-1" step="1" style="width:44px"><span>)</span>
+      <select id="liRel"><option value="lt">&lt;</option><option value="gt">&gt;</option></select>
+      <span>log</span><span class="mono" id="liBase2">2</span><span>(</span>
+      <input type="number" id="liK" value="5" step="1" style="width:44px"><span>)</span>
     </div>
-    <p class="muted"><b>Example.</b> <code>log_2(x−1) &lt; log_2(5)</code> → <code>x &gt; 1</code> AND <code>x &lt; 6</code> → <code>1 &lt; x &lt; 6</code>.</p>
+    <div id="liOut" class="eqout"></div>
+    <svg id="liLine" class="numline" viewBox="0 0 520 100"></svg>
   </div>
-</details>
+</div>
 </section>
 
 </div><!-- /folder-powlog -->
@@ -3472,6 +3503,68 @@
 <script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_pwbase", "v": 1, "subject": "f:powlog", "kind": "problem",
+  "name": "Exponential equation with one base",
+  "description": "Solve an equation like 4^(x+1) = 8^(x−2) by writing both sides as powers of the same base.",
+  "uses": [["c", "p1", "solving-a-a-match-the-base"], ["c", "p1", "rules-of-powers"]],
+  "parts": [
+    { "id": "st_bi_pwbase1", "cat": "stage", "name": "Choose a common base", "text": "Find a number that every base is a power of: `4 = 2²`, `8 = 2³`, `1/2 = 2⁻¹`, `√2 = 2^(1/2)`." },
+    { "id": "st_bi_pwbase2", "cat": "stage", "name": "Rewrite each side", "text": "Replace each base and use `(aᵐ)ⁿ = aᵐⁿ`, so each side is one power: `a^(something)`. Combine products on one side with `aᵐ · aⁿ = aᵐ⁺ⁿ`." },
+    { "id": "st_bi_pwbase3", "cat": "stage", "name": "Set the exponents equal", "text": "`a^(f(x)) = a^(g(x))` → `f(x) = g(x)`, and solve." },
+    { "id": "st_bi_pwbase4", "cat": "example", "name": "Example — 4 and 8", "text": "`4^(x + 1) = 8^(x − 2)`\n1. Both are powers of `2`.\n2. `2^(2(x + 1)) = 2^(3(x − 2))` → `2^(2x + 2) = 2^(3x − 6)`\n3. `2x + 2 = 3x − 6` → `x = 8`" },
+    { "id": "st_bi_pwbase5", "cat": "example", "name": "Example — a fraction and a root", "text": "`(1/9)ˣ = √3`\n1. Base `3`: `1/9 = 3⁻²`, `√3 = 3^(1/2)`\n2. `3^(−2x) = 3^(1/2)`\n3. `−2x = 1/2` → `x = −1/4`" },
+    { "id": "st_bi_pwbase6", "cat": "example", "name": "Example — a product", "text": "`2ˣ · 4^(x − 1) = 32`\n1. Base `2`: `4 = 2²`, `32 = 2⁵`\n2. `2ˣ · 2^(2x − 2) = 2⁵` → `2^(3x − 2) = 2⁵`\n3. `3x − 2 = 5` → `x = 7/3`" }
+  ] },
+{ "id": "pp_bi_pwsub", "v": 1, "subject": "f:powlog", "kind": "problem",
+  "name": "Exponential equation by substitution",
+  "description": "Solve an equation like 4ˣ − 6·2ˣ + 8 = 0 by setting t = aˣ.",
+  "uses": [["c", "p1", "solving-by-substitution-t-a"], ["c", "p1", "The exponential function y = aˣ"]],
+  "parts": [
+    { "id": "st_bi_pwsub1", "cat": "stage", "name": "Write everything with one power", "text": "Express each term using the same `aˣ`: `4ˣ = (2ˣ)²`, `2^(x + 1) = 2 · 2ˣ`, `2^(x − 1) = (2ˣ)/2`, `2⁻ˣ = 1/(2ˣ)`." },
+    { "id": "st_bi_pwsub2", "cat": "stage", "name": "Substitute", "text": "Let `t = aˣ`. Write the equation in `t`." },
+    { "id": "st_bi_pwsub3", "cat": "stage", "name": "Solve for t", "text": "Usually a quadratic. If there's a `1/(t)`, multiply everything by `t` first (allowed: `t > 0`)." },
+    { "id": "st_bi_pwsub4", "cat": "stage", "name": "Keep only t > 0", "text": "`aˣ` is always positive: throw away any `t ≤ 0`." },
+    { "id": "st_bi_pwsub5", "cat": "stage", "name": "Go back to x", "text": "Solve `aˣ = t` for each kept `t`: same base if possible, otherwise `x = log_a(t)`." },
+    { "id": "st_bi_pwsub6", "cat": "example", "name": "Example — 4 and 2", "text": "`4ˣ − 6 · 2ˣ + 8 = 0`\n1. `4ˣ = (2ˣ)²`\n2. `t = 2ˣ`: `t² − 6t + 8 = 0`\n3. `(t − 2)(t − 4) = 0` → `t = 2` or `t = 4`\n4. Both positive ✓\n5. `2ˣ = 2` → `x = 1`; `2ˣ = 4` → `x = 2`" },
+    { "id": "st_bi_pwsub7", "cat": "example", "name": "Example — a negative t", "text": "`9ˣ − 2 · 3ˣ − 3 = 0`\n2. `t = 3ˣ`: `t² − 2t − 3 = 0`\n3. `(t − 3)(t + 1) = 0` → `t = 3` or `t = −1`\n4. `t = −1` ✗ (a power of 3 is never negative)\n5. `3ˣ = 3` → `x = 1`" },
+    { "id": "st_bi_pwsub8", "cat": "example", "name": "Example — with a⁻ˣ", "text": "`2ˣ + 2^(1 − x) = 3`\n1. `2^(1 − x) = 2 · 2⁻ˣ = 2/(2ˣ)`\n2. `t + 2/(t) = 3`\n3. Multiply by `t`: `t² − 3t + 2 = 0` → `t = 1` or `t = 2`\n5. `2ˣ = 1` → `x = 0`; `2ˣ = 2` → `x = 1`" }
+  ] },
+{ "id": "pp_bi_pwineq", "v": 1, "subject": "f:powlog", "kind": "problem",
+  "name": "Solving an exponential inequality",
+  "description": "Solve an inequality like (1/2)^(x−1) > 1/8 or 3^(2x) ≤ 27.",
+  "uses": [["c", "p1", "power-inequalities-flip-by-base"], ["c", "p1", "The exponential function y = aˣ"]],
+  "parts": [
+    { "id": "st_bi_pwineq1", "cat": "stage", "name": "Same base on both sides", "text": "Write both sides as powers of one base `a`, exactly as for equations." },
+    { "id": "st_bi_pwineq2", "cat": "stage", "name": "Look at the base", "text": "`a > 1`: compare the exponents with the **same** sign.\n`0 < a < 1`: compare them with the sign **flipped**." },
+    { "id": "st_bi_pwineq3", "cat": "stage", "name": "Solve for x", "text": "Solve the inequality between the exponents." },
+    { "id": "st_bi_pwineq4", "cat": "example", "name": "Example — base above 1", "text": "`3^(2x) ≤ 27`\n1. `27 = 3³`: `3^(2x) ≤ 3³`\n2. `3 > 1`: keep: `2x ≤ 3`\n3. `x ≤ 3/2`" },
+    { "id": "st_bi_pwineq5", "cat": "example", "name": "Example — base below 1", "text": "`(1/2)^(x − 1) > 1/8`\n1. `1/8 = (1/2)³`: `(1/2)^(x − 1) > (1/2)³`\n2. `1/2 < 1`: flip: `x − 1 < 3`\n3. `x < 4`\nCheck `x = 0`: `(1/2)⁻¹ = 2 > 1/8` ✓" }
+  ] },
+{ "id": "pp_bi_lgeq", "v": 1, "subject": "f:powlog", "kind": "problem",
+  "name": "Solving a log equation",
+  "description": "Solve equations like log₂(x − 1) = 3 or log(x) + log(x − 3) = 1.",
+  "uses": [["c", "p2", "solving-log-a-x-p-c"], ["c", "p2", "solving-log-a-b-log-a-c"], ["c", "p2", "Rules of logarithms"], ["c", "p2", "definition-rules-identities"]],
+  "parts": [
+    { "id": "st_bi_lgeq1", "cat": "stage", "name": "Write the domain", "text": "Every expression inside a log must be `> 0`. Solve these together (AND)." },
+    { "id": "st_bi_lgeq2", "cat": "stage", "name": "Merge into one log per side", "text": "Use the rules: `log M + log N = log(MN)`, `log M − log N = log(M/N)`, `k log M = log(Mᵏ)`. All logs need the same base." },
+    { "id": "st_bi_lgeq3", "cat": "stage", "name": "Drop the logs", "text": "Log = number: `log_a(f) = c` → `f = aᶜ`.\nLog = log: `log_a(f) = log_a(g)` → `f = g`." },
+    { "id": "st_bi_lgeq4", "cat": "stage", "name": "Solve and check the domain", "text": "Solve, then throw away every answer outside the domain from step 1." },
+    { "id": "st_bi_lgeq5", "cat": "example", "name": "Example — log equals a number", "text": "`log₂(x − 1) = 3`\n1. `x − 1 > 0` → `x > 1`\n3. `x − 1 = 2³ = 8`\n4. `x = 9`, and `9 > 1` ✓" },
+    { "id": "st_bi_lgeq6", "cat": "example", "name": "Example — two logs added", "text": "`log(x) + log(x − 3) = 1` (base 10)\n1. `x > 0` and `x > 3` → `x > 3`\n2. `log(x(x − 3)) = 1`\n3. `x(x − 3) = 10¹` → `x² − 3x − 10 = 0`\n4. `(x − 5)(x + 2) = 0` → `x = 5` or `x = −2`. Only `x = 5` is `> 3`.\nAnswer: `x = 5`" },
+    { "id": "st_bi_lgeq7", "cat": "example", "name": "Example — log equals log", "text": "`log₃(x + 3) = log₃(2x − 1)`\n1. `x > −3` and `x > 1/2` → `x > 1/2`\n3. `x + 3 = 2x − 1`\n4. `x = 4`, and `4 > 1/2` ✓" }
+  ] },
+{ "id": "pp_bi_lgineq", "v": 1, "subject": "f:powlog", "kind": "problem",
+  "name": "Solving a log inequality",
+  "description": "Solve an inequality like log₂(x − 1) < 3 or log_(1/2)(x) ≥ −2.",
+  "uses": [["c", "p2", "log-inequalities"], ["c", "p2", "definition-rules-identities"], ["c", "a3", "quick-reference"]],
+  "parts": [
+    { "id": "st_bi_lginq1", "cat": "stage", "name": "Write the domain", "text": "Every expression inside a log must be `> 0`." },
+    { "id": "st_bi_lginq2", "cat": "stage", "name": "Make it log versus log", "text": "Merge each side into one log, and turn a number into a log of the same base: `3 = log₂(2³) = log₂(8)`." },
+    { "id": "st_bi_lginq3", "cat": "stage", "name": "Look at the base", "text": "`a > 1`: compare the insides with the **same** sign.\n`0 < a < 1`: compare them with the sign **flipped**." },
+    { "id": "st_bi_lginq4", "cat": "stage", "name": "Combine with the domain", "text": "Answer = the domain **AND** the result of step 3." },
+    { "id": "st_bi_lginq5", "cat": "example", "name": "Example — base above 1", "text": "`log₂(x − 1) < 3`\n1. `x > 1`\n2. `log₂(x − 1) < log₂(8)`\n3. `2 > 1`: keep: `x − 1 < 8` → `x < 9`\n4. `1 < x < 9`" },
+    { "id": "st_bi_lginq6", "cat": "example", "name": "Example — base below 1", "text": "`log_(1/2)(x) ≥ −2`\n1. `x > 0`\n2. `−2 = log_(1/2)((1/2)⁻²) = log_(1/2)(4)`\n3. `1/2 < 1`: flip: `x ≤ 4`\n4. `0 < x ≤ 4`" }
+  ] },
 { "id": "pp_bi_geangles", "v": 1, "subject": "f:geo", "kind": "problem",
   "name": "Finding angles with parallel lines",
   "description": "Find unknown angles in a figure with parallel lines, crossing lines and triangles.",
@@ -3544,9 +3637,9 @@
     { "id": "st_bi_alabseq3", "cat": "stage", "name": "Split into two equations", "text": "`E = k` **or** `E = −k`. Put brackets around `k` when it's an expression: `E = −(2x + 3)`." },
     { "id": "st_bi_alabseq4", "cat": "stage", "name": "Solve each one", "text": "Solve both equations the usual way." },
     { "id": "st_bi_alabseq5", "cat": "stage", "name": "Check in the original", "text": "Put each answer back into the **original** equation. Throw away any that don't work. This is a must when `x` was outside the bars too." },
-    { "id": "st_bi_alabseq6", "cat": "example", "name": "Example — a number on the right", "text": "`|2x − 3| + 1 = 8`\n1. `|2x − 3| = 7`\n2. `7 > 0`: two cases.\n3. `2x − 3 = 7` or `2x − 3 = −7`\n4. `2x = 10` → `x = 5` · `2x = −4` → `x = −2`\n5. `|7| + 1 = 8` ✓ · `|−7| + 1 = 8` ✓\nAnswer: `x = 5` or `x = −2`" },
+    { "id": "st_bi_alabseq6", "cat": "example", "name": "Example — a number on the right", "text": "`|2x − 3| + 1 = 8`\n1. `|2x − 3| = 7`\n2. `7 > 0`: two cases.\n3. `2x − 3 = 7` or `2x − 3 = −7`\n4. `2x = 10` → `x = 5`; `2x = −4` → `x = −2`\n5. `|7| + 1 = 8` ✓; `|−7| + 1 = 8` ✓\nAnswer: `x = 5` or `x = −2`" },
     { "id": "st_bi_alabseq7", "cat": "example", "name": "Example — x outside the bars", "text": "`|x − 1| = 2x + 3`\n1. Already alone.\n2. The right side has `x`: check at the end.\n3. `x − 1 = 2x + 3` or `x − 1 = −(2x + 3)`\n4. First: `−x = 4` → `x = −4`. Second: `x − 1 = −2x − 3` → `3x = −2` → `x = −2/3`\n5. `x = −4`: left `|−5| = 5`, right `2(−4) + 3 = −5`. `5 ≠ −5` ✗\n`x = −2/3`: left `|−5/3| = 5/3`, right `−4/3 + 3 = 5/3` ✓\nAnswer: `x = −2/3` only" },
-    { "id": "st_bi_alabseq8", "cat": "example", "name": "Example — two absolute values", "text": "`|x + 1| = |2x − 4|`\n3. `x + 1 = 2x − 4` or `x + 1 = −(2x − 4)`\n4. `x = 5` · `x + 1 = −2x + 4` → `3x = 3` → `x = 1`\n5. `|6| = |6|` ✓ · `|2| = |−2|` ✓\nAnswer: `x = 5` or `x = 1`" }
+    { "id": "st_bi_alabseq8", "cat": "example", "name": "Example — two absolute values", "text": "`|x + 1| = |2x − 4|`\n3. `x + 1 = 2x − 4` or `x + 1 = −(2x − 4)`\n4. `x = 5`; `x + 1 = −2x + 4` → `3x = 3` → `x = 1`\n5. `|6| = |6|` ✓; `|2| = |−2|` ✓\nAnswer: `x = 5` or `x = 1`" }
   ] },
 { "id": "pp_bi_alsign", "v": 1, "subject": "f:algebra", "kind": "problem",
   "name": "Solving an inequality with a sign chart",
@@ -3558,9 +3651,9 @@
     { "id": "st_bi_alsign3", "cat": "stage", "name": "Find the critical points", "text": "Where the top is `0` (the expression is `0`) and where the bottom is `0` (the expression is undefined). Mark them on a number line: they cut it into pieces." },
     { "id": "st_bi_alsign4", "cat": "stage", "name": "Test one number in each piece", "text": "Pick any number inside each piece and find the sign (+ or −) of the expression there. The sign is the same in the whole piece." },
     { "id": "st_bi_alsign5", "cat": "stage", "name": "Read off the answer", "text": "Take the pieces with the sign you need. With `≥` or `≤`, include the zeros of the top, but **never** the zeros of the bottom." },
-    { "id": "st_bi_alsign6", "cat": "example", "name": "Example — 1/x > 2", "text": "1. `1/(x) − 2 > 0`\n2. `(1 − 2x)/(x) > 0`\n3. Top `0` at `x = 1/2`, bottom `0` at `x = 0`. Pieces: `x < 0`, `0 < x < 1/2`, `x > 1/2`\n4. `x = −1`: `(3)/(−1) < 0` → − · `x = 1/4`: `(1/2)/(1/4) > 0` → + · `x = 1`: `(−1)/(1) < 0` → −\n5. We need `> 0`.\nAnswer: `0 < x < 1/2`" },
-    { "id": "st_bi_alsign7", "cat": "example", "name": "Example — a quadratic", "text": "`x² − 5x + 4 < 0`\n1. Already `< 0`.\n2. `(x − 1)(x − 4) < 0`\n3. Zeros at `x = 1` and `x = 4`. Pieces: `x < 1`, `1 < x < 4`, `x > 4`\n4. `x = 0`: `(−1)(−4) = 4` → + · `x = 2`: `(1)(−2) = −2` → − · `x = 5`: `(4)(1) = 4` → +\n5. We need `< 0`.\nAnswer: `1 < x < 4`" },
-    { "id": "st_bi_alsign8", "cat": "example", "name": "Example — a fraction with ≥", "text": "`(x − 3)/(x + 1) ≥ 0`\n3. Top `0` at `x = 3` (allowed, since `≥`), bottom `0` at `x = −1` (never allowed).\n4. `x = −2`: `(−5)/(−1) > 0` → + · `x = 0`: `(−3)/(1) < 0` → − · `x = 4`: `(1)/(5) > 0` → +\n5. Answer: `x < −1` or `x ≥ 3`" }
+    { "id": "st_bi_alsign6", "cat": "example", "name": "Example — 1/x > 2", "text": "1. `1/(x) − 2 > 0`\n2. `(1 − 2x)/(x) > 0`\n3. Top `0` at `x = 1/2`, bottom `0` at `x = 0`. Pieces: `x < 0`, `0 < x < 1/2`, `x > 1/2`\n4. `x = −1`: `(3)/(−1) < 0` → −; `x = 1/4`: `(1/2)/(1/4) > 0` → +; `x = 1`: `(−1)/(1) < 0` → −\n5. We need `> 0`.\nAnswer: `0 < x < 1/2`" },
+    { "id": "st_bi_alsign7", "cat": "example", "name": "Example — a quadratic", "text": "`x² − 5x + 4 < 0`\n1. Already `< 0`.\n2. `(x − 1)(x − 4) < 0`\n3. Zeros at `x = 1` and `x = 4`. Pieces: `x < 1`, `1 < x < 4`, `x > 4`\n4. `x = 0`: `(−1)(−4) = 4` → +; `x = 2`: `(1)(−2) = −2` → −; `x = 5`: `(4)(1) = 4` → +\n5. We need `< 0`.\nAnswer: `1 < x < 4`" },
+    { "id": "st_bi_alsign8", "cat": "example", "name": "Example — a fraction with ≥", "text": "`(x − 3)/(x + 1) ≥ 0`\n3. Top `0` at `x = 3` (allowed, since `≥`), bottom `0` at `x = −1` (never allowed).\n4. `x = −2`: `(−5)/(−1) > 0` → +; `x = 0`: `(−3)/(1) < 0` → −; `x = 4`: `(1)/(5) > 0` → +\n5. Answer: `x < −1` or `x ≥ 3`" }
   ] },
 { "id": "pp_bi_alcase", "v": 1, "subject": "f:algebra", "kind": "problem",
   "name": "Case split for an unknown sign",
@@ -3572,7 +3665,7 @@
     { "id": "st_bi_alcase3", "cat": "stage", "name": "Case 2: it's negative", "text": "Assume it's `< 0`. Multiply or divide **and flip** the inequality. Solve, and combine with the assumption using **AND**." },
     { "id": "st_bi_alcase4", "cat": "stage", "name": "Join the cases", "text": "The answer is Case 1 **OR** Case 2. A case can come out empty: that's fine, it just adds nothing." },
     { "id": "st_bi_alcase5", "cat": "example", "name": "Example — 1/x > 2", "text": "1. Multiply by `x`; `x ≠ 0`.\n2. `x > 0`: `1 > 2x` → `x < 1/2`. AND `x > 0` → `0 < x < 1/2`\n3. `x < 0`: `1 < 2x` (flipped) → `x > 1/2`. AND `x < 0` → nothing (no number is both)\n4. Answer: `0 < x < 1/2`" },
-    { "id": "st_bi_alcase6", "cat": "example", "name": "Example — 3/(x − 1) ≤ 1", "text": "1. Multiply by `x − 1`; `x ≠ 1`.\n2. `x − 1 > 0`, so `x > 1`: `3 ≤ x − 1` → `x ≥ 4`. AND `x > 1` → `x ≥ 4`\n3. `x − 1 < 0`, so `x < 1`: `3 ≥ x − 1` (flipped) → `x ≤ 4`. AND `x < 1` → `x < 1`\n4. Answer: `x < 1` or `x ≥ 4`\nCheck `x = 0`: `3/(−1) = −3 ≤ 1` ✓ · `x = 2`: `3/(1) = 3 ≤ 1` ✗ (correctly left out)" }
+    { "id": "st_bi_alcase6", "cat": "example", "name": "Example — 3/(x − 1) ≤ 1", "text": "1. Multiply by `x − 1`; `x ≠ 1`.\n2. `x − 1 > 0`, so `x > 1`: `3 ≤ x − 1` → `x ≥ 4`. AND `x > 1` → `x ≥ 4`\n3. `x − 1 < 0`, so `x < 1`: `3 ≥ x − 1` (flipped) → `x ≤ 4`. AND `x < 1` → `x < 1`\n4. Answer: `x < 1` or `x ≥ 4`\nCheck `x = 0`: `3/(−1) = −3 ≤ 1` ✓; `x = 2`: `3/(1) = 3 ≤ 1` ✗ (correctly left out)" }
   ] },
 { "id": "pp_bi_alsqrt", "v": 1, "subject": "f:algebra", "kind": "problem",
   "name": "Solving a square root inequality",
@@ -3626,7 +3719,7 @@
     { "id": "st_bi_trsolve6", "cat": "stage", "name": "Pick n (if there is an interval)", "text": "Try `n = 0, 1, −1, 2, …` in each family and keep only the `x` values inside the interval." },
     { "id": "st_bi_trsolve7", "cat": "example", "name": "Example — 2 sin x − 1 = 0", "text": "1. `2 sin x = 1` → `sin x = 1/2`. `1/2` is between `−1` and `1`, so there are solutions.\n2. `u = x`\n3. `sin(π/6) = 1/2`, so `α = π/6`.\n4. `x = π/6 + 2πn` or `x = π − π/6 + 2πn = (5π)/6 + 2πn`\n5. Already solved for `x`.\nAnswer: `x = π/6 + 2πn` or `x = (5π)/6 + 2πn`" },
     { "id": "st_bi_trsolve8", "cat": "example", "name": "Example — sin(2x + π/3) = 1/2", "text": "1. Already alone: `k = 1/2`.\n2. `u = 2x + π/3`\n3. `α = π/6`\n4. `u = π/6 + 2πn` or `u = (5π)/6 + 2πn`\n5. First family: `2x + π/3 = π/6 + 2πn` → `2x = −π/6 + 2πn` → `x = −π/12 + πn`\nSecond family: `2x + π/3 = (5π)/6 + 2πn` → `2x = π/2 + 2πn` → `x = π/4 + πn`\nAnswer: `x = −π/12 + πn` or `x = π/4 + πn`. The step is `π`, not `2π`, because we divided `2πn` by `2`." },
-    { "id": "st_bi_trsolve9", "cat": "example", "name": "Example — cos x = −1/2 in [0, 2π]", "text": "1. `k = −1/2`, between `−1` and `1`.\n2. `u = x`\n3. `arccos(−1/2) = (2π)/3`\n4. `x = (2π)/3 + 2πn` or `x = −(2π)/3 + 2πn`\n6. First family, `n = 0`: `(2π)/3` ✓ (`n = 1` is past `2π`).\nSecond family, `n = 0`: `−(2π)/3` ✗ (negative) · `n = 1`: `−(2π)/3 + 2π = (4π)/3` ✓\nAnswer: `x = (2π)/3` and `x = (4π)/3`" }
+    { "id": "st_bi_trsolve9", "cat": "example", "name": "Example — cos x = −1/2 in [0, 2π]", "text": "1. `k = −1/2`, between `−1` and `1`.\n2. `u = x`\n3. `arccos(−1/2) = (2π)/3`\n4. `x = (2π)/3 + 2πn` or `x = −(2π)/3 + 2πn`\n6. First family, `n = 0`: `(2π)/3` ✓ (`n = 1` is past `2π`).\nSecond family, `n = 0`: `−(2π)/3` ✗ (negative); `n = 1`: `−(2π)/3 + 2π = (4π)/3` ✓\nAnswer: `x = (2π)/3` and `x = (4π)/3`" }
   ] },
 { "id": "pp_bi_trquad", "v": 1, "subject": "f:trig", "kind": "problem",
   "name": "Trig equation that is a quadratic",
