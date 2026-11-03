@@ -2421,6 +2421,7 @@
     <button data-folder="int" data-group="calc"><span class="ficon">∫</span>Integrals</button>
     <button data-folder="ser" data-group="calc"><span class="ficon">∑</span>Series</button>
     <button data-folder="dst" data-group="stats"><span class="ficon">📊</span>Descriptive statistics</button>
+    <button data-folder="prb" data-group="stats"><span class="ficon">🎲</span>Probability</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2584,6 +2585,13 @@
   <button data-target="dst9"><span class="tnum">9</span>Relative position: percentiles and z-scores</button>
   <button data-target="dst10"><span class="tnum">10</span>Correlation</button>
 </nav>
+<nav class="tabbar" data-folder="prb" id="tabbar-prb">
+  <button data-target="prb1" class="on"><span class="tnum">1</span>Sets</button>
+  <button data-target="prb2"><span class="tnum">2</span>Sample space and events</button>
+  <button data-target="prb3"><span class="tnum">3</span>The probability function</button>
+  <button data-target="prb4"><span class="tnum">4</span>Rules of probability</button>
+  <button data-target="prb5"><span class="tnum">5</span>Uniform probability space</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2614,7 +2622,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B136</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B137</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4617,7 +4625,9 @@ function __detabaseMain() {
     ser: { title: "Series — for Calculus 1",
       sub: 'Sequences, infinite series and convergence tests, power series, Taylor series.' },
     dst: { title: "Descriptive statistics — for Intro to Statistics",
-      sub: 'Data and scales, frequency tables and charts, measures of center, spread and relative position, correlation.' }
+      sub: 'Data and scales, frequency tables and charts, measures of center, spread and relative position, correlation.' },
+    prb: { title: "Probability — for Intro to Statistics",
+      sub: 'Sets, sample spaces and events, the probability function and its rules, uniform spaces, conditional probability, independence, Bayes, trees and tables.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
