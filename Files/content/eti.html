@@ -864,338 +864,590 @@
 <!-- ===== G1 · PARALLEL LINES ===== -->
 <section class="pane on" id="pane-g1">
 <h2><span class="num">1</span>Angles from parallel lines &amp; a transversal</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="g1">Expand all</button>
-  <button data-acc="close" data-scope="g1">Collapse all</button>
+<div class="card" data-tags="Theorem">
+  <h4>Angles at a point and on a line</h4>
+  <ul>
+    <li>Angles that together make a <b>straight line</b> add up to <code>180°</code>.</li>
+    <li>Angles all the way <b>around a point</b> add up to <code>360°</code>.</li>
+    <li><b>Vertical angles</b> (opposite each other where two lines cross) are <b>equal</b>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="two crossing lines: opposite angles are equal, neighbouring angles add up to 180 degrees">
+    <path class="cv" d="M80 190 L340 40"/>
+    <path class="cv2" d="M80 60 L340 170"/>
+    <circle class="dot" cx="210" cy="115" r="4"/>
+    <text x="270" y="120">a</text>
+    <text x="150" y="120" text-anchor="end">a</text>
+    <text x="210" y="78" text-anchor="middle">b</text>
+    <text x="210" y="162" text-anchor="middle">b</text>
+    <text class="sm" x="210" y="210" text-anchor="middle">a + b = 180° · opposite angles are equal</text>
+  </svg>
+  <p class="muted"><b>Why vertical angles are equal:</b> <code>a</code> and <code>b</code> sit next to each other on a straight line, so <code>a + b = 180°</code>. The angle opposite <code>a</code> also sits next to <code>b</code>, so it's also <code>180° − b</code>. Both equal <code>180° − b</code>, so they're equal.</p>
 </div>
-
-<details class="subject" open>
-  <summary>The angle pairs<span class="stag">visualizer</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:560px">
-      <li><b>Corresponding</b> — same position at each crossing → <b>equal</b>.</li>
-      <li><b>Alternate interior</b> — opposite sides of the transversal, between the lines → <b>equal</b>.</li>
-      <li><b>Alternate exterior</b> — opposite sides, outside the lines → <b>equal</b>.</li>
-      <li><b>Co-interior</b> (same-side interior) → <b>supplementary</b>, <code>a + b = 180°</code>.</li>
-      <li><b>Vertical</b> angles (at one crossing) → always <b>equal</b>.</li>
-    </ul>
-    <div class="tool">
-      <p class="tool-title">Drag the transversal angle</p>
-      <label class="muted">angle = <span id="plAngleLbl" class="mono">55°</span></label>
-      <input type="range" id="plAngle" min="20" max="160" step="1" value="55">
-      <svg id="plSvg" viewBox="0 0 460 300" style="max-width:460px"></svg>
-      <div class="readout">
-        <span class="k">acute angles</span><span class="v" id="plAcute">–</span>
-        <span class="k">obtuse angles</span><span class="v" id="plObtuse">–</span>
-        <span class="k">co-interior sum</span><span class="v" id="plSum">–</span>
-      </div>
+<div class="card" data-key="the-angle-pairs" data-tags="Theorem">
+  <h4>Angle pairs with parallel lines</h4>
+  <p>A <b>transversal</b> is a line that crosses two other lines. When those two lines are <b>parallel</b>:</p>
+  <ul>
+    <li><b>Corresponding</b> angles (same position at each crossing) are <b>equal</b>: 1 = 5.</li>
+    <li><b>Alternate interior</b> angles (between the lines, on opposite sides of the transversal) are <b>equal</b>: 3 = 5, 4 = 6.</li>
+    <li><b>Alternate exterior</b> angles (outside the lines, opposite sides) are <b>equal</b>: 1 = 7.</li>
+    <li><b>Co-interior</b> angles (between the lines, same side) add up to <code>180°</code>: 4 + 5 = 180°.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="two parallel lines cut by a transversal, with the eight angles numbered 1 to 8">
+    <path class="ax" d="M30 70 H400 M30 170 H400"/>
+    <path class="cv" d="M130 230 L290 10"/>
+    <circle class="dot" cx="246.4" cy="70" r="3"/>
+    <circle class="dot" cx="173.6" cy="170" r="3"/>
+    <text x="272" y="62">1</text>
+    <text x="222" y="58">2</text>
+    <text x="218" y="90">3</text>
+    <text x="262" y="92">4</text>
+    <text x="199" y="162">5</text>
+    <text x="149" y="158">6</text>
+    <text x="145" y="190">7</text>
+    <text x="189" y="192">8</text>
+    <text class="sm" x="404" y="62" text-anchor="end">ℓ₁</text>
+    <text class="sm" x="404" y="162" text-anchor="end">ℓ₂ ∥ ℓ₁</text>
+  </svg>
+  <p class="muted"><b>The short version:</b> with parallel lines there are only <b>two</b> different angle sizes. All the sharp (acute) angles are equal, all the wide (obtuse) ones are equal, and one of each adds up to <code>180°</code>. In the sketch: 1, 3, 5, 7 are one size, 2, 4, 6, 8 the other.</p>
+  <p class="muted"><b>Why:</b> sliding the top line down along the transversal (it stays parallel) lands it on the bottom line, so the angles at the top crossing match those at the bottom one.</p>
+  <p class="muted"><b>The converse</b> is how you <b>prove</b> lines are parallel: if any of these pairs is equal (or co-interior angles add up to <code>180°</code>), the lines are parallel.</p>
+  <div class="tool">
+    <p class="tool-title">Drag the transversal angle</p>
+    <label class="muted">angle = <span id="plAngleLbl" class="mono">55°</span></label>
+    <input type="range" id="plAngle" min="20" max="160" step="1" value="55">
+    <svg id="plSvg" viewBox="0 0 460 300" style="max-width:460px"></svg>
+    <div class="readout">
+      <span class="k">acute angles</span><span class="v" id="plAcute">–</span>
+      <span class="k">obtuse angles</span><span class="v" id="plObtuse">–</span>
+      <span class="k">co-interior sum</span><span class="v" id="plSum">–</span>
     </div>
-    <p class="muted"><b>Converse:</b> if any of these equalities holds, the two lines <em>are</em> parallel — the standard way to prove parallelism.</p>
   </div>
-</details>
+</div>
 </section>
 
 <!-- ===== G2 · TRIANGLES ===== -->
 <section class="pane" id="pane-g2">
 <h2><span class="num">2</span>Triangles</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="g2">Expand all</button>
-  <button data-acc="close" data-scope="g2">Collapse all</button>
+<div class="card" data-key="triangle-solver-3-sides" data-tags="Theorem">
+  <h4>Angle sum and the triangle inequality</h4>
+  <ul>
+    <li>The three angles of a triangle add up to <code>180°</code>.</li>
+    <li><b>Triangle inequality:</b> each side is shorter than the other two together: <code>a &lt; b + c</code>.</li>
+    <li>The <b>longest side</b> is opposite the <b>biggest angle</b> (and the shortest opposite the smallest).</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a triangle with a line through the top vertex parallel to the base; the three angles at the top form a straight line">
+    <path class="cv" d="M80 190 H340 L200 50 Z"/>
+    <path class="gd" d="M60 50 H360"/>
+    <text x="104" y="182">α</text>
+    <text x="304" y="182">β</text>
+    <text x="200" y="84" text-anchor="middle">γ</text>
+    <text x="160" y="64" text-anchor="middle">α</text>
+    <text x="240" y="64" text-anchor="middle">β</text>
+    <text class="sm" x="364" y="45">parallel to the base</text>
+  </svg>
+  <p class="muted"><b>Why 180°:</b> draw a line through the top corner, parallel to the base. The angle on its left equals <code>α</code> and the angle on its right equals <code>β</code> (alternate interior angles, Geometry › 1). Together with <code>γ</code> they make a straight line: <code>α + β + γ = 180°</code>.</p>
+  <p class="muted"><b>Why the triangle inequality:</b> the straight path from one corner to another is the shortest. Going around through the third corner is longer. Example: sides <code>2</code>, <code>3</code>, <code>6</code> can't make a triangle, since <code>2 + 3 &lt; 6</code>: the two short sides can't reach.</p>
+  <div class="tool">
+    <p class="tool-title">Set the three sides</p>
+    <div class="flex">
+      <svg id="triSvg" viewBox="0 0 300 240" style="max-width:300px;flex-shrink:0"></svg>
+      <div class="panel">
+        <label class="muted">a = <span id="triALbl" class="mono">6</span></label><input type="range" id="triA" min="1" max="12" step="0.5" value="6">
+        <label class="muted">b = <span id="triBLbl" class="mono">5</span></label><input type="range" id="triB" min="1" max="12" step="0.5" value="5">
+        <label class="muted">c = <span id="triCLbl" class="mono">5</span></label><input type="range" id="triC" min="1" max="12" step="0.5" value="5">
+      </div>
+    </div>
+    <div id="triOut" class="eqout"></div>
+  </div>
 </div>
-
-<details class="subject" open>
-  <summary>Triangle solver — 3 sides<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p>Angle sum = <b>180°</b>. Triangle inequality: each side &lt; sum of the other two. Largest side faces the largest angle.</p>
-    <div class="tool">
-      <p class="tool-title">Set the three sides</p>
-      <div class="flex">
-        <svg id="triSvg" viewBox="0 0 300 240" style="max-width:300px;flex-shrink:0"></svg>
-        <div class="panel">
-          <label class="muted">a = <span id="triALbl" class="mono">6</span></label><input type="range" id="triA" min="1" max="12" step="0.5" value="6">
-          <label class="muted">b = <span id="triBLbl" class="mono">5</span></label><input type="range" id="triB" min="1" max="12" step="0.5" value="5">
-          <label class="muted">c = <span id="triCLbl" class="mono">5</span></label><input type="range" id="triC" min="1" max="12" step="0.5" value="5">
-        </div>
-      </div>
-      <div id="triOut" class="eqout"></div>
+<div class="card" data-key="every-triangle-rules" data-tags="Theorem">
+  <h4>Exterior angle and midsegment</h4>
+  <ul>
+    <li>An <b>exterior angle</b> equals the sum of the two interior angles that aren't next to it. The exterior angles (one at each corner) add up to <code>360°</code>.</li>
+    <li>A <b>midsegment</b> (joining the midpoints of two sides) is parallel to the third side and half as long.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a triangle with one side extended; the exterior angle equals the two far interior angles together">
+    <path class="cv" d="M70 180 H260 L170 60 Z"/>
+    <path class="ax" d="M260 180 H380"/>
+    <text x="94" y="172">α</text>
+    <text x="170" y="94" text-anchor="middle">γ</text>
+    <text x="246" y="172" text-anchor="end">β</text>
+    <text x="288" y="170">δ</text>
+    <text x="320" y="90">δ = α + γ</text>
+  </svg>
+  <p class="muted"><b>Why the exterior angle works:</b> <code>δ</code> and <code>β</code> lie on a straight line, so <code>δ = 180° − β</code>. The angle sum gives <code>α + γ = 180° − β</code> too. So <code>δ = α + γ</code>.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a triangle with the segment joining the midpoints of two sides, parallel to the base and half as long">
+    <path class="cv" d="M60 190 H360 L150 40 Z"/>
+    <path class="cv2" d="M105 115 H255"/>
+    <circle class="dot" cx="105" cy="115" r="4"/>
+    <circle class="dot" cx="255" cy="115" r="4"/>
+    <text x="210" y="212" text-anchor="middle">a</text>
+    <text x="180" y="106" text-anchor="middle">a/2</text>
+    <text class="sm" x="96" y="112" text-anchor="end">midpoint</text>
+    <text class="sm" x="264" y="112">midpoint</text>
+  </svg>
+  <p class="muted"><b>Example:</b> if the base is <code>10</code>, the midsegment is <code>5</code>. This is a special case of Thales' theorem (Geometry › 5) with ratio <code>1/2</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Special lines and centres of a triangle</h4>
+  <ul>
+    <li><b>Median:</b> from a corner to the midpoint of the opposite side. The three medians meet at the <b>centroid</b>, which cuts each median <code>2 : 1</code> (the longer part at the corner).</li>
+    <li><b>Altitude (height):</b> from a corner, perpendicular to the opposite side. They meet at the <b>orthocentre</b>.</li>
+    <li><b>Angle bisector:</b> splits a corner's angle in half. They meet at the <b>incentre</b>, the centre of the circle that touches all three sides.</li>
+    <li><b>Perpendicular bisector:</b> through a side's midpoint, perpendicular to it. They meet at the <b>circumcentre</b>, the centre of the circle through all three corners.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a triangle with its three medians meeting at the centroid G">
+    <path class="cv" d="M60 190 H360 L220 40 Z"/>
+    <path class="gd" d="M60 190 L290 115 M360 190 L140 115 M220 40 L210 190"/>
+    <circle class="dot" cx="290" cy="115" r="3"/>
+    <circle class="dot" cx="140" cy="115" r="3"/>
+    <circle class="dot" cx="210" cy="190" r="3"/>
+    <circle class="dot warn" cx="213.3" cy="140" r="5"/>
+    <text x="224" y="136">G</text>
+    <text class="sm" x="300" y="60">medians meet at G</text>
+    <text class="sm" x="300" y="78">G cuts each one 2 : 1</text>
+  </svg>
+  <p class="muted"><b>Don't mix them up:</b> a median goes to the <b>middle</b> of a side (it doesn't have to be perpendicular); an altitude is <b>perpendicular</b> (it doesn't have to hit the middle). In an <b>isosceles</b> triangle, from the top corner, they're the same line, and also the angle bisector.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Area of a triangle</h4>
+  <ul class="idlist">
+    <li><code>S = (base · height)/2</code></li>
+    <li><code>S = (1/2) · a · b · sin C</code></li>
+    <li><code>S = √(s(s − a)(s − b)(s − c))</code>, &nbsp; <code>s = (a + b + c)/2</code> (Heron)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a triangle with its base and the height drawn from the top corner perpendicular to the base">
+    <path class="cv" d="M60 190 H330 L240 50 Z"/>
+    <path class="gd" d="M240 50 V190"/>
+    <path class="gd" d="M228 190 V178 H240"/>
+    <text x="248" y="126">h</text>
+    <text x="195" y="210" text-anchor="middle">base</text>
+  </svg>
+  <p class="muted"><b>Why half:</b> a triangle is half of a rectangle (or parallelogram) with the same base and height.</p>
+  <p class="muted"><b>Which one to use:</b> base and height known → the first. Two sides and the angle <b>between</b> them → the second (<code>b · sin C</code> is exactly the height). All three sides → Heron.</p>
+  <p class="muted"><b>Example:</b> sides <code>5</code> and <code>8</code> with <code>30°</code> between them: <code>S = (1/2) · 5 · 8 · sin 30° = 20 · 1/2 = 10</code>. Heron for sides <code>3, 4, 5</code>: <code>s = 6</code>, <code>S = √(6 · 3 · 2 · 1) = √36 = 6</code>.</p>
+</div>
+<div class="card" data-key="congruence-similarity" data-tags="Theorem">
+  <h4>Congruent and similar triangles</h4>
+  <p><b>Congruent</b> (same shape and size) if they match by: <code>SSS</code>, <code>SAS</code>, <code>ASA</code>, <code>AAS</code>, or <code>HL</code> (right triangles: hypotenuse and a leg). <code>SSA</code> does <b>not</b> prove it.</p>
+  <p><b>Similar</b> (same shape, any size) if: two angles are equal (<code>AA</code>), all three sides are in the same ratio (<code>SSS~</code>), or two sides are in the same ratio with the angle between them equal (<code>SAS~</code>).</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a small triangle and a similar big triangle 1.5 times bigger">
+    <path class="cv" d="M40 180 H160 L70 100 Z"/>
+    <path class="cv2" d="M220 180 H400 L265 60 Z"/>
+    <text x="100" y="198" text-anchor="middle">4</text>
+    <text x="310" y="198" text-anchor="middle">6</text>
+    <text x="300" y="40" text-anchor="middle">ratio k = 6/4 = 1.5</text>
+  </svg>
+  <p class="muted"><b>What the letters mean:</b> S = a side, A = an angle, in the order you walk around the triangle. <code>SAS</code> = two sides and the angle <b>between</b> them. That "between" matters: with the angle not between the sides (<code>SSA</code>), two different triangles can fit (Geometry › 6, the ambiguous case).</p>
+  <p class="muted"><b>Similar triangles and ratios:</b> every length grows by the same ratio <code>k</code> (sides, heights, medians, perimeter). Areas grow by <code>k²</code>. In the sketch, <code>k = 1.5</code>, so the big triangle's area is <code>1.5² = 2.25</code> times the small one's.</p>
+</div>
+<div class="card" data-key="triangle-types-sketch-rules" data-tags="Definition">
+  <h4>Types of triangles</h4>
+  <p>By sides: <b>scalene</b> (all different), <b>isosceles</b> (two equal), <b>equilateral</b> (all equal). By angles: <b>acute</b> (all under <code>90°</code>), <b>right</b> (one is <code>90°</code>), <b>obtuse</b> (one over <code>90°</code>).</p>
+  <p class="muted">Pick a type below to see its sketch and its rules. In an isosceles triangle the angles opposite the equal sides are equal; an equilateral triangle has three <code>60°</code> angles.</p>
+  <div class="btnrow" id="triGalPick"></div>
+  <div class="tool gallery">
+    <svg id="triGalSvg" viewBox="0 0 260 240"></svg>
+    <div class="gallery-rules">
+      <h4 id="triGalName">–</h4>
+      <ul class="idlist" id="triGalRules"></ul>
+      <label class="muted" id="triGalSliderLbl" style="display:none">shape</label>
+      <input type="range" id="triGalSlider" min="20" max="80" step="1" value="50" style="display:none">
     </div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Every-triangle rules<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:600px">
-      <li><b>Exterior angle</b> = sum of the two remote interior angles; exterior angles sum to <b>360°</b>.</li>
-      <li><b>Midsegment</b> (joins two midpoints) — parallel to the third side, half its length.</li>
-      <li><b>Centroid</b> (medians) divides each median <b>2:1</b>. <b>Orthocenter</b> = altitudes. <b>Circumcenter</b> = perpendicular bisectors. <b>Incenter</b> = angle bisectors.</li>
-      <li><b>Area:</b> <code>½·base·height</code> = <code>½·a·b·sin C</code> = <code>√(s(s−a)(s−b)(s−c))</code> (Heron, <code>s = (a+b+c)/2</code>).</li>
-    </ul>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Congruence &amp; similarity<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <p><b>Congruent</b> if: <code>SSS</code>, <code>SAS</code>, <code>ASA</code>, <code>AAS</code>, or <code>HL</code> (right triangles). <code>SSA</code> is <b>not</b> valid — the ambiguous case.</p>
-    <p><b>Similar</b> if: <code>AA</code>, <code>SSS~</code>, or <code>SAS~</code>. Corresponding sides proportional; ratio of areas = (ratio of sides)².</p>
-  </div>
-</details>
-
-<details class="subject" open>
-  <summary>Triangle types — sketch &amp; rules<span class="stag">gallery</span></summary>
-  <div class="subject-body">
-    <p>Pick a type — the sketch on the left, its attributes &amp; formulas on the right.</p>
-    <div class="btnrow" id="triGalPick"></div>
-    <div class="tool gallery">
-      <svg id="triGalSvg" viewBox="0 0 260 240"></svg>
-      <div class="gallery-rules">
-        <h4 id="triGalName">–</h4>
-        <ul class="idlist" id="triGalRules"></ul>
-        <label class="muted" id="triGalSliderLbl" style="display:none">shape</label>
-        <input type="range" id="triGalSlider" min="20" max="80" step="1" value="50" style="display:none">
-      </div>
-    </div>
-  </div>
-</details>
+</div>
 </section>
 
 <!-- ===== G3 · QUADRILATERALS & POLYGONS ===== -->
 <section class="pane" id="pane-g3">
 <h2><span class="num">3</span>Quadrilaterals &amp; polygons</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="g3">Expand all</button>
-  <button data-acc="close" data-scope="g3">Collapse all</button>
-</div>
-
-<details class="subject" open>
-  <summary>Polygon angle calculator<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p>Convex <code>n</code>-gon: interior sum <code>(n−2)·180°</code>; exterior sum always <code>360°</code>; diagonals <code>n(n−3)/2</code>.</p>
-    <div class="tool">
-      <p class="tool-title">Number of sides</p>
-      <div class="flex">
-        <svg id="polySvg" viewBox="0 0 240 240" style="max-width:240px;flex-shrink:0"></svg>
-        <div class="panel">
-          <label class="muted">n = <span id="polyNLbl" class="mono">5</span></label>
-          <input type="range" id="polyN" min="3" max="12" step="1" value="5">
-          <div class="readout">
-            <span class="k">interior angle sum</span><span class="v" id="polySum">–</span>
-            <span class="k">each interior (regular)</span><span class="v" id="polyInt">–</span>
-            <span class="k">each exterior (regular)</span><span class="v" id="polyExt">–</span>
-            <span class="k">diagonals</span><span class="v" id="polyDiag">–</span>
-          </div>
+<div class="card" data-key="polygon-angle-calculator" data-tags="Formula">
+  <h4>Angles of a polygon</h4>
+  <ul class="idlist">
+    <li>Interior angles: <code>(n − 2) · 180°</code></li>
+    <li>Exterior angles: always <code>360°</code></li>
+    <li>Diagonals: <code>(n(n − 3))/2</code></li>
+  </ul>
+  <p>Here <code>n</code> is the number of sides of a convex polygon. A <b>regular</b> polygon (all sides and angles equal) has each interior angle <code>((n − 2) · 180°)/(n)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="a pentagon split into three triangles by the diagonals from one corner">
+    <path class="cv" d="M210 20 L119.6 85.6 L154.2 191.9 L265.8 191.9 L300.4 85.6 Z"/>
+    <path class="gd" d="M210 20 L154.2 191.9 M210 20 L265.8 191.9"/>
+    <text x="150" y="130" text-anchor="middle">1</text>
+    <text x="210" y="150" text-anchor="middle">2</text>
+    <text x="270" y="130" text-anchor="middle">3</text>
+    <text class="sm" x="210" y="226" text-anchor="middle">5 sides → 3 triangles → 3 · 180° = 540°</text>
+  </svg>
+  <p class="muted"><b>Why <code>n − 2</code>:</b> from one corner, draw every diagonal. They cut the polygon into <code>n − 2</code> triangles, and each triangle's angles add up to <code>180°</code>.</p>
+  <p class="muted"><b>Why the exterior angles make 360°:</b> walk around the polygon. At each corner you turn by the exterior angle, and after one lap you've turned exactly once around: <code>360°</code>.</p>
+  <p class="muted"><b>Example:</b> a regular hexagon (<code>n = 6</code>): sum <code>4 · 180° = 720°</code>, each angle <code>720°/6 = 120°</code>, diagonals <code>(6 · 3)/2 = 9</code>.</p>
+  <div class="tool">
+    <p class="tool-title">Number of sides</p>
+    <div class="flex">
+      <svg id="polySvg" viewBox="0 0 240 240" style="max-width:240px;flex-shrink:0"></svg>
+      <div class="panel">
+        <label class="muted">n = <span id="polyNLbl" class="mono">5</span></label>
+        <input type="range" id="polyN" min="3" max="12" step="1" value="5">
+        <div class="readout">
+          <span class="k">interior angle sum</span><span class="v" id="polySum">–</span>
+          <span class="k">each interior (regular)</span><span class="v" id="polyInt">–</span>
+          <span class="k">each exterior (regular)</span><span class="v" id="polyExt">–</span>
+          <span class="k">diagonals</span><span class="v" id="polyDiag">–</span>
         </div>
       </div>
     </div>
   </div>
-</details>
-
-<details class="subject" open>
-  <summary>Quadrilateral types — sketch &amp; rules<span class="stag">gallery</span></summary>
-  <div class="subject-body">
-    <p>Interior angles of any quadrilateral sum to <b>360°</b>. Pick a type:</p>
-    <div class="btnrow" id="quadGalPick"></div>
-    <div class="tool gallery">
-      <svg id="quadGalSvg" viewBox="0 0 260 240"></svg>
-      <div class="gallery-rules">
-        <h4 id="quadGalName">–</h4>
-        <ul class="idlist" id="quadGalRules"></ul>
-        <label class="muted" id="quadGalSliderLbl" style="display:none">shape</label>
-        <input type="range" id="quadGalSlider" min="20" max="80" step="1" value="50" style="display:none">
-      </div>
+</div>
+<div class="card" data-key="quadrilateral-types-sketch-rules" data-tags="Definition">
+  <h4>Types of quadrilaterals</h4>
+  <p>The angles of any quadrilateral add up to <code>360°</code> (it splits into 2 triangles).</p>
+  <ul>
+    <li><b>Parallelogram:</b> both pairs of opposite sides parallel. Opposite sides and opposite angles are equal; the diagonals cut each other in half.</li>
+    <li><b>Rectangle:</b> a parallelogram with four right angles; equal diagonals.</li>
+    <li><b>Rhombus:</b> a parallelogram with four equal sides; perpendicular diagonals.</li>
+    <li><b>Square:</b> both a rectangle and a rhombus.</li>
+    <li><b>Trapezoid:</b> exactly one pair of parallel sides (the bases).</li>
+    <li><b>Kite:</b> two pairs of equal neighbouring sides; perpendicular diagonals.</li>
+  </ul>
+  <p class="muted"><b>They're a family:</b> every square is a rectangle and a rhombus, and every rectangle and rhombus is a parallelogram. So a square has every property on this list (except the trapezoid's). Pick a type below to see it.</p>
+  <div class="btnrow" id="quadGalPick"></div>
+  <div class="tool gallery">
+    <svg id="quadGalSvg" viewBox="0 0 260 240"></svg>
+    <div class="gallery-rules">
+      <h4 id="quadGalName">–</h4>
+      <ul class="idlist" id="quadGalRules"></ul>
+      <label class="muted" id="quadGalSliderLbl" style="display:none">shape</label>
+      <input type="range" id="quadGalSlider" min="20" max="80" step="1" value="50" style="display:none">
     </div>
   </div>
-</details>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Areas of quadrilaterals</h4>
+  <ul class="idlist">
+    <li>Rectangle: <code>a · b</code> &nbsp;·&nbsp; Square: <code>a²</code></li>
+    <li>Parallelogram: <code>base · height</code></li>
+    <li>Trapezoid: <code>((a + b) · h)/2</code></li>
+    <li>Rhombus and kite: <code>(d₁ · d₂)/2</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a parallelogram and a trapezoid with their heights drawn">
+    <path class="cv" d="M30 170 H170 L210 70 H70 Z"/>
+    <path class="gd" d="M70 70 V170 M70 158 H82 V170"/>
+    <text x="100" y="192" text-anchor="middle">b</text>
+    <text x="78" y="126">h</text>
+    <path class="cv2" d="M240 170 H400 L360 70 H290 Z"/>
+    <path class="gd" d="M290 70 V170 M290 158 H302 V170"/>
+    <text x="325" y="62" text-anchor="middle">a</text>
+    <text x="320" y="192" text-anchor="middle">b</text>
+    <text x="298" y="126">h</text>
+  </svg>
+  <p class="muted"><b>Parallelogram:</b> cut off the triangle on one side and move it to the other: you get a rectangle with the same base and height. That's why it's <code>base · height</code>, not base times the slanted side.</p>
+  <p class="muted"><b>Trapezoid:</b> it's the <b>average</b> of the two bases times the height. Two copies, one turned upside down, make a parallelogram with base <code>a + b</code>.</p>
+  <p class="muted"><b>Example:</b> a trapezoid with bases <code>6</code> and <code>10</code> and height <code>4</code>: <code>((6 + 10) · 4)/2 = 32</code>.</p>
+</div>
 </section>
 
 <!-- ===== G4 · CIRCLES ===== -->
 <section class="pane" id="pane-g4">
 <h2><span class="num">4</span>Circles</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="g4">Expand all</button>
-  <button data-acc="close" data-scope="g4">Collapse all</button>
+<div class="card" data-tags="Formula">
+  <h4>Circumference, area and arcs</h4>
+  <ul class="idlist">
+    <li>Circumference: <code>C = 2πr</code> &nbsp;·&nbsp; Area: <code>S = πr²</code></li>
+    <li>Arc of angle <code>α°</code>: <code>(α/360°) · 2πr</code> &nbsp;·&nbsp; Sector: <code>(α/360°) · πr²</code></li>
+    <li>In radians: arc <code>= rθ</code>, sector <code>= (r²θ)/2</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a circle with a shaded sector of angle theta and its arc">
+    <circle class="ax" cx="150" cy="120" r="90"/>
+    <path class="band" d="M150 120 L240 120 A90 90 0 0 0 180.8 35.4 Z"/>
+    <path class="cv" d="M150 120 H240 M150 120 L180.8 35.4"/>
+    <path class="cv2" d="M240 120 A90 90 0 0 0 180.8 35.4" style="stroke-width:4"/>
+    <text x="195" y="138" text-anchor="middle">r</text>
+    <text x="172" y="108">θ</text>
+    <text x="232" y="62">arc</text>
+    <text class="sm" x="270" y="160">sector = the shaded slice</text>
+  </svg>
+  <p class="muted"><b>An arc and a sector are fractions of the whole:</b> an angle of <code>90°</code> is a quarter of <code>360°</code>, so its arc is a quarter of the circumference and its sector a quarter of the area.</p>
+  <p class="muted"><b>Example:</b> <code>r = 6</code>, <code>α = 60°</code>. Arc: <code>(60/360) · 12π = 2π</code>. Sector: <code>(60/360) · 36π = 6π</code>.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Inscribed vs central angle<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p>A <b>central angle</b> equals its arc. An <b>inscribed angle</b> is <b>half</b> the central angle on the same arc — so all inscribed angles on one arc are equal, and an angle in a semicircle is 90°.</p>
-    <div class="tool">
-      <p class="tool-title">Change the arc</p>
-      <div class="flex">
-        <svg id="inscSvg" viewBox="0 0 260 260" style="max-width:260px;flex-shrink:0"></svg>
-        <div class="panel">
-          <label class="muted">arc AB = <span id="inscArcLbl" class="mono">120°</span></label>
-          <input type="range" id="inscArc" min="20" max="330" step="2" value="120">
-          <div class="readout">
-            <span class="k">central angle ∠AOB</span><span class="v" id="inscCent">–</span>
-            <span class="k">inscribed angle ∠APB</span><span class="v" id="inscInsc">–</span>
-          </div>
+<div class="card" data-key="inscribed-vs-central-angle" data-tags="Theorem">
+  <h4>Inscribed and central angles</h4>
+  <p>A <b>central angle</b> has its corner at the centre. An <b>inscribed angle</b> has its corner on the circle. On the same arc, the inscribed angle is <b>half</b> the central angle.</p>
+  <ul>
+    <li>Inscribed angles on the same arc are equal.</li>
+    <li>An inscribed angle on a diameter (a half circle) is <code>90°</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="a circle with centre O, a central angle on arc AB, and an inscribed angle at P on the same arc that is half as big">
+    <circle class="ax" cx="210" cy="120" r="90"/>
+    <path class="cv2" d="M125.4 150.8 L210 120 L294.6 150.8"/>
+    <path class="cv" d="M125.4 150.8 L210 30 L294.6 150.8"/>
+    <circle class="dot" cx="210" cy="120" r="4"/>
+    <circle class="dot" cx="210" cy="30" r="4"/>
+    <circle class="dot" cx="125.4" cy="150.8" r="4"/>
+    <circle class="dot" cx="294.6" cy="150.8" r="4"/>
+    <text x="210" y="112" text-anchor="middle">O</text>
+    <text x="210" y="20" text-anchor="middle">P</text>
+    <text x="116" y="166" text-anchor="end">A</text>
+    <text x="304" y="166">B</text>
+    <text x="210" y="148" text-anchor="middle">2α</text>
+    <text x="210" y="62" text-anchor="middle">α</text>
+  </svg>
+  <p class="muted"><b>Why it's useful:</b> wherever <code>P</code> sits on the big arc, the angle <code>APB</code> stays the same. So if you know one angle on an arc, you know them all. In the sketch the central angle is <code>140°</code> and every inscribed angle on that arc is <code>70°</code>.</p>
+  <p class="muted"><b>Half circle:</b> a diameter is a central angle of <code>180°</code>, so any angle "looking at" the diameter from the circle is <code>90°</code>. That's the quickest way to find a right angle in a circle.</p>
+  <div class="tool">
+    <p class="tool-title">Change the arc</p>
+    <div class="flex">
+      <svg id="inscSvg" viewBox="0 0 260 260" style="max-width:260px;flex-shrink:0"></svg>
+      <div class="panel">
+        <label class="muted">arc AB = <span id="inscArcLbl" class="mono">120°</span></label>
+        <input type="range" id="inscArc" min="20" max="330" step="2" value="120">
+        <div class="readout">
+          <span class="k">central angle ∠AOB</span><span class="v" id="inscCent">–</span>
+          <span class="k">inscribed angle ∠APB</span><span class="v" id="inscInsc">–</span>
         </div>
       </div>
     </div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Chords<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:600px">
-      <li>A radius/diameter <b>perpendicular to a chord bisects it</b> (and its arc).</li>
-      <li><b>Equal chords</b> are equidistant from the center; longer chords sit closer to the center.</li>
-      <li><b>Intersecting chords:</b> <code>AP·PB = CP·PD</code>.</li>
-    </ul>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Tangents &amp; power of a point<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:600px">
-      <li>A tangent is <b>perpendicular to the radius</b> at the point of tangency.</li>
-      <li><b>Two tangents from one external point</b> are equal; the line to the center bisects the angle between them.</li>
-      <li><b>Tangent–chord angle</b> = half the intercepted arc.</li>
-      <li><b>Two secants:</b> <code>PA·PB = PC·PD</code>. &nbsp; <b>Tangent–secant:</b> <code>PT² = PA·PB</code>.</li>
-    </ul>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Cyclic quadrilateral<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <p>A quadrilateral inscribed in a circle: <b>opposite angles are supplementary</b> (<code>∠A + ∠C = 180°</code>). An exterior angle equals the opposite interior angle.</p>
-  </div>
-</details>
+</div>
+<div class="card" data-key="chords" data-tags="Theorem">
+  <h4>Chords</h4>
+  <ul>
+    <li>A line from the centre <b>perpendicular to a chord</b> cuts the chord (and its arc) in half. And the other way round: the line from the centre to a chord's midpoint is perpendicular to it.</li>
+    <li><b>Equal chords</b> are the same distance from the centre. The longer the chord, the closer it is to the centre.</li>
+    <li><b>Two chords crossing at P:</b> <code>AP · PB = CP · PD</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a chord AB with the perpendicular from the centre O meeting it at its midpoint M">
+    <circle class="ax" cx="210" cy="115" r="90"/>
+    <path class="cv" d="M132.1 160 H287.9"/>
+    <path class="gd" d="M210 115 V160 M210 148 H222 V160"/>
+    <path class="cv2" d="M210 115 L287.9 160"/>
+    <circle class="dot" cx="210" cy="115" r="4"/>
+    <circle class="dot" cx="210" cy="160" r="4"/>
+    <text x="204" y="110" text-anchor="end">O</text>
+    <text x="210" y="180" text-anchor="middle">M</text>
+    <text x="124" y="166" text-anchor="end">A</text>
+    <text x="296" y="166">B</text>
+    <text class="sm" x="256" y="130">r</text>
+  </svg>
+  <p class="muted"><b>Why:</b> <code>OA</code> and <code>OB</code> are both radii, so triangle <code>OAB</code> is isosceles. In an isosceles triangle the height from the top is also the median, so it hits <code>AB</code> at its middle.</p>
+  <p class="muted"><b>Example:</b> radius <code>5</code>, chord <code>8</code>. Half the chord is <code>4</code>, so by Pythagoras the distance from the centre is <code>√(5² − 4²) = 3</code>.</p>
+</div>
+<div class="card" data-key="tangents-power-of-a-point" data-tags="Theorem">
+  <h4>Tangents and the power of a point</h4>
+  <ul>
+    <li>A <b>tangent</b> touches the circle at one point and is <b>perpendicular to the radius</b> there.</li>
+    <li><b>Two tangents from one outside point</b> have equal lengths: <code>PA = PB</code>. The line from <code>P</code> to the centre cuts the angle between them in half.</li>
+    <li>The angle between a tangent and a chord is half the arc it cuts off.</li>
+    <li>From an outside point <code>P</code>: two secants: <code>PA · PB = PC · PD</code>; a tangent and a secant: <code>PT² = PA · PB</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="two tangents from an outside point P touching the circle at A and B, with the radii to A and B">
+    <circle class="ax" cx="150" cy="120" r="70"/>
+    <path class="cv" d="M360 120 L173.3 54 M360 120 L173.3 186"/>
+    <path class="cv2" d="M150 120 L173.3 54 M150 120 L173.3 186"/>
+    <path class="gd" d="M150 120 H360"/>
+    <circle class="dot" cx="150" cy="120" r="4"/>
+    <circle class="dot" cx="360" cy="120" r="4"/>
+    <circle class="dot" cx="173.3" cy="54" r="4"/>
+    <circle class="dot" cx="173.3" cy="186" r="4"/>
+    <text x="142" y="116" text-anchor="end">O</text>
+    <text x="368" y="124">P</text>
+    <text x="170" y="44" text-anchor="middle">A</text>
+    <text x="170" y="204" text-anchor="middle">B</text>
+    <text class="sm" x="270" y="76">PA = PB</text>
+  </svg>
+  <p class="muted"><b>Why the two tangents are equal:</b> triangles <code>OAP</code> and <code>OBP</code> both have a right angle (tangent ⊥ radius), equal radii <code>OA = OB</code>, and the same hypotenuse <code>OP</code>. So they're congruent (HL), and <code>PA = PB</code>.</p>
+  <p class="muted"><b>Example:</b> the distance from <code>P</code> to the centre is <code>13</code>, the radius is <code>5</code>. The tangent length is <code>√(13² − 5²) = 12</code>.</p>
+</div>
+<div class="card" data-key="cyclic-quadrilateral" data-tags="Theorem">
+  <h4>Cyclic quadrilaterals</h4>
+  <p>A quadrilateral with all four corners on one circle: its <b>opposite angles add up to <code>180°</code></b>. And the other way round: if opposite angles add up to <code>180°</code>, a circle passes through all four corners.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a quadrilateral ABCD with all four corners on a circle">
+    <circle class="ax" cx="210" cy="115" r="90"/>
+    <path class="cv" d="M165 37.1 L125.4 145.8 L240.8 199.6 L294.6 84.2 Z"/>
+    <text x="158" y="30" text-anchor="end">A</text>
+    <text x="116" y="156" text-anchor="end">B</text>
+    <text x="246" y="216">C</text>
+    <text x="304" y="82">D</text>
+    <text class="sm" x="330" y="160">∠A + ∠C = 180°</text>
+    <text class="sm" x="330" y="178">∠B + ∠D = 180°</text>
+  </svg>
+  <p class="muted"><b>Why:</b> <code>∠A</code> and <code>∠C</code> are inscribed angles on the two arcs between <code>B</code> and <code>D</code>. Those arcs make the whole circle, <code>360°</code>, and each angle is half its arc, so together they're <code>180°</code>.</p>
+  <p class="muted"><b>An exterior angle</b> of a cyclic quadrilateral equals the interior angle at the opposite corner.</p>
+</div>
 </section>
 
 <!-- ===== G5 · THALES ===== -->
 <section class="pane" id="pane-g5">
 <h2><span class="num">5</span>Thales' theorem</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="g5">Expand all</button>
-  <button data-acc="close" data-scope="g5">Collapse all</button>
+<div class="card" data-key="quick-recap-the-four-forms" data-tags="Theorem">
+  <h4>Thales' theorem in short</h4>
+  <p>Parallel lines cut the sides of an angle into <b>proportional</b> pieces. In triangle <code>ABC</code>, with <code>DE ∥ BC</code>:</p>
+  <ul class="idlist">
+    <li>Small Thales: <code>(AD)/(DB) = (AE)/(EC)</code></li>
+    <li>Big Thales: <code>(AD)/(AB) = (AE)/(AC) = (DE)/(BC)</code></li>
+    <li>Hourglass, with <code>AB ∥ DE</code> crossing at <code>P</code>: <code>(PA)/(PD) = (PB)/(PE) = (AB)/(DE)</code></li>
+    <li>Parallel lines cutting two lines: <code>(AB)/(BC) = (A'B')/(B'C')</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="triangle ABC with segment DE parallel to BC cutting the sides AB and AC">
+    <path class="cv" d="M210 30 L60 200 H360 Z"/>
+    <path class="cv2" d="M150 98 H270"/>
+    <circle class="dot" cx="150" cy="98" r="4"/>
+    <circle class="dot" cx="270" cy="98" r="4"/>
+    <text x="210" y="22" text-anchor="middle">A</text>
+    <text x="140" y="100" text-anchor="end">D</text>
+    <text x="280" y="100">E</text>
+    <text x="52" y="210" text-anchor="end">B</text>
+    <text x="368" y="210">C</text>
+    <text class="sm" x="210" y="118" text-anchor="middle">DE ∥ BC</text>
+  </svg>
+  <p class="muted"><b>Why it's true:</b> triangles <code>ADE</code> and <code>ABC</code> have the same angles (the corner at <code>A</code> is shared, and the parallel lines make the other angles equal), so they're <b>similar</b>. Similar triangles have all sides in the same ratio.</p>
+  <p class="muted"><b>Small or big?</b> Small Thales compares the two <b>pieces</b> of each side (<code>AD</code> with <code>DB</code>). Big Thales compares a piece with the <b>whole</b> side (<code>AD</code> with <code>AB</code>), and only big Thales includes <code>DE/BC</code>. Mixing them up is the most common mistake.</p>
+  <p class="muted"><b>Example:</b> <code>AD = 4</code>, <code>DB = 6</code>, <code>AE = 5</code>. Small Thales: <code>4/6 = 5/(EC)</code>, so <code>EC = 7.5</code>.</p>
+  <p class="muted"><b>The converse:</b> if the ratios are equal, the lines are parallel.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Thales' theorem — every form<span class="stag">gallery</span></summary>
-  <div class="subject-body">
-    <p>Pick a form — the sketch on the left, its rules &amp; formulas on the right. Drag the slider to see the ratio hold.</p>
-    <div class="btnrow" id="thalesPick"></div>
-    <div class="tool gallery">
-      <svg id="thalesSvg" viewBox="0 0 260 240"></svg>
-      <div class="gallery-rules">
-        <h4 id="thalesName">–</h4>
-        <ul class="idlist" id="thalesRules"></ul>
-        <label class="muted" id="thalesSliderLbl">adjust</label>
-        <input type="range" id="thalesSlider" min="15" max="85" step="1" value="45">
-        <div class="resultbox" id="thalesOut">–</div>
-      </div>
+<div class="card" data-key="thales-theorem-every-form" data-tags="Theorem">
+  <h4>Thales' theorem: every form</h4>
+  <p>Pick a form to see its sketch and rules. Drag the slider: the line moves, and the ratios stay equal.</p>
+  <div class="btnrow" id="thalesPick"></div>
+  <div class="tool gallery">
+    <svg id="thalesSvg" viewBox="0 0 260 240"></svg>
+    <div class="gallery-rules">
+      <h4 id="thalesName">–</h4>
+      <ul class="idlist" id="thalesRules"></ul>
+      <label class="muted" id="thalesSliderLbl">adjust</label>
+      <input type="range" id="thalesSlider" min="15" max="85" step="1" value="45">
+      <div class="resultbox" id="thalesOut">–</div>
     </div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Quick recap — the four forms<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:640px">
-      <li><b>Small Thales</b> (segment ratio): <code>DE ∥ BC</code> ⇒ <code>AD/DB = AE/EC</code></li>
-      <li><b>Big Thales</b> (whole-side ratio, △ADE ~ △ABC): <code>AD/AB = AE/AC = DE/BC</code></li>
-      <li><b>Sand-clock Thales</b> (hourglass through a point P): <code>AB ∥ DE</code> ⇒ <code>PA/PD = PB/PE = AB/DE</code></li>
-      <li><b>Intercept theorem</b>: parallel lines cut two transversals proportionally: <code>AB/BC = A'B'/B'C'</code></li>
-      <li><b>Converse</b> (all forms): equal ratios ⇒ the lines are parallel</li>
-    </ul>
-  </div>
-</details>
+</div>
 </section>
 
 <!-- ===== G6 · TRIG GEOMETRY ===== -->
 <section class="pane" id="pane-g6">
 <h2><span class="num">6</span>Trigonometric geometry</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="g6">Expand all</button>
-  <button data-acc="close" data-scope="g6">Collapse all</button>
+<div class="card" data-key="right-triangle-soh-cah-toa" data-tags="Definition">
+  <h4>Sine, cosine and tangent in a right triangle</h4>
+  <ul class="idlist">
+    <li><code>sin θ = (opposite)/(hypotenuse)</code></li>
+    <li><code>cos θ = (adjacent)/(hypotenuse)</code></li>
+    <li><code>tan θ = (opposite)/(adjacent)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a right triangle with angle theta; the hypotenuse, the side opposite theta and the side next to theta are labelled">
+    <path class="cv" d="M60 190 H340 V50 Z"/>
+    <path class="gd" d="M325 190 V175 H340"/>
+    <text x="100" y="182">θ</text>
+    <text x="186" y="108" text-anchor="end">hypotenuse</text>
+    <text x="200" y="210" text-anchor="middle">adjacent</text>
+    <text x="350" y="124">opposite</text>
+  </svg>
+  <p class="muted"><b>Which side is which:</b> the <b>hypotenuse</b> is always the longest side, across from the right angle. <b>Opposite</b> and <b>adjacent</b> depend on the angle you're looking at: opposite is across from <code>θ</code>, adjacent is the leg that touches <code>θ</code>.</p>
+  <p class="muted"><b>Memory aid:</b> SOH-CAH-TOA: <b>S</b>in = <b>O</b>pp/<b>H</b>yp, <b>C</b>os = <b>A</b>dj/<b>H</b>yp, <b>T</b>an = <b>O</b>pp/<b>A</b>dj.</p>
+  <p class="muted"><b>Example:</b> hypotenuse <code>10</code>, <code>θ = 30°</code>. The opposite side is <code>10 · sin 30° = 5</code>, the adjacent side <code>10 · cos 30° = 5√3 ≈ 8.66</code>.</p>
+  <div class="tool gallery">
+    <svg id="sohSvg" viewBox="0 0 260 220"></svg>
+    <div class="gallery-rules">
+      <h4>Drag the angle</h4>
+      <label class="muted">θ = <span id="sohLbl" class="mono">37°</span></label>
+      <input type="range" id="sohAngle" min="10" max="80" step="1" value="37">
+      <div class="readout">
+        <span class="k">opposite (hyp = 1)</span><span class="v" id="sohOpp">–</span>
+        <span class="k">adjacent</span><span class="v" id="sohAdj">–</span>
+        <span class="k"><i class="dot" style="background:var(--sin)"></i>sin θ</span><span class="v" id="sohSin">–</span>
+        <span class="k"><i class="dot" style="background:var(--cos)"></i>cos θ</span><span class="v" id="sohCos">–</span>
+        <span class="k"><i class="dot" style="background:var(--tan)"></i>tan θ</span><span class="v" id="sohTan">–</span>
+      </div>
+    </div>
+  </div>
 </div>
-
-<details class="subject" open>
-  <summary>Right triangle — SOH-CAH-TOA<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:460px">
-      <li><b>SOH:</b> <code>sin θ = opposite / hypotenuse</code></li>
-      <li><b>CAH:</b> <code>cos θ = adjacent / hypotenuse</code></li>
-      <li><b>TOA:</b> <code>tan θ = opposite / adjacent = sin θ / cos θ</code></li>
-    </ul>
-    <div class="tool gallery">
-      <svg id="sohSvg" viewBox="0 0 260 220"></svg>
-      <div class="gallery-rules">
-        <h4>Drag the angle</h4>
-        <label class="muted">θ = <span id="sohLbl" class="mono">37°</span></label>
-        <input type="range" id="sohAngle" min="10" max="80" step="1" value="37">
-        <div class="readout">
-          <span class="k">opposite (hyp = 1)</span><span class="v" id="sohOpp">–</span>
-          <span class="k">adjacent</span><span class="v" id="sohAdj">–</span>
-          <span class="k"><i class="dot" style="background:var(--sin)"></i>sin θ</span><span class="v" id="sohSin">–</span>
-          <span class="k"><i class="dot" style="background:var(--cos)"></i>cos θ</span><span class="v" id="sohCos">–</span>
-          <span class="k"><i class="dot" style="background:var(--tan)"></i>tan θ</span><span class="v" id="sohTan">–</span>
-        </div>
+<div class="card" data-key="right-triangle-facts" data-tags="Theorem">
+  <h4>Right triangle facts</h4>
+  <ul>
+    <li><b>Pythagoras:</b> <code>a² + b² = c²</code>, where <code>c</code> is the hypotenuse.</li>
+    <li><b>Height to the hypotenuse:</b> <code>h² = p · q</code>, where <code>p</code> and <code>q</code> are the two pieces it cuts the hypotenuse into.</li>
+    <li>The <b>median to the hypotenuse</b> is half the hypotenuse, <code>c/2</code>; it's the radius of the circle through all three corners.</li>
+    <li>Special triangles: <code>45°–45°–90°</code> has sides <code>1 : 1 : √2</code>; <code>30°–60°–90°</code> has sides <code>1 : √3 : 2</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a right triangle with the height from the right angle cutting the hypotenuse into pieces p and q">
+    <path class="cv" d="M40 190 H380 L125 42.8 Z"/>
+    <path class="gd" d="M125 42.8 V190 M125 178 H137 V190"/>
+    <text x="133" y="122">h</text>
+    <text x="82" y="210" text-anchor="middle">p</text>
+    <text x="252" y="210" text-anchor="middle">q</text>
+    <text x="125" y="34" text-anchor="middle">90°</text>
+  </svg>
+  <p class="muted"><b>Why <code>h² = p · q</code>:</b> the height splits the triangle into two smaller triangles that are similar to each other, so <code>h/p = q/h</code>.</p>
+  <p class="muted"><b>Why the median is half the hypotenuse:</b> a right angle is an inscribed angle on a diameter (Geometry › 4), so the hypotenuse is a diameter and its midpoint is the centre. All three corners are one radius away from it.</p>
+  <p class="muted"><b>Example:</b> legs <code>6</code> and <code>8</code>: hypotenuse <code>√(36 + 64) = 10</code>, median to it <code>5</code>.</p>
+</div>
+<div class="card" data-key="law-of-sines-law-of-cosines" data-tags="Theorem">
+  <h4>Law of sines and law of cosines</h4>
+  <ul class="idlist">
+    <li>Law of sines: <code>(a)/(sin A) = (b)/(sin B) = (c)/(sin C) = 2R</code></li>
+    <li>Law of cosines: <code>c² = a² + b² − 2ab · cos C</code></li>
+    <li>For an angle: <code>cos C = (a² + b² − c²)/(2ab)</code></li>
+  </ul>
+  <p>Side <code>a</code> is opposite angle <code>A</code>, and so on. <code>R</code> is the radius of the circle through the three corners.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a triangle ABC with each side named by the small letter of the opposite corner">
+    <path class="cv" d="M60 190 H360 L250 50 Z"/>
+    <text x="52" y="196" text-anchor="end">A</text>
+    <text x="368" y="196">B</text>
+    <text x="250" y="40" text-anchor="middle">C</text>
+    <text x="210" y="210" text-anchor="middle">c</text>
+    <text x="315" y="115">a</text>
+    <text x="145" y="112" text-anchor="end">b</text>
+  </svg>
+  <p class="muted"><b>The law of cosines is Pythagoras plus a correction:</b> when <code>C = 90°</code>, <code>cos C = 0</code> and it becomes <code>c² = a² + b²</code>. For a wider angle, <code>cos C &lt; 0</code> and <code>c</code> comes out longer; for a sharper one, shorter.</p>
+  <p class="muted"><b>When to use which:</b> the law of sines needs a side and its <b>opposite</b> angle as a known pair. The law of cosines needs either all three sides, or two sides and the angle <b>between</b> them. The method "Solving a triangle" walks through every case.</p>
+  <p class="muted"><b>Area</b> with two sides and the angle between them: <code>S = (1/2) · a · b · sin C</code>.</p>
+  <p class="muted">Below: every triangle has one circle through its three corners. The law of sines says that each side over the sine of its opposite angle equals that circle's <b>diameter</b>.</p>
+  <div class="tool gallery">
+    <svg id="losSvg" viewBox="0 0 260 250"></svg>
+    <div class="gallery-rules">
+      <h4>Drag angle A (moves B and C along the circle)</h4>
+      <label class="muted">arc BC = <span id="losArcLbl" class="mono">120°</span></label>
+      <input type="range" id="losArc" min="30" max="300" step="2" value="120">
+      <div class="readout">
+        <span class="k">R (circumradius)</span><span class="v" id="losR">–</span>
+        <span class="k"><i class="dot" style="background:var(--sin)"></i>side a = BC</span><span class="v" id="losA">–</span>
+        <span class="k"><i class="dot" style="background:var(--tan)"></i>angle A</span><span class="v" id="losAng">–</span>
+        <span class="k">a / sin A</span><span class="v" id="losRatio">–</span>
+        <span class="k">2R</span><span class="v" id="los2R">–</span>
       </div>
+      <p class="muted">Angle A is the <b>inscribed angle</b> on arc BC, so it's half that arc — while <code>a/sin A</code> stays pinned to <code>2R</code>.</p>
     </div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Right-triangle facts<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:560px">
-      <li><b>Pythagoras:</b> <code>a² + b² = c²</code> (c = hypotenuse)</li>
-      <li>Altitude to the hypotenuse: <code>h² = p·q</code>; each leg is the geometric mean of the hypotenuse and its adjacent segment</li>
-      <li>Median to the hypotenuse <code>= c/2 = R</code> (circumradius)</li>
-      <li>Special: <code>45-45-90 → 1 : 1 : √2</code>, &nbsp; <code>30-60-90 → 1 : √3 : 2</code></li>
-    </ul>
-  </div>
-</details>
-
-<details class="subject" open>
-  <summary>Law of Sines &amp; Law of Cosines<span class="stag">interactive + reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:640px">
-      <li><b>Law of Sines:</b> <code>a/sin A = b/sin B = c/sin C = 2R</code> &nbsp;(<code>R</code> = circumradius)</li>
-      <li><b>Law of Cosines:</b> <code>c² = a² + b² − 2ab·cos C</code></li>
-      <li>rearranged for an angle: <code>cos C = (a² + b² − c²)/(2ab)</code></li>
-      <li><b>Area:</b> <code>½·a·b·sin C</code> &nbsp;or&nbsp; <code>(a²·sin B·sin C)/(2 sin A)</code></li>
-    </ul>
-
-    <p style="margin-top:18px">Every triangle has one <b>circumcircle</b> through all three vertices, centre <code>O</code>, radius <code>R</code>. The Law of Sines just says each side over the sine of its opposite angle equals that circle's <b>diameter</b>:</p>
-    <div class="tool gallery">
-      <svg id="losSvg" viewBox="0 0 260 250"></svg>
-      <div class="gallery-rules">
-        <h4>Drag angle A (moves B and C along the circle)</h4>
-        <label class="muted">arc BC = <span id="losArcLbl" class="mono">120°</span></label>
-        <input type="range" id="losArc" min="30" max="300" step="2" value="120">
-        <div class="readout">
-          <span class="k">R (circumradius)</span><span class="v" id="losR">–</span>
-          <span class="k"><i class="dot" style="background:var(--sin)"></i>side a = BC</span><span class="v" id="losA">–</span>
-          <span class="k"><i class="dot" style="background:var(--tan)"></i>angle A</span><span class="v" id="losAng">–</span>
-          <span class="k">a / sin A</span><span class="v" id="losRatio">–</span>
-          <span class="k">2R</span><span class="v" id="los2R">–</span>
-        </div>
-        <p class="muted">Angle A is the <b>inscribed angle</b> on arc BC, so it's half that arc — while <code>a/sin A</code> stays pinned to <code>2R</code>.</p>
-      </div>
-    </div>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>SSA — the ambiguous case<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <p>Two sides and a <b>non-included</b> angle can give <b>0, 1, or 2</b> triangles. After solving with the Law of Sines, check each candidate: angles must sum to 180° and all sides stay positive.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Which tool for a triangle?<span class="stag">decision helper</span></summary>
-  <div class="subject-body">
-    <p>Pick what you're given:</p>
+</div>
+<div class="card" data-key="ssa-the-ambiguous-case" data-tags="Theorem">
+  <h4>The ambiguous case (SSA)</h4>
+  <p>Given two sides and an angle that is <b>not</b> between them, there can be <b>0, 1 or 2</b> triangles.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="side a swings around corner C and can meet the base line at two points, B1 and B2, giving two different triangles">
+    <path class="ax" d="M30 190 H330"/>
+    <path class="cv" d="M50 190 L170 70"/>
+    <path class="cv2" d="M170 70 L97.9 190 M170 70 L242.1 190"/>
+    <path class="gd" d="M97.9 190 A140 140 0 0 0 242.1 190"/>
+    <circle class="dot" cx="97.9" cy="190" r="4"/>
+    <circle class="dot" cx="242.1" cy="190" r="4"/>
+    <text x="42" y="196" text-anchor="end">A</text>
+    <text x="170" y="60" text-anchor="middle">C</text>
+    <text x="97.9" y="210" text-anchor="middle">B₁</text>
+    <text x="242.1" y="210" text-anchor="middle">B₂</text>
+    <text x="100" y="120" text-anchor="end">b</text>
+    <text x="214" y="122">a</text>
+    <text x="126" y="140" text-anchor="end">a</text>
+  </svg>
+  <p class="muted"><b>Why:</b> fix the angle <code>A</code> and side <code>b</code>. Side <code>a</code> hangs from <code>C</code> and swings like a door. It can miss the base line (too short: no triangle), just touch it (one right triangle), or cross it at two points <code>B₁</code> and <code>B₂</code> (two triangles).</p>
+  <p class="muted"><b>How you notice:</b> the law of sines gives <code>sin B</code>, and two angles have that sine: <code>B</code> and <code>180° − B</code>. Keep each one only if the angles still add up to less than <code>180°</code>. See the method "The ambiguous case (SSA)".</p>
+</div>
+<div class="card" data-key="which-tool-for-a-triangle" data-tags="Explanation">
+  <h4>Which law to use</h4>
+  <ul>
+    <li>Three sides (<code>SSS</code>) → law of cosines for an angle.</li>
+    <li>Two sides and the angle between them (<code>SAS</code>) → law of cosines for the third side.</li>
+    <li>Two angles and a side (<code>ASA</code>, <code>AAS</code>) → the third angle from <code>180°</code>, then the law of sines.</li>
+    <li>Two sides and an angle not between them (<code>SSA</code>) → law of sines, and check for two triangles.</li>
+    <li>A right triangle → SOH-CAH-TOA and Pythagoras.</li>
+  </ul>
+  <p class="muted">Tap what you're given to see the steps.</p>
+  <div class="tool">
+    <p class="tool-title">What are you given?</p>
     <div class="btnrow" id="lawPick">
       <button data-c="sss" class="on">SSS</button>
       <button data-c="sas">SAS</button>
@@ -1205,7 +1457,7 @@
     </div>
     <div class="resultbox" id="lawOut"></div>
   </div>
-</details>
+</div>
 </section>
 
 </div><!-- /folder-geo -->
@@ -3217,9 +3469,71 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_geangles", "v": 1, "subject": "f:geo", "kind": "problem",
+  "name": "Finding angles with parallel lines",
+  "description": "Find unknown angles in a figure with parallel lines, crossing lines and triangles.",
+  "uses": [["c", "g1", "the-angle-pairs"], ["c", "g1", "Angles at a point and on a line"], ["c", "g2", "triangle-solver-3-sides"]],
+  "parts": [
+    { "id": "st_bi_geangles1", "cat": "stage", "name": "Mark what you know", "text": "Write every given angle on the sketch, and mark which lines are parallel." },
+    { "id": "st_bi_geangles2", "cat": "stage", "name": "Fill in the easy ones", "text": "On a straight line, neighbours add up to `180°`. Vertical angles are equal." },
+    { "id": "st_bi_geangles3", "cat": "stage", "name": "Jump across the parallel lines", "text": "Corresponding and alternate angles are equal; co-interior angles add up to `180°`. Say which rule you use for each step." },
+    { "id": "st_bi_geangles4", "cat": "stage", "name": "Use triangles", "text": "Inside a triangle the three angles add up to `180°`, and an exterior angle is the sum of the two far interior ones." },
+    { "id": "st_bi_geangles5", "cat": "example", "name": "Example — all eight angles", "text": "Two parallel lines, a transversal makes a `65°` angle at the top crossing (angle 1).\n2. Its neighbour on the line: `180° − 65° = 115°` (angle 2). Vertical angles: angle 3 = `65°`, angle 4 = `115°`.\n3. Corresponding angles at the bottom crossing: 5 = `65°`, 6 = `115°`, 7 = `65°`, 8 = `115°`.\nCheck: co-interior 4 + 5 = `115° + 65° = 180°` ✓" },
+    { "id": "st_bi_geangles6", "cat": "example", "name": "Example — a triangle between parallel lines", "text": "`AB ∥ CD`. A triangle has its top corner `E` on `AB` and its base `FG` on `CD`. `∠AEF = 50°` and `∠BEG = 70°`.\n3. Alternate angles: `∠EFG = ∠AEF = 50°` and `∠EGF = ∠BEG = 70°`.\n4. `∠FEG = 180° − 50° − 70° = 60°`.\nCheck on line `AB`: `50° + 60° + 70° = 180°` ✓" }
+  ] },
+{ "id": "pp_bi_gesolve", "v": 1, "subject": "f:geo", "kind": "problem",
+  "name": "Solving a triangle",
+  "description": "Find all the missing sides and angles of a triangle from three given pieces.",
+  "uses": [["c", "g6", "law-of-sines-law-of-cosines"], ["c", "g6", "which-tool-for-a-triangle"], ["c", "g2", "triangle-solver-3-sides"]],
+  "parts": [
+    { "id": "st_bi_gesolve1", "cat": "stage", "name": "Sketch and name", "text": "Draw the triangle and name it: corners `A`, `B`, `C`, and each side by the small letter of the corner opposite it (`a` is opposite `A`)." },
+    { "id": "st_bi_gesolve2", "cat": "stage", "name": "Decide what you have", "text": "SSS, SAS, ASA/AAS or SSA? A right triangle? The card \"Which law to use\" says what to start with." },
+    { "id": "st_bi_gesolve3", "cat": "stage", "name": "First missing piece", "text": "SSS: law of cosines for the **biggest** angle (opposite the longest side).\nSAS: law of cosines for the third side.\nASA/AAS: the third angle `= 180° −` the other two.\nSSA: law of sines, then the method \"The ambiguous case (SSA)\"." },
+    { "id": "st_bi_gesolve4", "cat": "stage", "name": "Finish", "text": "Once you know a side **and** its opposite angle, use the law of sines for the rest. The last angle comes from `180°`." },
+    { "id": "st_bi_gesolve5", "cat": "stage", "name": "Check", "text": "The angles add up to `180°`, and the longest side is opposite the biggest angle." },
+    { "id": "st_bi_gesolve6", "cat": "example", "name": "Example — SSS", "text": "`a = 7`, `b = 5`, `c = 8`\n3. Biggest angle is `C` (opposite `8`): `cos C = (49 + 25 − 64)/(2 · 7 · 5) = 10/70 ≈ 0.143` → `C ≈ 81.8°`\n4. `cos A = (25 + 64 − 49)/(2 · 5 · 8) = 40/80 = 0.5` → `A = 60°`. `B = 180° − 60° − 81.8° = 38.2°`\n5. `8` is the longest side and `81.8°` the biggest angle ✓" },
+    { "id": "st_bi_gesolve7", "cat": "example", "name": "Example — SAS", "text": "`b = 5`, `c = 8`, `A = 60°` (between them)\n3. `a² = 25 + 64 − 2 · 5 · 8 · cos 60° = 89 − 40 = 49` → `a = 7`\n4. That's the SSS triangle above: `B ≈ 38.2°`, `C ≈ 81.8°`" },
+    { "id": "st_bi_gesolve8", "cat": "example", "name": "Example — ASA", "text": "`A = 40°`, `B = 60°`, `c = 10`\n3. `C = 180° − 40° − 60° = 80°`\n4. Now `c` and `C` are a pair: `(a)/(sin 40°) = (10)/(sin 80°)` → `a = (10 · sin 40°)/(sin 80°) ≈ (10 · 0.643)/(0.985) ≈ 6.53`\n`b = (10 · sin 60°)/(sin 80°) ≈ 8.79`\n5. Longest side `c = 10` faces the biggest angle `80°` ✓" }
+  ] },
+{ "id": "pp_bi_gessa", "v": 1, "subject": "f:geo", "kind": "problem",
+  "name": "The ambiguous case (SSA)",
+  "description": "Given two sides and an angle not between them, find whether there are 0, 1 or 2 triangles, and solve each.",
+  "uses": [["c", "g6", "ssa-the-ambiguous-case"], ["c", "g6", "law-of-sines-law-of-cosines"]],
+  "parts": [
+    { "id": "st_bi_gessa1", "cat": "stage", "name": "Law of sines for the unknown angle", "text": "Given `a`, `b` and `A`: `sin B = (b · sin A)/(a)`." },
+    { "id": "st_bi_gessa2", "cat": "stage", "name": "Count the triangles", "text": "`sin B > 1`: **no triangle**.\n`sin B = 1`: **one** right triangle (`B = 90°`).\n`sin B < 1`: two candidates, `B₁ = arcsin(sin B)` and `B₂ = 180° − B₁`." },
+    { "id": "st_bi_gessa3", "cat": "stage", "name": "Keep only the real ones", "text": "A candidate is a real triangle only if `A + B < 180°`. Check both." },
+    { "id": "st_bi_gessa4", "cat": "stage", "name": "Solve each triangle", "text": "For each kept `B`: `C = 180° − A − B`, then `c = (a · sin C)/(sin A)`." },
+    { "id": "st_bi_gessa5", "cat": "example", "name": "Example — two triangles", "text": "`a = 6`, `b = 8`, `A = 40°`\n1. `sin B = (8 · sin 40°)/(6) ≈ (8 · 0.643)/(6) ≈ 0.857`\n2. `B₁ ≈ 59.0°`, `B₂ ≈ 180° − 59.0° = 121.0°`\n3. `40° + 59.0° < 180°` ✓ and `40° + 121.0° = 161° < 180°` ✓: two triangles\n4. First: `C ≈ 81.0°`, `c ≈ (6 · 0.988)/(0.643) ≈ 9.22`\nSecond: `C ≈ 19.0°`, `c ≈ (6 · 0.326)/(0.643) ≈ 3.04`" },
+    { "id": "st_bi_gessa6", "cat": "example", "name": "Example — no triangle", "text": "`a = 3`, `b = 8`, `A = 40°`\n1. `sin B = (8 · 0.643)/(3) ≈ 1.71`\n2. A sine can't be more than `1`: side `a` is too short to reach the base. No triangle." }
+  ] },
+{ "id": "pp_bi_gethales", "v": 1, "subject": "f:geo", "kind": "problem",
+  "name": "Finding a length with Thales' theorem",
+  "description": "Use parallel lines (or similar triangles) to find a missing length.",
+  "uses": [["c", "g5", "quick-recap-the-four-forms"], ["c", "g2", "congruence-similarity"]],
+  "parts": [
+    { "id": "st_bi_gethales1", "cat": "stage", "name": "Find the parallel lines", "text": "Find the two parallel segments and the corner (or crossing point) the two sides come from." },
+    { "id": "st_bi_gethales2", "cat": "stage", "name": "Pick the form", "text": "Does the question involve the parallel segments themselves (like `DE` and `BC`)? Use **big Thales** (piece over whole side). Only pieces of the sides? **Small Thales** (piece over piece) is often quicker." },
+    { "id": "st_bi_gethales3", "cat": "stage", "name": "Write one proportion", "text": "Write the ratio in the same order on both sides: top piece over bottom piece on one side, top piece over bottom piece on the other." },
+    { "id": "st_bi_gethales4", "cat": "stage", "name": "Cross-multiply and solve", "text": "`(p)/(q) = (r)/(s)` → `p · s = q · r`." },
+    { "id": "st_bi_gethales5", "cat": "example", "name": "Example — small Thales", "text": "`DE ∥ BC`, `AD = 4`, `DB = 6`, `AE = 5`. Find `EC`.\n2. Only pieces: small Thales.\n3. `(AD)/(DB) = (AE)/(EC)` → `4/6 = (5)/(EC)`\n4. `4 · EC = 30` → `EC = 7.5`" },
+    { "id": "st_bi_gethales6", "cat": "example", "name": "Example — big Thales", "text": "Same triangle, `DE = 3`. Find `BC`.\n2. The parallel segments are involved: big Thales.\n3. `(AD)/(AB) = (DE)/(BC)`, with `AB = 4 + 6 = 10`: `4/10 = (3)/(BC)`\n4. `4 · BC = 30` → `BC = 7.5`" }
+  ] },
+{ "id": "pp_bi_gecircle", "v": 1, "subject": "f:geo", "kind": "problem",
+  "name": "Finding angles in a circle",
+  "description": "Find angles using central and inscribed angles, diameters, tangents and cyclic quadrilaterals.",
+  "uses": [["c", "g4", "inscribed-vs-central-angle"], ["c", "g4", "cyclic-quadrilateral"], ["c", "g4", "tangents-power-of-a-point"]],
+  "parts": [
+    { "id": "st_bi_gecircle1", "cat": "stage", "name": "Find the arc", "text": "For the angle you want, find the arc it \"looks at\" (the arc between the ends of its two sides)." },
+    { "id": "st_bi_gecircle2", "cat": "stage", "name": "Central or inscribed?", "text": "Corner at the centre: angle = arc. Corner on the circle: angle = half the arc. Angles on the same arc are equal." },
+    { "id": "st_bi_gecircle3", "cat": "stage", "name": "Look for special shapes", "text": "A diameter → a `90°` inscribed angle. A tangent → `90°` with the radius. Four corners on the circle → opposite angles add up to `180°`. Two radii → an isosceles triangle." },
+    { "id": "st_bi_gecircle4", "cat": "example", "name": "Example — central to inscribed", "text": "`∠AOB = 110°` (`O` the centre), `P` is on the big arc. Find `∠APB`.\n1. Both look at arc `AB`.\n2. Inscribed = half the central: `∠APB = 55°`" },
+    { "id": "st_bi_gecircle5", "cat": "example", "name": "Example — cyclic quadrilateral", "text": "`ABCD` has all corners on a circle, `∠A = 75°`, `∠B = 98°`. Find `∠C` and `∠D`.\n3. Opposite angles: `∠C = 180° − 75° = 105°`, `∠D = 180° − 98° = 82°`\nCheck: `75° + 98° + 105° + 82° = 360°` ✓" },
+    { "id": "st_bi_gecircle6", "cat": "example", "name": "Example — tangent and radius", "text": "`PA` is tangent at `A`, `O` the centre, `∠APO = 28°`. Find `∠AOP`.\n3. Tangent ⊥ radius: `∠OAP = 90°`.\nTriangle `OAP`: `∠AOP = 180° − 90° − 28° = 62°`" }
+  ] },
 { "id": "pp_bi_alabseq", "v": 1, "subject": "f:algebra", "kind": "problem",
   "name": "Solving an absolute value equation",
   "description": "Solve |E| = k, |A| = |B|, or an equation with x both inside and outside the bars.",
