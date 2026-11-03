@@ -2611,6 +2611,10 @@
   <button data-target="rv3"><span class="tnum">3</span>Special discrete distributions</button>
   <button data-target="rv4"><span class="tnum">4</span>Expectation</button>
   <button data-target="rv5"><span class="tnum">5</span>Variance and standard deviation</button>
+  <button data-target="rv6"><span class="tnum">6</span>Two random variables</button>
+  <button data-target="rv7"><span class="tnum">7</span>Covariance and correlation</button>
+  <button data-target="rv8"><span class="tnum">8</span>Continuous random variables</button>
+  <button data-target="rv9"><span class="tnum">9</span>The normal distribution</button>
 </nav>
 
 <main id="paneHost">
@@ -2642,7 +2646,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B140</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B141</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -19359,7 +19363,7 @@ function __detabaseMain() {
         return (SKIP[a] || SKIP[b]) ? m : "\\frac{" + fracs(bare(a)) + "}{" + fracs(bare(b)) + "}";
       });
     }
-    var s = fracs(String(text).replace(/\u00a0/g, "  ").replace(/[{}%&#$]/g, "\\$&"));
+    var s = fracs(String(text).replace(/\u00a0/g, "  ").replace(/~/g, "\u223c").replace(/[{}%&#$]/g, "\\$&"));   // ~ is TeX's space: "X ~ N(\u2026)" means \u223c (B141)
     s = s.replace(/lim_\(([^()]*)\)/g, "\\lim_{$1}").replace(/log_\(([^()]*)\)/g, "\\log_{$1}").replace(/log_([0-9A-Za-zπ])/g, "\\log_{$1}");
     for (var at; (at = s.indexOf("√(")) >= 0;) {          // √(…), brackets inside it kept whole
       var d = 0, i = at + 1;
