@@ -5389,12 +5389,143 @@
 </div>
 </section>
 </div><!-- /folder-prb -->
+<div class="folder" id="folder-cmb">
+
+<!-- ===== CMB1 · THE MULTIPLICATION RULE ===== -->
+<section class="pane on" id="pane-cmb1">
+<h2><span class="num">1</span>The multiplication rule</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Counting in stages</h4>
+  <p>If a first stage has <code>n₁</code> possible results and, whatever happened, a second stage has <code>n₂</code>, then the two stages together have <code>n₁ · n₂</code> results. With <code>k</code> stages: <code>n₁ · n₂ · … · nₖ</code>.</p>
+  <div class="bi-tree" data-cpart="ill" aria-label="a counting tree: a coin (H or T), then a choice of three colors under each side; 6 paths in all" data-tree='{"kids":[{"label":"H","kids":[{"label":"red"},{"label":"green"},{"label":"blue"}]},{"label":"T","kids":[{"label":"red"},{"label":"green"},{"label":"blue"}]}],"prod":0}'></div>
+  <p class="muted"><b>Why:</b> each of the <code>n₁</code> branches splits into <code>n₂</code> new ones, so the tree ends in <code>n₁ · n₂</code> leaves, one per combined result. A table with <code>n₁</code> rows and <code>n₂</code> columns shows the same thing.</p>
+  <p class="muted"><b>Example:</b> a code of 2 letters (26 choices each) and then 3 digits (10 each): <code>26 · 26 · 10 · 10 · 10 = 676,000</code> codes.</p>
+  <p class="muted"><b>What matters</b> is that the <b>number</b> of choices at a stage doesn't depend on earlier choices; which choices they are may change.</p>
+</div>
+</section>
+
+<!-- ===== CMB2 · ORDERED SAMPLES ===== -->
+<section class="pane" id="pane-cmb2">
+<h2><span class="num">2</span>Ordered samples</h2>
+<div class="card" data-tags="Formula">
+  <h4>With repeats: n to the k</h4>
+  <p>Choosing <code>k</code> times out of <code>n</code> items, in order, where an item may come up again (<b>with replacement</b>): <code>nᵏ</code> ways.</p>
+  <p class="muted"><b>Why:</b> the multiplication rule with <code>n</code> choices at every one of the <code>k</code> stages.</p>
+  <p class="muted"><b>Examples:</b> 4 coin tosses: <code>2⁴ = 16</code> results. A 4-digit PIN: <code>10⁴ = 10,000</code>. 3 dice: <code>6³ = 216</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Without repeats: (n)ₖ and n!</h4>
+  <ul class="idlist">
+    <li><code>(n)ₖ = n(n − 1)(n − 2) ⋯ (n − k + 1) = (n!)/((n − k)!)</code></li>
+    <li><code>n! = n(n − 1) ⋯ 2 · 1</code>, &nbsp; <code>0! = 1</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> <code>(n)ₖ</code> counts ordered choices of <code>k</code> different items out of <code>n</code> (<b>without replacement</b>): <code>n</code> choices for the first, one fewer for the second, and so on, <code>k</code> factors in all.</p>
+  <p class="muted"><b>Permutations:</b> arranging all <code>n</code> items in a row is the case <code>k = n</code>: <code>n!</code> ways ("<code>n</code> factorial").</p>
+  <p class="muted"><b>Examples:</b> gold, silver and bronze among 8 runners: <code>(8)₃ = 8 · 7 · 6 = 336</code>. Ranking 7 teachers: <code>7! = 5040</code>.</p>
+</div>
+</section>
+
+<!-- ===== CMB3 · UNORDERED SAMPLES ===== -->
+<section class="pane" id="pane-cmb3">
+<h2><span class="num">3</span>Unordered samples</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Combinations: n choose k</h4>
+  <p><code>binom(n,k) = ((n)ₖ)/(k!) = (n!)/(k! (n − k)!)</code></p>
+  <p class="muted"><b>In words:</b> the number of <b>groups</b> of <code>k</code> different items out of <code>n</code>, when order doesn't matter (a committee, a hand of cards).</p>
+  <p class="muted"><b>Why divide by <code>k!</code>:</b> counting in order, each group shows up <code>k!</code> times, once for every way to arrange its members. <code>{a, b, c}</code> is counted as <code>abc, acb, bac, bca, cab, cba</code>.</p>
+  <p class="muted"><b>Example:</b> 4 electives out of 10: <code>binom(10,4) = (10 · 9 · 8 · 7)/(4 · 3 · 2 · 1) = 210</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Properties of n choose k</h4>
+  <ul class="idlist">
+    <li><code>binom(n,k) = binom(n,n−k)</code></li>
+    <li><code>binom(n,0) = binom(n,n) = 1</code>, &nbsp; <code>binom(n,1) = n</code></li>
+  </ul>
+  <p class="muted"><b>Why the first:</b> choosing who goes on the committee is the same as choosing who stays out. So <code>binom(10,8) = binom(10,2) = 45</code>: compute with the smaller one.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Which formula: a summary</h4>
+  <div class="bi-table" data-table='{"rows":[{"c":["k out of n","repeats allowed","no repeats"]},{"c":["order matters","$n^k$","$\\frac{n!}{(n-k)!}$"]},{"c":["order doesn&#39;t matter","(not in this course)","$\\binom{n}{k}$"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Two questions decide it:</b> does the order matter (a ranking, a code: yes; a group, a hand: no)? Can the same item come up twice (with replacement: yes)?</p>
+</div>
+</section>
+
+<!-- ===== CMB4 · ARRANGEMENTS WITH REPEATED ITEMS ===== -->
+<section class="pane" id="pane-cmb4">
+<h2><span class="num">4</span>Arrangements with repeated items</h2>
+<div class="card" data-tags="Formula">
+  <h4>Repeated letters and splitting into groups</h4>
+  <p><code>(n!)/(n₁! n₂! ⋯ nₖ!)</code>, &nbsp; <code>n₁ + n₂ + ⋯ + nₖ = n</code></p>
+  <p class="muted"><b>Arranging items with repeats:</b> <code>n</code> items, of which <code>n₁</code> are alike, <code>n₂</code> are alike, and so on. Arranging them as if all were different gives <code>n!</code>; swapping alike items among themselves changes nothing, so divide by each <code>nᵢ!</code>.</p>
+  <p class="muted"><b>Example:</b> STATISTICS has 10 letters: S ×3, T ×3, I ×2, A, C. Different words: <code>(10!)/(3! 3! 2!) = 50,400</code>.</p>
+  <p class="muted"><b>The same count splits a group:</b> dividing <code>n</code> people into named groups of sizes <code>n₁, …, nₖ</code>. 10 people into teams of 5, 3 and 2: <code>(10!)/(5! 3! 2!) = 2520</code>. With two groups it is <code>binom(n,n₁)</code>.</p>
+</div>
+</section>
+
+<!-- ===== CMB5 · COUNTING FOR PROBABILITY ===== -->
+<section class="pane" id="pane-cmb5">
+<h2><span class="num">5</span>Counting for probability</h2>
+<div class="card" data-tags="Formula">
+  <h4>Choosing special items</h4>
+  <p>A group of <code>N</code> items has <code>K</code> special ones. Choose <code>n</code> at random without replacement. The chance of exactly <code>j</code> special ones:</p>
+  <p><code>(binom(K,j) binom(N−K,n−j))/(binom(N,n))</code></p>
+  <p class="muted"><b>Why:</b> every group of <code>n</code> is equally likely: <code>binom(N,n)</code> of them. A favorable group takes <code>j</code> of the special items and the other <code>n − j</code> from the rest: multiply the two counts.</p>
+  <p class="muted"><b>Example:</b> 7 black balls and 1 gold; draw 3. <code>P(gold drawn) = (binom(1,1) binom(7,2))/(binom(8,3)) = 21/56 = 3/8</code>. Or by the complement: <code>1 − binom(7,3)/binom(8,3) = 1 − 35/56 = 3/8</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>All different</h4>
+  <p>Choosing <code>k</code> times from <code>n</code> with replacement, every one of the <code>nᵏ</code> ordered results is equally likely, and</p>
+  <p><code>P(all different) = ((n)ₖ)/(nᵏ)</code></p>
+  <p class="muted"><b>Example:</b> 4 people in an elevator each pick one of 8 floors: <code>P(all different floors) = (8 · 7 · 6 · 5)/(8⁴) = 1680/4096 ≈ 0.41</code>.</p>
+  <p class="muted"><b>The birthday problem:</b> with 365 days, <code>((365)ₖ)/(365ᵏ)</code> drops below <code>1/2</code> already at <code>k = 23</code>: in a class of 23, two share a birthday more often than not.</p>
+  <p class="muted"><b>When <code>n</code> is huge compared with <code>k</code></b> this is close to 1: sampling with or without replacement then gives almost the same answers.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Keep the counting consistent</h4>
+  <p>Top and bottom must be counted the same way: both ordered, or both unordered. Mixing them is the most common mistake.</p>
+  <p class="muted"><b>Example:</b> 3 cards from a deck, all hearts. Unordered: <code>binom(13,3)/binom(52,3)</code>. Ordered: <code>(13 · 12 · 11)/(52 · 51 · 50)</code>. Both equal <code>11/850 ≈ 0.013</code>.</p>
+  <p class="muted"><b>Tip:</b> when order doesn't matter in the question, the unordered count is usually shorter. Order still helps for questions about "the first one" or "the third one".</p>
+</div>
+</section>
+</div><!-- /folder-cmb -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"]],"m":[["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"]],"m":[["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_cmbcount", "v": 1, "subject": "f:cmb", "kind": "action",
+  "name": "Choosing the counting formula",
+  "description": "Decide whether order matters and whether repeats are allowed, then count.",
+  "uses": [["c", "cmb3", "Which formula: a summary"], ["c", "cmb1", "Counting in stages"], ["c", "cmb2", "Without repeats: (n)ₖ and n!"]],
+  "parts": [
+    { "id": "st_bi_cmbcount1", "cat": "stage", "name": "Does order matter?", "text": "Would swapping two of the chosen items give a different result? A ranking, a code, seats in a row: yes. A committee, a hand of cards: no." },
+    { "id": "st_bi_cmbcount2", "cat": "stage", "name": "Can an item repeat?", "text": "Digits of a PIN, dice: yes (with replacement). People, cards: no." },
+    { "id": "st_bi_cmbcount3", "cat": "stage", "name": "Pick the formula", "text": "Order + repeats: `nᵏ`. Order, no repeats: `(n)ₖ = (n!)/((n − k)!)`. No order, no repeats: `binom(n,k)`. Mixed stages: multiply the counts of the stages." },
+    { "id": "st_bi_cmbcount4", "cat": "example", "name": "Example — a committee with conditions", "text": "A committee of 3 from 5 men and 3 women, with exactly 2 women\n1. No order. 2. No repeats.\n3. Women: `binom(3,2) = 3`; men: `binom(5,1) = 5`; together `3 · 5 = 15`" },
+    { "id": "st_bi_cmbcount5", "cat": "example", "name": "Example — at least one", "text": "Committees of 3 from the same 8 people with at least one woman\nAll: `binom(8,3) = 56`; no woman: `binom(5,3) = 10`; at least one: `56 − 10 = 46`" }
+  ] },
+{ "id": "pp_bi_cmbspecial", "v": 1, "subject": "f:cmb", "kind": "problem",
+  "name": "Probability of drawing special items",
+  "description": "Find the chance of exactly j special items in a random sample drawn without replacement.",
+  "uses": [["c", "cmb5", "Choosing special items"], ["c", "cmb3", "Combinations: n choose k"], ["c", "prb5", "Equally likely outcomes"]],
+  "parts": [
+    { "id": "st_bi_cmbspecial1", "cat": "stage", "name": "Name the numbers", "text": "`N` items in all, `K` special, a sample of `n`, and the wanted number `j` of special ones." },
+    { "id": "st_bi_cmbspecial2", "cat": "stage", "name": "Count all samples", "text": "`binom(N,n)`." },
+    { "id": "st_bi_cmbspecial3", "cat": "stage", "name": "Count the favorable ones", "text": "`binom(K,j) · binom(N − K, n − j)`: the special ones from the special, the rest from the rest." },
+    { "id": "st_bi_cmbspecial4", "cat": "stage", "name": "Divide", "text": "For \"at least\" questions, add the cases or use the complement." },
+    { "id": "st_bi_cmbspecial5", "cat": "example", "name": "Example", "text": "A group of 8 men and 2 women; 3 are chosen at random. `P(all men)`?\n1. `N = 10`, `K = 8` men, `n = 3`, `j = 3`\n2. `binom(10,3) = 120`\n3. `binom(8,3) binom(2,0) = 56`\n4. `56/120 = 7/15`" }
+  ] },
+{ "id": "pp_bi_cmbdiff", "v": 1, "subject": "f:cmb", "kind": "problem",
+  "name": "Probability that all choices differ",
+  "description": "Elevators, birthdays and other independent choices with replacement: the chance that no two coincide.",
+  "uses": [["c", "cmb5", "All different"], ["c", "cmb2", "With repeats: n to the k"]],
+  "parts": [
+    { "id": "st_bi_cmbdiff1", "cat": "stage", "name": "All results", "text": "Each of the `k` people chooses among `n` options: `nᵏ` equally likely ordered results." },
+    { "id": "st_bi_cmbdiff2", "cat": "stage", "name": "All different", "text": "`(n)ₖ = n(n − 1)⋯(n − k + 1)`." },
+    { "id": "st_bi_cmbdiff3", "cat": "stage", "name": "Divide; complement for \"some coincide\"", "text": "`P(all different) = ((n)ₖ)/(nᵏ)`; `P(at least two the same) = 1 −` that." },
+    { "id": "st_bi_cmbdiff4", "cat": "example", "name": "Example", "text": "5 people each roll a die. `P(at least two equal)`?\n1. `6⁵ = 7776`\n2. `(6)₅ = 6 · 5 · 4 · 3 · 2 = 720`\n3. `1 − 720/7776 ≈ 1 − 0.093 = 0.907`" }
+  ] },
 { "id": "pp_bi_prbwords", "v": 1, "subject": "f:prb", "kind": "action",
   "name": "Writing an event with set operations",
   "description": "Translate an event described in words into unions, intersections and complements, and simplify it.",

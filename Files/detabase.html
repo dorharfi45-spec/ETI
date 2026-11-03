@@ -2422,6 +2422,7 @@
     <button data-folder="ser" data-group="calc"><span class="ficon">∑</span>Series</button>
     <button data-folder="dst" data-group="stats"><span class="ficon">📊</span>Descriptive statistics</button>
     <button data-folder="prb" data-group="stats"><span class="ficon">🎲</span>Probability</button>
+    <button data-folder="cmb" data-group="stats"><span class="ficon">🔢</span>Combinatorics</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2592,6 +2593,13 @@
   <button data-target="prb4"><span class="tnum">4</span>Rules of probability</button>
   <button data-target="prb5"><span class="tnum">5</span>Uniform probability space</button>
 </nav>
+<nav class="tabbar" data-folder="cmb" id="tabbar-cmb">
+  <button data-target="cmb1" class="on"><span class="tnum">1</span>The multiplication rule</button>
+  <button data-target="cmb2"><span class="tnum">2</span>Ordered samples</button>
+  <button data-target="cmb3"><span class="tnum">3</span>Unordered samples</button>
+  <button data-target="cmb4"><span class="tnum">4</span>Arrangements with repeated items</button>
+  <button data-target="cmb5"><span class="tnum">5</span>Counting for probability</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2622,7 +2630,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B137</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B138</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4627,7 +4635,9 @@ function __detabaseMain() {
     dst: { title: "Descriptive statistics — for Intro to Statistics",
       sub: 'Data and scales, frequency tables and charts, measures of center, spread and relative position, correlation.' },
     prb: { title: "Probability — for Intro to Statistics",
-      sub: 'Sets, sample spaces and events, the probability function and its rules, uniform spaces, conditional probability, independence, Bayes, trees and tables.' }
+      sub: 'Sets, sample spaces and events, the probability function and its rules, uniform spaces, conditional probability, independence, Bayes, trees and tables.' },
+    cmb: { title: "Combinatorics — for Intro to Statistics",
+      sub: 'The multiplication rule, ordered and unordered samples, arrangements with repeats, counting for probability.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
