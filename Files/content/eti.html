@@ -3103,6 +3103,154 @@
 </div>
 </section>
 
+
+<!-- ===== DV9 · IMPLICIT DIFFERENTIATION AND DIFFERENTIALS ===== -->
+<section class="pane" id="pane-dv9">
+<h2><span class="num">9</span>Implicit differentiation and differentials</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Implicit differentiation</h4>
+  <p>When <code>y</code> is tied to <code>x</code> by an equation (like <code>x² + y² = 25</code>) instead of a formula <code>y = f(x)</code>: differentiate <b>both sides</b> with respect to <code>x</code>, treating <code>y</code> as a function of <code>x</code>, then solve for <code>y'</code>.</p>
+  <p>Every time <code>y</code> is differentiated, the chain rule adds a factor <code>y'</code>: <code>(y²)' = 2y · y'</code>, <code>(sin y)' = cos y · y'</code>, <code>(xy)' = y + x y'</code>.</p>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="the circle x squared plus y squared equals 25 with its tangent at the point (3, 4), of slope minus three quarters">
+    <path class="ax" d="M90 120 H330 M210 10 V230"/>
+    <circle class="cv" cx="210" cy="120" r="100"/>
+    <path class="gd" d="M210 120 L270 40"/>
+    <path class="cv2" d="M230 10 L350 100"/>
+    <circle class="dot" cx="270" cy="40" r="4"/>
+    <text x="278" y="34">(3, 4)</text>
+    <text class="sm" x="352" y="112">slope −3/4</text>
+    <text class="sm" x="120" y="226">x² + y² = 25</text>
+  </svg>
+  <p class="muted"><b>Why it's needed:</b> a circle isn't the graph of one function (it fails the vertical line test), but near each point it is: the top half is <code>y = √(25 − x²)</code>. Implicit differentiation gives the slope without splitting into halves.</p>
+  <p class="muted"><b>Example:</b> <code>x² + y² = 25</code>. Differentiate: <code>2x + 2y · y' = 0</code>, so <code>y' = −x/(y)</code>. At <code>(3, 4)</code>: <code>y' = −3/4</code>. (Check: the radius has slope <code>4/3</code>, and the tangent is perpendicular to it.)</p>
+  <p class="muted"><b>Careful:</b> the answer usually contains both <code>x</code> and <code>y</code>. To get a number, plug in a point that lies on the curve.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Differentials and linear approximation</h4>
+  <ul>
+    <li><code>Δy = f(x + Δx) − f(x)</code>: the real change in <code>y</code>.</li>
+    <li>The <b>differential</b> <code>dy = f'(x) dx</code>: the change along the tangent line (<code>dx = Δx</code>).</li>
+    <li>For small <code>Δx</code>: <code>Δy ≈ dy</code>, so <code>f(a + h) ≈ f(a) + f'(a) · h</code> (the <b>linear approximation</b>).</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="a curve and its tangent at a; moving right by dx, the curve rises by delta y and the tangent by dy, slightly less">
+    <path class="ax" d="M30 200 H405 M40 5 V210"/>
+    <path class="cv" d="M40.0 200.0 L55.0 199.6 L70.0 198.4 L85.0 196.4 L100.0 193.6 L115.0 190.0 L130.0 185.6 L145.0 180.4 L160.0 174.4 L175.0 167.6 L190.0 160.0 L205.0 151.6 L220.0 142.4 L235.0 132.4 L250.0 121.6 L265.0 110.0 L280.0 97.6 L295.0 84.4 L310.0 70.4 L325.0 55.6 L340.0 40.0 L355.0 23.6 L370.0 6.4"/>
+    <path class="cv2" d="M100 220 L340 64"/>
+    <path class="gd" d="M190 160 H290 M280 200 V97.6"/>
+    <circle class="dot" cx="190" cy="160" r="4"/>
+    <text x="235" y="176" text-anchor="middle">dx</text>
+    <text x="286" y="140">dy</text>
+    <text x="250" y="104" text-anchor="end">Δy</text>
+    <text x="190" y="214" text-anchor="middle">a</text>
+    <text x="280" y="214" text-anchor="middle">a + dx</text>
+  </svg>
+  <p class="muted"><b>In words:</b> close to a point, a smooth curve looks like its tangent line. So to estimate a value near a point you know, follow the tangent instead of the curve. The smaller the step, the smaller the gap between <code>Δy</code> and <code>dy</code>.</p>
+  <p class="muted"><b>Example:</b> <code>√(4.1)</code>. Use <code>f(x) = √x</code>, <code>a = 4</code>, <code>h = 0.1</code>: <code>f(4) = 2</code>, <code>f'(4) = 1/(2√4) = 1/4</code>. So <code>√(4.1) ≈ 2 + 0.1/4 = 2.025</code>. (Calculator: <code>2.02485</code>.)</p>
+  <p class="muted"><b>Error estimates:</b> a side of a cube measured as <code>10 cm</code> with a possible error of <code>0.1 cm</code>: <code>V = s³</code>, <code>dV = 3s² ds = 300 · 0.1 = 30 cm³</code> is the possible error in the volume.</p>
+</div>
+</section>
+
+<!-- ===== DV10 · RELATED RATES ===== -->
+<section class="pane" id="pane-dv10">
+<h2><span class="num">10</span>Related rates</h2>
+<div class="card" data-tags="Explanation">
+  <h4>Related rates</h4>
+  <p>When two quantities are linked by an equation and both change with time <code>t</code>, differentiate the equation with respect to <code>t</code>. The result links their rates (<code>dx/dt</code>, <code>dy/dt</code>), so knowing one rate gives the other.</p>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="a 5 metre ladder leaning on a wall: its foot is x from the wall and slides away, its top is y up the wall and slides down">
+    <path class="ax" d="M40 190 H400 M300 20 V190"/>
+    <path class="cv" d="M300 60 L140 190"/>
+    <path class="gd" d="M300 178 H288 V190"/>
+    <path class="arr" d="M120 190 L108 184 L108 196 Z"/>
+    <path class="gd" d="M140 182 H112"/>
+    <text x="220" y="207" text-anchor="middle">x</text>
+    <text x="310" y="130">y</text>
+    <text x="205" y="114" text-anchor="end">5 m</text>
+    <text class="sm" x="104" y="176" text-anchor="end">dx/dt = 0.5 m/s</text>
+  </svg>
+  <p class="muted"><b>Why it works:</b> both <code>x</code> and <code>y</code> are functions of time, so the chain rule gives <code>(x²)' = 2x · dx/dt</code>. The equation that holds at every moment also holds for the rates.</p>
+  <p class="muted"><b>Example:</b> a <code>5 m</code> ladder slides; its foot moves away from the wall at <code>0.5 m/s</code>. How fast is the top sliding down when the foot is <code>3 m</code> from the wall? <code>x² + y² = 25</code> → <code>2x · dx/dt + 2y · dy/dt = 0</code>. At <code>x = 3</code>, <code>y = 4</code>: <code>3 · 0.5 + 4 · dy/dt = 0</code>, so <code>dy/dt = −0.375 m/s</code>: the top slides down at <code>0.375 m/s</code>.</p>
+  <p class="muted"><b>The usual mistake:</b> plugging in the numbers (like <code>x = 3</code>) <b>before</b> differentiating. Then <code>x</code> looks constant and its rate disappears. Differentiate first, plug in after. Steps: the method "Solving a related-rates problem".</p>
+</div>
+</section>
+
+<!-- ===== DV11 · OPTIMIZATION PROBLEMS ===== -->
+<section class="pane" id="pane-dv11">
+<h2><span class="num">11</span>Optimization problems</h2>
+<div class="card" data-tags="Explanation">
+  <h4>Optimization problems</h4>
+  <p>A word problem that asks for the largest or smallest value (area, volume, cost, distance): write the quantity as a function of <b>one</b> variable, find the allowed interval, and find its absolute maximum or minimum there (Derivatives › 6).</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a 12 by 12 sheet with an x by x square cut from each corner; folding the sides up makes an open box">
+    <rect class="box" x="60" y="20" width="180" height="180"/>
+    <path class="gd" d="M60 65 H105 V20 M195 20 V65 H240 M60 155 H105 V200 M195 200 V155 H240"/>
+    <path class="ax" d="M105 65 H195 V155 H105 Z"/>
+    <text x="82" y="47" text-anchor="middle">x</text>
+    <text x="50" y="47" text-anchor="end">x</text>
+    <text x="150" y="114" text-anchor="middle">base</text>
+    <text x="150" y="60" text-anchor="middle">12 − 2x</text>
+    <text x="150" y="216" text-anchor="middle">12</text>
+    <text class="sm" x="260" y="80">fold the sides up:</text>
+    <text class="sm" x="260" y="100">V(x) = x(12 − 2x)²</text>
+    <text class="sm" x="260" y="120">0 &lt; x &lt; 6</text>
+  </svg>
+  <p class="muted"><b>Example:</b> cut equal squares of side <code>x</code> from the corners of a <code>12 × 12</code> sheet and fold an open box. <code>V(x) = x(12 − 2x)²</code> for <code>0 &lt; x &lt; 6</code>. <code>V'(x) = (12 − 2x)(12 − 6x) = 0</code> at <code>x = 2</code> (and <code>x = 6</code>, outside). <code>V(2) = 2 · 64 = 128</code>; near the ends <code>V → 0</code>. Largest box: <code>x = 2</code>, volume <code>128</code>.</p>
+  <p class="muted"><b>One critical point is enough</b> on an interval: if a continuous function has only one critical point there and it's a local maximum, it's the absolute maximum (likewise for a minimum).</p>
+  <p class="muted"><b>The hard part is the setup:</b> draw a sketch, name the variables, use the given condition (the "constraint") to remove all variables but one. Steps: the method "Solving an optimization problem".</p>
+</div>
+</section>
+
+<!-- ===== DV12 · NEWTON'S METHOD ===== -->
+<section class="pane" id="pane-dv12">
+<h2><span class="num">12</span>Newton's method</h2>
+<div class="card" data-tags="Formula">
+  <h4>Newton's method</h4>
+  <p>To approximate a root of <code>f(x) = 0</code>: start from a guess <code>x₁</code> and repeat</p>
+  <p><code>x_(n+1) = x_(n) − (f(x_(n)))/(f'(x_(n)))</code></p>
+  <svg class="ill" viewBox="0 0 420 235" role="img" aria-label="the curve x squared minus 2; the tangent at x equals 2 meets the axis at 1.5, the tangent there meets it at 1.417, very near the root">
+    <path class="ax" d="M30 170 H405"/>
+    <path class="cv" d="M40.0 229.5 L52.5 224.9 L65.0 220.0 L77.5 214.9 L90.0 209.5 L102.5 203.9 L115.0 198.0 L127.5 191.9 L140.0 185.5 L152.5 178.9 L165.0 172.0 L177.5 164.9 L190.0 157.5 L202.5 149.9 L215.0 142.0 L227.5 133.9 L240.0 125.5 L252.5 116.9 L265.0 108.0 L277.5 98.9 L290.0 89.5 L302.5 79.9 L315.0 70.0 L327.5 59.9 L340.0 49.5 L352.5 38.9 L365.0 28.0"/>
+    <path class="cv2" d="M315 70 L190 170 M190 157.5 L169.2 170"/>
+    <path class="gd" d="M315 70 V170 M190 157.5 V170"/>
+    <circle class="dot" cx="315" cy="70" r="4"/>
+    <circle class="dot" cx="190" cy="157.5" r="4"/>
+    <circle class="dot warn" cx="168.6" cy="170" r="4"/>
+    <text x="315" y="188" text-anchor="middle">x₁ = 2</text>
+    <text x="196" y="188">x₂ = 1.5</text>
+    <text x="150" y="160" text-anchor="end">root √2</text>
+    <text x="370" y="40">y = x² − 2</text>
+  </svg>
+  <p class="muted"><b>The idea:</b> at your guess, replace the curve by its tangent line, and take the place where the tangent crosses the x-axis as the next guess. Near a root the tangent hugs the curve, so the guesses close in very fast: the number of correct digits roughly doubles each step.</p>
+  <p class="muted"><b>Example, <code>√2</code>:</b> <code>f(x) = x² − 2</code>, <code>f'(x) = 2x</code>, so <code>x_(n+1) = x_(n) − (x_(n)² − 2)/(2x_(n))</code>. From <code>x₁ = 2</code>: <code>1.5</code>, <code>1.41667</code>, <code>1.414216</code> (true value <code>1.414214</code>).</p>
+  <p class="muted"><b>When it fails:</b> if <code>f'(x_(n)) = 0</code> (a flat tangent never meets the axis), or the start is too far from the root, the guesses can jump away. Start close: use the intermediate value theorem to find an interval with a sign change first (Limits › 8).</p>
+</div>
+</section>
+
+<!-- ===== DV13 · MOTION ALONG A LINE ===== -->
+<section class="pane" id="pane-dv13">
+<h2><span class="num">13</span>Motion along a line</h2>
+<div class="card" data-tags="Definition">
+  <h4>Position, velocity and acceleration</h4>
+  <ul>
+    <li><b>Position</b> <code>s(t)</code> on a line; <b>velocity</b> <code>v(t) = s'(t)</code>; <b>acceleration</b> <code>a(t) = v'(t) = s''(t)</code>.</li>
+    <li><b>Speed</b> = <code>|v(t)|</code>. <code>v &gt; 0</code>: moving in the positive direction; <code>v &lt; 0</code>: the negative direction; <code>v = 0</code>: stopped (maybe turning around).</li>
+    <li><b>Speeding up</b> when <code>v</code> and <code>a</code> have the same sign; <b>slowing down</b> when they have opposite signs.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the position s of t equals t cubed minus 6 t squared plus 9 t: it rises until t equals 1, falls until t equals 3, then rises again">
+    <path class="ax" d="M30 180 H405 M40 10 V195"/>
+    <path class="cv" d="M40.0 180.0 L48.0 154.8 L56.0 133.0 L64.0 114.4 L72.0 98.9 L80.0 86.2 L88.0 76.3 L96.0 68.9 L104.0 63.8 L112.0 60.9 L120.0 60.0 L128.0 60.9 L136.0 63.4 L144.0 67.3 L152.0 72.5 L160.0 78.8 L168.0 85.9 L176.0 93.8 L184.0 102.2 L192.0 111.0 L200.0 120.0 L208.0 129.0 L216.0 137.8 L224.0 146.2 L232.0 154.1 L240.0 161.2 L248.0 167.5 L256.0 172.7 L264.0 176.6 L272.0 179.1 L280.0 180.0 L288.0 179.1 L296.0 176.2 L304.0 171.1 L312.0 163.7 L320.0 153.8 L328.0 141.1 L336.0 125.6 L344.0 107.0 L352.0 85.2 L360.0 60.0 L368.0 31.2"/>
+    <path class="gd" d="M120 60 V180 M280 180 V180"/>
+    <text x="120" y="198" text-anchor="middle">1</text>
+    <text x="280" y="198" text-anchor="middle">3</text>
+    <text class="sm" x="80" y="48">v &gt; 0</text>
+    <text class="sm" x="200" y="98" text-anchor="middle">v &lt; 0</text>
+    <text class="sm" x="330" y="190">v &gt; 0</text>
+    <text x="398" y="200" text-anchor="end">t</text>
+    <text x="48" y="20">s</text>
+  </svg>
+  <p class="muted"><b>In words:</b> velocity is how fast the position changes (with a direction), acceleration is how fast the velocity changes. A slope on the position graph is a velocity.</p>
+  <p class="muted"><b>Example:</b> <code>s(t) = t³ − 6t² + 9t</code>. <code>v(t) = 3t² − 12t + 9 = 3(t − 1)(t − 3)</code>, <code>a(t) = 6t − 12</code>. It moves forward until <code>t = 1</code>, backwards until <code>t = 3</code>, then forward again. At <code>t = 2</code>: <code>v = −3</code>, <code>a = 0</code>. At <code>t = 0.5</code>: <code>v = 3.75 &gt; 0</code>, <code>a = −9 &lt; 0</code>: slowing down.</p>
+  <p class="muted"><b>Going backwards</b> (from acceleration to velocity to position) is integration: Integrals › 17.</p>
+</div>
+</section>
 </div><!-- /folder-der -->
 
 <div class="folder" id="folder-int">
@@ -4146,9 +4294,69 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"]],"m":[["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"]],"m":[["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_dvimp", "v": 1, "subject": "f:der", "kind": "action",
+  "name": "Differentiating implicitly",
+  "description": "Find y′ (and a tangent line) when x and y are linked by an equation instead of y = f(x).",
+  "uses": [["c", "dv9", "Implicit differentiation"], ["c", "dv2", "Composite functions (chain rule)"]],
+  "parts": [
+    { "id": "st_bi_dvimp1", "cat": "stage", "name": "Differentiate both sides", "text": "Differentiate every term with respect to `x`. Each time you differentiate something with `y`, multiply by `y'` (chain rule). A product like `xy` needs the product rule: `(xy)' = y + x y'`." },
+    { "id": "st_bi_dvimp2", "cat": "stage", "name": "Collect y′", "text": "Move every term with `y'` to one side and everything else to the other." },
+    { "id": "st_bi_dvimp3", "cat": "stage", "name": "Solve for y′", "text": "Take `y'` out as a common factor and divide." },
+    { "id": "st_bi_dvimp4", "cat": "stage", "name": "Plug in a point", "text": "For a slope at a point, put in both coordinates (check that the point is on the curve). Tangent line: `y − y₀ = y'(x − x₀)`." },
+    { "id": "st_bi_dvimp5", "cat": "example", "name": "Example — with a product", "text": "`x² + xy + y² = 7` at `(1, 2)`\n0. Check: `1 + 2 + 4 = 7` ✓\n1. `2x + (y + x y') + 2y y' = 0`\n2. `x y' + 2y y' = −2x − y`\n3. `y' = (−2x − y)/(x + 2y)`\n4. At `(1, 2)`: `y' = (−4)/(5)`. Tangent: `y − 2 = −(4/5)(x − 1)`" },
+    { "id": "st_bi_dvimp6", "cat": "example", "name": "Example — with a sine", "text": "`sin y = x`\n1. `cos y · y' = 1`\n3. `y' = 1/(cos y)`" }
+  ] },
+{ "id": "pp_bi_dvlin", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Approximating with differentials",
+  "description": "Estimate a value like √(9.2) or (2.01)⁵, or the error caused by a measuring error, with the tangent line.",
+  "uses": [["c", "dv9", "Differentials and linear approximation"], ["c", "dv1", "What the derivative tells you"]],
+  "parts": [
+    { "id": "st_bi_dvlin1", "cat": "stage", "name": "Choose f, a and h", "text": "Pick the function, a nearby point `a` where everything is easy to calculate, and the small step `h` (the number you want is `f(a + h)`)." },
+    { "id": "st_bi_dvlin2", "cat": "stage", "name": "Calculate f(a) and f′(a)", "text": "Work out both exactly at the easy point." },
+    { "id": "st_bi_dvlin3", "cat": "stage", "name": "Approximate", "text": "`f(a + h) ≈ f(a) + f'(a) · h`. For an error estimate, `dy = f'(x) dx` with `dx` = the measuring error." },
+    { "id": "st_bi_dvlin4", "cat": "example", "name": "Example — a root", "text": "`√(9.2)`\n1. `f(x) = √x`, `a = 9`, `h = 0.2`\n2. `f(9) = 3`, `f'(9) = 1/(2 · 3) = 1/6`\n3. `√(9.2) ≈ 3 + 0.2/6 ≈ 3.0333` (true: `3.0332`)" },
+    { "id": "st_bi_dvlin5", "cat": "example", "name": "Example — a measuring error", "text": "The radius of a ball is `5 cm`, measured with an error of up to `0.02 cm`. How big is the possible error in the volume?\n1. `V = (4/3)πr³`, `r = 5`, `dr = 0.02`\n2. `V' = 4πr² = 100π`\n3. `dV = 100π · 0.02 = 2π ≈ 6.3 cm³`" }
+  ] },
+{ "id": "pp_bi_dvrel", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Solving a related-rates problem",
+  "description": "Find how fast one quantity changes when you know how fast a linked quantity changes.",
+  "uses": [["c", "dv10", "Related rates"], ["c", "dv9", "Implicit differentiation"]],
+  "parts": [
+    { "id": "st_bi_dvrel1", "cat": "stage", "name": "Sketch and name", "text": "Draw the situation at a general moment. Name every changing quantity with a letter (functions of `t`); write in only the numbers that never change." },
+    { "id": "st_bi_dvrel2", "cat": "stage", "name": "Write what's given and what's asked", "text": "As rates: given `dx/dt = …`, asked `dy/dt` when `x = …`" },
+    { "id": "st_bi_dvrel3", "cat": "stage", "name": "Find an equation linking them", "text": "Pythagoras, similar triangles, an area or volume formula. If there's an extra variable, remove it with another relation." },
+    { "id": "st_bi_dvrel4", "cat": "stage", "name": "Differentiate with respect to t", "text": "Every changing letter gets its rate by the chain rule. Only now plug in the numbers of the moment you're asked about, and solve for the unknown rate." },
+    { "id": "st_bi_dvrel5", "cat": "example", "name": "Example — a growing circle", "text": "A circle's radius grows at `2 cm/s`. How fast does its area grow when `r = 10 cm`?\n2. `dr/dt = 2`; asked `dA/dt` at `r = 10`\n3. `A = πr²`\n4. `dA/dt = 2πr · dr/dt = 2π · 10 · 2 = 40π ≈ 126 cm²/s`" },
+    { "id": "st_bi_dvrel6", "cat": "example", "name": "Example — filling a cone", "text": "Water pours into a cone (point down, height `12`, top radius `4`) at `3 m³/min`. How fast does the water rise when it's `6 m` deep?\n2. `dV/dt = 3`; asked `dh/dt` at `h = 6`\n3. `V = (1/3)πr²h`. Similar triangles: `r/(h) = 4/12`, so `r = h/3` and `V = (π h³)/27`\n4. `dV/dt = (π h²)/9 · dh/dt` → `3 = (36π)/9 · dh/dt` → `dh/dt = 3/(4π) ≈ 0.24 m/min`" }
+  ] },
+{ "id": "pp_bi_dvopt", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Solving an optimization problem",
+  "description": "Find the largest or smallest value of a quantity in a word problem (area, volume, cost, distance).",
+  "uses": [["c", "dv11", "Optimization problems"], ["c", "dv6", "Extreme value theorem"], ["c", "dv5", "Critical points and the first derivative test"]],
+  "parts": [
+    { "id": "st_bi_dvopt1", "cat": "stage", "name": "Sketch and name", "text": "Draw it and give a letter to every quantity that can change." },
+    { "id": "st_bi_dvopt2", "cat": "stage", "name": "Write the quantity to optimize", "text": "A formula for what should be largest or smallest, in your letters." },
+    { "id": "st_bi_dvopt3", "cat": "stage", "name": "Reduce to one variable", "text": "Use the condition in the question (fixed perimeter, fixed volume, …) to replace all letters but one." },
+    { "id": "st_bi_dvopt4", "cat": "stage", "name": "Find the allowed interval", "text": "Which values make sense? (Lengths `> 0`, nothing bigger than the material.)" },
+    { "id": "st_bi_dvopt5", "cat": "stage", "name": "Find the absolute max or min", "text": "Critical points inside, plus the ends (or the limits at open ends). Compare, or use \"one critical point on an interval\"." },
+    { "id": "st_bi_dvopt6", "cat": "stage", "name": "Answer the question", "text": "Give what was asked: the dimensions, the value, or both, with units." },
+    { "id": "st_bi_dvopt7", "cat": "example", "name": "Example — a fence by a river", "text": "`600 m` of fence for a rectangle along a straight river (no fence on the river side). Largest area?\n1. `x` = the two sides at right angles to the river, `y` = the side along it.\n2. `A = xy`\n3. `2x + y = 600` → `y = 600 − 2x`, `A(x) = 600x − 2x²`\n4. `0 < x < 300`\n5. `A'(x) = 600 − 4x = 0` → `x = 150`; `A'' = −4 < 0`: maximum. Near the ends `A → 0`.\n6. `150 m × 300 m`, area `45,000 m²`" },
+    { "id": "st_bi_dvopt8", "cat": "example", "name": "Example — the cheapest can", "text": "A closed can must hold `V = 1000 cm³`. Which radius uses the least metal?\n2. Surface `S = 2πr² + 2πrh`\n3. `πr²h = 1000` → `h = 1000/(πr²)`, so `S(r) = 2πr² + 2000/(r)`\n4. `r > 0`\n5. `S'(r) = 4πr − 2000/(r²) = 0` → `r³ = 500/π` → `r ≈ 5.42 cm`. `S → ∞` at both ends, so this is the minimum.\n6. `r ≈ 5.42 cm`, `h = 1000/(πr²) ≈ 10.84 cm`: the height equals the diameter." }
+  ] },
+{ "id": "pp_bi_dvnewton", "v": 1, "subject": "f:der", "kind": "problem",
+  "name": "Approximating a root with Newton's method",
+  "description": "Find a solution of f(x) = 0 to several decimal places.",
+  "uses": [["c", "dv12", "Newton's method"], ["c", "lm8", "A root between a sign change"]],
+  "parts": [
+    { "id": "st_bi_dvnewton1", "cat": "stage", "name": "Bring it to f(x) = 0", "text": "Move everything to one side, e.g. `cos x = x` becomes `f(x) = cos x − x`." },
+    { "id": "st_bi_dvnewton2", "cat": "stage", "name": "Choose a start", "text": "Find an interval where `f` changes sign (a root is there), and start near it." },
+    { "id": "st_bi_dvnewton3", "cat": "stage", "name": "Iterate", "text": "`x_(n+1) = x_(n) − (f(x_(n)))/(f'(x_(n)))`. Stop when two guesses in a row agree to the decimals you need." },
+    { "id": "st_bi_dvnewton4", "cat": "example", "name": "Example — cos x = x", "text": "1. `f(x) = cos x − x`, `f'(x) = −sin x − 1`\n2. `f(0) = 1 > 0`, `f(1) ≈ −0.46 < 0`: a root in `(0, 1)`. Start `x₁ = 1`.\n3. `x₂ = 1 − (−0.4597)/(−1.8415) ≈ 0.7504`\n`x₃ ≈ 0.7391`, `x₄ ≈ 0.7391`\nRoot `≈ 0.7391`" },
+    { "id": "st_bi_dvnewton5", "cat": "example", "name": "Example — a cube root", "text": "`∛10`: solve `x³ − 10 = 0`, `f'(x) = 3x²`\n2. `2³ = 8 < 10 < 27`: start `x₁ = 2`\n3. `x₂ = 2 − (−2)/(12) ≈ 2.1667`, `x₃ ≈ 2.1545`, `x₄ ≈ 2.1544`\n`∛10 ≈ 2.1544`" }
+  ] },
 { "id": "pp_bi_seqlim", "v": 1, "subject": "f:ser", "kind": "problem",
   "name": "Finding the limit of a sequence",
   "description": "Decide whether a sequence converges and find its limit.",
