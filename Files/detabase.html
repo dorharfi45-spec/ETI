@@ -718,7 +718,6 @@
   .em-searchrow { display: flex; gap: 8px; align-items: center; }
   .em-search { flex: 1; min-width: 0; padding: 13px 15px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font-size: 1.02rem; }
   .em-clear { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-muted); border-radius: 10px; padding: 11px 13px; }
-  .em-narrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
   .em-nlabel { font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 700; }
   .em-clearnarrow { border: none; background: none; color: var(--accent); font-size: .84rem; text-decoration: underline; }
   .em-rhead { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin: 12px 2px 4px; }
@@ -729,7 +728,6 @@
   .em-hit-main:hover { border-color: var(--accent); }
   .em-hit-x { border: 1px solid var(--border); background: var(--bg); border-radius: 10px; padding: 0 12px; color: var(--text-muted); margin-bottom: 4px; }
   .em-hit-x:hover { color: var(--accent); border-color: var(--accent); }
-  .em-vhead { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); font-weight: 700; margin: 20px 2px 8px; }
   /* a vine: the page, then the concepts it uses, in stage order */
   .vine { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1); margin-bottom: 8px; }
   .vine-page { flex: 0 0 auto; max-width: 34%; text-align: left; border: none; background: none; padding: 0; color: var(--text-primary); }
@@ -902,6 +900,22 @@
   .em-libbar { margin: 0 0 12px; }
   .sl-head { margin: 22px 0 0; font-size: 1.1rem; }
   .cc-credit { margin-top: 18px; font-size: .74rem; }
+  .aw .lw-box { max-width: 620px; }
+  .aw-sec { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .aw-sec > .md-sechead { flex: 1 1 100%; margin: 0; }
+  .aw-kinds { display: flex; flex-wrap: wrap; gap: 6px; }
+  .aw-kind { min-height: 40px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: .84rem; cursor: pointer; }
+  .aw-kind.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); font-weight: 700; }
+  .aw-kind.off { opacity: .45; cursor: not-allowed; }
+  .aw-why { flex: 1 1 100%; margin: 4px 0 0; font-size: .78rem; }
+  .aw-where { flex: 1 1 auto; font-weight: 600; }
+  .aw-foot { display: flex; justify-content: flex-end; padding-top: 12px; }
+  .aw-foot .btn-primary { min-height: var(--tap); padding: 0 22px; }
+  .em-searchrow .em-search { min-height: 52px; font-size: 1.05rem; }
+  .em-kinds { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
+  .em-kind { min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 999px; background: none; color: var(--text-secondary); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+  .em-kind.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--text-primary); }
+  .em-hit-main b { font-weight: 650; }
   .course-sw { align-self: flex-start; min-height: 40px; margin: 6px 0; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-secondary); font: inherit; font-size: .84rem; font-weight: 600; cursor: pointer; }
   .course-sw.on { border-color: var(--ct); background: color-mix(in srgb, var(--ct) 18%, var(--surface-1)); color: var(--text-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--ct) 35%, transparent); }
   .cs-ctl { min-height: 36px; font-size: .8rem; }
@@ -1166,7 +1180,6 @@
   .em-search { border-radius: var(--r-md); min-height: 50px; }
   .em-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
   .em-clearnarrow { min-height: 40px; padding: 0 6px; }
-  .em-vhead { margin-top: 22px; }
 
   /* ---- the concept tree: concepts as circles, rings around them, methods as blue vines ---- */
   .em-tree { position: relative; margin-top: 12px; height: clamp(380px, 64vh, 780px); border: 1px solid var(--border);
@@ -2532,8 +2545,8 @@
 <div id="miningPane" hidden>
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
-    <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B127</span>
+    <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
+    <span id="buildTag" title="build marker — tell Claude what this says">B128</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -2548,6 +2561,7 @@
       <button id="psSource" type="button" class="btn-quiet">🖼 Source picture</button>
       <button id="psEdit" type="button" class="btn-quiet">✎ Open for editing</button>
       <button id="psRename" type="button" class="btn-quiet">✎ Rename</button>
+      <button id="psProps" type="button" class="btn-quiet">✎ Properties</button>
       <button id="psCourse" type="button" class="btn-quiet cs-ctl" hidden></button>
       <button id="psSummary" type="button" class="btn-quiet">📋 Summary</button>
       <button id="psBld" type="button" class="btn-primary" hidden>＋ Add to sheet</button>
@@ -2570,6 +2584,7 @@
     <span class="ps-actions">
       <button id="sumMore" type="button" class="btn-quiet">✎ Add / remove</button>
       <button id="sumGroup" type="button" class="btn-quiet" title="where this sheet is filed">📁</button>
+      <button id="sumProps" type="button" class="btn-quiet">✎ Properties</button>
       <button id="sumClip" type="button" class="btn-quiet">🧷 Add to Clipboard</button>
       <button id="sumRename" type="button" class="btn-quiet">✎ Rename</button>
       <button id="sumDelete" type="button" class="btn-danger">🗑 Delete</button>
@@ -5146,12 +5161,11 @@ function __detabaseMain() {
     head.querySelector("h2").addEventListener("click", function () { folderRename(gid); });
     var acts = head.querySelector(".cd-acts");
     acts.appendChild(actBtn("📋 Summary", "everything in this folder on one page, with filters — save it as a study sheet", function () { openScopeSummary("g:" + gid); }));
-    acts.appendChild(actBtn("＋ New study sheet", "pick from the library, then save it as a sheet", function () { sheetNew(sheetTopGroup(gid)); }));
     acts.appendChild(actBtn("＋ Folder", "a new folder inside this one", function () {
       askName("New folder", "Inside “" + groupName(gid) + "”.", "", function (n) { var id = addGroup(n, gid); renderFolderPage(); if (id) libToast("Created the folder “" + n + "”"); });
     }));
-    acts.appendChild(actBtn("＋ Subject", "a new subject in this folder", function () {
-      askName("New subject", "In “" + groupName(gid) + "”.", "", function (n) { addSubjectToGroup(gid, n); });
+    acts.appendChild(actBtn("＋ New asset", "a subject in this folder, or anything else", function () {
+      newAssetHere("s", { lvl: "g", id: gid });
     }, "btn-primary"));
     var dots = actBtn("⋯", "folder options", function () { folderMenu(dots, gid); }, "btn-quiet lib-dots");
     acts.appendChild(dots);
@@ -7983,7 +7997,6 @@ function __detabaseMain() {
       folder: folder, tab: tab, folderId: folderId, paneId: paneId,
       hay: (title + " " + full + " " + folder + " " + tab).toLowerCase(), snip: full.slice(0, 260)
     };
-    e.tags = SIT_TAGS.filter(function (t) { try { return t.test(e); } catch (_) { return false; } }).map(function (t) { return t.id; });
     searchIndex.push(e);
   }
   function indexById(id) { for (var i = 0; i < searchIndex.length; i++) if (searchIndex[i].id === id) return searchIndex[i]; return null; }
@@ -8029,33 +8042,6 @@ function __detabaseMain() {
         ch.setAttribute("data-el", runKey);
       });
     });
-  }
-
-  // "what does your problem look like?" — auto-assigned by keyword rules over each card's text
-  var SIT_TAGS = [
-    { id: "abs", label: "an absolute value |·|", test: function (e) { return /\|[^|]{1,40}\|/.test(e.hay) || e.hay.indexOf("absolute value") >= 0; } },
-    { id: "sqrt", label: "a square root √", test: function (e) { return e.hay.indexOf("√") >= 0 || e.hay.indexOf("square root") >= 0; } },
-    { id: "ineq", label: "an inequality", test: function (e) { return e.hay.indexOf("inequalit") >= 0; } },
-    { id: "signdiv", label: "dividing by something whose sign you don't know", test: function (e) { return e.hay.indexOf("unknown sign") >= 0 || e.hay.indexOf("sign chart") >= 0 || e.hay.indexOf("case split") >= 0 || e.hay.indexOf("1/x") >= 0; } },
-    { id: "andor", label: "conditions to combine (AND / OR)", test: function (e) { return e.title.toLowerCase().indexOf("and") >= 0 && e.title.toLowerCase().indexOf("or") >= 0 || (e.hay.indexOf("intersect") >= 0 && e.hay.indexOf("union") >= 0); } },
-    { id: "exp", label: "a power / exponent aˣ", test: function (e) { return e.hay.indexOf("exponent") >= 0 || e.hay.indexOf("aˣ") >= 0 || e.hay.indexOf("power") >= 0; } },
-    { id: "log", label: "a logarithm", test: function (e) { return /\blog\b/.test(e.hay) || e.hay.indexOf("logarithm") >= 0 || e.hay.indexOf(" ln ") >= 0; } },
-    { id: "subst", label: "a repeating chunk (substitution)", test: function (e) { return e.hay.indexOf("substitut") >= 0 || e.hay.indexOf("placing") >= 0 || e.hay.indexOf("let t =") >= 0 || e.hay.indexOf("u-substitution") >= 0; } },
-    { id: "trigeq", label: "a trig equation", test: function (e) { return (e.hay.indexOf("sin") >= 0 || e.hay.indexOf("cos") >= 0 || e.hay.indexOf("tan") >= 0) && (e.hay.indexOf("equation") >= 0 || e.hay.indexOf("solving") >= 0 || e.hay.indexOf("arcsin") >= 0 || e.hay.indexOf("periodic") >= 0); } },
-    { id: "identity", label: "a trig identity to apply", test: function (e) { return e.hay.indexOf("identit") >= 0 || e.hay.indexOf("double angle") >= 0 || e.hay.indexOf("half angle") >= 0 || e.hay.indexOf("pythagorean") >= 0; } },
-    { id: "circleangle", label: "an angle in the unit circle", test: function (e) { return e.hay.indexOf("unit circle") >= 0 || e.hay.indexOf("radian") >= 0 || e.hay.indexOf("quadrant") >= 0 || e.hay.indexOf("reference angle") >= 0; } },
-    { id: "domain", label: "the domain of a function", test: function (e) { return e.hay.indexOf("domain") >= 0; } },
-    { id: "triangle", label: "a triangle to solve", test: function (e) { return e.hay.indexOf("triangle") >= 0 || e.hay.indexOf("law of sines") >= 0 || e.hay.indexOf("law of cosines") >= 0 || e.hay.indexOf("soh-cah-toa") >= 0; } },
-    { id: "quad", label: "a quadrilateral", test: function (e) { return e.hay.indexOf("quadrilateral") >= 0 || e.hay.indexOf("parallelogram") >= 0 || e.hay.indexOf("trapezoid") >= 0 || e.hay.indexOf("rhombus") >= 0 || e.hay.indexOf("kite") >= 0; } },
-    { id: "circle", label: "a circle (chords, tangents…)", test: function (e) { return e.hay.indexOf("circle") >= 0 || e.hay.indexOf("chord") >= 0 || e.hay.indexOf("tangent") >= 0 || e.hay.indexOf("inscribed") >= 0 || e.hay.indexOf("arc") >= 0; } },
-    { id: "proportion", label: "parallel lines / proportions (Thales)", test: function (e) { return e.hay.indexOf("thales") >= 0 || e.hay.indexOf("proportion") >= 0 || (e.hay.indexOf("parallel") >= 0 && e.hay.indexOf("transversal") >= 0); } },
-    { id: "area", label: "an area to find", test: function (e) { return e.hay.indexOf("area") >= 0; } },
-    { id: "deriv", label: "a derivative", test: function (e) { return e.hay.indexOf("derivative") >= 0 || e.hay.indexOf("differentiat") >= 0 || e.hay.indexOf("d/dx") >= 0 || e.hay.indexOf("chain rule") >= 0; } },
-    { id: "monotone", label: "where a function increases / decreases", test: function (e) { return e.hay.indexOf("increasing") >= 0 || e.hay.indexOf("decreasing") >= 0 || e.hay.indexOf("monoton") >= 0; } },
-    { id: "integral", label: "an integral / area under a curve", test: function (e) { return e.hay.indexOf("integral") >= 0 || e.hay.indexOf("antiderivative") >= 0 || e.hay.indexOf("∫") >= 0; } }
-  ];
-  function availableTags() {
-    return SIT_TAGS.filter(function (t) { return searchIndex.some(function (e) { return e.tags.indexOf(t.id) >= 0; }); });
   }
 
   // ============================================================
@@ -10154,6 +10140,7 @@ function __detabaseMain() {
     t.setAttribute("data-card", cref.id);
     t.innerHTML = '<div class="cd-top"></div><button type="button" class="cd-open"><span class="cd-title"></span></button><div class="cd-bottom"><span class="cd-foot"></span></div>';
     t.querySelector(".cd-title").textContent = cardLabel(cref.id);
+    t.addEventListener("contextmenu", function (e) { e.preventDefault(); assetWindow({ lvl: "c", id: cref.id }); });
     var top = t.querySelector(".cd-top");
     if (sel) top.insertAdjacentHTML("beforeend", '<span class="cd-check" aria-hidden="true"></span>');
     top.appendChild(cardTagsEl(cref.id, false));
@@ -10250,7 +10237,7 @@ function __detabaseMain() {
       acts.appendChild(actBtn("↺ Reset to original", "delete your changes to this card", function () { biReset(ref.id); }));
     }
     var bd = usedBadge(ref); if (bd) acts.appendChild(bd);
-    acts.appendChild(actBtn("＋ Add to it", "add elements to this card", function () { addAssetAt(ref); }));
+    acts.appendChild(actBtn("✎ Properties", "everything about this card", function () { assetWindow(ref); }));
     acts.appendChild(dotsBtn(ref));
     var spec = { mem: "k|" + ref.id, title: cardLabel(ref.id), redraw: renderSubPage, filters: [cardPartFilter()] };
     var off = lsumState(spec).off.part, nOff = Object.keys(off).length;
@@ -10372,9 +10359,9 @@ function __detabaseMain() {
     if (sel) sel.allPaints = [];
     var acts = subHeadEl(host, { label: "‹ " + subjectName(key), title: "back to the subject", run: function () { openTabRef(tref.id); } }, tabLabel(tref.id));
     acts.appendChild(actBtn("📋 Summary", "every card of this concept on one page", function () { openSub("csummary", tref.id); }));
-    acts.appendChild(actBtn("＋ New study sheet", "pick from the library, then save it as a sheet", function () { sheetNew(keyGroup(key)); }));
     if (cards.length) acts.appendChild(selectBtn("t|" + tref.id, "cards to give them a type"));
-    acts.appendChild(actBtn("＋ Card", "crop a card out of your notes, or type one in", function () { addAssetAt(tref); }, "btn-primary"));
+    acts.appendChild(actBtn("＋ New asset", "a card in this concept, or anything else", function () { newAssetHere("c", { lvl: "t", id: tref.id }); }, "btn-primary"));
+    acts.appendChild(actBtn("✎ Properties", "everything about this concept", function () { assetWindow(tref); }));
     var bd = usedBadge(tref); if (bd) acts.appendChild(bd);
     acts.appendChild(dotsBtn(tref));
     var grid = cardGridEl(tref.id, cards, { sel: sel, methods: cardMethodsMap(), empty: "No cards yet — tap “＋ Card” to crop one out of your notes, or type one in." });
@@ -10409,7 +10396,7 @@ function __detabaseMain() {
     var m = conceptLinkMap();
     m[a] = (m[a] || []).filter(function (x) { return x !== b; });
     if (!m[a].length) delete m[a];
-    saveStore(); renderSubPage();
+    saveStore(); libAfterMove();
   }
   function conceptLinksEl(id) {
     var box = document.createElement("div");
@@ -10434,24 +10421,13 @@ function __detabaseMain() {
       pickLibTarget(null, function (x) {
         var m = conceptLinkMap(), l = m[id] = m[id] || [];
         if (x !== id && l.indexOf(x) < 0) l.push(x);
-        saveStore(); renderSubPage();
+        saveStore(); libAfterMove();
       }, null, { upTo: "t", title: "Builds on" });
     }, "ps-attach"));
     row("Used by", conceptUsedBy(id), function (x) { conceptUnlink(x, id); });
     return box;
   }
   // a new concept at the end of a subject
-  function newConcept(key) {
-    askName("New concept", "In " + subjectName(key) + " — a concept holds cards, for example “Kinematics”.", "", function (n) {
-      libEnsure();
-      var id = uid("ut_");
-      store.tabs.push({ id: id, subject: key, name: n, created: Date.now() });
-      libMove({ lvl: "t", id: id }, key, null);
-      saveStore(); libAfterMove();
-      setTimeout(function () { flashEl(spSectionOf(id)); }, 60);
-    });
-  }
-
   // ============================================================
   // SUMMARIES — live, filtered views; one component for every summary page
   // A summary pulls everything of its scope onto one scrolling page, in groups, in order. Filters
@@ -10961,7 +10937,7 @@ function __detabaseMain() {
     var nf = spChips(key, st).length;
     head.innerHTML = '<div class="sp-seg" role="tablist"><button type="button" data-v="concepts">Concepts</button><button type="button" data-v="methods">Methods</button><button type="button" data-v="merged">Merged</button></div>' +
       '<button type="button" class="sp-filter-btn">Filters' + (nf ? ' <span class="sp-badge">' + nf + '</span>' : '') + '</button>' +
-      '<span class="sp-adds"><button type="button" class="btn-quiet" data-a="n">＋ New study sheet</button><button type="button" class="btn-quiet" data-a="c">＋ Card</button><button type="button" class="btn-quiet" data-a="m">＋ Method</button></span>';
+      '<span class="sp-adds"><button type="button" class="btn-primary" data-a="new">＋ New asset</button></span>';
     Array.prototype.forEach.call(head.querySelectorAll(".sp-seg button"), function (b) {
       var on = b.getAttribute("data-v") === st.view;
       b.classList.toggle("on", on); b.setAttribute("aria-selected", on);
@@ -10969,9 +10945,11 @@ function __detabaseMain() {
     });
     head.querySelector(".sp-filter-btn").addEventListener("click", function () { spFilters(key); });
     if (spSummaryShown(st)) head.querySelector(".sp-filter-btn").hidden = true;
-    head.querySelector('[data-a="n"]').addEventListener("click", function () { sheetNew(keyGroup(key)); });
-    head.querySelector('[data-a="c"]').addEventListener("click", function () { addAssetAt({ lvl: "s", id: key }); });
-    head.querySelector('[data-a="m"]').addEventListener("click", function () { newProblemPage(key); });
+    head.querySelector('[data-a="new"]').addEventListener("click", function () {   // a card in the first concept, or a method on the Methods tab
+      var t0 = libKids({ lvl: "s", id: key })[0];
+      if (st.view === "methods" || !t0) newAssetHere(st.view === "methods" ? "p" : "t", { lvl: "s", id: key });
+      else newAssetHere("c", { lvl: "t", id: t0.id });
+    });
     return head;
   }
   function spChipsEl(key, st) {
@@ -11203,13 +11181,13 @@ function __detabaseMain() {
     bar.className = "cc-bar";
     bar.appendChild(spLookEl(key, st));
     if (spSummaryShown(st)) {
-      bar.appendChild(actBtn("＋ Concept", "a new concept at the end", function () { newConcept(key); }));
+      bar.appendChild(actBtn("＋ Concept", "a new concept in this subject", function () { newAssetHere("t", { lvl: "s", id: key }); }));
       host.appendChild(bar);
       lsumRender(host, conceptsSumSpec(key, null), bar);
       return;
     }
     if (tabs.length) bar.appendChild(selectBtn("c|" + key, "cards to give them a type"));
-    bar.appendChild(actBtn("＋ Concept", "a new concept at the end", function () { newConcept(key); }));
+    bar.appendChild(actBtn("＋ Concept", "a new concept in this subject", function () { newAssetHere("t", { lvl: "s", id: key }); }));
     if (tabs.length) bar.appendChild(collapseAllBtn("tiles", tabs.map(function (t) { return t.id; }), renderSubjectPage));
     host.appendChild(bar);
     if (sel) host.appendChild(selBarEl(cardSelActions()));
@@ -11475,44 +11453,6 @@ function __detabaseMain() {
   // Crop the whole thing out of a document — it becomes the method's source picture — say what kind
   // of method it is, then cut it into parts right away. Keeping it whole is fine too: then the whole
   // crop is the one part.
-  function newProblemPage(subjectKey) {
-    libEnsure();
-    if (!subjectKey) {
-      pickSubject("New method", "Which subject is this method for?", function (k) { newProblemPage(k); });
-      return;
-    }
-    cropFromPdf({
-      title: "Crop the method",
-      hint: "Draw a loop around the whole thing — next you cut it into its parts.",
-      saveLabel: "Use this →",
-      onDone: function (clip) {
-        askName("Name this method", "Every method needs a name. You can change it whenever you like.", "", function (name) {
-          pickKind("What kind of method is “" + name + "”?", function (kind) {
-            var pg = { id: uid("pp_"), subject: subjectKey, name: name, tags: [], assets: [], kind: kind, description: "",
-                       alsoSubjects: [], methodIds: [], created: Date.now() };
-            store.ps.pages.push(pg);
-            psBody(pg.id).source = clip;
-            psSaveBody(pg);
-            renderEtiTree();
-            selectPsPage(pg.id);
-            libToast("Created “" + name + "” in " + subjectName(subjectKey));
-            psCutParts(pg, true);
-          });
-        });
-      }
-    });
-  }
-  // the kind, asked when a method is made: one of the owner's kinds, or decided later (null)
-  function pickKind(title, onPick) {
-    var box = ovOpen(title);
-    box.body.innerHTML = '<p class="lw-hint">Summaries can show one kind at a time. You can change it on the method page.</p><div class="lw-opts"></div>';
-    var list = box.body.querySelector(".lw-opts");
-    methodKinds().forEach(function (k) {
-      list.appendChild(actBtn(k.name + "  ›", "", function () { box.close(true); onPick(k.id); }, "lw-opt"));
-    });
-    box.buttons([{ label: "Decide later", run: function () { box.close(true); onPick(null); } }]);
-    return box;
-  }
   // the kind as a segmented switch — on the method page and in the clipboard's review step
   function kindSwitchEl(cur, onPick) {
     var seg = document.createElement("div");
@@ -11694,18 +11634,18 @@ function __detabaseMain() {
   function linkMethods(pg, other) {
     if (other === pg || methodUses(pg).indexOf(other) >= 0) return;
     (pg.methodIds = pg.methodIds || []).push(other.id);
-    saveStore(); renderPsPane();
+    saveStore(); libAfterMove();
   }
   function unlinkMethods(user, used) {
     user.methodIds = (user.methodIds || []).filter(function (id) { return id !== used.id; });
-    saveStore(); renderPsPane();
+    saveStore(); libAfterMove();
     libToast("Unlinked “" + (user.id === activePsPage ? used.name : user.name) + "”");
   }
   function flipMethods(user, used) {
     user.methodIds = (user.methodIds || []).filter(function (id) { return id !== used.id; });
     used.methodIds = used.methodIds || [];
     if (used.methodIds.indexOf(user.id) < 0) used.methodIds.push(user.id);
-    saveStore(); renderPsPane();
+    saveStore(); libAfterMove();
   }
   function psMethodLinksEl(pg) {
     var box = document.createElement("div");
@@ -12005,6 +11945,7 @@ function __detabaseMain() {
     if (scopeValid(scopeSum) && $("scopePane") && !$("scopePane").hidden) renderScopePane();
     if (sheetsLib && $("sheetsPane") && !$("sheetsPane").hidden) renderSheetsLib();
     if (boardOpen && bd && bd.ctx) bdRedraw();
+    if (awCur) awCur.redraw();
   }
   // a method's parts: their order is the vine's order
   function psPartsDnd(docEl, pg) {
@@ -12460,16 +12401,6 @@ function __detabaseMain() {
     return box;
   }
   // the whole path: crop → (split) → destination → names
-  function newAssetsAt(startRef) {
-    cropFromPdf({
-      title: "Crop the concept",
-      hint: "Draw a loop around it. Several loops if there are several concepts on the page.",
-      saveLabel: "Use these →",
-      multi: true,
-      onDone: function (clips) { fileClipsAsConcepts(clips, startRef); }
-    });
-  }
-  // cb (optional): { saved(), cancelled() } — the reader keeps its marks until saved() is called
   function fileClipsAsConcepts(clips, startRef, cb) {
     cb = cb || {};
     if (!clips || !clips.length) return;
@@ -12649,32 +12580,6 @@ function __detabaseMain() {
     return box;
   }
   // no document behind it: type the concept instead
-  // a new card (or the one given), opened in the editor
-  function newWrittenCard(ref) {
-    function open(cardId) { cardEditing = cardId; edOpen = {}; edGone = {}; edHist = { undo: [], redo: [] }; openCardPage(cardId); }
-    if (ref.lvl === "c") { open(ref.id); return; }
-    function inTab(tabId) {
-      askName("New card", "In “" + tabLabel(tabId) + "”.", "", function (n) {
-        var id = uid("uc_");
-        store.cards.push({ id: id, tab: tabId, name: n, created: Date.now() });
-        libMove({ lvl: "c", id: id }, tabId, null);
-        saveStore(); libRefreshAll(); open(id);
-      });
-    }
-    if (ref.lvl === "t") inTab(ref.id);
-    else pickLibTarget(ref, inTab, null, { upTo: "t", title: "New card" });
-  }  // what the ⋯ menu's "＋ Add…" now does: crop, or type
-  function addAssetAt(ref) {
-    if (!mgmtExists(ref)) return;
-    var box = ovOpen("Add to " + mgmtName(ref));
-    box.body.innerHTML = '<p class="lw-hint">Where does the new material come from?</p>' +
-      '<div class="lw-kinds"><button type="button" data-k="crop">✂<b>Crop it out of a document</b><span>a PDF from Notability, or a picture</span></button>' +
-      '<button type="button" data-k="type">✎<b>Write it</b><span>text, formulas, graphs, drawings</span></button></div>';
-    box.body.querySelector('[data-k="crop"]').addEventListener("click", function () { box.close(true); newAssetsAt(ref); });
-    box.body.querySelector('[data-k="type"]').addEventListener("click", function () { box.close(true); newWrittenCard(ref); });
-    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
-    return box;
-  }
   function libToast(msg, action) {
     Array.prototype.forEach.call(document.querySelectorAll(".lib-toast.act"), function (x) { x.remove(); });   // one Undo at a time
     var t = document.createElement("div");
@@ -14895,36 +14800,15 @@ function __detabaseMain() {
   // that use it, and tapping another narrows again — which is how you look a method up by what it
   // needs rather than by what it is called.
   // ============================================================
-  var mainQ = "", mainNarrow = [], mainTag = null;
+  var mainQ = "", mainKind = "all";
   function entryRef(e) {   // a search-index entry → a library ref
     if (!e || !e.id) return null;
     return e.id.indexOf("pane:") === 0 ? { lvl: "t", id: "b:" + e.id.slice(5) } : { lvl: "c", id: e.id };
   }
-  function narrowHas(ref) { var k = refKey(ref); return mainNarrow.some(function (r) { return refKey(r) === k; }); }
-  function narrowAdd(ref) {
-    if (narrowHas(ref)) return;
-    mainNarrow.push({ lvl: ref.lvl, id: ref.id });
-    mainQ = "";            // the concept is the question now; the words that found it are not
-    renderEtiMain();
-  }
-  function narrowDrop(ref) {
-    var k = refKey(ref);
-    mainNarrow = mainNarrow.filter(function (r) { return refKey(r) !== k; });
-    renderEtiMain();
-  }
-  function narrowClear() { mainNarrow = []; mainTag = null; renderEtiMain(); }
-  // the vines on show: narrowed by the concepts picked, then by the tag, then by the words typed
+  // the methods the words typed find: the tree steps back from the rest
   function mainVines() {
     libEnsure();
-    var pages = mainNarrow.length ? vinesContaining(mainNarrow) : store.ps.pages.slice();
-    if (mainTag) {
-      var want = {};
-      searchIndex.forEach(function (e) {
-        if (e.tags.indexOf(mainTag) < 0) return;
-        var r = entryRef(e); if (r) want[refKey(r)] = 1;
-      });
-      pages = pages.filter(function (pg) { return vineOf(pg.id).some(function (r) { return want[refKey(r)]; }); });
-    }
+    var pages = store.ps.pages.slice();
     var q = mainQ.trim().toLowerCase();
     if (q) {
       var toks = q.split(/\s+/).filter(Boolean);
@@ -14954,10 +14838,10 @@ function __detabaseMain() {
       if (i) chain.insertAdjacentHTML("beforeend", '<span class="vine-arrow">→</span>');
       var b = document.createElement("button");
       b.type = "button";
-      b.className = "vine-node lvl-" + ref.lvl + (narrowHas(ref) ? " on" : "");
+      b.className = "vine-node lvl-" + ref.lvl;
       b.textContent = refName(ref);
-      b.title = narrowHas(ref) ? "already narrowing by this" : "show only methods that use this";
-      b.addEventListener("click", function () { narrowAdd(ref); });
+      b.title = "open it";
+      b.addEventListener("click", function () { openRef(ref); });
       chain.appendChild(b);
     });
     var cards = methodCards(pg.id), cl = document.createElement("div");
@@ -14985,107 +14869,66 @@ function __detabaseMain() {
     row.appendChild(acts);
     return row;
   }
-  // every part of every method on this device, for the search
-  function partIndex() {
-    var out = [];
-    store.ps.pages.forEach(function (pg) {
-      if (!psDocPresent(pg.id)) return;
-      psParts(pg.id).forEach(function (p) {
-        var label = partLabel(pg.id, p), cat = partCatName(p.cat);
-        out.push({ ref: { lvl: "st", id: p.id }, name: label, pg: pg, cat: cat, text: p.text || "",
-          hay: [label, p.text || "", cat, pg.name].join(" ").toLowerCase() });
-      });
+  // ---- the main page's search: everything by name (cards by their tags too), its kind and where it is ----
+  //   one engine (searchEntries) over the library, the methods, study sheets and strategies; kind chips narrow
+  var MAIN_KINDS = [{ id: "all", name: "All" }, { id: "s", name: "Subjects" }, { id: "t", name: "Concepts" }, { id: "c", name: "Cards" },
+    { id: "p", name: "Methods" }, { id: "sm", name: "Study sheets" }, { id: "sg", name: "Strategies" }];
+  var KIND_NAME = { s: "Subject", t: "Concept", c: "Card", p: "Method", sm: "Study sheet", sg: "Strategy" };
+  function mainIndex() {
+    var out = materialIndex().filter(function (en) { return en.ref.lvl !== "e"; }).map(function (en) {
+      var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id) : [];
+      var where = en.ref.lvl === "s" ? groupName(keyGroup(en.ref.id) || "base") : refPath(en.ref);
+      return { ref: en.ref, name: en.name, where: where, hay: (en.name + " " + tg.join(" ")).toLowerCase() };
     });
+    problemIndex().forEach(function (en) { out.push({ ref: en.ref, name: en.name, where: en.path, hay: (en.name + " " + (en.kind || "")).toLowerCase() }); });
+    sumEnsure().forEach(function (sm) {
+      var g = sheetGroupOf(sm);
+      out.push({ ref: { lvl: "sm", id: sm.id }, name: sm.name, where: (g ? groupName(g) : "Study sheets") + (sm.draft ? " · draft" : ""), hay: sm.name.toLowerCase() });
+    });
+    stratsAll().forEach(function (s) { var g = stratGroupOf(s); out.push({ ref: { lvl: "sg", id: s.id }, name: s.name, where: g ? groupName(g) : "Strategies", hay: s.name.toLowerCase() }); });
     return out;
   }
-  // what the words find, grouped by what each thing is — every result says what it is
+  function openAnyRef(ref) {
+    if (ref.lvl === "sm") { var sm = summaryById(ref.id); if (sm && sm.draft) bldStart(sm); else openSummary(ref.id); }
+    else if (ref.lvl === "sg") openStrat(ref.id);
+    else openRef(ref);
+  }
   function mainResultsEl() {
     var q = mainQ.trim();
     var box = document.createElement("div");
     box.className = "em-results";
     if (!q) return box;
-    function section(title) { box.insertAdjacentHTML("beforeend", '<div class="em-rhead">' + escapeHtml(title) + '</div>'); }
-    var TYPES = { s: "Subject", t: "Concept", c: "Card", e: "Element", p: "Method", st: "Part" };
-    function hitRow(label, sub, onMain, extra, type) {
+    var hiddenN = 0;
+    var all = searchEntries(mainIndex(), q, function (en) { return en.hay; }).filter(function (en) {
+      var lib = { s: 1, t: 1, c: 1, p: 1 }[en.ref.lvl];
+      if (lib && !courseRefOn(en.ref)) { hiddenN++; return false; }
+      return true;
+    });
+    var chips = document.createElement("div");
+    chips.className = "em-kinds";
+    MAIN_KINDS.forEach(function (k) {
+      var n = k.id === "all" ? all.length : all.filter(function (en) { return en.ref.lvl === k.id; }).length;
+      if (k.id !== "all" && !n) return;
+      chips.appendChild(actBtn(k.name + " " + n, "", function () { mainKind = k.id; renderEtiMain(); }, "em-kind" + (mainKind === k.id ? " on" : "")));
+    });
+    box.appendChild(chips);
+    var list = all.filter(function (en) { return mainKind === "all" || en.ref.lvl === mainKind; }).slice(0, 40);
+    if (!list.length) box.insertAdjacentHTML("beforeend", '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>');
+    list.forEach(function (en) {
       var row = document.createElement("div");
       row.className = "em-hit";
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "em-hit-main";
-      b.innerHTML = '<span>' + (type ? '<span class="mp-lvl lvl-' + type + '">' + TYPES[type] + '</span> ' : '') + escapeHtml(label) + '</span>' + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '');
-      b.addEventListener("click", onMain);
+      var b = actBtn("", "open it", function () { openAnyRef(en.ref); }, "em-hit-main");
+      b.innerHTML = '<span><b></b></span><small></small>';
+      b.querySelector("b").textContent = en.name;
+      b.querySelector("small").textContent = KIND_NAME[en.ref.lvl] + " · " + en.where;
       row.appendChild(b);
-      (extra || []).forEach(function (x) {
-        var e = document.createElement("button");
-        e.type = "button"; e.className = "em-hit-x"; e.textContent = x.label; e.title = x.title || "";
-        e.addEventListener("click", x.run);
-        row.appendChild(e);
-      });
+      assetHoldToOpen(b, en.ref);
+      row.appendChild(actBtn("⋯", "properties", function () { assetWindow(en.ref); }, "em-hit-x"));
       box.appendChild(row);
-    }
-    // the library — subjects and concepts, then cards (found by their title or their tags) and elements;
-    // tapping one narrows the methods to those that use it
-    var hiddenN = 0;
-    function swOn(en) { var on = courseRefOn(en.ref); if (!on) hiddenN++; return on; }
-    var lib = searchEntries(materialIndex(), q, function (en) {
-      var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id).concat(libElements(en.ref.id).map(function (e) { return elWords(e.id); })) : [];
-      return (en.name + " " + refPath(en.ref) + " " + tg.join(" ")).toLowerCase();
     });
-    lib = lib.filter(swOn);
-    var found = 0;
-    [["Concepts", ["s", "t"]], ["Cards", ["c", "e"]]].forEach(function (g) {
-      var list = lib.filter(function (en) { return g[1].indexOf(en.ref.lvl) >= 0; }).slice(0, 8);
-      if (!list.length) return;
-      found += list.length;
-      section(g[0]);
-      list.forEach(function (en) {
-        var tg = en.ref.lvl === "c" ? cardTagsOf(en.ref.id) : [];
-        hitRow(en.name, (tg.length ? tg.join(" · ") + " · " : "") + refPath(en.ref), function () { narrowAdd(en.ref); }, [
-          { label: "↗", title: "open it", run: function () { openRef(en.ref); } },
-          { label: "＋", title: "add to the Clipboard", run: function () { bdAddRefs([en.ref]); } }
-        ], en.ref.lvl);
-      });
-    });
-    // methods — by name, description, kind, subject › folder, tags and the concepts they use
-    var pages = searchEntries(problemIndex(), q, function (en) { return en.hay; }).filter(swOn).slice(0, 8);
     if (hiddenN) box.insertAdjacentHTML("beforeend", '<p class="muted cs-hint">' + hiddenN + (hiddenN === 1 ? " more result is" : " more results are") + ' hidden by “' + escapeHtml(courseSwName(courseSw())) + '”.</p>');
-    if (pages.length) {
-      found += pages.length;
-      section("Methods");
-      pages.forEach(function (en) {
-        hitRow(en.name, [en.kind || "needs a kind", en.path].concat(en.assets ? ["uses " + en.assets] : []).join(" · "), function () { selectPsPage(en.ref.id); }, [
-          { label: "＋", title: "add to the Clipboard", run: function () { bdAddRefs([en.ref]); } }
-        ], "p");
-      });
-    }
-    // method parts — by name, text and category
-    var parts = searchEntries(partIndex(), q, function (en) { return en.hay; }).slice(0, 8);
-    if (parts.length) {
-      found += parts.length;
-      section("Method parts");
-      parts.forEach(function (en) {
-        var snip = en.text ? " · “" + (en.text.length > 70 ? en.text.slice(0, 69) + "…" : en.text) + "”" : "";
-        hitRow(en.name, en.cat + " in " + en.pg.name + snip, function () { openRef(en.ref); }, [
-          { label: "＋", title: "add to the Clipboard", run: function () { bdAddRefs([en.ref]); } }
-        ], "st");
-      });
-    }
-    // situations: the tag search, matched against everything ETI holds
-    var ql = q.toLowerCase();
-    var tags = availableTags().filter(function (t) { return t.label.toLowerCase().indexOf(ql) >= 0 || t.id.indexOf(ql) >= 0; }).slice(0, 6);
-    if (tags.length) {
-      found += tags.length;
-      section("Involves…");
-      tags.forEach(function (t) {
-        hitRow(t.label, mainTag === t.id ? "filtering by this" : "", function () {
-          mainTag = mainTag === t.id ? null : t.id;
-          renderEtiMain();
-        });
-      });
-    }
-    if (!found) box.innerHTML = '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>';
     return box;
   }
-
   // ============================================================
   // THE CONCEPT TREE — the main page's map of the library
   // A concept is a circle. A card is a ring around its concepts, a tab a ring around its cards and a
@@ -15325,15 +15168,13 @@ function __detabaseMain() {
   }
   // what the search leaves standing; null when nothing is being searched
   function ctMark(model, pages) {
-    if (!(mainQ.trim() || mainNarrow.length || mainTag)) return null;
+    if (!mainQ.trim()) return null;
     var hit = {}, lit = {}, vis = {};
     pages.forEach(function (pg) {
       vis[pg.id] = 1;
       vineOf(pg.id).forEach(function (r) { lit[refKey(r)] = 1; });
       (pg.cardIds || []).forEach(function (id) { lit["c|" + id] = 1; });
     });
-    mainNarrow.forEach(function (r) { hit[refKey(r)] = 1; });
-    if (mainTag) searchIndex.forEach(function (e) { if (e.tags.indexOf(mainTag) >= 0) { var r = entryRef(e); if (r) hit[refKey(r)] = 1; } });
     var toks = mainQ.trim().toLowerCase().split(/\s+/).filter(Boolean);
     // the words, matched against a circle's name and the rings around it; the outermost match is
     // the one marked, and everything inside it comes along
@@ -15457,7 +15298,7 @@ function __detabaseMain() {
         if (h && !h.method && h.leaf) holdT = setTimeout(function () {
           if (pan !== p0 || p0.moved >= 8) return;
           p0.held = true;
-          narrowAdd(h.ref);
+          assetWindow(h.ref);                    // hold a circle: its properties
         }, 550);
       } else {
         var k = ids(), a = P[k[0]], b = P[k[1]];
@@ -15540,7 +15381,7 @@ function __detabaseMain() {
       '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-hint">Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for the methods that use it</div>';
+      '<div class="ct-hint">Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for its properties</div>';
     var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
     var gRings = world.querySelector(".ct-rings"), gLinks = world.querySelector(".ct-links"), gLeaves = world.querySelector(".ct-leaves"),
         gMethods = world.querySelector(".ct-methods"), gLbls = world.querySelector(".ct-lbls");
@@ -15617,7 +15458,7 @@ function __detabaseMain() {
     ctWire(E);
     // where to look: the whole tree the first time; what the search left, when it changes; and back
     // to where you were, once the search is cleared
-    var sig = JSON.stringify([mainQ.trim().toLowerCase(), mainNarrow.map(refKey), mainTag]);
+    var sig = JSON.stringify([mainQ.trim().toLowerCase()]);
     var want = null;
     if (sig !== ctSig) {
       if (marks) { if (!ctPreView && ctSig !== null && ctView) ctPreView = ctAuto ? { auto: ctAuto } : { view: ctView }; want = focusBox ? { box: focusBox, maxK: 3 } : null; }
@@ -15647,10 +15488,9 @@ function __detabaseMain() {
     libEnsure();
     host.innerHTML =
       '<div class="cc-bar em-libbar"></div>' +
-      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search concepts, cards, methods and their parts — or what a method involves…" autocomplete="off">' +
+      '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search by name — subjects, concepts, cards, methods, study sheets, strategies" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
-      '<div class="em-narrow"></div><div class="em-tree"></div><div class="em-res"></div>' +
-      '<div class="em-vines"></div>';
+      '<div class="em-res"></div><div class="em-tree"></div>';
     host.querySelector(".em-libbar").appendChild(actBtn("📚 Study sheets and strategies", "every study sheet, and make new ones", openSheetsLib, "btn-primary"));
     host.querySelector(".em-libbar").appendChild(actBtn("🧷 Clipboard", "a big board to lay out and connect library items", openBoard, "btn-primary"));
     var input = host.querySelector(".em-search");
@@ -15661,64 +15501,10 @@ function __detabaseMain() {
       st = setTimeout(function () { mainQ = input.value; renderEtiMain(); }, 160);
     });
     host.querySelector(".em-clear").addEventListener("click", function () { mainQ = ""; renderEtiMain(); });
-    // what we are narrowing by
-    var nb = host.querySelector(".em-narrow");
-    if (mainNarrow.length || mainTag) {
-      nb.insertAdjacentHTML("beforeend", '<span class="em-nlabel">Methods that use</span>');
-      mainNarrow.forEach(function (ref) {
-        var chip = document.createElement("span");
-        chip.className = "ps-chip";
-        chip.innerHTML = '<span class="ps-chip-go">' + escapeHtml(refName(ref)) + '</span>';
-        var x = document.createElement("button");
-        x.type = "button"; x.className = "ps-chip-x"; x.textContent = "✕"; x.title = "stop narrowing by this";
-        x.addEventListener("click", function () { narrowDrop(ref); });
-        chip.appendChild(x);
-        nb.appendChild(chip);
-      });
-      if (mainTag) {
-        var t = SIT_TAGS.filter(function (x) { return x.id === mainTag; })[0];
-        var tc = document.createElement("span");
-        tc.className = "ps-chip";
-        tc.innerHTML = '<span class="ps-chip-go">with ' + escapeHtml(t ? t.label : mainTag) + '</span>';
-        var tx = document.createElement("button");
-        tx.type = "button"; tx.className = "ps-chip-x"; tx.textContent = "✕";
-        tx.addEventListener("click", function () { mainTag = null; renderEtiMain(); });
-        tc.appendChild(tx);
-        nb.appendChild(tc);
-      }
-      if (mainNarrow.length) {
-        var addAll = document.createElement("button");
-        addAll.type = "button"; addAll.className = "ps-attach";
-        addAll.textContent = "＋ Add these to the Clipboard";
-        addAll.addEventListener("click", function () { bdAddRefs(mainNarrow.slice()); });
-        nb.appendChild(addAll);
-      }
-      var clr = document.createElement("button");
-      clr.type = "button"; clr.className = "em-clearnarrow"; clr.textContent = "Start over";
-      clr.addEventListener("click", narrowClear);
-      nb.appendChild(clr);
-    }
     var pages = mainVines();
     ctRender(host.querySelector(".em-tree"), pages);
     host.querySelector(".em-res").appendChild(mainResultsEl());
-    var vbox = host.querySelector(".em-vines");
-    var total = (store.ps.pages || []).length;
-    vbox.insertAdjacentHTML("beforeend", '<div class="em-vhead">' +
-      (mainNarrow.length || mainTag || mainQ.trim()
-        ? escapeHtml(pages.length + (pages.length === 1 ? " method" : " methods") + " of " + total)
-        : escapeHtml(total ? "All " + total + (total === 1 ? " method" : " methods") : "Methods")) + '</div>');
-    if (!total) {
-      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No methods yet. Tap “＋ New method”, crop it out of a PDF, cut it into parts and attach the concepts it uses — it shows up here, and as a square in the tree.</p>');
-    } else if (!pages.length) {
-      vbox.insertAdjacentHTML("beforeend", '<p class="muted">No method uses all of those together. Take one off to widen the search.</p>');
-    } else {
-      pages.sort(function (a, b) {
-        return subjectName(a.subject || "").localeCompare(subjectName(b.subject || "")) || a.name.localeCompare(b.name);
-      });
-      pages.slice(0, 60).forEach(function (pg) { vbox.appendChild(vineRowEl(pg)); });
-      if (pages.length > 60) vbox.insertAdjacentHTML("beforeend", '<p class="muted">…and ' + (pages.length - 60) + ' more — narrow it down.</p>');
-    }
-
+    if (mainQ && document.activeElement !== input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
   }
   // ============================================================
   // METHOD FOLDERS — a subject's methods, grouped
@@ -15898,6 +15684,7 @@ function __detabaseMain() {
     t.style.setProperty("--ct", k ? k.color || "var(--accent)" : "var(--border-strong)");
     t.innerHTML = '<div class="cd-top"></div><button type="button" class="cd-open"><span class="cd-title"></span></button><div class="cd-bottom"><span class="cd-foot"></span></div>';
     t.querySelector(".cd-title").textContent = pg.name;
+    t.addEventListener("contextmenu", function (e) { e.preventDefault(); assetWindow({ lvl: "p", id: pg.id }); });
     var top = t.querySelector(".cd-top");
     if (sel) top.insertAdjacentHTML("beforeend", '<span class="cd-check" aria-hidden="true"></span>');
     top.appendChild(methodKindLabel(pg, !sel));
@@ -16129,7 +15916,7 @@ function __detabaseMain() {
   function renderSheetsLib() {
     var host = $("sheetsPane"); if (!host) return;
     host.innerHTML = '<div class="cp-head"><h2>Study sheets and strategies</h2><span class="ps-actions"></span></div>';
-    host.querySelector(".ps-actions").appendChild(actBtn("＋ New study sheet", "pick from the library, then save it as a sheet", function () { sheetNew(null, null, true); }, "btn-primary"));
+    host.querySelector(".ps-actions").appendChild(actBtn("＋ New asset", "a study sheet, or anything else", function () { newAssetHere("sm", null); }, "btn-primary"));
     var drafts = sumEnsure().filter(function (sm) { return sm.draft; }), any = false;
     if (drafts.length) host.appendChild(sheetsSectionEl("Drafts", drafts));
     host.insertAdjacentHTML("beforeend", '<h3 class="sl-head">Study sheets</h3>');
@@ -16674,6 +16461,398 @@ function __detabaseMain() {
   if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
 
   DECOMPOSE.asset.can = function (clip) { var r = clip.ref || {}; return refExists(r) && (r.lvl === "p" || refKids(r).length > 0); };
+
+  // ============================================================
+  // THE ASSET WINDOW — one window that shows and changes every property of any asset, and creates new ones
+  //   refs: s t c p (library) · mf (a method folder) · sm (a study sheet) · sg (a strategy)
+  //   Changes apply as they are made; Cancel puts back the copy of the store taken when it opened, Save keeps
+  //   them and offers Undo (the same copy). Changing the kind is a conversion with a preview and a backup.
+  // ============================================================
+  var AW_KINDS = [{ id: "s", name: "Subject" }, { id: "t", name: "Concept" }, { id: "c", name: "Card" }, { id: "p", name: "Method" },
+    { id: "mf", name: "Method folder" }, { id: "sm", name: "Study sheet" }, { id: "sg", name: "Strategy" }];
+  var awCur = null;                                      // the open window: redrawn after anything changes the library
+  function awSnap() { return JSON.stringify(mainSnapshot()); }
+  function awRestore(snap) {
+    var o = JSON.parse(snap);
+    Object.keys(store).forEach(function (k) { if (!(k in o)) delete store[k]; });
+    Object.keys(o).forEach(function (k) { store[k] = o[k]; });
+    saveStore(); libAfterMove(); applyView();
+  }
+  function assetExists(ref) {
+    if (ref.lvl === "mf") return !!mfById(ref.id);
+    if (ref.lvl === "sm") return !!summaryById(ref.id);
+    if (ref.lvl === "sg") return !!stratById(ref.id);
+    return refExists(ref);
+  }
+  function assetName(ref) {
+    if (ref.lvl === "mf") return mfById(ref.id).name;
+    if (ref.lvl === "sm") return summaryById(ref.id).name;
+    if (ref.lvl === "sg") return stratById(ref.id).name;
+    return refLabel(ref);
+  }
+  function libSetName(ref, n) {
+    var o = mgmtObj(ref);
+    if (o) o.name = n; else store.etiEdits.names[refKey(ref)] = n;
+    if (ref.lvl === "st") { var sp = psPartById(ref.id); if (sp) psSaveBody(sp.page); }
+  }
+  function assetSetName(ref, n) {
+    if (ref.lvl === "mf") mfById(ref.id).name = n;
+    else if (ref.lvl === "sm") summaryById(ref.id).name = n;
+    else if (ref.lvl === "sg") stratById(ref.id).name = n;
+    else libSetName(ref, n);
+    saveStore(); refreshAfterManage();
+  }
+  // where it sits, in words
+  function assetWhere(ref) {
+    if (ref.lvl === "s") return groupName(ref.id.slice(0, 2) === "f:" ? effGroupOfBuiltin(ref.id.slice(2)) : effGroupOfSubject(byId(store.subjects, ref.id.slice(2)) || {}));
+    if (ref.lvl === "p") { var pg = psPageById(ref.id), f = methodFolderOf(pg); return subjectName(pg.subject) + (f ? " › 📁 " + f.name : ""); }
+    if (ref.lvl === "mf") return subjectName(mfById(ref.id).subject);
+    if (ref.lvl === "sm") { var g = sheetGroupOf(summaryById(ref.id)); return g ? groupName(g) : "No group"; }
+    if (ref.lvl === "sg") { var g2 = stratGroupOf(stratById(ref.id)); return g2 ? groupName(g2) : "No group"; }
+    return refPath(ref);
+  }
+  function assetMove(ref, anchor) {
+    var name = assetName(ref);
+    if (ref.lvl === "s") pickOrNew("Move “" + name + "” to", "Which folder?", allGroupIds().map(function (g) { return { id: g, name: new Array(groupPath(g).length).join("   ") + groupIcon(g) + " " + groupName(g) }; }), "New folder name…", function (gid, nn) {
+      if (!gid) gid = addGroup(nn, null);
+      libMoved("Moved “" + name + "”", function () { subjectToGroup(ref.id, gid, null); });
+    });
+    else if (ref.lvl === "t") pickSubject("Move “" + name + "” to", "Its cards come with it.", function (k) { libMoved("Moved “" + name + "”", function () { libMove(ref, k, null); }); });
+    else if (ref.lvl === "c") pickLibTarget(null, function (tabId) { libMoved("Moved “" + name + "”", function () { libMove(ref, tabId, null); }); }, null, { upTo: "t", title: "Move “" + name + "”" });
+    else if (ref.lvl === "p") libMenu(anchor, [{ label: "↪ To another subject…", run: function () { methodPickSubject([psPageById(ref.id)]); } }, { label: "📁 Into a folder…", run: function () { methodMoveTo(psPageById(ref.id)); } }]);
+    else if (ref.lvl === "mf") pickSubject("Move the folder “" + name + "” to", "Its methods come with it.", function (k) {
+      var f = mfById(ref.id), ms = psPagesOf(f.subject).filter(function (pg) { return pg.folder === f.id; });
+      libMoved("Moved the folder “" + name + "”", function () { ms.forEach(function (pg) { pg.subject = k; pg.folder = f.id; }); f.subject = k; });
+    });
+    else if (ref.lvl === "sm") sheetGroupMenu(anchor, summaryById(ref.id));
+    else if (ref.lvl === "sg") stratGroupMenu(anchor, stratById(ref.id));
+  }
+  function assetOpen(ref) {
+    if (ref.lvl === "c") { cardEditing = ref.id; edOpen = {}; edGone = {}; edHist = { undo: [], redo: [] }; openCardPage(ref.id); }
+    else if (ref.lvl === "mf") { var f = mfById(ref.id); spSetView(f.subject, "methods"); openSubjectRef(f.subject); }
+    else openAnyRef(ref);
+  }
+  function assetDelete(ref) {
+    if (ref.lvl === "mf") { mfDelete(mfById(ref.id)); return; }
+    if (ref.lvl === "sg") { stratDelete(stratById(ref.id)); return; }
+    if (ref.lvl === "sm") {
+      var sm = summaryById(ref.id); if (!confirmDelete(sm.name)) return;
+      store.summaries = sumEnsure().filter(function (x) { return x !== sm; });
+      if (store.ui.bld === sm.id) delete store.ui.bld;
+      if (activeSummary === sm.id) activeSummary = null;
+      saveStore(); libAfterMove(); applyView();
+      return;
+    }
+    libDelete(ref);
+  }
+  // a long press (or a right click) on something opens its window
+  function assetHoldToOpen(el, ref) {
+    var t = null;
+    el.addEventListener("contextmenu", function (e) { e.preventDefault(); assetWindow(ref); });
+    el.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse") return;
+      t = setTimeout(function () { t = null; el.__held = true; assetWindow(ref); }, 550);
+    });
+    ["pointerup", "pointercancel", "pointermove"].forEach(function (ev) { el.addEventListener(ev, function (e) { if (t && (ev !== "pointermove" || Math.abs(e.movementY) + Math.abs(e.movementX) > 4)) { clearTimeout(t); t = null; } }); });
+    el.addEventListener("click", function (e) { if (el.__held) { el.__held = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  }
+  function awSec(body, title) {
+    var s = document.createElement("div");
+    s.className = "aw-sec";
+    s.innerHTML = '<div class="md-sechead"></div>';
+    s.firstChild.textContent = title;
+    body.appendChild(s);
+    return s;
+  }
+  // ---- kind changes: what makes sense, and exactly what each does ----
+  function kindChoices(ref) {
+    var custom = !isBuiltinRef(ref), out = {};
+    function deny(id, why) { out[id] = { why: why }; }
+    AW_KINDS.forEach(function (k) { if (k.id !== ref.lvl) deny(k.id, "can't be made from a " + byId(AW_KINDS, ref.lvl).name.toLowerCase()); });
+    if (ref.lvl === "c") {
+      out.t = { ok: 1 };
+      if (custom) out.p = { ok: 1 }; else deny("p", "a built-in card: edit it first (✎ Edit), then it can become a method");
+    }
+    if (ref.lvl === "p") {
+      var pg = psPageById(ref.id), tabs = libKids({ lvl: "s", id: pg.subject });
+      if (tabs.length) out.c = { ok: 1 }; else deny("c", "its subject has no concept to hold the card");
+    }
+    if (ref.lvl === "t") out.s = { ok: 1 };
+    return out;
+  }
+  function kindPreview(ref, to) {
+    var name = assetName(ref), lines = [];
+    if (ref.lvl === "c" && to === "t") lines.push("A new concept “" + name + "” is made in " + subjectName(libSubjectOf(ref)) + ", and the card moves into it. Nothing else changes.");
+    if (ref.lvl === "t" && to === "s") lines.push("A new subject “" + name + "” is made in the same folder, and the concept moves into it with its cards. Its methods stay where they are.");
+    if (ref.lvl === "c" && to === "p") {
+      var els = libElements(ref.id), byKind = {};
+      els.forEach(function (e) { var k = e.kind || "ink"; byKind[k] = (byKind[k] || 0) + 1; });
+      lines.push("A method “" + name + "” is made in " + subjectName(libSubjectOf(ref)) + " with one Explanation part.");
+      if (byKind.text) lines.push(byKind.text + " text element" + (byKind.text > 1 ? "s become" : " becomes") + " the part's text (Description first, then Explanation, then Illustration).");
+      ["formula", "graph", "ink"].forEach(function (k) { if (byKind[k]) lines.push(byKind[k] + " " + { formula: "formula", graph: "graph", ink: "drawing" }[k] + (byKind[k] > 1 ? "s move" : " moves") + " into the part as they are."); });
+      if (cardTagsOf(ref.id).length) lines.push("Its tags are kept on the method.");
+      var users = cardMethodsMap()[ref.id] || [];
+      if (users.length) lines.push("Dropped: " + users.length + " method link" + (users.length > 1 ? "s" : "") + " to this card (" + users.map(function (p) { return p.name; }).join(", ") + ") — a method can't link to a method that way.");
+      lines.push("Study sheets, the Clipboard and strategies that hold the card hold the method instead.");
+    }
+    if (ref.lvl === "p" && to === "c") {
+      var pg = psPageById(ref.id), parts = psDocPresent(pg.id) ? psParts(pg.id) : [], tab = libKids({ lvl: "s", id: pg.subject })[0];
+      lines.push("A card “" + name + "” is made in the concept “" + tabLabel(tab.id) + "” (move it afterwards if needed).");
+      lines.push(parts.length + " part" + (parts.length === 1 ? "" : "s") + " become elements: a Stage or Explanation part → Description, an Example → Explanation; their formulas, graphs and drawings move with them.");
+      var pics = parts.filter(function (p) { return p.clip; }).length;
+      if (pics) lines.push("Dropped: " + pics + " cropped picture" + (pics > 1 ? "s" : "") + " (they can't be a card element).");
+      if ((pg.methodIds || []).length || methodUsedBy(pg).length) lines.push("Dropped: its “uses” links (a card has none).");
+      if ((pg.cardIds || []).length || (pg.alsoSubjects || []).length) lines.push("Dropped: its card connections and connected subjects.");
+      lines.push("Study sheets, the Clipboard and strategies that hold the method or its parts hold the card instead.");
+    }
+    return lines;
+  }
+  // every place a ref is stored by id: sheets, the Clipboard, strategies, course labels
+  function refReplace(from, to) {
+    var fk = refKey(from);
+    function swap(r) { if (r && refKey(r) === fk) { r.lvl = to.lvl; r.id = to.id; } }
+    sumEnsure().forEach(function (sm) { sm.items.forEach(swap); if (sm.bld) sm.bld.adds.forEach(function (a) { a.items.forEach(swap); }); });
+    var bdoc = loadCanvas(BOARD_ID);
+    if (bdoc.ps) { (bdoc.ps.blocks || []).forEach(function (b) { swap(b.ref); }); saveCanvas(BOARD_ID); }
+    stratsAll().forEach(function (s) {
+      s.nodes.forEach(function (n) { swap(n.ref); (n.refs || []).forEach(swap); });
+      var c = loadCanvas(s.id); if (c.ps) { (c.ps.blocks || []).forEach(function (b) { swap(b.ref); }); saveCanvas(s.id); }
+    });
+    var m = courseMap(); if (m[fk]) { m[refKey(to)] = m[fk]; delete m[fk]; }
+  }
+  function kindConvert(ref, to) {
+    try { window.DBX.put("__pre_kind", { store: awSnap(), ts: Date.now() }); } catch (e) {}
+    var name = assetName(ref), made = null;
+    if (ref.lvl === "c" && to === "t") {
+      var tab = refParent(ref), key = libSubjectOf(ref), id = uid("ut_");
+      store.tabs.push({ id: id, subject: key, name: name, created: Date.now() });
+      libMove({ lvl: "t", id: id }, key, null);
+      libMove(ref, id, null);
+      made = { lvl: "t", id: id };
+    } else if (ref.lvl === "t" && to === "s") {
+      var key2 = libSubjectOf(ref), sid = uid("s_");
+      store.subjects.push({ id: sid, folder: "eti", name: name, group: keyGroup(key2) || "base" });
+      libMove(ref, "s:" + sid, null);
+      made = { lvl: "s", id: "s:" + sid };
+    } else if (ref.lvl === "c" && to === "p") {
+      var els = cardElsByPart(ref.id), pg = { id: uid("pp_"), subject: libSubjectOf(ref), name: name, tags: cardTagsOf(ref.id).slice(), assets: [], kind: null, description: "", alsoSubjects: [], methodIds: [], created: Date.now() };
+      var text = [], blocks = [];
+      els.forEach(function (e) {
+        var b = elBody(e.id);
+        if (e.kind === "text") text.push(b.text || "");
+        else if (e.kind === "formula") blocks.push({ id: uid("pb_"), kind: "formula", lines: b.lines || [] });
+        else if (e.kind === "graph") blocks.push({ id: uid("pb_"), kind: "graph", graph: b.graph, svg: b.svg });
+        else { blocks.push({ id: uid("pb_"), kind: "ink", doc: e.id }); byId(store.elements, e.id).card = "method:" + pg.id; return; }
+        store.elements = store.elements.filter(function (x) { return x.id !== e.id; });
+        killCanvas(e.id);
+      });
+      store.ps.pages.push(pg);
+      var body = psBody(pg.id);
+      body.parts = [{ id: uid("st_"), cat: "explanation", name: "", clip: null, text: text.join("\n\n"), assets: [], blocks: blocks }];
+      psSaveBody(pg);
+      store.ps.pages.forEach(function (o) { if (o.cardIds) o.cardIds = o.cardIds.filter(function (id) { return id !== ref.id; }); });
+      refReplace(ref, { lvl: "p", id: pg.id });
+      delete cardTagMap()[ref.id];
+      store.cards = store.cards.filter(function (x) { return x.id !== ref.id; });
+      made = { lvl: "p", id: pg.id };
+    } else if (ref.lvl === "p" && to === "c") {
+      var pg2 = psPageById(ref.id), tab2 = libKids({ lvl: "s", id: pg2.subject })[0], cid = uid("uc_");
+      store.cards.push({ id: cid, tab: tab2.id, name: name, created: Date.now() });
+      libMove({ lvl: "c", id: cid }, tab2.id, null);
+      function addEl(part, kind, ps, doc) {
+        var id = doc || uid("ue_");
+        if (doc) { var ex = byId(store.elements, doc); ex.card = cid; ex.part = part; }
+        else { store.elements.push({ id: id, card: cid, name: byId(EL_KINDS, kind).name, part: part, kind: kind, created: Date.now() }); writeLibDoc(id, { ink: [], items: [] }); loadCanvas(id).ps = ps; saveCanvas(id); }
+        libMove({ lvl: "e", id: id }, cid, null);
+      }
+      (psDocPresent(pg2.id) ? psParts(pg2.id) : []).forEach(function (p) {
+        var part = p.cat === "example" ? "expl" : "desc";
+        if (p.text) addEl(part, "text", { text: p.text });
+        (p.blocks || []).forEach(function (b) {
+          if (b.kind === "formula") addEl(part, "formula", { lines: b.lines });
+          else if (b.kind === "graph") addEl(part, "graph", { graph: b.graph, svg: b.svg });
+          else if (b.kind === "ink") addEl(part, "ink", null, b.doc);
+        });
+        refReplace({ lvl: "st", id: p.id }, { lvl: "c", id: cid });
+      });
+      refReplace(ref, { lvl: "c", id: cid });
+      if ((pg2.tags || []).length) cardTagMap()[cid] = pg2.tags.slice();
+      store.ps.pages.forEach(function (o) { if (o.methodIds) o.methodIds = o.methodIds.filter(function (id) { return id !== pg2.id; }); });
+      store.ps.pages = store.ps.pages.filter(function (o) { return o !== pg2; });
+      killCanvas(pg2.id);
+      if (activePsPage === pg2.id) activePsPage = null;
+      made = { lvl: "c", id: cid };
+    }
+    saveStore(); libAfterMove(); applyView();
+    return made;
+  }
+  // ---- the window ----
+  //   assetWindow(ref) for something that exists; assetWindow(null, { kind, at }) to make something new
+  //   (at = the place it was asked from: a subject key, a concept / tab id, or a folder id, as a ref)
+  function assetWindow(ref, made) {
+    if (ref && !assetExists(ref)) return;
+    var create = !ref, snap = awSnap(), d = create ? { kind: (made && made.kind) || "c", at: made && made.at, name: "" } : null;
+    var box = ovOpen(create ? "New asset" : "Properties", { wide: true, onCancel: function () { awCur = null; if (!create) awRestore(snap); } });
+    box.ov.classList.add("aw");
+    function draw() {
+      if (!create && !assetExists(ref)) { awCur = null; box.close(true); return; }
+      var body = box.body;
+      body.innerHTML = "";
+      // name
+      var ns = awSec(body, "Name"), name = document.createElement("input");
+      name.type = "text"; name.maxLength = 80; name.className = "bld-name";
+      name.value = create ? d.name : assetName(ref);
+      name.placeholder = "Name…";
+      name.addEventListener("change", function () { var v = name.value.trim(); if (create) { d.name = v; return; } if (v && v !== assetName(ref)) assetSetName(ref, v); else name.value = assetName(ref); });
+      ns.appendChild(name);
+      // kind
+      var ks = awSec(body, "Kind"), row = document.createElement("div");
+      row.className = "aw-kinds";
+      var choices = create ? null : kindChoices(ref);
+      AW_KINDS.forEach(function (k) {
+        var cur = create ? d.kind === k.id : ref.lvl === k.id, ch = choices && choices[k.id];
+        var b = actBtn(k.name, ch && ch.why ? ch.why : cur ? "" : create ? "make a " + k.name.toLowerCase() : "turn it into a " + k.name.toLowerCase(), function () {
+          if (create) { d.kind = k.id; d.at = d.at && awAtFits(d.at, k.id) ? d.at : null; draw(); return; }
+          if (cur || (ch && ch.why)) return;
+          var lines = kindPreview(ref, k.id);
+          if (!confirm("Turn “" + assetName(ref) + "” into a " + k.name.toLowerCase() + "?\n\n• " + lines.join("\n• ") + "\n\nA backup is kept, and you can undo it.")) return;
+          var to = kindConvert(ref, k.id);
+          awCur = null; box.close(true);
+          libToast("Now a " + k.name.toLowerCase() + ": “" + assetName(to) + "”", { label: "Undo", run: function () { awRestore(snap); } });
+          assetWindow(to);
+        }, "aw-kind" + (cur ? " on" : "") + (ch && ch.why ? " off" : ""));
+        row.appendChild(b);
+      });
+      ks.appendChild(row);
+      if (choices) { var why = Object.keys(choices).filter(function (k) { return choices[k].why && k !== "sm" && k !== "sg"; }).map(function (k) { return byId(AW_KINDS, k).name + ": " + choices[k].why; }); if (why.length) ks.insertAdjacentHTML("beforeend", '<p class="muted aw-why">' + escapeHtml(why.join(" · ")) + '</p>'); }
+      if (create && d.kind === "sg") {
+        ks.insertAdjacentHTML("beforeend", '<p class="lw-hint">A strategy is saved from the Clipboard: lay things out, join them with lines, press a line and “Save branch as strategy”.</p>');
+        ks.appendChild(actBtn("🧷 Open the Clipboard", "", function () { box.close(true); openBoard(); }, "btn-primary"));
+        return;
+      }
+      // location
+      var kind = create ? d.kind : ref.lvl, ls = awSec(body, "Location");
+      var where = document.createElement("span");
+      where.className = "aw-where";
+      where.textContent = create ? awAtName(d.at, kind) : assetWhere(ref);
+      ls.appendChild(where);
+      var mv = actBtn(create ? "Choose…" : "Move…", "where it sits in the library", function () {
+        if (create) awPickAt(kind, function (at) { d.at = at; draw(); }, mv);
+        else assetMove(ref, mv);
+      });
+      ls.appendChild(mv);
+      if (create) {
+        var foot = document.createElement("div"); foot.className = "aw-foot";
+        foot.appendChild(actBtn("Create", "", function () {
+          d.name = name.value.trim();
+          if (!d.name) { name.focus(); return; }
+          if (!d.at && d.kind !== "s" && d.kind !== "sm") { libToast("Choose where it goes first."); return; }
+          box.close(true); awCur = null; awCreate(d);
+        }, "btn-primary"));
+        body.appendChild(foot);
+        return;
+      }
+      // tags, course
+      if (ref.lvl === "c") { var ts = awSec(body, "Tags"); ts.appendChild(cardTagsEl(ref.id, true)); }
+      if (ref.lvl === "p") { var tp = awSec(body, "Tags"), pg = psPageById(ref.id); tp.insertAdjacentHTML("beforeend", '<span class="muted">' + escapeHtml((pg.tags || []).join(" · ") || "none") + '</span>'); tp.appendChild(actBtn("🏷 Tags", "", function () { methodTagsEdit(pg); })); }
+      if ({ s: 1, t: 1, c: 1, p: 1 }[ref.lvl] && courses().length) { var cs = awSec(body, "Course"); cs.appendChild(courseCtlEl(ref)); }
+      // connections
+      if (ref.lvl === "t") awSec(body, "Connections").appendChild(conceptLinksEl(ref.id));
+      if (ref.lvl === "p") {
+        var pgc = psPageById(ref.id), cc = awSec(body, "Connections");
+        cc.appendChild(psMethodLinksEl(pgc));
+        var cards = methodCards(pgc.id);
+        cc.insertAdjacentHTML("beforeend", '<p class="muted aw-why">Cards and concepts: ' + escapeHtml(cards.map(function (x) { return refName(x.ref); }).join(", ") || "none") + '</p>');
+        cc.appendChild(actBtn("＋ Connect to card", "", function () { methodConnectCard(pgc, function () { draw(); }); }));
+        cc.appendChild(actBtn("Also connected to (tree)…", "", function () { methodPickAlso(pgc); }));
+      }
+      if (ref.lvl === "c") {
+        var users = cardMethodsMap()[ref.id] || [];
+        awSec(body, "Connections").insertAdjacentHTML("beforeend", '<p class="muted aw-why">Methods that use it: ' + escapeHtml(users.map(function (p) { return p.name; }).join(", ") || "none") + '</p>');
+      }
+      // content, delete
+      var co = awSec(body, "Content");
+      co.appendChild(actBtn("Open editor", "its page, to change what it says", function () { awCur = null; box.close(true); assetOpen(ref); }));
+      var dl = awSec(body, "Delete");
+      dl.appendChild(actBtn(isBuiltinRef(ref) ? "🙈 Hide it" : "🗑 Delete it", "", function () { awCur = null; box.close(true); assetDelete(ref); }, "btn-danger"));
+    }
+    awCur = { redraw: function () { setTimeout(draw, 0); } };
+    draw();
+    if (!create) box.buttons([
+      { label: "Cancel", run: function () { awCur = null; box.close(true); awRestore(snap); } },
+      { label: "Save", primary: true, right: true, run: function () {
+        awCur = null; box.close(true);
+        if (awSnap() !== snap) libToast("Saved “" + (assetExists(ref) ? assetName(ref) : "it") + "”", { label: "Undo", run: function () { awRestore(snap); } });
+      } }
+    ]);
+  }
+  // ---- creating ----
+  function awAtFits(at, kind) {
+    return { s: at.lvl === "g", t: at.lvl === "s", c: at.lvl === "t", p: at.lvl === "s", mf: at.lvl === "s", sm: at.lvl === "g" }[kind] || false;
+  }
+  function awAtName(at, kind) {
+    if (!at) return kind === "s" ? "Base (or choose a folder)" : kind === "sm" ? "No group (or choose a folder)" : "Not chosen yet";
+    if (at.lvl === "g") return groupName(at.id);
+    if (at.lvl === "s") return subjectName(at.id);
+    return refPath({ lvl: "t", id: at.id }) + " › " + tabLabel(at.id);
+  }
+  function awPickAt(kind, then, anchor) {
+    if (kind === "s" || kind === "sm") {
+      var gs = kind === "sm" ? topGroups() : allGroupIds();
+      libMenu(anchor, gs.map(function (g) { return { label: groupName(g), run: function () { then({ lvl: "g", id: g }); } }; }));
+    } else if (kind === "c") pickLibTarget(null, function (tabId) { then({ lvl: "t", id: tabId }); }, null, { upTo: "t", title: "Where" });
+    else pickSubject("Which subject?", "", function (k) { then({ lvl: "s", id: k }); });
+  }
+  function awCreate(d) {
+    var n = d.name, at = d.at;
+    if (d.kind === "s") { addSubjectToGroup(at ? at.id : "base", n); return; }
+    if (d.kind === "t") {
+      var tid = uid("ut_");
+      store.tabs.push({ id: tid, subject: at.id, name: n, created: Date.now() });
+      libMove({ lvl: "t", id: tid }, at.id, null);
+      saveStore(); libAfterMove(); openConceptPage(tid);
+    } else if (d.kind === "c") {
+      var cid = uid("uc_");
+      store.cards.push({ id: cid, tab: at.id, name: n, created: Date.now() });
+      libMove({ lvl: "c", id: cid }, at.id, null);
+      saveStore(); libRefreshAll(); assetOpen({ lvl: "c", id: cid });
+    } else if (d.kind === "p") {
+      var pg = { id: uid("pp_"), subject: at.id, name: n, tags: [], assets: [], kind: null, description: "", alsoSubjects: [], methodIds: [], created: Date.now() };
+      store.ps.pages.push(pg);
+      psSaveBody(pg);
+      renderEtiTree(); selectPsPage(pg.id);
+    } else if (d.kind === "mf") {
+      mfEnsure().push({ id: uid("mf_"), subject: at.id, name: n, order: mfOf(at.id).length });
+      saveStore(); spSetView(at.id, "methods"); openSubjectRef(at.id);
+    } else if (d.kind === "sm") {
+      var sm = { id: uid("sm_"), name: n, items: [], created: Date.now(), draft: 1, bld: { adds: [] } };
+      if (at) sm.groupId = at.id;
+      sumEnsure().push(sm);
+      bldStart(sm);
+      return;
+    }
+    libToast("Created “" + n + "”");
+  }
+  // "＋ New asset" from where it is pressed: what it most likely is, and where
+  function newAssetHere(kind, at) { assetWindow(null, { kind: kind, at: at }); }
+  function methodTagsEdit(pg) {
+    var box = ovOpen("Tags · " + pg.name);
+    function draw() {
+      box.body.innerHTML = '<div class="sp-chips"></div><div class="lw-new"><input type="text" maxlength="40" placeholder="New tag…"><button type="button" class="lw-primary">Add</button></div>';
+      (pg.tags || []).forEach(function (t) {
+        var chip = document.createElement("span");
+        chip.className = "ps-chip"; chip.innerHTML = '<span class="ps-chip-go"></span>'; chip.firstChild.textContent = t;
+        chip.appendChild(actBtn("✕", "remove this tag", function () { pg.tags = pg.tags.filter(function (x) { return x !== t; }); saveStore(); libAfterMove(); draw(); }, "ps-chip-x"));
+        box.body.firstChild.appendChild(chip);
+      });
+      var inp = box.body.querySelector("input");
+      function add() { var v = inp.value.trim(); if (!v) return; pg.tags = pg.tags || []; if (pg.tags.indexOf(v) < 0) pg.tags.push(v); saveStore(); libAfterMove(); draw(); }
+      box.body.querySelector("button.lw-primary").addEventListener("click", add);
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") add(); });
+    }
+    draw();
+    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
+  }
 
   // ============================================================
   // COURSES — what each course covers, and one switch that shows a course only
@@ -17919,6 +18098,7 @@ function __detabaseMain() {
   }
   function stratMenuItems(a, s) {
     return [
+      { label: "✎ Properties", run: function () { assetWindow({ lvl: "sg", id: s.id }); } },
       { label: "✎ Rename", run: function () { stratRename(s); } },
       { label: "🎨 Color…", run: function () { stratColorMenu(a, s); } },
       { label: "📁 File under…", run: function () { stratGroupMenu(a, s); } },
@@ -18092,7 +18272,7 @@ function __detabaseMain() {
   }
   function openMgmtMenu(ref, anchor) {
     var builtin = isBuiltinRef(ref), used = usedInPages(ref);
-    var addLbl = { s: "＋ Add a concept here", t: "＋ Add a card here", c: "＋ Add elements here" }[ref.lvl];
+    var here = { s: ["t", { lvl: "s", id: ref.id }], t: ["c", { lvl: "t", id: ref.id }] }[ref.lvl];
     var material = ref.lvl === "s" || ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e";
     libMenu(anchor, [
       { head: MG_LV[ref.lvl].charAt(0).toUpperCase() + MG_LV[ref.lvl].slice(1) + " · " + mgmtName(ref) },
@@ -18104,8 +18284,8 @@ function __detabaseMain() {
       ref.lvl === "c" || ref.lvl === "p" ? { label: "📄 Add to a study sheet…", run: function () { sumSaveRefs([{ lvl: ref.lvl, id: ref.id }]); } } : null,
       ref.lvl === "e" ? { label: "▤ Part of the card…", run: function () { elPartMenu(anchor, ref.id); } } : null,
       (ref.lvl === "t" || ref.lvl === "c" || ref.lvl === "e") ? { label: "↪ Move to…", run: function () { libMoveTo(ref); } } : null,
-      addLbl ? { label: addLbl, run: function () { addAssetAt(ref); } } : null,
-      ref.lvl === "s" ? { label: "🧩 New method here", run: function () { newProblemPage(ref.id); } } : null,
+      { label: "✎ Properties", run: function () { assetWindow(ref); } },
+      here ? { label: "＋ New asset here", run: function () { newAssetHere(here[0], here[1]); } } : null,
       ref.lvl === "s" ? { label: "🧹 Empty this subject…", run: function () { emptySubject(ref.id); } } : null,
       (ref.lvl === "e" || ref.lvl === "p") ? { label: "✎ Edit content", run: function () { openDocEditor(ref.id); } } : null,
       material ? { label: "🧩 Used in " + used.length + " method" + (used.length === 1 ? "" : "s"), disabled: !used.length, run: function () { openUsedMenu(ref, anchor); } } : null,
@@ -18130,8 +18310,7 @@ function __detabaseMain() {
     var n = prompt("Rename " + MG_LV[ref.lvl] + ":", cur);
     if (n == null) return;
     n = n.trim(); if (!n || n === cur) return;
-    if (o) o.name = n; else store.etiEdits.names[refKey(ref)] = n;
-    if (ref.lvl === "st") { var sp = psPartById(ref.id); if (sp) psSaveBody(sp.page); }   // a part lives in the method's doc
+    libSetName(ref, n);
     saveStore();
     refreshAfterManage();
   }
@@ -18711,13 +18890,15 @@ function __detabaseMain() {
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
   try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
   try { renderEtiTree(); renderHiddenBtn(); } catch (e) {}
-  if ($("psNewBtn")) $("psNewBtn").addEventListener("click", function () { newProblemPage(); });
+  if ($("psNewBtn")) $("psNewBtn").addEventListener("click", function () { newAssetHere("p", null); });
   // back from a method: its subject's Methods page
   if ($("psBack")) $("psBack").addEventListener("click", function () {
     var pg = psPageById(activePsPage); if (!pg) { openMiningScreen(); return; }
     spSetView(pg.subject, "methods"); openSubjectRef(pg.subject);
   });
   if ($("psSummary")) $("psSummary").addEventListener("click", function () { if (activePsPage) openSub("psummary", activePsPage); });
+  if ($("psProps")) $("psProps").addEventListener("click", function () { if (activePsPage) assetWindow({ lvl: "p", id: activePsPage }); });
+  if ($("sumProps")) $("sumProps").addEventListener("click", function () { if (activeSummary) assetWindow({ lvl: "sm", id: activeSummary }); });
   if ($("courseSw")) $("courseSw").addEventListener("click", function () { courseSwMenu($("courseSw")); });
   if ($("psCourse")) $("psCourse").addEventListener("click", function () { if (activePsPage) courseMenu($("psCourse"), [{ lvl: "p", id: activePsPage }]); });
   if ($("psOver")) $("psOver").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) methodReset(pg); });
