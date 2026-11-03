@@ -2423,6 +2423,7 @@
     <button data-folder="dst" data-group="stats"><span class="ficon">📊</span>Descriptive statistics</button>
     <button data-folder="prb" data-group="stats"><span class="ficon">🎲</span>Probability</button>
     <button data-folder="cmb" data-group="stats"><span class="ficon">🔢</span>Combinatorics</button>
+    <button data-folder="rv" data-group="stats"><span class="ficon">🎯</span>Random variables</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2592,6 +2593,10 @@
   <button data-target="prb3"><span class="tnum">3</span>The probability function</button>
   <button data-target="prb4"><span class="tnum">4</span>Rules of probability</button>
   <button data-target="prb5"><span class="tnum">5</span>Uniform probability space</button>
+  <button data-target="prb6"><span class="tnum">6</span>Conditional probability</button>
+  <button data-target="prb7"><span class="tnum">7</span>Independence</button>
+  <button data-target="prb8"><span class="tnum">8</span>Total probability and Bayes</button>
+  <button data-target="prb9"><span class="tnum">9</span>Multi-stage experiments: the tree and table methods</button>
 </nav>
 <nav class="tabbar" data-folder="cmb" id="tabbar-cmb">
   <button data-target="cmb1" class="on"><span class="tnum">1</span>The multiplication rule</button>
@@ -2599,6 +2604,13 @@
   <button data-target="cmb3"><span class="tnum">3</span>Unordered samples</button>
   <button data-target="cmb4"><span class="tnum">4</span>Arrangements with repeated items</button>
   <button data-target="cmb5"><span class="tnum">5</span>Counting for probability</button>
+</nav>
+<nav class="tabbar" data-folder="rv" id="tabbar-rv">
+  <button data-target="rv1" class="on"><span class="tnum">1</span>Random variables</button>
+  <button data-target="rv2"><span class="tnum">2</span>Probability function and cumulative distribution</button>
+  <button data-target="rv3"><span class="tnum">3</span>Special discrete distributions</button>
+  <button data-target="rv4"><span class="tnum">4</span>Expectation</button>
+  <button data-target="rv5"><span class="tnum">5</span>Variance and standard deviation</button>
 </nav>
 
 <main id="paneHost">
@@ -2630,7 +2642,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B138</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B140</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4637,7 +4649,9 @@ function __detabaseMain() {
     prb: { title: "Probability — for Intro to Statistics",
       sub: 'Sets, sample spaces and events, the probability function and its rules, uniform spaces, conditional probability, independence, Bayes, trees and tables.' },
     cmb: { title: "Combinatorics — for Intro to Statistics",
-      sub: 'The multiplication rule, ordered and unordered samples, arrangements with repeats, counting for probability.' }
+      sub: 'The multiplication rule, ordered and unordered samples, arrangements with repeats, counting for probability.' },
+    rv: { title: "Random variables — for Intro to Statistics",
+      sub: 'Discrete random variables, special distributions, expectation and variance; two-dimensional and continuous variables, the normal distribution.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -19327,7 +19341,7 @@ function __detabaseMain() {
   // =========================================================
   function plainToTex(text) {
     var PAR = "\\((?:[^()]|\\([^()]*\\))+\\)";   // (…) with at most one level of (…) inside
-    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂\u0303\u0304ȳμσ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
+    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304ȳμσ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
     var TERM = "(?:√?" + PAR + "|" + CALL + "(?:\\s" + CALL + ")?)";
     var SRC = "(" + TERM + ")\\s*/\\s*(" + TERM + ")";
     var SKIP = { and: 1, or: 1, AND: 1, OR: 1 };
@@ -19355,7 +19369,7 @@ function __detabaseMain() {
     s = s.replace(/√([0-9A-Za-zπθ]+)/g, "\\sqrt{$1}");
     for (var was; was !== s;) { was = s; s = s.replace(/\^\(([^()]*)\)/g, "^{$1}").replace(/_\(([^()]*)\)/g, "_{$1}"); }   // inside out: z_(x_(i))
     var SUP = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ᵏ": "k", "ᵐ": "m", "ˣ": "x", "ʸ": "y", "ᶜ": "c", "ᵃ": "a", "ᵇ": "b", "⁺": "+", "⁻": "-", "ᵖ": "p", "⁽": "(", "⁾": ")" };
-    var SUB = { "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9", "ₙ": "n", "ₖ": "k" };
+    var SUB = { "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9", "ₙ": "n", "ₖ": "k", "ᵢ": "i", "ⱼ": "j", "ₘ": "m", "ₜ": "t" };
     function runs(map, mark) {
       s = s.replace(new RegExp("[" + Object.keys(map).join("") + "]+", "g"), function (m) { return mark + "{" + m.split("").map(function (c) { return map[c]; }).join("") + "}"; });
     }

@@ -5388,6 +5388,108 @@
   <p class="muted"><b>A classic trap:</b> the 11 possible <b>sums</b> are not equally likely, so <code>P(sum = 7) ≠ 1/11</code>. Always count in a space whose outcomes really are equally likely: here, the pairs.</p>
 </div>
 </section>
+
+<!-- ===== PRB6 · CONDITIONAL PROBABILITY ===== -->
+<section class="pane" id="pane-prb6">
+<h2><span class="num">6</span>Conditional probability</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Probability given new information</h4>
+  <p><code>P(A | B) = (P(A ∩ B))/(P(B))</code>, &nbsp; when <code>P(B) &gt; 0</code></p>
+  <p class="muted"><b>Read</b> <code>P(A | B)</code> as "the probability of <code>A</code> given <code>B</code>": we learned that <code>B</code> happened, and update the chance of <code>A</code>.</p>
+  <p class="muted"><b>Why the formula:</b> once we know <code>B</code> happened, <code>B</code> is the whole new world. Of it, only the part <code>A ∩ B</code> is still <code>A</code>; dividing by <code>P(B)</code> scales the new world back up to a total of 1.</p>
+  <p class="muted"><b>In a uniform space</b> it is counting inside <code>B</code>: <code>P(A | B) = (N(A ∩ B))/(N(B))</code>. One die, given "even": <code>P(6 | even) = 1/3</code>, since only <code>{2, 4, 6}</code> are left.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Reading conditional probabilities off a table</h4>
+  <p>A two-way table of counts holds every conditional probability: <b>restrict to the row or column you're given</b>, and divide by its total.</p>
+  <div class="bi-table" data-table='{"rows":[{"c":["","Smokes","Doesn&#39;t smoke"]},{"c":["Men","30","70"]},{"c":["Women","20","80"]}],"head":1,"side":1,"totR":1,"totC":1}'></div>
+  <p class="muted"><b>Example:</b> <code>P(smokes | man) = 30/100 = 0.3</code> (the "Men" row). <code>P(man | smokes) = 30/50 = 0.6</code> (the "Smokes" column). The same cell, divided by different totals: <code>P(A | B)</code> and <code>P(B | A)</code> are usually different.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>The multiplication formula</h4>
+  <ul class="idlist">
+    <li><code>P(A ∩ B) = P(A) · P(B | A) = P(B) · P(A | B)</code></li>
+    <li><code>P(A ∩ B ∩ D) = P(A) · P(B | A) · P(D | A ∩ B)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the chance that both happen is the chance of the first times the chance of the second <b>given</b> the first. It is the definition, turned around.</p>
+  <p class="muted"><b>Example:</b> 4 white and 2 red balls, two drawn without replacement. <code>P(both white) = 4/6 · 3/5 = 2/5</code>: after a white one, 3 of the 5 left are white.</p>
+  <p class="muted"><b>A conditional probability is a probability:</b> with <code>B</code> fixed, every rule still holds. For instance <code>P(Aᶜ | B) = 1 − P(A | B)</code>.</p>
+</div>
+</section>
+
+<!-- ===== PRB7 · INDEPENDENCE ===== -->
+<section class="pane" id="pane-prb7">
+<h2><span class="num">7</span>Independence</h2>
+<div class="card" data-tags="Definition">
+  <h4>Independent events</h4>
+  <ul class="idlist">
+    <li><code>P(A | B) = P(A)</code></li>
+    <li><code>P(A ∩ B) = P(A) · P(B)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> <code>A</code> is <b>independent</b> of <code>B</code> when knowing that <code>B</code> happened doesn't change the chance of <code>A</code>. The two lines say the same thing (when <code>P(B) &gt; 0</code>); the second is symmetric, so independence goes both ways, and it is the usual test.</p>
+  <p class="muted"><b>Example:</b> one card from a deck. "Heart" (<code>1/4</code>) and "picture card" (<code>12/52 = 3/13</code>): <code>P(both) = 3/52 = 1/4 · 3/13</code>. Independent: knowing the suit says nothing about the picture.</p>
+  <p class="muted"><b>Then the complements are independent too:</b> <code>A</code> and <code>Bᶜ</code>, <code>Aᶜ</code> and <code>B</code>, <code>Aᶜ</code> and <code>Bᶜ</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Disjoint is not independent</h4>
+  <p>If <code>A</code> and <code>B</code> can't happen together (<code>A ∩ B = ∅</code>) and both have positive probability, they are strongly <b>dependent</b>: knowing <code>B</code> happened tells you for sure that <code>A</code> didn't, <code>P(A | B) = 0 ≠ P(A)</code>.</p>
+  <p class="muted"><b>Tell them apart:</b> disjoint is about the sets (no overlap, a picture); independent is about the numbers (<code>P(A ∩ B) = P(A)P(B)</code>, a calculation).</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Independent stages</h4>
+  <p>When the stages of an experiment don't influence each other (two separate dice, repeated coin tosses, drawing <b>with</b> replacement), events about different stages are independent, and their probabilities multiply.</p>
+  <p class="muted"><b>Example:</b> a red and a green die. <code>P(red 3 and green 5) = 1/6 · 1/6 = 1/36</code>, the same as counting pairs.</p>
+  <p class="muted"><b>Example:</b> a test passed with probability <code>0.8</code> each time, taken 3 times independently: <code>P(passes all 3) = 0.8³ = 0.512</code>; <code>P(fails all 3) = 0.2³ = 0.008</code>; <code>P(passes at least once) = 1 − 0.008 = 0.992</code>.</p>
+</div>
+</section>
+
+<!-- ===== PRB8 · TOTAL PROBABILITY AND BAYES ===== -->
+<section class="pane" id="pane-prb8">
+<h2><span class="num">8</span>Total probability and Bayes</h2>
+<div class="card" data-tags="Theorem">
+  <h4>The law of total probability</h4>
+  <p>If <code>B₁, …, Bₙ</code> are disjoint and together make up <code>Ω</code> (a <b>partition</b>), then</p>
+  <p><code>P(A) = P(A | B₁) P(B₁) + ⋯ + P(A | Bₙ) P(Bₙ)</code></p>
+  <p class="muted"><b>With two parts</b> <code>B</code> and <code>Bᶜ</code>: <code>P(A) = P(A | B) P(B) + P(A | Bᶜ) P(Bᶜ)</code>.</p>
+  <p class="muted"><b>In words:</b> split by the cases, find the chance of <code>A</code> in each case, and take the weighted average, weighted by how likely each case is.</p>
+  <p class="muted"><b>Why:</b> <code>A</code> is the disjoint union of its pieces <code>A ∩ Bᵢ</code>, and each piece is <code>P(A | Bᵢ) P(Bᵢ)</code> by the multiplication formula.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Bayes' formula</h4>
+  <p><code>P(Bⱼ | A) = (P(A | Bⱼ) P(Bⱼ))/(∑ᵢ P(A | Bᵢ) P(Bᵢ))</code></p>
+  <p class="muted"><b>What it does:</b> turns the condition around. We know how likely the evidence <code>A</code> is in each case (<code>P(A | Bᵢ)</code>); Bayes gives how likely each case is once we've seen the evidence (<code>P(Bⱼ | A)</code>).</p>
+  <p class="muted"><b>Example:</b> a test finds 90% of the sick, but also wrongly flags 2% of the healthy; 0.5% of people are sick. A positive result:</p>
+  <p class="muted"><code>P(sick | +) = (0.9 · 0.005)/(0.9 · 0.005 + 0.02 · 0.995) ≈ 0.184</code></p>
+  <p class="muted"><b>Only 18%!</b> The sick are so rare that the few false alarms among the many healthy outnumber the true positives. Ignoring how rare the case is (the <b>base rate</b>) is the classic mistake.</p>
+</div>
+</section>
+
+<!-- ===== PRB9 · MULTI-STAGE EXPERIMENTS ===== -->
+<section class="pane" id="pane-prb9">
+<h2><span class="num">9</span>Multi-stage experiments: the tree and table methods</h2>
+<div class="card" data-tags="Explanation">
+  <h4>The tree method</h4>
+  <p>Draw the first stage's outcomes as branches, and under each one the next stage's outcomes, each branch with its probability <b>given the path so far</b>.</p>
+  <div class="bi-tree" data-cpart="ill" aria-label="a probability tree: machine I with probability 0.6 and machine II with 0.4; under machine I, defective 0.03 and fine 0.97; under machine II, defective 0.05 and fine 0.95; the path products are 0.018, 0.582, 0.02 and 0.38" data-tree='{"kids":[{"label":"Machine I","p":"0.6","kids":[{"label":"defective","p":"0.03"},{"label":"fine","p":"0.97"}]},{"label":"Machine II","p":"0.4","kids":[{"label":"defective","p":"0.05"},{"label":"fine","p":"0.95"}]}],"prod":1}'></div>
+  <ul>
+    <li><b>Multiply along a path</b> to get the chance of that whole path (multiplication formula). The numbers under the leaves are these products.</li>
+    <li><b>Add the paths</b> that end in the event you want (total probability): <code>P(defective) = 0.018 + 0.02 = 0.038</code>.</li>
+    <li><b>Bayes from the tree:</b> one path divided by the sum of the paths with the same ending: <code>P(machine I | defective) = 0.018/0.038 ≈ 0.47</code>.</li>
+  </ul>
+  <p class="muted"><b>Checks:</b> the branches out of each point add up to 1, and so do all the leaves.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>The table method</h4>
+  <p>Put the first stage's outcomes in the rows and the second stage's in the columns. Each cell is the chance of that pair: <code>P(row) · P(column | row)</code>.</p>
+  <div class="bi-table" data-cpart="ill" data-table='{"rows":[{"c":["","defective","fine"]},{"c":["Machine I","0.018","0.582"]},{"c":["Machine II","0.02","0.38"]}],"head":1,"side":1,"totR":1,"totC":1}'></div>
+  <ul>
+    <li><b>Row totals</b> give back the first stage: <code>0.6</code>, <code>0.4</code>.</li>
+    <li><b>Column totals</b> are total probability: <code>P(defective) = 0.038</code>.</li>
+    <li><b>Bayes:</b> a cell divided by its column total: <code>P(I | defective) = 0.018/0.038 ≈ 0.47</code>.</li>
+  </ul>
+  <p class="muted"><b>Tree or table?</b> Same numbers, two pictures. The tree shows the order of the stages; the table shows both ways of conditioning at once (rows and columns) and suits two stages best.</p>
+</div>
+</section>
 </div><!-- /folder-prb -->
 <div class="folder" id="folder-cmb">
 
@@ -5488,12 +5590,234 @@
 </div>
 </section>
 </div><!-- /folder-cmb -->
+<div class="folder" id="folder-rv">
+
+<!-- ===== RV1 · RANDOM VARIABLES ===== -->
+<section class="pane on" id="pane-rv1">
+<h2><span class="num">1</span>Random variables</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a random variable is</h4>
+  <p>A <b>random variable</b> <code>X</code> gives a number to every outcome of an experiment: <code>X(ω)</code>. Its value is random because the outcome is.</p>
+  <p class="muted"><b>Example:</b> toss a coin 3 times; <code>X</code> = the number of heads. The outcome HTH gets <code>X = 2</code>; TTT gets <code>X = 0</code>. Many outcomes can share a value.</p>
+  <p class="muted"><b>Events from values:</b> <code>{X = 2}</code> is the event "the outcome gives 2" <code>= {HHT, HTH, THH}</code>. Writing <code>P(X = 2)</code> is short for its probability.</p>
+  <p class="muted"><b>Discrete:</b> <code>X</code> is discrete when its possible values can be listed, <code>x₁, x₂, …</code> (finitely many or countably many). Counts are discrete; lengths and times are continuous (later).</p>
+</div>
+</section>
+
+<!-- ===== RV2 · PMF AND CDF ===== -->
+<section class="pane" id="pane-rv2">
+<h2><span class="num">2</span>Probability function and cumulative distribution</h2>
+<div class="card" data-tags="Definition">
+  <h4>The probability function</h4>
+  <p>The <b>probability function</b> of a discrete <code>X</code> gives each value its probability, <code>P(X = x)</code>. Usually a table:</p>
+  <div class="bi-table" data-table='{"rows":[{"c":["x","0","1","2","3"]},{"c":["P(X = x)","1/8","3/8","3/8","1/8"]}],"head":1,"side":1,"totC":1}'></div>
+  <p class="muted"><b>It must have:</b> every <code>P(X = x) ≥ 0</code>, and they add up to <code>1</code> (the table's total). That is how to check a table you built.</p>
+  <p class="muted"><b>The probability of a range</b> is the sum over the values in it: <code>P(X ≥ 2) = 3/8 + 1/8 = 1/2</code>.</p>
+  <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="a stick diagram of the number of heads in 3 tosses: sticks at 0, 1, 2 and 3 with heights one eighth, three eighths, three eighths and one eighth">
+    <path class="ax" d="M40 125 H390 M50 125 V15"/>
+    <path class="cv" d="M110 125 V100 M190 125 V50 M270 125 V50 M350 125 V100"/>
+    <circle class="dot" cx="110" cy="100" r="4"/><circle class="dot" cx="190" cy="50" r="4"/><circle class="dot" cx="270" cy="50" r="4"/><circle class="dot" cx="350" cy="100" r="4"/>
+    <path class="gd" d="M50 100 H110 M50 50 H190"/>
+    <text class="sm" x="44" y="104" text-anchor="end">1/8</text><text class="sm" x="44" y="54" text-anchor="end">3/8</text>
+    <text x="110" y="142" text-anchor="middle">0</text><text x="190" y="142" text-anchor="middle">1</text><text x="270" y="142" text-anchor="middle">2</text><text x="350" y="142" text-anchor="middle">3</text>
+  </svg>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>The cumulative distribution function</h4>
+  <p><code>F(x) = P(X ≤ x)</code></p>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="the cumulative distribution of the number of heads: a staircase that is 0 before 0, then jumps to one eighth, one half, seven eighths and finally 1 at x equals 3">
+    <path class="ax" d="M30 145 H400 M60 145 V12"/>
+    <path class="cv" d="M30 145 H110 M110 131 H190 M190 89 H270 M270 47 H350 M350 33 H400"/>
+    <circle class="dot" cx="110" cy="131" r="4"/><circle class="dot" cx="190" cy="89" r="4"/><circle class="dot" cx="270" cy="47" r="4"/><circle class="dot" cx="350" cy="33" r="4"/>
+    <circle class="hole" cx="110" cy="145" r="4"/><circle class="hole" cx="190" cy="131" r="4"/><circle class="hole" cx="270" cy="89" r="4"/><circle class="hole" cx="350" cy="47" r="4"/>
+    <path class="gd" d="M60 33 H350"/>
+    <text class="sm" x="54" y="37" text-anchor="end">1</text>
+    <text x="110" y="162" text-anchor="middle">0</text><text x="190" y="162" text-anchor="middle">1</text><text x="270" y="162" text-anchor="middle">2</text><text x="350" y="162" text-anchor="middle">3</text>
+  </svg>
+  <ul>
+    <li>A <b>staircase</b> for a discrete <code>X</code>: flat between values, jumping at each value by <code>P(X = x)</code>; the filled dot shows the value at the jump.</li>
+    <li>Never decreases; starts at <code>0</code> far left and reaches <code>1</code> far right.</li>
+    <li><code>P(a &lt; X ≤ b) = F(b) − F(a)</code>.</li>
+  </ul>
+  <p class="muted"><b>Example:</b> heads in 3 tosses: <code>F(1) = 1/8 + 3/8 = 1/2</code>; <code>F(1.7) = 1/2</code> too (no value between 1 and 2); <code>P(1 &lt; X ≤ 3) = F(3) − F(1) = 1/2</code>.</p>
+</div>
+</section>
+
+<!-- ===== RV3 · SPECIAL DISCRETE DISTRIBUTIONS ===== -->
+<section class="pane" id="pane-rv3">
+<h2><span class="num">3</span>Special discrete distributions</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Discrete uniform: X ~ U(a, b)</h4>
+  <p><code>P(X = k) = 1/(b − a + 1)</code>, &nbsp; <code>k = a, a + 1, …, b</code></p>
+  <p class="muted"><b>When:</b> every whole number from <code>a</code> to <code>b</code> is equally likely. A fair die is <code>U(1, 6)</code>; a random digit is <code>U(0, 9)</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Binomial: X ~ B(n, p)</h4>
+  <p><code>P(X = k) = binom(n,k) pᵏ qⁿ⁻ᵏ</code>, &nbsp; <code>k = 0, 1, …, n</code>, &nbsp; <code>q = 1 − p</code></p>
+  <p class="muted"><b>When:</b> <code>n</code> independent repetitions of the same yes/no trial (a <b>Bernoulli trial</b>: "success" with probability <code>p</code>, "failure" with <code>q</code>), and <code>X</code> counts the successes.</p>
+  <p class="muted"><b>Why the formula:</b> one particular order with <code>k</code> successes, like SS…FF, has probability <code>pᵏ qⁿ⁻ᵏ</code> (independent trials multiply). There are <code>binom(n,k)</code> ways to choose which of the <code>n</code> trials are the successes.</p>
+  <p class="muted"><b>Example:</b> 10 multiple-choice questions with 4 options, all guessed: <code>X ~ B(10, 1/4)</code>; <code>P(X = 3) = binom(10,3) (1/4)³ (3/4)⁷ ≈ 0.25</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Geometric: X ~ G(p)</h4>
+  <p><code>P(X = k) = qᵏ⁻¹ p</code>, &nbsp; <code>k = 1, 2, 3, …</code></p>
+  <p class="muted"><b>When:</b> repeat a Bernoulli trial until the first success; <code>X</code> is the number of trials needed (the success included).</p>
+  <p class="muted"><b>Why:</b> <code>X = k</code> means <code>k − 1</code> failures and then a success.</p>
+  <p class="muted"><b>Useful:</b> <code>P(X &gt; k) = qᵏ</code> (the first <code>k</code> all failed).</p>
+  <p class="muted"><b>No memory:</b> <code>P(X &gt; n + k | X &gt; k) = P(X &gt; n)</code>. After <code>k</code> failures the wait starts over, as if nothing had happened; the dice don't "owe" you a six.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Poisson: X ~ P(λ)</h4>
+  <p><code>P(X = k) = (λᵏ)/(k!) e^(−λ)</code>, &nbsp; <code>k = 0, 1, 2, …</code>, &nbsp; <code>λ &gt; 0</code></p>
+  <p class="muted"><b>When:</b> counting how many times something happens in a stretch of time (or space) when it happens at random at a steady average rate, independently, one at a time: calls to a center in a minute, typos on a page. <code>λ</code> is the average count in that stretch.</p>
+  <p class="muted"><b>Example:</b> 5 calls a minute on average: <code>P(no call in a minute) = e^(−5) ≈ 0.0067</code>.</p>
+  <p class="muted"><b>Approximating the binomial:</b> many trials, each very unlikely (<code>n</code> large, <code>p</code> small): <code>B(n, p) ≈ P(np)</code>.</p>
+</div>
+</section>
+
+<!-- ===== RV4 · EXPECTATION ===== -->
+<section class="pane" id="pane-rv4">
+<h2><span class="num">4</span>Expectation</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>The expected value</h4>
+  <p><code>E(X) = ∑ x P(X = x)</code></p>
+  <p class="muted"><b>In words:</b> each value weighted by its probability. It is the <b>long-run average</b>: repeat the experiment many times, and the mean of the results settles near <code>E(X)</code>. Like the mean of a frequency table, with probabilities in place of relative frequencies. Also written <code>μ</code>.</p>
+  <p class="muted"><b>Example:</b> a fair die: <code>E(X) = (1 + 2 + ⋯ + 6)/6 = 3.5</code>, a value the die never shows. It is a balance point, not a "most likely" value.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Rules for expectation</h4>
+  <ul class="idlist">
+    <li><code>E(c) = c</code></li>
+    <li><code>E(aX + b) = a E(X) + b</code></li>
+    <li><code>E(g(X)) = ∑ g(x) P(X = x)</code></li>
+  </ul>
+  <p class="muted"><b>The third</b> means: to find the expectation of something computed from <code>X</code> (like <code>X²</code>), apply it to each value and keep the same probabilities.</p>
+  <p class="muted"><b>A trap:</b> usually <code>E(X²) ≠ (E(X))²</code>, and <code>E(1/X) ≠ 1/(E(X))</code>. Only straight-line changes pass through <code>E</code>.</p>
+  <p class="muted"><b>Example:</b> a prize of <code>5X</code> for a die roll: <code>E(5X) = 5 · 3.5 = 17.5</code>.</p>
+</div>
+</section>
+
+<!-- ===== RV5 · VARIANCE ===== -->
+<section class="pane" id="pane-rv5">
+<h2><span class="num">5</span>Variance and standard deviation</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Variance of a random variable</h4>
+  <ul class="idlist">
+    <li><code>V(X) = E[(X − μ)²]</code>, &nbsp; <code>μ = E(X)</code></li>
+    <li><code>V(X) = E(X²) − (E(X))²</code></li>
+    <li><code>σ(X) = √(V(X))</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the expected squared distance from the mean: how spread out the values are, weighted by probability. The second form (the mean of the square minus the square of the mean) is the quicker one, the same shortcut as for data.</p>
+  <p class="muted"><b>Example:</b> heads in 3 tosses: <code>E(X) = 1.5</code>, <code>E(X²) = (0 + 3 + 12 + 9)/8 = 3</code>, <code>V(X) = 3 − 2.25 = 0.75</code>, <code>σ ≈ 0.87</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Rules for variance</h4>
+  <ul class="idlist">
+    <li><code>V(aX + b) = a² V(X)</code></li>
+    <li><code>σ(aX + b) = |a| σ(X)</code></li>
+    <li><code>V(c) = 0</code></li>
+  </ul>
+  <p class="muted"><b>Why:</b> adding <code>b</code> shifts every value and the mean together, so no distance changes; multiplying by <code>a</code> stretches every distance by <code>|a|</code>, and squares by <code>a²</code>.</p>
+  <p class="muted"><b>The variance is the smallest</b> expected squared distance: <code>E[(X − c)²]</code> is smallest at <code>c = E(X)</code>, as the mean is for data.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Expectation and variance of the special distributions</h4>
+  <div class="bi-table" data-table='{"rows":[{"c":["X","E(X)","V(X)"]},{"c":["U(a, b)","$\\frac{a+b}{2}$","$\\frac{(b-a+1)^2-1}{12}$"]},{"c":["B(n, p)","$np$","$npq$"]},{"c":["G(p)","$\\frac{1}{p}$","$\\frac{q}{p^2}$"]},{"c":["P(λ)","$\\lambda$","$\\lambda$"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Make sense of them:</b> 100 fair coin tosses average <code>np = 50</code> heads. Waiting for a six takes <code>1/p = 6</code> rolls on average. For a Poisson count the mean and the variance are the same number.</p>
+</div>
+</section>
+</div><!-- /folder-rv -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"]],"m":[["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"]],"m":[["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_rvpmf", "v": 1, "subject": "f:rv", "kind": "action",
+  "name": "Finding the distribution of a random variable",
+  "description": "Build the probability function (and the cumulative distribution) of X from the experiment.",
+  "uses": [["c", "rv2", "The probability function"], ["c", "rv2", "The cumulative distribution function"], ["c", "rv1", "What a random variable is"]],
+  "parts": [
+    { "id": "st_bi_rvpmf1", "cat": "stage", "name": "List the possible values", "text": "Every value `X` can take: the smallest, the largest, and everything between." },
+    { "id": "st_bi_rvpmf2", "cat": "stage", "name": "Find each probability", "text": "`P(X = x)`: count the outcomes that give `x` (uniform space), multiply along a tree, or use a known distribution." },
+    { "id": "st_bi_rvpmf3", "cat": "stage", "name": "Check and tabulate", "text": "All `≥ 0` and adding up to 1. Write the table (the editor's Table with a totals column shows the sum)." },
+    { "id": "st_bi_rvpmf4", "cat": "stage", "name": "The cumulative distribution", "text": "`F(x)` = running total of the table; a staircase that ends at 1." },
+    { "id": "st_bi_rvpmf5", "cat": "example", "name": "Example — the larger of two dice", "text": "`X = max` of two dice\n1. `X = 1, …, 6`\n2. `P(X ≤ k) = (k/6)²`, so `P(X = k) = (k² − (k − 1)²)/36 = (2k − 1)/36`\n3. `1/36, 3/36, 5/36, 7/36, 9/36, 11/36`: sum `36/36` ✓\n4. `F(k) = k²/36`",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["x", "1", "2", "3", "4", "5", "6"] }, { "c": ["P(X = x)", "1/36", "3/36", "5/36", "7/36", "9/36", "11/36"] }], "head": 1, "side": 1, "totC": 1 } }] }
+  ] },
+{ "id": "pp_bi_rvwhich", "v": 1, "subject": "f:rv", "kind": "action",
+  "name": "Recognizing a special distribution",
+  "description": "Decide whether X is uniform, binomial, geometric or Poisson, and find its parameters.",
+  "uses": [["c", "rv3", "Binomial: X ~ B(n, p)"], ["c", "rv3", "Geometric: X ~ G(p)"], ["c", "rv3", "Poisson: X ~ P(λ)"], ["c", "rv3", "Discrete uniform: X ~ U(a, b)"]],
+  "parts": [
+    { "id": "st_bi_rvwhich1", "cat": "stage", "name": "What does X count?", "text": "Successes in a **fixed** number `n` of independent identical trials → `B(n, p)`.\nTrials **until** the first success → `G(p)`.\nEvents in an interval of time or space at an average rate `λ` → `P(λ)`.\nWhole numbers `a…b`, all equally likely → `U(a, b)`." },
+    { "id": "st_bi_rvwhich2", "cat": "stage", "name": "Check the conditions", "text": "Binomial and geometric need independent trials with the same `p` (drawing **with** replacement, or a huge population). Drawing without replacement from a small group is not binomial." },
+    { "id": "st_bi_rvwhich3", "cat": "stage", "name": "Write it with its parameters", "text": "`X ~ B(10, 0.2)`, `X ~ G(1/6)`, `X ~ P(5)`. Rescale `λ` to the interval asked: 3 an hour means `λ = 1.5` for half an hour." },
+    { "id": "st_bi_rvwhich4", "cat": "example", "name": "Examples", "text": "Defective items among 20, each defective with probability 0.05: `B(20, 0.05)`.\nRolls until the first 6: `G(1/6)`.\nEmails per hour, 12 per hour on average, in 10 minutes: `P(2)`." }
+  ] },
+{ "id": "pp_bi_rvbinom", "v": 1, "subject": "f:rv", "kind": "problem",
+  "name": "Binomial probabilities",
+  "description": "Compute exactly, at most and at least k successes for X ~ B(n, p).",
+  "uses": [["c", "rv3", "Binomial: X ~ B(n, p)"], ["c", "cmb3", "Combinations: n choose k"], ["c", "prb4", "The complement and monotone rules"]],
+  "parts": [
+    { "id": "st_bi_rvbinom1", "cat": "stage", "name": "Name n, p and q", "text": "`q = 1 − p`." },
+    { "id": "st_bi_rvbinom2", "cat": "stage", "name": "Exactly k", "text": "`binom(n,k) pᵏ qⁿ⁻ᵏ`." },
+    { "id": "st_bi_rvbinom3", "cat": "stage", "name": "A range", "text": "Add the exact terms. If the range is long, use the complement: `P(X ≥ 1) = 1 − P(X = 0) = 1 − qⁿ`." },
+    { "id": "st_bi_rvbinom4", "cat": "example", "name": "Example", "text": "Each of 6 seeds sprouts with probability 0.8, independently.\n2. `P(X = 5) = binom(6,5) 0.8⁵ 0.2 ≈ 0.393`\n3. `P(X ≥ 5) = 0.393 + 0.8⁶ ≈ 0.393 + 0.262 = 0.655`; `P(at least one) = 1 − 0.2⁶ ≈ 0.99994`" }
+  ] },
+{ "id": "pp_bi_rvev", "v": 1, "subject": "f:rv", "kind": "problem",
+  "name": "Computing the expectation and variance",
+  "description": "Find E(X), V(X) and σ(X) from a probability table, and of aX + b from them.",
+  "uses": [["c", "rv4", "The expected value"], ["c", "rv5", "Variance of a random variable"], ["c", "rv5", "Rules for variance"], ["c", "rv4", "Rules for expectation"]],
+  "parts": [
+    { "id": "st_bi_rvev1", "cat": "stage", "name": "E(X)", "text": "Multiply each value by its probability and add." },
+    { "id": "st_bi_rvev2", "cat": "stage", "name": "E(X²)", "text": "Square each value, keep the same probabilities, add." },
+    { "id": "st_bi_rvev3", "cat": "stage", "name": "V(X) and σ", "text": "`V(X) = E(X²) − (E(X))²`; check it isn't negative; `σ = √(V(X))`." },
+    { "id": "st_bi_rvev4", "cat": "stage", "name": "A linear change", "text": "`E(aX + b) = aE(X) + b`; `V(aX + b) = a²V(X)`. For a special distribution, read `E` and `V` off the table instead." },
+    { "id": "st_bi_rvev5", "cat": "example", "name": "Example — a game", "text": "Win 10 with probability 0.2, win 2 with probability 0.3, lose 4 with probability 0.5.\n1. `E(X) = 2 + 0.6 − 2 = 0.6`\n2. `E(X²) = 20 + 1.2 + 8 = 29.2`\n3. `V(X) = 29.2 − 0.36 = 28.84`, `σ ≈ 5.37`\n4. Stakes doubled and a fee of 1: `Y = 2X − 1`, `E(Y) = 0.2`, `V(Y) = 4 · 28.84 = 115.36`" }
+  ] },
+{ "id": "pp_bi_prbcond", "v": 1, "subject": "f:prb", "kind": "problem",
+  "name": "Finding a conditional probability",
+  "description": "Compute P(A | B) from the definition, by counting inside B, or from a two-way table.",
+  "uses": [["c", "prb6", "Probability given new information"], ["c", "prb6", "Reading conditional probabilities off a table"], ["c", "prb6", "The multiplication formula"]],
+  "parts": [
+    { "id": "st_bi_prbcond1", "cat": "stage", "name": "Find which event is given", "text": "The condition is what you know happened: \"given\", \"if\", \"among those who\". It goes after the bar." },
+    { "id": "st_bi_prbcond2", "cat": "stage", "name": "Pick the route", "text": "Probabilities given: `P(A ∩ B)/P(B)`. Equally likely outcomes or a count table: count `A ∩ B` inside `B` and divide by the size of `B`." },
+    { "id": "st_bi_prbcond3", "cat": "stage", "name": "Check", "text": "The answer is between 0 and 1, and `P(A | B)` is not mixed up with `P(B | A)`." },
+    { "id": "st_bi_prbcond4", "cat": "example", "name": "Example", "text": "Two dice; given that the sum is 8, what is `P(a 6 shows)`?\n1. Given: sum 8 `= {(2,6), (3,5), (4,4), (5,3), (6,2)}`, 5 pairs\n2. With a 6: `(2,6)`, `(6,2)`; `P = 2/5`" }
+  ] },
+{ "id": "pp_bi_prbindep", "v": 1, "subject": "f:prb", "kind": "problem",
+  "name": "Checking whether events are independent",
+  "description": "Test independence with P(A ∩ B) = P(A)P(B), and use it to multiply probabilities.",
+  "uses": [["c", "prb7", "Independent events"], ["c", "prb7", "Disjoint is not independent"]],
+  "parts": [
+    { "id": "st_bi_prbindep1", "cat": "stage", "name": "Find the three numbers", "text": "`P(A)`, `P(B)` and `P(A ∩ B)` (for the last, often the addition rule: `P(A) + P(B) − P(A ∪ B)`)." },
+    { "id": "st_bi_prbindep2", "cat": "stage", "name": "Compare", "text": "`P(A ∩ B) = P(A) P(B)` → independent; otherwise dependent. Equivalently, compare `P(A | B)` with `P(A)`." },
+    { "id": "st_bi_prbindep3", "cat": "example", "name": "Example", "text": "`P(A) = 0.4`, `P(B) = 0.3`, `P(A ∪ B) = 0.58`\n1. `P(A ∩ B) = 0.4 + 0.3 − 0.58 = 0.12`\n2. `0.4 · 0.3 = 0.12`: independent. (With `P(A ∪ B) = 0.7` instead: `P(A ∩ B) = 0`, disjoint, so dependent.)" }
+  ] },
+{ "id": "pp_bi_prbtree", "v": 1, "subject": "f:prb", "kind": "action",
+  "name": "The tree method",
+  "description": "Solve a two- or multi-stage problem with a probability tree: multiply along paths, add the paths you need.",
+  "uses": [["c", "prb9", "The tree method"], ["c", "prb6", "The multiplication formula"], ["c", "prb8", "The law of total probability"]],
+  "parts": [
+    { "id": "st_bi_prbtree1", "cat": "stage", "name": "List the stages", "text": "What happens first, what next. The first stage's probabilities are plain; the later ones are conditional on the path." },
+    { "id": "st_bi_prbtree2", "cat": "stage", "name": "Draw the branches", "text": "One branch per outcome, its probability on it. Check each fan of branches adds up to 1." },
+    { "id": "st_bi_prbtree3", "cat": "stage", "name": "Multiply along each path", "text": "The product is the probability of the whole path (in the editor's Tree, turn on \"Multiply along each path\")." },
+    { "id": "st_bi_prbtree4", "cat": "stage", "name": "Add the paths you need", "text": "`P(event)` = the sum of the paths that end in it. For \"given the ending\", divide one path by that sum (Bayes)." },
+    { "id": "st_bi_prbtree5", "cat": "example", "name": "Example — two boxes", "text": "Box A: 2 black, 2 white. Box B: 3 black, 1 red. Choose a box at random, then a ball.\n3. Paths: A-black `1/4`, A-white `1/4`, B-black `3/8`, B-red `1/8`\n4. `P(black) = 1/4 + 3/8 = 5/8`; `P(box B | black) = (3/8)/(5/8) = 3/5`",
+      "blocks": [{ "kind": "tree", "tree": { "kids": [{ "label": "Box A", "p": "1/2", "kids": [{ "label": "black", "p": "1/2" }, { "label": "white", "p": "1/2" }] }, { "label": "Box B", "p": "1/2", "kids": [{ "label": "black", "p": "3/4" }, { "label": "red", "p": "1/4" }] }], "prod": 1 } }] }
+  ] },
+{ "id": "pp_bi_prbtable", "v": 1, "subject": "f:prb", "kind": "action",
+  "name": "The table method",
+  "description": "Solve a two-stage problem with a table of joint probabilities: totals give total probability, a cell over its total gives Bayes.",
+  "uses": [["c", "prb9", "The table method"], ["c", "prb8", "Bayes' formula"]],
+  "parts": [
+    { "id": "st_bi_prbtable1", "cat": "stage", "name": "Set up the table", "text": "Rows: the first stage's outcomes. Columns: the second stage's. Add a totals row and column (the editor's Table does the adding)." },
+    { "id": "st_bi_prbtable2", "cat": "stage", "name": "Fill the cells", "text": "Each cell `= P(row) · P(column | row)`. The row totals must come out as the first stage's probabilities." },
+    { "id": "st_bi_prbtable3", "cat": "stage", "name": "Read the answers", "text": "A column total is `P(column)` (total probability). A cell over its column total is `P(row | column)` (Bayes)." },
+    { "id": "st_bi_prbtable4", "cat": "example", "name": "Example — a medical test", "text": "0.5% are sick; the test is positive for 90% of the sick and 2% of the healthy.\n2. Sick: `0.005 · 0.9 = 0.0045` positive, `0.0005` negative. Healthy: `0.995 · 0.02 = 0.0199` positive, `0.9751` negative.\n3. `P(+) = 0.0244`; `P(sick | +) = 0.0045/0.0244 ≈ 0.184`",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["", "positive", "negative"] }, { "c": ["sick", "0.0045", "0.0005"] }, { "c": ["healthy", "0.0199", "0.9751"] }], "head": 1, "side": 1, "totR": 1, "totC": 1 } }] }
+  ] },
 { "id": "pp_bi_cmbcount", "v": 1, "subject": "f:cmb", "kind": "action",
   "name": "Choosing the counting formula",
   "description": "Decide whether order matters and whether repeats are allowed, then count.",
