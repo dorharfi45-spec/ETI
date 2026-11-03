@@ -543,200 +543,318 @@
 <!-- ============ A. ABSOLUTE VALUE ============ -->
 <section class="pane on" id="pane-a1">
 <h2><span class="num">A</span>Absolute value</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="a1">Expand all</button>
-  <button data-acc="close" data-scope="a1">Collapse all</button>
+<div class="card" data-key="the-idea-distance-from-zero" data-tags="Definition">
+  <h4>What absolute value means</h4>
+  <p><code>|x|</code> is the <b>distance</b> of <code>x</code> from <code>0</code> on the number line, so it's never negative.</p>
+  <p>As a rule: <code>|x| = x</code> when <code>x ≥ 0</code>, and <code>|x| = −x</code> when <code>x &lt; 0</code>.</p>
+  <svg class="ill" viewBox="0 0 420 110" role="img" aria-label="a number line: minus 3 and 3 are both at distance 3 from 0">
+    <path class="ax" d="M20 60 H400"/>
+    <path class="ax" d="M30 55 V65 M66 55 V65 M102 55 V65 M138 55 V65 M174 55 V65 M210 55 V65 M246 55 V65 M282 55 V65 M318 55 V65 M354 55 V65 M390 55 V65"/>
+    <path class="cv2" d="M102 38 H210"/>
+    <path class="cv" d="M210 38 H318"/>
+    <circle class="dot" cx="102" cy="60" r="5"/>
+    <circle class="dot" cx="318" cy="60" r="5"/>
+    <text x="156" y="30" text-anchor="middle">3</text>
+    <text x="264" y="30" text-anchor="middle">3</text>
+    <text x="102" y="86" text-anchor="middle">−3</text>
+    <text x="210" y="86" text-anchor="middle">0</text>
+    <text x="318" y="86" text-anchor="middle">3</text>
+  </svg>
+  <p class="muted"><b>In words:</b> absolute value removes the sign. <code>|5| = 5</code> and <code>|−5| = 5</code>, because both are 5 steps from zero.</p>
+  <p class="muted"><b>Why "−x" for negatives:</b> if <code>x</code> is negative, then <code>−x</code> is positive. For <code>x = −5</code>: <code>−x = −(−5) = 5</code>. The minus sign isn't making the answer negative; it's cancelling the negative.</p>
+  <p class="muted"><b>Distance between two numbers:</b> <code>|a − b|</code> is the distance between <code>a</code> and <code>b</code>. So <code>|x − 2| = 3</code> means "<code>x</code> is 3 steps from 2": <code>x = 5</code> or <code>x = −1</code>.</p>
+  <div class="tool">
+    <p class="tool-title">Distance <code>a</code> from 0</p>
+    <label class="muted">a = <span id="avDistLbl" class="mono">3</span></label>
+    <input type="range" id="avDist" min="0" max="8" step="0.5" value="3">
+    <svg id="avDistLine" class="numline" viewBox="0 0 520 80"></svg>
+    <p class="muted" id="avDistNote"></p>
+  </div>
 </div>
-
-<details class="subject" open>
-  <summary>Solving equations with <code>|·|</code><span class="stag">method + solver</span></summary>
-  <div class="subject-body">
-    <ol class="steps">
-      <li><b>Isolate the absolute value</b> so it stands alone: <code>|expression| = k</code>.</li>
-      <li><b>Check <code>k</code>.</b> If <code>k &lt; 0</code> → <b>no solution</b> (an absolute value is never negative).</li>
-      <li>If <code>k = 0</code> → exactly <b>one case</b>: <code>expression = 0</code>.</li>
-      <li>If <code>k &gt; 0</code> → <b>split into two cases</b>: <code>expression = k</code> <b>or</b> <code>expression = −k</code>.</li>
-      <li><b>Solve each</b> equation separately.</li>
-      <li><b>Check</b> both solutions in the original — extra steps or a variable outside the <code>|·|</code> can introduce extraneous roots.</li>
-    </ol>
-    <p>Special case — two absolute values: <code>|A| = |B|</code> → <code>A = B</code> <b>or</b> <code>A = −B</code>.</p>
-
-    <div class="tool">
-      <p class="tool-title">Solver — <span class="mono">| a·x + b | = k</span></p>
-      <div class="flex" style="align-items:center;gap:8px;">
-        <span>|</span>
-        <input type="number" id="avA" value="2" step="1" style="width:52px"> <span>·x +</span>
-        <input type="number" id="avB" value="-3" step="1" style="width:52px">
-        <span>| =</span>
-        <input type="number" id="avK" value="7" step="1" style="width:52px">
-      </div>
-      <div id="avOut" class="eqout"></div>
-      <svg id="avLine" class="numline" viewBox="0 0 520 90"></svg>
+<div class="card" data-tags="Formula">
+  <h4>Properties of absolute value</h4>
+  <ul>
+    <li><code>|a| ≥ 0</code>, and <code>|a| = 0</code> only when <code>a = 0</code></li>
+    <li><code>|−a| = |a|</code></li>
+    <li><code>|a · b| = |a| · |b|</code> &nbsp;·&nbsp; <code>|a/b| = (|a|)/(|b|)</code> (<code>b ≠ 0</code>)</li>
+    <li><code>√(a²) = |a|</code></li>
+    <li><code>|a + b| ≤ |a| + |b|</code> (the triangle inequality)</li>
+  </ul>
+  <p class="muted"><b>The one that catches people:</b> <code>√(x²)</code> is <b>not</b> always <code>x</code>. For <code>x = −3</code>: <code>√((−3)²) = √9 = 3</code>, which is <code>|−3|</code>, not <code>−3</code>. A square root always gives the non-negative answer.</p>
+  <p class="muted"><b>Multiplying is fine, adding is not:</b> <code>|−2 · 3| = 6 = |−2| · |3|</code>. But <code>|−2 + 3| = 1</code>, while <code>|−2| + |3| = 5</code>. Adding can only make it smaller or equal, never bigger: that's the triangle inequality.</p>
+</div>
+<div class="card" data-key="solving-equations-with" data-tags="Theorem">
+  <h4>Absolute value equations</h4>
+  <p><code>|E| = k</code>, where <code>E</code> is any expression:</p>
+  <ul>
+    <li><code>k &lt; 0</code> → <b>no solution</b></li>
+    <li><code>k = 0</code> → <code>E = 0</code></li>
+    <li><code>k &gt; 0</code> → <code>E = k</code> <b>or</b> <code>E = −k</code></li>
+    <li>Two absolute values: <code>|A| = |B|</code> → <code>A = B</code> <b>or</b> <code>A = −B</code></li>
+  </ul>
+  <div class="tool">
+    <p class="tool-title">Solver — <span class="mono">| a·x + b | = k</span></p>
+    <div class="flex" style="align-items:center;gap:8px;">
+      <span>|</span>
+      <input type="number" id="avA" value="2" step="1" style="width:52px"> <span>·x +</span>
+      <input type="number" id="avB" value="-3" step="1" style="width:52px">
+      <span>| =</span>
+      <input type="number" id="avK" value="7" step="1" style="width:52px">
     </div>
-
-    <p class="muted"><b>Example.</b> <code>|2x − 3| = 7</code> → <code>2x − 3 = 7</code> or <code>2x − 3 = −7</code> → <code>x = 5</code> or <code>x = −2</code>.</p>
+    <div id="avOut" class="eqout"></div>
+    <svg id="avLine" class="numline" viewBox="0 0 520 90"></svg>
   </div>
-</details>
-
-<details class="subject">
-  <summary>The idea: distance from zero<span class="stag">visual</span></summary>
-  <div class="subject-body">
-    <p><code>|x| = a</code> asks "which points are exactly distance <code>a</code> from 0?" — for <code>a &gt; 0</code> there are two: <code>x = a</code> and <code>x = −a</code>.</p>
-    <div class="tool">
-      <p class="tool-title">Distance <code>a</code> from 0</p>
-      <label class="muted">a = <span id="avDistLbl" class="mono">3</span></label>
-      <input type="range" id="avDist" min="0" max="8" step="0.5" value="3">
-      <svg id="avDistLine" class="numline" viewBox="0 0 520 80"></svg>
-      <p class="muted" id="avDistNote"></p>
-    </div>
-  </div>
-</details>
+  <p class="muted"><b>Why two cases:</b> <code>|E| = 7</code> says "<code>E</code> is 7 steps from zero". There are two such numbers: <code>7</code> and <code>−7</code>. So <code>E</code> must be one <b>or</b> the other. A distance can't be negative, so <code>|E| = −2</code> has no solution at all.</p>
+  <p class="muted"><b>Example:</b> <code>|2x − 3| = 7</code>. Either <code>2x − 3 = 7</code>, so <code>x = 5</code>; or <code>2x − 3 = −7</code>, so <code>x = −2</code>. Check: <code>|10 − 3| = 7</code> ✓ and <code>|−4 − 3| = 7</code> ✓.</p>
+  <p class="muted"><b>When <code>x</code> is also outside the bars</b> (like <code>|x − 1| = 2x + 3</code>), the right side might be negative for some answers, so always check each answer in the original equation. The full steps are the method "Solving an absolute value equation".</p>
+</div>
 </section>
 
 <!-- ============ B. INEQUALITIES ============ -->
 <section class="pane" id="pane-a2">
 <h2><span class="num">B</span>Inequalities</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="a2">Expand all</button>
-  <button data-acc="close" data-scope="a2">Collapse all</button>
+<div class="card" data-tags="Definition">
+  <h4>Inequalities and interval notation</h4>
+  <p>The answer to an inequality is usually a whole <b>range</b> of numbers, written as an interval:</p>
+  <ul>
+    <li><code>[a, b]</code>: <code>a ≤ x ≤ b</code> (ends included) · <code>(a, b)</code>: <code>a &lt; x &lt; b</code> (ends left out)</li>
+    <li><code>[a, b)</code>: <code>a ≤ x &lt; b</code> · <code>(a, ∞)</code>: <code>x &gt; a</code> · <code>(−∞, b]</code>: <code>x ≤ b</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="two number lines: the interval from minus 2 included to 3 excluded, and the ray x greater than 1">
+    <path class="ax" d="M20 60 H400 M20 115 H400"/>
+    <rect class="band" x="138" y="52" width="180" height="16"/>
+    <path class="cv" d="M138 60 H318"/>
+    <circle class="dot" cx="138" cy="60" r="6"/>
+    <circle class="hole" cx="318" cy="60" r="6"/>
+    <text x="138" y="88" text-anchor="middle">−2</text>
+    <text x="318" y="88" text-anchor="middle">3</text>
+    <text x="228" y="38" text-anchor="middle">[−2, 3)</text>
+    <path class="cv" d="M252 115 H385"/>
+    <path class="arr" d="M398 115 L386 109 L386 121 Z"/>
+    <circle class="hole" cx="246" cy="115" r="6"/>
+    <text x="246" y="141" text-anchor="middle">1</text>
+    <text x="320" y="101" text-anchor="middle">(1, ∞)</text>
+  </svg>
+  <p class="muted"><b>Square bracket or round?</b> Square <code>[ ]</code> and a filled dot mean the end number <b>is</b> part of the answer (<code>≤</code>, <code>≥</code>). Round <code>( )</code> and an empty dot mean it isn't (<code>&lt;</code>, <code>&gt;</code>). Infinity always gets a round bracket, because it's not a number you can reach.</p>
+  <p class="muted"><b>Solving</b> works almost like an equation: you can add or subtract the same thing on both sides, and multiply or divide by a positive number. The only new rule is about negative numbers (next card).</p>
 </div>
-
-<details class="subject" open>
-  <summary>1 · Multiplying / dividing by a number<span class="stag">flip demo</span></summary>
-  <div class="subject-body">
-    <p>Multiply or divide both sides by a <b>positive</b> number → direction <b>unchanged</b>. By a <b>negative</b> number → direction <b>flips</b>.</p>
-    <div class="tool">
-      <p class="tool-title">Divide <code>2x &lt; 6</code> by <code>d</code></p>
-      <label class="muted">d = <span id="ineqDLbl" class="mono">2</span></label>
-      <input type="range" id="ineqD" min="-5" max="5" step="0.5" value="2">
-      <div class="eqout" id="ineqDOut"></div>
-      <svg id="ineqDLine" class="numline" viewBox="0 0 520 80"></svg>
-    </div>
+<div class="card" data-key="1-multiplying-dividing-by-a-number" data-tags="Theorem">
+  <h4>Multiplying or dividing by a number</h4>
+  <p>Multiply or divide both sides by a <b>positive</b> number: the inequality keeps its direction. By a <b>negative</b> number: it <b>flips</b> (<code>&lt;</code> becomes <code>&gt;</code>).</p>
+  <svg class="ill" viewBox="0 0 420 160" role="img" aria-label="2 is less than 3, but after multiplying by minus 1, minus 2 is greater than minus 3: the order reverses">
+    <path class="ax" d="M20 45 H400 M20 115 H400"/>
+    <path class="ax" d="M30 40 V50 M66 40 V50 M102 40 V50 M138 40 V50 M174 40 V50 M210 40 V50 M246 40 V50 M282 40 V50 M318 40 V50 M354 40 V50 M390 40 V50"/>
+    <path class="ax" d="M30 110 V120 M66 110 V120 M102 110 V120 M138 110 V120 M174 110 V120 M210 110 V120 M246 110 V120 M282 110 V120 M318 110 V120 M354 110 V120 M390 110 V120"/>
+    <circle class="dot" cx="282" cy="45" r="5"/>
+    <circle class="dot" cx="318" cy="45" r="5"/>
+    <circle class="dot" cx="138" cy="115" r="5"/>
+    <circle class="dot" cx="102" cy="115" r="5"/>
+    <path class="gd" d="M282 52 L138 108 M318 52 L102 108"/>
+    <text x="282" y="30" text-anchor="middle">2</text>
+    <text x="318" y="30" text-anchor="middle">3</text>
+    <text x="138" y="141" text-anchor="middle">−2</text>
+    <text x="102" y="141" text-anchor="middle">−3</text>
+    <text x="370" y="30" text-anchor="middle">2 &lt; 3</text>
+    <text x="50" y="100" text-anchor="middle">−2 &gt; −3</text>
+    <text class="sm" x="210" y="84" text-anchor="middle">× (−1)</text>
+  </svg>
+  <p class="muted"><b>Why it flips:</b> multiplying by <code>−1</code> mirrors the number line around <code>0</code>. The number that was further right ends up further left. <code>2 &lt; 3</code>, but <code>−2 &gt; −3</code> (<code>−2</code> is closer to zero, so it's bigger).</p>
+  <p class="muted"><b>Example:</b> <code>−3x &lt; 12</code>. Divide by <code>−3</code> and flip: <code>x &gt; −4</code>. Check with <code>x = 0</code>: <code>0 &lt; 12</code> ✓.</p>
+  <div class="tool">
+    <p class="tool-title">Divide <code>2x &lt; 6</code> by <code>d</code></p>
+    <label class="muted">d = <span id="ineqDLbl" class="mono">2</span></label>
+    <input type="range" id="ineqD" min="-5" max="5" step="0.5" value="2">
+    <div class="eqout" id="ineqDOut"></div>
+    <svg id="ineqDLine" class="numline" viewBox="0 0 520 80"></svg>
   </div>
-</details>
-
-<details class="subject">
-  <summary>2 · Dividing by an expression of unknown sign<span class="stag">case split</span></summary>
-  <div class="subject-body">
-    <p>You <b>cannot</b> multiply/divide an inequality by <code>x</code> unless you know its sign. Fix — <b>case split</b>:</p>
-    <ol class="steps">
-      <li><b>Case 1: assume <code>x &gt; 0</code></b>. Divide normally (keep direction). Combine with <code>x &gt; 0</code> using <span class="tag-and">AND</span>.</li>
-      <li><b>Case 2: assume <code>x &lt; 0</code></b>. Divide and <b>flip</b>. Combine with <code>x &lt; 0</code> using <span class="tag-and">AND</span>.</li>
-      <li><b>Final answer</b> = Case 1 <span class="tag-or">OR</span> Case 2 (<code>x = 0</code> checked separately).</li>
-    </ol>
-    <p class="muted">Alternative for rational inequalities: move everything to one side over a common denominator and build a sign chart — avoids dividing by the variable entirely.</p>
-
-    <div class="tool">
-      <p class="tool-title">Solver — <span class="mono">1 / x  ▸  c</span></p>
-      <div class="flex" style="align-items:center;gap:10px;">
-        <label>1 / x
-          <select id="ratRel"><option value="gt">&gt;</option><option value="lt">&lt;</option><option value="ge">≥</option><option value="le">≤</option></select>
-          <input type="number" id="ratC" value="2" step="0.5" style="width:64px"></label>
+</div>
+<div class="card" data-key="2-dividing-by-an-expression-of-unknown-s" data-tags="Theorem">
+  <h4>Dividing by an expression of unknown sign</h4>
+  <p>You may <b>not</b> multiply or divide an inequality by something like <code>x</code> or <code>x − 1</code> when you don't know its sign. Two safe ways instead:</p>
+  <ul>
+    <li><b>Sign chart</b> (usually easier): move everything to one side, make one fraction, and find where it's positive or negative.</li>
+    <li><b>Case split:</b> solve once assuming the expression is positive, once assuming it's negative (and flip), then join the two answers with <span class="tag-or">OR</span>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 130" role="img" aria-label="a sign chart for (1 minus 2x) over x: negative before 0, positive between 0 and one half, negative after one half">
+    <path class="ax" d="M20 70 H400"/>
+    <rect class="band" x="150" y="62" width="120" height="16"/>
+    <circle class="hole" cx="150" cy="70" r="6"/>
+    <circle class="hole" cx="270" cy="70" r="6"/>
+    <text x="150" y="98" text-anchor="middle">0</text>
+    <text x="270" y="98" text-anchor="middle">½</text>
+    <text x="80" y="50" text-anchor="middle">−</text>
+    <text x="210" y="50" text-anchor="middle">+</text>
+    <text x="340" y="50" text-anchor="middle">−</text>
+    <text class="sm" x="210" y="22" text-anchor="middle">sign of (1 − 2x)/x</text>
+    <text class="sm" x="210" y="122" text-anchor="middle">answer of 1/x &gt; 2: 0 &lt; x &lt; ½</text>
+  </svg>
+  <p class="muted"><b>Why you can't just multiply:</b> if <code>x</code> is negative, the inequality must flip; if it's positive, it mustn't. Not knowing which, you'd be guessing. Example of the mistake: from <code>1/(x) &gt; 2</code>, multiplying by <code>x</code> gives <code>1 &gt; 2x</code>, so <code>x &lt; ½</code>. But <code>x = −1</code> fits that and fails the original (<code>−1 &gt; 2</code> is false).</p>
+  <p class="muted"><b>The right answer, by sign chart:</b> <code>1/(x) − 2 &gt; 0</code> → <code>(1 − 2x)/(x) &gt; 0</code>. The top is <code>0</code> at <code>x = ½</code>, the bottom at <code>x = 0</code>. Test one number in each piece: the fraction is positive only between them. Answer: <code>0 &lt; x &lt; ½</code>. Steps: the methods "Solving an inequality with a sign chart" and "Case split for an unknown sign".</p>
+  <div class="tool">
+    <p class="tool-title">Solver — <span class="mono">1 / x  ▸  c</span></p>
+    <div class="flex" style="align-items:center;gap:10px;">
+      <label>1 / x
+        <select id="ratRel"><option value="gt">&gt;</option><option value="lt">&lt;</option><option value="ge">≥</option><option value="le">≤</option></select>
+        <input type="number" id="ratC" value="2" step="0.5" style="width:64px"></label>
+    </div>
+    <div class="eqout" id="ratOut"></div>
+    <svg id="ratLine" class="numline" viewBox="0 0 520 90"></svg>
+    <p class="muted" id="ratCheck"></p>
+  </div>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Quadratic inequalities</h4>
+  <p>For <code>ax² + bx + c &lt; 0</code> or <code>&gt; 0</code>: find the roots, sketch the parabola, and read where it's below or above the x-axis.</p>
+  <ul>
+    <li><code>a &gt; 0</code> (opens up), two roots <code>x₁ &lt; x₂</code>: negative <b>between</b> the roots, positive <b>outside</b> them.</li>
+    <li>No roots: the parabola is entirely above (<code>a &gt; 0</code>) or below (<code>a &lt; 0</code>) the axis.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="the parabola (x minus 1)(x minus 4): below the x-axis between 1 and 4">
+    <path class="ax" d="M20 120 H400 M60 15 V185"/>
+    <path class="cv" d="M35.0 25.5 L45.0 41.7 L55.0 56.9 L65.0 70.9 L75.0 83.7 L85.0 95.5 L95.0 106.1 L105.0 115.7 L115.0 124.1 L125.0 131.3 L135.0 137.5 L145.0 142.5 L155.0 146.5 L165.0 149.3 L175.0 150.9 L185.0 151.5 L195.0 150.9 L205.0 149.3 L215.0 146.5 L225.0 142.5 L235.0 137.5 L245.0 131.3 L255.0 124.1 L265.0 115.7 L275.0 106.1 L285.0 95.5 L295.0 83.7 L305.0 70.9 L315.0 56.9 L325.0 41.7 L335.0 25.5"/>
+    <path class="cv2" d="M110 120 H260" style="stroke-width:5"/>
+    <circle class="hole" cx="110" cy="120" r="5"/>
+    <circle class="hole" cx="260" cy="120" r="5"/>
+    <text x="104" y="108" text-anchor="end">1</text>
+    <text x="268" y="108">4</text>
+    <text class="sm" x="185" y="178" text-anchor="middle">below the axis: 1 &lt; x &lt; 4</text>
+    <text x="340" y="45">y = (x − 1)(x − 4)</text>
+  </svg>
+  <p class="muted"><b>Why the roots matter:</b> the parabola can only change sign where it crosses the axis, at the roots. Between two roots the sign is the same everywhere, so one test number tells you the sign of the whole piece.</p>
+  <p class="muted"><b>Example:</b> <code>x² − 5x + 4 &lt; 0</code>. Factor: <code>(x − 1)(x − 4) &lt; 0</code>, roots <code>1</code> and <code>4</code>. The parabola opens up, so it's below the axis between them: <code>1 &lt; x &lt; 4</code>. For <code>≥ 0</code> it would be <code>x ≤ 1</code> or <code>x ≥ 4</code>.</p>
+  <p class="muted"><b>Don't</b> take a square root of both sides: <code>x² &lt; 9</code> is <b>not</b> <code>x &lt; 3</code> (that lets in <code>x = −10</code>). It's <code>−3 &lt; x &lt; 3</code>.</p>
+</div>
+<div class="card" data-key="3-square-roots-in-inequalities" data-tags="Theorem">
+  <h4>Square roots in inequalities</h4>
+  <p><b>First the domain:</b> what's under a root must be <code>≥ 0</code>. Then:</p>
+  <ul>
+    <li><code>√(f(x)) &lt; k</code>: if <code>k ≤ 0</code>, no solution. If <code>k &gt; 0</code>: <code>f(x) ≥ 0</code> <span class="tag-and">AND</span> <code>f(x) &lt; k²</code>.</li>
+    <li><code>√(f(x)) &gt; k</code>: if <code>k &lt; 0</code>, the whole domain <code>f(x) ≥ 0</code>. If <code>k ≥ 0</code>: <code>f(x) &gt; k²</code>.</li>
+    <li><code>√A &lt; √B</code>: <code>A ≥ 0</code> <span class="tag-and">AND</span> <code>A &lt; B</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the graph of root of x minus 2 starts at x equals 2 and stays below the line y equals 3 until x equals 11">
+    <path class="ax" d="M20 170 H405 M30 20 V190"/>
+    <path class="gd" d="M30 65 H400"/>
+    <path class="cv" d="M80.0 170.0 L86.2 152.5 L92.5 145.3 L98.8 139.7 L105.0 135.0 L111.2 130.9 L117.5 127.1 L123.8 123.7 L130.0 120.5 L136.2 117.5 L142.5 114.7 L148.8 112.0 L155.0 109.4 L161.2 106.9 L167.5 104.5 L173.8 102.2 L180.0 100.0 L186.2 97.8 L192.5 95.8 L198.8 93.7 L205.0 91.7 L211.2 89.8 L217.5 87.9 L223.8 86.1 L230.0 84.3 L236.2 82.5 L242.5 80.8 L248.8 79.1 L255.0 77.4 L261.2 75.8 L267.5 74.1 L273.8 72.6 L280.0 71.0 L286.2 69.5 L292.5 68.0 L298.8 66.5 L305.0 65.0 L311.2 63.6 L317.5 62.1 L323.8 60.7 L330.0 59.3 L336.2 57.9 L342.5 56.6 L348.8 55.2 L355.0 53.9 L361.2 52.6 L367.5 51.3 L373.8 50.0 L380.0 48.8"/>
+    <path class="cv2" d="M80 170 H305" style="stroke-width:5"/>
+    <circle class="dot" cx="80" cy="170" r="5"/>
+    <circle class="hole" cx="305" cy="170" r="5"/>
+    <path class="gd" d="M305 65 V170"/>
+    <text x="80" y="190" text-anchor="middle">2</text>
+    <text x="305" y="190" text-anchor="middle">11</text>
+    <text x="36" y="58">y = 3</text>
+    <text x="340" y="40">y = √(x − 2)</text>
+  </svg>
+  <p class="muted"><b>Why the domain comes first:</b> squaring both sides hides the root, and with it the warning that the inside can't be negative. In <code>√(x − 2) &lt; 3</code>, squaring gives <code>x − 2 &lt; 9</code>, so <code>x &lt; 11</code>. But <code>x = 0</code> fits that, and <code>√(−2)</code> doesn't exist. Adding the domain <code>x ≥ 2</code> fixes it: <code>2 ≤ x &lt; 11</code>, exactly the green piece in the sketch.</p>
+  <p class="muted"><b>Why squaring is allowed here:</b> both sides are <code>≥ 0</code> (a root and a positive <code>k</code>), and for non-negative numbers, <code>a &lt; b</code> exactly when <code>a² &lt; b²</code>. With a negative side that fails: <code>−5 &lt; 1</code> but <code>25 &gt; 1</code>.</p>
+  <div class="tool">
+    <p class="tool-title">Solver — <span class="mono">√(x + p)  ▸  k</span></p>
+    <div class="flex" style="align-items:center;gap:8px;">
+      <span>√( x +</span>
+      <input type="number" id="sqrtP" value="-2" step="1" style="width:52px">
+      <span>)</span>
+      <select id="sqrtRel"><option value="lt">&lt;</option><option value="gt">&gt;</option></select>
+      <input type="number" id="sqrtK" value="3" step="1" style="width:52px">
+    </div>
+    <div class="eqout" id="sqrtOut"></div>
+    <svg id="sqrtLine" class="numline" viewBox="0 0 520 100"></svg>
+  </div>
+</div>
+<div class="card" data-key="4-absolute-value-inequalities" data-tags="Theorem">
+  <h4>Absolute value inequalities</h4>
+  <ul>
+    <li><code>|E| &lt; k</code> (<code>k &gt; 0</code>) → <code>−k &lt; E &lt; k</code>: one piece, <span class="tag-and">AND</span>. If <code>k ≤ 0</code>: no solution.</li>
+    <li><code>|E| &gt; k</code> (<code>k ≥ 0</code>) → <code>E &lt; −k</code> <span class="tag-or">OR</span> <code>E &gt; k</code>: two pieces. If <code>k &lt; 0</code>: every <code>x</code> in the domain.</li>
+    <li>With <code>≤</code> or <code>≥</code>: the same, with the ends included.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 160" role="img" aria-label="number lines for distance from 1 less than 3, between minus 2 and 4, and greater than 3, outside them">
+    <path class="ax" d="M20 50 H400 M20 120 H400"/>
+    <rect class="band" x="150" y="42" width="180" height="16"/>
+    <circle class="hole" cx="150" cy="50" r="6"/>
+    <circle class="hole" cx="330" cy="50" r="6"/>
+    <circle class="dot" cx="240" cy="50" r="4"/>
+    <text x="150" y="78" text-anchor="middle">−2</text>
+    <text x="240" y="78" text-anchor="middle">1</text>
+    <text x="330" y="78" text-anchor="middle">4</text>
+    <text class="sm" x="240" y="28" text-anchor="middle">|x − 1| &lt; 3: closer than 3 to 1</text>
+    <path class="cv" d="M35 120 H144 M336 120 H385"/>
+    <path class="arr" d="M22 120 L34 114 L34 126 Z M398 120 L386 114 L386 126 Z"/>
+    <circle class="hole" cx="150" cy="120" r="6"/>
+    <circle class="hole" cx="330" cy="120" r="6"/>
+    <circle class="dot" cx="240" cy="120" r="4"/>
+    <text x="150" y="148" text-anchor="middle">−2</text>
+    <text x="330" y="148" text-anchor="middle">4</text>
+    <text class="sm" x="240" y="104" text-anchor="middle">|x − 1| &gt; 3: further than 3</text>
+  </svg>
+  <p class="muted"><b>Think distance:</b> <code>|x − 1| &lt; 3</code> means "<code>x</code> is less than 3 away from 1": everything between <code>−2</code> and <code>4</code>, one piece. <code>|x − 1| &gt; 3</code> means "more than 3 away": everything outside, two pieces going off in both directions.</p>
+  <p class="muted"><b>Example:</b> <code>|3x − 1| &lt; 5</code> → <code>−5 &lt; 3x − 1 &lt; 5</code> → add 1: <code>−4 &lt; 3x &lt; 6</code> → divide by 3: <code>−4/3 &lt; x &lt; 2</code>. And <code>|3x − 1| ≥ 5</code> is everything else: <code>x ≤ −4/3</code> or <code>x ≥ 2</code>.</p>
+  <div class="tool">
+    <p class="tool-title">Visualizer — <span class="mono">| x − c |  ▸  k</span></p>
+    <div class="flex" style="align-items:center;gap:14px;">
+      <label class="muted">c = <span id="aviCLbl" class="mono">1</span></label>
+      <div class="btnrow" id="aviRel" style="margin:0">
+        <button data-r="lt" class="on">&lt; k</button>
+        <button data-r="gt">&gt; k</button>
       </div>
-      <div class="eqout" id="ratOut"></div>
-      <svg id="ratLine" class="numline" viewBox="0 0 520 90"></svg>
-      <p class="muted" id="ratCheck"></p>
     </div>
-
-    <p class="muted"><b>Worked example.</b> <code>1/x &gt; 2</code>: Case 1 (<code>x&gt;0</code>) → <code>1 &gt; 2x</code> → <code>x &lt; ½</code>, AND <code>x&gt;0</code> → <code>0 &lt; x &lt; ½</code>. Case 2 (<code>x&lt;0</code>) → <code>1 &lt; 2x</code> → <code>x &gt; ½</code>, AND <code>x&lt;0</code> → empty. Final: <code>0 &lt; x &lt; ½</code>.</p>
+    <input type="range" id="aviC" min="-6" max="6" step="0.5" value="1">
+    <label class="muted">k = <span id="aviKLbl" class="mono">3</span></label>
+    <input type="range" id="aviK" min="-2" max="7" step="0.5" value="3">
+    <div class="eqout" id="aviOut"></div>
+    <svg id="aviLine" class="numline" viewBox="0 0 520 80"></svg>
   </div>
-</details>
-
-<details class="subject">
-  <summary>3 · Square roots in inequalities<span class="stag">domain + solver</span></summary>
-  <div class="subject-body">
-    <p><b>Always start with the domain</b>: whatever is under the root must be <code>≥ 0</code>, combined with everything else using <span class="tag-and">AND</span>.</p>
-    <ul class="idlist" style="max-width:560px">
-      <li><code>√(f(x)) &lt; k</code>: if <code>k ≤ 0</code> → no solution. If <code>k &gt; 0</code> → <code>f(x) ≥ 0</code> <span class="tag-and">AND</span> <code>f(x) &lt; k²</code>.</li>
-      <li><code>√(f(x)) &gt; k</code>: if <code>k &lt; 0</code> → all of the domain <code>f(x) ≥ 0</code>. If <code>k ≥ 0</code> → <code>f(x) &gt; k²</code> (domain automatic).</li>
-      <li><code>√A &lt; √B</code> → <code>A ≥ 0</code> <span class="tag-and">AND</span> <code>B ≥ 0</code> <span class="tag-and">AND</span> <code>A &lt; B</code>.</li>
-    </ul>
-    <div class="tool">
-      <p class="tool-title">Solver — <span class="mono">√(x + p)  ▸  k</span></p>
-      <div class="flex" style="align-items:center;gap:8px;">
-        <span>√( x +</span>
-        <input type="number" id="sqrtP" value="-2" step="1" style="width:52px">
-        <span>)</span>
-        <select id="sqrtRel"><option value="lt">&lt;</option><option value="gt">&gt;</option></select>
-        <input type="number" id="sqrtK" value="3" step="1" style="width:52px">
-      </div>
-      <div class="eqout" id="sqrtOut"></div>
-      <svg id="sqrtLine" class="numline" viewBox="0 0 520 100"></svg>
-    </div>
-    <p class="muted"><b>Examples.</b> <code>√(x−2) &lt; 3</code> → domain <code>x ≥ 2</code>, square <code>x &lt; 11</code>, AND → <code>2 ≤ x &lt; 11</code>. &nbsp; <code>√(x+1) &gt; 2</code> → <code>x + 1 &gt; 4</code> → <code>x &gt; 3</code>.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>4 · Absolute-value inequalities<span class="stag">visualizer</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:560px">
-      <li><code>|f(x)| &lt; k</code> (k&gt;0) → <code>−k &lt; f(x) &lt; k</code> — one bounded range, <span class="tag-and">AND</span>. If <code>k ≤ 0</code> → no solution.</li>
-      <li><code>|f(x)| &gt; k</code> (k≥0) → <code>f(x) &lt; −k</code> <span class="tag-or">or</span> <code>f(x) &gt; k</code> — two disjoint rays. If <code>k &lt; 0</code> → true for all <code>x</code>.</li>
-      <li><code>≤ / ≥</code> — same, with closed endpoints.</li>
-    </ul>
-    <div class="tool">
-      <p class="tool-title">Visualizer — <span class="mono">| x − c |  ▸  k</span></p>
-      <div class="flex" style="align-items:center;gap:14px;">
-        <label class="muted">c = <span id="aviCLbl" class="mono">1</span></label>
-        <div class="btnrow" id="aviRel" style="margin:0">
-          <button data-r="lt" class="on">&lt; k</button>
-          <button data-r="gt">&gt; k</button>
-        </div>
-      </div>
-      <input type="range" id="aviC" min="-6" max="6" step="0.5" value="1">
-      <label class="muted">k = <span id="aviKLbl" class="mono">3</span></label>
-      <input type="range" id="aviK" min="-2" max="7" step="0.5" value="3">
-      <div class="eqout" id="aviOut"></div>
-      <svg id="aviLine" class="numline" viewBox="0 0 520 80"></svg>
-    </div>
-    <p class="muted"><b>Examples.</b> <code>|3x−1| &lt; 5</code> → <code>−4/3 &lt; x &lt; 2</code>. &nbsp; <code>|3x−1| ≥ 5</code> → <code>x ≤ −4/3</code> or <code>x ≥ 2</code>.</p>
-  </div>
-</details>
+</div>
 </section>
 
 <!-- ============ C. AND vs OR ============ -->
 <section class="pane" id="pane-a3">
 <h2><span class="num">C</span>When to use "and" vs "or"</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="a3">Expand all</button>
-  <button data-acc="close" data-scope="a3">Collapse all</button>
+<div class="card" data-key="quick-reference" data-tags="Explanation">
+  <h4>AND or OR: which one?</h4>
+  <p><span class="tag-and">AND</span>: every condition must be true at the same <code>x</code>. Keep only the <b>overlap</b> (the intersection, <code>∩</code>).</p>
+  <p><span class="tag-or">OR</span>: any one condition is enough. Keep <b>everything</b> that any of them covers (the union, <code>∪</code>).</p>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="the intervals from minus 4 to 1 and from minus 1 to 5; AND keeps minus 1 to 1, OR keeps minus 4 to 5">
+    <path class="cv" d="M90 30 H240" style="stroke-width:5"/>
+    <path class="cv2" d="M180 60 H360" style="stroke-width:5"/>
+    <path class="gd" d="M180 30 V150 M240 30 V150"/>
+    <path class="cv" d="M180 105 H240" style="stroke-width:7"/>
+    <path class="cv" d="M90 145 H360" style="stroke-width:7"/>
+    <text class="sm" x="80" y="34" text-anchor="end">[−4, 1]</text>
+    <text class="sm" x="370" y="64">[−1, 5]</text>
+    <text x="20" y="110">AND</text>
+    <text x="20" y="150">OR</text>
+    <text class="sm" x="250" y="109">[−1, 1]</text>
+    <text class="sm" x="372" y="149">[−4, 5]</text>
+  </svg>
+  <p class="muted"><b>Use AND when:</b> a domain condition meets the solved inequality (<code>x ≥ 2</code> and <code>x &lt; 11</code>); a double inequality like <code>−k &lt; E &lt; k</code>; a case assumption with the result solved under it (<code>x &gt; 0</code> and <code>x &lt; ½</code>).</p>
+  <p class="muted"><b>Use OR when:</b> the two answers of an absolute value equation (<code>x = 5</code> or <code>x = −2</code>); the two pieces of <code>|E| &gt; k</code>; joining the answers of different cases.</p>
+  <p class="muted"><b>A quick test:</b> ask "does one condition alone make <code>x</code> a solution?" Yes → OR. No, it needs all of them → AND.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Quick reference<span class="stag">rule</span></summary>
-  <div class="subject-body">
-    <p><span class="tag-and">Use AND</span> when every condition must hold <b>at the same point</b> and the result is one intersected region: a domain restriction with a derived inequality, the double inequality from <code>|f(x)| &lt; k</code>, or a case assumption (<code>x &gt; 0</code>) with the inequality solved under it.</p>
-    <p><span class="tag-or">Use OR</span> when the solution is <b>separate alternatives</b>, any one enough on its own: the two cases of an absolute-value equation, the two branches of <code>|f(x)| &gt; k</code>, or merging the results of separate case-split branches.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Interactive — intersect (AND) vs union (OR)<span class="stag">two intervals</span></summary>
-  <div class="subject-body">
-    <p>Set two intervals and see how <span class="tag-and">AND</span> (overlap only) and <span class="tag-or">OR</span> (everything covered) differ.</p>
-    <div class="tool">
-      <p class="tool-title">Two intervals on the line</p>
-      <div class="flex">
-        <div class="panel">
-          <label class="muted">Interval 1: [ <span id="i1aLbl">-4</span> , <span id="i1bLbl">1</span> ]</label>
-          <input type="range" id="i1a" min="-10" max="10" step="0.5" value="-4">
-          <input type="range" id="i1b" min="-10" max="10" step="0.5" value="1">
-        </div>
-        <div class="panel">
-          <label class="muted">Interval 2: [ <span id="i2aLbl">-1</span> , <span id="i2bLbl">5</span> ]</label>
-          <input type="range" id="i2a" min="-10" max="10" step="0.5" value="-1">
-          <input type="range" id="i2b" min="-10" max="10" step="0.5" value="5">
-        </div>
+<div class="card" data-key="interactive-intersect-and-vs-union-or" data-tags="Explanation">
+  <h4>Intersection and union on the number line</h4>
+  <p>Move two intervals and watch how <span class="tag-and">AND</span> (only the overlap) and <span class="tag-or">OR</span> (everything covered) differ.</p>
+  <p class="muted">If the two intervals don't overlap at all, AND gives the empty set: no number is in both. OR is then two separate pieces.</p>
+  <div class="tool">
+    <p class="tool-title">Two intervals on the line</p>
+    <div class="flex">
+      <div class="panel">
+        <label class="muted">Interval 1: [ <span id="i1aLbl">-4</span> , <span id="i1bLbl">1</span> ]</label>
+        <input type="range" id="i1a" min="-10" max="10" step="0.5" value="-4">
+        <input type="range" id="i1b" min="-10" max="10" step="0.5" value="1">
       </div>
-      <svg id="andorLine" class="numline" viewBox="0 0 520 150" style="max-width:520px"></svg>
-      <div class="readout">
-        <span class="k"><span class="tag-and">AND</span> (intersection)</span><span class="v" id="andOut">–</span>
-        <span class="k"><span class="tag-or">OR</span> (union)</span><span class="v" id="orOut">–</span>
+      <div class="panel">
+        <label class="muted">Interval 2: [ <span id="i2aLbl">-1</span> , <span id="i2bLbl">5</span> ]</label>
+        <input type="range" id="i2a" min="-10" max="10" step="0.5" value="-1">
+        <input type="range" id="i2b" min="-10" max="10" step="0.5" value="5">
       </div>
     </div>
+    <svg id="andorLine" class="numline" viewBox="0 0 520 150" style="max-width:520px"></svg>
+    <div class="readout">
+      <span class="k"><span class="tag-and">AND</span> (intersection)</span><span class="v" id="andOut">–</span>
+      <span class="k"><span class="tag-or">OR</span> (union)</span><span class="v" id="orOut">–</span>
+    </div>
   </div>
-</details>
+</div>
 </section>
 
 </div><!-- /folder-algebra -->
@@ -3102,6 +3220,71 @@
 <script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_alabseq", "v": 1, "subject": "f:algebra", "kind": "problem",
+  "name": "Solving an absolute value equation",
+  "description": "Solve |E| = k, |A| = |B|, or an equation with x both inside and outside the bars.",
+  "uses": [["c", "a1", "solving-equations-with"], ["c", "a1", "the-idea-distance-from-zero"]],
+  "parts": [
+    { "id": "st_bi_alabseq1", "cat": "stage", "name": "Get the absolute value alone", "text": "Move everything else to the other side: `|E| = k`." },
+    { "id": "st_bi_alabseq2", "cat": "stage", "name": "Check the right side", "text": "If `k` is a number: `k < 0` → **no solution** (stop). `k = 0` → just `E = 0`.\nIf the right side has `x` in it, you can't tell yet: go on, and check every answer at the end." },
+    { "id": "st_bi_alabseq3", "cat": "stage", "name": "Split into two equations", "text": "`E = k` **or** `E = −k`. Put brackets around `k` when it's an expression: `E = −(2x + 3)`." },
+    { "id": "st_bi_alabseq4", "cat": "stage", "name": "Solve each one", "text": "Solve both equations the usual way." },
+    { "id": "st_bi_alabseq5", "cat": "stage", "name": "Check in the original", "text": "Put each answer back into the **original** equation. Throw away any that don't work. This is a must when `x` was outside the bars too." },
+    { "id": "st_bi_alabseq6", "cat": "example", "name": "Example — a number on the right", "text": "`|2x − 3| + 1 = 8`\n1. `|2x − 3| = 7`\n2. `7 > 0`: two cases.\n3. `2x − 3 = 7` or `2x − 3 = −7`\n4. `2x = 10` → `x = 5` · `2x = −4` → `x = −2`\n5. `|7| + 1 = 8` ✓ · `|−7| + 1 = 8` ✓\nAnswer: `x = 5` or `x = −2`" },
+    { "id": "st_bi_alabseq7", "cat": "example", "name": "Example — x outside the bars", "text": "`|x − 1| = 2x + 3`\n1. Already alone.\n2. The right side has `x`: check at the end.\n3. `x − 1 = 2x + 3` or `x − 1 = −(2x + 3)`\n4. First: `−x = 4` → `x = −4`. Second: `x − 1 = −2x − 3` → `3x = −2` → `x = −2/3`\n5. `x = −4`: left `|−5| = 5`, right `2(−4) + 3 = −5`. `5 ≠ −5` ✗\n`x = −2/3`: left `|−5/3| = 5/3`, right `−4/3 + 3 = 5/3` ✓\nAnswer: `x = −2/3` only" },
+    { "id": "st_bi_alabseq8", "cat": "example", "name": "Example — two absolute values", "text": "`|x + 1| = |2x − 4|`\n3. `x + 1 = 2x − 4` or `x + 1 = −(2x − 4)`\n4. `x = 5` · `x + 1 = −2x + 4` → `3x = 3` → `x = 1`\n5. `|6| = |6|` ✓ · `|2| = |−2|` ✓\nAnswer: `x = 5` or `x = 1`" }
+  ] },
+{ "id": "pp_bi_alsign", "v": 1, "subject": "f:algebra", "kind": "problem",
+  "name": "Solving an inequality with a sign chart",
+  "description": "Solve a polynomial or fraction inequality, like (x − 3)/(x + 1) ≥ 0 or x² − 5x + 4 < 0, by finding where the expression is positive or negative.",
+  "uses": [["c", "a2", "2-dividing-by-an-expression-of-unknown-s"], ["c", "a2", "Quadratic inequalities"], ["c", "a2", "Inequalities and interval notation"]],
+  "parts": [
+    { "id": "st_bi_alsign1", "cat": "stage", "name": "Move everything to one side", "text": "Get `0` on the right: `… > 0`, `… < 0`, `… ≥ 0` or `… ≤ 0`. Never multiply both sides by something that contains `x`." },
+    { "id": "st_bi_alsign2", "cat": "stage", "name": "Make one fraction and factor", "text": "Bring everything to a common denominator and factor the top and the bottom as far as you can." },
+    { "id": "st_bi_alsign3", "cat": "stage", "name": "Find the critical points", "text": "Where the top is `0` (the expression is `0`) and where the bottom is `0` (the expression is undefined). Mark them on a number line: they cut it into pieces." },
+    { "id": "st_bi_alsign4", "cat": "stage", "name": "Test one number in each piece", "text": "Pick any number inside each piece and find the sign (+ or −) of the expression there. The sign is the same in the whole piece." },
+    { "id": "st_bi_alsign5", "cat": "stage", "name": "Read off the answer", "text": "Take the pieces with the sign you need. With `≥` or `≤`, include the zeros of the top, but **never** the zeros of the bottom." },
+    { "id": "st_bi_alsign6", "cat": "example", "name": "Example — 1/x > 2", "text": "1. `1/(x) − 2 > 0`\n2. `(1 − 2x)/(x) > 0`\n3. Top `0` at `x = 1/2`, bottom `0` at `x = 0`. Pieces: `x < 0`, `0 < x < 1/2`, `x > 1/2`\n4. `x = −1`: `(3)/(−1) < 0` → − · `x = 1/4`: `(1/2)/(1/4) > 0` → + · `x = 1`: `(−1)/(1) < 0` → −\n5. We need `> 0`.\nAnswer: `0 < x < 1/2`" },
+    { "id": "st_bi_alsign7", "cat": "example", "name": "Example — a quadratic", "text": "`x² − 5x + 4 < 0`\n1. Already `< 0`.\n2. `(x − 1)(x − 4) < 0`\n3. Zeros at `x = 1` and `x = 4`. Pieces: `x < 1`, `1 < x < 4`, `x > 4`\n4. `x = 0`: `(−1)(−4) = 4` → + · `x = 2`: `(1)(−2) = −2` → − · `x = 5`: `(4)(1) = 4` → +\n5. We need `< 0`.\nAnswer: `1 < x < 4`" },
+    { "id": "st_bi_alsign8", "cat": "example", "name": "Example — a fraction with ≥", "text": "`(x − 3)/(x + 1) ≥ 0`\n3. Top `0` at `x = 3` (allowed, since `≥`), bottom `0` at `x = −1` (never allowed).\n4. `x = −2`: `(−5)/(−1) > 0` → + · `x = 0`: `(−3)/(1) < 0` → − · `x = 4`: `(1)/(5) > 0` → +\n5. Answer: `x < −1` or `x ≥ 3`" }
+  ] },
+{ "id": "pp_bi_alcase", "v": 1, "subject": "f:algebra", "kind": "problem",
+  "name": "Case split for an unknown sign",
+  "description": "Solve an inequality where you'd like to multiply or divide by an expression whose sign you don't know.",
+  "uses": [["c", "a2", "2-dividing-by-an-expression-of-unknown-s"], ["c", "a2", "1-multiplying-dividing-by-a-number"], ["c", "a3", "quick-reference"]],
+  "parts": [
+    { "id": "st_bi_alcase1", "cat": "stage", "name": "Find the expression", "text": "Find the expression you want to multiply or divide by (often `x`, or a denominator like `x − 1`). Note where it's `0`: that value is never allowed." },
+    { "id": "st_bi_alcase2", "cat": "stage", "name": "Case 1: it's positive", "text": "Assume it's `> 0`. Multiply or divide **without** flipping and solve. Combine the result with the assumption using **AND**." },
+    { "id": "st_bi_alcase3", "cat": "stage", "name": "Case 2: it's negative", "text": "Assume it's `< 0`. Multiply or divide **and flip** the inequality. Solve, and combine with the assumption using **AND**." },
+    { "id": "st_bi_alcase4", "cat": "stage", "name": "Join the cases", "text": "The answer is Case 1 **OR** Case 2. A case can come out empty: that's fine, it just adds nothing." },
+    { "id": "st_bi_alcase5", "cat": "example", "name": "Example — 1/x > 2", "text": "1. Multiply by `x`; `x ≠ 0`.\n2. `x > 0`: `1 > 2x` → `x < 1/2`. AND `x > 0` → `0 < x < 1/2`\n3. `x < 0`: `1 < 2x` (flipped) → `x > 1/2`. AND `x < 0` → nothing (no number is both)\n4. Answer: `0 < x < 1/2`" },
+    { "id": "st_bi_alcase6", "cat": "example", "name": "Example — 3/(x − 1) ≤ 1", "text": "1. Multiply by `x − 1`; `x ≠ 1`.\n2. `x − 1 > 0`, so `x > 1`: `3 ≤ x − 1` → `x ≥ 4`. AND `x > 1` → `x ≥ 4`\n3. `x − 1 < 0`, so `x < 1`: `3 ≥ x − 1` (flipped) → `x ≤ 4`. AND `x < 1` → `x < 1`\n4. Answer: `x < 1` or `x ≥ 4`\nCheck `x = 0`: `3/(−1) = −3 ≤ 1` ✓ · `x = 2`: `3/(1) = 3 ≤ 1` ✗ (correctly left out)" }
+  ] },
+{ "id": "pp_bi_alsqrt", "v": 1, "subject": "f:algebra", "kind": "problem",
+  "name": "Solving a square root inequality",
+  "description": "Solve √(f(x)) < k or √(f(x)) > k without picking up wrong answers.",
+  "uses": [["c", "a2", "3-square-roots-in-inequalities"], ["c", "a3", "quick-reference"]],
+  "parts": [
+    { "id": "st_bi_alsqrt1", "cat": "stage", "name": "Write the domain", "text": "What's under the root must be `≥ 0`. Solve that: it's the domain." },
+    { "id": "st_bi_alsqrt2", "cat": "stage", "name": "Look at the other side", "text": "`√(f(x)) < k` with `k ≤ 0`: **no solution** (a root is never negative).\n`√(f(x)) > k` with `k < 0`: **the whole domain** (a root is always `≥ 0 > k`)." },
+    { "id": "st_bi_alsqrt3", "cat": "stage", "name": "Square both sides", "text": "When both sides are `≥ 0`, square: `f(x) < k²` (or `> k²`). Solve it." },
+    { "id": "st_bi_alsqrt4", "cat": "stage", "name": "Combine with the domain", "text": "Answer = the domain **AND** the result of step 3." },
+    { "id": "st_bi_alsqrt5", "cat": "example", "name": "Example — √(x − 2) < 3", "text": "1. `x − 2 ≥ 0` → `x ≥ 2`\n2. `3 > 0`: go on.\n3. `x − 2 < 9` → `x < 11`\n4. `x ≥ 2` AND `x < 11`\nAnswer: `2 ≤ x < 11`" },
+    { "id": "st_bi_alsqrt6", "cat": "example", "name": "Example — √(x + 1) > 2", "text": "1. `x ≥ −1`\n2. `2 ≥ 0`: go on.\n3. `x + 1 > 4` → `x > 3`\n4. `x ≥ −1` AND `x > 3`\nAnswer: `x > 3`" },
+    { "id": "st_bi_alsqrt7", "cat": "example", "name": "Example — √(5 − x) > −1", "text": "1. `5 − x ≥ 0` → `x ≤ 5`\n2. `−1 < 0`: a root is always bigger than `−1`, so every `x` in the domain works.\nAnswer: `x ≤ 5`" }
+  ] },
+{ "id": "pp_bi_alabsin", "v": 1, "subject": "f:algebra", "kind": "problem",
+  "name": "Solving an absolute value inequality",
+  "description": "Solve |E| < k or |E| > k (and with ≤, ≥).",
+  "uses": [["c", "a2", "4-absolute-value-inequalities"], ["c", "a1", "the-idea-distance-from-zero"], ["c", "a3", "quick-reference"]],
+  "parts": [
+    { "id": "st_bi_alabsin1", "cat": "stage", "name": "Get the absolute value alone", "text": "Move everything else to the other side: `|E| < k` or `|E| > k`." },
+    { "id": "st_bi_alabsin2", "cat": "stage", "name": "Check k", "text": "`|E| < k` with `k ≤ 0`: **no solution**.\n`|E| > k` with `k < 0`: **every `x`** (where `E` is defined)." },
+    { "id": "st_bi_alabsin3", "cat": "stage", "name": "Less than: one double inequality", "text": "`|E| < k` → `−k < E < k`. Solve it by doing the same thing to all three parts." },
+    { "id": "st_bi_alabsin4", "cat": "stage", "name": "Greater than: two pieces", "text": "`|E| > k` → `E < −k` **or** `E > k`. Solve each and join with OR." },
+    { "id": "st_bi_alabsin5", "cat": "example", "name": "Example — less than", "text": "`|3x − 1| < 5`\n2. `5 > 0`: go on.\n3. `−5 < 3x − 1 < 5` → add 1: `−4 < 3x < 6` → divide by 3: `−4/3 < x < 2`\nAnswer: `−4/3 < x < 2`" },
+    { "id": "st_bi_alabsin6", "cat": "example", "name": "Example — greater or equal", "text": "`|2x + 1| ≥ 3`\n2. `3 ≥ 0`: go on.\n4. `2x + 1 ≤ −3` or `2x + 1 ≥ 3` → `x ≤ −2` or `x ≥ 1`\nAnswer: `x ≤ −2` or `x ≥ 1`" }
+  ] },
 { "id": "pp_bi_trexact", "v": 1, "subject": "f:trig", "kind": "problem",
   "name": "Exact value of any angle",
   "description": "Find sin, cos or tan of an angle like 210°, 135° or 13π/6 without a calculator.",
