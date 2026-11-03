@@ -2397,6 +2397,7 @@
     <button data-folder="fn" data-group="calc"><span class="ficon">ƒ</span>Functions</button>
     <button data-folder="lim" data-group="calc"><span class="ficon">→</span>Limits and continuity</button>
     <button data-folder="der" data-group="calc"><span class="ficon">′</span>Derivatives</button>
+    <button data-folder="int" data-group="calc"><span class="ficon">∫</span>Integrals</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2475,6 +2476,17 @@
   <button data-target="dv7"><span class="tnum">7</span>Rolle's theorem and the mean value theorem</button>
   <button data-target="dv8"><span class="tnum">8</span>Convexity and concavity</button>
 </nav>
+<nav class="tabbar" data-folder="int" id="tabbar-int">
+  <button data-target="in1" class="on"><span class="tnum">1</span>What an integral is</button>
+  <button data-target="in2"><span class="tnum">2</span>The fundamental theorem and Newton–Leibniz</button>
+  <button data-target="in3"><span class="tnum">3</span>Linear properties</button>
+  <button data-target="in4"><span class="tnum">4</span>Basic integration techniques</button>
+  <button data-target="in5"><span class="tnum">5</span>Substitution</button>
+  <button data-target="in6"><span class="tnum">6</span>Integration by parts</button>
+  <button data-target="in7"><span class="tnum">7</span>Definite integrals and area</button>
+  <button data-target="in8"><span class="tnum">8</span>Estimating integrals</button>
+  <button data-target="in9"><span class="tnum">9</span>Improper integrals</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2505,7 +2517,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B115</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B116</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4499,7 +4511,9 @@ function __detabaseMain() {
     lim: { title: "Limits and continuity — for Calculus 1",
       sub: 'Limits, their arithmetic and calculation, L\'Hôpital, continuity and the intermediate value theorem.' },
     der: { title: "Derivatives — for Calculus 1",
-      sub: 'The derivative, its formulas, differentiability, extrema, Rolle and the mean value theorem, convexity.' }
+      sub: 'The derivative, its formulas, differentiability, extrema, Rolle and the mean value theorem, convexity.' },
+    int: { title: "Integrals — for Calculus 1",
+      sub: 'Antiderivatives, the fundamental theorem, techniques, area, estimates and improper integrals.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -9825,7 +9839,14 @@ function __detabaseMain() {
   // copied: {m: {methodId: v}, ct: {cardId: 1}}. A method is (re)written when its v is higher than the
   // recorded one — name, kind, description, subject, parts, concepts; the owner's folder, order, links
   // and connected subjects stay. One the owner deleted stays deleted. A built-in card's data-tags are
-  // its starting tags, set once and only on a card with no tags yet. Nothing new → nothing is saved.
+  // its starting tags, set once and only on a card with no tags yet. A built-in course label (#biLinks
+  // "courses": [lvl, id(, card title), course name | "x"]) is set once, by the course's name, only on an
+  // item the owner hasn't labelled; it waits while that course doesn't exist on this device.
+  // Nothing new → nothing is saved.
+  function courseByName(name) {
+    var n = String(name).trim().toLowerCase();
+    return courses().filter(function (c) { return String(c.name).trim().toLowerCase() === n; })[0] || null;
+  }
   function seedBuiltins() {
     var src = $("biMethods");
     var list = src ? JSON.parse(src.textContent) : [];
@@ -9836,7 +9857,12 @@ function __detabaseMain() {
     var bl = JSON.parse($("biLinks").textContent), done = seed.l = seed.l || {};
     var newLinks = bl.c.map(function (p) { return ["c", p[0], p[1]]; }).concat(bl.m.map(function (p) { return ["m", p[0], p[1]]; }))
       .filter(function (p) { return !done[p.join(">")]; });
-    if (!methods.length && !typed.length && !newLinks.length) return;
+    var coDone = seed.co = seed.co || {};
+    var newCourses = (bl.courses || []).filter(function (e) {
+      var name = e[e.length - 1];
+      return !coDone[e.join(">")] && (name === "x" || courseByName(name));
+    });
+    if (!methods.length && !typed.length && !newLinks.length && !newCourses.length) return;
     try {
       if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", mainRead() || "");
     } catch (e) {}
@@ -9868,6 +9894,12 @@ function __detabaseMain() {
       if (p[0] === "c") { var l = conceptLinkMap(), a = l[p[1]] = l[p[1]] || []; if (a.indexOf(p[2]) < 0) a.push(p[2]); }
       else { var pg = psPageById(p[1]); if (pg) { pg.methodIds = pg.methodIds || []; if (pg.methodIds.indexOf(p[2]) < 0) pg.methodIds.push(p[2]); } }
       done[p.join(">")] = 1;
+    });
+    // built-in course labels: each set once, so the owner's own label (or removing it) wins
+    newCourses.forEach(function (e) {
+      var name = e[e.length - 1], k = refKey(ref(e.slice(0, -1))), cm = courseMap();
+      if (!cm[k]) cm[k] = name === "x" ? "x" : [courseByName(name).id];
+      coDone[e.join(">")] = 1;
     });
     store.biSeed = seed;
     saveStore();

@@ -2365,9 +2365,526 @@
 
 </div><!-- /folder-der -->
 
+<div class="folder" id="folder-int">
+
+<!-- ===== IN1 · WHAT AN INTEGRAL IS ===== -->
+<section class="pane on" id="pane-in1">
+<h2><span class="num">1</span>What an integral is</h2>
+<div class="card" data-tags="Definition">
+  <h4>Integrals and antiderivatives</h4>
+  <p><code>F</code> is an <b>antiderivative</b> of <code>f</code> when <code>F'(x) = f(x)</code>. Then</p>
+  <p><code>∫ f(x) dx = F(x) + C</code></p>
+  <p>Integration is differentiation run backwards: <code>F' = f &nbsp;⇔&nbsp; ∫ f(x) dx = F(x) + C</code></p>
+  <p data-cpart="expl"><b>In words:</b> differentiating asks "how fast is this function changing?". Integrating asks the reverse: "which function changes like this?". If you know the speed at every moment, the integral gives you back the position.</p>
+  <p data-cpart="expl"><b>Why the <code>+ C</code>:</b> a constant has derivative <code>0</code>, so <code>x²</code>, <code>x² + 1</code> and <code>x² − 7</code> all have derivative <code>2x</code>. The derivative can't tell them apart, so the integral gives the whole family: <code>∫ 2x dx = x² + C</code>, where <code>C</code> is any number.</p>
+  <p data-cpart="expl"><b>Check any answer</b> by differentiating it: you must get the function under the integral back.</p>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="three antiderivatives of the same function: the same curve moved up and down">
+    <path class="ax" d="M20 200 H405 M210 205 V10"/>
+    <path class="cv" d="M39.0 120.6 L44.7 125.8 L50.4 130.8 L56.1 135.7 L61.8 140.3 L67.5 144.8 L73.2 149.2 L78.9 153.3 L84.6 157.3 L90.3 161.1 L96.0 164.7 L101.7 168.1 L107.4 171.4 L113.1 174.5 L118.8 177.4 L124.5 180.1 L130.2 182.7 L135.9 185.1 L141.6 187.3 L147.3 189.3 L153.0 191.2 L158.7 192.9 L164.4 194.4 L170.1 195.7 L175.8 196.8 L181.5 197.8 L187.2 198.6 L192.9 199.2 L198.6 199.6 L204.3 199.9 L210.0 200.0 L215.7 199.9 L221.4 199.6 L227.1 199.2 L232.8 198.6 L238.5 197.8 L244.2 196.8 L249.9 195.7 L255.6 194.4 L261.3 192.9 L267.0 191.2 L272.7 189.3 L278.4 187.3 L284.1 185.1 L289.8 182.7 L295.5 180.1 L301.2 177.4 L306.9 174.5 L312.6 171.4 L318.3 168.1 L324.0 164.7 L329.7 161.1 L335.4 157.3 L341.1 153.3 L346.8 149.2 L352.5 144.8 L358.2 140.3 L363.9 135.7 L369.6 130.8 L375.3 125.8 L381.0 120.6" transform="translate(0,-44)"/>
+    <path class="cv" d="M39.0 120.6 L44.7 125.8 L50.4 130.8 L56.1 135.7 L61.8 140.3 L67.5 144.8 L73.2 149.2 L78.9 153.3 L84.6 157.3 L90.3 161.1 L96.0 164.7 L101.7 168.1 L107.4 171.4 L113.1 174.5 L118.8 177.4 L124.5 180.1 L130.2 182.7 L135.9 185.1 L141.6 187.3 L147.3 189.3 L153.0 191.2 L158.7 192.9 L164.4 194.4 L170.1 195.7 L175.8 196.8 L181.5 197.8 L187.2 198.6 L192.9 199.2 L198.6 199.6 L204.3 199.9 L210.0 200.0 L215.7 199.9 L221.4 199.6 L227.1 199.2 L232.8 198.6 L238.5 197.8 L244.2 196.8 L249.9 195.7 L255.6 194.4 L261.3 192.9 L267.0 191.2 L272.7 189.3 L278.4 187.3 L284.1 185.1 L289.8 182.7 L295.5 180.1 L301.2 177.4 L306.9 174.5 L312.6 171.4 L318.3 168.1 L324.0 164.7 L329.7 161.1 L335.4 157.3 L341.1 153.3 L346.8 149.2 L352.5 144.8 L358.2 140.3 L363.9 135.7 L369.6 130.8 L375.3 125.8 L381.0 120.6"/>
+    <path class="cv2" d="M39.0 120.6 L44.7 125.8 L50.4 130.8 L56.1 135.7 L61.8 140.3 L67.5 144.8 L73.2 149.2 L78.9 153.3 L84.6 157.3 L90.3 161.1 L96.0 164.7 L101.7 168.1 L107.4 171.4 L113.1 174.5 L118.8 177.4 L124.5 180.1 L130.2 182.7 L135.9 185.1 L141.6 187.3 L147.3 189.3 L153.0 191.2 L158.7 192.9 L164.4 194.4 L170.1 195.7 L175.8 196.8 L181.5 197.8 L187.2 198.6 L192.9 199.2 L198.6 199.6 L204.3 199.9 L210.0 200.0 L215.7 199.9 L221.4 199.6 L227.1 199.2 L232.8 198.6 L238.5 197.8 L244.2 196.8 L249.9 195.7 L255.6 194.4 L261.3 192.9 L267.0 191.2 L272.7 189.3 L278.4 187.3 L284.1 185.1 L289.8 182.7 L295.5 180.1 L301.2 177.4 L306.9 174.5 L312.6 171.4 L318.3 168.1 L324.0 164.7 L329.7 161.1 L335.4 157.3 L341.1 153.3 L346.8 149.2 L352.5 144.8 L358.2 140.3 L363.9 135.7 L369.6 130.8 L375.3 125.8 L381.0 120.6" transform="translate(0,-88)"/>
+    <text class="sm" x="220" y="192" text-anchor="start">F</text>
+    <text class="sm" x="220" y="148" text-anchor="start">F + 1</text>
+    <text class="sm" x="220" y="104" text-anchor="start">F + 2</text>
+    <text class="sm" x="30" y="24" text-anchor="start">same slope at every x</text>
+  </svg>
+  <p class="muted">Every antiderivative is the same curve moved up or down. Moving a curve up doesn't change its slope, so all of them have the same derivative.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>The integral sign and its bounds</h4>
+  <ul class="idlist">
+    <li><b>Indefinite integral:</b> <code>∫ f(x) dx = F(x) + C</code>. No bounds. The answer is a family of functions.</li>
+    <li><b>Definite integral:</b> <code>∫_(a)^(b) f(x) dx</code>. The answer is one number.</li>
+  </ul>
+  <p data-cpart="expl"><b>Reading the symbol:</b> <code>∫</code> is a stretched S, for "sum". <code>f(x)</code> is the <b>integrand</b>, the function being integrated. <code>a</code> is the <b>lower bound</b> and <code>b</code> the <b>upper bound</b>: where the sum starts and ends on the x-axis. <code>dx</code> says that <code>x</code> is the variable.</p>
+  <p data-cpart="expl"><b>What the number means:</b> the definite integral is the <b>signed area</b> between the graph and the x-axis from <code>a</code> to <code>b</code>. Area above the axis counts plus, area below counts minus (Integrals › 7).</p>
+  <p class="muted">The two kinds are tied together by Newton–Leibniz (Integrals › 2): find <code>F</code> from the indefinite integral, then <code>∫_(a)^(b) f(x) dx = F(b) − F(a)</code>.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>What dx means</h4>
+  <p><code>dx</code> names the variable you integrate by, and stands for a very thin width along the x-axis.</p>
+  <p data-cpart="expl"><b>The picture:</b> cut the area under the graph into very thin vertical slices. One slice at <code>x</code> is almost a rectangle: height <code>f(x)</code>, width <code>dx</code>, area <code>f(x) dx</code>. The integral adds up all these slices from <code>a</code> to <code>b</code>. That is why <code>f(x)</code> and <code>dx</code> are written next to each other, like a multiplication.</p>
+  <p data-cpart="expl"><b>Which variable:</b> in <code>∫ x·t dt</code> the variable is <code>t</code>, so <code>x</code> is treated as a constant. Change the letter after <code>d</code> and you change the question.</p>
+  <svg class="ill" viewBox="0 0 420 225" role="img" aria-label="the area under a curve from a to b, with one thin slice of width dx and height f of x">
+    <path class="ax" d="M30 205 H405 M50 210 V12"/>
+    <path class="band" d="M92.5 107.3 L97.5 108.6 L102.4 109.8 L107.4 110.9 L112.3 111.9 L117.3 112.8 L122.2 113.6 L127.2 114.4 L132.2 115.1 L137.1 115.6 L142.1 116.1 L147.0 116.5 L152.0 116.9 L157.0 117.1 L161.9 117.2 L166.9 117.3 L171.8 117.3 L176.8 117.2 L181.8 117.0 L186.7 116.7 L191.7 116.3 L196.6 115.9 L201.6 115.3 L206.5 114.7 L211.5 114.0 L216.5 113.2 L221.4 112.3 L226.4 111.4 L231.3 110.3 L236.3 109.2 L241.2 108.0 L246.2 106.7 L251.2 105.3 L256.1 103.8 L261.1 102.2 L266.0 100.6 L271.0 98.8 L276.0 97.0 L280.9 95.1 L285.9 93.1 L290.8 91.0 L295.8 88.9 L300.8 86.6 L305.7 84.3 L310.7 81.8 L315.6 79.3 L320.6 76.7 L325.5 74.1 L330.5 71.3 L335.5 68.4 L340.4 65.5 L345.4 62.5 L350.3 59.4 L355.3 56.2 L360.2 52.9 L365.2 49.5 L370.2 46.1 L375.1 42.5 L380.1 38.9 L385.0 35.2 L390.0 31.4 L390.0 205.0 L92.5 205.0 Z"/>
+    <rect class="box" x="271.0" y="98.8" width="13.6" height="106.2"/>
+    <path class="cv" d="M67.0 99.5 L72.7 101.4 L78.3 103.3 L84.0 105.0 L89.7 106.6 L95.3 108.1 L101.0 109.5 L106.7 110.7 L112.3 111.9 L118.0 112.9 L123.7 113.9 L129.3 114.7 L135.0 115.4 L140.7 116.0 L146.3 116.5 L152.0 116.9 L157.7 117.1 L163.3 117.3 L169.0 117.3 L174.7 117.2 L180.3 117.0 L186.0 116.7 L191.7 116.3 L197.3 115.8 L203.0 115.2 L208.7 114.4 L214.3 113.6 L220.0 112.6 L225.7 111.5 L231.3 110.3 L237.0 109.0 L242.7 107.6 L248.3 106.1 L254.0 104.4 L259.7 102.7 L265.3 100.8 L271.0 98.8 L276.7 96.7 L282.3 94.5 L288.0 92.2 L293.7 89.8 L299.3 87.3 L305.0 84.6 L310.7 81.8 L316.3 79.0 L322.0 76.0 L327.7 72.9 L333.3 69.7 L339.0 66.3 L344.7 62.9 L350.3 59.4 L356.0 55.7 L361.7 51.9 L367.3 48.1 L373.0 44.1 L378.7 39.9 L384.3 35.7 L390.0 31.4 L395.7 27.0 L401.3 22.4 L407.0 17.7"/>
+    <text x="92" y="222" text-anchor="middle">a</text>
+    <text x="390" y="222" text-anchor="middle">b</text>
+    <text x="278" y="222" text-anchor="middle">dx</text>
+    <text class="sm" x="265" y="152" text-anchor="end">f(x)</text>
+  </svg>
+  <p class="muted">How thin is "very thin"? Darboux and Riemann sums (next card) make it exact: the slices get thinner and thinner, and the integral is what the sum tends to.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Darboux and Riemann sums</h4>
+  <p>Split <code>[a, b]</code> into <code>n</code> strips of width <code>Δx = (b − a)/(n)</code>, with points <code>x_(0) = a &lt; x_(1) &lt; … &lt; x_(n) = b</code>.</p>
+  <ul class="idlist">
+    <li><b>Lower sum</b> <code>L</code>: each strip's rectangle is as high as the <b>lowest</b> value of <code>f</code> on it.</li>
+    <li><b>Upper sum</b> <code>U</code>: each rectangle is as high as the <b>highest</b> value of <code>f</code> on it.</li>
+    <li><b>Riemann sum:</b> any point <code>c_(i)</code> in each strip: <code>∑_(i=1)^(n) f(c_(i))·Δx</code>. It always lies between <code>L</code> and <code>U</code>.</li>
+    <li><code>f</code> is <b>integrable</b> on <code>[a, b]</code> when <code>L</code> and <code>U</code> come together as the strips get thinner. Then <code>∫_(a)^(b) f(x) dx = lim_(n→∞) ∑_(i=1)^(n) f(c_(i))·Δx</code></li>
+    <li><b>Theorem:</b> every function continuous on <code>[a, b]</code> is integrable on it.</li>
+  </ul>
+  <p data-cpart="expl"><b>In words:</b> we can't measure a curved area directly, but we can measure rectangles. The lower sum is too small, the upper sum is too big, and the true area is squeezed between them. Make the strips thinner and the two estimates close in on the same number: that number is the integral.</p>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="upper and lower sums with 4, 8 and 16 strips: the gap between them shrinks">
+    <path class="ax" d="M11 160 H139"/>
+    <rect class="box" x="15.0" y="153.1" width="29.5" height="6.9" style="stroke-width:.8"/>
+    <rect class="band2" x="15.0" y="160.0" width="29.5" height="0.0"/>
+    <rect class="box" x="44.5" y="132.5" width="29.5" height="27.5" style="stroke-width:.8"/>
+    <rect class="band2" x="44.5" y="153.1" width="29.5" height="6.9"/>
+    <rect class="box" x="74.0" y="98.1" width="29.5" height="61.9" style="stroke-width:.8"/>
+    <rect class="band2" x="74.0" y="132.5" width="29.5" height="27.5"/>
+    <rect class="box" x="103.5" y="50.0" width="29.5" height="110.0" style="stroke-width:.8"/>
+    <rect class="band2" x="103.5" y="98.1" width="29.5" height="61.9"/>
+    <path class="cv" d="M15.0 160.0 L17.9 159.9 L20.9 159.7 L23.9 159.4 L26.8 158.9 L29.8 158.3 L32.7 157.5 L35.6 156.6 L38.6 155.6 L41.5 154.4 L44.5 153.1 L47.5 151.7 L50.4 150.1 L53.4 148.4 L56.3 146.5 L59.2 144.5 L62.2 142.4 L65.2 140.1 L68.1 137.7 L71.0 135.2 L74.0 132.5 L77.0 129.7 L79.9 126.7 L82.8 123.6 L85.8 120.4 L88.8 117.0 L91.7 113.5 L94.7 109.9 L97.6 106.1 L100.5 102.2 L103.5 98.1 L106.5 93.9 L109.4 89.6 L112.3 85.1 L115.3 80.5 L118.2 75.8 L121.2 70.9 L124.2 65.9 L127.1 60.7 L130.1 55.4 L133.0 50.0"/>
+    <text class="sm" x="74" y="182" text-anchor="middle">n = 4</text>
+    <path class="ax" d="M148 160 H276"/>
+    <rect class="box" x="152.0" y="158.3" width="14.8" height="1.7" style="stroke-width:.8"/>
+    <rect class="band2" x="152.0" y="160.0" width="14.8" height="0.0"/>
+    <rect class="box" x="166.8" y="153.1" width="14.8" height="6.9" style="stroke-width:.8"/>
+    <rect class="band2" x="166.8" y="158.3" width="14.8" height="1.7"/>
+    <rect class="box" x="181.5" y="144.5" width="14.8" height="15.5" style="stroke-width:.8"/>
+    <rect class="band2" x="181.5" y="153.1" width="14.8" height="6.9"/>
+    <rect class="box" x="196.2" y="132.5" width="14.8" height="27.5" style="stroke-width:.8"/>
+    <rect class="band2" x="196.2" y="144.5" width="14.8" height="15.5"/>
+    <rect class="box" x="211.0" y="117.0" width="14.8" height="43.0" style="stroke-width:.8"/>
+    <rect class="band2" x="211.0" y="132.5" width="14.8" height="27.5"/>
+    <rect class="box" x="225.8" y="98.1" width="14.8" height="61.9" style="stroke-width:.8"/>
+    <rect class="band2" x="225.8" y="117.0" width="14.8" height="43.0"/>
+    <rect class="box" x="240.5" y="75.8" width="14.8" height="84.2" style="stroke-width:.8"/>
+    <rect class="band2" x="240.5" y="98.1" width="14.8" height="61.9"/>
+    <rect class="box" x="255.2" y="50.0" width="14.8" height="110.0" style="stroke-width:.8"/>
+    <rect class="band2" x="255.2" y="75.8" width="14.8" height="84.2"/>
+    <path class="cv" d="M152.0 160.0 L154.9 159.9 L157.9 159.7 L160.8 159.4 L163.8 158.9 L166.8 158.3 L169.7 157.5 L172.7 156.6 L175.6 155.6 L178.6 154.4 L181.5 153.1 L184.4 151.7 L187.4 150.1 L190.3 148.4 L193.3 146.5 L196.2 144.5 L199.2 142.4 L202.2 140.1 L205.1 137.7 L208.1 135.2 L211.0 132.5 L213.9 129.7 L216.9 126.7 L219.8 123.6 L222.8 120.4 L225.8 117.0 L228.7 113.5 L231.7 109.9 L234.6 106.1 L237.6 102.2 L240.5 98.1 L243.4 93.9 L246.4 89.6 L249.3 85.1 L252.3 80.5 L255.2 75.8 L258.2 70.9 L261.1 65.9 L264.1 60.7 L267.1 55.4 L270.0 50.0"/>
+    <text class="sm" x="211" y="182" text-anchor="middle">n = 8</text>
+    <path class="ax" d="M285 160 H413"/>
+    <rect class="box" x="289.0" y="159.6" width="7.4" height="0.4" style="stroke-width:.8"/>
+    <rect class="band2" x="289.0" y="160.0" width="7.4" height="0.0"/>
+    <rect class="box" x="296.4" y="158.3" width="7.4" height="1.7" style="stroke-width:.8"/>
+    <rect class="band2" x="296.4" y="159.6" width="7.4" height="0.4"/>
+    <rect class="box" x="303.8" y="156.1" width="7.4" height="3.9" style="stroke-width:.8"/>
+    <rect class="band2" x="303.8" y="158.3" width="7.4" height="1.7"/>
+    <rect class="box" x="311.1" y="153.1" width="7.4" height="6.9" style="stroke-width:.8"/>
+    <rect class="band2" x="311.1" y="156.1" width="7.4" height="3.9"/>
+    <rect class="box" x="318.5" y="149.3" width="7.4" height="10.7" style="stroke-width:.8"/>
+    <rect class="band2" x="318.5" y="153.1" width="7.4" height="6.9"/>
+    <rect class="box" x="325.9" y="144.5" width="7.4" height="15.5" style="stroke-width:.8"/>
+    <rect class="band2" x="325.9" y="149.3" width="7.4" height="10.7"/>
+    <rect class="box" x="333.2" y="138.9" width="7.4" height="21.1" style="stroke-width:.8"/>
+    <rect class="band2" x="333.2" y="144.5" width="7.4" height="15.5"/>
+    <rect class="box" x="340.6" y="132.5" width="7.4" height="27.5" style="stroke-width:.8"/>
+    <rect class="band2" x="340.6" y="138.9" width="7.4" height="21.1"/>
+    <rect class="box" x="348.0" y="125.2" width="7.4" height="34.8" style="stroke-width:.8"/>
+    <rect class="band2" x="348.0" y="132.5" width="7.4" height="27.5"/>
+    <rect class="box" x="355.4" y="117.0" width="7.4" height="43.0" style="stroke-width:.8"/>
+    <rect class="band2" x="355.4" y="125.2" width="7.4" height="34.8"/>
+    <rect class="box" x="362.8" y="108.0" width="7.4" height="52.0" style="stroke-width:.8"/>
+    <rect class="band2" x="362.8" y="117.0" width="7.4" height="43.0"/>
+    <rect class="box" x="370.1" y="98.1" width="7.4" height="61.9" style="stroke-width:.8"/>
+    <rect class="band2" x="370.1" y="108.0" width="7.4" height="52.0"/>
+    <rect class="box" x="377.5" y="87.4" width="7.4" height="72.6" style="stroke-width:.8"/>
+    <rect class="band2" x="377.5" y="98.1" width="7.4" height="61.9"/>
+    <rect class="box" x="384.9" y="75.8" width="7.4" height="84.2" style="stroke-width:.8"/>
+    <rect class="band2" x="384.9" y="87.4" width="7.4" height="72.6"/>
+    <rect class="box" x="392.2" y="63.3" width="7.4" height="96.7" style="stroke-width:.8"/>
+    <rect class="band2" x="392.2" y="75.8" width="7.4" height="84.2"/>
+    <rect class="box" x="399.6" y="50.0" width="7.4" height="110.0" style="stroke-width:.8"/>
+    <rect class="band2" x="399.6" y="63.3" width="7.4" height="96.7"/>
+    <path class="cv" d="M289.0 160.0 L291.9 159.9 L294.9 159.7 L297.9 159.4 L300.8 158.9 L303.8 158.3 L306.7 157.5 L309.6 156.6 L312.6 155.6 L315.6 154.4 L318.5 153.1 L321.4 151.7 L324.4 150.1 L327.4 148.4 L330.3 146.5 L333.2 144.5 L336.2 142.4 L339.1 140.1 L342.1 137.7 L345.1 135.2 L348.0 132.5 L350.9 129.7 L353.9 126.7 L356.9 123.6 L359.8 120.4 L362.8 117.0 L365.7 113.5 L368.6 109.9 L371.6 106.1 L374.6 102.2 L377.5 98.1 L380.4 93.9 L383.4 89.6 L386.4 85.1 L389.3 80.5 L392.2 75.8 L395.2 70.9 L398.1 65.9 L401.1 60.7 L404.1 55.4 L407.0 50.0"/>
+    <text class="sm" x="348" y="182" text-anchor="middle">n = 16</text>
+  </svg>
+  <p class="muted">For <code>f(x) = x²</code> on <code>[0, 1]</code>: the green rectangles are the lower sum, the outlined ones the upper sum. With 4, 8, 16 strips the gap between them shrinks towards the exact area <code>1/3</code>.</p>
+</div>
+</section>
+
+<!-- ===== IN2 · THE FUNDAMENTAL THEOREM AND NEWTON–LEIBNIZ ===== -->
+<section class="pane" id="pane-in2">
+<h2><span class="num">2</span>The fundamental theorem and Newton–Leibniz</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Fundamental theorem of calculus</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and <code>F(x) = ∫_(a)^(x) f(t) dt</code> &nbsp;⇒&nbsp; <code>F'(x) = f(x)</code> for every <code>x ∈ (a, b)</code></p>
+  <p>The area function is an antiderivative of the function under it. This is the theorem that links integrals and derivatives.</p>
+  <p data-cpart="expl"><b>What <code>F</code> is:</b> the area under <code>f</code> from the fixed start <code>a</code> up to a moving end <code>x</code>. Move <code>x</code> and the area changes, so <code>F</code> is a function of <code>x</code>. The letter inside is <code>t</code> only because <code>x</code> is already taken by the end.</p>
+  <p data-cpart="expl"><b>Why it is true:</b> move the end from <code>x</code> to <code>x + h</code>. The area grows by a thin strip of width <code>h</code> and height about <code>f(x)</code>, so <code>F(x + h) − F(x) ≈ f(x)·h</code>. Divide by <code>h</code>: <code>(F(x + h) − F(x))/h ≈ f(x)</code>. As <code>h → 0</code> the strip becomes an exact rectangle, and the left side is the derivative <code>F'(x)</code> (Derivatives › 1). <b>The area grows at the rate <code>f(x)</code>.</b></p>
+  <svg class="ill" viewBox="0 0 420 225" role="img" aria-label="the area under f from a to x is F of x; moving x a little adds a thin strip of height f of x">
+    <path class="ax" d="M30 200 H405 M50 205 V12"/>
+    <path class="band" d="M92.5 102.3 L96.4 103.4 L100.3 104.3 L104.2 105.2 L108.1 106.0 L112.0 106.8 L116.0 107.6 L119.9 108.3 L123.8 108.9 L127.7 109.5 L131.6 110.0 L135.5 110.5 L139.4 110.9 L143.3 111.2 L147.2 111.5 L151.1 111.8 L155.1 112.0 L159.0 112.2 L162.9 112.3 L166.8 112.3 L170.7 112.3 L174.6 112.2 L178.5 112.1 L182.4 111.9 L186.3 111.7 L190.2 111.4 L194.2 111.1 L198.1 110.7 L202.0 110.3 L205.9 109.8 L209.8 109.3 L213.7 108.7 L217.6 108.0 L221.5 107.3 L225.4 106.6 L229.4 105.8 L233.3 104.9 L237.2 104.0 L241.1 103.0 L245.0 102.0 L248.9 100.9 L252.8 99.8 L256.7 98.6 L260.6 97.4 L264.5 96.1 L268.4 94.7 L272.4 93.3 L276.3 91.9 L280.2 90.4 L284.1 88.8 L288.0 87.2 L288.0 200.0 L92.5 200.0 Z"/>
+    <rect class="box" x="288.0" y="83.5" width="17.0" height="116.5"/>
+    <path class="cv" d="M67.0 94.5 L72.7 96.4 L78.3 98.3 L84.0 100.0 L89.7 101.6 L95.3 103.1 L101.0 104.5 L106.7 105.7 L112.3 106.9 L118.0 107.9 L123.7 108.9 L129.3 109.7 L135.0 110.4 L140.7 111.0 L146.3 111.5 L152.0 111.9 L157.7 112.1 L163.3 112.3 L169.0 112.3 L174.7 112.2 L180.3 112.0 L186.0 111.7 L191.7 111.3 L197.3 110.8 L203.0 110.2 L208.7 109.4 L214.3 108.6 L220.0 107.6 L225.7 106.5 L231.3 105.3 L237.0 104.0 L242.7 102.6 L248.3 101.1 L254.0 99.4 L259.7 97.7 L265.3 95.8 L271.0 93.8 L276.7 91.7 L282.3 89.5 L288.0 87.2 L293.7 84.8 L299.3 82.3 L305.0 79.6 L310.7 76.8 L316.3 74.0 L322.0 71.0 L327.7 67.9 L333.3 64.7 L339.0 61.3 L344.7 57.9 L350.3 54.4 L356.0 50.7 L361.7 46.9 L367.3 43.1 L373.0 39.1 L378.7 34.9 L384.3 30.7 L390.0 26.4 L395.7 22.0 L401.3 17.4 L407.0 12.7"/>
+    <text x="186" y="175" text-anchor="middle">F(x)</text>
+    <text x="92" y="218" text-anchor="middle">a</text>
+    <text x="288" y="218" text-anchor="end">x</text>
+    <text class="sm" x="309" y="218" text-anchor="start">x + h</text>
+    <text class="sm" x="311" y="114" text-anchor="start">height f(x)</text>
+  </svg>
+  <p class="muted">The shaded area is <code>F(x)</code>. The thin outlined strip is what moving to <code>x + h</code> adds: about <code>f(x)·h</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Newton–Leibniz theorem</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code> and <code>F</code> any antiderivative of <code>f</code> &nbsp;⇒&nbsp; <code>∫_(a)^(b) f(x) dx = F(b) − F(a)</code></p>
+  <p>Written: <code>∫_(a)^(b) f(x) dx = [F(x)]_(a)^(b) = F(b) − F(a)</code></p>
+  <p data-cpart="expl"><b>Where it comes from:</b> by the fundamental theorem, the area function <code>A(x) = ∫_(a)^(x) f(t) dt</code> is an antiderivative of <code>f</code>. Any other antiderivative differs from it by a constant: <code>F = A + C</code> (Derivatives › 7, Monotonicity). So <code>F(b) − F(a) = A(b) − A(a) = A(b) − 0</code>, which is the whole area.</p>
+  <p data-cpart="expl"><b>In words:</b> the change in a function between two points equals the area under its derivative over that interval: <code>∫_(a)^(b) f'(x) dx = f(b) − f(a)</code>. If <code>f'</code> is a speed, the area under it is the distance covered.</p>
+  <p data-cpart="expl"><b>Signed area:</b> the result is the <b>signed</b> area. It equals the geometric area only where the function under the integral is <code>≥ 0</code>.</p>
+  <p data-cpart="expl"><b>The <code>+ C</code> doesn't matter here:</b> <code>(F(b) + C) − (F(a) + C) = F(b) − F(a)</code>, so any antiderivative gives the same answer.</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="left: the graph of f prime with the area from 1 to 3 shaded, equal to 4. Right: the graph of f rising by 4 between 1 and 3">
+    <path class="ax" d="M10 175 H200 M20 15 V180"/>
+    <path class="band" d="M60.0 145.0 L68.0 139.0 L76.0 133.0 L84.0 127.0 L92.0 121.0 L100.0 115.0 L108.0 109.0 L116.0 103.0 L124.0 97.0 L132.0 91.0 L140.0 85.0 L140.0 175.0 L60.0 175.0 Z"/>
+    <path class="cv" d="M20.0 175.0 L36.8 162.4 L53.6 149.8 L70.4 137.2 L87.2 124.6 L104.0 112.0 L120.8 99.4 L137.6 86.8 L154.4 74.2 L171.2 61.6 L188.0 49.0"/>
+    <text class="sm" x="100" y="151" text-anchor="middle">area = 4</text>
+    <text class="sm" x="188" y="45" text-anchor="end">f′(x) = x</text>
+    <text class="sm" x="60" y="192" text-anchor="middle">1</text>
+    <text class="sm" x="140" y="192" text-anchor="middle">3</text>
+    <path class="ax" d="M215 175 H410 M225 15 V180"/>
+    <path class="cv" d="M225.0 175.0 L229.2 174.8 L233.4 174.3 L237.6 173.5 L241.8 172.4 L246.0 170.9 L250.2 169.0 L254.4 166.9 L258.6 164.4 L262.8 161.6 L267.0 158.5 L271.2 155.0 L275.4 151.2 L279.6 147.1 L283.8 142.6 L288.0 137.8 L292.2 132.7 L296.4 127.2 L300.6 121.4 L304.8 115.3 L309.0 108.8 L313.2 102.1 L317.4 95.0 L321.6 87.5 L325.8 79.7 L330.0 71.6 L334.2 63.2 L338.4 54.4 L342.6 45.3 L346.8 35.9 L351.0 26.2 L355.2 16.1 L359.4 5.7 L363.6 -5.1 L367.8 -16.2 L372.0 -27.6 L376.2 -39.3 L380.4 -51.4 L384.6 -63.8 L388.8 -76.5 L393.0 -89.6"/>
+    <path class="gd" d="M265.0 160.0 H345.0 V40.0"/>
+    <circle class="dot" cx="265.0" cy="160.0" r="4"/>
+    <circle class="dot warn" cx="345.0" cy="40.0" r="4"/>
+    <text class="sm" x="232" y="30" text-anchor="start">f(3) − f(1) = 4</text>
+    <text class="sm" x="265" y="192" text-anchor="middle">1</text>
+    <text class="sm" x="345" y="192" text-anchor="middle">3</text>
+    <text class="sm" x="393" y="26" text-anchor="end">f(x)</text>
+  </svg>
+  <p class="muted">Left: the area under <code>f'(x) = x</code> from <code>1</code> to <code>3</code> is <code>4</code>. Right: <code>f(x) = x²/2</code> rises from <code>1/2</code> to <code>9/2</code>, also by <code>4</code>.</p>
+</div>
+</section>
+
+<!-- ===== IN3 · LINEAR PROPERTIES ===== -->
+<section class="pane" id="pane-in3">
+<h2><span class="num">3</span>Linear properties</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Sums and constants</h4>
+  <ul class="idlist">
+    <li><code>∫ (f(x) + g(x)) dx = ∫ f(x) dx + ∫ g(x) dx</code></li>
+    <li><code>∫ k·f(x) dx = k·∫ f(x) dx</code> &nbsp;(<code>k</code> a constant)</li>
+    <li>The same with bounds: <code>∫_(a)^(b) (α·f(x) + β·g(x)) dx = α∫_(a)^(b) f(x) dx + β∫_(a)^(b) g(x) dx</code></li>
+  </ul>
+  <p data-cpart="expl"><b>Why:</b> the derivative has the same rules: <code>(F + G)' = F' + G'</code> and <code>(k·F)' = k·F'</code>. Run them backwards and you get these.</p>
+  <p data-cpart="expl"><b>Use:</b> split a long integrand into simple pieces and integrate each one: <code>∫ (3x² − 4x + 5) dx = 3·∫ x² dx − 4·∫ x dx + ∫ 5 dx = x³ − 2x² + 5x + C</code></p>
+  <p class="muted"><b>There is no such rule for products or quotients:</b> <code>∫ f·g dx</code> is <b>not</b> <code>∫ f dx·∫ g dx</code>. Products need substitution or parts (Integrals › 5, 6).</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Properties of the definite integral</h4>
+  <ul class="idlist">
+    <li><b>Same bounds:</b> <code>∫_(a)^(a) f(x) dx = 0</code></li>
+    <li><b>Swapping the bounds</b> flips the sign: <code>∫_(b)^(a) f(x) dx = −∫_(a)^(b) f(x) dx</code></li>
+    <li><b>Splitting the interval:</b> <code>∫_(a)^(b) f(x) dx = ∫_(a)^(c) f(x) dx + ∫_(c)^(b) f(x) dx</code></li>
+  </ul>
+  <p data-cpart="expl"><b>In words:</b> no width, no area. Walking the interval backwards counts every slice with the opposite sign. And an area can be cut into two pieces at any point <code>c</code> and added back together.</p>
+  <p class="muted">Splitting is what lets you integrate a piecewise function or an absolute value: cut at each breakpoint (Integrals › 7).</p>
+</div>
+</section>
+
+<!-- ===== IN4 · BASIC INTEGRATION TECHNIQUES ===== -->
+<section class="pane" id="pane-in4">
+<h2><span class="num">4</span>Basic integration techniques</h2>
+<div class="card" data-tags="Formula">
+  <h4>Polynomials and roots</h4>
+  <ul class="idlist">
+    <li><b>Power rule:</b> <code>∫ xⁿ dx = xⁿ⁺¹/(n + 1) + C</code> &nbsp;(<code>n ≠ −1</code>)</li>
+    <li><b>The missing case:</b> <code>∫ 1/(x) dx = ln|x| + C</code></li>
+    <li><b>Constants:</b> <code>∫ k dx = k·x + C</code></li>
+    <li><b>Roots are powers:</b> <code>√x = x^(1/2)</code>, <code>∛x = x^(1/3)</code>, <code>1/√x = x^(−1/2)</code></li>
+  </ul>
+  <p data-cpart="expl"><b>Why:</b> differentiating lowers the power by one and multiplies by it. Integrating does the opposite: <b>raise the power by one, then divide by the new power.</b> Check: <code>(xⁿ⁺¹/(n + 1))' = xⁿ</code>.</p>
+  <p data-cpart="expl"><b>Why <code>n ≠ −1</code>:</b> for <code>n = −1</code> the rule would divide by <code>0</code>. That case is <code>ln|x|</code>. The absolute value is there so it also works for <code>x &lt; 0</code>, where <code>ln x</code> is not defined but <code>(ln|x|)' = 1/x</code> still holds.</p>
+  <p data-cpart="expl"><b>Examples:</b> <code>∫ √x dx = ∫ x^(1/2) dx = (x^(3/2))/(3/2) + C = (2/3)·x√x + C</code> &nbsp;·&nbsp; <code>∫ 1/(x³) dx = ∫ x⁻³ dx = (x⁻²)/(−2) + C = −1/(2x²) + C</code></p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>A linear function to a power</h4>
+  <ul class="idlist">
+    <li><code>∫ (ax + b)ⁿ dx = ((ax + b)ⁿ⁺¹)/(a(n + 1)) + C</code> &nbsp;(<code>n ≠ −1</code>, <code>a ≠ 0</code>)</li>
+    <li><code>∫ 1/(ax + b) dx = (1/a)·ln|ax + b| + C</code></li>
+  </ul>
+  <p data-cpart="expl"><b>Why the extra <code>1/a</code>:</b> differentiating <code>(ax + b)ⁿ⁺¹</code> gives <code>(n + 1)(ax + b)ⁿ·a</code>. The inside's derivative <code>a</code> appears (chain rule, Derivatives › 2), so we divide by it in advance.</p>
+  <p data-cpart="expl"><b>Example:</b> <code>∫ (3x − 1)⁴ dx = ((3x − 1)⁵)/(3·5) + C = ((3x − 1)⁵)/(15) + C</code></p>
+  <p class="muted">This works only when the inside is linear. For <code>(x² + 1)⁴</code> the inside's derivative <code>2x</code> is not a constant: expand it, or use substitution if <code>x</code> is also there (Integrals › 5).</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Integrals that give ln</h4>
+  <p><code>∫ f'(x)/(f(x)) dx = ln|f(x)| + C</code></p>
+  <p data-cpart="expl"><b>Why:</b> by the chain rule, <code>(ln|f(x)|)' = f'(x)/f(x)</code> (Derivatives › 2).</p>
+  <p data-cpart="expl"><b>How to spot it:</b> the numerator is the derivative of the denominator, maybe up to a constant.</p>
+  <p data-cpart="expl"><b>Examples:</b> <code>∫ 2x/(x² + 1) dx = ln(x² + 1) + C</code> (no <code>|·|</code> needed: <code>x² + 1 &gt; 0</code>) &nbsp;·&nbsp; <code>∫ cos x/sin x dx = ln|sin x| + C</code></p>
+  <p class="muted">Almost the right numerator? Fix it first: the method "Bring a quotient to the form f′/f".</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Sine and cosine</h4>
+  <ul class="idlist">
+    <li><code>∫ sin x dx = −cos x + C</code></li>
+    <li><code>∫ cos x dx = sin x + C</code></li>
+    <li><code>∫ sin(ax + b) dx = −(1/a)·cos(ax + b) + C</code></li>
+    <li><code>∫ cos(ax + b) dx = (1/a)·sin(ax + b) + C</code></li>
+  </ul>
+  <p data-cpart="expl"><b>Why:</b> <code>(cos x)' = −sin x</code>, so <code>(−cos x)' = sin x</code>, and <code>(sin x)' = cos x</code> (Derivatives › 2). Watch the minus sign: it belongs to the integral of <b>sin</b>.</p>
+  <p data-cpart="expl"><b>Example:</b> <code>∫ cos(2x + 1) dx = (1/2)·sin(2x + 1) + C</code>. Check: <code>((1/2)·sin(2x + 1))' = (1/2)·cos(2x + 1)·2 = cos(2x + 1)</code></p>
+  <p class="muted">When the inside is not linear, like <code>sin(x²)</code>, these rules don't work. Substitution does, when the inside's derivative is also there: <code>∫ x·sin(x²) dx</code> (Integrals › 5).</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Exponential functions</h4>
+  <ul class="idlist">
+    <li><code>∫ eˣ dx = eˣ + C</code></li>
+    <li><code>∫ e^(ax + b) dx = (1/a)·e^(ax + b) + C</code> &nbsp;(<code>a ≠ 0</code>)</li>
+  </ul>
+  <p data-cpart="expl"><b>Why:</b> <code>eˣ</code> is its own derivative (Derivatives › 2). With a linear inside, the chain rule brings out an <code>a</code>, so we divide by it.</p>
+  <p data-cpart="expl"><b>Example:</b> <code>∫ e^(−2x) dx = −(1/2)·e^(−2x) + C</code></p>
+</div>
+</section>
+
+<!-- ===== IN5 · SUBSTITUTION ===== -->
+<section class="pane" id="pane-in5">
+<h2><span class="num">5</span>Substitution</h2>
+<div class="card" data-tags="Theorem">
+  <h4>What the substitution does</h4>
+  <p><code>∫ f(g(x))·g'(x) dx = ∫ f(t) dt</code>, with <code>t = g(x)</code> and <code>dt = g'(x) dx</code></p>
+  <p>With bounds: <code>∫_(a)^(b) f(g(x))·g'(x) dx = ∫_(g(a))^(g(b)) f(t) dt</code></p>
+  <p data-cpart="expl"><b>Where it comes from:</b> it is the chain rule run backwards. If <code>F' = f</code>, the chain rule gives <code>(F(g(x)))' = f(g(x))·g'(x)</code>. So the integral of the right side is <code>F(g(x)) + C = F(t) + C</code>, which is exactly <code>∫ f(t) dt</code>.</p>
+  <p data-cpart="expl"><b>What <code>dt = g'(x) dx</code> means:</b> a thin slice of width <code>dx</code> on the x-axis becomes a slice of width <code>dt = g'(x)·dx</code> on the t-axis. Where <code>g</code> changes fast, the slices are stretched, and the integrand is rescaled to match, so the area stays the same.</p>
+  <p data-cpart="expl"><b>How to spot it:</b> a function inside another function (the inside is <code>g(x)</code>), and the inside's derivative <code>g'(x)</code> is also multiplying, maybe up to a constant.</p>
+  <svg class="ill" viewBox="0 0 420 195" role="img" aria-label="left: 2x times e to the x squared from 0 to 1. Right: e to the t from 0 to 1. Different shapes, the same area">
+    <path class="ax" d="M15 165 H195 M25 15 V170"/>
+    <path class="band" d="M25.0 165.0 L28.8 163.8 L32.5 162.6 L36.2 161.4 L40.0 160.2 L43.8 158.9 L47.5 157.6 L51.2 156.3 L55.0 155.0 L58.8 153.6 L62.5 152.2 L66.2 150.8 L70.0 149.2 L73.8 147.7 L77.5 146.0 L81.2 144.3 L85.0 142.5 L88.8 140.6 L92.5 138.6 L96.2 136.4 L100.0 134.2 L103.8 131.8 L107.5 129.3 L111.2 126.6 L115.0 123.7 L118.8 120.7 L122.5 117.4 L126.2 113.9 L130.0 110.2 L133.8 106.1 L137.5 101.8 L141.2 97.2 L145.0 92.2 L148.8 86.8 L152.5 81.0 L156.2 74.7 L160.0 67.9 L163.8 60.5 L167.5 52.6 L171.2 43.9 L175.0 34.5 L175.0 165.0 L25.0 165.0 Z"/>
+    <path class="cv" d="M25.0 165.0 L28.8 163.8 L32.5 162.6 L36.2 161.4 L40.0 160.2 L43.8 158.9 L47.5 157.6 L51.2 156.3 L55.0 155.0 L58.8 153.6 L62.5 152.2 L66.2 150.8 L70.0 149.2 L73.8 147.7 L77.5 146.0 L81.2 144.3 L85.0 142.5 L88.8 140.6 L92.5 138.6 L96.2 136.4 L100.0 134.2 L103.8 131.8 L107.5 129.3 L111.2 126.6 L115.0 123.7 L118.8 120.7 L122.5 117.4 L126.2 113.9 L130.0 110.2 L133.8 106.1 L137.5 101.8 L141.2 97.2 L145.0 92.2 L148.8 86.8 L152.5 81.0 L156.2 74.7 L160.0 67.9 L163.8 60.5 L167.5 52.6 L171.2 43.9 L175.0 34.5"/>
+    <text class="sm" x="25" y="182" text-anchor="middle">0</text>
+    <text class="sm" x="175" y="182" text-anchor="middle">1</text>
+    <text x="100" y="188" text-anchor="middle">x</text>
+    <text class="sm" x="88" y="150" text-anchor="middle">area ≈ 1.72</text>
+    <path class="ax" d="M225 165 H405 M235 15 V170"/>
+    <path class="band2" d="M235.0 141.0 L238.8 140.4 L242.5 139.8 L246.2 139.1 L250.0 138.5 L253.8 137.8 L257.5 137.1 L261.2 136.4 L265.0 135.7 L268.8 134.9 L272.5 134.2 L276.2 133.4 L280.0 132.6 L283.8 131.8 L287.5 130.9 L291.2 130.1 L295.0 129.2 L298.8 128.3 L302.5 127.4 L306.2 126.4 L310.0 125.4 L313.8 124.4 L317.5 123.4 L321.2 122.3 L325.0 121.3 L328.8 120.2 L332.5 119.0 L336.2 117.9 L340.0 116.7 L343.8 115.4 L347.5 114.2 L351.2 112.9 L355.0 111.6 L358.8 110.2 L362.5 108.8 L366.2 107.4 L370.0 106.0 L373.8 104.5 L377.5 102.9 L381.2 101.4 L385.0 99.8 L385.0 165.0 L235.0 165.0 Z"/>
+    <path class="cv2" d="M235.0 141.0 L238.8 140.4 L242.5 139.8 L246.2 139.1 L250.0 138.5 L253.8 137.8 L257.5 137.1 L261.2 136.4 L265.0 135.7 L268.8 134.9 L272.5 134.2 L276.2 133.4 L280.0 132.6 L283.8 131.8 L287.5 130.9 L291.2 130.1 L295.0 129.2 L298.8 128.3 L302.5 127.4 L306.2 126.4 L310.0 125.4 L313.8 124.4 L317.5 123.4 L321.2 122.3 L325.0 121.3 L328.8 120.2 L332.5 119.0 L336.2 117.9 L340.0 116.7 L343.8 115.4 L347.5 114.2 L351.2 112.9 L355.0 111.6 L358.8 110.2 L362.5 108.8 L366.2 107.4 L370.0 106.0 L373.8 104.5 L377.5 102.9 L381.2 101.4 L385.0 99.8"/>
+    <text class="sm" x="235" y="182" text-anchor="middle">0</text>
+    <text class="sm" x="385" y="182" text-anchor="middle">1</text>
+    <text x="310" y="188" text-anchor="middle">t = x²</text>
+    <text class="sm" x="310" y="150" text-anchor="middle">area ≈ 1.72</text>
+  </svg>
+  <p class="muted"><code>∫_(0)^(1) 2x·e^(x²) dx</code> with <code>t = x²</code> becomes <code>∫_(0)^(1) eᵗ dt</code>. The graphs look different, but the areas are the same: <code>e − 1 ≈ 1.72</code>.</p>
+</div>
+</section>
+
+<!-- ===== IN6 · INTEGRATION BY PARTS ===== -->
+<section class="pane" id="pane-in6">
+<h2><span class="num">6</span>Integration by parts</h2>
+<div class="card" data-tags="Formula">
+  <h4>Integration by parts formula</h4>
+  <p><code>∫ u·v' dx = u·v − ∫ u'·v dx</code></p>
+  <p>With bounds: <code>∫_(a)^(b) u·v' dx = [u·v]_(a)^(b) − ∫_(a)^(b) u'·v dx</code></p>
+  <p data-cpart="expl"><b>Where it comes from,</b> step by step:</p>
+  <ol class="idlist" data-cpart="expl">
+    <li>Product rule (Derivatives › 2): <code>(u·v)' = u'·v + u·v'</code></li>
+    <li>Integrate both sides: <code>u·v = ∫ u'·v dx + ∫ u·v' dx</code>. The left side is an antiderivative of its own derivative.</li>
+    <li>Move one integral across: <code>∫ u·v' dx = u·v − ∫ u'·v dx</code></li>
+  </ol>
+  <p data-cpart="expl"><b>What it buys you:</b> it swaps one integral for another. It helps when the new one, <code>∫ u'·v dx</code>, is easier: you choose <code>u</code> as the factor that gets simpler when you differentiate it.</p>
+  <svg class="ill" viewBox="0 0 420 225" role="img" aria-label="a rectangle from the origin to u v, split by a curve into the integral of v d u below it and the integral of u d v beside it">
+    <path class="ax" d="M40 200 H400 M60 215 V12"/>
+    <path class="band2" d="M120 200 L120 160 C200 150 260 120 330 70 L330 200 Z"/>
+    <path class="band" d="M60 160 L120 160 C200 150 260 120 330 70 L60 70 Z"/>
+    <path class="cv" d="M120 160 C200 150 260 120 330 70"/>
+    <path class="gd" d="M60 160 H120 V200 M60 70 H330 V200"/>
+    <text x="232" y="186" text-anchor="middle">∫ v du</text>
+    <text x="150" y="112" text-anchor="middle">∫ u dv</text>
+    <text class="sm" x="120" y="216" text-anchor="middle">u₁</text>
+    <text class="sm" x="330" y="216" text-anchor="middle">u₂</text>
+    <text class="sm" x="52" y="164" text-anchor="end">v₁</text>
+    <text class="sm" x="52" y="74" text-anchor="end">v₂</text>
+    <text x="402" y="196" text-anchor="end">u</text>
+    <text x="70" y="20" text-anchor="start">v</text>
+  </svg>
+  <p class="muted">The big rectangle minus the small one is <code>u₂v₂ − u₁v₁</code>. The curve splits that L-shaped region into the area under it, <code>∫ v du</code>, and the area beside it, <code>∫ u dv</code>. So <code>∫ u dv = [uv] − ∫ v du</code>.</p>
+</div>
+</section>
+
+<!-- ===== IN7 · DEFINITE INTEGRALS AND AREA ===== -->
+<section class="pane" id="pane-in7">
+<h2><span class="num">7</span>Definite integrals and area</h2>
+<div class="card" data-tags="Definition">
+  <h4>Integral value and area</h4>
+  <ul class="idlist">
+    <li><b>Value</b> of the integral: <code>∫_(a)^(b) f(x) dx</code>. Parts below the x-axis count <b>negative</b>.</li>
+    <li><b>Area</b> between the graph and the x-axis: <code>∫_(a)^(b) |f(x)| dx</code>. Everything counts positive.</li>
+  </ul>
+  <p data-cpart="expl"><b>In words:</b> the integral adds heights times widths, and a height below the axis is a negative number. So a piece below the axis subtracts. The area is a geometric size, never negative: you flip the negative pieces before adding.</p>
+  <p data-cpart="expl"><b>When they are equal:</b> only when <code>f ≥ 0</code> on the whole interval.</p>
+  <svg class="ill" viewBox="0 0 420 205" role="img" aria-label="sine from 0 to 2 pi: the hump above the axis has area 2, the hump below has area 2 but counts as minus 2 in the integral">
+    <path class="ax" d="M15 105 H405 M25 15 V195"/>
+    <path class="band" d="M25.0 105.0 L29.6 99.5 L34.1 94.0 L38.7 88.7 L43.2 83.4 L47.8 78.2 L52.3 73.2 L56.9 68.4 L61.4 63.9 L66.0 59.5 L70.6 55.5 L75.1 51.8 L79.7 48.4 L84.2 45.3 L88.8 42.6 L93.3 40.3 L97.9 38.4 L102.4 36.9 L107.0 35.9 L111.6 35.2 L116.1 35.0 L120.7 35.2 L125.2 35.9 L129.8 36.9 L134.3 38.4 L138.9 40.3 L143.4 42.6 L148.0 45.3 L152.5 48.4 L157.1 51.8 L161.7 55.5 L166.2 59.5 L170.8 63.9 L175.3 68.4 L179.9 73.2 L184.4 78.2 L189.0 83.4 L193.5 88.7 L198.1 94.0 L202.7 99.5 L207.2 105.0 L207.2 105.0 L25.0 105.0 Z"/>
+    <path class="band" d="M207.2 105.0 L211.8 110.5 L216.3 116.0 L220.9 121.3 L225.4 126.6 L230.0 131.8 L234.5 136.8 L239.1 141.6 L243.7 146.1 L248.2 150.5 L252.8 154.5 L257.3 158.2 L261.9 161.6 L266.4 164.7 L271.0 167.4 L275.5 169.7 L280.1 171.6 L284.7 173.1 L289.2 174.1 L293.8 174.8 L298.3 175.0 L302.9 174.8 L307.4 174.1 L312.0 173.1 L316.5 171.6 L321.1 169.7 L325.7 167.4 L330.2 164.7 L334.8 161.6 L339.3 158.2 L343.9 154.5 L348.4 150.5 L353.0 146.1 L357.5 141.6 L362.1 136.8 L366.6 131.8 L371.2 126.6 L375.8 121.3 L380.3 116.0 L384.9 110.5 L389.4 105.0 L389.4 105.0 L207.2 105.0 Z" style="fill: color-mix(in srgb, #dc2626 20%, transparent)"/>
+    <path class="cv" d="M25.0 105.0 L29.6 99.5 L34.1 94.0 L38.7 88.7 L43.2 83.4 L47.8 78.2 L52.3 73.2 L56.9 68.4 L61.4 63.9 L66.0 59.5 L70.6 55.5 L75.1 51.8 L79.7 48.4 L84.2 45.3 L88.8 42.6 L93.3 40.3 L97.9 38.4 L102.4 36.9 L107.0 35.9 L111.6 35.2 L116.1 35.0 L120.7 35.2 L125.2 35.9 L129.8 36.9 L134.3 38.4 L138.9 40.3 L143.4 42.6 L148.0 45.3 L152.5 48.4 L157.1 51.8 L161.7 55.5 L166.2 59.5 L170.8 63.9 L175.3 68.4 L179.9 73.2 L184.4 78.2 L189.0 83.4 L193.5 88.7 L198.1 94.0 L202.7 99.5 L207.2 105.0 L211.8 110.5 L216.3 116.0 L220.9 121.3 L225.4 126.6 L230.0 131.8 L234.5 136.8 L239.1 141.6 L243.7 146.1 L248.2 150.5 L252.8 154.5 L257.3 158.2 L261.9 161.6 L266.4 164.7 L271.0 167.4 L275.5 169.7 L280.1 171.6 L284.7 173.1 L289.2 174.1 L293.8 174.8 L298.3 175.0 L302.9 174.8 L307.4 174.1 L312.0 173.1 L316.5 171.6 L321.1 169.7 L325.7 167.4 L330.2 164.7 L334.8 161.6 L339.3 158.2 L343.9 154.5 L348.4 150.5 L353.0 146.1 L357.5 141.6 L362.1 136.8 L366.6 131.8 L371.2 126.6 L375.8 121.3 L380.3 116.0 L384.9 110.5 L389.4 105.0"/>
+    <text x="116" y="92" text-anchor="middle">+2</text>
+    <text x="298" y="128" text-anchor="middle">−2</text>
+    <text class="sm" x="207" y="122" text-anchor="middle">π</text>
+    <text class="sm" x="389" y="122" text-anchor="middle">2π</text>
+    <text class="sm" x="405" y="200" text-anchor="end">value: 2 + (−2) = 0 · area: 2 + 2 = 4</text>
+  </svg>
+  <p class="muted">For <code>sin x</code> on <code>[0, 2π]</code> the two humps cancel in the integral but add up in the area. Try other functions live in Precalc › Integrals.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Area between two curves</h4>
+  <p>Where <code>f(x) ≥ g(x)</code> on <code>[a, b]</code>: &nbsp;<code>area = ∫_(a)^(b) (f(x) − g(x)) dx</code></p>
+  <p data-cpart="expl"><b>In words:</b> each thin slice now goes from the lower curve up to the upper curve, so its height is <b>top − bottom</b>. This works anywhere, even below the x-axis, because the difference is still the slice's height.</p>
+  <p data-cpart="expl"><b>When the curves cross</b> inside the interval, the top one changes. Split at the crossing points and use top − bottom on each piece.</p>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="the curves y equals x and y equals x cubed cross at minus 1, 0 and 1; the region between them is shaded">
+    <path class="ax" d="M20 105 H400 M210 12 V200"/>
+    <path class="band" d="M210.0 105.0 L214.0 102.9 L218.0 100.8 L222.0 98.6 L226.0 96.5 L230.0 94.4 L234.0 92.2 L238.0 90.1 L242.0 88.0 L246.0 85.9 L250.0 83.8 L254.0 81.6 L258.0 79.5 L262.0 77.4 L266.0 75.2 L270.0 73.1 L274.0 71.0 L278.0 68.9 L282.0 66.8 L286.0 64.6 L290.0 62.5 L294.0 60.4 L298.0 58.2 L302.0 56.1 L306.0 54.0 L310.0 51.9 L314.0 49.8 L318.0 47.6 L322.0 45.5 L326.0 43.4 L330.0 41.2 L334.0 39.1 L338.0 37.0 L342.0 34.9 L346.0 32.8 L350.0 30.6 L354.0 28.5 L358.0 26.4 L362.0 24.2 L366.0 22.1 L370.0 20.0 L370.0 20.0 L366.0 26.2 L362.0 32.1 L358.0 37.7 L354.0 43.0 L350.0 48.1 L346.0 52.8 L342.0 57.3 L338.0 61.5 L334.0 65.4 L330.0 69.1 L326.0 72.6 L322.0 75.8 L318.0 78.9 L314.0 81.7 L310.0 84.2 L306.0 86.6 L302.0 88.8 L298.0 90.9 L294.0 92.7 L290.0 94.4 L286.0 95.9 L282.0 97.3 L278.0 98.5 L274.0 99.6 L270.0 100.5 L266.0 101.4 L262.0 102.1 L258.0 102.7 L254.0 103.2 L250.0 103.7 L246.0 104.0 L242.0 104.3 L238.0 104.5 L234.0 104.7 L230.0 104.8 L226.0 104.9 L222.0 105.0 L218.0 105.0 L214.0 105.0 L210.0 105.0 Z"/>
+    <path class="band2" d="M50.0 190.0 L54.0 183.8 L58.0 177.9 L62.0 172.3 L66.0 167.0 L70.0 161.9 L74.0 157.2 L78.0 152.7 L82.0 148.5 L86.0 144.6 L90.0 140.9 L94.0 137.4 L98.0 134.2 L102.0 131.1 L106.0 128.3 L110.0 125.8 L114.0 123.4 L118.0 121.2 L122.0 119.1 L126.0 117.3 L130.0 115.6 L134.0 114.1 L138.0 112.7 L142.0 111.5 L146.0 110.4 L150.0 109.5 L154.0 108.6 L158.0 107.9 L162.0 107.3 L166.0 106.8 L170.0 106.3 L174.0 106.0 L178.0 105.7 L182.0 105.5 L186.0 105.3 L190.0 105.2 L194.0 105.1 L198.0 105.0 L202.0 105.0 L206.0 105.0 L210.0 105.0 L210.0 105.0 L206.0 107.1 L202.0 109.2 L198.0 111.4 L194.0 113.5 L190.0 115.6 L186.0 117.8 L182.0 119.9 L178.0 122.0 L174.0 124.1 L170.0 126.2 L166.0 128.4 L162.0 130.5 L158.0 132.6 L154.0 134.8 L150.0 136.9 L146.0 139.0 L142.0 141.1 L138.0 143.2 L134.0 145.4 L130.0 147.5 L126.0 149.6 L122.0 151.8 L118.0 153.9 L114.0 156.0 L110.0 158.1 L106.0 160.2 L102.0 162.4 L98.0 164.5 L94.0 166.6 L90.0 168.8 L86.0 170.9 L82.0 173.0 L78.0 175.1 L74.0 177.2 L70.0 179.4 L66.0 181.5 L62.0 183.6 L58.0 185.8 L54.0 187.9 L50.0 190.0 Z"/>
+    <path class="cv" d="M26.0 202.8 L118.0 153.9 L210.0 105.0 L302.0 56.1 L394.0 7.3"/>
+    <path class="cv2" d="M42.0 203.4 L47.6 193.9 L53.2 185.0 L58.8 176.7 L64.4 169.1 L70.0 161.9 L75.6 155.4 L81.2 149.3 L86.8 143.8 L92.4 138.8 L98.0 134.2 L103.6 130.0 L109.2 126.3 L114.8 122.9 L120.4 119.9 L126.0 117.3 L131.6 115.0 L137.2 113.0 L142.8 111.3 L148.4 109.9 L154.0 108.6 L159.6 107.7 L165.2 106.9 L170.8 106.3 L176.4 105.8 L182.0 105.5 L187.6 105.2 L193.2 105.1 L198.8 105.0 L204.4 105.0 L210.0 105.0 L215.6 105.0 L221.2 105.0 L226.8 104.9 L232.4 104.8 L238.0 104.5 L243.6 104.2 L249.2 103.7 L254.8 103.1 L260.4 102.3 L266.0 101.4 L271.6 100.1 L277.2 98.7 L282.8 97.0 L288.4 95.0 L294.0 92.7 L299.6 90.1 L305.2 87.1 L310.8 83.7 L316.4 80.0 L322.0 75.8 L327.6 71.2 L333.2 66.2 L338.8 60.7 L344.4 54.6 L350.0 48.1 L355.6 40.9 L361.2 33.3 L366.8 25.0 L372.4 16.1 L378.0 6.6"/>
+    <path class="cv" d="M30 22 H52"/>
+    <path class="cv2" d="M30 42 H52"/>
+    <text class="sm" x="58" y="26" text-anchor="start">y = x</text>
+    <text class="sm" x="58" y="46" text-anchor="start">y = x³</text>
+    <text class="sm" x="290" y="78" text-anchor="middle">x on top</text>
+    <text class="sm" x="130" y="136" text-anchor="middle">x³ on top</text>
+    <text class="sm" x="50" y="122" text-anchor="middle">−1</text>
+    <text class="sm" x="370" y="122" text-anchor="middle">1</text>
+  </svg>
+  <p class="muted"><code>y = x</code> and <code>y = x³</code> cross at <code>−1</code>, <code>0</code> and <code>1</code>. On <code>(0, 1)</code> the line is on top, on <code>(−1, 0)</code> the cubic is.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Even and odd functions on a symmetric interval</h4>
+  <ul class="idlist">
+    <li><b>Even</b> (<code>f(−x) = f(x)</code>, mirror image in the y-axis): <code>∫_(−a)^(a) f(x) dx = 2∫_(0)^(a) f(x) dx</code></li>
+    <li><b>Odd</b> (<code>f(−x) = −f(x)</code>, symmetric about the origin): <code>∫_(−a)^(a) f(x) dx = 0</code>, but the area is <code>2∫_(0)^(a) |f(x)| dx</code></li>
+  </ul>
+  <p data-cpart="expl"><b>Examples:</b> <code>x²</code>, <code>cos x</code>, <code>|x|</code> are even. <code>x³</code>, <code>sin x</code>, <code>x</code> are odd.</p>
+  <p data-cpart="expl"><b>Why:</b> an even graph has two equal halves, so do one and double it. An odd graph's left half is the right half flipped below the axis, so their signed values cancel. The areas don't cancel: both halves have the same size.</p>
+  <svg class="ill" viewBox="0 0 420 195" role="img" aria-label="left: x squared on minus 1 to 1, two equal halves. Right: x cubed, a positive half and a negative half that cancel">
+    <path class="ax" d="M15 105 H195 M105 15 V190"/>
+    <path class="band" d="M35.0 25.0 L37.3 30.2 L39.7 35.3 L42.0 40.2 L44.3 44.9 L46.7 49.4 L49.0 53.8 L51.3 58.0 L53.7 62.0 L56.0 65.8 L58.3 69.4 L60.7 72.9 L63.0 76.2 L65.3 79.3 L67.7 82.2 L70.0 85.0 L72.3 87.6 L74.7 90.0 L77.0 92.2 L79.3 94.2 L81.7 96.1 L84.0 97.8 L86.3 99.3 L88.7 100.6 L91.0 101.8 L93.3 102.8 L95.7 103.6 L98.0 104.2 L100.3 104.6 L102.7 104.9 L105.0 105.0 L105.0 105.0 L35.0 105.0 Z"/>
+    <path class="band" d="M105.0 105.0 L107.3 104.9 L109.7 104.6 L112.0 104.2 L114.3 103.6 L116.7 102.8 L119.0 101.8 L121.3 100.6 L123.7 99.3 L126.0 97.8 L128.3 96.1 L130.7 94.2 L133.0 92.2 L135.3 90.0 L137.7 87.6 L140.0 85.0 L142.3 82.2 L144.7 79.3 L147.0 76.2 L149.3 72.9 L151.7 69.4 L154.0 65.8 L156.3 62.0 L158.7 58.0 L161.0 53.8 L163.3 49.4 L165.7 44.9 L168.0 40.2 L170.3 35.3 L172.7 30.2 L175.0 25.0 L175.0 105.0 L105.0 105.0 Z"/>
+    <path class="cv" d="M21.0 -10.2 L25.2 1.0 L29.4 11.7 L33.6 21.8 L37.8 31.3 L42.0 40.2 L46.2 48.6 L50.4 56.3 L54.6 63.5 L58.8 70.2 L63.0 76.2 L67.2 81.7 L71.4 86.6 L75.6 90.9 L79.8 94.6 L84.0 97.8 L88.2 100.4 L92.4 102.4 L96.6 103.8 L100.8 104.7 L105.0 105.0 L109.2 104.7 L113.4 103.8 L117.6 102.4 L121.8 100.4 L126.0 97.8 L130.2 94.6 L134.4 90.9 L138.6 86.6 L142.8 81.7 L147.0 76.2 L151.2 70.2 L155.4 63.5 L159.6 56.3 L163.8 48.6 L168.0 40.2 L172.2 31.3 L176.4 21.8 L180.6 11.7 L184.8 1.0 L189.0 -10.2"/>
+    <text class="sm" x="105" y="186" text-anchor="middle">even: equal halves</text>
+    <path class="ax" d="M225 105 H405 M315 15 V190"/>
+    <path class="band" d="M315.0 105.0 L317.3 105.0 L319.7 105.0 L322.0 104.9 L324.3 104.8 L326.7 104.6 L329.0 104.4 L331.3 104.0 L333.7 103.5 L336.0 102.8 L338.3 102.0 L340.7 101.1 L343.0 99.9 L345.3 98.5 L347.7 96.9 L350.0 95.0 L352.3 92.9 L354.7 90.4 L357.0 87.7 L359.3 84.7 L361.7 81.3 L364.0 77.6 L366.3 73.5 L368.7 68.9 L371.0 64.0 L373.3 58.7 L375.7 52.9 L378.0 46.7 L380.3 40.0 L382.7 32.7 L385.0 25.0 L385.0 105.0 L315.0 105.0 Z"/>
+    <path class="band" d="M245.0 185.0 L247.3 177.3 L249.7 170.0 L252.0 163.3 L254.3 157.1 L256.7 151.3 L259.0 146.0 L261.3 141.1 L263.7 136.5 L266.0 132.4 L268.3 128.7 L270.7 125.3 L273.0 122.3 L275.3 119.6 L277.7 117.1 L280.0 115.0 L282.3 113.1 L284.7 111.5 L287.0 110.1 L289.3 108.9 L291.7 108.0 L294.0 107.2 L296.3 106.5 L298.7 106.0 L301.0 105.6 L303.3 105.4 L305.7 105.2 L308.0 105.1 L310.3 105.0 L312.7 105.0 L315.0 105.0 L315.0 105.0 L245.0 105.0 Z" style="fill: color-mix(in srgb, #dc2626 20%, transparent)"/>
+    <path class="cv" d="M234.5 226.7 L238.5 209.3 L242.6 193.7 L246.6 179.7 L250.6 167.3 L254.6 156.3 L258.6 146.7 L262.7 138.4 L266.7 131.3 L270.7 125.2 L274.8 120.2 L278.8 116.1 L282.8 112.8 L286.8 110.2 L290.9 108.3 L294.9 106.9 L298.9 106.0 L302.9 105.4 L306.9 105.1 L311.0 105.0 L315.0 105.0 L319.0 105.0 L323.1 104.9 L327.1 104.6 L331.1 104.0 L335.1 103.1 L339.1 101.7 L343.2 99.8 L347.2 97.2 L351.2 93.9 L355.2 89.8 L359.3 84.8 L363.3 78.7 L367.3 71.6 L371.3 63.3 L375.4 53.7 L379.4 42.7 L383.4 30.3 L387.4 16.3 L391.5 0.7 L395.5 -16.7"/>
+    <text class="sm" x="315" y="186" text-anchor="middle">odd: they cancel</text>
+  </svg>
+</div>
+</section>
+
+<!-- ===== IN8 · ESTIMATING INTEGRALS ===== -->
+<section class="pane" id="pane-in8">
+<h2><span class="num">8</span>Estimating integrals</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Comparison of integrals</h4>
+  <p><code>f(x) ≤ g(x)</code> for all <code>x ∈ [a, b]</code> (<code>a &lt; b</code>) &nbsp;⇒&nbsp; <code>∫_(a)^(b) f(x) dx ≤ ∫_(a)^(b) g(x) dx</code></p>
+  <p data-cpart="expl"><b>In words:</b> if one graph is never above the other, the area under it can't be bigger. Each thin slice of <code>f</code> is no taller than the matching slice of <code>g</code>.</p>
+  <p data-cpart="expl"><b>Use it</b> to estimate an integral you can't calculate: put it between two simpler functions whose integrals you can calculate.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="two curves with f below g on the interval: the area under f sits inside the area under g">
+    <path class="ax" d="M25 190 H405 M40 205 V12"/>
+    <path class="band" d="M80.0 62.7 L85.9 62.5 L91.8 62.5 L97.8 62.6 L103.7 62.7 L109.6 63.0 L115.5 63.4 L121.4 63.8 L127.4 64.4 L133.3 65.0 L139.2 65.8 L145.1 66.6 L151.0 67.5 L157.0 68.5 L162.9 69.5 L168.8 70.6 L174.7 71.8 L180.6 73.1 L186.6 74.4 L192.5 75.7 L198.4 77.1 L204.3 78.5 L210.2 79.9 L216.2 81.4 L222.1 82.9 L228.0 84.4 L233.9 85.9 L239.8 87.4 L245.8 88.9 L251.7 90.3 L257.6 91.8 L263.5 93.2 L269.4 94.6 L275.4 95.9 L281.3 97.2 L287.2 98.4 L293.1 99.6 L299.0 100.7 L305.0 101.7 L310.9 102.7 L316.8 103.6 L322.7 104.4 L328.6 105.1 L334.6 105.7 L340.5 106.3 L346.4 106.7 L352.3 107.1 L358.2 107.3 L364.2 107.5 L370.1 107.5 L376.0 107.4 L376.0 190.0 L80.0 190.0 Z"/>
+    <path class="band2" d="M80.0 141.2 L85.9 139.8 L91.8 138.5 L97.8 137.4 L103.7 136.4 L109.6 135.5 L115.5 134.8 L121.4 134.3 L127.4 134.0 L133.3 133.8 L139.2 133.8 L145.1 133.9 L151.0 134.3 L157.0 134.8 L162.9 135.4 L168.8 136.2 L174.7 137.2 L180.6 138.3 L186.6 139.6 L192.5 140.9 L198.4 142.4 L204.3 144.0 L210.2 145.6 L216.2 147.3 L222.1 149.1 L228.0 150.9 L233.9 152.7 L239.8 154.5 L245.8 156.3 L251.7 158.0 L257.6 159.7 L263.5 161.3 L269.4 162.9 L275.4 164.3 L281.3 165.7 L287.2 166.9 L293.1 168.0 L299.0 168.9 L305.0 169.7 L310.9 170.4 L316.8 170.8 L322.7 171.1 L328.6 171.2 L334.6 171.2 L340.5 171.0 L346.4 170.6 L352.3 170.0 L358.2 169.3 L364.2 168.4 L370.1 167.4 L376.0 166.2 L376.0 190.0 L80.0 190.0 Z"/>
+    <path class="cv" d="M56.0 64.2 L62.9 63.6 L69.8 63.1 L76.6 62.8 L83.5 62.6 L90.4 62.5 L97.3 62.6 L104.2 62.8 L111.0 63.1 L117.9 63.5 L124.8 64.1 L131.7 64.8 L138.6 65.7 L145.4 66.6 L152.3 67.7 L159.2 68.9 L166.1 70.1 L173.0 71.5 L179.8 72.9 L186.7 74.4 L193.6 76.0 L200.5 77.6 L207.4 79.2 L214.2 80.9 L221.1 82.7 L228.0 84.4 L234.9 86.1 L241.8 87.9 L248.6 89.6 L255.5 91.3 L262.4 92.9 L269.3 94.5 L276.2 96.1 L283.0 97.6 L289.9 99.0 L296.8 100.3 L303.7 101.5 L310.6 102.7 L317.4 103.7 L324.3 104.6 L331.2 105.4 L338.1 106.1 L345.0 106.6 L351.8 107.0 L358.7 107.3 L365.6 107.5 L372.5 107.5 L379.4 107.4 L386.2 107.1 L393.1 106.7 L400.0 106.2"/>
+    <path class="cv2" d="M56.0 147.7 L62.9 145.7 L69.8 143.8 L76.6 142.0 L83.5 140.3 L90.4 138.8 L97.3 137.5 L104.2 136.3 L111.0 135.4 L117.9 134.6 L124.8 134.1 L131.7 133.8 L138.6 133.8 L145.4 133.9 L152.3 134.4 L159.2 135.0 L166.1 135.9 L173.0 136.9 L179.8 138.2 L186.7 139.6 L193.6 141.2 L200.5 143.0 L207.4 144.8 L214.2 146.8 L221.1 148.8 L228.0 150.9 L234.9 153.0 L241.8 155.1 L248.6 157.1 L255.5 159.1 L262.4 161.0 L269.3 162.8 L276.2 164.5 L283.0 166.1 L289.9 167.4 L296.8 168.6 L303.7 169.6 L310.6 170.3 L317.4 170.9 L324.3 171.2 L331.2 171.2 L338.1 171.1 L345.0 170.7 L351.8 170.1 L358.7 169.2 L365.6 168.2 L372.5 167.0 L379.4 165.5 L386.2 163.9 L393.1 162.2 L400.0 160.4"/>
+    <text x="402" y="100" text-anchor="end">g</text>
+    <text x="402" y="152" text-anchor="end">f</text>
+    <text x="80" y="206" text-anchor="middle">a</text>
+    <text x="376" y="206" text-anchor="middle">b</text>
+  </svg>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Bounds from the minimum and maximum</h4>
+  <p><code>f</code> continuous on <code>[a, b]</code>, with minimum <code>m</code> and maximum <code>M</code> there &nbsp;⇒&nbsp; <code>m(b − a) ≤ ∫_(a)^(b) f(x) dx ≤ M(b − a)</code></p>
+  <p data-cpart="expl"><b>Why:</b> compare <code>f</code> with the two constant functions <code>m ≤ f(x) ≤ M</code>. A constant's integral is a rectangle: height times width.</p>
+  <p data-cpart="expl"><b>Finding <code>m</code> and <code>M</code>:</b> check the two ends <b>and</b> the critical points inside (Derivatives › 6). Only when <code>f</code> is monotone on the interval are they simply <code>f(a)</code> and <code>f(b)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a curve on the interval from a to b lying between the level m, its minimum, and the level M, its maximum">
+    <path class="ax" d="M30 190 H405 M50 205 V12"/>
+    <rect class="band" x="50.0" y="47.5" width="332.5" height="142.5"/>
+    <rect class="band2" x="50.0" y="111.4" width="332.5" height="78.6"/>
+    <path class="cv" d="M50.0 111.4 L55.5 110.5 L61.1 109.3 L66.6 107.9 L72.2 106.2 L77.7 104.3 L83.2 102.1 L88.8 99.6 L94.3 96.7 L99.9 93.6 L105.4 90.2 L111.0 86.5 L116.5 82.6 L122.0 78.6 L127.6 74.5 L133.1 70.4 L138.7 66.3 L144.2 62.4 L149.8 58.8 L155.3 55.6 L160.8 52.8 L166.4 50.5 L171.9 48.9 L177.5 47.8 L183.0 47.5 L188.5 47.8 L194.1 48.9 L199.6 50.5 L205.2 52.8 L210.7 55.6 L216.2 58.8 L221.8 62.4 L227.3 66.3 L232.9 70.4 L238.4 74.5 L244.0 78.6 L249.5 82.6 L255.0 86.5 L260.6 90.2 L266.1 93.6 L271.7 96.7 L277.2 99.6 L282.8 102.1 L288.3 104.3 L293.8 106.2 L299.4 107.9 L304.9 109.3 L310.5 110.5 L316.0 111.4 L321.5 112.2 L327.1 112.9 L332.6 113.4 L338.2 113.8 L343.7 114.1 L349.2 114.3 L354.8 114.5 L360.3 114.6 L365.9 114.7 L371.4 114.8 L377.0 114.9 L382.5 114.9"/>
+    <circle class="dot warn" cx="183.0" cy="47.5" r="4"/>
+    <circle class="dot" cx="50.0" cy="111.4" r="4"/>
+    <text x="44" y="52" text-anchor="end">M</text>
+    <text x="44" y="115" text-anchor="end">m</text>
+    <text x="50" y="206" text-anchor="middle">a</text>
+    <text x="382" y="206" text-anchor="middle">b</text>
+  </svg>
+  <p class="muted">The integral is the area under the curve. It is more than the low rectangle (green) and less than the high one (blue). Here the maximum is inside the interval, not at an end.</p>
+</div>
+</section>
+
+<!-- ===== IN9 · IMPROPER INTEGRALS ===== -->
+<section class="pane" id="pane-in9">
+<h2><span class="num">9</span>Improper integrals</h2>
+<div class="card" data-tags="Definition">
+  <h4>What an improper integral is</h4>
+  <ul class="idlist">
+    <li><code>∫_(a)^(∞) f(x) dx = lim_(r→∞) ∫_(a)^(r) f(x) dx</code></li>
+    <li><code>∫_(−∞)^(b) f(x) dx = lim_(r→−∞) ∫_(r)^(b) f(x) dx</code></li>
+    <li><b>Both bounds infinite:</b> split at any point <code>c</code>: <code>∫_(−∞)^(∞) f(x) dx = ∫_(−∞)^(c) f(x) dx + ∫_(c)^(∞) f(x) dx</code>. Both pieces must converge.</li>
+  </ul>
+  <p>It <b>converges</b> if the limit is a finite number, and <b>diverges</b> otherwise (infinite, or no limit).</p>
+  <p data-cpart="expl"><b>In words:</b> we can't plug in <code>∞</code>, so we stop at a finite end <code>r</code>, calculate as usual, and then let <code>r</code> run off to infinity (limits at infinity: Limits › 1). An area that goes on forever can still add up to a finite number, if the graph falls towards <code>0</code> fast enough.</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the area under 1 over x squared from 1 to infinity goes on forever but adds up to 1">
+    <path class="ax" d="M25 180 H410 M40 12 V195"/>
+    <path class="band" d="M88.0 70.0 L92.0 86.1 L95.9 99.0 L99.9 109.3 L103.8 117.8 L107.8 124.9 L111.8 130.8 L115.7 135.8 L119.7 140.1 L123.6 143.8 L127.6 147.0 L131.6 149.8 L135.5 152.2 L139.5 154.4 L143.4 156.3 L147.4 158.0 L151.4 159.6 L155.3 160.9 L159.3 162.2 L163.2 163.3 L167.2 164.3 L171.2 165.3 L175.1 166.1 L179.1 166.9 L183.0 167.6 L187.0 168.3 L191.0 168.9 L194.9 169.4 L198.9 170.0 L202.8 170.4 L206.8 170.9 L210.8 171.3 L214.7 171.7 L218.7 172.1 L222.6 172.4 L226.6 172.7 L230.6 173.0 L234.5 173.3 L238.5 173.6 L242.4 173.8 L246.4 174.1 L250.4 174.3 L254.3 174.5 L258.3 174.7 L262.2 174.9 L266.2 175.0 L270.2 175.2 L274.1 175.4 L278.1 175.5 L282.0 175.7 L286.0 175.8 L290.0 175.9 L293.9 176.1 L297.9 176.2 L301.8 176.3 L305.8 176.4 L309.8 176.5 L313.7 176.6 L317.7 176.7 L321.6 176.8 L325.6 176.9 L329.6 177.0 L333.5 177.1 L337.5 177.1 L341.4 177.2 L345.4 177.3 L349.4 177.4 L353.3 177.4 L357.3 177.5 L361.2 177.5 L365.2 177.6 L369.2 177.7 L373.1 177.7 L377.1 177.8 L381.0 177.8 L385.0 177.9 L389.0 177.9 L392.9 178.0 L396.9 178.0 L400.8 178.1 L404.8 178.1 L404.8 180.0 L88.0 180.0 Z"/>
+    <path class="cv" d="M71.2 -80.4 L75.4 -22.6 L79.5 17.9 L83.7 47.3 L87.9 69.4 L92.1 86.5 L96.2 99.8 L100.4 110.5 L104.6 119.2 L108.7 126.3 L112.9 132.3 L117.1 137.3 L121.2 141.6 L125.4 145.3 L129.6 148.4 L133.8 151.2 L137.9 153.6 L142.1 155.7 L146.3 157.6 L150.4 159.2 L154.6 160.7 L158.8 162.0 L162.9 163.2 L167.1 164.3 L171.3 165.3 L175.4 166.2 L179.6 167.0 L183.8 167.7 L188.0 168.4 L192.1 169.0 L196.3 169.6 L200.5 170.2 L204.6 170.7 L208.8 171.1 L213.0 171.5 L217.1 171.9 L221.3 172.3 L225.5 172.6 L229.7 173.0 L233.8 173.3 L238.0 173.5 L242.2 173.8 L246.3 174.0 L250.5 174.3 L254.7 174.5 L258.8 174.7 L263.0 174.9 L267.2 175.1 L271.4 175.3 L275.5 175.4 L279.7 175.6 L283.9 175.7 L288.0 175.9 L292.2 176.0 L296.4 176.1 L300.5 176.3 L304.7 176.4 L308.9 176.5 L313.1 176.6 L317.2 176.7 L321.4 176.8 L325.6 176.9 L329.7 177.0 L333.9 177.1 L338.1 177.1 L342.2 177.2 L346.4 177.3 L350.6 177.4 L354.8 177.4 L358.9 177.5 L363.1 177.6 L367.3 177.6 L371.4 177.7 L375.6 177.7 L379.8 177.8 L384.0 177.9 L388.1 177.9 L392.3 178.0 L396.5 178.0 L400.6 178.1 L404.8 178.1"/>
+    <text class="sm" x="88" y="196" text-anchor="middle">1</text>
+    <text x="165" y="160" text-anchor="middle">area = 1</text>
+    <text class="sm" x="405" y="164" text-anchor="end">→ ∞</text>
+  </svg>
+  <p class="muted"><code>∫_(1)^(r) 1/(x²) dx = 1 − 1/r → 1</code>: the endless area under <code>1/x²</code> from <code>1</code> on is exactly <code>1</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Improper integrals of unbounded functions</h4>
+  <p>If <code>f</code> blows up at the end <code>a</code> (continuous on <code>(a, b]</code>):</p>
+  <p><code>∫_(a)^(b) f(x) dx = lim_(r→a⁺) ∫_(r)^(b) f(x) dx</code></p>
+  <p>The same at the end <code>b</code> with <code>r → b⁻</code>. A blow-up inside the interval: split there.</p>
+  <p data-cpart="expl"><b>In words:</b> the bound is finite, but the graph shoots up to infinity at it, so we can't plug it in. Stop just before it at <code>r</code>, calculate, and let <code>r</code> slide to the bad point. Converges or diverges exactly as before.</p>
+  <svg class="ill" viewBox="0 0 420 205" role="img" aria-label="the graph of 1 over root x on 0 to 1 shoots up near 0, yet the area under it is 2">
+    <path class="ax" d="M40 185 H405 M60 12 V195"/>
+    <path class="band" d="M62.0 -286.3 L65.7 -91.3 L69.4 -29.7 L73.1 3.3 L76.9 24.7 L80.6 39.9 L84.3 51.5 L88.0 60.7 L91.8 68.2 L95.5 74.5 L99.2 79.9 L102.9 84.5 L106.7 88.6 L110.4 92.3 L114.1 95.5 L117.8 98.5 L121.6 101.1 L125.3 103.5 L129.0 105.8 L132.7 107.8 L136.5 109.7 L140.2 111.5 L143.9 113.1 L147.6 114.7 L151.4 116.1 L155.1 117.5 L158.8 118.8 L162.5 120.0 L166.3 121.2 L170.0 122.2 L173.7 123.3 L177.4 124.3 L181.2 125.2 L184.9 126.1 L188.6 127.0 L192.3 127.8 L196.1 128.6 L199.8 129.3 L203.5 130.1 L207.2 130.8 L211.0 131.4 L214.7 132.1 L218.4 132.7 L222.2 133.3 L225.9 133.9 L229.6 134.5 L233.3 135.0 L237.1 135.5 L240.8 136.0 L244.5 136.5 L248.2 137.0 L252.0 137.5 L255.7 137.9 L259.4 138.4 L263.1 138.8 L266.9 139.2 L270.6 139.6 L274.3 140.0 L278.0 140.4 L281.8 140.8 L285.5 141.2 L289.2 141.5 L292.9 141.9 L296.7 142.2 L300.4 142.5 L304.1 142.9 L307.8 143.2 L311.6 143.5 L315.3 143.8 L319.0 144.1 L322.7 144.4 L326.5 144.7 L330.2 145.0 L333.9 145.2 L337.6 145.5 L341.4 145.8 L345.1 146.0 L348.8 146.3 L352.5 146.5 L356.3 146.8 L360.0 147.0 L360.0 185.0 L62.0 185.0 Z"/>
+    <path class="cv" d="M62.0 -286.3 L66.2 -78.5 L70.5 -17.9 L74.8 14.0 L79.1 34.4 L83.4 48.9 L87.7 59.9 L92.0 68.6 L96.3 75.7 L100.5 81.6 L104.8 86.7 L109.1 91.1 L113.4 94.9 L117.7 98.3 L122.0 101.4 L126.3 104.2 L130.6 106.6 L134.8 108.9 L139.1 111.0 L143.4 112.9 L147.7 114.7 L152.0 116.4 L156.3 117.9 L160.6 119.4 L164.9 120.7 L169.2 122.0 L173.4 123.2 L177.7 124.3 L182.0 125.4 L186.3 126.4 L190.6 127.4 L194.9 128.3 L199.2 129.2 L203.5 130.0 L207.7 130.9 L212.0 131.6 L216.3 132.4 L220.6 133.1 L224.9 133.7 L229.2 134.4 L233.5 135.0 L237.8 135.6 L242.1 136.2 L246.3 136.8 L250.6 137.3 L254.9 137.9 L259.2 138.4 L263.5 138.9 L267.8 139.3 L272.1 139.8 L276.4 140.3 L280.6 140.7 L284.9 141.1 L289.2 141.5 L293.5 141.9 L297.8 142.3 L302.1 142.7 L306.4 143.1 L310.7 143.4 L314.9 143.8 L319.2 144.1 L323.5 144.5 L327.8 144.8 L332.1 145.1 L336.4 145.4 L340.7 145.7 L345.0 146.0 L349.3 146.3 L353.5 146.6 L357.8 146.9 L362.1 147.1 L366.4 147.4 L370.7 147.7 L375.0 147.9 L379.3 148.2 L383.6 148.4 L387.8 148.6 L392.1 148.9 L396.4 149.1 L400.7 149.3 L405.0 149.6"/>
+    <text class="sm" x="60" y="201" text-anchor="middle">0</text>
+    <text class="sm" x="360" y="201" text-anchor="middle">1</text>
+    <text x="195" y="162" text-anchor="middle">area = 2</text>
+    <text class="sm" x="82" y="22" text-anchor="start">↑ ∞</text>
+  </svg>
+  <p class="muted"><code>∫_(r)^(1) 1/(√x) dx = 2 − 2√r → 2</code>: the graph has no top near <code>0</code>, yet the area is <code>2</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Harmonic integral (p-integral)</h4>
+  <ul class="idlist">
+    <li><code>∫_(1)^(∞) 1/(x^(p)) dx</code> converges when <code>p &gt; 1</code> and diverges when <code>p ≤ 1</code></li>
+    <li>Near <code>0</code>, the other way round: <code>∫_(0)^(1) 1/(x^(p)) dx</code> converges when <code>p &lt; 1</code> and diverges when <code>p ≥ 1</code></li>
+  </ul>
+  <p data-cpart="expl"><b>Why, for <code>p ≠ 1</code>:</b> <code>∫_(1)^(r) x^(−p) dx = (r^(1 − p) − 1)/(1 − p)</code>. If <code>p &gt; 1</code> the power <code>1 − p</code> is negative, so <code>r^(1 − p) → 0</code> and the limit is <code>1/(p − 1)</code>. If <code>p &lt; 1</code> it grows to infinity.</p>
+  <p data-cpart="expl"><b>The harmonic case <code>p = 1</code></b> diverges: <code>∫_(1)^(r) 1/(x) dx = ln r → ∞</code>. It is the border: <code>1/x</code> falls, but just too slowly.</p>
+  <p data-cpart="expl"><b>Why it matters:</b> these are the reference functions for the comparison test (next card).</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="1 over x and 1 over x squared from 1 onwards: 1 over x stays higher and its area is infinite, the area under 1 over x squared is 1">
+    <path class="ax" d="M25 180 H410 M40 12 V195"/>
+    <path class="band" d="M88.0 70.0 L93.3 80.9 L98.6 89.8 L103.8 97.3 L109.1 103.6 L114.4 109.0 L119.7 113.7 L125.0 117.9 L130.2 121.5 L135.5 124.7 L140.8 127.6 L146.1 130.2 L151.4 132.6 L156.6 134.7 L161.9 136.7 L167.2 138.5 L172.5 140.1 L177.8 141.7 L183.0 143.1 L188.3 144.4 L193.6 145.6 L198.9 146.8 L204.2 147.8 L209.4 148.8 L214.7 149.8 L220.0 150.7 L225.3 151.5 L230.6 152.3 L235.8 153.0 L241.1 153.7 L246.4 154.4 L251.7 155.1 L257.0 155.7 L262.2 156.2 L267.5 156.8 L272.8 157.3 L278.1 157.8 L283.4 158.3 L288.6 158.8 L293.9 159.2 L299.2 159.6 L304.5 160.0 L309.8 160.4 L315.0 160.8 L320.3 161.2 L325.6 161.5 L330.9 161.8 L336.2 162.2 L341.4 162.5 L346.7 162.8 L352.0 163.1 L357.3 163.4 L362.6 163.6 L367.8 163.9 L373.1 164.1 L378.4 164.4 L383.7 164.6 L389.0 164.9 L394.2 165.1 L399.5 165.3 L404.8 165.5 L404.8 180.0 L88.0 180.0 Z"/>
+    <path class="band2" d="M88.0 70.0 L93.3 90.7 L98.6 106.1 L103.8 117.8 L109.1 127.0 L114.4 134.2 L119.7 140.1 L125.0 144.9 L130.2 148.9 L135.5 152.2 L140.8 155.1 L146.1 157.5 L151.4 159.6 L156.6 161.4 L161.9 162.9 L167.2 164.3 L172.5 165.6 L177.8 166.6 L183.0 167.6 L188.3 168.5 L193.6 169.3 L198.9 170.0 L204.2 170.6 L209.4 171.2 L214.7 171.7 L220.0 172.2 L225.3 172.6 L230.6 173.0 L235.8 173.4 L241.1 173.7 L246.4 174.1 L251.7 174.3 L257.0 174.6 L262.2 174.9 L267.5 175.1 L272.8 175.3 L278.1 175.5 L283.4 175.7 L288.6 175.9 L293.9 176.1 L299.2 176.2 L304.5 176.4 L309.8 176.5 L315.0 176.6 L320.3 176.8 L325.6 176.9 L330.9 177.0 L336.2 177.1 L341.4 177.2 L346.7 177.3 L352.0 177.4 L357.3 177.5 L362.6 177.6 L367.8 177.6 L373.1 177.7 L378.4 177.8 L383.7 177.9 L389.0 177.9 L394.2 178.0 L399.5 178.0 L404.8 178.1 L404.8 180.0 L88.0 180.0 Z"/>
+    <path class="cv" d="M88.0 70.0 L93.3 80.9 L98.6 89.8 L103.8 97.3 L109.1 103.6 L114.4 109.0 L119.7 113.7 L125.0 117.9 L130.2 121.5 L135.5 124.7 L140.8 127.6 L146.1 130.2 L151.4 132.6 L156.6 134.7 L161.9 136.7 L167.2 138.5 L172.5 140.1 L177.8 141.7 L183.0 143.1 L188.3 144.4 L193.6 145.6 L198.9 146.8 L204.2 147.8 L209.4 148.8 L214.7 149.8 L220.0 150.7 L225.3 151.5 L230.6 152.3 L235.8 153.0 L241.1 153.7 L246.4 154.4 L251.7 155.1 L257.0 155.7 L262.2 156.2 L267.5 156.8 L272.8 157.3 L278.1 157.8 L283.4 158.3 L288.6 158.8 L293.9 159.2 L299.2 159.6 L304.5 160.0 L309.8 160.4 L315.0 160.8 L320.3 161.2 L325.6 161.5 L330.9 161.8 L336.2 162.2 L341.4 162.5 L346.7 162.8 L352.0 163.1 L357.3 163.4 L362.6 163.6 L367.8 163.9 L373.1 164.1 L378.4 164.4 L383.7 164.6 L389.0 164.9 L394.2 165.1 L399.5 165.3 L404.8 165.5"/>
+    <path class="cv2" d="M88.0 70.0 L93.3 90.7 L98.6 106.1 L103.8 117.8 L109.1 127.0 L114.4 134.2 L119.7 140.1 L125.0 144.9 L130.2 148.9 L135.5 152.2 L140.8 155.1 L146.1 157.5 L151.4 159.6 L156.6 161.4 L161.9 162.9 L167.2 164.3 L172.5 165.6 L177.8 166.6 L183.0 167.6 L188.3 168.5 L193.6 169.3 L198.9 170.0 L204.2 170.6 L209.4 171.2 L214.7 171.7 L220.0 172.2 L225.3 172.6 L230.6 173.0 L235.8 173.4 L241.1 173.7 L246.4 174.1 L251.7 174.3 L257.0 174.6 L262.2 174.9 L267.5 175.1 L272.8 175.3 L278.1 175.5 L283.4 175.7 L288.6 175.9 L293.9 176.1 L299.2 176.2 L304.5 176.4 L309.8 176.5 L315.0 176.6 L320.3 176.8 L325.6 176.9 L330.9 177.0 L336.2 177.1 L341.4 177.2 L346.7 177.3 L352.0 177.4 L357.3 177.5 L362.6 177.6 L367.8 177.6 L373.1 177.7 L378.4 177.8 L383.7 177.9 L389.0 177.9 L394.2 178.0 L399.5 178.0 L404.8 178.1"/>
+    <text class="sm" x="405" y="158" text-anchor="end">1/x: area ∞</text>
+    <text class="sm" x="405" y="174" text-anchor="end">1/x²: area 1</text>
+    <text class="sm" x="88" y="196" text-anchor="middle">1</text>
+  </svg>
+  <p class="muted"><code>1/x</code> (blue) and <code>1/x²</code> (green) look alike, but the area under <code>1/x</code> is infinite and the area under <code>1/x²</code> is <code>1</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Comparison test for improper integrals</h4>
+  <p><code>0 ≤ f(x) ≤ g(x)</code> for all <code>x ≥ a</code>:</p>
+  <ul class="idlist">
+    <li><code>∫_(a)^(∞) g(x) dx</code> converges &nbsp;⇒&nbsp; <code>∫_(a)^(∞) f(x) dx</code> converges</li>
+    <li><code>∫_(a)^(∞) f(x) dx</code> diverges &nbsp;⇒&nbsp; <code>∫_(a)^(∞) g(x) dx</code> diverges</li>
+  </ul>
+  <p data-cpart="expl"><b>In words:</b> under a finite area, a smaller area is finite too. Above an infinite area, a bigger area is infinite too.</p>
+  <p data-cpart="expl"><b>What tells you nothing:</b> the bigger one diverges, or the smaller one converges. Something below an infinite area can be finite or infinite, and something above a finite area too. If you land there, compare with a different function, in the other direction.</p>
+  <p data-cpart="expl"><b>Both conditions matter:</b> <code>f ≥ 0</code> (no negative parts) and the inequality on the whole <code>[a, ∞)</code>, or at least from some point on.</p>
+  <p class="muted">The same works for unbounded functions near a bad point, with <code>∫_(0)^(1) 1/(x^(p)) dx</code> as the reference.</p>
+</div>
+</section>
+
+</div><!-- /folder-int -->
+
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
 { "id": "pp_bi_fnabs", "v": 2, "subject": "f:fn", "kind": "action",
@@ -2736,6 +3253,185 @@
     { "id": "st_bi_dvr33", "cat": "stage", "name": "Count", "text": "On each monotonic interval, `f(x) = k` has one solution if `k` is between the end values, none otherwise. Add them up for each range of `k`." },
     { "id": "st_bi_dvr34", "cat": "example", "name": "Example — cubic", "text": "`x³ − 3x = k`. Maximum `(−1, 2)`, minimum `(1, −2)`, limits `−∞` and `+∞`.\n`k > 2` or `k < −2`: `1` root\n`k = ±2`: `2` roots\n`−2 < k < 2`: `3` roots" },
     { "id": "st_bi_dvr35", "cat": "example", "name": "Example — quartic", "text": "`x⁴ − 4x³ + k = 0`, so `f(x) = x⁴ − 4x³ = −k`.\n`f` decreases until `x = 3`, then increases. Minimum `−27`, limits `+∞`.\n`k > 27`: no roots · `k = 27`: `1` root · `k < 27`: `2` roots" }
+  ] },
+{ "id": "pp_bi_inquot", "v": 1, "subject": "f:int", "kind": "action",
+  "name": "Bring a quotient to the form f′/f",
+  "description": "Three moves that turn a fraction into one whose numerator is the derivative of its denominator, or into simple pieces.",
+  "uses": [["c", "in4", "Integrals that give ln"], ["c", "in4", "Polynomials and roots"], ["c", "in3", "Sums and constants"]],
+  "parts": [
+    { "id": "st_bi_inquot1", "cat": "stage", "name": "Compare", "text": "Differentiate the denominator and compare it with the numerator. The same → `∫ f'(x)/(f(x)) dx = ln|f(x)| + C` right away. Almost the same → one of the moves below." },
+    { "id": "st_bi_inquot2", "cat": "stage", "name": "Move 1: multiply by 1", "text": "The numerator is the derivative **up to a constant**. Multiply inside by the missing constant and outside by its inverse. Together that is multiplying by `1`, so nothing changes." },
+    { "id": "st_bi_inquot3", "cat": "example", "name": "Example — multiply by 1", "text": "`∫ x/(x² + 1) dx`\nThe denominator's derivative is `2x`; the numerator has only `x`. Multiply inside by `2` and outside by `1/2`:\n`= (1/2)·∫ 2x/(x² + 1) dx`\nNow the numerator is the derivative of the denominator:\n`= (1/2)·ln(x² + 1) + C`\nNo `|·|` needed, because `x² + 1 > 0`." },
+    { "id": "st_bi_inquot4", "cat": "example", "name": "Example — a missing minus sign", "text": "`∫ tan x dx = ∫ sin x/cos x dx`\nThe derivative of `cos x` is `−sin x`. Multiply inside and outside by `−1`:\n`= −∫ (−sin x)/cos x dx = −ln|cos x| + C`" },
+    { "id": "st_bi_inquot5", "cat": "stage", "name": "Move 2: add zero", "text": "The numerator looks like the denominator but isn't. Add and subtract the same number so the denominator appears in the numerator, then split the fraction." },
+    { "id": "st_bi_inquot6", "cat": "example", "name": "Example — add zero", "text": "`∫ x/(x + 1) dx`\nWrite `x` as `x + 1 − 1`: we added `1` and took it away again.\n`= ∫ (x + 1 − 1)/(x + 1) dx = ∫ (1 − 1/(x + 1)) dx`\nEach piece is a basic integral:\n`= x − ln|x + 1| + C`" },
+    { "id": "st_bi_inquot7", "cat": "stage", "name": "Move 3: break up the quotient", "text": "Split the numerator over the denominator, term by term.\nIf the numerator's degree is at least the denominator's, divide the polynomials first (long division): what's left over has a smaller numerator." },
+    { "id": "st_bi_inquot8", "cat": "example", "name": "Example — split term by term", "text": "`∫ (x² + 3)/(x) dx = ∫ (x + 3/x) dx`\nEach term of the numerator is divided by `x` separately.\n`= x²/2 + 3·ln|x| + C`" },
+    { "id": "st_bi_inquot9", "cat": "example", "name": "Example — divide the polynomials", "text": "`∫ (x² + 1)/(x + 1) dx`\nThe numerator has degree `2`, the denominator `1`, so divide: `x² + 1 = (x + 1)(x − 1) + 2`.\n`= ∫ (x − 1 + 2/(x + 1)) dx`\n`= x²/2 − x + 2·ln|x + 1| + C`" }
+  ] },
+{ "id": "pp_bi_insub", "v": 1, "subject": "f:int", "kind": "action",
+  "name": "Integration by substitution",
+  "description": "Replace an inside function by a new variable t, so the integral becomes a basic one.",
+  "uses": [["c", "in5", "What the substitution does"], ["c", "in4", "Polynomials and roots"], ["c", "in4", "Sine and cosine"], ["c", "in2", "Newton–Leibniz theorem"]],
+  "parts": [
+    { "id": "st_bi_insub1", "cat": "stage", "name": "Choose t", "text": "`t` = the inside of the composite function, the part whose derivative also appears in the integral." },
+    { "id": "st_bi_insub2", "cat": "stage", "name": "Find dt", "text": "Differentiate: `dt = t'(x) dx`. Solve for `dx`, or for the piece of the integrand that matches `t'(x) dx`." },
+    { "id": "st_bi_insub3", "cat": "stage", "name": "Replace everything", "text": "Write the whole integral in `t`. **No `x` may remain.** If an `x` is left over, express it through `t` (from `t = …`), or choose a different `t`." },
+    { "id": "st_bi_insub4", "cat": "stage", "name": "Integrate in t", "text": "It should now be a basic integral." },
+    { "id": "st_bi_insub5", "cat": "stage", "name": "Back to x, or change the bounds", "text": "Indefinite integral: put `t = …` back, so the answer is in `x`.\nDefinite integral, choose **one**:\n- change the bounds to `t`-values (`t(a)` and `t(b)`) and finish in `t`, or\n- go back to `x` first and plug in the original bounds.\nNever mix the two: `x`-bounds in a `t`-answer give a wrong number." },
+    { "id": "st_bi_insub6", "cat": "example", "name": "Example — a power", "text": "`∫ 2x·(x² + 1)⁵ dx`\n1. The inside is `x² + 1`, and its derivative `2x` is there: `t = x² + 1`.\n2. `dt = 2x dx`.\n3. `2x dx` becomes `dt`, `(x² + 1)⁵` becomes `t⁵`: `∫ t⁵ dt`.\n4. `= t⁶/6 + C`\n5. `= ((x² + 1)⁶)/6 + C`" },
+    { "id": "st_bi_insub7", "cat": "example", "name": "Example — sin with a non-linear inside", "text": "`∫ x·sin(x²) dx`\n1. `t = x²`.\n2. `dt = 2x dx`, so `x dx = dt/2`.\n3. `∫ sin t · (1/2) dt = (1/2)·∫ sin t dt`\n4. `= −(1/2)·cos t + C`\n5. `= −(1/2)·cos(x²) + C`" },
+    { "id": "st_bi_insub8", "cat": "example", "name": "Example — ln", "text": "`∫ ln x/(x) dx`\n1. `t = ln x`.\n2. `dt = (1/x) dx`: exactly the `dx/x` in the integral.\n3. `∫ t dt`\n4. `= t²/2 + C`\n5. `= ((ln x)²)/2 + C`" },
+    { "id": "st_bi_insub9", "cat": "example", "name": "Example — an x is left over", "text": "`∫ x·√(x + 1) dx`\n1. `t = x + 1`, `dt = dx`.\n3. The `√(x + 1)` becomes `√t`, but an `x` is left. From `t = x + 1`: `x = t − 1`.\n`∫ (t − 1)·√t dt = ∫ (t^(3/2) − t^(1/2)) dt`\n4. `= (2/5)·t^(5/2) − (2/3)·t^(3/2) + C`\n5. `= (2/5)·(x + 1)^(5/2) − (2/3)·(x + 1)^(3/2) + C`" },
+    { "id": "st_bi_insub10", "cat": "example", "name": "Example — definite, change the bounds", "text": "`∫_(0)^(1) 2x·e^(x²) dx`\n1–2. `t = x²`, `dt = 2x dx`.\nNew bounds: `x = 0` → `t = 0`, and `x = 1` → `t = 1`.\n3. `∫_(0)^(1) eᵗ dt`\n4. `= [eᵗ]_(0)^(1) = e − 1`\nWe stayed in `t` to the end, so no going back." },
+    { "id": "st_bi_insub11", "cat": "example", "name": "Example — definite, back to x", "text": "`∫_(0)^(π/2) cos x·sin³x dx`\n1–2. `t = sin x`, `dt = cos x dx`.\n3–4. `∫ t³ dt = t⁴/4`\n5. Back to `x`: `(sin⁴x)/4`. Now the original bounds:\n`[(sin⁴x)/4]_(0)^(π/2) = 1/4 − 0 = 1/4`" }
+  ] },
+{ "id": "pp_bi_inparts", "v": 1, "subject": "f:int", "kind": "action",
+  "name": "Integration by parts",
+  "description": "For a product: differentiate one factor, integrate the other, and get an easier integral.",
+  "uses": [["c", "in6", "Integration by parts formula"], ["c", "in4", "Exponential functions"], ["c", "in4", "Sine and cosine"], ["c", "in4", "Polynomials and roots"]],
+  "parts": [
+    { "id": "st_bi_inparts1", "cat": "stage", "name": "Choose u and v′", "text": "`u` = the factor that gets **simpler** when you differentiate it (a polynomial, `ln x`).\n`v'` = the factor you can **integrate** (`eˣ`, `sin x`, `cos x`, or `1`).\nTip: `ln x` is almost always `u`. A polynomial is `u` unless the other factor is `ln x`." },
+    { "id": "st_bi_inparts2", "cat": "stage", "name": "Find u′ and v", "text": "Differentiate `u`, integrate `v'`. No `+ C` needed for `v`." },
+    { "id": "st_bi_inparts3", "cat": "stage", "name": "Apply the formula", "text": "`∫ u·v' dx = u·v − ∫ u'·v dx`\nDefinite: `[u·v]_(a)^(b) − ∫_(a)^(b) u'·v dx`" },
+    { "id": "st_bi_inparts4", "cat": "stage", "name": "Finish the new integral", "text": "It should be easier than the first. If it is harder, swap your choice of `u` and `v'`. If it still has a product, apply parts again." },
+    { "id": "st_bi_inparts5", "cat": "example", "name": "Example — x·eˣ", "text": "`∫ x·eˣ dx`\n1. `u = x` (becomes `1`), `v' = eˣ`.\n2. `u' = 1`, `v = eˣ`.\n3. `= x·eˣ − ∫ 1·eˣ dx`\n4. `= x·eˣ − eˣ + C`\nCheck: `(x·eˣ − eˣ)' = eˣ + x·eˣ − eˣ = x·eˣ`" },
+    { "id": "st_bi_inparts6", "cat": "example", "name": "Example — x·cos x", "text": "`∫ x·cos x dx`\n1. `u = x`, `v' = cos x`.\n2. `u' = 1`, `v = sin x`.\n3. `= x·sin x − ∫ sin x dx`\n4. `= x·sin x + cos x + C`" },
+    { "id": "st_bi_inparts7", "cat": "example", "name": "Example — ln x alone", "text": "`∫ ln x dx`: there is no product, so make one: `ln x = ln x · 1`.\n1. `u = ln x`, `v' = 1`.\n2. `u' = 1/x`, `v = x`.\n3. `= x·ln x − ∫ x·(1/x) dx = x·ln x − ∫ 1 dx`\n4. `= x·ln x − x + C`" },
+    { "id": "st_bi_inparts8", "cat": "example", "name": "Example — twice", "text": "`∫ x²·eˣ dx`\n1–3. `u = x²`, `v' = eˣ`: `= x²·eˣ − ∫ 2x·eˣ dx`\n4. The new integral still has a product, with a smaller power. Parts again, `u = 2x`, `v' = eˣ`:\n`∫ 2x·eˣ dx = 2x·eˣ − ∫ 2·eˣ dx = 2x·eˣ − 2eˣ`\nTogether: `= x²·eˣ − 2x·eˣ + 2eˣ + C = eˣ·(x² − 2x + 2) + C`" },
+    { "id": "st_bi_inparts9", "cat": "example", "name": "Example — definite", "text": "`∫_(0)^(π) x·sin x dx`\n1–2. `u = x`, `v' = sin x`: `u' = 1`, `v = −cos x`.\n3. `= [−x·cos x]_(0)^(π) + ∫_(0)^(π) cos x dx`\n`[−x·cos x]_(0)^(π) = −π·cos π − 0 = π`\n4. `∫_(0)^(π) cos x dx = [sin x]_(0)^(π) = 0`\nSo the integral is `π`." },
+    { "id": "st_bi_inparts10", "cat": "example", "name": "Example — the integral comes back", "text": "`I = ∫ eˣ·sin x dx`\nParts with `u = sin x`, `v' = eˣ`: `I = eˣ·sin x − ∫ eˣ·cos x dx`\nParts again with `u = cos x`, `v' = eˣ`: `∫ eˣ·cos x dx = eˣ·cos x + I`\nSo `I = eˣ·sin x − eˣ·cos x − I`. The same `I` is on both sides: solve for it like an equation.\n`2I = eˣ·(sin x − cos x)`, so `I = (eˣ·(sin x − cos x))/2 + C`" }
+  ] },
+{ "id": "pp_bi_inchoose", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Choosing between substitution and parts",
+  "description": "How to recognise which technique an integral needs, and when it needs both.",
+  "uses": [["c", "in5", "What the substitution does"], ["c", "in6", "Integration by parts formula"]],
+  "parts": [
+    { "id": "st_bi_inchoose1", "cat": "stage", "name": "A function inside a function?", "text": "Look for an inside function whose derivative also multiplies, maybe up to a constant: `cos x·e^(sin x)`, `x·sin(x²)`, `ln x/x`. → **Substitution**." },
+    { "id": "st_bi_inchoose2", "cat": "stage", "name": "A product of two different kinds?", "text": "A polynomial times `eˣ`, `sin`, `cos`, or anything times `ln x`, and no inside-plus-derivative pair. Differentiating one factor makes it simpler. → **Parts**." },
+    { "id": "st_bi_inchoose3", "cat": "stage", "name": "Both?", "text": "An inside function, but its derivative is not all there, and what's left is a product. → **Substitution first**, then parts on the result." },
+    { "id": "st_bi_inchoose4", "cat": "stage", "name": "Neither", "text": "Rewrite with algebra first: expand, split a fraction, or use the f′/f moves." },
+    { "id": "st_bi_inchoose5", "cat": "example", "name": "Example — substitution", "text": "`∫ cos x·e^(sin x) dx`\nThe inside is `sin x`, and its derivative `cos x` is there. `t = sin x`, `dt = cos x dx`:\n`∫ eᵗ dt = eᵗ + C = e^(sin x) + C`" },
+    { "id": "st_bi_inchoose6", "cat": "example", "name": "Example — parts", "text": "`∫ x·e^(2x) dx`\nNo inside function with its derivative. A product: `x` becomes `1` when differentiated.\n`u = x`, `v' = e^(2x)`: `u' = 1`, `v = (1/2)·e^(2x)`\n`= (x/2)·e^(2x) − (1/2)·∫ e^(2x) dx = (x/2)·e^(2x) − (1/4)·e^(2x) + C`" },
+    { "id": "st_bi_inchoose7", "cat": "example", "name": "Example — they look alike", "text": "`∫ x·sin(x²) dx`: the inside `x²` has derivative `2x`, and `x` is there. **Substitution** (see its method).\n`∫ x·sin x dx`: no inside function. **Parts**: `u = x`, `v' = sin x`: `= −x·cos x + sin x + C`" },
+    { "id": "st_bi_inchoose8", "cat": "example", "name": "Example — both: x³·e^(x²)", "text": "`∫ x³·e^(x²) dx`\nThe inside is `x²`; its derivative `2x` is there, with an extra `x²` left over.\nSubstitution `t = x²`, `dt = 2x dx`: `x³ dx = x²·x dx = t·(dt/2)`\n`= (1/2)·∫ t·eᵗ dt`\nNow a product: parts with `u = t`, `v' = eᵗ`:\n`∫ t·eᵗ dt = t·eᵗ − eᵗ`\n`= (1/2)·(t·eᵗ − eᵗ) + C = (1/2)·e^(x²)·(x² − 1) + C`" },
+    { "id": "st_bi_inchoose9", "cat": "example", "name": "Example — both: sin(√x)", "text": "`∫ sin(√x) dx`\nThe inside `√x` has no derivative next to it, so substitute and see: `t = √x`, so `x = t²` and `dx = 2t dt`.\n`= ∫ 2t·sin t dt`\nA product: parts with `u = 2t`, `v' = sin t`: `u' = 2`, `v = −cos t`\n`= −2t·cos t + ∫ 2·cos t dt = −2t·cos t + 2·sin t + C`\n`= −2√x·cos(√x) + 2·sin(√x) + C`" }
+  ] },
+{ "id": "pp_bi_indef", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Calculating a definite integral",
+  "description": "Find an antiderivative, then apply Newton–Leibniz.",
+  "uses": [["c", "in2", "Newton–Leibniz theorem"], ["c", "in1", "The integral sign and its bounds"], ["c", "in3", "Sums and constants"]],
+  "parts": [
+    { "id": "st_bi_indef1", "cat": "stage", "name": "Find an antiderivative", "text": "Integrate as if there were no bounds. No `+ C` needed: it cancels." },
+    { "id": "st_bi_indef2", "cat": "stage", "name": "Write it with the bounds", "text": "`[F(x)]_(a)^(b)`" },
+    { "id": "st_bi_indef3", "cat": "stage", "name": "Upper minus lower", "text": "`F(b) − F(a)`. Put each value in brackets: most mistakes are a lost minus sign." },
+    { "id": "st_bi_indef4", "cat": "example", "name": "Example — polynomial", "text": "`∫_(1)^(2) (3x² − 2x) dx`\n1. Antiderivative: `x³ − x²`\n2. `[x³ − x²]_(1)^(2)`\n3. `= (8 − 4) − (1 − 1) = 4`" },
+    { "id": "st_bi_indef5", "cat": "example", "name": "Example — sine", "text": "`∫_(0)^(π) sin x dx`\n1. Antiderivative: `−cos x`\n2. `[−cos x]_(0)^(π)`\n3. `= (−cos π) − (−cos 0) = 1 + 1 = 2`" },
+    { "id": "st_bi_indef6", "cat": "example", "name": "Example — 1/x", "text": "`∫_(1)^(e) 1/(x) dx = [ln x]_(1)^(e) = ln e − ln 1 = 1 − 0 = 1`" }
+  ] },
+{ "id": "pp_bi_inarea", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Integral value vs. area",
+  "description": "The value counts parts below the axis as negative; the area counts everything as positive.",
+  "uses": [["c", "in7", "Integral value and area"], ["c", "in3", "Properties of the definite integral"], ["c", "c3", "Definite integral & signed area"]],
+  "parts": [
+    { "id": "st_bi_inarea1", "cat": "stage", "name": "Asked for the value?", "text": "Integrate over the whole interval in one go. Parts below the axis count negative on their own: don't flip anything." },
+    { "id": "st_bi_inarea2", "cat": "stage", "name": "Asked for the area? Find the roots", "text": "Solve `f(x) = 0` inside `[a, b]`. These are where the graph crosses the axis." },
+    { "id": "st_bi_inarea3", "cat": "stage", "name": "Split and integrate each piece", "text": "Cut the integral at each root, so each piece is all above or all below the axis." },
+    { "id": "st_bi_inarea4", "cat": "stage", "name": "Flip the negative pieces", "text": "Take the absolute value of each piece's result, then add them all." },
+    { "id": "st_bi_inarea5", "cat": "example", "name": "Example — the same function asked both ways", "text": "`f(x) = x² − 1` on `[0, 2]`.\n**Value:** `∫_(0)^(2) (x² − 1) dx = [x³/3 − x]_(0)^(2) = 8/3 − 2 = 2/3`\n**Area:** root at `x = 1`.\n`∫_(0)^(1) (x² − 1) dx = 1/3 − 1 = −2/3`, below the axis, so it counts `2/3`.\n`∫_(1)^(2) (x² − 1) dx = (8/3 − 2) − (1/3 − 1) = 4/3`\nArea `= 2/3 + 4/3 = 2`. The value `2/3` is smaller, because the piece below the axis was subtracted." },
+    { "id": "st_bi_inarea6", "cat": "example", "name": "Example — sine on a full period", "text": "`sin x` on `[0, 2π]`, root at `π`.\nValue: `[−cos x]_(0)^(2π) = −1 + 1 = 0`\nArea: `∫_(0)^(π) sin x dx = 2` and `∫_(π)^(2π) sin x dx = −2` → `2 + 2 = 4`" }
+  ] },
+{ "id": "pp_bi_inbetween", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Area between two curves",
+  "description": "Find where the curves meet, see which one is on top, and integrate top minus bottom.",
+  "uses": [["c", "in7", "Area between two curves"], ["c", "in2", "Newton–Leibniz theorem"]],
+  "parts": [
+    { "id": "st_bi_inbetween1", "cat": "stage", "name": "Where do they meet?", "text": "Solve `f(x) = g(x)`. The solutions are the crossing points (and, if no interval is given, the ends of the region)." },
+    { "id": "st_bi_inbetween2", "cat": "stage", "name": "Which one is on top?", "text": "Between two neighbouring crossing points, plug one test point into both. The bigger value is on top. A quick sketch helps." },
+    { "id": "st_bi_inbetween3", "cat": "stage", "name": "Integrate top − bottom", "text": "On each piece: `∫ (top − bottom) dx`. Every piece comes out positive." },
+    { "id": "st_bi_inbetween4", "cat": "stage", "name": "Add", "text": "The area is the sum of the pieces." },
+    { "id": "st_bi_inbetween5", "cat": "example", "name": "Example — the curves cross inside", "text": "`y = x` and `y = x³` on `[−1, 1]`.\n1. `x³ = x` → `x(x − 1)(x + 1) = 0` → `x = −1, 0, 1`.\n2. At `x = 1/2`: `1/2 > 1/8`, so `x` is on top on `(0, 1)`. At `x = −1/2`: `−1/8 > −1/2`, so `x³` is on top on `(−1, 0)`.\n3. `∫_(0)^(1) (x − x³) dx = 1/2 − 1/4 = 1/4`\n`∫_(−1)^(0) (x³ − x) dx = [x⁴/4 − x²/2]_(−1)^(0) = 0 − (1/4 − 1/2) = 1/4`\n4. Area `= 1/4 + 1/4 = 1/2`" },
+    { "id": "st_bi_inbetween6", "cat": "example", "name": "Example — an enclosed region", "text": "The region between `y = x²` and `y = 2x`.\n1. `x² = 2x` → `x = 0`, `x = 2`.\n2. At `x = 1`: `2 > 1`, so `2x` is on top.\n3. `∫_(0)^(2) (2x − x²) dx = [x² − x³/3]_(0)^(2) = 4 − 8/3 = 4/3`" }
+  ] },
+{ "id": "pp_bi_inabs", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Integrating an absolute value",
+  "description": "Turn |f(x)| into a piecewise function and integrate each piece.",
+  "uses": [["c", "in3", "Properties of the definite integral"], ["c", "fn2", "Absolute value as a piecewise function"]],
+  "parts": [
+    { "id": "st_bi_inabs1", "cat": "stage", "name": "Write it as a piecewise function", "text": "Remove the `|·|` with the method **Absolute value → piecewise** (Functions)." },
+    { "id": "st_bi_inabs2", "cat": "stage", "name": "Split at the breakpoints", "text": "Cut the integral at every breakpoint that lies inside `[a, b]`." },
+    { "id": "st_bi_inabs3", "cat": "stage", "name": "Integrate each piece", "text": "On each piece use that piece's rule, then add." },
+    { "id": "st_bi_inabs4", "cat": "example", "name": "Example", "text": "`∫_(0)^(3) |x − 1| dx`\n1.\n|x − 1| = { 1 − x ; x < 1\n{ x − 1 ; x ≥ 1\n2. Breakpoint `1` is inside `[0, 3]`.\n3. `∫_(0)^(1) (1 − x) dx = [x − x²/2]_(0)^(1) = 1/2`\n`∫_(1)^(3) (x − 1) dx = [x²/2 − x]_(1)^(3) = 3/2 − (−1/2) = 2`\nTotal: `1/2 + 2 = 5/2`" },
+    { "id": "st_bi_inabs5", "cat": "example", "name": "Example — two breakpoints", "text": "`∫_(−2)^(2) |x² − 1| dx`\nThe function is even, so `= 2∫_(0)^(2) |x² − 1| dx` (symmetry).\n|x² − 1| = { 1 − x² ; 0 ≤ x < 1\n{ x² − 1 ; x ≥ 1\n`∫_(0)^(1) (1 − x²) dx = 2/3` and `∫_(1)^(2) (x² − 1) dx = (8/3 − 2) − (1/3 − 1) = 4/3`\nTotal: `2·(2/3 + 4/3) = 4`" }
+  ] },
+{ "id": "pp_bi_insym", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Symmetry shortcuts",
+  "description": "On an interval [−a, a], an even function doubles its half and an odd function cancels.",
+  "uses": [["c", "in7", "Even and odd functions on a symmetric interval"], ["c", "in7", "Integral value and area"]],
+  "parts": [
+    { "id": "st_bi_insym1", "cat": "stage", "name": "Symmetric interval?", "text": "The bounds must be `−a` and `a`. If not, no shortcut." },
+    { "id": "st_bi_insym2", "cat": "stage", "name": "Even or odd?", "text": "Calculate `f(−x)`.\n`f(−x) = f(x)` → even. `f(−x) = −f(x)` → odd. Neither → split `f` into an even part and an odd part, or integrate normally.\nHandy: even × even = even, odd × odd = even, even × odd = odd." },
+    { "id": "st_bi_insym3", "cat": "stage", "name": "Use the rule", "text": "Even: `∫_(−a)^(a) f(x) dx = 2∫_(0)^(a) f(x) dx`\nOdd: the value is `0`, but the area is `2∫_(0)^(a) |f(x)| dx`" },
+    { "id": "st_bi_insym4", "cat": "example", "name": "Example — even", "text": "`∫_(−2)^(2) (x⁴ + x²) dx`\n`(−x)⁴ + (−x)² = x⁴ + x²`: even.\n`= 2∫_(0)^(2) (x⁴ + x²) dx = 2·(32/5 + 8/3) = 2·136/15 = 272/15`" },
+    { "id": "st_bi_insym5", "cat": "example", "name": "Example — odd, the value", "text": "`∫_(−π)^(π) x²·sin x dx`\n`x²` is even, `sin x` is odd, so the product is odd. The value is `0`, with no calculation." },
+    { "id": "st_bi_insym6", "cat": "example", "name": "Example — odd, the area", "text": "The area between `y = x³` and the x-axis on `[−2, 2]`.\nThe value would be `0`, but the area counts both halves:\n`= 2∫_(0)^(2) x³ dx = 2·[x⁴/4]_(0)^(2) = 2·4 = 8`" },
+    { "id": "st_bi_insym7", "cat": "example", "name": "Example — split into odd and even", "text": "`∫_(−1)^(1) (x³ + 5) dx = ∫_(−1)^(1) x³ dx + ∫_(−1)^(1) 5 dx = 0 + 2·∫_(0)^(1) 5 dx = 10`" }
+  ] },
+{ "id": "pp_bi_inpiece", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Antiderivative of a piecewise function through a point",
+  "description": "Integrate each piece with its own constant, then use the given point and continuity.",
+  "uses": [["c", "in1", "Integrals and antiderivatives"], ["c", "fn2", "Piecewise function"], ["c", "lm5", "Continuity at a point"], ["c", "dv3", "Differentiable implies continuous"]],
+  "parts": [
+    { "id": "st_bi_inpiece1", "cat": "stage", "name": "Integrate each piece", "text": "Each piece gets its own constant: `C₁`, `C₂`, …" },
+    { "id": "st_bi_inpiece2", "cat": "stage", "name": "Use the given point", "text": "Plug the point into the piece it belongs to. That gives that piece's constant." },
+    { "id": "st_bi_inpiece3", "cat": "stage", "name": "Continuity at each breakpoint", "text": "An antiderivative is differentiable, so it must be continuous: at every breakpoint, the two pieces give the same value. Each breakpoint gives one equation for the next constant." },
+    { "id": "st_bi_inpiece4", "cat": "stage", "name": "Write and check", "text": "Write `F` with its constants, and differentiate each piece to check you get `f` back." },
+    { "id": "st_bi_inpiece5", "cat": "example", "name": "Example — the point is in the second piece", "text": "Find `F` with `F' = f` and `F(2) = 5`:\nf(x) = { 2x ; x < 1\n{ 2 ; x ≥ 1\n1.\nF(x) = { x² + C₁ ; x < 1\n{ 2x + C₂ ; x ≥ 1\n2. `x = 2` is in the second piece: `4 + C₂ = 5`, so `C₂ = 1`.\n3. At `x = 1` the pieces must agree: `1 + C₁ = 2·1 + 1 = 3`, so `C₁ = 2`.\n4.\nF(x) = { x² + 2 ; x < 1\n{ 2x + 1 ; x ≥ 1" },
+    { "id": "st_bi_inpiece6", "cat": "example", "name": "Example — absolute value", "text": "Find `F` with `F'(x) = |x|` and `F(1) = 0`.\n1.\nF(x) = { x²/2 + C₁ ; x ≥ 0\n{ −x²/2 + C₂ ; x < 0\n2. `F(1) = 1/2 + C₁ = 0`, so `C₁ = −1/2`.\n3. At `x = 0`: `C₁ = C₂`, so `C₂ = −1/2`.\n4. `F(x) = (x·|x|)/2 − 1/2`" }
+  ] },
+{ "id": "pp_bi_inest", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Estimating an integral you can't calculate",
+  "description": "Squeeze it between two constant functions: the minimum and the maximum on the interval.",
+  "uses": [["c", "in8", "Bounds from the minimum and maximum"], ["c", "in8", "Comparison of integrals"], ["c", "dv6", "Absolute extremum point"], ["c", "dv7", "Monotonicity"]],
+  "parts": [
+    { "id": "st_bi_inest1", "cat": "stage", "name": "Recognise it", "text": "No technique gives an antiderivative: `e^(x²)`, `e^(−x²)`, `sin x/x`, `√(1 + x³)` and many others have none you can write with the usual functions. Or the question asks for an estimate." },
+    { "id": "st_bi_inest2", "cat": "stage", "name": "Up or down?", "text": "Find `f'` and its sign on `[a, b]`. Always one sign → `f` is monotone there." },
+    { "id": "st_bi_inest3", "cat": "stage", "name": "Minimum and maximum", "text": "Monotone: they are at the ends, `f(a)` and `f(b)`.\nNot monotone: also check the critical points inside, and compare all the values." },
+    { "id": "st_bi_inest4", "cat": "stage", "name": "Squeeze", "text": "`m(b − a) ≤ ∫_(a)^(b) f(x) dx ≤ M(b − a)`" },
+    { "id": "st_bi_inest5", "cat": "example", "name": "Example — monotone", "text": "`∫_(0)^(1) e^(x²) dx`\n2. `f'(x) = 2x·e^(x²) ≥ 0` on `[0, 1]`: increasing.\n3. `m = f(0) = 1`, `M = f(1) = e`.\n4. `1·1 ≤ ∫_(0)^(1) e^(x²) dx ≤ e·1`, so `1 ≤ ∫_(0)^(1) e^(x²) dx ≤ e`" },
+    { "id": "st_bi_inest6", "cat": "example", "name": "Example — not monotone", "text": "`∫_(0)^(3) e^(2x − x²) dx`\n2. `f'(x) = (2 − 2x)·e^(2x − x²)`: positive for `x < 1`, negative for `x > 1`. Not monotone.\n3. Candidates: `f(0) = 1`, `f(1) = e`, `f(3) = e⁻³`. So `M = e` (inside!) and `m = e⁻³`.\n4. `3e⁻³ ≤ ∫_(0)^(3) e^(2x − x²) dx ≤ 3e`\nUsing only the ends would have given `M = 1`: wrong." },
+    { "id": "st_bi_inest7", "cat": "example", "name": "Example — compare with a simpler function", "text": "`∫_(1)^(2) 1/(√(1 + x⁴)) dx`\n`1 + x⁴ > x⁴`, so `√(1 + x⁴) > x²` and `1/√(1 + x⁴) < 1/x²`.\n`∫_(1)^(2) 1/(x²) dx = [−1/x]_(1)^(2) = 1/2`, so the integral is less than `1/2`." }
+  ] },
+{ "id": "pp_bi_inconv", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Deciding convergence by integrating",
+  "description": "Stop at a finite r, integrate, then let r go to infinity (or to the bad point).",
+  "uses": [["c", "in9", "What an improper integral is"], ["c", "in9", "Improper integrals of unbounded functions"], ["c", "lm1", "Infinite limits and limits at infinity"]],
+  "parts": [
+    { "id": "st_bi_inconv1", "cat": "stage", "name": "Replace the bad bound by r", "text": "`∞` → `r`, or the point where `f` blows up → `r`." },
+    { "id": "st_bi_inconv2", "cat": "stage", "name": "Integrate", "text": "Calculate the ordinary integral up to `r` with Newton–Leibniz. The answer depends on `r`." },
+    { "id": "st_bi_inconv3", "cat": "stage", "name": "Take the limit", "text": "`r → ∞` (or `r →` the bad point, from inside the interval)." },
+    { "id": "st_bi_inconv4", "cat": "stage", "name": "Decide", "text": "A finite number → **converges**, and that number is the value. `±∞` or no limit → **diverges**." },
+    { "id": "st_bi_inconv5", "cat": "example", "name": "Example — converges", "text": "`∫_(1)^(∞) 1/(x²) dx`\n1–2. `∫_(1)^(r) 1/(x²) dx = [−1/x]_(1)^(r) = 1 − 1/r`\n3. As `r → ∞`, `1/r → 0`, so the limit is `1`.\n4. Converges, value `1`." },
+    { "id": "st_bi_inconv6", "cat": "example", "name": "Example — diverges", "text": "`∫_(1)^(∞) 1/(x) dx`\n1–2. `∫_(1)^(r) 1/(x) dx = ln r − ln 1 = ln r`\n3. `ln r → ∞`\n4. Diverges." },
+    { "id": "st_bi_inconv7", "cat": "example", "name": "Example — exponential", "text": "`∫_(0)^(∞) e^(−x) dx`\n`∫_(0)^(r) e^(−x) dx = [−e^(−x)]_(0)^(r) = 1 − e^(−r) → 1`. Converges, value `1`." },
+    { "id": "st_bi_inconv8", "cat": "example", "name": "Example — no limit", "text": "`∫_(0)^(∞) cos x dx`\n`∫_(0)^(r) cos x dx = sin r`, which keeps swinging between `−1` and `1` and has no limit. Diverges." },
+    { "id": "st_bi_inconv9", "cat": "example", "name": "Example — an unbounded function", "text": "`∫_(0)^(1) 1/(√x) dx`: `1/√x` blows up at `0`.\n1–2. `∫_(r)^(1) x^(−1/2) dx = [2√x]_(r)^(1) = 2 − 2√r`\n3. As `r → 0⁺`, `2√r → 0`.\n4. Converges, value `2`." },
+    { "id": "st_bi_inconv10", "cat": "example", "name": "Example — both bounds infinite", "text": "`∫_(−∞)^(∞) x·e^(−x²) dx`: split at `0`.\n`∫_(0)^(r) x·e^(−x²) dx = (1/2)·(1 − e^(−r²)) → 1/2`, and the left half gives `−1/2`.\nBoth converge, so the integral converges, value `0`.\nCareful: you may only use the odd-function shortcut after both halves converge. `∫_(−∞)^(∞) x dx` diverges, even though `x` is odd." }
+  ] },
+{ "id": "pp_bi_inharm", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Bringing an integral to harmonic form",
+  "description": "Compare with a simpler 1/xᵖ function to decide convergence without integrating.",
+  "uses": [["c", "in9", "Harmonic integral (p-integral)"], ["c", "in9", "Comparison test for improper integrals"], ["c", "lm3", "Polynomials and the biggest power"]],
+  "parts": [
+    { "id": "st_bi_inharm1", "cat": "stage", "name": "Guess", "text": "For large `x`, keep only the biggest power on top and on the bottom. The result looks like `1/(x^(p))`: guess **converges** if `p > 1`, **diverges** if `p ≤ 1`." },
+    { "id": "st_bi_inharm2", "cat": "stage", "name": "Pick the direction", "text": "To prove it **converges**: find a **bigger** function `g ≥ f` whose integral converges. Make the denominator smaller, or the numerator bigger.\nTo prove it **diverges**: find a **smaller** function `0 ≤ g ≤ f` whose integral diverges. Make the denominator bigger, or the numerator smaller." },
+    { "id": "st_bi_inharm3", "cat": "stage", "name": "Check the inequality", "text": "Show it holds for every `x` in the interval, and that `f ≥ 0` there." },
+    { "id": "st_bi_inharm4", "cat": "stage", "name": "Conclude", "text": "Apply the p-integral to `g`, then the comparison test.\nBigger than a convergent, or smaller than a divergent → no conclusion. Change the comparison function, or turn it the other way." },
+    { "id": "st_bi_inharm5", "cat": "example", "name": "Example — converges", "text": "`∫_(1)^(∞) 1/(x² + x) dx`\n1. Like `1/x²`: guess converges.\n2–3. `x² + x > x²` for `x ≥ 1`, so `1/(x² + x) < 1/x²`. The denominator got smaller, the fraction bigger: the right direction.\n4. `∫_(1)^(∞) 1/(x²) dx` converges (`p = 2 > 1`), so ours converges." },
+    { "id": "st_bi_inharm6", "cat": "example", "name": "Example — diverges", "text": "`∫_(1)^(∞) 1/(x + √x) dx`\n1. Like `1/x`: guess diverges.\n2–3. For `x ≥ 1`, `√x ≤ x`, so `x + √x ≤ 2x` and `1/(x + √x) ≥ 1/(2x)`. A smaller function: the right direction.\n4. `∫_(1)^(∞) 1/(2x) dx` diverges (`p = 1`), so ours diverges." },
+    { "id": "st_bi_inharm7", "cat": "example", "name": "Example — the first try gives nothing", "text": "`∫_(2)^(∞) 1/(x² − x) dx`, guess converges.\n**First try:** `x² − x < x²`, so `1/(x² − x) > 1/x²`. Bigger than a convergent integral: **no conclusion**.\n**Second try:** for `x ≥ 2`, `x ≤ x²/2`, so `x² − x ≥ x²/2` and `1/(x² − x) ≤ 2/x²`.\n`∫_(2)^(∞) 2/(x²) dx` converges, so ours converges." },
+    { "id": "st_bi_inharm8", "cat": "example", "name": "Example — change the numerator", "text": "`∫_(1)^(∞) (2 + sin x)/(x) dx`\n`2 + sin x ≥ 1`, so the function is positive and `(2 + sin x)/x ≥ 1/x`.\n`∫_(1)^(∞) 1/(x) dx` diverges, so ours diverges." },
+    { "id": "st_bi_inharm9", "cat": "example", "name": "Example — an unbounded function", "text": "`∫_(0)^(1) 1/(√x + x²) dx`: blows up at `0`.\nNear `0` the biggest term is `√x`. `√x + x² ≥ √x`, so `1/(√x + x²) ≤ 1/√x`.\n`∫_(0)^(1) 1/(x^(1/2)) dx` converges (`p = 1/2 < 1`), so ours converges." }
   ] }
 ]
 </script>
