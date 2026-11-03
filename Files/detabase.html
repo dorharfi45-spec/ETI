@@ -2396,6 +2396,7 @@
     <button data-folder="lim" data-group="calc"><span class="ficon">→</span>Limits and continuity</button>
     <button data-folder="der" data-group="calc"><span class="ficon">′</span>Derivatives</button>
     <button data-folder="int" data-group="calc"><span class="ficon">∫</span>Integrals</button>
+    <button data-folder="ser" data-group="calc"><span class="ficon">∑</span>Series</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2516,6 +2517,17 @@
   <button data-target="in8"><span class="tnum">8</span>Estimating integrals</button>
   <button data-target="in9"><span class="tnum">9</span>Improper integrals</button>
 </nav>
+<nav class="tabbar" data-folder="ser" id="tabbar-ser">
+  <button data-target="se1" class="on"><span class="tnum">1</span>Sequences</button>
+  <button data-target="se2"><span class="tnum">2</span>Monotone sequences</button>
+  <button data-target="se3"><span class="tnum">3</span>Infinite series</button>
+  <button data-target="se4"><span class="tnum">4</span>Convergence tests</button>
+  <button data-target="se5"><span class="tnum">5</span>More convergence tests</button>
+  <button data-target="se6"><span class="tnum">6</span>Alternating series and absolute convergence</button>
+  <button data-target="se7"><span class="tnum">7</span>Power series</button>
+  <button data-target="se8"><span class="tnum">8</span>Taylor and Maclaurin series</button>
+  <button data-target="se9"><span class="tnum">9</span>Differentiating and integrating power series</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2546,7 +2558,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B128</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B129</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4544,7 +4556,9 @@ function __detabaseMain() {
     der: { title: "Derivatives — for Calculus 1",
       sub: 'The derivative, its formulas, differentiability, extrema, Rolle and the mean value theorem, convexity.' },
     int: { title: "Integrals — for Calculus 1",
-      sub: 'Antiderivatives, the fundamental theorem, techniques, area, estimates and improper integrals.' }
+      sub: 'Antiderivatives, the fundamental theorem, techniques, area, estimates and improper integrals.' },
+    ser: { title: "Series — for Calculus 1",
+      sub: 'Sequences, infinite series and convergence tests, power series, Taylor series.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -19011,13 +19025,13 @@ function __detabaseMain() {
       s = s.slice(0, at) + "\\sqrt{" + s.slice(at + 2, i) + "}" + s.slice(i + 1);
     }
     s = s.replace(/√([0-9A-Za-zπθ]+)/g, "\\sqrt{$1}").replace(/\^\(([^()]*)\)/g, "^{$1}").replace(/_\(([^()]*)\)/g, "_{$1}");
-    var SUP = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ᵏ": "k", "ᵐ": "m", "ˣ": "x", "ʸ": "y", "ᶜ": "c", "ᵃ": "a", "ᵇ": "b", "⁺": "+", "⁻": "-" };
+    var SUP = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ᵏ": "k", "ᵐ": "m", "ˣ": "x", "ʸ": "y", "ᶜ": "c", "ᵃ": "a", "ᵇ": "b", "⁺": "+", "⁻": "-", "ᵖ": "p", "⁽": "(", "⁾": ")" };
     var SUB = { "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "ₙ": "n", "ₖ": "k" };
     function runs(map, mark) {
       s = s.replace(new RegExp("[" + Object.keys(map).join("") + "]+", "g"), function (m) { return mark + "{" + m.split("").map(function (c) { return map[c]; }).join("") + "}"; });
     }
     runs(SUP, "^"); runs(SUB, "_");
-    var FN = { sin: 1, cos: 1, tan: 1, cot: 1, sec: 1, csc: 1, arcsin: 1, arccos: 1, arctan: 1, ln: 1, log: 1, exp: 1, max: 1, min: 1, lim: 1 };
+    var FN = { sin: 1, cos: 1, tan: 1, cot: 1, sec: 1, csc: 1, arcsin: 1, arccos: 1, arctan: 1, sinh: 1, cosh: 1, ln: 1, log: 1, exp: 1, max: 1, min: 1, lim: 1 };
     s = s.replace(/[A-Za-z]{2,}/g, function (w, at, all) {
       if (all[at - 1] === "\\") return w;
       if (FN[w]) return "\\" + w;

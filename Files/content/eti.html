@@ -3633,12 +3633,651 @@
 </section>
 
 </div><!-- /folder-int -->
+<div class="folder" id="folder-ser">
+
+<!-- ===== SE1 · SEQUENCES ===== -->
+<section class="pane on" id="pane-se1">
+<h2><span class="num">1</span>Sequences</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a sequence is</h4>
+  <p>A <b>sequence</b> is an endless list of numbers in order: <code>a_(1), a_(2), a_(3), …</code>. Written <code>{a_(n)}_(n=1)^(∞)</code> or just <code>{a_(n)}</code>.</p>
+  <p>Formally, it's a function whose domain is the natural numbers: <code>a_(n) = f(n)</code>, <code>n = 1, 2, 3, …</code></p>
+  <p class="muted"><b>In words:</b> <code>a_(n)</code> is "the term in place <code>n</code>". A formula for <code>a_(n)</code> tells you any term straight away: for <code>a_(n) = 1/(n)</code>, the 5th term is <code>1/5</code>.</p>
+  <p class="muted"><b>Finding the formula from the first terms:</b> compare each term with its place number. <code>1/3, 2/4, 3/5, 4/6, …</code>: the top is the place <code>n</code>, the bottom is <code>n + 2</code>, so <code>a_(n) = n/(n + 2)</code>. Signs that switch (<code>+, −, +, −</code>) come from a factor <code>(−1)^(n+1)</code>.</p>
+  <p class="muted"><b>Defined step by step:</b> a sequence can also be given by its first term and a rule that builds each term from the one before (a <b>recursive</b> formula). Example: <code>a_(1) = 2</code>, <code>a_(n+1) = 3a_(n) − 1</code> gives <code>2, 5, 14, 41, …</code></p>
+  <p class="muted"><b>The graph</b> of a sequence is separate dots at <code>n = 1, 2, 3, …</code>, not a connected curve (next card).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Limit of a sequence</h4>
+  <p><code>lim_(n→∞) a_(n) = L</code> &nbsp;⇔&nbsp; <code>∀ε &gt; 0 ∃N :</code> <code>n ≥ N ⇒ |a_(n) − L| &lt; ε</code></p>
+  <p>Then the sequence <b>converges</b> to <code>L</code>. A sequence with no finite limit <b>diverges</b>.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the dots of n over n plus 1 rise towards 1; from some place N on, all of them stay inside a thin band around 1">
+    <rect class="band" x="30" y="17.5" width="375" height="45"/>
+    <path class="ax" d="M30 190 H405 M40 10 V200"/>
+    <path class="gd" d="M30 40 H405 M244 17.5 V190"/>
+    <circle class="dot" cx="74" cy="115" r="4"/>
+    <circle class="dot" cx="108" cy="90" r="4"/>
+    <circle class="dot" cx="142" cy="77.5" r="4"/>
+    <circle class="dot" cx="176" cy="70" r="4"/>
+    <circle class="dot" cx="210" cy="65" r="4"/>
+    <circle class="dot" cx="244" cy="61.4" r="4"/>
+    <circle class="dot" cx="278" cy="58.8" r="4"/>
+    <circle class="dot" cx="312" cy="56.7" r="4"/>
+    <circle class="dot" cx="346" cy="55" r="4"/>
+    <circle class="dot" cx="380" cy="53.6" r="4"/>
+    <text x="34" y="44" text-anchor="end">L</text>
+    <text x="244" y="205" text-anchor="middle">N</text>
+    <text class="sm" x="400" y="80" text-anchor="end">band L ± ε</text>
+  </svg>
+  <p class="muted"><b>In words:</b> the terms get as close to <code>L</code> as you like and <b>stay</b> that close. However thin a band someone draws around <code>L</code>, from some place <code>N</code> on, every term is inside it. The first few terms don't matter at all.</p>
+  <p class="muted"><b>Three ways to diverge:</b> grow without end (<code>n + 1</code>, limit <code>+∞</code>); jump between values (<code>(−1)^(n)</code>: <code>−1, 1, −1, …</code>); or wander without settling.</p>
+  <p class="muted"><b>Example:</b> <code>a_(n) = n/(n + 1)</code>: <code>1/2, 2/3, 3/4, …</code> gets closer and closer to <code>1</code>. Dividing top and bottom by <code>n</code>: <code>1/(1 + 1/(n)) → 1/(1 + 0) = 1</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Limit laws and the squeeze theorem</h4>
+  <p>If <code>a_(n) → L₁</code> and <code>b_(n) → L₂</code> (finite), then <code>a_(n) ± b_(n) → L₁ ± L₂</code>, <code>c · a_(n) → c · L₁</code>, <code>a_(n) b_(n) → L₁ L₂</code>, and <code>(a_(n))/(b_(n)) → (L₁)/(L₂)</code> when <code>L₂ ≠ 0</code>.</p>
+  <ul>
+    <li><b>From a function:</b> if <code>lim_(x→∞) f(x) = L</code> and <code>a_(n) = f(n)</code>, then <code>lim_(n→∞) a_(n) = L</code>. So you may use L'Hôpital's rule on <code>f(x)</code>.</li>
+    <li><b>Squeeze:</b> <code>b_(n) ≤ a_(n) ≤ c_(n)</code> from some place on, and <code>b_(n) → L</code>, <code>c_(n) → L</code> ⇒ <code>a_(n) → L</code>.</li>
+    <li><b>Even and odd places:</b> <code>a_(n) → L</code> ⇔ the terms in the even places and the terms in the odd places both tend to <code>L</code>.</li>
+  </ul>
+  <p class="muted"><b>Why L'Hôpital needs a function:</b> a sequence only lives at whole numbers, so it has no derivative. Replace <code>n</code> by a real <code>x</code>, find the limit of <code>f(x)</code>, and the sequence has the same limit.</p>
+  <p class="muted"><b>Example (function):</b> <code>(ln n)/(n)</code>. Look at <code>(ln x)/(x)</code>: it's <code>∞/∞</code>, and L'Hôpital gives <code>(1/(x))/(1) → 0</code>. So <code>(ln n)/(n) → 0</code>.</p>
+  <p class="muted"><b>Example (even and odd):</b> <code>(−1)^(n) · n/(n + 1)</code>: the even places tend to <code>1</code>, the odd places to <code>−1</code>. They disagree, so the sequence diverges.</p>
+  <p class="muted"><b>Example (squeeze):</b> <code>(sin n)/(n)</code> is between <code>−1/(n)</code> and <code>1/(n)</code>, and both tend to <code>0</code>, so it tends to <code>0</code> too.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Standard limits</h4>
+  <ul class="idlist">
+    <li><code>lim_(n→∞) 1/(nᵖ) = 0</code> &nbsp;(<code>p &gt; 0</code>)</li>
+    <li><code>lim_(n→∞) rⁿ = 0</code> when <code>|r| &lt; 1</code>; <code>rⁿ</code> diverges when <code>|r| &gt; 1</code> or <code>r = −1</code></li>
+    <li><code>lim_(n→∞) ⁿ√n = 1</code> &nbsp;·&nbsp; <code>lim_(n→∞) ⁿ√a = 1</code> (<code>a &gt; 0</code>)</li>
+    <li><code>lim_(n→∞) (xⁿ)/(n!) = 0</code> for every real <code>x</code></li>
+    <li><code>lim_(n→∞) (1 + 1/(n))ⁿ = e</code></li>
+  </ul>
+  <p class="muted"><b>Who wins:</b> as <code>n</code> grows, <code>ln n</code> &lt;&lt; <code>nᵖ</code> &lt;&lt; <code>aⁿ</code> (<code>a &gt; 1</code>) &lt;&lt; <code>n!</code>. A slower one over a faster one tends to <code>0</code>: <code>n¹⁰/(2ⁿ) → 0</code>, <code>(5ⁿ)/(n!) → 0</code>.</p>
+  <p class="muted"><b>Why <code>ⁿ√n → 1</code>:</b> write it as <code>n^(1/n) = e^((ln n)/n)</code>. The exponent <code>(ln n)/(n) → 0</code>, so the whole thing tends to <code>e⁰ = 1</code>.</p>
+  <p class="muted"><b>Why <code>(xⁿ)/(n!) → 0</code>:</b> from some place on, each new factor <code>x/(n)</code> is less than <code>1/2</code>, so each step at least halves the term.</p>
+</div>
+</section>
+
+<!-- ===== SE2 · MONOTONE SEQUENCES ===== -->
+<section class="pane" id="pane-se2">
+<h2><span class="num">2</span>Monotone sequences</h2>
+<div class="card" data-tags="Definition">
+  <h4>Increasing, decreasing and bounded</h4>
+  <ul>
+    <li><b>Increasing:</b> <code>a_(1) ≤ a_(2) ≤ a_(3) ≤ …</code> &nbsp;·&nbsp; <b>strictly increasing:</b> with <code>&lt;</code></li>
+    <li><b>Decreasing:</b> <code>a_(1) ≥ a_(2) ≥ a_(3) ≥ …</code> &nbsp;·&nbsp; <b>strictly decreasing:</b> with <code>&gt;</code></li>
+    <li>Either kind is <b>monotone</b>.</li>
+    <li><b>Bounded above</b> by <code>M</code>: <code>a_(n) ≤ M</code> for every <code>n</code>. <b>Bounded below</b> by <code>m</code>: <code>a_(n) ≥ m</code> for every <code>n</code>.</li>
+    <li><b>Monotone from some place on:</b> monotone once you ignore the first few terms.</li>
+  </ul>
+  <p class="muted"><b>Examples:</b> <code>1, 1/2, 1/3, …</code> is strictly decreasing, bounded below by <code>0</code>. <code>1, 1, 2, 2, 3, 3, …</code> is increasing, but not strictly. <code>1, −1/2, 1/3, −1/4, …</code> is not monotone: it goes down, up, down.</p>
+  <p class="muted"><b>From some place on:</b> <code>(10ⁿ)/(n!)</code> grows at first (<code>10, 50, 166.7, …</code>), but from <code>n = 10</code> on, each term is smaller than the one before.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Three ways to test monotonicity</h4>
+  <table>
+    <thead><tr><th>Test</th><th>Increasing</th><th>Decreasing</th></tr></thead>
+    <tbody>
+      <tr><td>Difference</td><td><code>a_(n+1) − a_(n) ≥ 0</code></td><td><code>a_(n+1) − a_(n) ≤ 0</code></td></tr>
+      <tr><td>Ratio (positive terms)</td><td><code>(a_(n+1))/(a_(n)) ≥ 1</code></td><td><code>(a_(n+1))/(a_(n)) ≤ 1</code></td></tr>
+      <tr><td>Derivative, <code>a_(n) = f(n)</code></td><td><code>f'(x) ≥ 0</code> for <code>x ≥ 1</code></td><td><code>f'(x) ≤ 0</code> for <code>x ≥ 1</code></td></tr>
+    </tbody>
+  </table>
+  <p>With strict inequalities (<code>&gt; 0</code>, <code>&gt; 1</code>) the sequence is strictly monotone.</p>
+  <p class="muted"><b>Which to pick:</b> the difference is good for fractions and sums; the ratio for factorials and powers like <code>(2ⁿ)/(n!)</code>, where a lot cancels; the derivative when <code>a_(n)</code> is a nice formula in <code>n</code>.</p>
+  <p class="muted"><b>Example, all three:</b> <code>a_(n) = n/(n + 1)</code>. Difference: <code>(n + 1)/(n + 2) − n/(n + 1) = 1/((n + 1)(n + 2)) &gt; 0</code>. Ratio: <code>(n² + 2n + 1)/(n² + 2n) &gt; 1</code>. Derivative: <code>f(x) = x/(x + 1)</code>, <code>f'(x) = 1/((x + 1)²) &gt; 0</code>. All say: strictly increasing.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Monotone convergence theorem</h4>
+  <ul>
+    <li>An <b>increasing</b> sequence that is <b>bounded above</b> by <code>M</code> converges, to some <code>L ≤ M</code>. If it isn't bounded above, it tends to <code>+∞</code>.</li>
+    <li>A <b>decreasing</b> sequence that is <b>bounded below</b> by <code>M</code> converges, to some <code>L ≥ M</code>. If it isn't bounded below, it tends to <code>−∞</code>.</li>
+    <li>The same holds for a sequence that is monotone <b>from some place on</b>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="an increasing sequence below a ceiling M climbs and levels off at a limit L that is at most M">
+    <path class="ax" d="M30 190 H405 M40 10 V195"/>
+    <path class="gd" d="M30 30 H405"/>
+    <path class="gd" d="M30 40 H405" style="stroke: var(--accent)"/>
+    <circle class="dot" cx="74" cy="140" r="4"/>
+    <circle class="dot" cx="108" cy="90" r="4"/>
+    <circle class="dot" cx="142" cy="73.3" r="4"/>
+    <circle class="dot" cx="176" cy="65" r="4"/>
+    <circle class="dot" cx="210" cy="60" r="4"/>
+    <circle class="dot" cx="244" cy="56.7" r="4"/>
+    <circle class="dot" cx="278" cy="54.3" r="4"/>
+    <circle class="dot" cx="312" cy="52.5" r="4"/>
+    <circle class="dot" cx="346" cy="51.1" r="4"/>
+    <circle class="dot" cx="380" cy="50" r="4"/>
+    <text x="34" y="26" text-anchor="end">M</text>
+    <text x="34" y="44" text-anchor="end">L</text>
+    <text class="sm" x="400" y="24" text-anchor="end">upper bound (ceiling)</text>
+  </svg>
+  <p class="muted"><b>In words:</b> a sequence that only goes up but can never pass a ceiling has to level off somewhere. It can't jump around (it's monotone) and can't escape (it's bounded).</p>
+  <p class="muted"><b>What it does and doesn't tell you:</b> it proves the limit <b>exists</b>, but doesn't say what it is. To find it, a trick often works: if <code>a_(n+1) = g(a_(n))</code> and <code>a_(n) → L</code>, then <code>a_(n+1) → L</code> too, so <code>L = g(L)</code>.</p>
+  <p class="muted"><b>Example:</b> <code>a_(n) = (5ⁿ)/(n!)</code> is decreasing from <code>n = 5</code> on and bounded below by <code>0</code>, so it converges. Its terms satisfy <code>a_(n+1) = 5/(n + 1) · a_(n)</code>; let <code>n → ∞</code>: <code>L = 0 · L</code>, so <code>L = 0</code>. Full steps: the method "Showing a sequence converges (monotone and bounded)".</p>
+</div>
+</section>
+
+<!-- ===== SE3 · INFINITE SERIES ===== -->
+<section class="pane" id="pane-se3">
+<h2><span class="num">3</span>Infinite series</h2>
+<div class="card" data-tags="Definition">
+  <h4>Partial sums and convergence</h4>
+  <p>An <b>infinite series</b> is an endless sum <code>∑_(k=1)^(∞) u_(k) = u_(1) + u_(2) + u_(3) + …</code></p>
+  <p>The <b>n-th partial sum</b> is <code>s_(n) = u_(1) + u_(2) + … + u_(n)</code>. If the sequence of partial sums <code>{s_(n)}</code> converges to <code>S</code>, the series <b>converges</b> and its <b>sum</b> is <code>S</code>. Otherwise it <b>diverges</b> and has no sum.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="bars for the partial sums of one half plus one quarter plus one eighth and so on climb towards 1">
+    <path class="ax" d="M20 190 H405"/>
+    <path class="gd" d="M20 40 H405"/>
+    <rect class="box" x="40" y="115" width="30" height="75"/>
+    <rect class="box" x="80" y="77.5" width="30" height="112.5"/>
+    <rect class="box" x="120" y="58.8" width="30" height="131.2"/>
+    <rect class="box" x="160" y="49.4" width="30" height="140.6"/>
+    <rect class="box" x="200" y="44.7" width="30" height="145.3"/>
+    <rect class="box" x="240" y="42.3" width="30" height="147.7"/>
+    <rect class="box" x="280" y="41.2" width="30" height="148.8"/>
+    <rect class="box" x="320" y="40.6" width="30" height="149.4"/>
+    <text class="sm" x="55" y="205" text-anchor="middle">s₁</text>
+    <text class="sm" x="95" y="205" text-anchor="middle">s₂</text>
+    <text class="sm" x="135" y="205" text-anchor="middle">s₃</text>
+    <text class="sm" x="175" y="205" text-anchor="middle">s₄</text>
+    <text class="sm" x="335" y="205" text-anchor="middle">s₈</text>
+    <text x="400" y="34" text-anchor="end">S = 1</text>
+  </svg>
+  <p class="muted"><b>In words:</b> you can't add infinitely many numbers directly. So add the first <code>n</code>, then ask what those running totals head for as <code>n</code> grows. That target is the sum. In the sketch, <code>1/2 + 1/4 + 1/8 + …</code>: the totals <code>0.5, 0.75, 0.875, …</code> climb towards <code>1</code>.</p>
+  <p class="muted"><b>A sequence vs a series:</b> a sequence is a list of numbers; a series is the sum of a list. The terms <code>1/2, 1/4, 1/8, …</code> tend to <code>0</code>, but their sum is <code>1</code>.</p>
+  <p class="muted"><b>Example of a divergent series:</b> <code>1 − 1 + 1 − 1 + …</code> has partial sums <code>1, 0, 1, 0, …</code>, which never settle, so it has no sum. Grouping the terms differently can't fix that: the ordinary rules of addition don't automatically hold for endless sums.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Geometric series</h4>
+  <p><code>a + ar + ar² + ar³ + … = ∑_(k=0)^(∞) arᵏ</code> &nbsp;(<code>a ≠ 0</code>)</p>
+  <ul>
+    <li><code>|r| &lt; 1</code>: it converges, and its sum is <code>(a)/(1 − r)</code>.</li>
+    <li><code>|r| ≥ 1</code>: it diverges.</li>
+  </ul>
+  <p><code>a</code> is the first term, <code>r</code> the <b>ratio</b>: each term is the one before times <code>r</code>.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a unit square cut into a half, a quarter, an eighth and smaller pieces that fill it completely">
+    <rect class="box" x="110" y="10" width="200" height="200"/>
+    <rect class="band" x="110" y="10" width="100" height="200"/>
+    <path class="ax" d="M210 10 V210 M210 110 H310 M260 110 V210 M260 160 H310 M285 160 V210 M285 185 H310"/>
+    <text x="160" y="115" text-anchor="middle">1/2</text>
+    <text x="260" y="65" text-anchor="middle">1/4</text>
+    <text x="235" y="165" text-anchor="middle">1/8</text>
+    <text class="sm" x="272" y="140" text-anchor="middle">1/16</text>
+    <text class="sm" x="330" y="200">… = 1</text>
+  </svg>
+  <p class="muted"><b>Where <code>(a)/(1 − r)</code> comes from:</b> <code>s_(n) = a + ar + … + arⁿ⁻¹</code> and <code>r · s_(n) = ar + … + arⁿ</code>. Subtract: almost everything cancels, leaving <code>(1 − r)s_(n) = a − arⁿ</code>. When <code>|r| &lt; 1</code>, <code>rⁿ → 0</code>, so <code>s_(n) → (a)/(1 − r)</code>.</p>
+  <p class="muted"><b>Example:</b> <code>4 + 4/3 + 4/9 + …</code> has <code>a = 4</code>, <code>r = 1/3</code>, so the sum is <code>(4)/(1 − 1/3) = 6</code>.</p>
+  <p class="muted"><b>Repeating decimals are geometric series:</b> <code>0.454545… = 0.45 + 0.0045 + …</code>, with <code>a = 0.45</code>, <code>r = 0.01</code>: <code>(0.45)/(0.99) = 45/99 = 5/11</code>.</p>
+  <p class="muted"><b>Watch where it starts:</b> <code>∑_(k=1)^(∞) (2/3)ᵏ</code> starts at <code>2/3</code>, so <code>a = 2/3</code> and the sum is <code>(2/3)/(1/3) = 2</code>. Always take <code>a</code> = the first term actually written.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Telescoping series</h4>
+  <p>When each term is a difference <code>u_(k) = b_(k) − b_(k+1)</code>, the partial sum collapses: <code>s_(n) = b_(1) − b_(n+1)</code>. The series converges exactly when <code>b_(n)</code> has a limit, and then <code>S = b_(1) − lim_(n→∞) b_(n+1)</code>.</p>
+  <p class="muted"><b>In words:</b> like a folding telescope, each middle piece cancels the next one, and only the very first and the very last parts stay.</p>
+  <p class="muted"><b>Example:</b> <code>∑_(k=1)^(∞) 1/(k(k + 1))</code>. Partial fractions: <code>1/(k(k + 1)) = 1/(k) − 1/(k + 1)</code>. So <code>s_(n) = (1 − 1/2) + (1/2 − 1/3) + … + (1/(n) − 1/(n + 1)) = 1 − 1/(n + 1) → 1</code>. The sum is <code>1</code>. Full steps: the method "Sum of a telescoping series".</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Harmonic series</h4>
+  <p><code>∑_(k=1)^(∞) 1/(k) = 1 + 1/2 + 1/3 + 1/4 + …</code> <b>diverges</b>, even though its terms tend to <code>0</code>.</p>
+  <p class="muted"><b>Why, by grouping:</b> <code>1/3 + 1/4 &gt; 1/4 + 1/4 = 1/2</code>; <code>1/5 + … + 1/8 &gt; 4 · 1/8 = 1/2</code>; the next 8 terms are again more than <code>1/2</code>, and so on. You can collect infinitely many groups, each worth more than <code>1/2</code>, so the total grows without end.</p>
+  <p class="muted"><b>The lesson:</b> terms that shrink to <code>0</code> are not enough. They must shrink <b>fast enough</b>. <code>1/(k)</code> shrinks too slowly; <code>1/(k²)</code> shrinks fast enough (Series › 4).</p>
+  <p class="muted"><b>How slowly:</b> it takes about <code>12,000</code> terms for the partial sum to pass <code>10</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Sums, constant multiples, and the first terms</h4>
+  <ul>
+    <li><code>∑ u_(k)</code> and <code>∑ v_(k)</code> converge ⇒ <code>∑ (u_(k) ± v_(k)) = ∑ u_(k) ± ∑ v_(k)</code>.</li>
+    <li><code>c ≠ 0</code>: <code>∑ c u_(k)</code> and <code>∑ u_(k)</code> both converge or both diverge; when they converge, <code>∑ c u_(k) = c ∑ u_(k)</code>.</li>
+    <li>Removing or adding finitely many terms doesn't change <b>whether</b> a series converges. It does change the <b>sum</b>.</li>
+  </ul>
+  <p class="muted"><b>Example:</b> <code>∑_(k=1)^(∞) (5/(2ᵏ) − 2/(3ᵏ))</code> is two convergent geometric series: <code>5 · 1 − 2 · 1/2 = 4</code>.</p>
+  <p class="muted"><b>Example:</b> <code>∑_(k=20)^(∞) 1/(k)</code> diverges: it's the harmonic series without its first 19 terms. And <code>∑ 7/(k)</code> diverges: 7 times the harmonic series.</p>
+  <p class="muted"><b>Careful:</b> a sum of two divergent series may converge (<code>∑ 1</code> plus <code>∑ (−1)</code>). Split a series only when the pieces converge.</p>
+</div>
+</section>
+
+<!-- ===== SE4 · CONVERGENCE TESTS ===== -->
+<section class="pane" id="pane-se4">
+<h2><span class="num">4</span>Convergence tests</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Divergence test (the k-th term)</h4>
+  <p><code>lim_(k→∞) u_(k) ≠ 0</code> (or doesn't exist) ⇒ <code>∑ u_(k)</code> <b>diverges</b>.</p>
+  <p>Equivalently: <code>∑ u_(k)</code> converges ⇒ <code>u_(k) → 0</code>.</p>
+  <p class="muted"><b>Why:</b> <code>u_(k) = s_(k) − s_(k−1)</code>. If the partial sums tend to <code>S</code>, both <code>s_(k)</code> and <code>s_(k−1)</code> tend to <code>S</code>, so their difference tends to <code>0</code>.</p>
+  <p class="muted"><b>Example:</b> <code>∑ (2k)/(3k + 1)</code>: the terms tend to <code>2/3 ≠ 0</code>, so it diverges. You're adding numbers close to <code>2/3</code> forever.</p>
+  <p class="muted"><b>The trap:</b> <code>u_(k) → 0</code> does <b>not</b> prove convergence. The harmonic series has <code>1/(k) → 0</code> and diverges. This test can only ever say "diverges".</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Integral test</h4>
+  <p><code>∑ u_(k)</code> with positive terms, and <code>f</code> the function you get by putting <code>x</code> for <code>k</code> in <code>u_(k)</code>. If <code>f</code> is <b>decreasing and continuous</b> on <code>[a, ∞)</code>, then</p>
+  <p><code>∑_(k=a)^(∞) u_(k)</code> and <code>∫_(a)^(∞) f(x) dx</code> both converge or both diverge.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="rectangles of heights u2, u3, u4 and so on sit under the curve y equals f of x, so their total area is less than the area under the curve">
+    <rect class="band" x="40" y="115" width="50" height="75"/>
+    <rect class="band" x="90" y="140" width="50" height="50"/>
+    <rect class="band" x="140" y="152.5" width="50" height="37.5"/>
+    <rect class="band" x="190" y="160" width="50" height="30"/>
+    <rect class="band" x="240" y="165" width="50" height="25"/>
+    <rect class="band" x="290" y="168.6" width="50" height="21.4"/>
+    <path class="ax" d="M30 190 H405 M40 20 V200"/>
+    <path class="ax" d="M90 115 V190 M140 140 V190 M190 152.5 V190 M240 160 V190 M290 165 V190 M340 168.6 V190"/>
+    <path class="cv" d="M40.0 40.0 L48.1 61.0 L56.2 76.8 L64.4 89.2 L72.5 99.1 L80.6 107.2 L88.8 114.1 L96.9 119.8 L105.0 124.8 L113.1 129.1 L121.2 132.9 L129.4 136.2 L137.5 139.2 L145.6 141.8 L153.8 144.2 L161.9 146.4 L170.0 148.3 L178.1 150.1 L186.2 151.8 L194.4 153.3 L202.5 154.7 L210.6 156.0 L218.8 157.2 L226.9 158.3 L235.0 159.4 L243.1 160.4 L251.2 161.3 L259.4 162.2 L267.5 163.0 L275.6 163.7 L283.8 164.5 L291.9 165.2 L300.0 165.8 L308.1 166.4 L316.2 167.0 L324.4 167.6 L332.5 168.1 L340.6 168.6 L348.8 169.1 L356.9 169.6 L365.0 170.0"/>
+    <text class="sm" x="65" y="185" text-anchor="middle">u₂</text>
+    <text class="sm" x="115" y="185" text-anchor="middle">u₃</text>
+    <text class="sm" x="165" y="185" text-anchor="middle">u₄</text>
+    <text x="40" y="207" text-anchor="middle">1</text>
+    <text x="90" y="207" text-anchor="middle">2</text>
+    <text x="140" y="207" text-anchor="middle">3</text>
+    <text x="70" y="50">y = f(x)</text>
+  </svg>
+  <p class="muted"><b>Why:</b> each term <code>u_(k)</code> is the area of a rectangle of width <code>1</code> and height <code>f(k)</code>. Placed between <code>k − 1</code> and <code>k</code>, the rectangles sit under the decreasing curve, so <code>u_(2) + u_(3) + … + u_(n) ≤ ∫_(1)^(n) f(x) dx</code>. A finite area on top caps the sum. Shifted one step left, the rectangles stick out above the curve, so an infinite area forces the sum to infinity too.</p>
+  <p class="muted"><b>Example:</b> <code>∑ 1/(k²)</code>: <code>∫_(1)^(∞) 1/(x²) dx = 1</code> converges, so the series converges. (Its sum is <code>π²/6 ≈ 1.645</code>, not <code>1</code>: the test tells you whether, not how much.)</p>
+  <p class="muted"><b>Check the conditions:</b> positive, continuous and decreasing (from some point on is enough). Improper integrals: Integrals › 9.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>p-series (generalized harmonic series)</h4>
+  <p><code>∑_(k=1)^(∞) 1/(kᵖ) = 1 + 1/(2ᵖ) + 1/(3ᵖ) + …</code> converges when <code>p &gt; 1</code> and diverges when <code>p ≤ 1</code>.</p>
+  <p class="muted"><b>Why:</b> the integral test with <code>f(x) = 1/(xᵖ)</code>: <code>∫_(1)^(∞) 1/(xᵖ) dx</code> converges exactly when <code>p &gt; 1</code> (Integrals › 9, the harmonic integral). <code>p = 1</code> is the harmonic series itself.</p>
+  <p class="muted"><b>Examples:</b> <code>∑ 1/(k³)</code> converges (<code>p = 3</code>). <code>∑ 1/(√k)</code> diverges (<code>p = 1/2</code>). <code>∑ 1/(k√k)</code> converges (<code>p = 3/2</code>). For <code>p ≤ 0</code> the terms don't even tend to <code>0</code>.</p>
+  <p class="muted"><b>Why it matters:</b> together with geometric series, p-series are the yardsticks you compare other series with (next concept).</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Bounded partial sums</h4>
+  <p>A series with <b>non-negative</b> terms converges exactly when its partial sums are bounded: <code>s_(n) ≤ M</code> for every <code>n</code>. Then <code>S ≤ M</code>.</p>
+  <p class="muted"><b>Why:</b> with no negative terms, each partial sum is at least the one before, so <code>{s_(n)}</code> is increasing. An increasing sequence converges exactly when it's bounded above (Series › 2).</p>
+  <p class="muted"><b>Why it matters:</b> it's the reason behind the integral test and the comparison test. For a positive series there are only two options: a finite sum, or <code>+∞</code>.</p>
+</div>
+</section>
+
+<!-- ===== SE5 · MORE TESTS ===== -->
+<section class="pane" id="pane-se5">
+<h2><span class="num">5</span>More convergence tests</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Comparison test</h4>
+  <p><code>∑ a_(k)</code> and <code>∑ b_(k)</code> with non-negative terms, and <code>a_(k) ≤ b_(k)</code> for every <code>k</code> (or from some place on):</p>
+  <ul>
+    <li>The bigger one, <code>∑ b_(k)</code>, converges ⇒ the smaller one, <code>∑ a_(k)</code>, converges.</li>
+    <li>The smaller one, <code>∑ a_(k)</code>, diverges ⇒ the bigger one, <code>∑ b_(k)</code>, diverges.</li>
+  </ul>
+  <p class="muted"><b>In words:</b> under a finite sum, a smaller sum is finite too. Above an infinite sum, a bigger sum is infinite too. The other two directions tell you nothing.</p>
+  <p class="muted"><b>How to use it:</b> first guess the answer by looking at the "main part" of <code>u_(k)</code> (drop small constants, keep the biggest powers). Then compare with a series you know (geometric or p-series), in the direction that proves your guess.</p>
+  <p class="muted"><b>Example:</b> <code>∑ 1/(k² + 5)</code>: <code>1/(k² + 5) &lt; 1/(k²)</code>, and <code>∑ 1/(k²)</code> converges, so it converges.</p>
+  <p class="muted"><b>Example:</b> <code>∑ 1/(√k − 0.5)</code>: <code>1/(√k − 0.5) &gt; 1/(√k)</code>, and <code>∑ 1/(√k)</code> diverges, so it diverges.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Limit comparison test</h4>
+  <p><code>∑ a_(k)</code> and <code>∑ b_(k)</code> with positive terms, and <code>ρ = lim_(k→∞) (a_(k))/(b_(k))</code>.</p>
+  <p>If <code>ρ</code> is finite and <code>ρ &gt; 0</code>, the two series both converge or both diverge.</p>
+  <p class="muted"><b>In words:</b> if two series' terms are roughly proportional far out, they behave the same. You don't have to find an exact inequality, which makes it easier than the plain comparison test.</p>
+  <p class="muted"><b>Two practical rules for choosing <code>b_(k)</code>:</b> constants added to <code>u_(k)</code> usually don't matter; in a fraction of polynomials, keep only the biggest power on the top and on the bottom.</p>
+  <p class="muted"><b>Example:</b> <code>∑ (2k² + 3)/(k⁴ − k + 1)</code> behaves like <code>(2k²)/(k⁴) = 2/(k²)</code>. Take <code>b_(k) = 1/(k²)</code>: <code>ρ = lim (2k⁴ + 3k²)/(k⁴ − k + 1) = 2</code>, finite and positive. <code>∑ 1/(k²)</code> converges, so the series converges.</p>
+  <p class="muted"><b>When <code>ρ = 0</code> or <code>ρ = ∞</code></b> the test (in this form) says nothing: choose another <code>b_(k)</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Ratio test</h4>
+  <p><code>∑ u_(k)</code> with positive terms, and <code>ρ = lim_(k→∞) (u_(k+1))/(u_(k))</code>:</p>
+  <ul>
+    <li><code>ρ &lt; 1</code> ⇒ converges.</li>
+    <li><code>ρ &gt; 1</code> or <code>ρ = +∞</code> ⇒ diverges.</li>
+    <li><code>ρ = 1</code> ⇒ no conclusion: try another test.</li>
+  </ul>
+  <p class="muted"><b>Why:</b> if each term is eventually about <code>ρ</code> times the one before, the series behaves like a geometric series with ratio <code>ρ</code>. Below <code>1</code> that converges, above <code>1</code> it diverges.</p>
+  <p class="muted"><b>When to use it:</b> terms with factorials (<code>k!</code>) or powers with <code>k</code> in the exponent (<code>3ᵏ</code>): they mostly cancel in <code>(u_(k+1))/(u_(k))</code>.</p>
+  <p class="muted"><b>Example:</b> <code>∑ (3ᵏ)/(k!)</code>: <code>(3^(k+1))/((k + 1)!) · (k!)/(3ᵏ) = 3/(k + 1) → 0 &lt; 1</code>, so it converges.</p>
+  <p class="muted"><b>Why <code>ρ = 1</code> says nothing:</b> both <code>∑ 1/(k)</code> (diverges) and <code>∑ 1/(k²)</code> (converges) give <code>ρ = 1</code>. That happens for every fraction of polynomials: use a comparison test there.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Root test</h4>
+  <p><code>∑ u_(k)</code> with positive terms, and <code>ρ = lim_(k→∞) ᵏ√(u_(k))</code>: the same three cases as the ratio test (<code>ρ &lt; 1</code> converges, <code>ρ &gt; 1</code> diverges, <code>ρ = 1</code> no conclusion).</p>
+  <p class="muted"><b>When to use it:</b> when the whole term is something to the power <code>k</code>, like <code>((k)/(2k + 1))ᵏ</code>. The <code>k</code>-th root removes that power.</p>
+  <p class="muted"><b>Example:</b> <code>∑ ((3k + 1)/(5k − 2))ᵏ</code>: <code>ᵏ√(u_(k)) = (3k + 1)/(5k − 2) → 3/5 &lt; 1</code>, so it converges.</p>
+  <p class="muted"><b>Changing where the sum starts</b> (from <code>k = 0</code> or <code>k = 1</code>) doesn't affect any of these tests: only the far terms matter.</p>
+</div>
+</section>
+
+<!-- ===== SE6 · ALTERNATING SERIES ===== -->
+<section class="pane" id="pane-se6">
+<h2><span class="num">6</span>Alternating series and absolute convergence</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Alternating series test (Leibniz)</h4>
+  <p>An <b>alternating series</b> has signs that switch: <code>a_(1) − a_(2) + a_(3) − …</code> or <code>−a_(1) + a_(2) − a_(3) + …</code>, with every <code>a_(k) &gt; 0</code>. It converges if:</p>
+  <ol class="idlist">
+    <li><code>a_(1) &gt; a_(2) &gt; a_(3) &gt; …</code> (the sizes decrease)</li>
+    <li><code>lim_(k→∞) a_(k) = 0</code></li>
+  </ol>
+  <p><b>Error bound:</b> the sum <code>S</code> is within one term of every partial sum: <code>|S − s_(n)| &lt; a_(n+1)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the partial sums of 1 minus a half plus a third and so on zig-zag above and below their limit, ln 2, getting closer each time">
+    <path class="ax" d="M30 200 H405 M40 30 V205"/>
+    <path class="gd" d="M30 126.7 H405"/>
+    <path class="cv" d="M74 50 L108 175 L142 91.7 L176 154.2 L210 104.2 L244 145.8 L278 110.1 L312 141.4 L346 113.6 L380 138.6" style="stroke-width:1.4"/>
+    <circle class="dot" cx="74" cy="50" r="4"/>
+    <circle class="dot" cx="108" cy="175" r="4"/>
+    <circle class="dot" cx="142" cy="91.7" r="4"/>
+    <circle class="dot" cx="176" cy="154.2" r="4"/>
+    <circle class="dot" cx="210" cy="104.2" r="4"/>
+    <circle class="dot" cx="244" cy="145.8" r="4"/>
+    <circle class="dot" cx="278" cy="110.1" r="4"/>
+    <circle class="dot" cx="312" cy="141.4" r="4"/>
+    <circle class="dot" cx="346" cy="113.6" r="4"/>
+    <circle class="dot" cx="380" cy="138.6" r="4"/>
+    <text x="34" y="131" text-anchor="end">S</text>
+    <text class="sm" x="82" y="44">s₁ = 1</text>
+    <text class="sm" x="116" y="190">s₂ = 1/2</text>
+    <text class="sm" x="400" y="120" text-anchor="end">S = ln 2</text>
+  </svg>
+  <p class="muted"><b>Why it converges:</b> each step goes the other way and is shorter than the step before. The partial sums zig-zag, overshooting less each time, and close in on one number. The sum always lies between two neighbouring partial sums, which is where the error bound comes from.</p>
+  <p class="muted"><b>Example:</b> the <b>alternating harmonic series</b> <code>1 − 1/2 + 1/3 − 1/4 + …</code>: the sizes <code>1/(k)</code> decrease to <code>0</code>, so it converges (its sum is <code>ln 2</code>). Without the alternating signs it would be the harmonic series, which diverges.</p>
+  <p class="muted"><b>Error example:</b> stopping after 9 terms, the error is less than the 10th term, <code>1/10</code>.</p>
+  <p class="muted"><b>The decrease needs to hold only from some place on.</b> If the terms don't tend to <code>0</code>, the series diverges by the divergence test.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Absolute and conditional convergence</h4>
+  <ul>
+    <li><code>∑ u_(k)</code> <b>converges absolutely</b> if <code>∑ |u_(k)|</code> converges.</li>
+    <li><b>Theorem:</b> a series that converges absolutely converges.</li>
+    <li>A series that converges but not absolutely <b>converges conditionally</b>.</li>
+  </ul>
+  <p class="muted"><b>Why absolute convergence is enough:</b> taking absolute values makes every term as big as it can be. If even that sum is finite, letting some terms be negative can only cancel, never blow up.</p>
+  <p class="muted"><b>The three outcomes</b> for a series with mixed signs: converges absolutely (<code>1 − 1/4 + 1/9 − 1/16 + …</code>, since <code>∑ 1/(k²)</code> converges); converges conditionally (<code>1 − 1/2 + 1/3 − …</code>: it converges, but <code>∑ 1/(k)</code> diverges); or diverges.</p>
+  <p class="muted"><b>Example, signs not alternating:</b> <code>∑ (cos k)/(k²)</code>. <code>|(cos k)/(k²)| ≤ 1/(k²)</code>, so it converges absolutely by comparison, and therefore converges.</p>
+  <p class="muted"><b>Careful:</b> if <code>∑ |u_(k)|</code> diverges, the series itself may still converge. Check it separately (Leibniz, if it alternates). Full steps: the method "Absolutely, conditionally, or divergent?".</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Ratio test for absolute convergence</h4>
+  <p><code>∑ u_(k)</code> with non-zero terms (any signs), and <code>ρ = lim_(k→∞) (|u_(k+1)|)/(|u_(k)|)</code>:</p>
+  <ul>
+    <li><code>ρ &lt; 1</code> ⇒ converges absolutely (so converges).</li>
+    <li><code>ρ &gt; 1</code> or <code>ρ = +∞</code> ⇒ <b>diverges</b>.</li>
+    <li><code>ρ = 1</code> ⇒ no conclusion.</li>
+  </ul>
+  <p class="muted"><b>Why <code>ρ &gt; 1</code> means "diverges", not only "not absolutely":</b> then the sizes <code>|u_(k)|</code> grow, so the terms can't tend to <code>0</code>.</p>
+  <p class="muted"><b>Example:</b> <code>∑ (−1)ᵏ (5ᵏ)/(k!)</code>: <code>(|u_(k+1)|)/(|u_(k)|) = 5/(k + 1) → 0 &lt; 1</code>. It converges absolutely.</p>
+  <p class="muted"><b>Summary of all the tests:</b> the method "Choosing a convergence test".</p>
+</div>
+</section>
+
+<!-- ===== SE7 · POWER SERIES ===== -->
+<section class="pane" id="pane-se7">
+<h2><span class="num">7</span>Power series</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a power series is</h4>
+  <p>A <b>power series in <code>x − a</code></b> (centred at <code>a</code>) is</p>
+  <p><code>∑_(k=0)^(∞) c_(k)(x − a)ᵏ = c_(0) + c_(1)(x − a) + c_(2)(x − a)² + …</code></p>
+  <p>The <code>c_(k)</code> are fixed numbers (the coefficients) and <code>x</code> is a variable. With <code>a = 0</code> it's a power series in <code>x</code>: <code>∑ c_(k) xᵏ</code>.</p>
+  <p class="muted"><b>In words:</b> a "polynomial that never ends". For each value of <code>x</code> it's an ordinary series of numbers, which may converge or diverge. So a power series defines a function, but only on the <code>x</code> values where it converges.</p>
+  <p class="muted"><b>Example:</b> <code>∑ xᵏ = 1 + x + x² + …</code> is geometric with ratio <code>x</code>. It converges for <code>−1 &lt; x &lt; 1</code>, and there its sum is <code>1/(1 − x)</code>. At <code>x = 1/2</code>: <code>1 + 1/2 + 1/4 + … = 2 = 1/(1 − 1/2)</code> ✓.</p>
+  <p class="muted"><b>The convention <code>x⁰ = 1</code></b>, also at <code>x = 0</code>, so the first term is always just <code>c_(0)</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Radius and interval of convergence</h4>
+  <p>For every power series <code>∑ c_(k)(x − a)ᵏ</code>, exactly one of these holds:</p>
+  <ul>
+    <li>It converges only at <code>x = a</code>. (Radius <code>R = 0</code>.)</li>
+    <li>It converges absolutely for every real <code>x</code>. (Radius <code>R = +∞</code>.)</li>
+    <li>There's a number <code>R &gt; 0</code>: it converges absolutely for <code>|x − a| &lt; R</code> and diverges for <code>|x − a| &gt; R</code>. At the two ends <code>x = a ± R</code> anything can happen.</li>
+  </ul>
+  <p>The set of <code>x</code> where it converges is the <b>interval of convergence</b>, centred at <code>a</code>; <code>R</code> is the <b>radius of convergence</b>.</p>
+  <svg class="ill" viewBox="0 0 420 120" role="img" aria-label="a number line: the series converges between a minus R and a plus R, diverges outside, and the two ends must be checked separately">
+    <path class="ax" d="M20 60 H400"/>
+    <rect class="band" x="110" y="52" width="200" height="16"/>
+    <path class="cv" d="M110 60 H310" style="stroke-width:4"/>
+    <circle class="hole" cx="110" cy="60" r="6"/>
+    <circle class="hole" cx="310" cy="60" r="6"/>
+    <circle class="dot" cx="210" cy="60" r="4"/>
+    <text x="110" y="90" text-anchor="middle">a − R</text>
+    <text x="210" y="90" text-anchor="middle">a</text>
+    <text x="310" y="90" text-anchor="middle">a + R</text>
+    <text class="sm" x="210" y="40" text-anchor="middle">converges absolutely</text>
+    <text class="sm" x="55" y="40" text-anchor="middle">diverges</text>
+    <text class="sm" x="365" y="40" text-anchor="middle">diverges</text>
+    <text class="sm" x="110" y="112" text-anchor="middle">check</text>
+    <text class="sm" x="310" y="112" text-anchor="middle">check</text>
+  </svg>
+  <p class="muted"><b>How to find <code>R</code>:</b> usually with the ratio test for absolute convergence. <code>x</code> stays as a letter; you get <code>ρ = |x − a| · (something)</code>, and <code>ρ &lt; 1</code> gives the inside of the interval.</p>
+  <p class="muted"><b>Why the ends need their own check:</b> there the ratio test gives <code>ρ = 1</code> and says nothing. Put each end into the series and test the ordinary series you get (p-series, Leibniz, divergence test).</p>
+  <p class="muted"><b>Example:</b> <code>∑_(k=1)^(∞) ((x − 2)ᵏ)/(k · 3ᵏ)</code>: <code>ρ = |x − 2|/3</code>, so <code>|x − 2| &lt; 3</code>: <code>−1 &lt; x &lt; 5</code>. At <code>x = 5</code>: <code>∑ 1/(k)</code>, diverges. At <code>x = −1</code>: <code>∑ (−1)ᵏ/(k)</code>, converges (Leibniz). Interval: <code>[−1, 5)</code>, <code>R = 3</code>. Full steps: the method "Finding the interval of convergence".</p>
+</div>
+</section>
+
+<!-- ===== SE8 · TAYLOR SERIES ===== -->
+<section class="pane" id="pane-se8">
+<h2><span class="num">8</span>Taylor and Maclaurin series</h2>
+<div class="card" data-tags="Definition">
+  <h4>Taylor polynomials</h4>
+  <p>The <b>Taylor polynomial of order <code>n</code></b> of <code>f</code> about <code>x = a</code> is</p>
+  <p><code>p_(n)(x) = f(a) + f'(a)(x − a) + (f''(a))/(2!) (x − a)² + … + (f⁽ⁿ⁾(a))/(n!) (x − a)ⁿ</code></p>
+  <p>It's the polynomial of degree <code>≤ n</code> whose value and first <code>n</code> derivatives at <code>a</code> equal those of <code>f</code>. With <code>a = 0</code> it's the <b>Maclaurin polynomial</b>.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="sin x and its Maclaurin polynomials of order 1, 3, 5 and 7; each one hugs the sine curve over a wider stretch around 0">
+    <path class="ax" d="M15 110 H405 M210 10 V210"/>
+    <path class="cv" d="M18.0 94.6 L21.2 89.4 L24.4 84.4 L27.6 79.7 L30.8 75.3 L34.0 71.2 L37.2 67.5 L40.4 64.2 L43.6 61.4 L46.8 59.1 L50.0 57.3 L53.2 56.0 L56.4 55.2 L59.6 55.0 L62.8 55.3 L66.0 56.2 L69.2 57.7 L72.4 59.6 L75.6 62.1 L78.8 65.0 L82.0 68.4 L85.2 72.2 L88.4 76.3 L91.6 80.9 L94.8 85.7 L98.0 90.7 L101.2 95.9 L104.4 101.3 L107.6 106.8 L110.8 112.3 L114.0 117.8 L117.2 123.2 L120.4 128.4 L123.6 133.5 L126.8 138.4 L130.0 142.9 L133.2 147.2 L136.4 151.0 L139.6 154.5 L142.8 157.5 L146.0 160.0 L149.2 162.0 L152.4 163.6 L155.6 164.5 L158.8 165.0 L162.0 164.9 L165.2 164.2 L168.4 163.0 L171.6 161.3 L174.8 159.0 L178.0 156.3 L181.2 153.1 L184.4 149.5 L187.6 145.4 L190.8 141.1 L194.0 136.4 L197.2 131.4 L200.4 126.3 L203.6 120.9 L206.8 115.5 L210.0 110.0 L213.2 104.5 L216.4 99.1 L219.6 93.7 L222.8 88.6 L226.0 83.6 L229.2 78.9 L232.4 74.6 L235.6 70.5 L238.8 66.9 L242.0 63.7 L245.2 61.0 L248.4 58.7 L251.6 57.0 L254.8 55.8 L258.0 55.1 L261.2 55.0 L264.4 55.5 L267.6 56.4 L270.8 58.0 L274.0 60.0 L277.2 62.5 L280.4 65.5 L283.6 69.0 L286.8 72.8 L290.0 77.1 L293.2 81.6 L296.4 86.5 L299.6 91.6 L302.8 96.8 L306.0 102.2 L309.2 107.7 L312.4 113.2 L315.6 118.7 L318.8 124.1 L322.0 129.3 L325.2 134.3 L328.4 139.1 L331.6 143.7 L334.8 147.8 L338.0 151.6 L341.2 155.0 L344.4 157.9 L347.6 160.4 L350.8 162.3 L354.0 163.8 L357.2 164.7 L360.4 165.0 L363.6 164.8 L366.8 164.0 L370.0 162.7 L373.2 160.9 L376.4 158.6 L379.6 155.8 L382.8 152.5 L386.0 148.8 L389.2 144.7 L392.4 140.3 L395.6 135.6 L398.8 130.6 L402.0 125.4"/>
+    <path class="gd" d="M152.4 209.0 L155.6 203.5 L158.8 198.0 L162.0 192.5 L165.2 187.0 L168.4 181.5 L171.6 176.0 L174.8 170.5 L178.0 165.0 L181.2 159.5 L184.4 154.0 L187.6 148.5 L190.8 143.0 L194.0 137.5 L197.2 132.0 L200.4 126.5 L203.6 121.0 L206.8 115.5 L210.0 110.0 L213.2 104.5 L216.4 99.0 L219.6 93.5 L222.8 88.0 L226.0 82.5 L229.2 77.0 L232.4 71.5 L235.6 66.0 L238.8 60.5 L242.0 55.0 L245.2 49.5 L248.4 44.0 L251.6 38.5 L254.8 33.0 L258.0 27.5 L261.2 22.0 L264.4 16.5 L267.6 11.0"/>
+    <path class="cv2" d="M114.0 27.5 L117.2 45.9 L120.4 62.8 L123.6 78.1 L126.8 91.9 L130.0 104.3 L133.2 115.3 L136.4 125.0 L139.6 133.4 L142.8 140.6 L146.0 146.7 L149.2 151.6 L152.4 155.5 L155.6 158.5 L158.8 160.5 L162.0 161.6 L165.2 161.8 L168.4 161.4 L171.6 160.2 L174.8 158.3 L178.0 155.8 L181.2 152.8 L184.4 149.3 L187.6 145.4 L190.8 141.0 L194.0 136.4 L197.2 131.4 L200.4 126.3 L203.6 120.9 L206.8 115.5 L210.0 110.0 L213.2 104.5 L216.4 99.1 L219.6 93.7 L222.8 88.6 L226.0 83.6 L229.2 79.0 L232.4 74.6 L235.6 70.7 L238.8 67.2 L242.0 64.2 L245.2 61.7 L248.4 59.8 L251.6 58.6 L254.8 58.2 L258.0 58.4 L261.2 59.5 L264.4 61.5 L267.6 64.5 L270.8 68.4 L274.0 73.3 L277.2 79.4 L280.4 86.6 L283.6 95.0 L286.8 104.7 L290.0 115.7 L293.2 128.1 L296.4 141.9 L299.6 157.2 L302.8 174.1 L306.0 192.5" style="stroke-width:1.5"/>
+    <path class="cv2" d="M85.2 194.3 L88.4 179.2 L91.6 167.0 L94.8 157.5 L98.0 150.2 L101.2 145.0 L104.4 141.4 L107.6 139.4 L110.8 138.6 L114.0 138.9 L117.2 139.9 L120.4 141.7 L123.6 143.8 L126.8 146.3 L130.0 149.0 L133.2 151.8 L136.4 154.5 L139.6 157.0 L142.8 159.3 L146.0 161.3 L149.2 163.0 L152.4 164.2 L155.6 165.0 L158.8 165.3 L162.0 165.0 L165.2 164.3 L168.4 163.1 L171.6 161.3 L174.8 159.0 L178.0 156.3 L181.2 153.1 L184.4 149.5 L187.6 145.4 L190.8 141.1 L194.0 136.4 L197.2 131.4 L200.4 126.3 L203.6 120.9 L206.8 115.5 L210.0 110.0 L213.2 104.5 L216.4 99.1 L219.6 93.7 L222.8 88.6 L226.0 83.6 L229.2 78.9 L232.4 74.6 L235.6 70.5 L238.8 66.9 L242.0 63.7 L245.2 61.0 L248.4 58.7 L251.6 56.9 L254.8 55.7 L258.0 55.0 L261.2 54.7 L264.4 55.0 L267.6 55.8 L270.8 57.0 L274.0 58.7 L277.2 60.7 L280.4 63.0 L283.6 65.5 L286.8 68.2 L290.0 71.0 L293.2 73.7 L296.4 76.2 L299.6 78.3 L302.8 80.1 L306.0 81.1 L309.2 81.4 L312.4 80.6 L315.6 78.6 L318.8 75.0 L322.0 69.8 L325.2 62.5 L328.4 53.0 L331.6 40.8 L334.8 25.7" style="stroke-width:1.5; stroke-dasharray: 6 3"/>
+    <path class="gd" d="M78.8 22.2 L82.0 33.9 L85.2 44.5 L88.4 54.3 L91.6 63.4 L94.8 71.9 L98.0 80.0 L101.2 87.6 L104.4 94.9 L107.6 101.9 L110.8 108.6 L114.0 115.0 L117.2 121.1 L120.4 126.9 L123.6 132.4 L126.8 137.6 L130.0 142.4 L133.2 146.8 L136.4 150.8 L139.6 154.3 L142.8 157.4 L146.0 159.9 L149.2 162.0 L152.4 163.5 L155.6 164.5 L158.8 165.0 L162.0 164.9 L165.2 164.2 L168.4 163.0 L171.6 161.3 L174.8 159.0 L178.0 156.3 L181.2 153.1 L184.4 149.5 L187.6 145.4 L190.8 141.1 L194.0 136.4 L197.2 131.4 L200.4 126.3 L203.6 120.9 L206.8 115.5 L210.0 110.0 L213.2 104.5 L216.4 99.1 L219.6 93.7 L222.8 88.6 L226.0 83.6 L229.2 78.9 L232.4 74.6 L235.6 70.5 L238.8 66.9 L242.0 63.7 L245.2 61.0 L248.4 58.7 L251.6 57.0 L254.8 55.8 L258.0 55.1 L261.2 55.0 L264.4 55.5 L267.6 56.5 L270.8 58.0 L274.0 60.1 L277.2 62.6 L280.4 65.7 L283.6 69.2 L286.8 73.2 L290.0 77.6 L293.2 82.4 L296.4 87.6 L299.6 93.1 L302.8 98.9 L306.0 105.0 L309.2 111.4 L312.4 118.1 L315.6 125.1 L318.8 132.4 L322.0 140.0 L325.2 148.1 L328.4 156.6 L331.6 165.7 L334.8 175.5 L338.0 186.1 L341.2 197.8" style="stroke-width:1.8"/>
+    <text x="400" y="160" text-anchor="end">y = sin x</text>
+    <text class="sm" x="262" y="28">p₁ = x</text>
+    <text class="sm" x="20" y="24">p₃, p₅, p₇ fit further and further out</text>
+  </svg>
+  <p class="muted"><b>The idea:</b> near <code>a</code>, copy <code>f</code> as closely as possible with a polynomial, which is easy to calculate. <code>p_(1)</code> matches the value and the slope: it's the tangent line. <code>p_(2)</code> also matches the bending. Each extra order fits a little more, over a wider stretch.</p>
+  <p class="muted"><b>Where the <code>k!</code> comes from:</b> differentiating <code>(x − a)ᵏ</code> <code>k</code> times gives <code>k!</code>. To make the <code>k</code>-th derivative at <code>a</code> equal <code>f⁽ᵏ⁾(a)</code>, the coefficient must be <code>(f⁽ᵏ⁾(a))/(k!)</code>.</p>
+  <p class="muted"><b>Example:</b> <code>f(x) = eˣ</code>, <code>a = 0</code>: every derivative is <code>eˣ</code>, which is <code>1</code> at <code>0</code>. So <code>p_(3)(x) = 1 + x + (x²)/2 + (x³)/6</code>. At <code>x = 0.5</code>: <code>p_(3) ≈ 1.6458</code>, while <code>e^(0.5) ≈ 1.6487</code>.</p>
+  <p class="muted"><b>About another point:</b> <code>ln x</code> about <code>a = 1</code>: <code>f(1) = 0</code>, <code>f'(1) = 1</code>, <code>f''(1) = −1</code>, so <code>p_(2)(x) = (x − 1) − ((x − 1)²)/2</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Taylor and Maclaurin series</h4>
+  <p>If <code>f</code> has derivatives of every order at <code>a</code>, its <b>Taylor series</b> about <code>a</code> is</p>
+  <p><code>∑_(k=0)^(∞) (f⁽ᵏ⁾(a))/(k!) (x − a)ᵏ</code></p>
+  <p>With <code>a = 0</code> it's the <b>Maclaurin series</b>: <code>∑_(k=0)^(∞) (f⁽ᵏ⁾(0))/(k!) xᵏ</code>.</p>
+  <p class="muted"><b>In words:</b> the Taylor polynomials, continued forever. The <code>n</code>-th partial sum of the Taylor series is the Taylor polynomial <code>p_(n)</code>.</p>
+  <p class="muted"><b>Example, <code>sin x</code>:</b> its derivatives at <code>0</code> repeat <code>0, 1, 0, −1, 0, 1, …</code>, so only odd powers survive, with alternating signs: <code>sin x = x − (x³)/(3!) + (x⁵)/(5!) − …</code></p>
+  <p class="muted"><b>Careful:</b> writing down the series is one question; whether it actually adds up to <code>f(x)</code> is another. That needs the remainder (next card). For the common functions it does, on the intervals in the table below.</p>
+  <p class="muted"><b>Only one power series:</b> if <code>f</code> equals some power series in <code>x − a</code> on an open interval around <code>a</code>, that series <b>is</b> the Taylor series of <code>f</code>. So any legal way of finding a power series for <code>f</code> (substitution, differentiation, integration) gives its Taylor series.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The standard Maclaurin series</h4>
+  <table>
+    <thead><tr><th>Series</th><th>Valid for</th></tr></thead>
+    <tbody>
+      <tr><td><code>1/(1 − x) = 1 + x + x² + x³ + …</code></td><td><code>−1 &lt; x &lt; 1</code></td></tr>
+      <tr><td><code>eˣ = 1 + x + (x²)/(2!) + (x³)/(3!) + …</code></td><td>every <code>x</code></td></tr>
+      <tr><td><code>sin x = x − (x³)/(3!) + (x⁵)/(5!) − …</code></td><td>every <code>x</code></td></tr>
+      <tr><td><code>cos x = 1 − (x²)/(2!) + (x⁴)/(4!) − …</code></td><td>every <code>x</code></td></tr>
+      <tr><td><code>ln(1 + x) = x − (x²)/2 + (x³)/3 − …</code></td><td><code>−1 &lt; x ≤ 1</code></td></tr>
+      <tr><td><code>arctan x = x − (x³)/3 + (x⁵)/5 − …</code></td><td><code>−1 ≤ x ≤ 1</code></td></tr>
+      <tr><td><code>sinh x = x + (x³)/(3!) + (x⁵)/(5!) + …</code></td><td>every <code>x</code></td></tr>
+      <tr><td><code>cosh x = 1 + (x²)/(2!) + (x⁴)/(4!) + …</code></td><td>every <code>x</code></td></tr>
+      <tr><td><code>(1 + x)ᵐ = 1 + mx + (m(m − 1))/(2!) x² + …</code></td><td><code>−1 &lt; x &lt; 1</code></td></tr>
+    </tbody>
+  </table>
+  <p class="muted"><b>Patterns that help you remember:</b> <code>sin</code> has the odd powers, <code>cos</code> the even ones, both with alternating signs. <code>sinh</code> and <code>cosh</code> are the same without the minus signs (<code>sinh x = (eˣ − e⁻ˣ)/2</code>, <code>cosh x = (eˣ + e⁻ˣ)/2</code>). <code>eˣ</code> has every power. <code>ln(1 + x)</code> and <code>arctan x</code> divide by <code>k</code> instead of <code>k!</code>, so they converge only for <code>|x| ≤ 1</code>.</p>
+  <p class="muted"><b>The binomial series</b> (last line) works for any real <code>m</code>. When <code>m</code> is a whole number <code>≥ 0</code>, it stops after <code>m + 1</code> terms and is the ordinary binomial formula, valid for every <code>x</code>. Example: <code>1/(√(1 + x)) = (1 + x)^(−1/2) = 1 − (1/2)x + (3/8)x² − …</code></p>
+  <p class="muted"><b>New series from these:</b> put something else in place of <code>x</code>: <code>e^(−x²) = 1 − x² + (x⁴)/(2!) − …</code>; <code>1/(1 + x²) = 1 − x² + x⁴ − …</code> for <code>|x| &lt; 1</code>. Full steps: the method "Building a new series from a known one".</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Taylor's formula with remainder</h4>
+  <p><code>f(x) = p_(n)(x) + R_(n)(x)</code>, where <code>R_(n)</code> is the <b>remainder</b> (the error of the approximation).</p>
+  <p><b>Lagrange form:</b> if <code>f</code> has <code>n + 1</code> derivatives on an interval containing <code>a</code> and <code>x</code>, then for some <code>c</code> between <code>a</code> and <code>x</code>:</p>
+  <p><code>R_(n)(x) = (f⁽ⁿ⁺¹⁾(c))/((n + 1)!) (x − a)ⁿ⁺¹</code></p>
+  <p>The Taylor series equals <code>f(x)</code> exactly when <code>R_(n)(x) → 0</code> as <code>n → ∞</code>.</p>
+  <p class="muted"><b>In words:</b> the error looks just like the next term of the series, except that the derivative is taken at some unknown point <code>c</code> instead of at <code>a</code>. You don't know <code>c</code>, but you can bound the error: if <code>|f⁽ⁿ⁺¹⁾| ≤ M</code> between <code>a</code> and <code>x</code>, then <code>|R_(n)(x)| ≤ (M)/((n + 1)!) |x − a|ⁿ⁺¹</code>.</p>
+  <p class="muted"><b>For <code>n = 0</code></b> it's the mean value theorem: <code>f(x) = f(a) + f'(c)(x − a)</code> (Derivatives › 7).</p>
+  <p class="muted"><b>Example, why <code>eˣ</code> equals its series everywhere:</b> <code>|R_(n)(x)| = (e^(c))/((n + 1)!) |x|ⁿ⁺¹ ≤ e^(|x|) · (|x|ⁿ⁺¹)/((n + 1)!)</code>, and <code>(|x|ⁿ⁺¹)/((n + 1)!) → 0</code> (Series › 1, standard limits). The same argument works for <code>sin</code> and <code>cos</code>, whose derivatives are all at most <code>1</code> in size.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Calculating with Taylor series</h4>
+  <p>To approximate <code>f(x₀)</code>: pick a centre <code>a</code> near <code>x₀</code> where the derivatives are easy, add terms until the error bound is small enough.</p>
+  <ul>
+    <li>Accurate to <code>n</code> decimal places: error less than <code>0.5 × 10⁻ⁿ</code>.</li>
+    <li>Bound the error with the Lagrange remainder, or, when the series alternates, with the next term (Leibniz).</li>
+  </ul>
+  <p class="muted"><b>Example, <code>e</code> to 3 decimal places:</b> <code>e = 1 + 1 + 1/(2!) + 1/(3!) + …</code> (put <code>x = 1</code>). The error after the <code>xⁿ</code> term is <code>(e^(c))/((n + 1)!) &lt; 3/((n + 1)!)</code>. We need it below <code>0.0005</code>: <code>n = 6</code> gives <code>3/5040 ≈ 0.0006</code>, too big; <code>n = 7</code> gives <code>3/40320 ≈ 0.00007</code> ✓. So <code>e ≈ 1 + 1 + 1/2 + 1/6 + 1/24 + 1/120 + 1/720 + 1/5040 ≈ 2.718</code>.</p>
+  <p class="muted"><b>Example, <code>cos 0.2</code>:</b> <code>1 − (0.2²)/2 + (0.2⁴)/24 − …</code> alternates, so stopping after <code>1 − 0.02 = 0.98</code> has an error below the next term, <code>(0.0016)/24 ≈ 0.00007</code>. Full steps: the method "Approximating a value to a given accuracy".</p>
+  <p class="muted"><b>Angles in radians:</b> for <code>sin 2°</code>, use <code>x = 2 · π/180 ≈ 0.0349</code>.</p>
+</div>
+</section>
+
+<!-- ===== SE9 · DIFFERENTIATING AND INTEGRATING POWER SERIES ===== -->
+<section class="pane" id="pane-se9">
+<h2><span class="num">9</span>Differentiating and integrating power series</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Term-by-term differentiation and integration</h4>
+  <p>If <code>f(x) = ∑_(k=0)^(∞) c_(k)(x − a)ᵏ</code> with radius of convergence <code>R &gt; 0</code>, then on <code>(a − R, a + R)</code>:</p>
+  <ul class="idlist">
+    <li><code>f'(x) = ∑_(k=1)^(∞) k c_(k)(x − a)ᵏ⁻¹</code></li>
+    <li><code>∫ f(x) dx = ∑_(k=0)^(∞) (c_(k))/(k + 1) (x − a)ᵏ⁺¹ + C</code></li>
+  </ul>
+  <p>Both new series have the same radius <code>R</code> (the ends may behave differently).</p>
+  <p class="muted"><b>In words:</b> inside its interval of convergence, a power series can be treated like a long polynomial: differentiate or integrate each term separately. One <code>+ C</code> covers the whole integral.</p>
+  <p class="muted"><b>Check with known series:</b> differentiating <code>x − (x³)/(3!) + (x⁵)/(5!) − …</code> term by term gives <code>1 − (x²)/(2!) + (x⁴)/(4!) − …</code>, which is <code>cos x</code>. Just as <code>(sin x)' = cos x</code>.</p>
+  <p class="muted"><b>Example, <code>ln(1 + x)</code>:</b> <code>1/(1 + x) = 1 − x + x² − …</code> for <code>|x| &lt; 1</code>. Integrate from <code>0</code> to <code>x</code>: <code>ln(1 + x) = x − (x²)/2 + (x³)/3 − …</code></p>
+  <p class="muted"><b>Example, <code>arctan x</code>:</b> <code>1/(1 + x²) = 1 − x² + x⁴ − …</code>; integrate: <code>arctan x = x − (x³)/3 + (x⁵)/5 − …</code></p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Integrals you can't do otherwise</h4>
+  <p>Some functions, like <code>e^(−x²)</code> or <code>(sin x)/(x)</code>, have no antiderivative made of ordinary functions. Their integrals can still be calculated: replace the function by its power series and integrate term by term.</p>
+  <p class="muted"><b>Example:</b> <code>∫_(0)^(1/2) e^(−x²) dx</code>. <code>e^(−x²) = 1 − x² + (x⁴)/2 − …</code>, so the integral is <code>[x − (x³)/3 + (x⁵)/10 − …]_(0)^(1/2) = 1/2 − 1/24 + 1/320 − …</code></p>
+  <p class="muted"><b>How accurate:</b> it's an alternating series with decreasing terms, so stopping after <code>1/2 − 1/24 ≈ 0.4583</code> has an error below the next term, <code>1/320 ≈ 0.003</code>. Add that term: <code>≈ 0.4615</code>, with an error below <code>(0.5⁷)/42 ≈ 0.0002</code>.</p>
+</div>
+</section>
+
+</div><!-- /folder-ser -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"]],"m":[["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_seqlim", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Finding the limit of a sequence",
+  "description": "Decide whether a sequence converges and find its limit.",
+  "uses": [["c", "se1", "Limit of a sequence"], ["c", "se1", "Limit laws and the squeeze theorem"], ["c", "se1", "Standard limits"]],
+  "parts": [
+    { "id": "st_bi_seqlim1", "cat": "stage", "name": "Look at the type", "text": "A fraction of polynomials? Powers or factorials? An alternating sign `(−1)ⁿ`? A recursive formula? Each points to a different tool below." },
+    { "id": "st_bi_seqlim2", "cat": "stage", "name": "Fractions: divide by the biggest power", "text": "Divide top and bottom by the biggest power of `n` in the bottom; terms like `1/(n)` go to `0`." },
+    { "id": "st_bi_seqlim3", "cat": "stage", "name": "Hard forms: switch to a function", "text": "For `∞/∞` or `0/0` with `ln n`, `eⁿ` and the like: write `f(x)` with `x` for `n`, and use L'Hôpital's rule on `f(x)`. The sequence has the same limit." },
+    { "id": "st_bi_seqlim4", "cat": "stage", "name": "Use the standard limits", "text": "`rⁿ → 0` for `|r| < 1`; `ⁿ√n → 1`; `(xⁿ)/(n!) → 0`; `(1 + 1/(n))ⁿ → e`. Remember who wins: `ln n` << `n^(p)` << `aⁿ` << `n!`." },
+    { "id": "st_bi_seqlim5", "cat": "stage", "name": "Signs or bounded factors", "text": "With `(−1)ⁿ`: look at the even and the odd places separately; if they have different limits, the sequence diverges. With a bounded factor like `sin n` next to something that tends to `0`: squeeze." },
+    { "id": "st_bi_seqlim6", "cat": "example", "name": "Example — a fraction", "text": "`a_(n) = (3n² − n)/(5n² + 2)`\n2. Divide by `n²`: `(3 − 1/(n))/(5 + 2/(n²)) → 3/5`\nThe sequence converges to `3/5`." },
+    { "id": "st_bi_seqlim7", "cat": "example", "name": "Example — L'Hôpital", "text": "`a_(n) = (n²)/(eⁿ)`\n3. `f(x) = (x²)/(eˣ)` is `∞/∞`. L'Hôpital twice: `(2x)/(eˣ)`, then `2/(eˣ) → 0`.\nSo `a_(n) → 0`." },
+    { "id": "st_bi_seqlim8", "cat": "example", "name": "Example — alternating sign", "text": "`a_(n) = (−1)ⁿ (2n)/(n + 1)`\n5. Even places: `(2n)/(n + 1) → 2`. Odd places: `→ −2`.\nThe two limits differ, so the sequence diverges.\nCompare `b_(n) = (−1)ⁿ/(n)`: both even and odd places tend to `0`, so `b_(n) → 0`." },
+    { "id": "st_bi_seqlim9", "cat": "example", "name": "Example — squeeze", "text": "`a_(n) = (cos(n²))/(√n)`\n5. `−1/(√n) ≤ a_(n) ≤ 1/(√n)`, and both sides tend to `0`.\nSo `a_(n) → 0`." }
+  ] },
+{ "id": "pp_bi_seqmono", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Showing a sequence converges (monotone and bounded)",
+  "description": "Prove that a sequence converges without knowing its limit, then find the limit, often for a recursive sequence.",
+  "uses": [["c", "se2", "Monotone convergence theorem"], ["c", "se2", "Three ways to test monotonicity"], ["c", "se2", "Increasing, decreasing and bounded"]],
+  "parts": [
+    { "id": "st_bi_seqmono1", "cat": "stage", "name": "Guess the direction", "text": "Write out the first few terms: does it seem to go up or down?" },
+    { "id": "st_bi_seqmono2", "cat": "stage", "name": "Prove it's monotone", "text": "Use the difference `a_(n+1) − a_(n)`, the ratio `(a_(n+1))/(a_(n))` (positive terms), or `f'(x)` when `a_(n) = f(n)`. For a recursive sequence, induction often works best." },
+    { "id": "st_bi_seqmono3", "cat": "stage", "name": "Prove it's bounded", "text": "Increasing: find a ceiling `M` with `a_(n) ≤ M`. Decreasing: find a floor (positive terms always have the floor `0`)." },
+    { "id": "st_bi_seqmono4", "cat": "stage", "name": "Conclude, then find the limit", "text": "Monotone and bounded, so it converges to some `L`. If `a_(n+1) = g(a_(n))`, let `n → ∞` on both sides: `L = g(L)`. Solve, and keep the solution that fits the bound and the direction." },
+    { "id": "st_bi_seqmono5", "cat": "example", "name": "Example — a factorial", "text": "`a_(n) = (4ⁿ)/(n!)`\n1. `4, 8, 10.7, 10.7, 8.5, …`: down from some place on.\n2. `(a_(n+1))/(a_(n)) = 4/(n + 1) < 1` for `n ≥ 4`: decreasing from `n = 4`.\n3. All terms are positive: bounded below by `0`.\n4. It converges to some `L`. Since `a_(n+1) = 4/(n + 1) · a_(n)`: `L = 0 · L`, so `L = 0`." },
+    { "id": "st_bi_seqmono6", "cat": "example", "name": "Example — recursive", "text": "`a_(1) = 1`, `a_(n+1) = √(2 + a_(n))`\n1. `1, 1.73, 1.93, 1.98, …`: up, towards `2`?\n3. Bounded by `2` (induction): `a_(1) = 1 < 2`; if `a_(n) < 2`, then `a_(n+1) = √(2 + a_(n)) < √4 = 2`.\n2. Increasing: `a_(n+1) > a_(n)` ⇔ `2 + a_(n) > a_(n)²` ⇔ `(2 − a_(n))(1 + a_(n)) > 0`, true since `0 < a_(n) < 2`.\n4. `L = √(2 + L)` → `L² − L − 2 = 0` → `L = 2` or `L = −1`. The terms are positive, so `L = 2`." }
+  ] },
+{ "id": "pp_bi_sergeo", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Sum of a geometric series",
+  "description": "Recognise a geometric series, decide whether it converges, and find its sum.",
+  "uses": [["c", "se3", "Geometric series"], ["c", "se3", "Sums, constant multiples, and the first terms"]],
+  "parts": [
+    { "id": "st_bi_sergeo1", "cat": "stage", "name": "Find a and r", "text": "`a` = the first term actually written (put in the starting `k`). `r` = any term divided by the one before it." },
+    { "id": "st_bi_sergeo2", "cat": "stage", "name": "Check the ratio", "text": "`|r| < 1`: converges. `|r| ≥ 1`: diverges (stop)." },
+    { "id": "st_bi_sergeo3", "cat": "stage", "name": "Sum", "text": "`S = (a)/(1 − r)`. For a sum or difference of geometric series, find each sum and combine them." },
+    { "id": "st_bi_sergeo4", "cat": "example", "name": "Example — a shifted start", "text": "`∑_(k=2)^(∞) (3)/(4ᵏ)`\n1. First term (`k = 2`): `3/16`. Ratio `1/4`.\n2. `1/4 < 1`: converges.\n3. `S = (3/16)/(1 − 1/4) = (3/16)/(3/4) = 1/4`" },
+    { "id": "st_bi_sergeo5", "cat": "example", "name": "Example — rewrite first", "text": "`∑_(k=1)^(∞) (2^(k+1))/(5ᵏ)`\n1. `(2^(k+1))/(5ᵏ) = 2 · (2/5)ᵏ`. First term (`k = 1`): `4/5`. Ratio `2/5`.\n2. `2/5 < 1`: converges.\n3. `S = (4/5)/(1 − 2/5) = (4/5)/(3/5) = 4/3`" },
+    { "id": "st_bi_sergeo6", "cat": "example", "name": "Example — a repeating decimal", "text": "`0.272727…`\n1. `0.27 + 0.0027 + …`: `a = 0.27`, `r = 0.01`\n3. `S = (0.27)/(0.99) = 27/99 = 3/11`" }
+  ] },
+{ "id": "pp_bi_sertel", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Sum of a telescoping series",
+  "description": "Find the sum of a series whose terms split into differences that cancel.",
+  "uses": [["c", "se3", "Telescoping series"], ["c", "se3", "Partial sums and convergence"]],
+  "parts": [
+    { "id": "st_bi_sertel1", "cat": "stage", "name": "Split the term", "text": "Write `u_(k)` as a difference `b_(k) − b_(k+m)`, usually by partial fractions: `1/(k(k + 1)) = 1/(k) − 1/(k + 1)`. With a log: `ln((k + 1)/(k)) = ln(k + 1) − ln k`." },
+    { "id": "st_bi_sertel2", "cat": "stage", "name": "Write the partial sum", "text": "Write `s_(n)` with the first few and the last few brackets, and cross out what cancels." },
+    { "id": "st_bi_sertel3", "cat": "stage", "name": "Take the limit", "text": "What's left is a few first parts minus a few last parts. Let `n → ∞`. A finite limit is the sum; otherwise it diverges." },
+    { "id": "st_bi_sertel4", "cat": "example", "name": "Example — neighbours cancel", "text": "`∑_(k=1)^(∞) 2/((k + 1)(k + 2))`\n1. `2/((k + 1)(k + 2)) = 2/(k + 1) − 2/(k + 2)`\n2. `s_(n) = (2/2 − 2/3) + (2/3 − 2/4) + … + (2/(n + 1) − 2/(n + 2)) = 1 − 2/(n + 2)`\n3. `→ 1`. The sum is `1`." },
+    { "id": "st_bi_sertel5", "cat": "example", "name": "Example — a gap of two", "text": "`∑_(k=1)^(∞) 1/(k(k + 2))`\n1. `1/(k(k + 2)) = (1/2)(1/(k) − 1/(k + 2))`\n2. Each `1/(k + 2)` cancels two brackets later. What stays: `(1/2)(1 + 1/2 − 1/(n + 1) − 1/(n + 2))`\n3. `→ (1/2) · (3/2) = 3/4`" },
+    { "id": "st_bi_sertel6", "cat": "example", "name": "Example — it diverges", "text": "`∑_(k=1)^(∞) ln((k + 1)/(k))`\n1. `= ln(k + 1) − ln k`\n2. `s_(n) = ln(n + 1) − ln 1 = ln(n + 1)`\n3. `→ ∞`: the series diverges (even though its terms tend to `0`)." }
+  ] },
+{ "id": "pp_bi_sertest", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Choosing a convergence test",
+  "description": "Decide whether a series converges, by picking the test that fits its terms.",
+  "uses": [["c", "se4", "Divergence test (the k-th term)"], ["c", "se4", "Integral test"], ["c", "se4", "p-series (generalized harmonic series)"], ["c", "se5", "Comparison test"], ["c", "se5", "Limit comparison test"], ["c", "se5", "Ratio test"], ["c", "se5", "Root test"]],
+  "parts": [
+    { "id": "st_bi_sertest1", "cat": "stage", "name": "Do the terms tend to 0?", "text": "If `u_(k)` doesn't tend to `0`: **diverges** (divergence test). If it does, that proves nothing: go on." },
+    { "id": "st_bi_sertest2", "cat": "stage", "name": "A known type?", "text": "Geometric `∑ arᵏ`: converges ⇔ `|r| < 1`. p-series `∑ 1/(k^(p))`: converges ⇔ `p > 1`. Telescoping: find the partial sum." },
+    { "id": "st_bi_sertest3", "cat": "stage", "name": "Factorials or k-th powers?", "text": "`k!` or `aᵏ` in the term: **ratio test**. The whole term to the power `k`: **root test**." },
+    { "id": "st_bi_sertest4", "cat": "stage", "name": "Fractions of powers of k?", "text": "Keep the biggest power on top and bottom to see what it behaves like (usually a p-series). Then **limit comparison** with that, or a plain **comparison** if the inequality is easy." },
+    { "id": "st_bi_sertest5", "cat": "stage", "name": "Easy to integrate?", "text": "Positive, decreasing, and `f(x)` has an antiderivative you can find (like `1/(x ln x)`): **integral test**." },
+    { "id": "st_bi_sertest6", "cat": "stage", "name": "Signs that switch?", "text": "Use the method \"Absolutely, conditionally, or divergent?\"." },
+    { "id": "st_bi_sertest7", "cat": "example", "name": "Example — ratio test", "text": "`∑ (k²)/(3ᵏ)`\n1. Terms → `0`; no conclusion yet.\n3. A power `3ᵏ`: ratio test. `((k + 1)²)/(3^(k+1)) · (3ᵏ)/(k²) = (1/3)((k + 1)/(k))² → 1/3 < 1`\nConverges." },
+    { "id": "st_bi_sertest8", "cat": "example", "name": "Example — limit comparison", "text": "`∑ (√k)/(k² + 1)`\n4. Behaves like `(√k)/(k²) = 1/(k^(3/2))`, a p-series with `p = 3/2 > 1`.\n`ρ = lim ((√k)/(k² + 1))/(1/(k^(3/2))) = lim (k²)/(k² + 1) = 1`, finite and positive.\nConverges." },
+    { "id": "st_bi_sertest9", "cat": "example", "name": "Example — integral test", "text": "`∑_(k=2)^(∞) 1/(k ln k)`\n5. `f(x) = 1/(x ln x)` is positive and decreasing for `x ≥ 2`. `∫_(2)^(r) 1/(x ln x) dx = ln(ln r) − ln(ln 2) → ∞`\nDiverges." },
+    { "id": "st_bi_sertest10", "cat": "example", "name": "Example — divergence test", "text": "`∑ (1 + 1/(k))ᵏ`\n1. The terms tend to `e ≠ 0`.\nDiverges." }
+  ] },
+{ "id": "pp_bi_serabs", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Absolutely, conditionally, or divergent?",
+  "description": "Classify a series with mixed or alternating signs.",
+  "uses": [["c", "se6", "Absolute and conditional convergence"], ["c", "se6", "Alternating series test (Leibniz)"], ["c", "se6", "Ratio test for absolute convergence"]],
+  "parts": [
+    { "id": "st_bi_serabs1", "cat": "stage", "name": "Do the terms tend to 0?", "text": "If not: **diverges**. Stop." },
+    { "id": "st_bi_serabs2", "cat": "stage", "name": "Test the absolute values", "text": "Drop the signs: does `∑ |u_(k)|` converge? Use any test for positive series (ratio, comparison, p-series). If yes: **converges absolutely**. Stop." },
+    { "id": "st_bi_serabs3", "cat": "stage", "name": "Otherwise: Leibniz", "text": "If `∑ |u_(k)|` diverges and the signs alternate, check: do the sizes `a_(k)` decrease (from some place on) to `0`? If yes: **converges conditionally**." },
+    { "id": "st_bi_serabs4", "cat": "example", "name": "Example — conditional", "text": "`∑ (−1)^(k+1) 1/(√k)`\n1. `1/(√k) → 0`\n2. `∑ 1/(√k)`: p-series with `p = 1/2`, diverges. Not absolute.\n3. `1/(√k)` decreases to `0`: Leibniz, converges.\n**Converges conditionally.**" },
+    { "id": "st_bi_serabs5", "cat": "example", "name": "Example — absolute", "text": "`∑ (−1)ᵏ (k)/(2ᵏ)`\n2. Ratio test on `(k)/(2ᵏ)`: `(k + 1)/(2^(k+1)) · (2ᵏ)/(k) = (k + 1)/(2k) → 1/2 < 1`\n**Converges absolutely.**" },
+    { "id": "st_bi_serabs6", "cat": "example", "name": "Example — divergent", "text": "`∑ (−1)ᵏ (k)/(k + 3)`\n1. The sizes `(k)/(k + 3) → 1`, so the terms jump near `±1` and don't tend to `0`.\n**Diverges.**" }
+  ] },
+{ "id": "pp_bi_serint", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Finding the interval of convergence",
+  "description": "Find the radius and the interval of convergence of a power series, including its ends.",
+  "uses": [["c", "se7", "Radius and interval of convergence"], ["c", "se6", "Ratio test for absolute convergence"], ["c", "se6", "Alternating series test (Leibniz)"], ["c", "se4", "p-series (generalized harmonic series)"]],
+  "parts": [
+    { "id": "st_bi_serint1", "cat": "stage", "name": "Ratio test with x in it", "text": "`ρ = lim_(k→∞) (|u_(k+1)|)/(|u_(k)|)`, keeping `x` as a letter. It comes out as `|x − a|` times a number (or `0`, or `∞`)." },
+    { "id": "st_bi_serint2", "cat": "stage", "name": "Solve ρ < 1", "text": "`ρ < 1` gives `|x − a| < R`: the open interval `(a − R, a + R)`. If `ρ = 0` for every `x`: `R = ∞`, all of `ℝ`. If `ρ = ∞` for every `x ≠ a`: `R = 0`, only `x = a`." },
+    { "id": "st_bi_serint3", "cat": "stage", "name": "Check each end", "text": "Put `x = a − R` and `x = a + R` into the series one at a time. Each gives an ordinary series: test it (p-series, Leibniz, divergence test)." },
+    { "id": "st_bi_serint4", "cat": "stage", "name": "Write the interval", "text": "Include each end that converged, with `[` or `]`; leave out the others with `(` or `)`." },
+    { "id": "st_bi_serint5", "cat": "example", "name": "Example — one end in", "text": "`∑_(k=1)^(∞) ((x + 1)ᵏ)/(k · 2ᵏ)`\n1. `ρ = lim (|x + 1|^(k+1))/((k + 1)2^(k+1)) · (k · 2ᵏ)/(|x + 1|ᵏ) = (|x + 1|)/2`\n2. `|x + 1| < 2`: `−3 < x < 1`, `R = 2`\n3. `x = 1`: `∑ 1/(k)` diverges. `x = −3`: `∑ (−1)ᵏ/(k)` converges (Leibniz).\n4. `[−3, 1)`" },
+    { "id": "st_bi_serint6", "cat": "example", "name": "Example — both ends in", "text": "`∑_(k=1)^(∞) (xᵏ)/(k²)`\n1. `ρ = |x| · lim (k²)/((k + 1)²) = |x|`\n2. `−1 < x < 1`, `R = 1`\n3. `x = 1`: `∑ 1/(k²)` converges. `x = −1`: `∑ (−1)ᵏ/(k²)` converges absolutely.\n4. `[−1, 1]`" },
+    { "id": "st_bi_serint7", "cat": "example", "name": "Example — every x", "text": "`∑_(k=0)^(∞) ((x − 3)ᵏ)/(k!)`\n1. `ρ = lim (|x − 3|)/(k + 1) = 0` for every `x`\n2. `R = ∞`: the interval is all of `ℝ` (no ends to check)." }
+  ] },
+{ "id": "pp_bi_sermac", "v": 1, "subject": "f:ser", "kind": "action",
+  "name": "Taylor or Maclaurin series from the derivatives",
+  "description": "Build the Taylor series of a function about a point by computing its derivatives there.",
+  "uses": [["c", "se8", "Taylor polynomials"], ["c", "se8", "Taylor and Maclaurin series"]],
+  "parts": [
+    { "id": "st_bi_sermac1", "cat": "stage", "name": "Differentiate several times", "text": "Find `f`, `f'`, `f''`, `f'''`, … until you see a pattern." },
+    { "id": "st_bi_sermac2", "cat": "stage", "name": "Put in x = a", "text": "Work out `f⁽ᵏ⁾(a)` for each `k`, and look for the general pattern." },
+    { "id": "st_bi_sermac3", "cat": "stage", "name": "Divide by k!", "text": "The coefficient of `(x − a)ᵏ` is `(f⁽ᵏ⁾(a))/(k!)`. Write the first terms, then the general term with `∑`." },
+    { "id": "st_bi_sermac4", "cat": "example", "name": "Example — 1/x about 1", "text": "`f(x) = 1/(x)`, `a = 1`\n1. `f' = −x⁻²`, `f'' = 2x⁻³`, `f''' = −6x⁻⁴`, …, `f⁽ᵏ⁾(x) = (−1)ᵏ k! x^(−k−1)`\n2. `f⁽ᵏ⁾(1) = (−1)ᵏ k!`\n3. Coefficient `((−1)ᵏ k!)/(k!) = (−1)ᵏ`\n`1/(x) = 1 − (x − 1) + (x − 1)² − … = ∑_(k=0)^(∞) (−1)ᵏ (x − 1)ᵏ`" },
+    { "id": "st_bi_sermac5", "cat": "example", "name": "Example — Taylor polynomial of √x", "text": "`f(x) = √x`, `a = 4`, order `2`\n1. `f' = 1/(2√x)`, `f'' = −1/(4x√x)`\n2. `f(4) = 2`, `f'(4) = 1/4`, `f''(4) = −1/32`\n3. `p_(2)(x) = 2 + (1/4)(x − 4) − (1/64)(x − 4)²`\nCheck: `p_(2)(4.1) ≈ 2.02484`, and `√4.1 ≈ 2.02485`." }
+  ] },
+{ "id": "pp_bi_serbuild", "v": 1, "subject": "f:ser", "kind": "action",
+  "name": "Building a new series from a known one",
+  "description": "Get the Maclaurin series of a function from a standard series by substitution, multiplying by a power, differentiating or integrating.",
+  "uses": [["c", "se8", "The standard Maclaurin series"], ["c", "se9", "Term-by-term differentiation and integration"], ["c", "se8", "Taylor and Maclaurin series"]],
+  "parts": [
+    { "id": "st_bi_serbuild1", "cat": "stage", "name": "Find the closest standard series", "text": "`eᵘ`, `sin u`, `cos u`, `1/(1 − u)`, `ln(1 + u)`, `arctan u`, `(1 + u)ᵐ`." },
+    { "id": "st_bi_serbuild2", "cat": "stage", "name": "Substitute", "text": "Put your expression in place of `u` everywhere (also in the condition for convergence): `u = −x²`, `u = 3x`, …" },
+    { "id": "st_bi_serbuild3", "cat": "stage", "name": "Multiply, differentiate or integrate", "text": "Multiply every term by a power of `x` if needed. Or differentiate / integrate term by term (same radius)." },
+    { "id": "st_bi_serbuild4", "cat": "stage", "name": "Write the interval", "text": "Translate the standard interval: `|u| < 1` with `u = 2x` becomes `|x| < 1/2`." },
+    { "id": "st_bi_serbuild5", "cat": "example", "name": "Example — substitute and multiply", "text": "`f(x) = x² e^(−x)`\n2. `e^(−x) = 1 − x + (x²)/(2!) − (x³)/(3!) + …`\n3. Multiply by `x²`: `x² − x³ + (x⁴)/(2!) − (x⁵)/(3!) + …`\n4. Valid for every `x`." },
+    { "id": "st_bi_serbuild6", "cat": "example", "name": "Example — a geometric series", "text": "`f(x) = 1/(1 + 4x²)`\n1. `1/(1 − u)` with `u = −4x²`\n2. `1 − 4x² + 16x⁴ − 64x⁶ + …`\n4. `|−4x²| < 1` → `|x| < 1/2`" },
+    { "id": "st_bi_serbuild7", "cat": "example", "name": "Example — differentiate", "text": "`f(x) = 1/((1 − x)²)`\n3. It's the derivative of `1/(1 − x) = 1 + x + x² + x³ + …`, so `1/((1 − x)²) = 1 + 2x + 3x² + 4x³ + …`\n4. `|x| < 1`" }
+  ] },
+{ "id": "pp_bi_serapprox", "v": 1, "subject": "f:ser", "kind": "problem",
+  "name": "Approximating a value to a given accuracy",
+  "description": "Use a Taylor series to calculate a number (like e^0.1, sin 3° or ln 1.2) to a required number of decimal places.",
+  "uses": [["c", "se8", "Calculating with Taylor series"], ["c", "se8", "Taylor's formula with remainder"], ["c", "se6", "Alternating series test (Leibniz)"]],
+  "parts": [
+    { "id": "st_bi_serapprox1", "cat": "stage", "name": "Choose the series and the x", "text": "Pick a series centred near your number, usually a Maclaurin series. Angles go in radians." },
+    { "id": "st_bi_serapprox2", "cat": "stage", "name": "Set the target", "text": "`n` decimal places: the error must be less than `0.5 × 10⁻ⁿ`." },
+    { "id": "st_bi_serapprox3", "cat": "stage", "name": "Bound the error", "text": "Alternating series with decreasing terms: the error is less than the first term you leave out.\nOtherwise: Lagrange, `|R_(n)| ≤ (M)/((n + 1)!) |x − a|^(n+1)`, with `M` a bound for `|f⁽ⁿ⁺¹⁾|` between `a` and `x`." },
+    { "id": "st_bi_serapprox4", "cat": "stage", "name": "Add terms until it's small enough", "text": "Find the smallest `n` that brings the error bound below the target, then add up those terms." },
+    { "id": "st_bi_serapprox5", "cat": "example", "name": "Example — sin 3°", "text": "3 decimal places\n1. `x = 3 · π/180 ≈ 0.05236`; `sin x = x − (x³)/(3!) + …`\n2. Target `0.0005`.\n3. It alternates: stopping after `x`, the error is below `(x³)/6 ≈ 0.000024` ✓\n4. `sin 3° ≈ 0.052` (more exactly `0.05234`)." },
+    { "id": "st_bi_serapprox6", "cat": "example", "name": "Example — e^0.1 with Lagrange", "text": "4 decimal places\n1. `eˣ` at `x = 0.1`\n2. Target `0.00005`.\n3. `|R_(n)| ≤ (e^(0.1))/((n + 1)!) (0.1)^(n+1) < (2 · (0.1)^(n+1))/((n + 1)!)`\n`n = 2`: `(2 · 0.001)/6 ≈ 0.00033` ✗ · `n = 3`: `(2 · 0.0001)/24 ≈ 0.0000083` ✓\n4. `1 + 0.1 + 0.005 + 0.000167 ≈ 1.1052`" },
+    { "id": "st_bi_serapprox7", "cat": "example", "name": "Example — ln 1.2", "text": "3 decimal places\n1. `ln(1 + x) = x − (x²)/2 + (x³)/3 − …` with `x = 0.2`\n2. Target `0.0005`.\n3. Alternating and decreasing: `0.2 − 0.02 + 0.00267 − 0.0004 + …`. Stopping after three terms, the error is below `0.0004` ✓\n4. `ln 1.2 ≈ 0.2 − 0.02 + 0.00267 ≈ 0.183` (more exactly `0.1823`)." }
+  ] },
 { "id": "pp_bi_pcdom", "v": 1, "subject": "f:precalc", "kind": "problem",
   "name": "Finding the domain",
   "description": "Find every x where a formula is defined: fractions, roots, logs and tan.",
