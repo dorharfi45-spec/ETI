@@ -84,6 +84,15 @@
     font-weight: 700; color: var(--text-muted);
     padding: 0 4px 8px;
   }
+  /* a tablet or computer: the side list and the page are two scroll areas; neither waits for the other,
+     and reaching the end of one never scrolls the other or bounces the page. A phone scrolls as one page. */
+  @media (min-width: 761px) {
+    html, body { height: 100%; overflow: hidden; }
+    .wrap { height: 100vh; height: 100dvh; padding-top: 0; padding-bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; }
+    .layout { flex: 1; min-height: 0; flex-wrap: nowrap; align-items: stretch; }
+    .layout > .sidebar { position: static; height: 100%; box-sizing: border-box; padding: 18px 4px 60px 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    .layout > .content { height: 100%; box-sizing: border-box; padding: 32px 4px 80px 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  }
   @media (max-width: 760px) {
     .layout { flex-direction: column; gap: 12px; }
     .content { width: 100%; }
@@ -2330,37 +2339,6 @@
 <body>
 <div class="wrap">
 
-<header class="page">
-  <h1 id="pageTitle">Math Base — High-School Reference</h1>
-  <p class="subtitle" id="pageSubtitle">An interactive companion to the <span class="mono">Math/base</span> notes. Pick a subject folder, then a topic.</p>
-</header>
-
-<div id="dataBar">
-  <span id="cloudBox">
-    <button id="cloudBadge" type="button" class="tool-btn" title="cloud sync across your devices — click to sign in">☁ sign in</button>
-    <span id="cloudSignin" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
-      <input id="cloudEmail" type="email" autocomplete="username" placeholder="email">
-      <input id="cloudPass" type="password" autocomplete="current-password" placeholder="password">
-      <button id="cloudGo" type="button" class="tool-btn">Sign in</button>
-      <button id="cloudSigninClose" type="button" class="tool-btn" title="cancel">✕</button>
-      <span id="cloudErr"></span>
-    </span>
-  </span>
-  <span class="databar-spacer"></span>
-  <span id="syncFileBox">
-    <button id="plSyncSetup" type="button" class="tool-btn" title="pick one file on this computer to keep a copy of your data in">🔗 Sync file…</button>
-    <button id="plSyncSave" type="button" class="tool-btn" title="save your data into the sync file now" hidden>⤓ Save</button>
-    <button id="plSyncLoad" type="button" class="tool-btn" title="load data from the sync file (replaces what's on this device)" hidden>⤒ Load</button>
-    <label id="plSyncAutoWrap" style="display:none;align-items:center;gap:4px;font-size:.78rem;color:var(--text-muted);" title="automatically save into the sync file a moment after every change">
-      <input type="checkbox" id="plSyncAuto"> auto
-    </label>
-    <span id="plSyncStatus" style="font-size:.74rem;color:var(--text-muted);"></span>
-  </span>
-  <button id="plExport" type="button" class="tool-btn" title="download all your data as a file">⤓ Backup</button>
-  <button id="plImport" type="button" class="tool-btn" title="load data from a backup file (replaces everything here)">⤒ Restore</button>
-  <input id="plImportFile" type="file" accept="application/json,.json" hidden>
-</div>
-
 <div class="layout">
 
 <aside class="sidebar">
@@ -2418,6 +2396,37 @@
 </aside>
 
 <div class="content">
+<header class="page">
+  <h1 id="pageTitle">Math Base — High-School Reference</h1>
+  <p class="subtitle" id="pageSubtitle">An interactive companion to the <span class="mono">Math/base</span> notes. Pick a subject folder, then a topic.</p>
+</header>
+
+<div id="dataBar">
+  <span id="cloudBox">
+    <button id="cloudBadge" type="button" class="tool-btn" title="cloud sync across your devices — click to sign in">☁ sign in</button>
+    <span id="cloudSignin" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
+      <input id="cloudEmail" type="email" autocomplete="username" placeholder="email">
+      <input id="cloudPass" type="password" autocomplete="current-password" placeholder="password">
+      <button id="cloudGo" type="button" class="tool-btn">Sign in</button>
+      <button id="cloudSigninClose" type="button" class="tool-btn" title="cancel">✕</button>
+      <span id="cloudErr"></span>
+    </span>
+  </span>
+  <span class="databar-spacer"></span>
+  <span id="syncFileBox">
+    <button id="plSyncSetup" type="button" class="tool-btn" title="pick one file on this computer to keep a copy of your data in">🔗 Sync file…</button>
+    <button id="plSyncSave" type="button" class="tool-btn" title="save your data into the sync file now" hidden>⤓ Save</button>
+    <button id="plSyncLoad" type="button" class="tool-btn" title="load data from the sync file (replaces what's on this device)" hidden>⤒ Load</button>
+    <label id="plSyncAutoWrap" style="display:none;align-items:center;gap:4px;font-size:.78rem;color:var(--text-muted);" title="automatically save into the sync file a moment after every change">
+      <input type="checkbox" id="plSyncAuto"> auto
+    </label>
+    <span id="plSyncStatus" style="font-size:.74rem;color:var(--text-muted);"></span>
+  </span>
+  <button id="plExport" type="button" class="tool-btn" title="download all your data as a file">⤓ Backup</button>
+  <button id="plImport" type="button" class="tool-btn" title="load data from a backup file (replaces everything here)">⤒ Restore</button>
+  <input id="plImportFile" type="file" accept="application/json,.json" hidden>
+</div>
+
 
 <nav class="tabbar on" data-folder="trig" id="tabbar-trig">
   <button data-target="s1" class="on"><span class="tnum">2.1</span>Identities</button>
@@ -2524,7 +2533,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New method</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B126</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B127</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5266,6 +5275,8 @@ function __detabaseMain() {
   // ---- master view update ----
   function applyView() {
     bldRender(); courseSwRender();
+    var hashBefore = location.hash;                      // a different page starts at its top
+    setTimeout(function () { if (location.hash !== hashBefore) pageTo(0); }, 0);
     var onProblem = viewingProblem && !!activeProblem && !!canvasDocById(activeProblem);
     var onNbBank = !onProblem && activeTop === "notebook" && !activeSubject;
     var onSum = !onProblem && activeTop === "eti" && !!summaryById(activeSummary);
@@ -5324,7 +5335,7 @@ function __detabaseMain() {
       $("pageTitle").textContent = "PDFs";
       $("pageSubtitle").innerHTML = "PDFs and pictures you brought in, to read and cut.";
       history.replaceState(null, "", "#notebook");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      pageTo(0, true);
       return;
     }
 
@@ -5333,7 +5344,7 @@ function __detabaseMain() {
       $("pageTitle").textContent = pb ? (pb.name || "Untitled") : "";
       $("pageSubtitle").innerHTML = psPageById(activeProblem) ? 'Method' : 'Library element';
       renderProblemPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      pageTo(0, true);
       return;
     }
     if (onMining) {
@@ -5415,7 +5426,7 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = 'An empty folder — add a subject from the sidebar.';
       history.replaceState(null, "", "#" + activeTop);
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    pageTo(0, true);
   }
 
   function selectTop(id) {
@@ -11284,10 +11295,14 @@ function __detabaseMain() {
   // a redraw keeps the page where it was: emptying it first would let the browser snap back up
   // (opening a page still scrolls to its top — applyView does that after drawing)
   function keepScroll(draw) {
-    var y = window.scrollY;
+    var y = pageY();
     draw();
-    if (Math.abs(window.scrollY - y) > 1) window.scrollTo(0, y);
+    if (Math.abs(pageY() - y) > 1) pageTo(y);
   }
+  // the center page's own scroll area on a tablet or computer; the window on a phone
+  function pageBox() { var c = document.querySelector(".layout > .content"); return c && getComputedStyle(c).overflowY === "auto" ? c : null; }
+  function pageY() { var b = pageBox(); return b ? b.scrollTop : window.scrollY; }
+  function pageTo(y, smooth) { var b = pageBox(); (b || window).scrollTo({ top: y, behavior: smooth ? "smooth" : "auto" }); }
   function renderSubjectPage() { keepScroll(drawSubjectPage); }
   function drawSubjectPage() {
     var host = $("subjectPage"); if (!host) return;
@@ -11868,7 +11883,8 @@ function __detabaseMain() {
     el.style.display = "none";            // its place closes up; it is only hidden, never moved
     if (o.fold) {                        // folded titles: keep the gap under the finger
       list.insertBefore(ph, dndItemsOf(list, el)[dndCur.origin] || null);
-      window.scrollBy(0, ph.getBoundingClientRect().top - (y - 20));
+      var sb = pageBox(), dy = ph.getBoundingClientRect().top - (y - 20);
+      if (sb && sb.contains(list)) sb.scrollTop += dy; else window.scrollBy(0, dy);
     }
     dndCur.scrollT = setInterval(dndAutoScroll, 16);
     dndMove(x, y);
@@ -13604,7 +13620,7 @@ function __detabaseMain() {
       navLoad(p);
       setInkTool(inkTool === "lasso" ? "lasso" : "pen");
       renderCanvas();
-      window.scrollTo(0, 0);
+      pageTo(0);
     }
     function exitInkFull() {
       document.body.classList.remove("ink-full");
