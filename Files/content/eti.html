@@ -4070,6 +4070,127 @@
 </div>
 </section>
 
+
+<!-- ===== IN10 · TRIG INTEGRALS ===== -->
+<section class="pane" id="pane-in10">
+<h2><span class="num">10</span>Trig integrals</h2>
+<div class="card" data-tags="Formula">
+  <h4>Powers of sin and cos</h4>
+  <p><code>∫ sinᵐx cosⁿx dx</code>:</p>
+  <ul>
+    <li><b>One power is odd</b> (say <code>n</code>): save one <code>cos x</code>, turn the rest into <code>sin</code> with <code>cos²x = 1 − sin²x</code>, and substitute <code>u = sin x</code>. (Odd <code>m</code>: the same with the roles swapped, <code>u = cos x</code>.)</li>
+    <li><b>Both powers are even:</b> lower them with <code>sin²x = (1 − cos 2x)/2</code> and <code>cos²x = (1 + cos 2x)/2</code>.</li>
+  </ul>
+  <p class="muted"><b>Why saving one factor works:</b> the saved <code>cos x dx</code> is exactly <code>du</code> when <code>u = sin x</code>, and everything else becomes a polynomial in <code>u</code>.</p>
+  <p class="muted"><b>Example (odd):</b> <code>∫ sin³x dx = ∫ (1 − cos²x) sin x dx</code>; with <code>u = cos x</code>, <code>du = −sin x dx</code>: <code>−∫ (1 − u²) du = −cos x + (cos³x)/3 + C</code>.</p>
+  <p class="muted"><b>Example (even):</b> <code>∫ cos²x dx = ∫ (1 + cos 2x)/2 dx = x/2 + (sin 2x)/4 + C</code>.</p>
+  <p class="muted"><b>Products like <code>sin 3x cos 5x</code></b> become sums: <code>sin A cos B = (1/2)(sin(A − B) + sin(A + B))</code>, and each piece is easy.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Powers of tan and sec</h4>
+  <ul class="idlist">
+    <li><code>∫ tan x dx = −ln|cos x| + C</code> &nbsp;·&nbsp; <code>∫ sec x dx = ln|sec x + tan x| + C</code></li>
+    <li><code>∫ 1/(cos²x) dx = ∫ sec²x dx = tan x + C</code></li>
+  </ul>
+  <ul>
+    <li><b>Even power of sec:</b> save <code>sec²x</code>, turn the rest into <code>tan</code> with <code>sec²x = 1 + tan²x</code>, substitute <code>u = tan x</code>.</li>
+    <li><b>Odd power of tan:</b> save <code>sec x tan x</code>, turn the rest into <code>sec</code>, substitute <code>u = sec x</code>.</li>
+  </ul>
+  <p class="muted"><b>Why <code>∫ tan x dx</code> is a log:</b> <code>tan x = (sin x)/(cos x)</code>, and the top is minus the derivative of the bottom: the <code>f'/f</code> pattern (Integrals › 4).</p>
+  <p class="muted"><b>Example:</b> <code>∫ tan²x dx = ∫ (sec²x − 1) dx = tan x − x + C</code>.</p>
+  <p class="muted"><b>Example:</b> <code>∫ sec⁴x dx = ∫ (1 + tan²x) sec²x dx</code>, <code>u = tan x</code>: <code>tan x + (tan³x)/3 + C</code>.</p>
+</div>
+</section>
+
+<!-- ===== IN11 · TRIG SUBSTITUTION ===== -->
+<section class="pane" id="pane-in11">
+<h2><span class="num">11</span>Trig substitution</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Trig substitution</h4>
+  <table>
+    <thead><tr><th>The integral has</th><th>Substitute</th><th>Because</th></tr></thead>
+    <tbody>
+      <tr><td><code>√(a² − x²)</code></td><td><code>x = a sin θ</code></td><td><code>a² − a²sin²θ = a²cos²θ</code></td></tr>
+      <tr><td><code>√(a² + x²)</code></td><td><code>x = a tan θ</code></td><td><code>a² + a²tan²θ = a²sec²θ</code></td></tr>
+      <tr><td><code>√(x² − a²)</code></td><td><code>x = a sec θ</code></td><td><code>a²sec²θ − a² = a²tan²θ</code></td></tr>
+    </tbody>
+  </table>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the triangle for x equals a sine theta: hypotenuse a, opposite side x, adjacent side root of a squared minus x squared">
+    <path class="cv" d="M80 170 H320 V40 Z"/>
+    <path class="gd" d="M305 170 V155 H320"/>
+    <text x="118" y="162">θ</text>
+    <text x="190" y="96" text-anchor="end">a</text>
+    <text x="330" y="110">x</text>
+    <text x="200" y="190" text-anchor="middle">√(a² − x²)</text>
+    <text class="sm" x="330" y="30">x = a sin θ</text>
+  </svg>
+  <p class="muted"><b>The idea:</b> a root of "square plus or minus square" is a Pythagoras leftover. Choosing <code>x</code> as a trig function of an angle turns the inside into a perfect square, and the root disappears.</p>
+  <p class="muted"><b>Going back to <code>x</code>:</b> draw the right triangle that matches your substitution (above, for <code>x = a sin θ</code>) and read any trig function of <code>θ</code> from it.</p>
+  <p class="muted"><b>Example:</b> <code>∫ 1/(x²√(4 − x²)) dx</code>, <code>x = 2 sin θ</code>, <code>dx = 2 cos θ dθ</code>: <code>∫ (2 cos θ)/(4 sin²θ · 2 cos θ) dθ = (1/4) ∫ csc²θ dθ = −(1/4) cot θ + C</code>. From the triangle, <code>cot θ = (√(4 − x²))/(x)</code>, so the answer is <code>−(√(4 − x²))/(4x) + C</code>.</p>
+</div>
+</section>
+
+<!-- ===== IN12 · PARTIAL FRACTIONS ===== -->
+<section class="pane" id="pane-in12">
+<h2><span class="num">12</span>Partial fractions</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Partial fractions</h4>
+  <p>To integrate a fraction of polynomials <code>(P(x))/(Q(x))</code>:</p>
+  <ul>
+    <li>If the top's degree is ≥ the bottom's, first divide (long division).</li>
+    <li>Factor the bottom into linear factors <code>(ax + b)</code> and quadratics with no real roots.</li>
+    <li>Each factor gets its own simple fraction:
+      <code>(x − r)</code> → <code>A/(x − r)</code>;
+      <code>(x − r)²</code> → <code>A/(x − r) + B/((x − r)²)</code>;
+      <code>(x² + px + q)</code> → <code>(Ax + B)/(x² + px + q)</code>.</li>
+    <li>Find the constants, then integrate each piece: they give <code>ln</code>, powers, or <code>arctan</code>.</li>
+  </ul>
+  <p class="muted"><b>The idea:</b> it's adding fractions backwards. <code>1/(x − 1) − 1/(x + 1)</code> makes <code>2/(x² − 1)</code>; partial fractions takes the single fraction apart into pieces that are each easy to integrate.</p>
+  <p class="muted"><b>Example:</b> <code>(5x − 1)/((x − 1)(x + 2)) = A/(x − 1) + B/(x + 2)</code>. Multiply out: <code>5x − 1 = A(x + 2) + B(x − 1)</code>. Put <code>x = 1</code>: <code>4 = 3A</code>, <code>A = 4/3</code>. Put <code>x = −2</code>: <code>−11 = −3B</code>, <code>B = 11/3</code>. So the integral is <code>(4/3) ln|x − 1| + (11/3) ln|x + 2| + C</code>.</p>
+  <p class="muted"><b>Quick trick:</b> plugging in each root of a linear factor kills every other term, as in the example. Steps: the method "Integrating with partial fractions".</p>
+</div>
+</section>
+
+<!-- ===== IN13 · OTHER SUBSTITUTIONS ===== -->
+<section class="pane" id="pane-in13">
+<h2><span class="num">13</span>Other substitutions</h2>
+<div class="card" data-tags="Explanation">
+  <h4>Substitutions that remove roots</h4>
+  <ul>
+    <li>A root of a linear expression, <code>ⁿ√(ax + b)</code>: let <code>u = ⁿ√(ax + b)</code>, so <code>x = (uⁿ − b)/a</code>. The integral becomes a fraction of polynomials.</li>
+    <li>Several roots of <code>x</code> (<code>√x</code> and <code>∛x</code>): let <code>x = u⁶</code> (6 = the least common multiple of the root orders).</li>
+    <li>A fraction of <code>sin x</code> and <code>cos x</code>: <code>u = tan(x/2)</code> turns it into a fraction of polynomials, with <code>sin x = (2u)/(1 + u²)</code>, <code>cos x = (1 − u²)/(1 + u²)</code>, <code>dx = (2 du)/(1 + u²)</code>.</li>
+  </ul>
+  <p class="muted"><b>Example:</b> <code>∫ 1/(1 + √x) dx</code>: <code>u = √x</code>, <code>x = u²</code>, <code>dx = 2u du</code>. It becomes <code>∫ (2u)/(1 + u) du = ∫ (2 − 2/(1 + u)) du = 2u − 2 ln|1 + u| + C = 2√x − 2 ln(1 + √x) + C</code>.</p>
+  <p class="muted"><b>When to try it:</b> after the basic techniques fail. The goal is always to land on something you know: a polynomial, a fraction of polynomials, or a standard integral.</p>
+</div>
+</section>
+
+<!-- ===== IN14 · NUMERICAL INTEGRATION ===== -->
+<section class="pane" id="pane-in14">
+<h2><span class="num">14</span>Numerical integration</h2>
+<div class="card" data-tags="Formula">
+  <h4>The trapezoid rule and Simpson's rule</h4>
+  <p>Split <code>[a, b]</code> into <code>n</code> equal steps of width <code>Δx = (b − a)/n</code>, with points <code>x₀, x₁, …, xₙ</code> and values <code>yᵢ = f(xᵢ)</code>.</p>
+  <ul class="idlist">
+    <li>Trapezoid: <code>T = (Δx)/2 (y₀ + 2y₁ + 2y₂ + … + 2yₙ₋₁ + yₙ)</code></li>
+    <li>Simpson (<code>n</code> even): <code>S = (Δx)/3 (y₀ + 4y₁ + 2y₂ + 4y₃ + … + 4yₙ₋₁ + yₙ)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="the curve 1 over x from 1 to 3 with four trapezoids under it whose tops are straight chords">
+    <path class="band" d="M60 190 V60 L135 103.3 L210 125 L285 138 L360 146.7 V190 Z"/>
+    <path class="ax" d="M40 190 H405 M50 20 V200"/>
+    <path class="ax" d="M135 103.3 V190 M210 125 V190 M285 138 V190 M360 146.7 V190 M60 60 V190"/>
+    <path class="cv2" d="M60 60 L135 103.3 L210 125 L285 138 L360 146.7"/>
+    <path class="cv" d="M60.0 60.0 L68.2 66.8 L76.5 72.9 L84.8 78.4 L93.0 83.4 L101.2 88.0 L109.5 92.3 L117.8 96.1 L126.0 99.7 L134.2 103.0 L142.5 106.1 L150.8 109.0 L159.0 111.7 L167.2 114.2 L175.5 116.6 L183.8 118.8 L192.0 120.9 L200.2 122.8 L208.5 124.7 L216.8 126.4 L225.0 128.1 L233.3 129.7 L241.5 131.2 L249.8 132.6 L258.0 134.0 L266.2 135.3 L274.5 136.5 L282.8 137.7 L291.0 138.8 L299.2 139.9 L307.5 140.9 L315.8 141.9 L324.0 142.9 L332.3 143.8 L340.5 144.7 L348.8 145.6 L357.0 146.4"/>
+    <text x="60" y="206" text-anchor="middle">1</text>
+    <text x="360" y="206" text-anchor="middle">3</text>
+    <text x="370" y="140">y = 1/x</text>
+  </svg>
+  <p class="muted"><b>The idea:</b> when there's no antiderivative to use, add up simple shapes. The trapezoid rule joins neighbouring points with straight chords; Simpson's rule fits a parabola through each three points, which follows a curve much more closely.</p>
+  <p class="muted"><b>Example:</b> <code>∫_(1)^(3) 1/(x) dx = ln 3 ≈ 1.0986</code>. With <code>n = 4</code>, <code>Δx = 0.5</code>, values <code>1, 0.667, 0.5, 0.4, 0.333</code>: trapezoid <code>0.25(1 + 1.333 + 1 + 0.8 + 0.333) ≈ 1.1167</code>; Simpson <code>(0.5/3)(1 + 2.667 + 1 + 1.6 + 0.333) ≈ 1.1000</code>. Simpson is much closer.</p>
+  <p class="muted"><b>Error bounds:</b> trapezoid <code>≤ ((b − a)³ M₂)/(12n²)</code> with <code>M₂ ≥ |f''|</code>; Simpson <code>≤ ((b − a)⁵ M₄)/(180n⁴)</code> with <code>M₄ ≥ |f⁽⁴⁾|</code>. Doubling <code>n</code> cuts the trapezoid error by about 4 and Simpson's by about 16.</p>
+</div>
+</section>
 </div><!-- /folder-int -->
 <div class="folder" id="folder-ser">
 
@@ -4584,9 +4705,55 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"]],"m":[["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"]],"m":[["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_intrig", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Integrating powers of sin and cos",
+  "description": "Integrate sinᵐx cosⁿx by saving one factor or lowering the powers.",
+  "uses": [["c", "in10", "Powers of sin and cos"], ["c", "s1", "half-angle"], ["c", "s1", "pythagorean"]],
+  "parts": [
+    { "id": "st_bi_intrig1", "cat": "stage", "name": "Look at the powers", "text": "Is one of them odd? Then save one factor. Both even? Then lower the powers." },
+    { "id": "st_bi_intrig2", "cat": "stage", "name": "Odd: save and substitute", "text": "Odd power of `cos`: keep one `cos x`, write the rest with `cos²x = 1 − sin²x`, set `u = sin x`. (Odd `sin`: the mirror image, `u = cos x`, `du = −sin x dx`.)" },
+    { "id": "st_bi_intrig3", "cat": "stage", "name": "Even: lower the powers", "text": "`sin²x = (1 − cos 2x)/2`, `cos²x = (1 + cos 2x)/2`, `sin x cos x = (sin 2x)/2`. Repeat if powers are still even." },
+    { "id": "st_bi_intrig4", "cat": "example", "name": "Example — odd power", "text": "`∫ sin²x cos³x dx`\n2. `= ∫ sin²x (1 − sin²x) cos x dx`, `u = sin x`: `∫ (u² − u⁴) du = (u³)/3 − (u⁵)/5`\n`= (sin³x)/3 − (sin⁵x)/5 + C`" },
+    { "id": "st_bi_intrig5", "cat": "example", "name": "Example — even powers", "text": "`∫ sin²x cos²x dx`\n3. `= ∫ ((sin 2x)/2)² dx = (1/4) ∫ sin²2x dx = (1/4) ∫ (1 − cos 4x)/2 dx`\n`= x/8 − (sin 4x)/32 + C`" }
+  ] },
+{ "id": "pp_bi_intsub", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Integrating with a trig substitution",
+  "description": "Remove a root like √(9 − x²), √(x² + 4) or √(x² − 1) by substituting a trig function.",
+  "uses": [["c", "in11", "Trig substitution"]],
+  "parts": [
+    { "id": "st_bi_intsub1", "cat": "stage", "name": "Pick the substitution", "text": "`√(a² − x²)` → `x = a sin θ`; `√(a² + x²)` → `x = a tan θ`; `√(x² − a²)` → `x = a sec θ`. If there's `x² + bx + c`, complete the square first." },
+    { "id": "st_bi_intsub2", "cat": "stage", "name": "Replace everything", "text": "Replace `x`, `dx` and the root. The root becomes `a cos θ`, `a sec θ` or `a tan θ`." },
+    { "id": "st_bi_intsub3", "cat": "stage", "name": "Integrate in θ", "text": "Usually a trig integral (Integrals › 10)." },
+    { "id": "st_bi_intsub4", "cat": "stage", "name": "Back to x with a triangle", "text": "Draw the right triangle of the substitution, and read the trig functions of `θ` in terms of `x`. For a definite integral you can change the bounds to `θ` instead." },
+    { "id": "st_bi_intsub5", "cat": "example", "name": "Example — area of a circle", "text": "`∫_(−r)^(r) √(r² − x²) dx` (half a circle)\n1. `x = r sin θ`, from `θ = −π/2` to `π/2`\n2. `√(r² − x²) = r cos θ`, `dx = r cos θ dθ`\n3. `r² ∫ cos²θ dθ = r² [θ/2 + (sin 2θ)/4]` from `−π/2` to `π/2` `= (πr²)/2`\nHalf the area of a circle ✓" }
+  ] },
+{ "id": "pp_bi_inpf", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Integrating with partial fractions",
+  "description": "Integrate a fraction of polynomials by splitting it into simple fractions.",
+  "uses": [["c", "in12", "Partial fractions"], ["c", "in4", "A linear function to a power"], ["c", "fn6", "Integrals that give arctan"]],
+  "parts": [
+    { "id": "st_bi_inpf1", "cat": "stage", "name": "Divide if needed", "text": "If deg(top) ≥ deg(bottom), do long division: a polynomial plus a proper fraction." },
+    { "id": "st_bi_inpf2", "cat": "stage", "name": "Factor the bottom", "text": "Into linear factors and irreducible quadratics (negative discriminant)." },
+    { "id": "st_bi_inpf3", "cat": "stage", "name": "Write the pieces", "text": "One fraction per factor (with every power for repeated factors), with unknown constants on top." },
+    { "id": "st_bi_inpf4", "cat": "stage", "name": "Find the constants", "text": "Multiply both sides by the bottom. Plug in the roots, then compare coefficients for whatever is left." },
+    { "id": "st_bi_inpf5", "cat": "stage", "name": "Integrate each piece", "text": "`A/(x − r)` → `A ln|x − r|`; `A/((x − r)ᵏ)` → a power; `(Ax + B)/(x² + px + q)` → an `ln` part plus an `arctan` part." },
+    { "id": "st_bi_inpf6", "cat": "example", "name": "Example — a repeated factor", "text": "`∫ (x + 3)/(x(x − 1)²) dx`\n3. `A/(x) + B/(x − 1) + C/((x − 1)²)`\n4. `x + 3 = A(x − 1)² + Bx(x − 1) + Cx`. `x = 0`: `A = 3`. `x = 1`: `C = 4`. Coefficient of `x²`: `0 = A + B`, so `B = −3`.\n5. `3 ln|x| − 3 ln|x − 1| − 4/(x − 1) + C`" },
+    { "id": "st_bi_inpf7", "cat": "example", "name": "Example — a quadratic factor", "text": "`∫ 2/(x(x² + 1)) dx`\n3. `A/(x) + (Bx + C)/(x² + 1)`\n4. `2 = A(x² + 1) + (Bx + C)x`. `x = 0`: `A = 2`. `x²`: `0 = A + B`, `B = −2`. `x`: `C = 0`.\n5. `2 ln|x| − ln(x² + 1) + C`" }
+  ] },
+{ "id": "pp_bi_innum", "v": 1, "subject": "f:int", "kind": "problem",
+  "name": "Approximating an integral numerically",
+  "description": "Estimate a definite integral with the trapezoid rule or Simpson's rule, and choose n for a given accuracy.",
+  "uses": [["c", "in14", "The trapezoid rule and Simpson's rule"]],
+  "parts": [
+    { "id": "st_bi_innum1", "cat": "stage", "name": "Choose n", "text": "For a given accuracy, find the smallest `n` that makes the error bound small enough (Simpson needs `n` even)." },
+    { "id": "st_bi_innum2", "cat": "stage", "name": "Make a table", "text": "`Δx = (b − a)/n`, the points `xᵢ = a + iΔx`, and the values `f(xᵢ)`." },
+    { "id": "st_bi_innum3", "cat": "stage", "name": "Apply the rule", "text": "Trapezoid weights `1, 2, 2, …, 2, 1`, times `(Δx)/2`. Simpson weights `1, 4, 2, 4, …, 4, 1`, times `(Δx)/3`." },
+    { "id": "st_bi_innum4", "cat": "example", "name": "Example — Simpson", "text": "`∫_(0)^(1) e^(−x²) dx`, `n = 4`\n2. `Δx = 0.25`; values `1, 0.9394, 0.7788, 0.5698, 0.3679`\n3. `(0.25/3)(1 + 4(0.9394) + 2(0.7788) + 4(0.5698) + 0.3679) ≈ 0.7469`\n(True value `0.74682`.)" },
+    { "id": "st_bi_innum5", "cat": "example", "name": "Example — choosing n", "text": "Trapezoid for `∫_(1)^(2) 1/(x) dx` with error `< 0.001`\n1. `f''(x) = 2/(x³) ≤ 2` on `[1, 2]`, so the error is `≤ 2/(12n²)`. Need `1/(6n²) < 0.001` → `n² > 166.7` → `n = 13`." }
+  ] },
 { "id": "pp_bi_fninv", "v": 1, "subject": "f:fn", "kind": "problem",
   "name": "Finding an inverse function",
   "description": "Check that a function has an inverse, find its formula, domain and range.",
