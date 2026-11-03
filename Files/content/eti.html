@@ -1662,252 +1662,272 @@
 <!-- ===== C1 · DOMAIN ===== -->
 <section class="pane on" id="pane-c1">
 <h2><span class="num">0</span>Domain of definition</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="c1">Expand all</button>
-  <button data-acc="close" data-scope="c1">Collapse all</button>
+<div class="card" data-key="risky-forms-their-conditions" data-tags="Definition">
+  <h4>Where a formula is defined</h4>
+  <p>The <b>domain</b> is every <code>x</code> you're allowed to put into a formula. Only a few things can go wrong:</p>
+  <table>
+    <thead><tr><th>Form</th><th>Condition</th></tr></thead>
+    <tbody>
+      <tr><td><code>1/(f(x))</code></td><td><code>f(x) ≠ 0</code></td></tr>
+      <tr><td><code>√(f(x))</code>, any even root</td><td><code>f(x) ≥ 0</code></td></tr>
+      <tr><td><code>log_b(f(x))</code>, <code>ln(f(x))</code></td><td><code>f(x) &gt; 0</code></td></tr>
+      <tr><td><code>tan(f(x))</code></td><td><code>cos(f(x)) ≠ 0</code></td></tr>
+      <tr><td><code>x⁻ⁿ</code></td><td><code>x ≠ 0</code></td></tr>
+    </tbody>
+  </table>
+  <p>Write a condition for every risky part, then join them all with <span class="tag-and">AND</span>.</p>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="number lines for x greater than 1 and x less than 5; together they leave the interval from 1 to 5">
+    <path class="ax" d="M20 40 H400 M20 85 H400 M20 135 H400"/>
+    <path class="cv" d="M156 40 H385"/>
+    <path class="arr" d="M398 40 L386 34 L386 46 Z"/>
+    <circle class="hole" cx="150" cy="40" r="6"/>
+    <path class="cv2" d="M35 85 H264"/>
+    <path class="arr" d="M22 85 L34 79 L34 91 Z"/>
+    <circle class="hole" cx="270" cy="85" r="6"/>
+    <rect class="band" x="150" y="127" width="120" height="16"/>
+    <circle class="hole" cx="150" cy="135" r="6"/>
+    <circle class="hole" cx="270" cy="135" r="6"/>
+    <text class="sm" x="40" y="30">ln(x − 1): x &gt; 1</text>
+    <text class="sm" x="290" y="75">√(5 − x) on the bottom: x &lt; 5</text>
+    <text x="150" y="162" text-anchor="middle">1</text>
+    <text x="270" y="162" text-anchor="middle">5</text>
+    <text class="sm" x="290" y="139">AND: 1 &lt; x &lt; 5</text>
+  </svg>
+  <p class="muted"><b>Why these:</b> you can't divide by zero; a real square root of a negative number doesn't exist; a log only takes positive numbers (no power of a positive base is <code>0</code> or negative); <code>tan = sin/cos</code> is a division by <code>cos</code>.</p>
+  <p class="muted"><b>A root on the bottom</b> needs both conditions at once: <code>≥ 0</code> for the root and <code>≠ 0</code> for the division, so <code>&gt; 0</code>. That's why the sketch has <code>x &lt; 5</code>, not <code>x ≤ 5</code>.</p>
+  <p class="muted"><b>Example:</b> <code>(ln(x − 1))/(√(5 − x))</code>: <code>x − 1 &gt; 0</code> AND <code>5 − x &gt; 0</code>, so the domain is <code>1 &lt; x &lt; 5</code>. Steps: the method "Finding the domain".</p>
 </div>
-
-<details class="subject" open>
-  <summary>Risky forms &amp; their conditions<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <table>
-      <thead><tr><th>Form</th><th>Domain requirement</th></tr></thead>
-      <tbody>
-        <tr><td><code>1/f(x)</code></td><td><code>f(x) ≠ 0</code></td></tr>
-        <tr><td><code>x⁻ⁿ</code></td><td><code>x ≠ 0</code></td></tr>
-        <tr><td><code>√f(x)</code>, <code>ⁿ√f(x)</code> (n even)</td><td><code>f(x) ≥ 0</code></td></tr>
-        <tr><td><code>aˣ</code></td><td>always <code>&gt; 0</code> (never 0, never negative)</td></tr>
-        <tr><td><code>log_b(a)</code></td><td><code>a &gt; 0</code> and <code>b &gt; 0, b ≠ 1</code></td></tr>
-        <tr><td><code>tan(f(x))</code></td><td><code>cos(f(x)) ≠ 0</code></td></tr>
-      </tbody>
-    </table>
-    <p>Write each condition, then <b>intersect (AND)</b> them all. A root in a <b>denominator</b> tightens <code>≥ 0</code> to <code>&gt; 0</code>.</p>
+<div class="card" data-key="domain-builder" data-tags="Explanation">
+  <h4>Domain builder</h4>
+  <p>Add each condition your formula needs; the tool shows where they all hold at once (their intersection).</p>
+  <div class="tool">
+    <p class="tool-title">Intersect conditions</p>
+    <div id="domRows"></div>
+    <div class="btnrow"><button id="domAdd">+ add condition</button></div>
+    <svg id="domLine" class="numline" viewBox="0 0 520 120" style="max-width:520px"></svg>
+    <div class="resultbox" id="domOut">–</div>
   </div>
-</details>
-
-<details class="subject" open>
-  <summary>Domain builder<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p>Add the conditions your expression forces; the intersection is the domain.</p>
-    <div class="tool">
-      <p class="tool-title">Intersect conditions</p>
-      <div id="domRows"></div>
-      <div class="btnrow"><button id="domAdd">+ add condition</button></div>
-      <svg id="domLine" class="numline" viewBox="0 0 520 120" style="max-width:520px"></svg>
-      <div class="resultbox" id="domOut">–</div>
-    </div>
-    <p class="muted"><b>Example.</b> <code>ln(x−1) / √(5−x)</code> → <code>x &gt; 1</code> AND <code>x &lt; 5</code> → domain <code>1 &lt; x &lt; 5</code>.</p>
-  </div>
-</details>
+</div>
 </section>
 
 <!-- ===== C2 · DERIVATIVES ===== -->
 <section class="pane" id="pane-c2">
 <h2><span class="num">1</span>Derivatives</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="c2">Expand all</button>
-  <button data-acc="close" data-scope="c2">Collapse all</button>
+<div class="card" data-key="secant-tangent" data-tags="Definition">
+  <h4>From secant to tangent: what a derivative is</h4>
+  <p><code>f'(x) = lim_(h→0) (f(x + h) − f(x))/h</code></p>
+  <p>It's the <b>slope of the tangent</b> to the graph at <code>x</code>: how fast <code>f</code> is changing there.</p>
+  <p class="muted"><b>The idea in three steps:</b> (1) take two points on the graph, <code>x</code> and <code>x + h</code>; (2) the line through them (a <b>secant</b>) has slope <code>(f(x + h) − f(x))/h</code>, "rise over run"; (3) slide the second point towards the first (<code>h → 0</code>) and the secant turns into the <b>tangent</b>. Shrink <code>h</code> below and watch the slope settle on <code>1</code>.</p>
+  <p class="muted">The full story, with differentiability and the theorems, is in the Derivatives subject.</p>
+  <div class="tool">
+    <p class="tool-title">Shrink <code>h</code> toward 0 &nbsp;(<code>f(x) = ¼x²</code>, at <code>x = 2</code>)</p>
+    <label class="muted">h = <span id="secHLbl" class="mono">2.0</span></label>
+    <input type="range" id="secH" min="0.05" max="3" step="0.05" value="2">
+    <svg id="secSvg" viewBox="0 0 340 260" style="max-width:340px"></svg>
+    <div class="readout">
+      <span class="k">secant slope</span><span class="v" id="secSlope">–</span>
+      <span class="k">true f'(2)</span><span class="v">1.000</span>
+    </div>
+  </div>
 </div>
-
-<details class="subject" open>
-  <summary>Secant → tangent<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p><code>f'(x) = lim_(h→0) [f(x+h) − f(x)] / h</code> — the secant slope collapses to the tangent slope.</p>
-    <div class="tool">
-      <p class="tool-title">Shrink <code>h</code> toward 0 &nbsp;(<code>f(x) = ¼x²</code>, at <code>x = 2</code>)</p>
-      <label class="muted">h = <span id="secHLbl" class="mono">2.0</span></label>
-      <input type="range" id="secH" min="0.05" max="3" step="0.05" value="2">
-      <svg id="secSvg" viewBox="0 0 340 260" style="max-width:340px"></svg>
-      <div class="readout">
-        <span class="k">secant slope</span><span class="v" id="secSlope">–</span>
-        <span class="k">true f'(2)</span><span class="v">1.000</span>
-      </div>
+<div class="card" data-key="differentiation-rules" data-tags="Formula">
+  <h4>Differentiation rules</h4>
+  <ul class="idlist">
+    <li><code>(xⁿ)' = n · xⁿ⁻¹</code> &nbsp;·&nbsp; <code>(c)' = 0</code> &nbsp;·&nbsp; <code>(c · f)' = c · f'</code> &nbsp;·&nbsp; <code>(f ± g)' = f' ± g'</code></li>
+    <li>Product: <code>(f · g)' = f'g + fg'</code></li>
+    <li>Quotient: <code>(f/g)' = (f'g − fg')/(g²)</code></li>
+    <li>Chain: <code>(f(g(x)))' = f'(g(x)) · g'(x)</code></li>
+  </ul>
+  <p class="muted"><b>Power rule in words:</b> bring the exponent down in front, then lower it by one. <code>(x⁵)' = 5x⁴</code>. Roots and fractions are powers too: <code>√x = x^(1/2)</code>, so <code>(√x)' = (1/2)x^(−1/2) = 1/(2√x)</code>.</p>
+  <p class="muted"><b>Chain rule in words:</b> differentiate the outside, keep the inside as it is, then multiply by the derivative of the inside. <code>((3x² + 1)⁵)'</code>: outside <code>( )⁵</code> gives <code>5(3x² + 1)⁴</code>, inside gives <code>6x</code>. Answer: <code>30x(3x² + 1)⁴</code>.</p>
+  <p class="muted"><b>Another chain example:</b> <code>(√(x² + 1))' = 1/(2√(x² + 1)) · 2x = (x)/(√(x² + 1))</code>.</p>
+  <p class="muted">More formulas and worked examples: Derivatives › 2.</p>
+</div>
+<div class="card" data-key="derivative-playground" data-tags="Explanation">
+  <h4>See f and f′ together</h4>
+  <p>Pick a function and move <code>x</code>: the tangent line follows, and <code>f′(x)</code> is its slope.</p>
+  <p class="muted"><b>Things to notice:</b> where the graph rises, <code>f′</code> is positive; at a peak or a valley the tangent is flat and <code>f′ = 0</code>; for <code>eˣ</code>, the slope always equals the height.</p>
+  <div class="tool">
+    <p class="tool-title">f and f′, with the tangent line</p>
+    <div class="btnrow" id="dvFn">
+      <button data-f="sq" class="on">x²</button>
+      <button data-f="cube">x³</button>
+      <button data-f="sqrt">√x</button>
+      <button data-f="sin">sin x</button>
+      <button data-f="exp">eˣ</button>
+      <button data-f="ln">ln x</button>
+      <button data-f="inv">1/x</button>
+    </div>
+    <svg id="dvSvg" viewBox="0 0 420 280" style="max-width:420px"></svg>
+    <label class="muted">x = <span id="dvXLbl" class="mono">1.0</span></label>
+    <input type="range" id="dvX" min="-4" max="4" step="0.05" value="1">
+    <div class="readout">
+      <span class="k"><i class="dot" style="background:var(--cos)"></i>f(x)</span><span class="v" id="dvF">–</span>
+      <span class="k"><i class="dot" style="background:var(--sin)"></i>f′(x) = tangent slope</span><span class="v" id="dvD">–</span>
     </div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Differentiation rules<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:560px">
-      <li><code>d/dx[xⁿ] = n·xⁿ⁻¹</code>,&nbsp; <code>d/dx[c] = 0</code>,&nbsp; <code>d/dx[c·f] = c·f'</code></li>
-      <li><code>d/dx[f ± g] = f' ± g'</code></li>
-      <li><b>Product:</b> <code>d/dx[f·g] = f'g + fg'</code></li>
-      <li><b>Quotient:</b> <code>d/dx[f/g] = (f'g − fg') / g²</code></li>
-      <li><b>Chain:</b> <code>d/dx[f(g(x))] = f'(g(x))·g'(x)</code></li>
-      <li><b>Roots:</b> convert first — <code>√x = x^(1/2)</code> → <code>1/(2√x)</code>.</li>
-    </ul>
-    <p class="muted"><b>Examples.</b> <code>d/dx[(3x²+1)⁵] = 30x(3x²+1)⁴</code>. &nbsp; <code>d/dx[√(x²+1)] = x/√(x²+1)</code>.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Derivative playground<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <div class="tool">
-      <p class="tool-title">f and f′, with the tangent line</p>
-      <div class="btnrow" id="dvFn">
-        <button data-f="sq" class="on">x²</button>
-        <button data-f="cube">x³</button>
-        <button data-f="sqrt">√x</button>
-        <button data-f="sin">sin x</button>
-        <button data-f="exp">eˣ</button>
-        <button data-f="ln">ln x</button>
-        <button data-f="inv">1/x</button>
-      </div>
-      <svg id="dvSvg" viewBox="0 0 420 280" style="max-width:420px"></svg>
-      <label class="muted">x = <span id="dvXLbl" class="mono">1.0</span></label>
-      <input type="range" id="dvX" min="-4" max="4" step="0.05" value="1">
-      <div class="readout">
-        <span class="k"><i class="dot" style="background:var(--cos)"></i>f(x)</span><span class="v" id="dvF">–</span>
-        <span class="k"><i class="dot" style="background:var(--sin)"></i>f′(x) = tangent slope</span><span class="v" id="dvD">–</span>
-      </div>
-    </div>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Increasing / decreasing &amp; sign charts<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <p><code>f</code> increases where <code>f'(x) &gt; 0</code>, decreases where <code>f'(x) &lt; 0</code>. <b>Critical points:</b> <code>f'(x) = 0</code> or undefined. Build a sign chart of <code>f'</code> with those as boundaries and test each interval.</p>
-  </div>
-</details>
+</div>
+<div class="card" data-key="increasing-decreasing-sign-charts" data-tags="Theorem">
+  <h4>Increasing, decreasing and sign charts</h4>
+  <p><code>f'(x) &gt; 0</code> on an interval → <code>f</code> is <b>increasing</b> there. <code>f'(x) &lt; 0</code> → <b>decreasing</b>. The points where <code>f' = 0</code> or <code>f'</code> is undefined are the <b>critical points</b>: the only places the direction can change.</p>
+  <svg class="ill" viewBox="0 0 420 285" role="img" aria-label="the graph of x cubed minus 3x rising, falling, then rising, with the sign chart of its derivative underneath: plus, minus, plus">
+    <path class="ax" d="M40 110 H390 M210 10 V215"/>
+    <path class="cv" d="M78.0 211.2 L84.0 184.0 L90.0 160.0 L96.0 139.0 L102.0 120.8 L108.0 105.3 L114.0 92.4 L120.0 81.9 L126.0 73.6 L132.0 67.4 L138.0 63.2 L144.0 60.8 L150.0 60.0 L156.0 60.7 L162.0 62.8 L168.0 66.1 L174.0 70.4 L180.0 75.6 L186.0 81.6 L192.0 88.2 L198.0 95.2 L204.0 102.5 L210.0 110.0 L216.0 117.5 L222.0 124.8 L228.0 131.8 L234.0 138.4 L240.0 144.4 L246.0 149.6 L252.0 153.9 L258.0 157.2 L264.0 159.3 L270.0 160.0 L276.0 159.2 L282.0 156.8 L288.0 152.6 L294.0 146.4 L300.0 138.1 L306.0 127.6 L312.0 114.7 L318.0 99.2 L324.0 81.0 L330.0 60.0 L336.0 36.0 L342.0 8.8"/>
+    <path class="gd" d="M150 60 V250 M270 160 V250"/>
+    <circle class="dot" cx="150" cy="60" r="4"/>
+    <circle class="dot" cx="270" cy="160" r="4"/>
+    <text class="sm" x="150" y="48" text-anchor="middle">max</text>
+    <text class="sm" x="270" y="180" text-anchor="middle">min</text>
+    <text x="350" y="30">y = x³ − 3x</text>
+    <path class="ax" d="M40 250 H390"/>
+    <text x="30" y="255" text-anchor="end">f′</text>
+    <text x="95" y="240" text-anchor="middle">+  rising</text>
+    <text x="210" y="240" text-anchor="middle">−  falling</text>
+    <text x="330" y="240" text-anchor="middle">+  rising</text>
+    <text x="150" y="272" text-anchor="middle">−1</text>
+    <text x="270" y="272" text-anchor="middle">1</text>
+  </svg>
+  <p class="muted"><b>Why:</b> <code>f'</code> is the slope of the tangent. A positive slope means the graph is going up as you move right.</p>
+  <p class="muted"><b>Sign chart, step by step:</b> for <code>f(x) = x³ − 3x</code>, <code>f'(x) = 3x² − 3 = 3(x − 1)(x + 1)</code>. It's <code>0</code> at <code>x = −1</code> and <code>x = 1</code>. Test a number in each piece: <code>f'(−2) = 9 &gt; 0</code>, <code>f'(0) = −3 &lt; 0</code>, <code>f'(2) = 9 &gt; 0</code>. So <code>f</code> rises, falls, then rises: a maximum at <code>x = −1</code> and a minimum at <code>x = 1</code>.</p>
+  <p class="muted">Full steps: the method "Find the local extrema" (Derivatives).</p>
+</div>
 </section>
 
 <!-- ===== C3 · INTEGRALS ===== -->
 <section class="pane" id="pane-c3">
 <h2><span class="num">2</span>Integrals</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="c3">Expand all</button>
-  <button data-acc="close" data-scope="c3">Collapse all</button>
-</div>
-
-<details class="subject" open>
-  <summary>Definite integral &amp; signed area<span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p>If <code>F' = f</code> then <code>∫f dx = F + C</code>, and <code>∫[a,b] f dx = F(b) − F(a)</code> (FTC) = <b>signed</b> area (below the axis counts negative).</p>
-    <div class="tool">
-      <p class="tool-title">Area under a curve</p>
-      <div class="btnrow" id="intFn">
-        <button data-f="sq" class="on">x²</button>
-        <button data-f="cube">x³</button>
-        <button data-f="sin">sin x</button>
-        <button data-f="line">x − 1</button>
-        <button data-f="exp">eˣ</button>
-      </div>
-      <svg id="intSvg" viewBox="0 0 420 260" style="max-width:420px"></svg>
-      <label class="muted">a = <span id="intALbl" class="mono">0</span></label><input type="range" id="intA" min="-4" max="4" step="0.1" value="0">
-      <label class="muted">b = <span id="intBLbl" class="mono">2</span></label><input type="range" id="intB" min="-4" max="4" step="0.1" value="2">
-      <div class="readout">
-        <span class="k">∫[a,b] f dx (signed)</span><span class="v" id="intSigned">–</span>
-        <span class="k">geometric area (|·| pieces)</span><span class="v" id="intGeom">–</span>
-      </div>
+<div class="card" data-key="definite-integral-signed-area" data-tags="Definition">
+  <h4>Antiderivatives and signed area</h4>
+  <p>If <code>F' = f</code>, then <code>F</code> is an <b>antiderivative</b> of <code>f</code> and <code>∫ f(x) dx = F(x) + C</code>.</p>
+  <p><code>∫_(a)^(b) f(x) dx = F(b) − F(a)</code> is the <b>signed area</b> between the graph and the x-axis, from <code>a</code> to <code>b</code>: area above the axis counts plus, area below counts minus.</p>
+  <p class="muted"><b>In words:</b> integrating is differentiating backwards. Since <code>(x³)' = 3x²</code>, an antiderivative of <code>3x²</code> is <code>x³</code>. The <code>+ C</code> is there because constants disappear when you differentiate, so <code>x³ + 5</code> works too.</p>
+  <p class="muted"><b>Example:</b> <code>∫_(0)^(2) x² dx = (2³)/3 − (0³)/3 = 8/3</code>. Try <code>x²</code> with <code>a = 0</code> and <code>b = 2</code> below.</p>
+  <p class="muted">The full subject, with why this works (the fundamental theorem), is Integrals.</p>
+  <div class="tool">
+    <p class="tool-title">Area under a curve</p>
+    <div class="btnrow" id="intFn">
+      <button data-f="sq" class="on">x²</button>
+      <button data-f="cube">x³</button>
+      <button data-f="sin">sin x</button>
+      <button data-f="line">x − 1</button>
+      <button data-f="exp">eˣ</button>
+    </div>
+    <svg id="intSvg" viewBox="0 0 420 260" style="max-width:420px"></svg>
+    <label class="muted">a = <span id="intALbl" class="mono">0</span></label><input type="range" id="intA" min="-4" max="4" step="0.1" value="0">
+    <label class="muted">b = <span id="intBLbl" class="mono">2</span></label><input type="range" id="intB" min="-4" max="4" step="0.1" value="2">
+    <div class="readout">
+      <span class="k">∫[a,b] f dx (signed)</span><span class="v" id="intSigned">–</span>
+      <span class="k">geometric area (|·| pieces)</span><span class="v" id="intGeom">–</span>
     </div>
   </div>
-</details>
-
-<details class="subject">
-  <summary>Geometric area when part dips below<span class="stag">method</span></summary>
-  <div class="subject-body">
-    <ol class="steps">
-      <li>Find where <code>f(x) = 0</code> inside <code>[a,b]</code> — these split it into constant-sign pieces.</li>
-      <li>Integrate each piece separately.</li>
-      <li><b>Take the absolute value</b> of any negative piece.</li>
-      <li>Sum: <code>total area = Σ |∫ over each sub-interval|</code>.</li>
-    </ol>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>u-substitution / reverse chain rule<span class="stag">method</span></summary>
-  <div class="subject-body">
-    <ol class="steps">
-      <li>Let <code>t</code> = the inner expression; <code>dt = (inner)' dx</code> → isolate <code>dx</code>.</li>
-      <li>Substitute so everything is in <code>t</code>.</li>
-      <li>Integrate w.r.t. <code>t</code>, then substitute back.</li>
-    </ol>
-    <p><b>Shortcut:</b> <code>∫ g'(x)·[g(x)]ⁿ dx = [g(x)]ⁿ⁺¹/(n+1) + C</code> — undoing the chain rule.</p>
-    <p class="muted"><b>Example.</b> <code>∫2x(x²+1)⁴ dx</code>, <code>t = x²+1</code> → <code>∫t⁴ dt = (x²+1)⁵/5 + C</code>.</p>
-  </div>
-</details>
+</div>
+<div class="card" data-key="geometric-area-when-part-dips-below" data-tags="Theorem">
+  <h4>Area when the graph dips below the axis</h4>
+  <p>The integral counts area below the axis as <b>negative</b>. For the real area, split the interval where <code>f = 0</code>, integrate each piece, and add up the pieces' <b>absolute values</b>.</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="sine from 0 to 2 pi: the hump above the axis is plus 2, the dip below is minus 2">
+    <path class="band" d="M40.0 110.0 L46.5 102.2 L53.1 94.5 L59.6 87.0 L66.2 80.0 L72.7 73.5 L79.3 67.6 L85.8 62.4 L92.4 58.0 L98.9 54.6 L105.4 52.0 L112.0 50.5 L118.5 50.0 L125.1 50.5 L131.6 52.0 L138.2 54.6 L144.7 58.0 L151.3 62.4 L157.8 67.6 L164.4 73.5 L170.9 80.0 L177.4 87.0 L184.0 94.5 L190.5 102.2 L197.1 110.0 Z"/>
+    <path class="band2" d="M197.1 110.0 L203.6 117.8 L210.2 125.5 L216.7 133.0 L223.3 140.0 L229.8 146.5 L236.3 152.4 L242.9 157.6 L249.4 162.0 L256.0 165.4 L262.5 168.0 L269.1 169.5 L275.6 170.0 L282.2 169.5 L288.7 168.0 L295.3 165.4 L301.8 162.0 L308.3 157.6 L314.9 152.4 L321.4 146.5 L328.0 140.0 L334.5 133.0 L341.1 125.5 L347.6 117.8 L354.2 110.0 Z"/>
+    <path class="ax" d="M25 110 H390 M40 30 V190"/>
+    <path class="cv" d="M40.0 110.0 L46.5 102.2 L53.1 94.5 L59.6 87.0 L66.2 80.0 L72.7 73.5 L79.3 67.6 L85.8 62.4 L92.4 58.0 L98.9 54.6 L105.4 52.0 L112.0 50.5 L118.5 50.0 L125.1 50.5 L131.6 52.0 L138.2 54.6 L144.7 58.0 L151.3 62.4 L157.8 67.6 L164.4 73.5 L170.9 80.0 L177.4 87.0 L184.0 94.5 L190.5 102.2 L197.1 110.0 L203.6 117.8 L210.2 125.5 L216.7 133.0 L223.3 140.0 L229.8 146.5 L236.3 152.4 L242.9 157.6 L249.4 162.0 L256.0 165.4 L262.5 168.0 L269.1 169.5 L275.6 170.0 L282.2 169.5 L288.7 168.0 L295.3 165.4 L301.8 162.0 L308.3 157.6 L314.9 152.4 L321.4 146.5 L328.0 140.0 L334.5 133.0 L341.1 125.5 L347.6 117.8 L354.2 110.0"/>
+    <text x="118" y="92" text-anchor="middle">+2</text>
+    <text x="276" y="142" text-anchor="middle">−2</text>
+    <text x="197" y="126" text-anchor="middle">π</text>
+    <text x="360" y="100">2π</text>
+  </svg>
+  <p class="muted"><b>Example:</b> <code>∫_(0)^(2π) sin x dx = 0</code>, because the hump (<code>+2</code>) and the dip (<code>−2</code>) cancel. But the area is clearly not <code>0</code>: it's <code>|2| + |−2| = 4</code>.</p>
+  <p class="muted"><b>The steps:</b> (1) find where <code>f(x) = 0</code> inside <code>[a, b]</code>; (2) integrate each piece separately; (3) take the absolute value of each piece; (4) add them. Worked examples: the method "Integral value vs. area" (Integrals).</p>
+</div>
+<div class="card" data-key="u-substitution-reverse-chain-rule" data-tags="Theorem">
+  <h4>Substitution: undoing the chain rule</h4>
+  <p>When an integral contains an inner expression <b>and</b> its derivative, set <code>t =</code> the inner expression. Then <code>dt = t'(x) dx</code>, and the integral becomes a simple one in <code>t</code>.</p>
+  <p>Shortcut: <code>∫ g'(x) · (g(x))ⁿ dx = ((g(x))ⁿ⁺¹)/(n + 1) + C</code> &nbsp;(<code>n ≠ −1</code>)</p>
+  <p class="muted"><b>Why it works:</b> the chain rule says <code>((x² + 1)⁵)' = 5(x² + 1)⁴ · 2x</code>. Read backwards: an integral with <code>(x² + 1)⁴</code> <b>and</b> a <code>2x</code> next to it came from <code>(x² + 1)⁵</code>.</p>
+  <p class="muted"><b>Example, step by step:</b> <code>∫ 2x(x² + 1)⁴ dx</code>. (1) <code>t = x² + 1</code>. (2) <code>dt = 2x dx</code>: that's exactly the rest of the integral. (3) It becomes <code>∫ t⁴ dt = (t⁵)/5 + C</code>. (4) Put <code>x</code> back: <code>((x² + 1)⁵)/5 + C</code>.</p>
+  <p class="muted">Full steps and harder examples: the method "Integration by substitution" (Integrals).</p>
+</div>
 </section>
 
 <!-- ===== C4 · TRIG CALCULUS ===== -->
 <section class="pane" id="pane-c4">
 <h2><span class="num">3</span>Trigonometric derivatives &amp; integrals</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="c4">Expand all</button>
-  <button data-acc="close" data-scope="c4">Collapse all</button>
+<div class="card" data-key="derivatives" data-tags="Formula">
+  <h4>Derivatives of sin, cos and tan</h4>
+  <ul class="idlist">
+    <li><code>(sin x)' = cos x</code> &nbsp;·&nbsp; <code>(cos x)' = −sin x</code> &nbsp;·&nbsp; <code>(tan x)' = 1/(cos²x)</code></li>
+    <li>With an inside <code>g(x)</code>: <code>(sin g)' = cos g · g'</code> &nbsp;·&nbsp; <code>(cos g)' = −sin g · g'</code> &nbsp;·&nbsp; <code>(tan g)' = (g')/(cos²g)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="sine and cosine over one period: where sine is at its peak, cosine is zero, and where sine rises fastest, cosine is at its peak">
+    <path class="ax" d="M25 110 H390 M40 30 V190"/>
+    <path class="cv" d="M40.0 110.0 L46.5 102.2 L53.1 94.5 L59.6 87.0 L66.2 80.0 L72.7 73.5 L79.3 67.6 L85.8 62.4 L92.4 58.0 L98.9 54.6 L105.4 52.0 L112.0 50.5 L118.5 50.0 L125.1 50.5 L131.6 52.0 L138.2 54.6 L144.7 58.0 L151.3 62.4 L157.8 67.6 L164.4 73.5 L170.9 80.0 L177.4 87.0 L184.0 94.5 L190.5 102.2 L197.1 110.0 L203.6 117.8 L210.2 125.5 L216.7 133.0 L223.3 140.0 L229.8 146.5 L236.3 152.4 L242.9 157.6 L249.4 162.0 L256.0 165.4 L262.5 168.0 L269.1 169.5 L275.6 170.0 L282.2 169.5 L288.7 168.0 L295.3 165.4 L301.8 162.0 L308.3 157.6 L314.9 152.4 L321.4 146.5 L328.0 140.0 L334.5 133.0 L341.1 125.5 L347.6 117.8 L354.2 110.0"/>
+    <path class="cv2" d="M40.0 50.0 L46.5 50.5 L53.1 52.0 L59.6 54.6 L66.2 58.0 L72.7 62.4 L79.3 67.6 L85.8 73.5 L92.4 80.0 L98.9 87.0 L105.4 94.5 L112.0 102.2 L118.5 110.0 L125.1 117.8 L131.6 125.5 L138.2 133.0 L144.7 140.0 L151.3 146.5 L157.8 152.4 L164.4 157.6 L170.9 162.0 L177.4 165.4 L184.0 168.0 L190.5 169.5 L197.1 170.0 L203.6 169.5 L210.2 168.0 L216.7 165.4 L223.3 162.0 L229.8 157.6 L236.3 152.4 L242.9 146.5 L249.4 140.0 L256.0 133.0 L262.5 125.5 L269.1 117.8 L275.6 110.0 L282.2 102.2 L288.7 94.5 L295.3 87.0 L301.8 80.0 L308.3 73.5 L314.9 67.6 L321.4 62.4 L328.0 58.0 L334.5 54.6 L341.1 52.0 L347.6 50.5 L354.2 50.0"/>
+    <path class="gd" d="M118.5 50 V110"/>
+    <circle class="dot" cx="118.5" cy="50" r="4"/>
+    <circle class="dot" cx="118.5" cy="110" r="4"/>
+    <text x="130" y="42">sin x: flat top</text>
+    <text x="126" y="128">cos x = 0 here</text>
+    <text x="362" y="52">cos x</text>
+    <text x="362" y="104">sin x</text>
+  </svg>
+  <p class="muted"><b>See it in the graphs:</b> at the top of the sine wave (<code>x = π/2</code>) the tangent is flat, so the derivative is <code>0</code>, and indeed <code>cos(π/2) = 0</code>. At <code>x = 0</code> sine rises fastest, with slope <code>1</code>, and <code>cos 0 = 1</code>. The cosine curve is the slope of the sine curve.</p>
+  <p class="muted"><b>Example:</b> <code>(sin(3x²))' = cos(3x²) · 6x</code>. The outside (<code>sin</code>) becomes <code>cos</code> with the same inside, times the inside's derivative.</p>
+  <p class="muted">These need <code>x</code> in <b>radians</b>.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Derivatives<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:520px">
-      <li><code>d/dx[sin x] = cos x</code></li>
-      <li><code>d/dx[cos x] = −sin x</code></li>
-      <li><code>d/dx[tan x] = 1/cos²x</code></li>
-    </ul>
-    <p><b>Chain versions</b> (argument <code>g(x)</code>):</p>
-    <ul class="idlist" style="max-width:520px">
-      <li><code>d/dx[sin(g)] = cos(g)·g'</code></li>
-      <li><code>d/dx[cos(g)] = −sin(g)·g'</code></li>
-      <li><code>d/dx[tan(g)] = g'/cos²(g)</code></li>
-    </ul>
-    <p class="muted"><b>Example.</b> <code>d/dx[sin(3x²)] = 6x·cos(3x²)</code>.</p>
-  </div>
-</details>
-
-<details class="subject">
-  <summary>Integrals<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:520px">
-      <li><code>∫sin x dx = −cos x + C</code></li>
-      <li><code>∫cos x dx = sin x + C</code></li>
-      <li><code>∫1/cos²x dx = tan x + C</code></li>
-    </ul>
-    <p>For an inner <code>g(x)</code>: <code>∫g'(x)·cos(g(x)) dx = sin(g(x)) + C</code>, etc.</p>
-  </div>
-</details>
+<div class="card" data-key="integrals" data-tags="Formula">
+  <h4>Integrals of sin and cos</h4>
+  <ul class="idlist">
+    <li><code>∫ sin x dx = −cos x + C</code></li>
+    <li><code>∫ cos x dx = sin x + C</code></li>
+    <li><code>∫ 1/(cos²x) dx = tan x + C</code></li>
+    <li>Inside <code>ax + b</code>: <code>∫ cos(ax + b) dx = (1/a) sin(ax + b) + C</code></li>
+  </ul>
+  <p class="muted"><b>Where the minus comes from:</b> read the derivatives backwards. <code>(cos x)' = −sin x</code>, so to get <code>+sin x</code> you need <code>−cos x</code>. Check by differentiating: <code>(−cos x)' = sin x</code> ✓.</p>
+  <p class="muted"><b>Why <code>1/a</code>:</b> differentiating <code>sin(ax + b)</code> gives an extra <code>a</code> (chain rule), so the integral must divide by it. <code>∫ cos 3x dx = (1/3) sin 3x + C</code>.</p>
+  <p class="muted">More: Integrals › 4 (Sine and cosine).</p>
+</div>
 </section>
 
 <!-- ===== C5 · EXP & LOG CALCULUS ===== -->
 <section class="pane" id="pane-c5">
 <h2><span class="num">4</span>Exponential &amp; logarithmic calculus</h2>
-<div class="accordion-controls">
-  <button data-acc="open" data-scope="c5">Expand all</button>
-  <button data-acc="close" data-scope="c5">Collapse all</button>
+<div class="card" data-key="derivatives-integrals" data-tags="Formula">
+  <h4>Derivatives and integrals of eˣ and ln x</h4>
+  <ul class="idlist">
+    <li><code>(eˣ)' = eˣ</code> &nbsp;·&nbsp; <code>(aˣ)' = aˣ · ln a</code></li>
+    <li><code>(ln x)' = 1/(x)</code> &nbsp;·&nbsp; <code>(log_a(x))' = 1/(x · ln a)</code></li>
+    <li>With an inside <code>g</code>: <code>(e^(g))' = e^(g) · g'</code> &nbsp;·&nbsp; <code>(ln g)' = (g')/(g)</code></li>
+    <li><code>∫ eˣ dx = eˣ + C</code> &nbsp;·&nbsp; <code>∫ aˣ dx = (aˣ)/(ln a) + C</code></li>
+    <li><code>∫ 1/(x) dx = ln|x| + C</code></li>
+  </ul>
+  <p class="muted"><b><code>eˣ</code> is its own derivative:</b> at every point, the slope of its graph equals its height. That's what makes <code>e</code> special (next card).</p>
+  <p class="muted"><b>Why <code>ln|x|</code>:</b> <code>1/(x)</code> is defined for negative <code>x</code> too, but <code>ln x</code> isn't. <code>ln|x|</code> is defined for every <code>x ≠ 0</code> and its derivative is still <code>1/(x)</code>.</p>
+  <p class="muted"><b>Examples:</b> <code>(e^(3x))' = 3e^(3x)</code>. <code>(ln(x² + 1))' = (2x)/(x² + 1)</code>. <code>∫ 2ˣ dx = (2ˣ)/(ln 2) + C</code>.</p>
 </div>
-
-<details class="subject" open>
-  <summary>Derivatives &amp; integrals<span class="stag">reference</span></summary>
-  <div class="subject-body">
-    <ul class="idlist" style="max-width:560px">
-      <li><code>d/dx[eˣ] = eˣ</code>,&nbsp; <code>d/dx[aˣ] = aˣ·ln a</code></li>
-      <li><code>d/dx[ln x] = 1/x</code>,&nbsp; <code>d/dx[log_a x] = 1/(x·ln a)</code></li>
-      <li><b>Chain:</b> <code>d/dx[e^g] = e^g·g'</code>,&nbsp; <code>d/dx[ln g] = g'/g</code></li>
-      <li><code>∫eˣ dx = eˣ + C</code>,&nbsp; <code>∫aˣ dx = aˣ/ln a + C</code></li>
-      <li><code>∫(1/x) dx = ln|x| + C</code> — the <code>|·|</code> matches the full domain <code>x ≠ 0</code>.</li>
-    </ul>
-  </div>
-</details>
-
-<details class="subject" open>
-  <summary>The number <code>e</code><span class="stag">interactive</span></summary>
-  <div class="subject-body">
-    <p><code>e = lim_(n→∞) (1 + 1/n)ⁿ ≈ 2.71828</code> — the unique base where the tangent to <code>y = aˣ</code> at <code>x = 0</code> has slope exactly 1, which is why <code>eˣ</code> is its own derivative.</p>
-    <div class="tool">
-      <p class="tool-title">Watch <code>(1 + 1/n)ⁿ</code> approach <code>e</code></p>
-      <label class="muted">n = <span id="eNLbl" class="mono">10</span></label>
-      <input type="range" id="eN" min="1" max="1000" step="1" value="10">
-      <div class="readout">
-        <span class="k">(1 + 1/n)ⁿ</span><span class="v" id="eVal">–</span>
-        <span class="k">e</span><span class="v">2.718281828</span>
-        <span class="k">difference</span><span class="v" id="eDiff">–</span>
-      </div>
+<div class="card" data-key="the-number-e" data-tags="Definition">
+  <h4>The number e</h4>
+  <p><code>e = lim_(n→∞) (1 + 1/n)ⁿ ≈ 2.71828</code></p>
+  <p>It's the one base for which the graph of <code>y = eˣ</code> crosses the y-axis with slope exactly <code>1</code>.</p>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="the graph of e to the x with its tangent line y equals x plus 1 at the point (0, 1)">
+    <path class="ax" d="M40 170 H400 M210 15 V225"/>
+    <path class="gd" d="M60 220 L294 86"/>
+    <path class="cv" d="M60.0 167.1 L66.0 166.8 L72.0 166.5 L78.0 166.1 L84.0 165.7 L90.0 165.3 L96.0 164.8 L102.0 164.2 L108.0 163.6 L114.0 162.9 L120.0 162.2 L126.0 161.4 L132.0 160.5 L138.0 159.5 L144.0 158.3 L150.0 157.1 L156.0 155.8 L162.0 154.3 L168.0 152.6 L174.0 150.8 L180.0 148.8 L186.0 146.5 L192.0 144.1 L198.0 141.3 L204.0 138.3 L210.0 135.0 L216.0 131.3 L222.0 127.3 L228.0 122.8 L234.0 117.8 L240.0 112.3 L246.0 106.2 L252.0 99.5 L258.0 92.1 L264.0 83.9 L270.0 74.9 L276.0 64.9 L282.0 53.8 L288.0 41.6 L294.0 28.1"/>
+    <circle class="dot" cx="210" cy="135" r="4"/>
+    <text x="300" y="32">y = eˣ</text>
+    <text x="300" y="92">y = x + 1 (slope 1)</text>
+    <text class="sm" x="202" y="128" text-anchor="end">(0, 1)</text>
+  </svg>
+  <p class="muted"><b>Why that matters:</b> for any base, the slope of <code>aˣ</code> is <code>aˣ</code> times its slope at <code>0</code>. For <code>2ˣ</code> that slope is about <code>0.69</code>, for <code>3ˣ</code> about <code>1.10</code>. Somewhere between <code>2</code> and <code>3</code> it's exactly <code>1</code>, and that base is <code>e</code>. So <code>(eˣ)' = eˣ · 1 = eˣ</code>.</p>
+  <p class="muted"><b>Where the limit comes from:</b> <code>(1 + 1/n)ⁿ</code> is what <code>1</code> grows to if it earns <code>100%</code> interest per year, added in <code>n</code> small steps. More steps help less and less, and the total settles at <code>e</code>. Watch it below.</p>
+  <div class="tool">
+    <p class="tool-title">Watch <code>(1 + 1/n)ⁿ</code> approach <code>e</code></p>
+    <label class="muted">n = <span id="eNLbl" class="mono">10</span></label>
+    <input type="range" id="eN" min="1" max="1000" step="1" value="10">
+    <div class="readout">
+      <span class="k">(1 + 1/n)ⁿ</span><span class="v" id="eVal">–</span>
+      <span class="k">e</span><span class="v">2.718281828</span>
+      <span class="k">difference</span><span class="v" id="eDiff">–</span>
     </div>
   </div>
-</details>
+</div>
 </section>
 
 </div><!-- /folder-precalc -->
@@ -3503,6 +3523,19 @@
 <script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"]],"m":[["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:int","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_pcdom", "v": 1, "subject": "f:precalc", "kind": "problem",
+  "name": "Finding the domain",
+  "description": "Find every x where a formula is defined: fractions, roots, logs and tan.",
+  "uses": [["c", "c1", "risky-forms-their-conditions"], ["c", "a3", "quick-reference"], ["c", "a2", "Quadratic inequalities"]],
+  "parts": [
+    { "id": "st_bi_pcdom1", "cat": "stage", "name": "Find the risky parts", "text": "Look for: a fraction (bottom `≠ 0`), an even root (inside `≥ 0`), a log (inside `> 0`), `tan` (`cos ≠ 0`). Each one gives a condition." },
+    { "id": "st_bi_pcdom2", "cat": "stage", "name": "Merge conditions on the same part", "text": "A root on the bottom of a fraction: `≥ 0` and `≠ 0` together make `> 0`." },
+    { "id": "st_bi_pcdom3", "cat": "stage", "name": "Solve each condition", "text": "Solve each one as an equation (`≠`) or an inequality (`≥`, `>`)." },
+    { "id": "st_bi_pcdom4", "cat": "stage", "name": "Join with AND", "text": "Every condition must hold at once: draw them on one number line and keep only the overlap." },
+    { "id": "st_bi_pcdom5", "cat": "example", "name": "Example — a log over a root", "text": "`f(x) = (ln(x − 1))/(√(5 − x))`\n1. `ln`: `x − 1 > 0`; root: `5 − x ≥ 0`; fraction: `√(5 − x) ≠ 0`\n2. Root on the bottom: `5 − x > 0`\n3. `x > 1`; `x < 5`\n4. Domain: `1 < x < 5`" },
+    { "id": "st_bi_pcdom6", "cat": "example", "name": "Example — a quadratic under a root", "text": "`f(x) = √(x² − 4) + 1/(x − 3)`\n1. Root: `x² − 4 ≥ 0`; fraction: `x − 3 ≠ 0`\n3. `x² − 4 ≥ 0` → `(x − 2)(x + 2) ≥ 0` → `x ≤ −2` or `x ≥ 2`; and `x ≠ 3`\n4. Domain: `x ≤ −2`, or `2 ≤ x < 3`, or `x > 3`" },
+    { "id": "st_bi_pcdom7", "cat": "example", "name": "Example — a fraction with a quadratic", "text": "`f(x) = (x + 1)/(x² − 5x + 6)`\n1. Bottom `≠ 0`\n3. `x² − 5x + 6 = (x − 2)(x − 3) = 0` at `x = 2` and `x = 3`\n4. Domain: every `x` except `2` and `3`" }
+  ] },
 { "id": "pp_bi_pwbase", "v": 1, "subject": "f:powlog", "kind": "problem",
   "name": "Exponential equation with one base",
   "description": "Solve an equation like 4^(x+1) = 8^(x−2) by writing both sides as powers of the same base.",
