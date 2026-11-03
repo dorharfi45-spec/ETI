@@ -2420,6 +2420,7 @@
     <button data-folder="der" data-group="calc"><span class="ficon">′</span>Derivatives</button>
     <button data-folder="int" data-group="calc"><span class="ficon">∫</span>Integrals</button>
     <button data-folder="ser" data-group="calc"><span class="ficon">∑</span>Series</button>
+    <button data-folder="dst" data-group="stats"><span class="ficon">📊</span>Descriptive statistics</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2571,6 +2572,18 @@
   <button data-target="se8"><span class="tnum">8</span>Taylor and Maclaurin series</button>
   <button data-target="se9"><span class="tnum">9</span>Differentiating and integrating power series</button>
 </nav>
+<nav class="tabbar" data-folder="dst" id="tabbar-dst">
+  <button data-target="dst1" class="on"><span class="tnum">1</span>Statistics, data and variables</button>
+  <button data-target="dst2"><span class="tnum">2</span>Measurement scales</button>
+  <button data-target="dst3"><span class="tnum">3</span>Frequency tables</button>
+  <button data-target="dst4"><span class="tnum">4</span>Charts and the shape of a distribution</button>
+  <button data-target="dst5"><span class="tnum">5</span>Summation notation</button>
+  <button data-target="dst6"><span class="tnum">6</span>Measures of center</button>
+  <button data-target="dst7"><span class="tnum">7</span>Measures of spread</button>
+  <button data-target="dst8"><span class="tnum">8</span>Combining groups</button>
+  <button data-target="dst9"><span class="tnum">9</span>Relative position: percentiles and z-scores</button>
+  <button data-target="dst10"><span class="tnum">10</span>Correlation</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2601,7 +2614,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B135</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B136</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4602,7 +4615,9 @@ function __detabaseMain() {
     int: { title: "Integrals — for Calculus 1",
       sub: 'Antiderivatives, the fundamental theorem, techniques, area, estimates and improper integrals.' },
     ser: { title: "Series — for Calculus 1",
-      sub: 'Sequences, infinite series and convergence tests, power series, Taylor series.' }
+      sub: 'Sequences, infinite series and convergence tests, power series, Taylor series.' },
+    dst: { title: "Descriptive statistics — for Intro to Statistics",
+      sub: 'Data and scales, frequency tables and charts, measures of center, spread and relative position, correlation.' }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -4903,6 +4918,7 @@ function __detabaseMain() {
   var BUILTIN_GROUPS = {
     base:    { name: "Base",     icon: "📁" },
     calc:    { name: "Calculus", icon: "∑" },
+    stats:   { name: "Statistics", icon: "📊" },
     physics: { name: "Physics",  icon: "🔬" },
     ee:      { name: "EE",       icon: "⚡" },
     me:      { name: "ME",       icon: "⚙️" }
@@ -4915,7 +4931,7 @@ function __detabaseMain() {
     return BUILTIN_GROUPS[id] ? ((store.etiEdits && store.etiEdits.names && store.etiEdits.names["g|" + id]) || BUILTIN_GROUPS[id].name)
       : ((store.groups.filter(function (g) { return g.id === id; })[0] || {}).name || id);
   }
-  var BUILTIN_GROUP_ORDER = ["base", "calc", "physics", "ee", "me"];
+  var BUILTIN_GROUP_ORDER = ["base", "calc", "stats", "physics", "ee", "me"];
   function everyGroupId() {
     return BUILTIN_GROUP_ORDER.concat(store.groups.map(function (g) { return g.id; }));
   }
@@ -19291,10 +19307,10 @@ function __detabaseMain() {
   // =========================================================
   function plainToTex(text) {
     var PAR = "\\((?:[^()]|\\([^()]*\\))+\\)";   // (…) with at most one level of (…) inside
-    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
+    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂\u0303\u0304ȳμσ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
     var TERM = "(?:√?" + PAR + "|" + CALL + "(?:\\s" + CALL + ")?)";
     var SRC = "(" + TERM + ")\\s*/\\s*(" + TERM + ")";
-    var SKIP = { and: 1, or: 1, AND: 1, OR: 1, n: 1 };
+    var SKIP = { and: 1, or: 1, AND: 1, OR: 1 };
     function bare(t) {   // "(x − 4)" → "x − 4", but "(x − 4)(x + 2)" stays
       if (t.charAt(0) !== "(") return t;
       for (var i = 0, d = 0; i < t.length; i++) {
@@ -19316,14 +19332,16 @@ function __detabaseMain() {
       for (; i < s.length; i++) { d += s[i] === "(" ? 1 : s[i] === ")" ? -1 : 0; if (!d) break; }
       s = s.slice(0, at) + "\\sqrt{" + s.slice(at + 2, i) + "}" + s.slice(i + 1);
     }
-    s = s.replace(/√([0-9A-Za-zπθ]+)/g, "\\sqrt{$1}").replace(/\^\(([^()]*)\)/g, "^{$1}").replace(/_\(([^()]*)\)/g, "_{$1}");
+    s = s.replace(/√([0-9A-Za-zπθ]+)/g, "\\sqrt{$1}");
+    for (var was; was !== s;) { was = s; s = s.replace(/\^\(([^()]*)\)/g, "^{$1}").replace(/_\(([^()]*)\)/g, "_{$1}"); }   // inside out: z_(x_(i))
     var SUP = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ᵏ": "k", "ᵐ": "m", "ˣ": "x", "ʸ": "y", "ᶜ": "c", "ᵃ": "a", "ᵇ": "b", "⁺": "+", "⁻": "-", "ᵖ": "p", "⁽": "(", "⁾": ")" };
-    var SUB = { "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "ₙ": "n", "ₖ": "k" };
+    var SUB = { "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9", "ₙ": "n", "ₖ": "k" };
     function runs(map, mark) {
       s = s.replace(new RegExp("[" + Object.keys(map).join("") + "]+", "g"), function (m) { return mark + "{" + m.split("").map(function (c) { return map[c]; }).join("") + "}"; });
     }
     runs(SUP, "^"); runs(SUB, "_");
     var FN = { sin: 1, cos: 1, tan: 1, cot: 1, sec: 1, csc: 1, arcsin: 1, arccos: 1, arctan: 1, sinh: 1, cosh: 1, ln: 1, log: 1, exp: 1, max: 1, min: 1, lim: 1 };
+    s = s.replace(/([A-Za-z])\u0304/g, "\\bar{$1}").replace(/([A-Za-z])\u0303/g, "\\tilde{$1}").replace(/binom\(([^(),]*),([^(),]*)\)/g, "\\binom{$1}{$2}");   // x̄, x̃ (combining marks), binom(n,k) (B136)
     s = s.replace(/[A-Za-z]{2,}/g, function (w, at, all) {
       if (all[at - 1] === "\\") return w;
       if (FN[w]) return "\\" + w;
@@ -19332,8 +19350,9 @@ function __detabaseMain() {
     var SYM = { "π": "\\pi ", "θ": "\\theta ", "α": "\\alpha ", "β": "\\beta ", "γ": "\\gamma ", "δ": "\\delta ", "ε": "\\varepsilon ", "λ": "\\lambda ", "μ": "\\mu ", "σ": "\\sigma ", "φ": "\\varphi ", "ω": "\\omega ", "Δ": "\\Delta ", "Ω": "\\Omega ", "Σ": "\\Sigma ",
       "≤": "\\le ", "≥": "\\ge ", "≠": "\\ne ", "≈": "\\approx ", "≅": "\\cong ", "∼": "\\sim ", "∞": "\\infty ", "∀": "\\forall ", "∃": "\\exists ", "∈": "\\in ", "∉": "\\notin ", "∪": "\\cup ", "∩": "\\cap ", "⊂": "\\subset ",
       "·": "\\cdot ", "×": "\\times ", "÷": "\\div ", "±": "\\pm ", "∓": "\\mp ", "−": "-", "–": "-", "′": "'", "°": "^{\\circ}", "∘": "\\circ ", "∠": "\\angle ", "△": "\\triangle ", "∥": "\\parallel ", "⊥": "\\perp ",
-      "→": "\\to ", "←": "\\leftarrow ", "⇒": "\\Rightarrow ", "⇔": "\\iff ", "⟺": "\\iff ", "∫": "\\int ", "∑": "\\sum ", "…": "\\ldots ", "ℝ": "\\mathbb{R}", "ℤ": "\\mathbb{Z}", "ℕ": "\\mathbb{N}", "ℚ": "\\mathbb{Q}", "⌊": "\\lfloor ", "⌋": "\\rfloor " };
-    return s.replace(/[^\x00-\x7f]/g, function (c) { return SYM[c] || "\\text{" + c + "}"; }).replace(/ {2,}/g, "\\quad ").replace(/ (\\forall|\\exists)/g, "\\quad $1").replace(/, /g, ",\\ ");
+      "→": "\\to ", "←": "\\leftarrow ", "⇒": "\\Rightarrow ", "⇔": "\\iff ", "⟺": "\\iff ", "∫": "\\int ", "∑": "\\sum ", "…": "\\ldots ", "ℝ": "\\mathbb{R}", "ℤ": "\\mathbb{Z}", "ℕ": "\\mathbb{N}", "ℚ": "\\mathbb{Q}", "⌊": "\\lfloor ", "⌋": "\\rfloor ", "ȳ": "\\bar{y}", "∅": "\\emptyset ", "⊆": "\\subseteq ", "⊇": "\\supseteq ", "∖": "\\setminus ", "ρ": "\\rho ", "Φ": "\\Phi " };
+    // a gap the author typed (two spaces, a no-break space) is a \quad; read before the symbols get their own trailing space (B136)
+    return s.replace(/ {2,}/g, "\\quad ").replace(/[^\x00-\x7f]/g, function (c) { return SYM[c] || "\\text{" + c + "}"; }).replace(/ (\\forall|\\exists)/g, "\\quad $1").replace(/, /g, ",\\ ");
   }
   var texCache;
   // the one math renderer: LaTeX → markup (a formula that can't be read shows as written)

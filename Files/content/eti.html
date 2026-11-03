@@ -4843,12 +4843,495 @@
 </section>
 
 </div><!-- /folder-ser -->
+<div class="folder" id="folder-dst">
+
+<!-- ===== DST1 · STATISTICS, DATA AND VARIABLES ===== -->
+<section class="pane on" id="pane-dst1">
+<h2><span class="num">1</span>Statistics, data and variables</h2>
+<div class="card" data-tags="Explanation">
+  <h4>The stages of a statistical study</h4>
+  <p>Every study goes through the same steps: <b>ask a question</b> → <b>plan</b> (which data, collected how) → <b>collect the data</b> → <b>organize and present it</b> (tables, charts) → <b>summarize it with measures</b> (a mean, a range…) → <b>report the findings</b>.</p>
+  <svg class="ill" viewBox="0 0 420 300" role="img" aria-label="six boxes one under the other with arrows: ask a question, plan, collect, organize and present, summarize with measures, report; a bracket marks organize and summarize as descriptive statistics">
+    <rect class="box" x="60" y="8" width="230" height="30" rx="8"/><text x="175" y="28" text-anchor="middle">Ask a question</text>
+    <rect class="box" x="60" y="56" width="230" height="30" rx="8"/><text x="175" y="76" text-anchor="middle">Plan the study</text>
+    <rect class="box" x="60" y="104" width="230" height="30" rx="8"/><text x="175" y="124" text-anchor="middle">Collect the data</text>
+    <rect class="box" x="60" y="152" width="230" height="30" rx="8"/><text x="175" y="172" text-anchor="middle">Organize and present</text>
+    <rect class="box" x="60" y="200" width="230" height="30" rx="8"/><text x="175" y="220" text-anchor="middle">Summarize with measures</text>
+    <rect class="box" x="60" y="248" width="230" height="30" rx="8"/><text x="175" y="268" text-anchor="middle">Report the findings</text>
+    <path class="ax" d="M175 38 V54 M175 86 V102 M175 134 V150 M175 182 V198 M175 230 V246"/>
+    <path class="cv" d="M300 152 H310 V230 H300"/>
+    <text class="sm" x="316" y="186">descriptive</text><text class="sm" x="316" y="201">statistics</text>
+  </svg>
+  <p class="muted"><b>Descriptive statistics</b> is the middle part: organizing, presenting and summarizing data. That is what this subject covers.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Population and sample</h4>
+  <p>The <b>population</b> is everyone (or everything) the question is about. A <b>sample</b> is the part of it you actually measure.</p>
+  <p class="muted"><b>Why samples:</b> measuring a whole population is usually too expensive or impossible (all the children in the world, every light bulb a factory will make). So we measure a sample and describe it.</p>
+  <p class="muted"><b>Inference:</b> going from what the sample shows to a claim about the whole population is <b>statistical inference</b>. It needs probability (subjects Probability and Random variables) and is the topic of a later course.</p>
+  <p class="muted"><b>Example:</b> to learn the average height of 12th graders in the country, measure 500 of them (the sample) and use their average to estimate the average of all of them (the population).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Variables and values</h4>
+  <p>A <b>variable</b> is a property that changes from one case to another (height, blood type, number of siblings). Each case has a <b>value</b> of it. A <b>constant</b> is the same for every case.</p>
+  <ul>
+    <li><b>Discrete variable:</b> between two values there are only finitely many possible values. Usually a count: number of children <code>0, 1, 2, …</code></li>
+    <li><b>Continuous variable:</b> any value in between is possible, at least in principle. Usually a measurement: weight, time, temperature.</li>
+  </ul>
+  <p class="muted"><b>Names:</b> variables get capital or small letters such as <code>x</code>, <code>y</code>; the value of case number <code>i</code> is <code>x_(i)</code>, and <code>n</code> is the number of cases (observations).</p>
+</div>
+</section>
+
+<!-- ===== DST2 · MEASUREMENT SCALES ===== -->
+<section class="pane" id="pane-dst2">
+<h2><span class="num">2</span>Measurement scales</h2>
+<div class="card" data-tags="Definition">
+  <h4>The four scales</h4>
+  <p>The <b>scale</b> of a variable says what its numbers really mean, and so which calculations make sense.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Scale","What the values tell you","Examples"]},{"c":["Nominal","Only same or different (names, categories)","blood type, city, ID numbers"]},{"c":["Ordinal","Also which is bigger (an order)","rank in a race, satisfaction: low / medium / high"]},{"c":["Interval","Also how far apart (equal steps), but 0 is not “nothing”","temperature in °C, year"]},{"c":["Ratio","Also how many times bigger (a true zero)","weight, time, income, number of children"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Each scale has everything the one above it has, plus one more thing.</b> Nominal: = and ≠. Ordinal: also &lt; and &gt;. Interval: also differences. Ratio: also ratios.</p>
+  <p class="muted"><b>Why 0 matters:</b> 20 °C is not "twice as hot" as 10 °C, because 0 °C is not "no heat" (interval). But 20 kg really is twice 10 kg, because 0 kg is "no weight" (ratio).</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Which measure fits which scale</h4>
+  <ul>
+    <li><b>Nominal:</b> only the <b>mode</b> (the most common value) means something. The "average blood type" is nonsense.</li>
+    <li><b>Ordinal:</b> also the <b>median</b> (the middle value) and percentiles.</li>
+    <li><b>Interval and ratio:</b> also the <b>mean</b>, the variance and the standard deviation.</li>
+  </ul>
+  <p class="muted"><b>A trap:</b> numbers that are only codes (shirt number 10, area code 03) are nominal. You can compute their mean, but it means nothing.</p>
+</div>
+</section>
+
+<!-- ===== DST3 · FREQUENCY TABLES ===== -->
+<section class="pane" id="pane-dst3">
+<h2><span class="num">3</span>Frequency tables</h2>
+<div class="card" data-tags="Definition">
+  <h4>Frequency and the frequency table</h4>
+  <p>The <b>frequency</b> <code>f(x)</code> of a value <code>x</code> is how many times it appears in the data. A <b>frequency table</b> lists each value with its frequency. The frequencies add up to <code>n</code>: <code>∑ f(x) = n</code>.</p>
+  <div class="bi-table" data-table='{"rows":[{"c":["x (quiz score)","f(x)"]},{"c":["4","1"]},{"c":["5","3"]},{"c":["6","5"]},{"c":["7","6"]},{"c":["8","3"]},{"c":["9","2"]}],"head":1,"side":1,"totR":1}'></div>
+  <p class="muted"><b>Reading it:</b> 20 students took a quiz; 6 of them scored 7, which is the most common score. The table shows the <b>distribution</b> of the scores at a glance, much better than a list of 20 numbers.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Grouping into classes</h4>
+  <p>With many different values, group them into <b>classes</b> (intervals) and count how many fall in each. The classes must be <b>disjoint</b> (no value in two classes) and <b>exhaustive</b> (every value in some class).</p>
+  <ul>
+    <li><b>Apparent limits</b> are the limits as written: <code>50–59</code>, <code>60–69</code>.</li>
+    <li><b>Real limits</b> close the gaps between classes: split each gap in half, <code>49.5–59.5</code>, <code>59.5–69.5</code>. Each class ends exactly where the next begins.</li>
+    <li><b>Class width</b> <code>a</code> = upper real limit − lower real limit (here <code>10</code>).</li>
+    <li><b>Midpoint</b> = the average of a class's limits: <code>(49.5 + 59.5)/2 = 54.5</code>. It stands for the whole class in calculations.</li>
+    <li><b>Open class:</b> one with only one limit, such as "90 and up".</li>
+  </ul>
+  <p class="muted"><b>How many classes:</b> too few hide the shape, too many leave single cases in each class. About 5 to 10 is usual. The width is roughly <code>(largest − smallest)/(number of classes)</code>, rounded to a convenient number.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Cumulative and relative frequency</h4>
+  <ul>
+    <li><b>Cumulative frequency</b> <code>F(x)</code>: how many observations are <b>at most</b> <code>x</code> (up to the upper real limit of a class). The last one is always <code>n</code>.</li>
+    <li><b>Relative frequency</b> (proportion): <code>f(x)/n</code>, the share of the data with this value. Times 100, it's a percentage.</li>
+    <li><b>Cumulative relative frequency:</b> <code>F(x)/n</code>, the share at most <code>x</code>.</li>
+  </ul>
+  <div class="bi-table" data-table='{"rows":[{"c":["Class (real limits)","f(x)","F(x)","f(x)/n"]},{"c":["39.5–49.5","2","2","0.05"]},{"c":["49.5–59.5","5","7","0.125"]},{"c":["59.5–69.5","9","16","0.225"]},{"c":["69.5–79.5","14","30","0.35"]},{"c":["79.5–89.5","7","37","0.175"]},{"c":["89.5–99.5","3","40","0.075"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Reading <code>F</code>:</b> <code>F = 16</code> at <code>69.5</code> says 16 of the 40 students scored below 69.5. The relative frequencies always add up to 1.</p>
+</div>
+</section>
+
+<!-- ===== DST4 · CHARTS ===== -->
+<section class="pane" id="pane-dst4">
+<h2><span class="num">4</span>Charts and the shape of a distribution</h2>
+<div class="card" data-tags="Definition">
+  <h4>Bar chart and histogram</h4>
+  <p>A <b>bar chart</b> (stick diagram) draws one stick per value, as tall as its frequency. A <b>histogram</b> draws one rectangle per class, standing on the class's real limits, with no gaps.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a histogram of the grouped grades: six touching rectangles from 39.5 to 99.5 with heights 2, 5, 9, 14, 7 and 3">
+    <path class="ax" d="M30 190 H405 M40 190 V10"/>
+    <rect class="box" x="45" y="168" width="58" height="22"/>
+    <rect class="box" x="103" y="135" width="58" height="55"/>
+    <rect class="box" x="161" y="91" width="58" height="99"/>
+    <rect class="box" x="219" y="36" width="58" height="154"/>
+    <rect class="box" x="277" y="113" width="58" height="77"/>
+    <rect class="box" x="335" y="157" width="58" height="33"/>
+    <text class="sm" x="45" y="205" text-anchor="middle">39.5</text><text class="sm" x="161" y="205" text-anchor="middle">59.5</text><text class="sm" x="277" y="205" text-anchor="middle">79.5</text><text class="sm" x="393" y="205" text-anchor="middle">99.5</text>
+    <text x="248" y="30" text-anchor="middle">14</text><text x="74" y="162" text-anchor="middle">2</text>
+    <text class="sm" x="46" y="18">f(x)</text>
+  </svg>
+  <p class="muted"><b>In a histogram the area counts, not the height.</b> When all classes have the same width the two agree. With different widths, draw each height as <code>f/(width)</code> (frequency per unit), or a wide class would look far bigger than it is.</p>
+  <p class="muted"><b>Other charts:</b> a <b>pie chart</b> gives each class a slice with angle <code>360° · f/n</code> (good for nominal data); a <b>frequency polygon</b> joins the tops of the sticks, or the midpoints of the rectangles' tops, with straight lines.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Shapes of distributions</h4>
+  <svg class="ill" viewBox="0 0 420 130" role="img" aria-label="three curves: a symmetric bell, a curve with a long tail to the right (positive skew) and a curve with a long tail to the left (negative skew)">
+    <path class="ax" d="M10 100 H130 M150 100 H270 M290 100 H410"/>
+    <path class="cv" d="M15 99 C40 98 50 20 70 20 C90 20 100 98 125 99"/>
+    <path class="cv" d="M155 99 C165 98 172 20 188 20 C205 20 220 85 265 98"/>
+    <path class="cv" d="M295 98 C340 85 355 20 372 20 C388 20 395 98 405 99"/>
+    <text class="sm" x="70" y="120" text-anchor="middle">symmetric</text>
+    <text class="sm" x="210" y="120" text-anchor="middle">positive skew (tail right)</text>
+    <text class="sm" x="350" y="120" text-anchor="middle">negative skew (tail left)</text>
+  </svg>
+  <ul>
+    <li><b>Symmetric bell:</b> most values near the middle, few at the ends, the same on both sides.</li>
+    <li><b>Positive (right) skew:</b> a long tail toward the <b>large</b> values (incomes: most are moderate, a few are huge).</li>
+    <li><b>Negative (left) skew:</b> a long tail toward the <b>small</b> values (scores on an easy exam).</li>
+  </ul>
+  <p class="muted"><b>Density:</b> as the data grows and the classes get thinner, the histogram's outline becomes a smooth curve. Its height is the <b>density</b>, frequency per unit; the area under the curve between two values is the share of the data between them.</p>
+</div>
+</section>
+
+<!-- ===== DST5 · SUMMATION NOTATION ===== -->
+<section class="pane" id="pane-dst5">
+<h2><span class="num">5</span>Summation notation</h2>
+<div class="card" data-tags="Definition">
+  <h4>The sigma sign</h4>
+  <p><code>∑_(i=1)^(n) x_(i) = x_(1) + x_(2) + … + x_(n)</code></p>
+  <p class="muted"><b>Read it as a loop:</b> let <code>i</code> run from the bottom number to the top number, write what's after the sign for each <code>i</code>, and add everything up.</p>
+  <p class="muted"><b>Example:</b> with <code>x_(1) = 1</code>, <code>x_(2) = 4</code>, <code>x_(3) = 5</code>: <code>∑_(i=1)^(3) x_(i) = 10</code> and <code>∑_(i=1)^(3) x_(i)² = 1 + 16 + 25 = 42</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Rules for sums</h4>
+  <ul class="idlist">
+    <li><code>∑_(i=k)^(m) c = (m − k + 1) c</code></li>
+    <li><code>∑ c x_(i) = c ∑ x_(i)</code></li>
+    <li><code>∑ (x_(i) + y_(i)) = ∑ x_(i) + ∑ y_(i)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a constant added <code>n</code> times is <code>n</code> times the constant; a common factor comes out of the sum; a sum of two things splits into two sums.</p>
+  <p class="muted"><b>Traps:</b> <code>∑ x_(i)² ≠ (∑ x_(i))²</code> and <code>∑ x_(i) y_(i) ≠ ∑ x_(i) · ∑ y_(i)</code>. With <code>1, 4, 5</code>: <code>42 ≠ 100</code>.</p>
+  <p class="muted"><b>Example:</b> <code>∑_(i=1)^(3) (2x_(i) + 1) = 2 ∑ x_(i) + 3 · 1 = 2 · 10 + 3 = 23</code>.</p>
+</div>
+</section>
+
+<!-- ===== DST6 · MEASURES OF CENTER ===== -->
+<section class="pane" id="pane-dst6">
+<h2><span class="num">6</span>Measures of center</h2>
+<div class="card" data-tags="Explanation">
+  <h4>A center as the best single guess</h4>
+  <p>A measure of center is one number <code>x̃</code> that stands for all the data. Which number is "best" depends on how you count a wrong guess: a <b>loss function</b> adds up the errors <code>x_(i) − x̃</code>, and the best center is the one with the smallest loss.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["How errors are counted","Smallest when x̃ is","Smallest loss gives the spread measure"]},{"c":["the number of misses","the mode","error rate"]},{"c":["the largest error","the mid-range","largest error = range/2"]},{"c":["the sum of |errors|","the median","mean absolute deviation"]},{"c":["the sum of errors²","the mean","variance"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>So no center is "the right one":</b> each is the best answer to a different question. A shop ordering one shoe size wants the mode; someone who hates big mistakes wants the mid-range.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mode, mid-range and median</h4>
+  <ul>
+    <li><b>Mode</b> <code>Mo</code>: the value with the highest frequency. In a grouped table, the midpoint of the class with the highest frequency.</li>
+    <li><b>Mid-range</b> <code>MR = (x_(max) + x_(min))/2</code>, halfway between the largest and the smallest.</li>
+    <li><b>Median</b> <code>Md</code>: the middle value once the data is sorted. Half the data is below it, half above.</li>
+  </ul>
+  <ul class="idlist">
+    <li><code>n</code> odd: <code>Md = x_((n+1)/2)</code></li>
+    <li><code>n</code> even: <code>Md = (x_(n/2) + x_(n/2+1))/2</code></li>
+  </ul>
+  <p class="muted"><b>Example:</b> <code>4, 5, 5, 6, 7, 8, 9, 10, 10</code> (9 values): <code>Md</code> is the 5th, <code>7</code>. Add a <code>4</code> (10 values): the 5th and 6th are <code>6</code> and <code>7</code>, so <code>Md = 6.5</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The median of a grouped table</h4>
+  <p><code>Md = L₀ + (n/2 − F_(before))/(f_(m)) · (L₁ − L₀)</code></p>
+  <p class="muted"><b>The parts:</b> the median class is the first class where <code>F</code> reaches <code>n/2</code>; <code>L₀</code>, <code>L₁</code> are its real limits, <code>f_(m)</code> its frequency, and <code>F_(before)</code> the cumulative frequency up to the class before it.</p>
+  <p class="muted"><b>Why it works:</b> the cases inside a class are taken as spread evenly over it. We need <code>n/2 − F_(before)</code> more cases out of the class's <code>f_(m)</code>, so we go that fraction of the way across it. It is the point that cuts the histogram's area in half.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>The mean</h4>
+  <ul class="idlist">
+    <li><code>x̄ = (∑_(i=1)^(n) x_(i))/n</code></li>
+    <li><code>x̄ = (∑ x f(x))/n</code> (a frequency table; for classes, <code>x</code> is the midpoint)</li>
+  </ul>
+  <p class="muted"><b>Example:</b> the quiz table (Frequency tables): <code>(4 · 1 + 5 · 3 + 6 · 5 + 7 · 6 + 8 · 3 + 9 · 2)/20 = 133/20 = 6.65</code>.</p>
+  <p class="muted"><b>The balance point:</b> the deviations from the mean always cancel, <code>∑ (x_(i) − x̄) = 0</code>. If the values were weights on a ruler, the ruler would balance at <code>x̄</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Skew and how the centers sit</h4>
+  <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="a curve with a long tail to the right; from left to right the mode at the peak, then the median, then the mean pulled toward the tail">
+    <path class="ax" d="M20 150 H405"/>
+    <path class="cv" d="M30 149 C60 145 80 30 115 30 C150 30 190 110 395 147"/>
+    <path class="gd" d="M115 150 V30 M150 150 V52 M185 150 V82"/>
+    <text x="115" y="168" text-anchor="middle">Mo</text><text x="150" y="168" text-anchor="middle">Md</text><text x="185" y="168" text-anchor="middle">x̄</text>
+  </svg>
+  <ul>
+    <li><b>Symmetric:</b> mode, median and mean coincide.</li>
+    <li><b>Positive skew:</b> usually <code>Mo &lt; Md &lt; x̄</code>. The few large values pull the mean toward the tail.</li>
+    <li><b>Negative skew:</b> the other way round, <code>x̄ &lt; Md &lt; Mo</code>.</li>
+  </ul>
+  <p class="muted"><b>Why:</b> the mean uses the size of every value, so one extreme value moves it a lot. The median only cares about order, so it barely moves. For skewed data such as income, the median describes a typical case better.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Changing units: y = bx + a</h4>
+  <p>If every value is multiplied by <code>b</code> and then <code>a</code> is added, every measure of center does the same: <code>ȳ = b x̄ + a</code>, and likewise for <code>Md</code>, <code>Mo</code> and <code>MR</code>.</p>
+  <p class="muted"><b>Example:</b> the mean temperature is <code>20 °C</code>. In Fahrenheit, <code>F = 1.8C + 32</code>, so the mean is <code>1.8 · 20 + 32 = 68 °F</code>. No need to convert every value first.</p>
+</div>
+</section>
+
+<!-- ===== DST7 · MEASURES OF SPREAD ===== -->
+<section class="pane" id="pane-dst7">
+<h2><span class="num">7</span>Measures of spread</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a measure of spread must do</h4>
+  <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="two bell curves with the same center: a narrow tall one and a wide flat one">
+    <path class="ax" d="M20 125 H405"/>
+    <path class="cv" d="M130 124 C170 122 185 20 212 20 C239 20 254 122 294 124"/>
+    <path class="cv2" d="M40 124 C110 120 150 70 212 70 C274 70 314 120 384 124"/>
+    <path class="gd" d="M212 125 V18"/>
+    <text class="sm" x="212" y="142" text-anchor="middle">same center</text>
+  </svg>
+  <p>Two distributions can have the same center and still be very different: one tightly packed, one spread out. A <b>measure of spread</b> says how far the values are from each other, or from the center.</p>
+  <ul>
+    <li>It is never negative.</li>
+    <li>It is <code>0</code> exactly when all the values are equal.</li>
+    <li>Adding the same constant to every value doesn't change it (shifting the data doesn't spread it).</li>
+  </ul>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Error rate, largest error and range</h4>
+  <ul>
+    <li><b>Error rate</b> (percentage error): the percentage of values <b>not</b> equal to the mode, <code>(1 − f(Mo)/n) · 100%</code>. The only spread measure for nominal data.</li>
+    <li><b>Largest error</b> (maximum deviation) from the mid-range: <code>(x_(max) − x_(min))/2</code>.</li>
+    <li><b>Range</b>: <code>x_(max) − x_(min)</code>.</li>
+  </ul>
+  <p class="muted"><b>Their weakness:</b> the last two use only the two most extreme values. One odd value makes them huge even when everything else is packed together.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Quartiles and the interquartile range</h4>
+  <p>The <b>lower quartile</b> <code>Q₁</code> has 25% of the data below it; the <b>upper quartile</b> <code>Q₃</code> has 75% below it. The <b>interquartile range</b> <code>IQR = Q₃ − Q₁</code> is the width of the middle half of the data.</p>
+  <ul class="idlist">
+    <li><code>Q₁ = L₀ + (n/4 − F_(before))/(f_(m)) · (L₁ − L₀)</code></li>
+    <li><code>Q₃ = L₀ + ((3n)/4 − F_(before))/(f_(m)) · (L₁ − L₀)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 90" role="img" aria-label="a number line from the minimum to the maximum; Q1 and Q3 mark off the middle half of the data, which is the IQR">
+    <path class="ax" d="M20 55 H400"/>
+    <rect class="band" x="140" y="35" width="130" height="40"/>
+    <path class="gd" d="M140 30 V78 M270 30 V78"/>
+    <circle class="dot" cx="40" cy="55" r="4"/><circle class="dot" cx="380" cy="55" r="4"/>
+    <text class="sm" x="40" y="88" text-anchor="middle">min</text><text x="140" y="24" text-anchor="middle">Q₁</text><text x="270" y="24" text-anchor="middle">Q₃</text><text class="sm" x="380" y="88" text-anchor="middle">max</text>
+    <text class="sm" x="205" y="59" text-anchor="middle">middle 50%: IQR</text>
+  </svg>
+  <p class="muted"><b>Same idea as the median</b> (Measures of center), with <code>n/4</code> and <code>3n/4</code> in place of <code>n/2</code>.</p>
+  <p class="muted"><b>A plain list</b> (not grouped): sort it, compute <code>n/4</code> and <code>3n/4</code>, and round to the nearest whole number to get the places. <code>n = 39</code>: <code>9.75 → 10th</code> value and <code>29.25 → 29th</code> value.</p>
+  <p class="muted"><b>Strength:</b> the extremes don't affect it at all.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mean absolute deviation</h4>
+  <p><code>(∑_(i=1)^(n) |x_(i) − Md|)/n</code></p>
+  <p class="muted"><b>In words:</b> the average distance of a value from the median. It uses every value. It is measured from the median because that is where the sum of distances is smallest.</p>
+  <p class="muted"><b>A grouped table:</b> <code>(∑ |m_(x) − Md| f(x))/n</code>, with <code>m_(x)</code> the class midpoint.</p>
+  <p class="muted"><b>Why not just average <code>x_(i) − x̄</code>?</b> Those always add up to <code>0</code>: the positive and negative deviations cancel. Taking absolute values (here) or squares (variance) stops the cancelling.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Variance and standard deviation</h4>
+  <ul class="idlist">
+    <li><code>s_(x)² = (∑_(i=1)^(n) (x_(i) − x̄)²)/n</code></li>
+    <li><code>s_(x)² = (∑ (x − x̄)² f(x))/n</code> (a frequency table)</li>
+    <li><code>s_(x) = √(s_(x)²)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the variance is the average squared distance from the mean. Its units are squared (cm²), so we take the root: the <b>standard deviation</b> <code>s_(x)</code> is back in the data's own units and is the usual measure of spread.</p>
+  <p class="muted"><b>Notation:</b> <code>s</code> is for data you have (a sample); <code>σ</code> is for a whole population. In this course both divide by <code>n</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>The shortcut formula for the variance</h4>
+  <p><code>s_(x)² = (∑ x_(i)²)/n − x̄²</code></p>
+  <p class="muted"><b>In words:</b> the mean of the squares minus the square of the mean. It's quicker by hand: no deviations to compute.</p>
+  <p class="muted"><b>Where it comes from:</b> open the square, <code>(x_(i) − x̄)² = x_(i)² − 2x̄ x_(i) + x̄²</code>, and sum with the rules for sums using <code>∑ x_(i) = n x̄</code>: <code>∑ x_(i)² − 2n x̄² + n x̄² = ∑ x_(i)² − n x̄²</code>. Divide by <code>n</code>.</p>
+  <p class="muted"><b>Example:</b> the quiz table: <code>∑ x² f(x) = 919</code>, so <code>s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275</code> and <code>s ≈ 1.31</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Spread after y = bx + a</h4>
+  <ul class="idlist">
+    <li><code>s_(y) = |b| s_(x)</code></li>
+    <li><code>s_(y)² = b² s_(x)²</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> adding <code>a</code> shifts the data and changes no spread at all; multiplying by <code>b</code> stretches every distance by <code>|b|</code>. The same goes for the range, the IQR and the mean absolute deviation.</p>
+  <p class="muted"><b>Example:</b> <code>s = 5 °C</code> becomes <code>1.8 · 5 = 9 °F</code>; the variance <code>25</code> becomes <code>1.8² · 25 = 81</code>.</p>
+</div>
+</section>
+
+<!-- ===== DST8 · WEIGHTED MEAN AND POOLED VARIANCE ===== -->
+<section class="pane" id="pane-dst8">
+<h2><span class="num">8</span>Combining groups</h2>
+<div class="card" data-tags="Formula">
+  <h4>Weighted mean</h4>
+  <p><code>x̄_(T) = (∑_(j=1)^(k) n_(j) x̄_(j))/N</code>, &nbsp; <code>N = n_(1) + … + n_(k)</code></p>
+  <p class="muted"><b>In words:</b> the mean of all groups together is the average of the group means, each <b>weighted by its size</b>. A group of 30 counts three times as much as a group of 10.</p>
+  <p class="muted"><b>Only when the groups are the same size</b> is it the plain average of the means.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Pooled variance</h4>
+  <p><code>s_(T)² = (∑ n_(j) s_(j)²)/N + (∑ n_(j) (x̄_(j) − x̄_(T))²)/N</code></p>
+  <p class="muted"><b>Two parts:</b> the first is the average spread <b>inside</b> the groups (the weighted mean of their variances). The second is the spread <b>between</b> the groups (how far the group means are from the overall mean). The total spread is both together.</p>
+  <p class="muted"><b>So:</b> even if each group is tightly packed, the whole is spread out when the groups sit far apart.</p>
+</div>
+</section>
+
+<!-- ===== DST9 · RELATIVE POSITION ===== -->
+<section class="pane" id="pane-dst9">
+<h2><span class="num">9</span>Relative position: percentiles and z-scores</h2>
+<div class="card" data-tags="Explanation">
+  <h4>Why relative position</h4>
+  <p>A grade of 70 in math and 75 in English can't be compared directly: the exams differ in difficulty and in spread. A <b>relative</b> measure places each value inside its own distribution, so values from different distributions (even different units) become comparable.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Percentiles</h4>
+  <p>The <b>k-th percentile</b> <code>C_(k)</code> is the value with <code>k%</code> of the data below it and <code>(100 − k)%</code> above it.</p>
+  <ul class="idlist">
+    <li><code>C_(k) = L₀ + ((n · k)/100 − F_(before))/(f_(m)) · (L₁ − L₀)</code></li>
+    <li><code>k = (F_(before) + (C − L₀)/(L₁ − L₀) · f_(m)) · 100/n</code></li>
+  </ul>
+  <p class="muted"><b>The first</b> finds the value for a given percent (the same steps as the median); <b>the second</b> goes back, from a value <code>C</code> to its percent.</p>
+  <p class="muted"><b>Familiar ones:</b> <code>C_(25) = Q₁</code>, <code>C_(50) = Md</code>, <code>C_(75) = Q₃</code>.</p>
+  <p class="muted"><b>Limit:</b> percentiles keep the order but not the distances. The gap from <code>C_(50)</code> to <code>C_(60)</code> can be tiny in the middle and wide in the tails.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>z-scores</h4>
+  <p><code>z_(x) = (x − x̄)/(s_(x))</code></p>
+  <p class="muted"><b>In words:</b> how many standard deviations a value is above (<code>z &gt; 0</code>) or below (<code>z &lt; 0</code>) the mean. It has no units.</p>
+  <p class="muted"><b>Example:</b> math 70 with <code>x̄ = 65</code>, <code>s = 3</code>: <code>z = 5/3 ≈ 1.67</code>. English 75 with <code>ȳ = 70</code>, <code>s = 4</code>: <code>z = 5/4 = 1.25</code>. Compared with their classmates, the math grade is the better one.</p>
+  <p class="muted"><b>Always:</b> the z-scores of a whole data set have mean <code>0</code> and standard deviation <code>1</code>. Turning values into z-scores is the linear change <code>y = (1/(s_(x))) x − (x̄)/(s_(x))</code>, so it keeps distances in proportion (percentiles don't).</p>
+</div>
+</section>
+
+<!-- ===== DST10 · CORRELATION ===== -->
+<section class="pane" id="pane-dst10">
+<h2><span class="num">10</span>Correlation</h2>
+<div class="card" data-tags="Definition">
+  <h4>Scatter diagrams and linear relations</h4>
+  <p>With two variables measured on each case, draw one point <code>(x_(i), y_(i))</code> per case: a <b>scatter diagram</b>. If the points lie close to a straight line, there is a <b>linear relation</b> between <code>x</code> and <code>y</code>.</p>
+  <svg class="ill" viewBox="0 0 420 140" role="img" aria-label="three scatter diagrams: points rising along a line (r near 1), a shapeless cloud (r near 0), and points falling along a line (r near minus 1)">
+    <path class="ax" d="M15 110 H125 M15 110 V15 M155 110 H265 M155 110 V15 M295 110 H405 M295 110 V15"/>
+    <circle class="dot" cx="25" cy="100" r="3"/><circle class="dot" cx="38" cy="92" r="3"/><circle class="dot" cx="50" cy="80" r="3"/><circle class="dot" cx="62" cy="74" r="3"/><circle class="dot" cx="75" cy="60" r="3"/><circle class="dot" cx="88" cy="52" r="3"/><circle class="dot" cx="100" cy="38" r="3"/><circle class="dot" cx="113" cy="30" r="3"/>
+    <circle class="dot" cx="170" cy="40" r="3"/><circle class="dot" cx="185" cy="90" r="3"/><circle class="dot" cx="200" cy="55" r="3"/><circle class="dot" cx="212" cy="95" r="3"/><circle class="dot" cx="225" cy="35" r="3"/><circle class="dot" cx="238" cy="70" r="3"/><circle class="dot" cx="250" cy="50" r="3"/><circle class="dot" cx="195" cy="75" r="3"/>
+    <circle class="dot" cx="305" cy="30" r="3"/><circle class="dot" cx="318" cy="40" r="3"/><circle class="dot" cx="330" cy="50" r="3"/><circle class="dot" cx="342" cy="60" r="3"/><circle class="dot" cx="355" cy="66" r="3"/><circle class="dot" cx="368" cy="80" r="3"/><circle class="dot" cx="380" cy="88" r="3"/><circle class="dot" cx="393" cy="100" r="3"/>
+    <text class="sm" x="70" y="130" text-anchor="middle">r close to 1</text><text class="sm" x="210" y="130" text-anchor="middle">r close to 0</text><text class="sm" x="350" y="130" text-anchor="middle">r close to −1</text>
+  </svg>
+  <ul>
+    <li><b>Positive relation:</b> large <code>x</code> goes with large <code>y</code> (height and weight).</li>
+    <li><b>Negative relation:</b> large <code>x</code> goes with small <code>y</code> (speed and travel time).</li>
+    <li><b>Perfect</b> when the points lie exactly on a line: <code>y = bx + a</code>.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Pearson's correlation coefficient</h4>
+  <ul class="idlist">
+    <li><code>r = (∑ z_(x) z_(y))/n</code> (one product per case)</li>
+    <li><code>r = (∑ (x_(i) − x̄)(y_(i) − ȳ))/(n s_(x) s_(y))</code></li>
+    <li><code>r = ((∑ x_(i) y_(i))/n − x̄ ȳ)/(s_(x) s_(y))</code></li>
+  </ul>
+  <p class="muted"><b>Why it works:</b> a point above both means, or below both, gives a positive product of z-scores; a point above one mean and below the other gives a negative one. If most points are of the first kind, <code>r</code> comes out positive.</p>
+  <p class="muted"><b>The third form</b> is the shortcut for hand calculation, like the shortcut for the variance.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Properties of r</h4>
+  <ul>
+    <li><code>−1 ≤ r ≤ 1</code>.</li>
+    <li><code>r = 1</code> or <code>r = −1</code> exactly when all the points lie on one line (rising or falling).</li>
+    <li>The sign of <code>r</code> is the direction of the relation; its size is how close the points are to a line.</li>
+    <li>Changing units (<code>bx + a</code> with <code>b &gt; 0</code>) doesn't change <code>r</code>; a negative <code>b</code> flips its sign.</li>
+  </ul>
+  <p class="muted"><b>Two warnings:</b> <code>r = 0</code> means no <b>linear</b> relation; the points can still lie on a curve (a parabola gives <code>r = 0</code>). And a strong correlation doesn't show that one variable <b>causes</b> the other. Always look at the scatter diagram first.</p>
+</div>
+</section>
+</div><!-- /folder-dst -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"]],"m":[["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"]],"m":[["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_dstfreq", "v": 1, "subject": "f:dst", "kind": "action",
+  "name": "Building a grouped frequency table",
+  "description": "Turn a long list of numbers into a table of classes with frequencies, cumulative and relative frequencies.",
+  "uses": [["c", "dst3", "Grouping into classes"], ["c", "dst3", "Cumulative and relative frequency"]],
+  "parts": [
+    { "id": "st_bi_dstfreq1", "cat": "stage", "name": "Choose the number of classes", "text": "Usually 5 to 10: enough to show the shape, few enough that most classes hold several values." },
+    { "id": "st_bi_dstfreq2", "cat": "stage", "name": "Find the class width", "text": "`a ≈ (largest − smallest)/(number of classes)`, rounded up to a convenient number." },
+    { "id": "st_bi_dstfreq3", "cat": "stage", "name": "Write the classes", "text": "Start at (or just below) the smallest value and step by `a`. Check that every value falls in exactly one class." },
+    { "id": "st_bi_dstfreq4", "cat": "stage", "name": "Count", "text": "Go through the list once and tally each value into its class: `f(x)`. The frequencies must add up to `n`." },
+    { "id": "st_bi_dstfreq5", "cat": "stage", "name": "Add the extra columns", "text": "Real limits (split each gap in half), midpoints, `F(x)` (running total, ends at `n`) and `f(x)/n` (adds up to 1)." },
+    { "id": "st_bi_dstfreq6", "cat": "example", "name": "Example", "text": "12 waiting times (minutes): 3, 7, 12, 5, 9, 14, 6, 8, 11, 4, 10, 7\n1. 4 classes.\n2. `a ≈ (14 − 3)/4 = 2.75` → `a = 3`.\n3. `3–5`, `6–8`, `9–11`, `12–14`.\n4. Frequencies `3, 4, 3, 2` (sum `12` ✓).\n5. Real limits `2.5–5.5`, `5.5–8.5`, `8.5–11.5`, `11.5–14.5`; midpoints `4, 7, 10, 13`; `F = 3, 7, 10, 12`.",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["Class", "f(x)", "F(x)", "f(x)/n"] }, { "c": ["2.5–5.5", "3", "3", "3/12"] }, { "c": ["5.5–8.5", "4", "7", "4/12"] }, { "c": ["8.5–11.5", "3", "10", "3/12"] }, { "c": ["11.5–14.5", "2", "12", "2/12"] }], "head": 1, "side": 1 } }] }
+  ] },
+{ "id": "pp_bi_dsthist", "v": 1, "subject": "f:dst", "kind": "action",
+  "name": "Drawing a histogram",
+  "description": "Draw a histogram from a grouped frequency table, including classes of different widths.",
+  "uses": [["c", "dst4", "Bar chart and histogram"], ["c", "dst3", "Grouping into classes"]],
+  "parts": [
+    { "id": "st_bi_dsthist1", "cat": "stage", "name": "Use the real limits", "text": "Mark the real limits on the `x` axis, so the rectangles touch." },
+    { "id": "st_bi_dsthist2", "cat": "stage", "name": "Check the widths", "text": "All the same width: the height is the frequency `f`. Different widths: the height is `f/(width)`, so that the **area** shows the frequency." },
+    { "id": "st_bi_dsthist3", "cat": "stage", "name": "Draw and read the shape", "text": "Draw one rectangle per class. Then describe it: symmetric, skewed right or skewed left; where the peak is." },
+    { "id": "st_bi_dsthist4", "cat": "example", "name": "Example — unequal widths", "text": "Classes `0–10` (`f = 20`), `10–20` (`f = 30`), `20–50` (`f = 30`)\n2. Heights `20/10 = 2`, `30/10 = 3`, `30/30 = 1` per unit.\nThe last class has as many cases as the second, but spread over three times the width, so it's drawn three times lower and three times wider: the same area." }
+  ] },
+{ "id": "pp_bi_dstcenter", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Finding the mode, median, mean and mid-range",
+  "description": "Compute the four measures of center from a list or a frequency table, and say which one fits.",
+  "uses": [["c", "dst6", "Mode, mid-range and median"], ["c", "dst6", "The mean"], ["c", "dst2", "Which measure fits which scale"]],
+  "parts": [
+    { "id": "st_bi_dstcenter1", "cat": "stage", "name": "Sort the data", "text": "Or use the frequency table, which is already in order." },
+    { "id": "st_bi_dstcenter2", "cat": "stage", "name": "Mode and mid-range", "text": "`Mo`: the value with the biggest `f`. `MR = (x_(max) + x_(min))/2`." },
+    { "id": "st_bi_dstcenter3", "cat": "stage", "name": "Median", "text": "Find the place: `(n + 1)/2` for odd `n`; the two places `n/2` and `n/2 + 1` for even `n` (average them). In a table, run down `F(x)` until it reaches the place." },
+    { "id": "st_bi_dstcenter4", "cat": "stage", "name": "Mean", "text": "`x̄ = (∑ x f(x))/n`: multiply each value by its frequency, add, divide by `n`." },
+    { "id": "st_bi_dstcenter5", "cat": "stage", "name": "Choose", "text": "Nominal → mode. Ordinal or strongly skewed → median. Otherwise the mean." },
+    { "id": "st_bi_dstcenter6", "cat": "example", "name": "Example — the quiz table", "text": "Scores `4…9` with `f = 1, 3, 5, 6, 3, 2`, `n = 20`\n2. `Mo = 7`; `MR = (9 + 4)/2 = 6.5`\n3. Places 10 and 11. `F = 1, 4, 9, 15, …`: both are `7`, so `Md = 7`.\n4. `x̄ = (4 + 15 + 30 + 42 + 24 + 18)/20 = 133/20 = 6.65`" }
+  ] },
+{ "id": "pp_bi_dstgrp", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Median, quartiles and percentiles of a grouped table",
+  "description": "Find Md, Q₁, Q₃, the IQR or any percentile C_k from a grouped frequency table.",
+  "uses": [["c", "dst6", "The median of a grouped table"], ["c", "dst7", "Quartiles and the interquartile range"], ["c", "dst9", "Percentiles"]],
+  "parts": [
+    { "id": "st_bi_dstgrp1", "cat": "stage", "name": "Add the cumulative column", "text": "Write `F(x)` next to each class, with real limits." },
+    { "id": "st_bi_dstgrp2", "cat": "stage", "name": "Find the place", "text": "Median `n/2`; `Q₁` `n/4`; `Q₃` `(3n)/4`; percentile `C_(k)` `(n · k)/100`." },
+    { "id": "st_bi_dstgrp3", "cat": "stage", "name": "Find the class", "text": "The first class whose `F` reaches the place. Note its limits `L₀`, `L₁`, its `f_(m)` and the `F_(before)` of the class above it." },
+    { "id": "st_bi_dstgrp4", "cat": "stage", "name": "Go part of the way across", "text": "`L₀ + (place − F_(before))/(f_(m)) · (L₁ − L₀)`" },
+    { "id": "st_bi_dstgrp5", "cat": "example", "name": "Example", "text": "The grades table (Frequency tables), `n = 40`, `F = 2, 7, 16, 30, 37, 40`\nMedian: place `20`, class `69.5–79.5`: `69.5 + (20 − 16)/14 · 10 ≈ 72.36`\n`Q₁`: place `10`, class `59.5–69.5`: `59.5 + (10 − 7)/9 · 10 ≈ 62.83`\n`Q₃`: place `30`, class `69.5–79.5`: `69.5 + (30 − 16)/14 · 10 = 79.5`\n`IQR ≈ 79.5 − 62.83 = 16.67`\n`C_(90)`: place `36`, class `79.5–89.5`: `79.5 + (36 − 30)/7 · 10 ≈ 88.07`" },
+    { "id": "st_bi_dstgrp6", "cat": "example", "name": "Example — the other way: the percentile of a value", "text": "Which percentile is a grade of `75`?\n`k = (F_(before) + (75 − 69.5)/10 · 14) · 100/40 = (16 + 7.7) · 2.5 ≈ 59`\nSo `75` is about the 59th percentile." }
+  ] },
+{ "id": "pp_bi_dstvar", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Computing the variance and the standard deviation",
+  "description": "Find s² and s from a list or a frequency table, by the definition or by the shortcut.",
+  "uses": [["c", "dst7", "Variance and standard deviation"], ["c", "dst7", "The shortcut formula for the variance"], ["c", "dst5", "Rules for sums"]],
+  "parts": [
+    { "id": "st_bi_dstvar1", "cat": "stage", "name": "Find the mean", "text": "`x̄ = (∑ x f(x))/n`." },
+    { "id": "st_bi_dstvar2", "cat": "stage", "name": "Pick a route", "text": "**Definition:** square each deviation `(x − x̄)²`, times `f(x)`, add, divide by `n`. **Shortcut:** `(∑ x² f(x))/n − x̄²`. The shortcut is quicker when `x̄` isn't a round number." },
+    { "id": "st_bi_dstvar3", "cat": "stage", "name": "Take the root", "text": "`s = √(s²)`. Check: `s` is in the data's units and is never negative." },
+    { "id": "st_bi_dstvar4", "cat": "example", "name": "Example — by the definition", "text": "`2, 4, 4, 5, 10`\n1. `x̄ = 25/5 = 5`\n2. Deviations `−3, −1, −1, 0, 5`; squares `9, 1, 1, 0, 25`; `s² = 36/5 = 7.2`\n3. `s ≈ 2.68`" },
+    { "id": "st_bi_dstvar5", "cat": "example", "name": "Example — the shortcut on a table", "text": "The quiz table, `x̄ = 6.65`\n2. `∑ x² f(x) = 16 + 75 + 180 + 294 + 192 + 162 = 919`; `s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275`\n3. `s ≈ 1.31`" }
+  ] },
+{ "id": "pp_bi_dstlin", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Measures after a change of units",
+  "description": "Find the center and spread of y = bx + a from those of x, without recomputing from the data.",
+  "uses": [["c", "dst6", "Changing units: y = bx + a"], ["c", "dst7", "Spread after y = bx + a"]],
+  "parts": [
+    { "id": "st_bi_dstlin1", "cat": "stage", "name": "Write the change as y = bx + a", "text": "Name `b` (the factor) and `a` (what is added). \"Add 5 then double\" is `y = 2(x + 5) = 2x + 10`: `b = 2`, `a = 10`." },
+    { "id": "st_bi_dstlin2", "cat": "stage", "name": "Centers do everything", "text": "`ȳ = b x̄ + a`, and the same for `Md`, `Mo`, `MR`, percentiles." },
+    { "id": "st_bi_dstlin3", "cat": "stage", "name": "Spreads ignore a", "text": "`s_(y) = |b| s_(x)`, `s_(y)² = b² s_(x)²`; range and IQR times `|b|`." },
+    { "id": "st_bi_dstlin4", "cat": "example", "name": "Example", "text": "Grades with `x̄ = 60`, `s = 12`, `Md = 58`. The teacher adds 5 points and then multiplies by 1.1.\n1. `y = 1.1(x + 5) = 1.1x + 5.5`\n2. `ȳ = 1.1 · 60 + 5.5 = 71.5`; `Md_(y) = 1.1 · 58 + 5.5 = 69.3`\n3. `s_(y) = 1.1 · 12 = 13.2`" }
+  ] },
+{ "id": "pp_bi_dstpool", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Combining groups: weighted mean and pooled variance",
+  "description": "Find the mean and variance of several groups together from each group's size, mean and variance.",
+  "uses": [["c", "dst8", "Weighted mean"], ["c", "dst8", "Pooled variance"]],
+  "parts": [
+    { "id": "st_bi_dstpool1", "cat": "stage", "name": "List each group", "text": "Its size `n_(j)`, mean `x̄_(j)` and variance `s_(j)²` (square a given standard deviation). `N = ∑ n_(j)`." },
+    { "id": "st_bi_dstpool2", "cat": "stage", "name": "Overall mean", "text": "`x̄_(T) = (∑ n_(j) x̄_(j))/N`." },
+    { "id": "st_bi_dstpool3", "cat": "stage", "name": "Inside the groups", "text": "`(∑ n_(j) s_(j)²)/N`." },
+    { "id": "st_bi_dstpool4", "cat": "stage", "name": "Between the groups", "text": "`(∑ n_(j) (x̄_(j) − x̄_(T))²)/N`." },
+    { "id": "st_bi_dstpool5", "cat": "stage", "name": "Add them", "text": "`s_(T)²` = inside + between; `s_(T) = √(s_(T)²)`." },
+    { "id": "st_bi_dstpool6", "cat": "example", "name": "Example", "text": "Class A: `n = 20`, `x̄ = 70`, `s = 8`. Class B: `n = 30`, `x̄ = 80`, `s = 6`.\n2. `x̄_(T) = (20 · 70 + 30 · 80)/50 = 3800/50 = 76`\n3. `(20 · 64 + 30 · 36)/50 = 2360/50 = 47.2`\n4. `(20 · (−6)² + 30 · 4²)/50 = 1200/50 = 24`\n5. `s_(T)² = 71.2`, `s_(T) ≈ 8.44`: more than either class alone, because the classes sit 10 points apart." }
+  ] },
+{ "id": "pp_bi_dstz", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Comparing values from different distributions",
+  "description": "Use z-scores (or percentiles) to say which of two results is relatively better.",
+  "uses": [["c", "dst9", "z-scores"], ["c", "dst9", "Why relative position"]],
+  "parts": [
+    { "id": "st_bi_dstz1", "cat": "stage", "name": "Find each z-score", "text": "`z = (x − x̄)/s`, each in its own distribution." },
+    { "id": "st_bi_dstz2", "cat": "stage", "name": "Compare", "text": "The larger `z` is the relatively better result (if higher is better). Same `z` means the same relative position." },
+    { "id": "st_bi_dstz3", "cat": "stage", "name": "Back to a raw value", "text": "To find the value with a given `z`: `x = x̄ + z s`." },
+    { "id": "st_bi_dstz4", "cat": "example", "name": "Example", "text": "Math 70 (`x̄ = 65`, `s = 3`); English 75 (`x̄ = 70`, `s = 4`)\n1. `z_(math) = 5/3 ≈ 1.67`; `z_(Eng) = 5/4 = 1.25`\n2. The math grade is relatively better.\n3. What English grade would match the math one? `70 + 1.67 · 4 ≈ 76.7`" }
+  ] },
+{ "id": "pp_bi_dstr", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Computing Pearson's r",
+  "description": "Compute the correlation coefficient of paired data and interpret it.",
+  "uses": [["c", "dst10", "Pearson's correlation coefficient"], ["c", "dst10", "Properties of r"], ["c", "dst7", "The shortcut formula for the variance"]],
+  "parts": [
+    { "id": "st_bi_dstr1", "cat": "stage", "name": "Look at the scatter diagram", "text": "Is a straight line a sensible summary? If the points follow a curve, `r` is the wrong tool." },
+    { "id": "st_bi_dstr2", "cat": "stage", "name": "Means and standard deviations", "text": "`x̄`, `ȳ`, `s_(x)`, `s_(y)` (shortcut: `s² = (∑ x²)/n − x̄²`)." },
+    { "id": "st_bi_dstr3", "cat": "stage", "name": "The products", "text": "`(∑ x y)/n − x̄ ȳ`, or the deviations `∑ (x − x̄)(y − ȳ)/n`." },
+    { "id": "st_bi_dstr4", "cat": "stage", "name": "Divide and interpret", "text": "`r = ` products `/(s_(x) s_(y))`. Check `−1 ≤ r ≤ 1`; give the direction (sign) and the strength (how close to ±1)." },
+    { "id": "st_bi_dstr5", "cat": "example", "name": "Example", "text": "`x`: `1, 2, 3, 4, 5`; `y`: `2, 4, 5, 4, 5`\n2. `x̄ = 3`, `ȳ = 4`; `s_(x)² = 55/5 − 9 = 2`; `s_(y)² = 86/5 − 16 = 1.2`\n3. `∑ x y = 2 + 8 + 15 + 16 + 25 = 66`; `66/5 − 12 = 1.2`\n4. `r = 1.2/√(2 · 1.2) = 1.2/√(2.4) ≈ 0.77`: a fairly strong positive linear relation." }
+  ] },
 { "id": "pp_bi_invol", "v": 1, "subject": "f:int", "kind": "problem",
   "name": "Setting up a volume of revolution",
   "description": "Find the volume of a solid made by turning a region around an axis, choosing disks, washers or shells.",
