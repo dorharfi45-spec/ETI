@@ -2171,6 +2171,9 @@
     <text class="sm" x="254" y="250" text-anchor="middle">a+δ</text>
   </svg>
   <p class="muted">For <b>every</b> band <code>L ± ε</code> (blue) there is a band <code>a ± δ</code> (green) where the graph — except at <code>a</code> itself — stays inside the blue band.</p>
+  <p class="muted"><b>In plain words:</b> a limit asks "what value is <code>f(x)</code> heading for as <code>x</code> comes closer and closer to <code>a</code>?" It doesn't ask what happens <b>at</b> <code>a</code>; only what happens <b>near</b> it.</p>
+  <p class="muted"><b>Example:</b> <code>f(x) = (x² − 1)/(x − 1)</code> isn't defined at <code>x = 1</code>. But try numbers near it: <code>f(0.9) = 1.9</code>, <code>f(0.99) = 1.99</code>, <code>f(1.01) = 2.01</code>. The values head for <code>2</code>, so <code>lim_(x→1) f(x) = 2</code>.</p>
+  <p class="muted"><b>Reading the ε–δ line:</b> however thin a band <code>ε</code> someone draws around <code>L</code>, you can answer with a band <code>δ</code> around <code>a</code> so that every <code>x</code> in your band (except <code>a</code>) lands inside theirs. "As close as we want" made exact.</p>
 </div>
 <div class="card" data-tags="Definition">
   <h4>One-sided limits</h4>
@@ -2190,10 +2193,12 @@
     <text x="210" y="213" text-anchor="middle">a</text>
   </svg>
   <p class="muted">Left limit <code>L₁</code> ≠ right limit <code>L₂</code> → no limit at <code>a</code>. Typical at the breakpoint of a piecewise function or <code>|·|</code> (Functions › 2).</p>
+  <p class="muted"><b>In plain words:</b> walk towards <code>a</code> along the graph from the left, then from the right. If both walks head for the same height, that height is the limit. If they head for different heights, there's no limit, but each one-sided limit still exists.</p>
+  <p class="muted"><b>Example:</b> <code>f(x) = (|x|)/(x)</code> is <code>−1</code> for <code>x &lt; 0</code> and <code>1</code> for <code>x &gt; 0</code>. So <code>lim_(x→0⁻) f(x) = −1</code>, <code>lim_(x→0⁺) f(x) = 1</code>, and <code>lim_(x→0) f(x)</code> doesn't exist.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Properties of a limit</h4>
-  <ul class="idlist">
+  <ul>
     <li><b>The value at the point doesn't matter.</b> <code>f(a)</code> may be anything, or not exist — the limit only looks at <code>x</code> near <code>a</code>.</li>
     <li><b>Unique:</b> <code>lim_(x→a) f(x) = L₁</code> and <code>lim_(x→a) f(x) = L₂</code> ⇒ <code>L₁ = L₂</code></li>
     <li><b>Local:</b> <code>f(x) = g(x)</code> for all <code>x ≠ a</code> near <code>a</code> ⇒ <code>lim_(x→a) f(x) = lim_(x→a) g(x)</code> &nbsp;(this is why cancelling works)</li>
@@ -2209,6 +2214,7 @@
     <text x="210" y="203" text-anchor="middle">a</text>
   </svg>
   <p class="muted">Here <code>lim_(x→a) f(x) = L</code> even though <code>f(a) ≠ L</code>.</p>
+  <p class="muted"><b>Why "the value at the point doesn't matter" is useful:</b> it's what lets you cancel. <code>(x² − 1)/(x − 1) = x + 1</code> for every <code>x ≠ 1</code>, and the limit never looks at <code>x = 1</code>, so <code>lim_(x→1) (x² − 1)/(x − 1) = lim_(x→1) (x + 1) = 2</code>.</p>
 </div>
 <div class="card" data-tags="Definition">
   <h4>Infinite limits and limits at infinity</h4>
@@ -2217,6 +2223,15 @@
     <li><code>lim_(x→a) f(x) = ∞ &nbsp;⇔&nbsp; ∀M ∃δ &gt; 0 : 0 &lt; |x − a| &lt; δ ⇒ f(x) &gt; M</code></li>
   </ul>
   <p class="muted">A limit of <code>±∞</code> is not a finite limit — the arithmetic of limits needs finite ones.</p>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="the graph of 1 over x for x greater than 0: it shoots up near 0 and flattens towards 0 far to the right">
+    <path class="ax" d="M50 190 H405 M60 12 V200"/>
+    <path class="cv" d="M66.6 23.3 L68.2 56.7 L69.9 78.9 L71.5 94.8 L73.2 106.7 L74.8 115.9 L76.5 123.3 L78.2 129.4 L79.8 134.4 L81.5 138.7 L83.1 142.4 L84.8 145.6 L86.4 148.3 L88.0 150.8 L89.7 153.0 L91.3 154.9 L93.0 156.7 L104.0 165.0 L115.0 170.0 L126.0 173.3 L137.0 175.7 L148.0 177.5 L159.0 178.9 L170.0 180.0 L181.0 180.9 L192.0 181.7 L203.0 182.3 L214.0 182.9 L225.0 183.3 L236.0 183.8 L247.0 184.1 L258.0 184.4 L269.0 184.7 L280.0 185.0 L291.0 185.2 L302.0 185.5 L313.0 185.7 L324.0 185.8 L335.0 186.0 L346.0 186.2 L357.0 186.3 L368.0 186.4 L379.0 186.6 L390.0 186.7"/>
+    <text x="74" y="30">x → 0⁺: f(x) → ∞</text>
+    <text x="250" y="168" text-anchor="middle">x → ∞: f(x) → 0</text>
+    <text class="sm" x="380" y="40" text-anchor="end">y = 1/x</text>
+  </svg>
+  <p class="muted"><b>Two different questions:</b> "limit <b>at</b> infinity" asks where <code>f</code> goes when <code>x</code> grows without end (a horizontal asymptote). "Infinite limit" asks about <code>f</code> itself growing without end near a point (a vertical asymptote). <code>1/(x)</code> shows both.</p>
+  <p class="muted"><b>Why <code>∞</code> isn't a real limit:</b> <code>∞</code> isn't a number, so "the limit is <code>∞</code>" just describes how the function fails to have a limit: it keeps growing.</p>
 </div>
 </section>
 
@@ -2233,15 +2248,19 @@
     <li><code>lim_(x→a) f(x)/g(x) = L/M</code> &nbsp;if <code>M ≠ 0</code></li>
   </ul>
   <p class="muted">In words: when both limits exist (finite), you may split the limit over <code>+ − · ÷</code>.</p>
+  <p class="muted"><b>Example:</b> <code>lim_(x→2) (x² + 3x)</code>. Both parts have limits: <code>x² → 4</code> and <code>3x → 6</code>. So the sum's limit is <code>4 + 6 = 10</code>.</p>
+  <p class="muted"><b>The fine print matters:</b> the rules need both limits to exist and be <b>finite</b>, and the bottom's limit to be non-zero. When that fails, you get forms like <code>0/0</code> and must rewrite first (next card).</p>
 </div>
 <div class="card" data-tags="Explanation">
   <h4>When you can't use the arithmetic</h4>
-  <ul class="idlist">
+  <ul>
     <li><b>One exists, one doesn't</b> ⇒ the sum has <b>no</b> limit: <code>lim f</code> exists, <code>lim g</code> doesn't ⇒ <code>lim (f + g)</code> doesn't (else <code>g = (f + g) − f</code> would have one).</li>
     <li><b>Neither exists</b> ⇒ can't tell — the sum or product may still have a limit (examples next card).</li>
     <li><b>Indeterminate forms</b> — unknown until you rewrite the expression: <code>0/0</code>, <code>∞/∞</code>, <code>∞ − ∞</code>, <code>0·∞</code>, <code>1<sup>∞</sup></code>, <code>0<sup>0</sup></code>, <code>∞<sup>0</sup></code></li>
     <li><b>Not indeterminate:</b> <code>L/∞ = 0</code>, &nbsp;<code>∞ + ∞ = ∞</code>, &nbsp;<code>L·∞ = ±∞</code> (<code>L ≠ 0</code>), &nbsp;<code>L/0</code> (<code>L ≠ 0</code>) <code>= ±∞</code> — check the sign from each side.</li>
   </ul>
+  <p class="muted"><b>Why <code>0/0</code> tells you nothing:</b> both <code>x/x</code> and <code>x²/x</code> are <code>0/0</code> at <code>0</code>, but the first heads for <code>1</code> and the second for <code>0</code>. It depends on <b>how fast</b> top and bottom shrink, which only rewriting reveals.</p>
+  <p class="muted"><b>Example of a non-indeterminate form:</b> <code>lim_(x→0⁺) 1/(x)</code> is "<code>1/0⁺</code>": a fixed number over something tiny and positive, so it's <code>+∞</code>. From the left it's <code>−∞</code>.</p>
 </div>
 <div class="card" data-tags="Note">
   <h4>No limits apart, a limit together</h4>
@@ -2250,11 +2269,20 @@
   <p><span class="pw"><code>f(x) = g(x) =</code><span class="pw-b"><code>1</code><code>x ≥ 0</code><code>−1</code><code>x &lt; 0</code></span></span></p>
   <p>has a jump (no limit), but <code>f(x)·g(x) = 1</code> → limit <code>1</code>. Same for <code>f(x)/g(x) = 1</code>.</p>
   <p class="muted">So <code>lim (f + g)</code> existing does <b>not</b> mean <code>lim f</code> and <code>lim g</code> exist — never split a limit before you know both parts exist.</p>
+  <p class="muted"><b>The lesson:</b> the arithmetic rules only work in one direction. "Both parts have limits ⇒ the sum does", but not the other way round.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Zero times bounded</h4>
   <p><code>lim_(x→a) f(x) = 0</code> and <code>∃K &gt; 0 : |g(x)| ≤ K</code> near <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x)·g(x) = 0</code></p>
   <p class="muted">Even when <code>lim g</code> doesn't exist: <code>lim_(x→0) x·sin(1/x) = 0</code>, since <code>|sin(1/x)| ≤ 1</code>.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="x times sine of 1 over x wiggles faster and faster near 0 but is squeezed between the lines y equals x and y equals minus x">
+    <path class="gd" d="M40 20 L210 110 L380 20 M40 200 L210 110 L380 200"/>
+    <path class="ax" d="M30 110 H395 M210 15 V210"/>
+    <path class="cv" d="M40.0 34.3 L40.8 34.4 L41.7 34.5 L42.6 34.7 L43.4 34.8 L44.2 35.0 L45.1 35.1 L46.0 35.3 L46.8 35.4 L47.7 35.6 L48.5 35.7 L49.3 35.9 L50.2 36.0 L51.0 36.2 L51.9 36.4 L52.8 36.5 L53.6 36.7 L54.4 36.9 L55.3 37.1 L56.2 37.2 L57.0 37.4 L57.8 37.6 L58.7 37.8 L59.6 38.0 L60.4 38.2 L61.2 38.4 L62.1 38.5 L62.9 38.7 L63.8 39.0 L64.7 39.2 L65.5 39.4 L66.3 39.6 L67.2 39.8 L68.1 40.0 L68.9 40.2 L69.8 40.5 L70.6 40.7 L71.5 40.9 L72.3 41.2 L73.2 41.4 L74.0 41.7 L74.8 41.9 L75.7 42.2 L76.5 42.4 L77.4 42.7 L78.2 43.0 L79.1 43.2 L79.9 43.5 L80.8 43.8 L81.7 44.1 L82.5 44.4 L83.3 44.7 L84.2 45.0 L85.0 45.3 L85.9 45.6 L86.8 45.9 L87.6 46.3 L88.4 46.6 L89.3 46.9 L90.1 47.3 L91.0 47.6 L91.8 48.0 L92.7 48.4 L93.5 48.7 L94.4 49.1 L95.2 49.5 L96.1 49.9 L96.9 50.3 L97.8 50.7 L98.6 51.1 L99.5 51.5 L100.3 52.0 L101.2 52.4 L102.0 52.9 L102.9 53.3 L103.8 53.8 L104.6 54.2 L105.5 54.7 L106.3 55.2 L107.2 55.7 L108.0 56.2 L108.9 56.8 L109.7 57.3 L110.6 57.9 L111.4 58.4 L112.3 59.0 L113.1 59.6 L114.0 60.2 L114.8 60.8 L115.7 61.4 L116.5 62.0 L117.4 62.7 L118.2 63.3 L119.1 64.0 L119.9 64.7 L120.8 65.4 L121.6 66.1 L122.5 66.8 L123.3 67.5 L124.2 68.3 L125.0 69.1 L125.8 69.9 L126.7 70.7 L127.5 71.5 L128.4 72.4 L129.2 73.2 L130.1 74.1 L130.9 75.0 L131.8 75.9 L132.7 76.8 L133.5 77.8 L134.4 78.8 L135.2 79.8 L136.1 80.8 L136.9 81.8 L137.8 82.9 L138.6 83.9 L139.4 85.0 L140.3 86.2 L141.1 87.3 L142.0 88.5 L142.8 89.6 L143.7 90.8 L144.6 92.1 L145.4 93.3 L146.2 94.6 L147.1 95.8 L147.9 97.2 L148.8 98.5 L149.7 99.8 L150.5 101.2 L151.3 102.5 L152.2 103.9 L153.1 105.3 L153.9 106.7 L154.8 108.1 L155.6 109.5 L156.5 110.9 L157.3 112.3 L158.1 113.8 L159.0 115.1 L159.8 116.5 L160.7 117.9 L161.6 119.2 L162.4 120.5 L163.2 121.8 L164.1 123.0 L164.9 124.1 L165.8 125.2 L166.7 126.1 L167.5 127.0 L168.3 127.8 L169.2 128.5 L170.1 129.0 L170.9 129.3 L171.8 129.5 L172.6 129.5 L173.4 129.3 L174.3 128.9 L175.2 128.2 L176.0 127.3 L176.9 126.1 L177.7 124.6 L178.5 122.8 L179.4 120.8 L180.2 118.5 L181.1 116.0 L181.9 113.3 L182.8 110.5 L183.7 107.7 L184.5 104.9 L185.3 102.5 L186.2 100.5 L187.1 99.0 L187.9 98.5 L188.8 98.9 L189.6 100.4 L190.4 103.1 L191.3 106.8 L192.2 110.9 L193.0 114.9 L193.8 117.6 L194.7 118.0 L195.6 115.5 L196.4 110.5 L197.2 105.3 L198.1 103.8 L199.0 108.1 L199.8 114.4 L200.6 113.1 L201.5 105.9 L202.3 110.9 L203.2 110.5 L204.0 110.9 L204.9 107.5 L205.8 108.3 L206.6 110.5 L207.4 110.9 L208.3 110.5 L209.2 110.4 L210.0 110.0 L210.8 110.4 L211.7 110.5 L212.5 110.9 L213.4 110.5 L214.2 108.3 L215.1 107.5 L215.9 110.9 L216.8 110.5 L217.6 110.9 L218.5 105.9 L219.3 113.1 L220.2 114.4 L221.0 108.1 L221.9 103.8 L222.8 105.3 L223.6 110.5 L224.4 115.5 L225.3 118.0 L226.2 117.6 L227.0 114.9 L227.8 110.9 L228.7 106.8 L229.6 103.1 L230.4 100.4 L231.2 98.9 L232.1 98.5 L232.9 99.0 L233.8 100.5 L234.7 102.5 L235.5 104.9 L236.3 107.7 L237.2 110.5 L238.1 113.3 L238.9 116.0 L239.8 118.5 L240.6 120.8 L241.5 122.8 L242.3 124.6 L243.2 126.1 L244.0 127.3 L244.9 128.2 L245.7 128.9 L246.6 129.3 L247.4 129.5 L248.2 129.5 L249.1 129.3 L250.0 129.0 L250.8 128.5 L251.7 127.8 L252.5 127.0 L253.3 126.1 L254.2 125.2 L255.0 124.1 L255.9 123.0 L256.8 121.8 L257.6 120.5 L258.4 119.2 L259.3 117.9 L260.1 116.5 L261.0 115.1 L261.8 113.8 L262.7 112.3 L263.6 110.9 L264.4 109.5 L265.2 108.1 L266.1 106.7 L266.9 105.3 L267.8 103.9 L268.6 102.5 L269.5 101.2 L270.4 99.8 L271.2 98.5 L272.1 97.2 L272.9 95.8 L273.8 94.6 L274.6 93.3 L275.4 92.1 L276.3 90.8 L277.1 89.6 L278.0 88.5 L278.9 87.3 L279.7 86.2 L280.6 85.0 L281.4 83.9 L282.2 82.9 L283.1 81.8 L283.9 80.8 L284.8 79.8 L285.6 78.8 L286.5 77.8 L287.4 76.8 L288.2 75.9 L289.1 75.0 L289.9 74.1 L290.8 73.2 L291.6 72.4 L292.5 71.5 L293.3 70.7 L294.2 69.9 L295.0 69.1 L295.8 68.3 L296.7 67.5 L297.5 66.8 L298.4 66.1 L299.2 65.4 L300.1 64.7 L300.9 64.0 L301.8 63.3 L302.6 62.7 L303.5 62.0 L304.4 61.4 L305.2 60.8 L306.1 60.2 L306.9 59.6 L307.8 59.0 L308.6 58.4 L309.4 57.9 L310.3 57.3 L311.1 56.8 L312.0 56.2 L312.9 55.7 L313.7 55.2 L314.6 54.7 L315.4 54.2 L316.2 53.8 L317.1 53.3 L317.9 52.9 L318.8 52.4 L319.6 52.0 L320.5 51.5 L321.4 51.1 L322.2 50.7 L323.1 50.3 L323.9 49.9 L324.8 49.5 L325.6 49.1 L326.4 48.7 L327.3 48.4 L328.1 48.0 L329.0 47.6 L329.9 47.3 L330.7 46.9 L331.6 46.6 L332.4 46.3 L333.2 45.9 L334.1 45.6 L335.0 45.3 L335.8 45.0 L336.7 44.7 L337.5 44.4 L338.4 44.1 L339.2 43.8 L340.0 43.5 L340.9 43.2 L341.8 43.0 L342.6 42.7 L343.4 42.4 L344.3 42.2 L345.1 41.9 L346.0 41.7 L346.9 41.4 L347.7 41.2 L348.5 40.9 L349.4 40.7 L350.2 40.5 L351.1 40.2 L351.9 40.0 L352.8 39.8 L353.6 39.6 L354.5 39.4 L355.4 39.2 L356.2 39.0 L357.1 38.7 L357.9 38.5 L358.8 38.4 L359.6 38.2 L360.4 38.0 L361.3 37.8 L362.1 37.6 L363.0 37.4 L363.9 37.2 L364.7 37.1 L365.6 36.9 L366.4 36.7 L367.2 36.5 L368.1 36.4 L369.0 36.2 L369.8 36.0 L370.6 35.9 L371.5 35.7 L372.4 35.6 L373.2 35.4 L374.1 35.3 L374.9 35.1 L375.8 35.0 L376.6 34.8 L377.5 34.7 L378.3 34.5 L379.1 34.4 L380.0 34.3"/>
+    <text class="sm" x="384" y="24">y = |x|</text>
+    <text class="sm" x="384" y="206">y = −|x|</text>
+  </svg>
+  <p class="muted"><b>Why:</b> <code>sin(1/x)</code> wiggles between <code>−1</code> and <code>1</code> faster and faster, and never settles. But multiplied by <code>x</code>, it's trapped between <code>−|x|</code> and <code>|x|</code>, and both of those shrink to <code>0</code>. Squeezed, it has nowhere to go but <code>0</code>.</p>
 </div>
 </section>
 
@@ -2266,14 +2294,18 @@
   <p><code>f</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(x) = f(a)</code></p>
   <p>Every elementary function is continuous on its domain: polynomials, rational functions (denominator <code>≠ 0</code>), roots, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>aˣ</code>, <code>ln</code> — and their sums, products, quotients and compositions (concepts 6–7).</p>
   <p class="muted">Plugging in gives <code>0/0</code>, <code>∞/∞</code>… → <code>a</code> is not in the domain: rewrite first.</p>
+  <p class="muted"><b>So the first thing to try is always: plug in.</b> <code>lim_(x→3) (x² + 1)/(x − 1) = 10/2 = 5</code>. Done, if you get a number.</p>
+  <p class="muted"><b>If you get <code>0/0</code>:</b> the point isn't in the domain, but the limit may still exist. Factor and cancel, multiply by a conjugate, or use L'Hôpital. The method "Calculate a limit — the general procedure" decides which.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Polynomials and the biggest power</h4>
-  <ul class="idlist">
+  <ul>
     <li><code>lim_(x→a) p(x) = p(a)</code></li>
     <li><code>p(x) = aₙxⁿ + … + a₁x + a₀</code>, <code>aₙ ≠ 0</code>: &nbsp;<code>lim_(x→±∞) p(x) = lim_(x→±∞) aₙxⁿ</code></li>
     <li>Rational <code>p(x)/q(x)</code> at <code>±∞</code>: deg <code>p</code> &lt; deg <code>q</code> → <code>0</code> · equal → ratio of the leading coefficients · deg <code>p</code> &gt; deg <code>q</code> → <code>±∞</code></li>
   </ul>
+  <p class="muted"><b>Why the biggest power wins:</b> for huge <code>x</code>, <code>x³</code> dwarfs everything below it. At <code>x = 1000</code>, <code>x³ = 10⁹</code> while <code>100x² = 10⁸</code>. So <code>2x³ − 100x² + 7</code> behaves like <code>2x³</code> and goes to <code>∞</code>.</p>
+  <p class="muted"><b>Example:</b> <code>lim_(x→∞) (3x² + 1)/(x² − 5)</code>: same degree, so the answer is the ratio of the leading coefficients, <code>3/1 = 3</code>.</p>
 </div>
 <div class="card" data-tags="Formula">
   <h4>Shortened multiplication formulas</h4>
@@ -2284,14 +2316,16 @@
     <li><code>a³ + b³ = (a + b)(a² − ab + b²)</code></li>
   </ul>
   <p class="muted">Read right-to-left they factor; left-to-right they build the "partner" that cancels a root.</p>
+  <p class="muted"><b>Example:</b> <code>lim_(x→2) (x³ − 8)/(x − 2)</code> is <code>0/0</code>. Factor the top: <code>(x − 2)(x² + 2x + 4)</code>. Cancel <code>x − 2</code>: the limit is <code>4 + 4 + 4 = 12</code>.</p>
 </div>
 <div class="card" data-tags="Explanation">
   <h4>Multiplying by 1</h4>
   <p>Multiplying by <code>A/A</code> (= 1, for <code>A ≠ 0</code>) changes the <b>form</b>, not the value:</p>
-  <ul class="idlist">
+  <ul>
     <li><code>(1/xⁿ)/(1/xⁿ)</code> — divide top and bottom by the biggest power (<code>x → ∞</code>)</li>
     <li><code>(√x + 2)/(√x + 2)</code> — the conjugate: <code>(√x − 2)(√x + 2) = x − 4</code> removes the root</li>
   </ul>
+  <p class="muted"><b>Example with a conjugate:</b> <code>lim_(x→4) (√x − 2)/(x − 4)</code> is <code>0/0</code>. Multiply top and bottom by <code>√x + 2</code>: the top becomes <code>x − 4</code>, which cancels, leaving <code>1/(√x + 2) → 1/4</code>.</p>
 </div>
 </section>
 
@@ -2304,6 +2338,9 @@
   <p><code>lim_(x→a) f(x) = lim_(x→a) g(x) = 0</code> &nbsp;(or both <code>±∞</code>), &nbsp;and <code>lim_(x→a) f'(x)/g'(x) = L</code> (<code>L</code> finite or <code>±∞</code>)</p>
   <p>⇒ &nbsp;<code>lim_(x→a) f(x)/g(x) = lim_(x→a) f'(x)/g'(x) = L</code></p>
   <p class="muted">Also for <code>x → ±∞</code> and one-sided limits. Only for <code>0/0</code> or <code>∞/∞</code>. Differentiate top and bottom <b>separately</b> — not the quotient rule. Derivatives: Precalc › 1 Derivatives, 3 Trig calculus, 4 Exp &amp; log calculus.</p>
+  <p class="muted"><b>Why it makes sense:</b> near <code>a</code>, both <code>f</code> and <code>g</code> are close to <code>0</code>, and each looks like its tangent line. So their ratio looks like the ratio of their slopes, <code>(f')/(g')</code>.</p>
+  <p class="muted"><b>Example:</b> <code>lim_(x→0) (sin x)/(x)</code> is <code>0/0</code>. Differentiate top and bottom: <code>(cos x)/(1) → 1</code>. And <code>lim_(x→∞) (ln x)/(x)</code> is <code>∞/∞</code>: <code>(1/(x))/(1) → 0</code>.</p>
+  <p class="muted"><b>Check the form first:</b> using it on a limit that isn't <code>0/0</code> or <code>∞/∞</code> gives wrong answers.</p>
 </div>
 <div class="card" data-tags="Formula">
   <h4>Other forms into 0/0 or ∞/∞</h4>
@@ -2312,6 +2349,7 @@
     <li><code>∞ − ∞</code>: &nbsp;common denominator, or the conjugate</li>
     <li><code>1<sup>∞</sup></code>, <code>0<sup>0</sup></code>, <code>∞<sup>0</sup></code>: &nbsp;<code>f<sup>g</sup> = e<sup>g·ln f</sup></code> → find <code>lim g·ln f</code></li>
   </ul>
+  <p class="muted"><b>Example:</b> <code>lim_(x→0⁺) x ln x</code> is <code>0 · (−∞)</code>. Rewrite as <code>(ln x)/(1/(x))</code>, which is <code>−∞/∞</code>. L'Hôpital: <code>(1/(x))/(−1/(x²)) = −x → 0</code>.</p>
 </div>
 </section>
 
@@ -2337,14 +2375,17 @@
     <text class="sm" x="210" y="145" text-anchor="middle">no limit (jump)</text>
     <text class="sm" x="350" y="145" text-anchor="middle">f(a) ≠ limit</text>
   </svg>
+  <p class="muted"><b>In plain words:</b> you can draw the graph through <code>a</code> without lifting your pen. Where you'd expect to be (the limit) is exactly where you are (the value).</p>
+  <p class="muted"><b>Example:</b> <code>f(x) = x + 1</code> for <code>x &lt; 1</code>, and <code>ax</code> for <code>x ≥ 1</code>. From the left, <code>f → 2</code>; from the right and at <code>1</code>, it's <code>a</code>. Continuous at <code>1</code> exactly when <code>a = 2</code>. Steps: the method "Check continuity at a point (or find a parameter)".</p>
 </div>
 <div class="card" data-tags="Definition">
   <h4>One-sided continuity and intervals</h4>
-  <ul class="idlist">
+  <ul>
     <li>From the right: <code>lim_(x→a⁺) f(x) = f(a)</code> &nbsp;·&nbsp; from the left: <code>lim_(x→a⁻) f(x) = f(a)</code></li>
     <li>On <code>(a, b)</code>: continuous at every point.</li>
     <li>On <code>[a, b]</code>: on <code>(a, b)</code> + from the right at <code>a</code> + from the left at <code>b</code>.</li>
   </ul>
+  <p class="muted"><b>Why one-sided at the ends:</b> on <code>[a, b]</code> there's nothing to the left of <code>a</code> to look at, so only the side inside the interval counts. Example: <code>√x</code> is continuous on <code>[0, ∞)</code>, though it's not defined left of <code>0</code>.</p>
 </div>
 </section>
 
@@ -2355,15 +2396,17 @@
   <h4>Arithmetic of continuous functions</h4>
   <p><code>f, g</code> continuous at <code>a</code> &nbsp;⇒&nbsp; <code>f ± g</code>, <code>c·f</code>, <code>f·g</code> continuous at <code>a</code>, and <code>f/g</code> too if <code>g(a) ≠ 0</code>.</p>
   <p class="muted"><code>x² + sin x</code> is continuous everywhere; <code>(x + 1)/(x − 2)</code> for every <code>x ≠ 2</code>.</p>
+  <p class="muted"><b>Why it holds:</b> continuity means "limit = value", and the arithmetic of limits works for sums, products and quotients. So the limit of <code>f + g</code> is <code>f(a) + g(a)</code>, which is its value.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Continuous and not continuous</h4>
-  <ul class="idlist">
+  <ul>
     <li><code>f</code> continuous at <code>a</code>, <code>g</code> not &nbsp;⇒&nbsp; <code>f ± g</code> <b>not</b> continuous at <code>a</code></li>
     <li>… and if also <code>f(a) ≠ 0</code> &nbsp;⇒&nbsp; <code>f·g</code>, <code>g/f</code> <b>not</b> continuous at <code>a</code></li>
     <li>Both not continuous ⇒ can't tell.</li>
   </ul>
   <p class="muted"><code>x + sgn x</code> is not continuous at 0; but <code>x·sgn x = |x|</code> is (there <code>f(0) = 0</code>). Proved by contradiction — see the method.</p>
+  <p class="muted"><b>Why the first rule holds:</b> if <code>f + g</code> were continuous, then <code>g = (f + g) − f</code> would be a difference of continuous functions, so <code>g</code> would be continuous. It isn't, so <code>f + g</code> can't be.</p>
 </div>
 </section>
 
@@ -2374,14 +2417,16 @@
   <h4>Composition of continuous functions</h4>
   <p><code>g</code> continuous at <code>a</code> and <code>f</code> continuous at <code>g(a)</code> &nbsp;⇒&nbsp; <code>f∘g</code> continuous at <code>a</code></p>
   <p class="muted"><code>sin(x²)</code>, <code>√(x² + 1)</code>, <code>e<sup>cos x</sup></code> — continuous wherever defined. Composition itself: Functions › 4.</p>
+  <p class="muted"><b>In plain words:</b> a small change in <code>x</code> makes a small change in <code>g(x)</code>, which makes a small change in <code>f(g(x))</code>. No jumps anywhere along the chain means no jump at the end.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Limit of a composition</h4>
-  <ul class="idlist">
+  <ul>
     <li><code>lim_(x→a) g(x) = b</code> and <code>f</code> continuous at <code>b</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = f(lim_(x→a) g(x)) = f(b)</code></li>
     <li><b>Substitution:</b> <code>lim_(x→a) g(x) = b</code>, <code>g(x) ≠ b</code> near <code>a</code>, <code>lim_(t→b) f(t) = L</code> &nbsp;⇒&nbsp; <code>lim_(x→a) f(g(x)) = L</code></li>
   </ul>
   <p class="muted">The limit goes inside a continuous function: <code>lim_(x→0) cos(x² + π) = cos π = −1</code>. The second line is why a help variable <code>t</code> works.</p>
+  <p class="muted"><b>Example with a help variable:</b> <code>lim_(x→0) (sin(3x))/(3x)</code>: let <code>t = 3x</code>; as <code>x → 0</code>, <code>t → 0</code>, and it becomes <code>lim_(t→0) (sin t)/(t) = 1</code>.</p>
 </div>
 </section>
 
@@ -2407,11 +2452,14 @@
     <text x="360" y="223" text-anchor="middle">b</text>
   </svg>
   <p class="muted">A continuous graph can't get from <code>f(a)</code> to <code>f(b)</code> without crossing every level in between.</p>
+  <p class="muted"><b>Example:</b> a temperature goes from <code>10°</code> at 8:00 to <code>20°</code> at noon, changing continuously. At some moment in between it was exactly <code>15°</code>, even if no one saw it.</p>
+  <p class="muted"><b>Why continuity is needed:</b> a function with a jump can skip a value. The sign function jumps from <code>−1</code> to <code>1</code> and never equals <code>0.5</code>.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>A root between a sign change</h4>
   <p><code>f</code> continuous on <code>[a, b]</code> and <code>f(a)·f(b) &lt; 0</code> &nbsp;⇒&nbsp; <code>∃c ∈ (a, b) : f(c) = 0</code></p>
   <p class="muted">Says a root <b>exists</b> — not where, not how many. Continuity on the whole <code>[a, b]</code> is a must: <code>1/x</code> on <code>[−1, 1]</code> changes sign with no root.</p>
+  <p class="muted"><b>Example:</b> does <code>x³ + x − 1 = 0</code> have a solution? <code>f(0) = −1 &lt; 0</code> and <code>f(1) = 1 &gt; 0</code>, and a polynomial is continuous. So a root lies between <code>0</code> and <code>1</code>. Steps: the method "Prove an equation has a root (IVT)".</p>
 </div>
 </section>
 
