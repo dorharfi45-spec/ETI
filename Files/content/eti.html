@@ -2245,6 +2245,194 @@
 </div>
 </section>
 
+
+<!-- ===== FN5 · INVERSE FUNCTIONS ===== -->
+<section class="pane" id="pane-fn5">
+<h2><span class="num">5</span>Inverse functions</h2>
+<div class="card" data-tags="Definition">
+  <h4>What an inverse function is</h4>
+  <p><code>g</code> is the <b>inverse</b> of <code>f</code> when each one undoes the other:</p>
+  <ul class="idlist">
+    <li><code>g(f(x)) = x</code> for every <code>x</code> in the domain of <code>f</code></li>
+    <li><code>f(g(y)) = y</code> for every <code>y</code> in the domain of <code>g</code></li>
+  </ul>
+  <p>It's written <code>f⁻¹</code>. The domain of <code>f⁻¹</code> is the range of <code>f</code>, and the range of <code>f⁻¹</code> is the domain of <code>f</code>.</p>
+  <p class="muted"><b>In words:</b> <code>f</code> takes <code>x</code> to <code>y</code>; <code>f⁻¹</code> takes <code>y</code> back to <code>x</code>. "Multiply by 2" is undone by "divide by 2"; "cube" is undone by "take the cube root"; <code>eˣ</code> is undone by <code>ln x</code>.</p>
+  <p class="muted"><b>Careful with the notation:</b> <code>f⁻¹(x)</code> is <b>not</b> <code>1/(f(x))</code>. The <code>−1</code> means "the inverse", not a power.</p>
+  <p class="muted"><b>Finding the formula:</b> write <code>y = f(x)</code> and solve for <code>x</code>. Example: <code>y = 2x + 3</code> → <code>x = (y − 3)/2</code>, so <code>f⁻¹(x) = (x − 3)/2</code>. Check: <code>f⁻¹(f(1)) = f⁻¹(5) = 1</code> ✓. Steps: the method "Finding an inverse function".</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>One-to-one functions</h4>
+  <p><code>f</code> has an inverse ⇔ <code>f</code> is <b>one-to-one</b>: different inputs always give different outputs (<code>x₁ ≠ x₂ ⇒ f(x₁) ≠ f(x₂)</code>).</p>
+  <ul>
+    <li><b>Horizontal line test:</b> every horizontal line meets the graph at most once.</li>
+    <li>A function that is increasing (or decreasing) on an interval is one-to-one there. A derivative that keeps one sign is enough: <code>f' &gt; 0</code> or <code>f' &lt; 0</code> on the interval.</li>
+  </ul>
+  <p class="muted"><b>Why it's needed:</b> if two inputs share an output, the inverse wouldn't know which one to go back to. <code>x²</code> sends both <code>2</code> and <code>−2</code> to <code>4</code>, so it has no inverse on all of <code>ℝ</code>.</p>
+  <p class="muted"><b>The fix: restrict the domain.</b> On <code>x ≥ 0</code> alone, <code>x²</code> is one-to-one, and its inverse is <code>√x</code>. That's exactly how the inverse trig functions are made (next concepts).</p>
+  <p class="muted"><b>Example:</b> <code>f(x) = x⁵ + x³ + x</code> has <code>f'(x) = 5x⁴ + 3x² + 1 &gt; 0</code>, so it has an inverse, even though you can't solve <code>y = x⁵ + x³ + x</code> for <code>x</code> with a formula.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>The graph of the inverse</h4>
+  <p>The graph of <code>f⁻¹</code> is the graph of <code>f</code> <b>mirrored across the line <code>y = x</code></b>: the point <code>(a, b)</code> is on <code>f</code> exactly when <code>(b, a)</code> is on <code>f⁻¹</code>.</p>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="the graphs of e to the x and ln x, mirror images across the line y equals x">
+    <path class="ax" d="M30 150 H405 M170 10 V235"/>
+    <path class="gd" d="M80 240 L310 10"/>
+    <path class="cv" d="M50.0 148.0 L58.0 147.6 L66.0 147.0 L74.0 146.4 L82.0 145.6 L90.0 144.6 L98.0 143.4 L106.0 141.9 L114.0 140.1 L122.0 138.0 L130.0 135.3 L138.0 132.0 L146.0 128.0 L154.0 123.2 L162.0 117.3 L170.0 110.0 L178.0 101.1 L186.0 90.3 L194.0 77.1 L202.0 61.0 L210.0 41.3 L218.0 17.2"/>
+    <path class="cv2" d="M178.0 214.4 L184.0 192.0 L190.0 177.7 L196.0 167.2 L202.0 158.9 L208.0 152.1 L214.0 146.2 L220.0 141.1 L226.0 136.5 L232.0 132.5 L238.0 128.8 L244.0 125.4 L250.0 122.3 L256.0 119.4 L262.0 116.7 L268.0 114.2 L274.0 111.8 L280.0 109.5 L286.0 107.4 L292.0 105.4 L298.0 103.5 L304.0 101.6 L310.0 99.9 L316.0 98.2 L322.0 96.6 L328.0 95.1 L334.0 93.6 L340.0 92.1 L346.0 90.7 L352.0 89.4 L358.0 88.1 L364.0 86.8 L370.0 85.6"/>
+    <circle class="dot" cx="170" cy="110" r="4"/>
+    <circle class="dot" cx="210" cy="150" r="4"/>
+    <text x="162" y="104" text-anchor="end">(0, 1)</text>
+    <text x="214" y="168">(1, 0)</text>
+    <text x="226" y="22">y = eˣ</text>
+    <text x="372" y="78">y = ln x</text>
+    <text class="sm" x="314" y="22">y = x</text>
+  </svg>
+  <p class="muted"><b>Why:</b> the inverse swaps the roles of input and output, so it swaps the coordinates of every point. Swapping <code>x</code> and <code>y</code> is a reflection across <code>y = x</code>.</p>
+  <p class="muted"><b>What carries over:</b> if <code>f</code> is continuous, so is <code>f⁻¹</code>. A horizontal tangent on <code>f</code> becomes a vertical tangent on <code>f⁻¹</code> (and there <code>f⁻¹</code> isn't differentiable).</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The derivative of an inverse function</h4>
+  <p>If <code>f</code> is differentiable and one-to-one, and <code>f'(f⁻¹(x)) ≠ 0</code>, then</p>
+  <p><code>(f⁻¹)'(x) = 1/(f'(f⁻¹(x)))</code> &nbsp;·&nbsp; in Leibniz notation: <code>dy/dx = 1/(dx/dy)</code></p>
+  <p class="muted"><b>Why:</b> mirroring across <code>y = x</code> swaps rise and run, so a tangent of slope <code>m</code> becomes a tangent of slope <code>1/m</code> at the mirrored point. Or: differentiate <code>f(f⁻¹(x)) = x</code> with the chain rule: <code>f'(f⁻¹(x)) · (f⁻¹)'(x) = 1</code>.</p>
+  <p class="muted"><b>Example:</b> <code>ln x</code> is the inverse of <code>eˣ</code>, so <code>(ln x)' = 1/(e^(ln x)) = 1/(x)</code>.</p>
+  <p class="muted"><b>Example without a formula:</b> <code>f(x) = x³ + x</code>, find <code>(f⁻¹)'(2)</code>. First <code>f⁻¹(2)</code>: <code>x³ + x = 2</code> at <code>x = 1</code>. Then <code>f'(1) = 3 + 1 = 4</code>, so <code>(f⁻¹)'(2) = 1/4</code>.</p>
+</div>
+</section>
+
+<!-- ===== FN6 · ARCTAN ===== -->
+<section class="pane" id="pane-fn6">
+<h2><span class="num">6</span>The arctan function</h2>
+<div class="card" data-tags="Definition">
+  <h4>arctan: the inverse of tan</h4>
+  <p><code>tan x</code> restricted to <code>−π/2 &lt; x &lt; π/2</code> is one-to-one; its inverse is <code>arctan x</code> (the book writes <code>tan⁻¹x</code>).</p>
+  <ul>
+    <li><code>y = arctan x</code> ⇔ <code>tan y = x</code> and <code>−π/2 &lt; y &lt; π/2</code></li>
+    <li>Domain: every real <code>x</code>. Range: <code>(−π/2, π/2)</code>.</li>
+    <li><code>lim_(x→∞) arctan x = π/2</code> &nbsp;·&nbsp; <code>lim_(x→−∞) arctan x = −π/2</code>: two horizontal asymptotes.</li>
+    <li>It's odd (<code>arctan(−x) = −arctan x</code>) and increasing.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="the graph of arctan x: it rises through the origin and flattens towards the asymptotes y equals pi over 2 and y equals minus pi over 2">
+    <path class="ax" d="M20 110 H405 M210 15 V205"/>
+    <path class="gd" d="M20 39.3 H405 M20 180.7 H405"/>
+    <path class="cv" d="M30.0 173.3 L37.5 172.9 L45.0 172.6 L52.5 172.2 L60.0 171.8 L67.5 171.3 L75.0 170.8 L82.5 170.3 L90.0 169.7 L97.5 169.0 L105.0 168.2 L112.5 167.3 L120.0 166.2 L127.5 165.0 L135.0 163.6 L142.5 161.9 L150.0 159.8 L157.5 157.3 L165.0 154.2 L172.5 150.3 L180.0 145.3 L187.5 139.0 L195.0 130.9 L202.5 121.0 L210.0 110.0 L217.5 99.0 L225.0 89.1 L232.5 81.0 L240.0 74.7 L247.5 69.7 L255.0 65.8 L262.5 62.7 L270.0 60.2 L277.5 58.1 L285.0 56.4 L292.5 55.0 L300.0 53.8 L307.5 52.7 L315.0 51.8 L322.5 51.0 L330.0 50.3 L337.5 49.7 L345.0 49.2 L352.5 48.7 L360.0 48.2 L367.5 47.8 L375.0 47.4 L382.5 47.1 L390.0 46.7"/>
+    <circle class="dot" cx="240" cy="74.7" r="4"/>
+    <text x="216" y="33">π/2</text>
+    <text x="216" y="198">−π/2</text>
+    <text x="246" y="94">(1, π/4)</text>
+    <text x="330" y="80">y = arctan x</text>
+  </svg>
+  <p class="muted"><b>In words:</b> <code>arctan x</code> answers "which angle between <code>−90°</code> and <code>90°</code> has tangent <code>x</code>?" Since <code>tan(π/4) = 1</code>, <code>arctan 1 = π/4</code>. Since a tangent can be any number, <code>arctan</code> accepts any number, but its answer never reaches <code>±π/2</code>.</p>
+  <p class="muted"><b>Values to know:</b> <code>arctan 0 = 0</code>, <code>arctan 1 = π/4</code>, <code>arctan √3 = π/3</code>, <code>arctan(1/(√3)) = π/6</code>, <code>arctan(−1) = −π/4</code>.</p>
+  <p class="muted"><b>Undoing:</b> <code>tan(arctan x) = x</code> for every <code>x</code>, but <code>arctan(tan x) = x</code> only for <code>−π/2 &lt; x &lt; π/2</code>. Example: <code>arctan(tan π) = arctan 0 = 0</code>, not <code>π</code>. (The unit-circle picture: Trig base › 2.4.)</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Derivative of arctan</h4>
+  <ul class="idlist">
+    <li><code>(arctan x)' = 1/(1 + x²)</code></li>
+    <li>With an inside <code>u(x)</code>: <code>(arctan u)' = (u')/(1 + u²)</code></li>
+  </ul>
+  <p class="muted"><b>Where it comes from:</b> <code>y = arctan x</code> means <code>tan y = x</code>. Differentiate: <code>(1/(cos²y)) · y' = 1</code>, so <code>y' = cos²y = 1/(1 + tan²y) = 1/(1 + x²)</code> (Pythagorean identity, Trig base › 2.1).</p>
+  <p class="muted"><b>What it says:</b> the slope is <code>1</code> at <code>x = 0</code>, always positive (arctan always rises), and shrinks to <code>0</code> far out, where the graph flattens towards its asymptotes.</p>
+  <p class="muted"><b>Examples:</b> <code>(arctan 3x)' = 3/(1 + 9x²)</code>. <code>(arctan(x²))' = (2x)/(1 + x⁴)</code>. <code>(x · arctan x)' = arctan x + (x)/(1 + x²)</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Integrals that give arctan</h4>
+  <ul class="idlist">
+    <li><code>∫ 1/(1 + x²) dx = arctan x + C</code></li>
+    <li><code>∫ 1/(a² + x²) dx = (1/a) arctan(x/a) + C</code> &nbsp;(<code>a &gt; 0</code>)</li>
+  </ul>
+  <p class="muted"><b>Why:</b> read the derivative backwards. For the second line, check: <code>((1/a) arctan(x/a))' = (1/a) · (1/a)/(1 + x²/a²) = 1/(a² + x²)</code> ✓.</p>
+  <p class="muted"><b>How to spot it:</b> a constant on top, and on the bottom a square plus a positive number, with no <code>x</code> to cancel. If there's an <code>x</code> on top that matches the bottom's derivative, it's <code>ln</code> instead (Integrals › 4).</p>
+  <p class="muted"><b>Examples:</b> <code>∫ 1/(9 + x²) dx = (1/3) arctan(x/3) + C</code>. <code>∫_(0)^(1) 1/(1 + x²) dx = arctan 1 − arctan 0 = π/4</code>. With a quadratic that doesn't factor, complete the square first: the method "Integrals that give arctan".</p>
+  <p class="muted"><b>An improper example:</b> <code>∫_(0)^(∞) 1/(1 + x²) dx = lim_(r→∞) arctan r = π/2</code>: an endless region with a finite area.</p>
+</div>
+</section>
+
+<!-- ===== FN7 · OTHER INVERSE TRIG FUNCTIONS ===== -->
+<section class="pane" id="pane-fn7">
+<h2><span class="num">7</span>Other inverse trig functions</h2>
+<div class="card" data-tags="Definition">
+  <h4>arcsin, arccos, arcsec, arccot, arccsc</h4>
+  <table>
+    <thead><tr><th>Function</th><th>Restricted to</th><th>Domain</th><th>Range</th></tr></thead>
+    <tbody>
+      <tr><td><code>arcsin x</code></td><td><code>sin</code> on <code>[−π/2, π/2]</code></td><td><code>[−1, 1]</code></td><td><code>[−π/2, π/2]</code></td></tr>
+      <tr><td><code>arccos x</code></td><td><code>cos</code> on <code>[0, π]</code></td><td><code>[−1, 1]</code></td><td><code>[0, π]</code></td></tr>
+      <tr><td><code>arccot x</code></td><td><code>cot</code> on <code>(0, π)</code></td><td><code>ℝ</code></td><td><code>(0, π)</code></td></tr>
+      <tr><td><code>arcsec x</code></td><td><code>sec</code> on <code>[0, π/2) ∪ [π, 3π/2)</code></td><td><code>|x| ≥ 1</code></td><td><code>[0, π/2) ∪ [π, 3π/2)</code></td></tr>
+    </tbody>
+  </table>
+  <p class="muted"><b>The same idea as arctan:</b> keep one piece of the graph where the function is one-to-one, and reverse it. The book writes <code>sin⁻¹x</code> for <code>arcsin x</code>, and so on. (The choice of piece for <code>arcsec</code> isn't the same in every book; it's chosen so its derivative formula is simple.)</p>
+  <p class="muted"><b>A useful identity:</b> <code>arcsin x + arccos x = π/2</code> for <code>−1 ≤ x ≤ 1</code>. (A right triangle's two acute angles add up to <code>π/2</code>.)</p>
+  <p class="muted"><b>Simplifying with a triangle:</b> <code>cos(arcsin x) = √(1 − x²)</code>. Draw a right triangle with angle <code>θ = arcsin x</code>: opposite <code>x</code>, hypotenuse <code>1</code>, so adjacent <code>√(1 − x²)</code>. The meaning in the unit circle: Trig base › 2.4.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Derivatives and integrals of arcsin, arccos, arcsec</h4>
+  <ul class="idlist">
+    <li><code>(arcsin x)' = 1/(√(1 − x²))</code> &nbsp;·&nbsp; <code>(arccos x)' = −1/(√(1 − x²))</code> &nbsp;(<code>|x| &lt; 1</code>)</li>
+    <li><code>(arcsec x)' = 1/(x√(x² − 1))</code> &nbsp;(<code>|x| &gt; 1</code>, with the book's choice of range)</li>
+    <li><code>∫ 1/(√(1 − x²)) dx = arcsin x + C</code> &nbsp;·&nbsp; <code>∫ 1/(√(a² − x²)) dx = arcsin(x/a) + C</code></li>
+    <li><code>∫ 1/(x√(x² − 1)) dx = arcsec x + C</code></li>
+  </ul>
+  <p class="muted"><b>Where they come from:</b> as for arctan, differentiate the equation. <code>sin y = x</code> → <code>cos y · y' = 1</code> → <code>y' = 1/(cos y) = 1/(√(1 − x²))</code> (with <code>cos y ≥ 0</code> on <code>[−π/2, π/2]</code>).</p>
+  <p class="muted"><b>Why arccos has the minus:</b> <code>arccos x = π/2 − arcsin x</code>, so their derivatives are opposite. Both formulas fail at <code>x = ±1</code>, where the graphs have vertical tangents.</p>
+  <p class="muted"><b>Example:</b> <code>∫_(0)^(1/2) 1/(√(1 − x²)) dx = arcsin(1/2) − arcsin 0 = π/6</code>.</p>
+</div>
+</section>
+
+<!-- ===== FN8 · HYPERBOLIC FUNCTIONS ===== -->
+<section class="pane" id="pane-fn8">
+<h2><span class="num">8</span>Hyperbolic functions</h2>
+<div class="card" data-tags="Definition">
+  <h4>sinh, cosh and tanh</h4>
+  <ul class="idlist">
+    <li><code>sinh x = (eˣ − e⁻ˣ)/2</code> &nbsp;·&nbsp; <code>cosh x = (eˣ + e⁻ˣ)/2</code></li>
+    <li><code>tanh x = (sinh x)/(cosh x)</code> &nbsp;(also <code>coth</code>, <code>sech</code>, <code>csch</code>, like the trig ones)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="cosh x, a U shape with its lowest point at (0, 1), and sinh x, rising through the origin">
+    <path class="ax" d="M40 120 H390 M210 10 V225"/>
+    <path class="cv" d="M78.0 19.5 L84.0 28.8 L90.0 37.2 L96.0 44.8 L102.0 51.6 L108.0 57.8 L114.0 63.3 L120.0 68.2 L126.0 72.7 L132.0 76.6 L138.0 80.2 L144.0 83.3 L150.0 86.1 L156.0 88.5 L162.0 90.6 L168.0 92.4 L174.0 93.9 L180.0 95.2 L186.0 96.2 L192.0 97.0 L198.0 97.6 L204.0 97.9 L210.0 98.0 L216.0 97.9 L222.0 97.6 L228.0 97.0 L234.0 96.2 L240.0 95.2 L246.0 93.9 L252.0 92.4 L258.0 90.6 L264.0 88.5 L270.0 86.1 L276.0 83.3 L282.0 80.2 L288.0 76.6 L294.0 72.7 L300.0 68.2 L306.0 63.3 L312.0 57.8 L318.0 51.6 L324.0 44.8 L330.0 37.2 L336.0 28.8 L342.0 19.5"/>
+    <path class="cv2" d="M78.0 218.1 L84.0 208.5 L90.0 199.8 L96.0 191.9 L102.0 184.7 L108.0 178.2 L114.0 172.3 L120.0 166.8 L126.0 161.9 L132.0 157.4 L138.0 153.2 L144.0 149.4 L150.0 145.9 L156.0 142.6 L162.0 139.5 L168.0 136.7 L174.0 134.0 L180.0 131.5 L186.0 129.0 L192.0 126.7 L198.0 124.4 L204.0 122.2 L210.0 120.0 L216.0 117.8 L222.0 115.6 L228.0 113.3 L234.0 111.0 L240.0 108.5 L246.0 106.0 L252.0 103.3 L258.0 100.5 L264.0 97.4 L270.0 94.1 L276.0 90.6 L282.0 86.8 L288.0 82.6 L294.0 78.1 L300.0 73.2 L306.0 67.7 L312.0 61.8 L318.0 55.3 L324.0 48.1 L330.0 40.2 L336.0 31.5 L342.0 21.9"/>
+    <circle class="dot" cx="210" cy="98" r="4"/>
+    <text x="350" y="24">cosh x</text>
+    <text x="350" y="44" style="fill:#16a34a">sinh x</text>
+    <text class="sm" x="218" y="90">(0, 1)</text>
+  </svg>
+  <p class="muted"><b>What they are:</b> the even and odd halves of <code>eˣ</code>: <code>eˣ = cosh x + sinh x</code>. <code>cosh</code> is even (a U), <code>sinh</code> is odd (an S through <code>0</code>). A hanging chain or cable takes the shape of a <code>cosh</code> curve.</p>
+  <p class="muted"><b>Why "hyperbolic":</b> the point <code>(cosh t, sinh t)</code> lies on the hyperbola <code>x² − y² = 1</code>, just as <code>(cos t, sin t)</code> lies on the circle <code>x² + y² = 1</code>.</p>
+  <p class="muted"><b>tanh</b> is odd, increasing, and squeezed between the asymptotes <code>y = −1</code> and <code>y = 1</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Hyperbolic identities</h4>
+  <ul class="idlist">
+    <li><code>cosh²x − sinh²x = 1</code></li>
+    <li><code>sinh 2x = 2 sinh x cosh x</code> &nbsp;·&nbsp; <code>cosh 2x = cosh²x + sinh²x</code></li>
+    <li><code>sinh(x + y) = sinh x cosh y + cosh x sinh y</code> &nbsp;·&nbsp; <code>cosh(x + y) = cosh x cosh y + sinh x sinh y</code></li>
+  </ul>
+  <p class="muted"><b>They look like the trig identities</b> with some signs flipped. The main one comes straight from the definitions: <code>((eˣ + e⁻ˣ)/2)² − ((eˣ − e⁻ˣ)/2)² = (2 + 2)/4 = 1</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Derivatives and integrals of the hyperbolic functions</h4>
+  <ul class="idlist">
+    <li><code>(sinh x)' = cosh x</code> &nbsp;·&nbsp; <code>(cosh x)' = sinh x</code> &nbsp;·&nbsp; <code>(tanh x)' = 1/(cosh²x)</code></li>
+    <li><code>∫ sinh x dx = cosh x + C</code> &nbsp;·&nbsp; <code>∫ cosh x dx = sinh x + C</code></li>
+  </ul>
+  <p class="muted"><b>Why:</b> differentiate the definitions: <code>((eˣ − e⁻ˣ)/2)' = (eˣ + e⁻ˣ)/2</code>. Note: no minus sign for <code>cosh</code>, unlike <code>(cos x)' = −sin x</code>.</p>
+  <p class="muted"><b>Example:</b> <code>(cosh(x²))' = sinh(x²) · 2x</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Inverse hyperbolic functions</h4>
+  <ul class="idlist">
+    <li><code>sinh⁻¹x = ln(x + √(x² + 1))</code> (every <code>x</code>) &nbsp;·&nbsp; <code>(sinh⁻¹x)' = 1/(√(x² + 1))</code></li>
+    <li><code>cosh⁻¹x = ln(x + √(x² − 1))</code> (<code>x ≥ 1</code>) &nbsp;·&nbsp; <code>(cosh⁻¹x)' = 1/(√(x² − 1))</code></li>
+    <li><code>tanh⁻¹x = (1/2) ln((1 + x)/(1 − x))</code> (<code>|x| &lt; 1</code>) &nbsp;·&nbsp; <code>(tanh⁻¹x)' = 1/(1 − x²)</code></li>
+  </ul>
+  <p class="muted"><b>Why they're logs:</b> <code>sinh</code> is built from <code>eˣ</code>, so solving <code>y = sinh x</code> for <code>x</code> gives a quadratic in <code>eˣ</code>, and undoing <code>eˣ</code> gives a <code>ln</code>. <code>cosh</code> is restricted to <code>x ≥ 0</code> first, where it's one-to-one.</p>
+  <p class="muted"><b>Why they matter for integrals:</b> read backwards, they give <code>∫ 1/(√(x² + 1)) dx = sinh⁻¹x + C = ln(x + √(x² + 1)) + C</code>, an integral that also appears with trig substitution (Integrals › 11).</p>
+</div>
+</section>
 </div><!-- /folder-fn -->
 
 <div class="folder" id="folder-lim">
@@ -2753,6 +2941,7 @@
     <li><b>Tangent:</b> the quotient rule on <code>sin x / cos x</code> gives <code>(cos²x + sin²x)/cos²x = 1/cos²x</code></li>
   </ul>
   <p class="muted"><b>Example:</b> <code>(cos(5x))' = −sin(5x) · 5 = −5 sin(5x)</code>. The angle must be in radians for these formulas.</p>
+  <p class="muted"><b>Inverse trig:</b> <code>(arctan x)' = 1/(1 + x²)</code>. More in Functions › 6 (and arcsin, arccos in Functions › 7).</p>
 </div>
 <div class="card" data-tags="Formula">
   <h4>Exponential and logarithmic functions</h4>
@@ -3600,6 +3789,7 @@
   <p data-cpart="expl"><b>How to spot it:</b> the numerator is the derivative of the denominator, maybe up to a constant.</p>
   <p data-cpart="expl"><b>Examples:</b> <code>∫ 2x/(x² + 1) dx = ln(x² + 1) + C</code> (no <code>|·|</code> needed: <code>x² + 1 &gt; 0</code>) &nbsp;·&nbsp; <code>∫ cos x/sin x dx = ln|sin x| + C</code></p>
   <p class="muted">Almost the right numerator? Fix it first: the method "Bring a quotient to the form f′/f".</p>
+  <p class="muted"><b>Not ln:</b> a constant over a square plus a number gives arctan: <code>∫ 1/(1 + x²) dx = arctan x + C</code> (Functions › 6).</p>
 </div>
 <div class="card" data-tags="Formula">
   <h4>Sine and cosine</h4>
@@ -4394,9 +4584,65 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"]],"m":[["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"]],"m":[["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_fninv", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Finding an inverse function",
+  "description": "Check that a function has an inverse, find its formula, domain and range.",
+  "uses": [["c", "fn5", "What an inverse function is"], ["c", "fn5", "One-to-one functions"], ["c", "fn5", "The graph of the inverse"]],
+  "parts": [
+    { "id": "st_bi_fninv1", "cat": "stage", "name": "Check it's one-to-one", "text": "Horizontal line test, or show `f' > 0` (or `< 0`) on the domain. If it isn't, restrict the domain to a piece where it is." },
+    { "id": "st_bi_fninv2", "cat": "stage", "name": "Solve y = f(x) for x", "text": "Write `y = f(x)` and isolate `x`." },
+    { "id": "st_bi_fninv3", "cat": "stage", "name": "Swap the letters", "text": "Rename: `y` becomes `x` and `x` becomes `f⁻¹(x)`." },
+    { "id": "st_bi_fninv4", "cat": "stage", "name": "Domain and range swap", "text": "Domain of `f⁻¹` = range of `f`; range of `f⁻¹` = domain of `f`. Check: `f(f⁻¹(x)) = x`." },
+    { "id": "st_bi_fninv5", "cat": "example", "name": "Example — a fraction", "text": "`f(x) = (2x + 1)/(x − 3)`, `x ≠ 3`\n1. `f'(x) = −7/((x − 3)²) < 0`: decreasing on each piece, and it never takes the value `2` (the horizontal asymptote): one-to-one.\n2. `y(x − 3) = 2x + 1` → `xy − 2x = 3y + 1` → `x = (3y + 1)/(y − 2)`\n3. `f⁻¹(x) = (3x + 1)/(x − 2)`\n4. Domain `x ≠ 2`, range `y ≠ 3`" },
+    { "id": "st_bi_fninv6", "cat": "example", "name": "Example — restrict the domain", "text": "`f(x) = (x − 1)² + 2`\n1. Not one-to-one on `ℝ` (it's a parabola). Restrict to `x ≥ 1`, where it rises.\n2. `y − 2 = (x − 1)²` → `x − 1 = √(y − 2)` (the positive root, since `x ≥ 1`) → `x = 1 + √(y − 2)`\n3. `f⁻¹(x) = 1 + √(x − 2)`\n4. Domain `x ≥ 2`, range `y ≥ 1`" }
+  ] },
+{ "id": "pp_bi_fninvd", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Derivative of an inverse at a point",
+  "description": "Find (f⁻¹)′(b) without a formula for f⁻¹.",
+  "uses": [["c", "fn5", "The derivative of an inverse function"]],
+  "parts": [
+    { "id": "st_bi_fninvd1", "cat": "stage", "name": "Find a = f⁻¹(b)", "text": "Solve `f(a) = b`; usually a small whole number works (try `0, 1, −1, 2`)." },
+    { "id": "st_bi_fninvd2", "cat": "stage", "name": "Differentiate f at a", "text": "Work out `f'(a)`; it must not be `0`." },
+    { "id": "st_bi_fninvd3", "cat": "stage", "name": "Flip it", "text": "`(f⁻¹)'(b) = 1/(f'(a))`" },
+    { "id": "st_bi_fninvd4", "cat": "example", "name": "Example", "text": "`f(x) = x³ + 2x + 1`, find `(f⁻¹)'(4)`\n1. `x³ + 2x + 1 = 4` at `x = 1`\n2. `f'(x) = 3x² + 2`, `f'(1) = 5`\n3. `(f⁻¹)'(4) = 1/5`" },
+    { "id": "st_bi_fninvd5", "cat": "example", "name": "Example — with e", "text": "`f(x) = x + eˣ`, find `(f⁻¹)'(1)`\n1. `x + eˣ = 1` at `x = 0`\n2. `f'(0) = 1 + 1 = 2`\n3. `(f⁻¹)'(1) = 1/2`" }
+  ] },
+{ "id": "pp_bi_fnatan", "v": 1, "subject": "f:fn", "kind": "problem",
+  "name": "Integrals that give arctan",
+  "description": "Integrate a constant over a quadratic with no real roots, like 1/(x² + 4x + 13), by completing the square.",
+  "uses": [["c", "fn6", "Integrals that give arctan"], ["c", "in4", "Integrals that give ln"], ["c", "g8", "Parabolas"]],
+  "parts": [
+    { "id": "st_bi_fnatan1", "cat": "stage", "name": "Split off an f′/f part", "text": "If the top has an `x`, first write it as (a number) × (the bottom's derivative) + (a constant). The first part gives `ln`; continue with the constant part." },
+    { "id": "st_bi_fnatan2", "cat": "stage", "name": "Complete the square", "text": "`x² + bx + c = (x + b/2)² + (c − b²/4)`. If `c − b²/4 > 0`, call it `a²`." },
+    { "id": "st_bi_fnatan3", "cat": "stage", "name": "Use the arctan formula", "text": "`∫ 1/((x + p)² + a²) dx = (1/a) arctan((x + p)/a) + C` (the substitution `t = x + p` changes nothing else)." },
+    { "id": "st_bi_fnatan4", "cat": "example", "name": "Example — completing the square", "text": "`∫ 1/(x² + 4x + 13) dx`\n2. `x² + 4x + 13 = (x + 2)² + 9`, `a = 3`\n3. `= (1/3) arctan((x + 2)/3) + C`" },
+    { "id": "st_bi_fnatan5", "cat": "example", "name": "Example — with an x on top", "text": "`∫ (x + 3)/(x² + 1) dx`\n1. `= (1/2) ∫ (2x)/(x² + 1) dx + 3 ∫ 1/(x² + 1) dx`\n3. `= (1/2) ln(x² + 1) + 3 arctan x + C`" },
+    { "id": "st_bi_fnatan6", "cat": "example", "name": "Example — definite", "text": "`∫_(0)^(2) 1/(4 + x²) dx`\n3. `= (1/2) arctan(x/2)` from `0` to `2` `= (1/2)(arctan 1 − 0) = π/8`" }
+  ] },
+{ "id": "pp_bi_fnatand", "v": 1, "subject": "f:fn", "kind": "action",
+  "name": "Differentiating with arctan",
+  "description": "Differentiate expressions that contain arctan of an inner function.",
+  "uses": [["c", "fn6", "Derivative of arctan"], ["c", "dv2", "Composite functions (chain rule)"]],
+  "parts": [
+    { "id": "st_bi_fnatand1", "cat": "stage", "name": "Find the inside", "text": "Call the expression inside `arctan` `u`, and find `u'`." },
+    { "id": "st_bi_fnatand2", "cat": "stage", "name": "Apply the formula", "text": "`(arctan u)' = (u')/(1 + u²)`; combine with the product or quotient rule if `arctan` is multiplied by something." },
+    { "id": "st_bi_fnatand3", "cat": "stage", "name": "Simplify", "text": "Clear the fraction inside the fraction (multiply top and bottom)." },
+    { "id": "st_bi_fnatand4", "cat": "example", "name": "Example — a root inside", "text": "`(arctan √x)'`\n1. `u = √x`, `u' = 1/(2√x)`\n2. `= (1/(2√x))/(1 + x)`\n3. `= 1/(2√x (1 + x))`" },
+    { "id": "st_bi_fnatand5", "cat": "example", "name": "Example — a fraction inside", "text": "`(arctan(1/(x)))'`, `x ≠ 0`\n1. `u = 1/(x)`, `u' = −1/(x²)`\n2. `= (−1/(x²))/(1 + 1/(x²))`\n3. Multiply top and bottom by `x²`: `= −1/(x² + 1)`\n(So `arctan x + arctan(1/(x))` has derivative `0`: it's constant on `x > 0`, equal to `π/2`.)" }
+  ] },
+{ "id": "pp_bi_fntri", "v": 1, "subject": "f:fn", "kind": "action",
+  "name": "Simplifying trig of an inverse trig function",
+  "description": "Rewrite expressions like cos(arcsin x) or tan(arcsec x) without trig, using a right triangle.",
+  "uses": [["c", "fn7", "arcsin, arccos, arcsec, arccot, arccsc"], ["c", "g6", "right-triangle-soh-cah-toa"]],
+  "parts": [
+    { "id": "st_bi_fntri1", "cat": "stage", "name": "Name the angle", "text": "`θ = arcsin x` means `sin θ = x = x/1`." },
+    { "id": "st_bi_fntri2", "cat": "stage", "name": "Draw the triangle", "text": "Put the two known sides in a right triangle (opposite `x`, hypotenuse `1`), and find the third with Pythagoras." },
+    { "id": "st_bi_fntri3", "cat": "stage", "name": "Read off and check the sign", "text": "Read the asked function from the triangle. Then check the sign from the range of the inverse function (for `arcsin`, `cos θ ≥ 0`)." },
+    { "id": "st_bi_fntri4", "cat": "example", "name": "Example", "text": "`tan(arcsin x)`, `|x| < 1`\n2. Opposite `x`, hypotenuse `1`, adjacent `√(1 − x²)`\n3. `= x/(√(1 − x²))` (the sign matches `x`, as `θ` is in `(−π/2, π/2)`)" }
+  ] },
 { "id": "pp_bi_geline", "v": 1, "subject": "f:geo", "kind": "problem",
   "name": "Equation of a line from given data",
   "description": "Write the equation of a line through two points, or through a point with a given slope, parallel or perpendicular line.",
