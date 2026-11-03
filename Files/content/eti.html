@@ -1461,6 +1461,106 @@
 </div>
 </section>
 
+
+<!-- ===== G7 · COORDINATES, DISTANCE AND LINES ===== -->
+<section class="pane" id="pane-g7">
+<h2><span class="num">7</span>Coordinates, distance and lines</h2>
+<div class="card" data-tags="Formula">
+  <h4>Distance and midpoint</h4>
+  <ul class="idlist">
+    <li><code>d = √((x₂ − x₁)² + (y₂ − y₁)²)</code></li>
+    <li>Midpoint: <code>((x₁ + x₂)/2, (y₁ + y₂)/2)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="points (1, 1) and (5, 4) with a right triangle under the segment: sides 4 and 3, distance 5">
+    <path class="ax" d="M40 190 H400 M60 10 V200"/>
+    <path class="cv" d="M100 150 L260 30"/>
+    <path class="gd" d="M100 150 H260 V30 M248 150 V138 H260"/>
+    <circle class="dot" cx="100" cy="150" r="4"/>
+    <circle class="dot" cx="260" cy="30" r="4"/>
+    <circle class="dot warn" cx="180" cy="90" r="4"/>
+    <text x="92" y="168" text-anchor="end">(1, 1)</text>
+    <text x="268" y="28">(5, 4)</text>
+    <text x="180" y="168" text-anchor="middle">4</text>
+    <text x="270" y="96">3</text>
+    <text x="168" y="86" text-anchor="end">5</text>
+    <text class="sm" x="190" y="104">midpoint (3, 2.5)</text>
+  </svg>
+  <p class="muted"><b>Why:</b> the segment is the hypotenuse of a right triangle whose legs are the horizontal and vertical gaps. Pythagoras does the rest. The order of the points doesn't matter, because the gaps are squared.</p>
+  <p class="muted"><b>The midpoint</b> is just the average of the two x-values and the average of the two y-values.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Slope and the equation of a line</h4>
+  <ul class="idlist">
+    <li>Slope: <code>m = (y₂ − y₁)/(x₂ − x₁)</code> (for <code>x₁ ≠ x₂</code>)</li>
+    <li>Point-slope: <code>y − y₁ = m(x − x₁)</code> &nbsp;·&nbsp; Slope-intercept: <code>y = mx + b</code></li>
+    <li>General form: <code>Ax + By + C = 0</code> &nbsp;·&nbsp; Vertical line: <code>x = a</code> (no slope)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> the slope is "rise over run": how much <code>y</code> goes up for each step of <code>1</code> to the right. Positive: the line rises; negative: it falls; <code>0</code>: horizontal. <code>b</code> is where the line crosses the y-axis.</p>
+  <p class="muted"><b>Example:</b> through <code>(1, 1)</code> and <code>(5, 4)</code>: <code>m = 3/4</code>, so <code>y − 1 = (3/4)(x − 1)</code>, which is <code>y = (3/4)x + 1/4</code>.</p>
+  <p class="muted"><b>Why point-slope works:</b> for any point <code>(x, y)</code> on the line, the slope to <code>(x₁, y₁)</code> must be <code>m</code>: <code>(y − y₁)/(x − x₁) = m</code>. Multiply out and you have the formula.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Parallel and perpendicular lines</h4>
+  <ul>
+    <li><b>Parallel</b> lines have equal slopes: <code>m₁ = m₂</code>.</li>
+    <li><b>Perpendicular</b> lines have slopes whose product is <code>−1</code>: <code>m₁ · m₂ = −1</code>, so <code>m₂ = −1/(m₁)</code>.</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="two parallel lines of slope 2 and a perpendicular line of slope minus one half">
+    <path class="cv" d="M160 210 L260 10"/>
+    <path class="cv" d="M250 210 L350 10"/>
+    <path class="cv2" d="M90 50 L330 170"/>
+    <path class="gd" d="M204.6 120.7 L215.3 126.1 L220.7 115.4"/>
+    <text x="152" y="200" text-anchor="end">m = 2</text>
+    <text x="358" y="24">m = 2 (parallel)</text>
+    <text x="86" y="44" text-anchor="end">m = −1/2</text>
+  </svg>
+  <p class="muted"><b>Why "−1":</b> turning a line by <code>90°</code> swaps its rise and run and flips one sign. A slope of <code>2/1</code> becomes <code>−1/2</code>.</p>
+  <p class="muted"><b>Example:</b> the line through <code>(2, 3)</code> perpendicular to <code>y = 2x − 5</code>: slope <code>−1/2</code>, so <code>y − 3 = −(1/2)(x − 2)</code>, which is <code>y = −(1/2)x + 4</code>.</p>
+</div>
+</section>
+
+<!-- ===== G8 · CIRCLES AND PARABOLAS ===== -->
+<section class="pane" id="pane-g8">
+<h2><span class="num">8</span>Circles and parabolas</h2>
+<div class="card" data-tags="Formula">
+  <h4>The equation of a circle</h4>
+  <p>Centre <code>(a, b)</code>, radius <code>r</code>: <code>(x − a)² + (y − b)² = r²</code></p>
+  <p>Expanded: <code>x² + y² + Dx + Ey + F = 0</code>. Completing the square brings it back to the first form.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a circle with centre (a, b) and a point (x, y) on it at distance r">
+    <circle class="cv" cx="210" cy="110" r="80"/>
+    <path class="gd" d="M210 110 L266.6 53.4 M210 110 H266.6 V53.4"/>
+    <circle class="dot" cx="210" cy="110" r="4"/>
+    <circle class="dot" cx="266.6" cy="53.4" r="4"/>
+    <text x="204" y="128" text-anchor="end">(a, b)</text>
+    <text x="274" y="48">(x, y)</text>
+    <text x="230" y="76" text-anchor="end">r</text>
+    <text class="sm" x="238" y="124" text-anchor="middle">x − a</text>
+    <text class="sm" x="272" y="86">y − b</text>
+  </svg>
+  <p class="muted"><b>Why:</b> a circle is every point at distance <code>r</code> from the centre. Write that with the distance formula and square both sides.</p>
+  <p class="muted"><b>Example:</b> <code>x² + y² − 6x + 4y − 3 = 0</code>. Group and complete the squares: <code>(x² − 6x + 9) + (y² + 4y + 4) = 3 + 9 + 4</code>, so <code>(x − 3)² + (y + 2)² = 16</code>: centre <code>(3, −2)</code>, radius <code>4</code>. If the right side comes out negative, there's no circle at all. Steps: the method "Centre and radius of a circle".</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Parabolas</h4>
+  <p><code>y = ax² + bx + c</code> (<code>a ≠ 0</code>) is a parabola. It opens up if <code>a &gt; 0</code>, down if <code>a &lt; 0</code>. Its <b>vertex</b> is at <code>x = −b/(2a)</code>, on the axis of symmetry.</p>
+  <p>Vertex form: <code>y = a(x − h)² + k</code>, with vertex <code>(h, k)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="the parabola y equals x squared minus 4x plus 3, with roots 1 and 3, vertex (2, minus 1) and the axis x equals 2">
+    <path class="ax" d="M30 160 H400 M60 15 V210"/>
+    <path class="gd" d="M160 15 V210"/>
+    <path class="cv" d="M45.0 31.3 L50.0 44.8 L55.0 57.7 L60.0 70.0 L65.0 81.7 L70.0 92.8 L75.0 103.3 L80.0 113.2 L85.0 122.5 L90.0 131.2 L95.0 139.3 L100.0 146.8 L105.0 153.7 L110.0 160.0 L115.0 165.7 L120.0 170.8 L125.0 175.3 L130.0 179.2 L135.0 182.5 L140.0 185.2 L145.0 187.3 L150.0 188.8 L155.0 189.7 L160.0 190.0 L165.0 189.7 L170.0 188.8 L175.0 187.3 L180.0 185.2 L185.0 182.5 L190.0 179.2 L195.0 175.3 L200.0 170.8 L205.0 165.7 L210.0 160.0 L215.0 153.7 L220.0 146.8 L225.0 139.3 L230.0 131.2 L235.0 122.5 L240.0 113.2 L245.0 103.3 L250.0 92.8 L255.0 81.7 L260.0 70.0 L265.0 57.7 L270.0 44.8 L275.0 31.3"/>
+    <circle class="dot" cx="160" cy="190" r="4"/>
+    <circle class="dot" cx="110" cy="160" r="4"/>
+    <circle class="dot" cx="210" cy="160" r="4"/>
+    <text x="168" y="206">vertex (2, −1)</text>
+    <text x="104" y="152" text-anchor="end">1</text>
+    <text x="216" y="152">3</text>
+    <text class="sm" x="166" y="28">axis x = 2</text>
+    <text x="290" y="60">y = x² − 4x + 3</text>
+  </svg>
+  <p class="muted"><b>Why the vertex is at <code>−b/(2a)</code>:</b> it's halfway between the two roots (the parabola is symmetric), and by the quadratic formula their average is <code>−b/(2a)</code>. (Or: <code>y' = 2ax + b = 0</code> there.)</p>
+  <p class="muted"><b>Example:</b> <code>y = x² − 4x + 3</code>: vertex at <code>x = 4/2 = 2</code>, <code>y = 4 − 8 + 3 = −1</code>. Completing the square gives the same: <code>y = (x − 2)² − 1</code>. Roots: <code>(x − 1)(x − 3) = 0</code>.</p>
+</div>
+</section>
 </div><!-- /folder-geo -->
 
 <div class="folder" id="folder-powlog">
@@ -4294,9 +4394,31 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"]],"m":[["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"]],"m":[["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_geline", "v": 1, "subject": "f:geo", "kind": "problem",
+  "name": "Equation of a line from given data",
+  "description": "Write the equation of a line through two points, or through a point with a given slope, parallel or perpendicular line.",
+  "uses": [["c", "g7", "Slope and the equation of a line"], ["c", "g7", "Parallel and perpendicular lines"]],
+  "parts": [
+    { "id": "st_bi_geline1", "cat": "stage", "name": "Find the slope", "text": "Two points: `m = (y₂ − y₁)/(x₂ − x₁)`. Parallel to a line: the same `m`. Perpendicular: `m = −1/(m₁)`. If the two x-values are equal, it's the vertical line `x = a`." },
+    { "id": "st_bi_geline2", "cat": "stage", "name": "Use point-slope", "text": "`y − y₁ = m(x − x₁)` with any point on the line." },
+    { "id": "st_bi_geline3", "cat": "stage", "name": "Tidy up and check", "text": "Bring it to `y = mx + b` (or `Ax + By + C = 0`). Check that each given point satisfies it." },
+    { "id": "st_bi_geline4", "cat": "example", "name": "Example — two points", "text": "Through `(−2, 5)` and `(4, 2)`\n1. `m = (2 − 5)/(4 − (−2)) = −3/6 = −1/2`\n2. `y − 2 = −(1/2)(x − 4)`\n3. `y = −(1/2)x + 4`. Check `(−2, 5)`: `1 + 4 = 5` ✓" },
+    { "id": "st_bi_geline5", "cat": "example", "name": "Example — perpendicular", "text": "Through `(1, −1)`, perpendicular to `3x − y = 7`\n1. `y = 3x − 7` has slope `3`; perpendicular: `−1/3`\n2. `y + 1 = −(1/3)(x − 1)`\n3. `y = −(1/3)x − 2/3`" }
+  ] },
+{ "id": "pp_bi_gecirc", "v": 1, "subject": "f:geo", "kind": "action",
+  "name": "Centre and radius of a circle",
+  "description": "Bring x² + y² + Dx + Ey + F = 0 to (x − a)² + (y − b)² = r² by completing the square.",
+  "uses": [["c", "g8", "The equation of a circle"]],
+  "parts": [
+    { "id": "st_bi_gecirc1", "cat": "stage", "name": "Make the squares' coefficients 1", "text": "If `x²` and `y²` have the same coefficient other than `1`, divide everything by it. (Different coefficients: not a circle.)" },
+    { "id": "st_bi_gecirc2", "cat": "stage", "name": "Group and move the number", "text": "`(x² + Dx) + (y² + Ey) = −F`" },
+    { "id": "st_bi_gecirc3", "cat": "stage", "name": "Complete each square", "text": "Add `(D/2)²` inside the x-bracket and `(E/2)²` inside the y-bracket, and add the same numbers on the right." },
+    { "id": "st_bi_gecirc4", "cat": "stage", "name": "Read off", "text": "`(x + D/2)² + (y + E/2)² = R`: centre `(−D/2, −E/2)`, radius `√R`. `R = 0`: a single point; `R < 0`: nothing." },
+    { "id": "st_bi_gecirc5", "cat": "example", "name": "Example", "text": "`2x² + 2y² + 8x − 12y + 8 = 0`\n1. Divide by `2`: `x² + y² + 4x − 6y + 4 = 0`\n2. `(x² + 4x) + (y² − 6y) = −4`\n3. `(x² + 4x + 4) + (y² − 6y + 9) = −4 + 4 + 9`\n4. `(x + 2)² + (y − 3)² = 9`: centre `(−2, 3)`, radius `3`" }
+  ] },
 { "id": "pp_bi_dvimp", "v": 1, "subject": "f:der", "kind": "action",
   "name": "Differentiating implicitly",
   "description": "Find y′ (and a tangent line) when x and y are linked by an equation instead of y = f(x).",
