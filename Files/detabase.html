@@ -2673,6 +2673,12 @@
   <button data-target="elm7"><span class="tnum">7</span>DC circuits</button>
   <button data-target="elm8"><span class="tnum">8</span>Power in a circuit</button>
   <button data-target="elm9"><span class="tnum">9</span>Capacitors and dielectrics</button>
+  <button data-target="elm10"><span class="tnum">10</span>The magnetic field and moving charges</button>
+  <button data-target="elm11"><span class="tnum">11</span>Forces on currents</button>
+  <button data-target="elm12"><span class="tnum">12</span>The magnetic field of a current</button>
+  <button data-target="elm13"><span class="tnum">13</span>Electromagnetic induction</button>
+  <button data-target="elm14"><span class="tnum">14</span>Alternating current</button>
+  <button data-target="elm15"><span class="tnum">15</span>Electromagnetic waves and magnetism in matter</button>
 </nav>
 
 <main id="paneHost">
@@ -2704,7 +2710,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B153</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B154</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4721,7 +4727,7 @@ function __detabaseMain() {
     opt: { title: "Optics — for Physics course",
       sub: "Light as an electromagnetic wave, reflection and refraction, mirrors and lenses, optical instruments, interference, thin films, diffraction and polarization." },
     elm: { title: "Electricity and magnetism — for Physics course",
-      sub: "Electrostatics: charge, Coulomb's law and the field, Gauss's law, potential, capacitance; direct current: Ohm's law, circuits, Kirchhoff, power, capacitors; more to come: magnetism, induction, alternating current." }
+      sub: "Electrostatics: charge, Coulomb's law and the field, Gauss's law, potential, capacitance; direct current: Ohm's law, circuits, Kirchhoff, power, capacitors; magnetism: magnetic forces, fields of currents, induction, alternating current, electromagnetic waves." }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -19467,7 +19473,7 @@ function __detabaseMain() {
       return w.length > 2 ? "\\text{ " + w + " }" : w;
     });
     var SYM = { "π": "\\pi ", "θ": "\\theta ", "α": "\\alpha ", "β": "\\beta ", "γ": "\\gamma ", "δ": "\\delta ", "ε": "\\varepsilon ", "λ": "\\lambda ", "μ": "\\mu ", "σ": "\\sigma ", "φ": "\\varphi ", "ω": "\\omega ", "Δ": "\\Delta ", "Ω": "\\Omega ", "Σ": "\\Sigma ",
-      "≤": "\\le ", "≥": "\\ge ", "≠": "\\ne ", "≈": "\\approx ", "≅": "\\cong ", "∼": "\\sim ", "∕": "/", "∞": "\\infty ", "∂": "\\partial ", "Γ": "\\Gamma ", "Θ": "\\Theta ", "Λ": "\\Lambda ", "Ξ": "\\Xi ", "Π": "\\Pi ", "Ψ": "\\Psi ", "ζ": "\\zeta ", "η": "\\eta ", "ι": "\\iota ", "κ": "\\kappa ", "ν": "\\nu ", "ξ": "\\xi ", "τ": "\\tau ", "χ": "\\chi ", "ψ": "\\psi ", "ℓ": "\\ell ", "∀": "\\forall ", "∃": "\\exists ", "∈": "\\in ", "∉": "\\notin ", "∪": "\\cup ", "∩": "\\cap ", "⊂": "\\subset ",
+      "≤": "\\le ", "≥": "\\ge ", "≠": "\\ne ", "≈": "\\approx ", "≅": "\\cong ", "∼": "\\sim ", "∕": "/", "∞": "\\infty ", "∮": "\\oint ", "∂": "\\partial ", "Γ": "\\Gamma ", "Θ": "\\Theta ", "Λ": "\\Lambda ", "Ξ": "\\Xi ", "Π": "\\Pi ", "Ψ": "\\Psi ", "ζ": "\\zeta ", "η": "\\eta ", "ι": "\\iota ", "κ": "\\kappa ", "ν": "\\nu ", "ξ": "\\xi ", "τ": "\\tau ", "χ": "\\chi ", "ψ": "\\psi ", "ℓ": "\\ell ", "∀": "\\forall ", "∃": "\\exists ", "∈": "\\in ", "∉": "\\notin ", "∪": "\\cup ", "∩": "\\cap ", "⊂": "\\subset ",
       "·": "\\cdot ", "×": "\\times ", "÷": "\\div ", "±": "\\pm ", "∓": "\\mp ", "−": "-", "–": "-", "′": "'", "°": "^{\\circ}", "∘": "\\circ ", "∠": "\\angle ", "△": "\\triangle ", "∥": "\\parallel ", "⊥": "\\perp ",
       "→": "\\to ", "←": "\\leftarrow ", "⇒": "\\Rightarrow ", "⇔": "\\iff ", "⟺": "\\iff ", "∫": "\\int ", "∑": "\\sum ", "…": "\\ldots ", "ℝ": "\\mathbb{R}", "ℤ": "\\mathbb{Z}", "ℕ": "\\mathbb{N}", "ℚ": "\\mathbb{Q}", "⌊": "\\lfloor ", "⌋": "\\rfloor ", "ȳ": "\\bar{y}", "∅": "\\emptyset ", "⊆": "\\subseteq ", "⊇": "\\supseteq ", "∖": "\\setminus ", "ρ": "\\rho ", "Φ": "\\Phi " };
     // a gap the author typed (two spaces, a no-break space) is a \quad; read before the symbols get their own trailing space (B136)

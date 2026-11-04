@@ -7877,13 +7877,242 @@
 </div>
 </section>
 
+<!-- ===== ELM10 · THE MAGNETIC FIELD AND MOVING CHARGES ===== -->
+<section class="pane" id="pane-elm10">
+<h2><span class="num">10</span>The magnetic field and moving charges</h2>
+<div class="card" data-tags="Definition">
+  <h4>Magnets and the magnetic field</h4>
+  <p>Every magnet has a <b>north</b> and a <b>south pole</b>; like poles repel, unlike poles attract. Cutting a magnet in two gives two smaller magnets: a single pole has never been found.</p>
+  <p class="muted"><b>The magnetic field</b> <code>B⃗</code> fills the space around a magnet. A small compass needle turns to point along it; field lines leave the north pole and enter the south pole. The Earth is a huge magnet, which is why a compass points (roughly) north.</p>
+  <p class="muted"><b>The source of all magnetism is moving charge</b> (Ørsted, 1820: a current turns a compass). In a magnet it is the electrons' motion and spin (Magnetic fields in matter).</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The force on a moving charge</h4>
+  <ul class="idlist">
+    <li><code>F⃗ = q v⃗ × B⃗</code></li>
+    <li><code>F = q v B sin θ</code> &nbsp; (tesla, <code>1 T = 1 N/(A·m)</code>)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> a magnetic field pushes only on <b>moving</b> charges, and sideways: the force is perpendicular both to the velocity and to the field (the cross product, Scalar and vector products). A charge moving along the field feels nothing. For a negative charge the force is reversed.</p>
+  <p class="muted"><b>Sizes:</b> the Earth's field is about <code>10⁻⁴ T</code> (1 gauss); a fridge magnet about <code>10⁻² T</code>; strong lab magnets a few tesla.</p>
+  <p class="muted"><b>It does no work:</b> the force is always across the motion, so it can bend a path but never change the speed.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Circular motion in a magnetic field</h4>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a positive charge in a uniform magnetic field pointing out of the page moves on a circle; the force always points to the centre">
+    <g class="dot"><circle cx="60" cy="40" r="2"/><circle cx="120" cy="40" r="2"/><circle cx="180" cy="40" r="2"/><circle cx="240" cy="40" r="2"/><circle cx="300" cy="40" r="2"/><circle cx="360" cy="40" r="2"/><circle cx="60" cy="100" r="2"/><circle cx="360" cy="100" r="2"/><circle cx="60" cy="160" r="2"/><circle cx="120" cy="160" r="2"/><circle cx="180" cy="160" r="2"/><circle cx="240" cy="160" r="2"/><circle cx="300" cy="160" r="2"/><circle cx="360" cy="160" r="2"/></g>
+    <circle class="cv" cx="210" cy="100" r="62" fill="none"/>
+    <circle class="dot" cx="272" cy="100" r="6"/>
+    <path class="cv3" d="M266 100 L232 100"/><path class="vh3" d="M222 100 L232 95 L232 105 Z"/>
+    <path class="cv2" d="M272 100 L272 66"/><path class="vh2" d="M272 56 L267 66 L277 66 Z"/>
+    <text class="sm" x="282" y="70"><tspan font-weight="bold">v</tspan></text><text class="sm" x="236" y="94"><tspan font-weight="bold">F</tspan></text>
+    <text class="sm" x="372" y="104">B out of the page (•)</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>R = (mv)/(qB)</code></li>
+    <li><code>T = (2πm)/(qB)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a charge moving across a uniform field feels a force of constant size, always toward one centre: it goes round a circle (Circular motion, Mechanics: <code>q v B = mv²/R</code>). Faster or heavier particles make bigger circles; the time for one round doesn't depend on the speed.</p>
+  <p class="muted"><b>Uses:</b> a mass spectrometer sorts ions by their radius (so by their mass); cyclotrons accelerate particles round and round. A proton at <code>2 × 10⁶ m/s</code> in 0.5 T circles with <code>R ≈ 4.2 cm</code>.</p>
+</div>
+</section>
+
+<!-- ===== ELM11 · FORCES ON CURRENTS ===== -->
+<section class="pane" id="pane-elm11">
+<h2><span class="num">11</span>Forces on currents</h2>
+<div class="card" data-tags="Formula">
+  <h4>The force on a current-carrying wire</h4>
+  <ul class="idlist">
+    <li><code>F⃗ = I L⃗ × B⃗</code></li>
+    <li><code>F = I L B sin θ</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a current is moving charge, so a wire carrying current <code>I</code> in a field feels the sum of the forces on all its charges. <code>L⃗</code> points along the wire, in the current's direction. A 0.2 m wire carrying 5 A across a 0.4 T field: <code>F = 0.4 N</code>.</p>
+  <p class="muted"><b>Direction</b> (right-hand rule): fingers along <code>I</code>, curl them toward <code>B⃗</code>; the thumb gives the force.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The torque on a coil: motors and meters</h4>
+  <p><code>N = N I A B sin θ</code> &nbsp; (<code>N</code> turns, area <code>A</code>)</p>
+  <p class="muted"><b>In words:</b> in a field, the two sides of a current loop are pushed in opposite directions, so the loop turns until its plane is perpendicular to the field. The torque is largest when the plane is along the field. A 100-turn coil of <code>5 cm × 10 cm</code> with 2 A in 0.3 T: up to <code>0.3 N·m</code>.</p>
+  <p class="muted"><b>Uses:</b> an <b>electric motor</b> reverses the current every half turn (a commutator) so the coil keeps turning; a moving-coil meter turns against a spring by an amount proportional to the current. A loop behaves like a small magnet (a magnetic dipole).</p>
+</div>
+</section>
+
+<!-- ===== ELM12 · THE MAGNETIC FIELD OF A CURRENT ===== -->
+<section class="pane" id="pane-elm12">
+<h2><span class="num">12</span>The magnetic field of a current</h2>
+<div class="card" data-tags="Formula">
+  <h4>A long straight wire</h4>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="a straight wire carrying current upward; the magnetic field lines are circles around it, counter-clockwise seen from above">
+    <path class="cv3" d="M210 160 L210 22"/><path class="vh3" d="M210 10 L205 22 L215 22 Z"/>
+    <ellipse class="cv" cx="210" cy="60" rx="70" ry="14" fill="none"/>
+    <ellipse class="cv" cx="210" cy="110" rx="110" ry="20" fill="none"/>
+    <path class="vh" d="M140 62 L150 56 L150 68 Z"/><path class="vh" d="M100 112 L110 106 L110 118 Z"/>
+    <text class="sm" x="218" y="22">I</text><text class="sm" x="290" y="58"><tspan font-weight="bold">B</tspan></text>
+  </svg>
+  <ul class="idlist">
+    <li><code>B = (μ₀I)/(2πr)</code></li>
+    <li><code>μ₀ = 4π × 10⁻⁷ T·m/A</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the field lines of a straight current are circles around the wire, getting weaker as <code>1/r</code>. <b>Right-hand rule:</b> thumb along the current, the fingers curl the way the field goes. 10 A, 5 cm away: <code>B = 4 × 10⁻⁵ T</code>, about the Earth's field.</p>
+  <p class="muted"><b>Where it comes from:</b> the Biot–Savart law gives the field of each small piece of wire; adding them along a long wire gives this result.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>A loop and a solenoid</h4>
+  <ul class="idlist">
+    <li>centre of a circular loop: <code>B = (μ₀I)/(2R)</code></li>
+    <li>inside a long solenoid: <code>B = μ₀nI</code> &nbsp; (<code>n</code> turns per metre)</li>
+  </ul>
+  <p class="muted"><b>A solenoid</b> (a long coil) makes a strong, <b>uniform</b> field inside, along its axis, and almost none outside: like a bar magnet with poles at its ends. 1000 turns per metre with 2 A: <code>B ≈ 2.5 × 10⁻³ T</code>. With an iron core inside it is an <b>electromagnet</b>, many times stronger.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Ampère's law</h4>
+  <p><code>∮ B⃗ · dl⃗ = μ₀I</code> &nbsp; (<code>I</code> the current through the loop)</p>
+  <p class="muted"><b>In words:</b> going round any closed path, the sum of the field along the path equals <code>μ₀</code> times the current passing through it. It plays the role Gauss's law plays for electric fields: with symmetry it gives the field at once. A circle of radius <code>r</code> around a wire: <code>B · 2πr = μ₀I</code>, the wire's formula. A rectangle half inside a solenoid: <code>BL = μ₀n L I</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The force between two currents</h4>
+  <p><code>F/L = (μ₀I₁I₂)/(2πd)</code></p>
+  <p class="muted"><b>In words:</b> each wire sits in the other's field. Parallel currents <b>attract</b>; opposite currents <b>repel</b> (the reverse of charges). 10 A and 20 A, 10 cm apart: <code>4 × 10⁻⁴ N</code> per metre.</p>
+  <p class="muted"><b>The ampere was defined this way:</b> the current that gives <code>2 × 10⁻⁷ N</code> per metre between two wires 1 m apart.</p>
+</div>
+</section>
+
+<!-- ===== ELM13 · ELECTROMAGNETIC INDUCTION ===== -->
+<section class="pane" id="pane-elm13">
+<h2><span class="num">13</span>Electromagnetic induction</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Magnetic flux</h4>
+  <ul class="idlist">
+    <li><code>φ_(B) = BA cos α</code> &nbsp; (weber, <code>1 Wb = 1 T·m²</code>)</li>
+    <li><code>φ_(B) = ∫ B⃗ · dA⃗</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the magnetic flux through a surface measures how much field passes through it, exactly like the electric flux (Gauss's law): field times area times the cosine of the angle between the field and the surface's perpendicular.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Faraday's law and Lenz's law</h4>
+  <ul class="idlist">
+    <li><code>ε = −(dφ_(B))/(dt)</code> &nbsp; (a coil of <code>N</code> turns: <code>× N</code>)</li>
+    <li><code>I = ε/R</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> whenever the magnetic flux through a loop <b>changes</b>, an emf appears around the loop, equal to how fast the flux changes (Faraday, 1831). It doesn't matter how: moving a magnet, changing a current nearby, turning or stretching the loop.</p>
+  <p class="muted"><b>Lenz's law</b> (the minus sign): the induced current flows so that its own field <b>opposes the change</b> that made it. Push a magnet's north pole toward a coil and the coil's near end becomes a north pole, pushing back. Otherwise energy would come from nothing.</p>
+  <p class="muted"><b>Example:</b> a 200-turn coil of <code>0.01 m²</code> while the field drops from 0.5 T to 0.1 T in 0.2 s: <code>ε = 200 · 0.4 · 0.01/0.2 = 4 V</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Motional emf and the generator</h4>
+  <ul class="idlist">
+    <li>a rod sliding across a field: <code>ε = B L v</code></li>
+    <li>a coil turning at <code>ω</code>: <code>ε = N B Aω sin ωt</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a conducting rod moving through a field has its charges pushed along it (<code>q v B</code>), so an emf appears: 0.5 m at <code>3 m/s</code> in 0.4 T gives 0.6 V. A coil turning in a field sees its flux go up and down: a sine-shaped emf. That is the <b>generator</b>, the source of almost all our electricity: mechanical energy (steam, water, wind) turned into electrical energy.</p>
+  <p class="muted"><b>Example:</b> 100 turns, <code>0.02 m²</code>, 0.2 T, 50 turns a second: peak emf <code>≈ 126 V</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Self-inductance and eddy currents</h4>
+  <p>A coil's own changing current changes its own flux, so it induces an emf in itself that opposes the change: <code>ε = −L dI/dt</code>, <code>L</code> the <b>inductance</b> (henry). A coil resists sudden changes of current, the way mass resists sudden changes of velocity; it stores energy <code>(1/2)LI²</code> in its field.</p>
+  <p class="muted"><b>Eddy currents:</b> a changing field induces swirling currents in any nearby metal; they heat it (induction cookers) and brake moving metal (train brakes). Transformer cores are made of thin insulated sheets to stop them.</p>
+</div>
+</section>
+
+<!-- ===== ELM14 · ALTERNATING CURRENT ===== -->
+<section class="pane" id="pane-elm14">
+<h2><span class="num">14</span>Alternating current</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>AC voltage and current, rms values</h4>
+  <ul class="idlist">
+    <li><code>V(t) = V₀ sin ωt</code>, &nbsp; <code>I(t) = I₀ sin ωt</code></li>
+    <li><code>V_(rms) = V₀/√2 ≈ 0.707 V₀</code>, &nbsp; <code>I_(rms) = I₀/√2</code></li>
+    <li><code>P_(av) = I_(rms)V_(rms) = (1/2)I₀V₀</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a generator gives a voltage that swings back and forth as a sine, and the current through a resistor follows it. The <b>rms</b> ("root mean square") value is the steady DC value that would deliver the same average power; with rms values the DC formulas <code>V = IR</code> and <code>P = IV = I²R = V²/R</code> still hold for resistors.</p>
+  <p class="muted"><b>Household electricity:</b> "230 V" is the rms value; the peak is <code>230 √2 ≈ 325 V</code>, alternating 50 times a second (60 in some countries). A 50 Ω heater on it uses about 1060 W.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The transformer</h4>
+  <ul class="idlist">
+    <li><code>V₂/V₁ = N₂/N₁</code></li>
+    <li><code>I₁V₁ = I₂V₂</code> &nbsp; (ideal)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> two coils on one iron core. The alternating current in the first makes a changing flux, which induces a voltage in the second (Faraday's law) in proportion to the turns. Few turns on the second coil step the voltage down; many turns step it up. The power in and out is nearly the same, so stepping the voltage up steps the current down.</p>
+  <p class="muted"><b>Example:</b> 230 V into 1000 turns, 50 turns out: 11.5 V; a 2 A load there draws only 0.1 A from the mains. Transformers only work with AC (a steady current gives no changing flux): that's why the grid is AC (Why power lines use high voltage).</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Coils and capacitors in AC circuits</h4>
+  <p>A <b>capacitor</b> blocks steady current but passes AC: it lets more through at higher frequencies. A <b>coil</b> passes steady current easily but resists fast changes: it lets less through at higher frequencies. In both, the current and voltage are out of step by a quarter cycle, and on average they use no power.</p>
+  <p class="muted"><b>Together</b> (an LC circuit) they <b>resonate</b>: energy sloshes between the capacitor's field and the coil's at <code>f = 1/(2π√(LC))</code>, like a mass on a spring. Tuning a radio means adjusting <code>C</code> so that this frequency matches the station.</p>
+</div>
+</section>
+
+<!-- ===== ELM15 · ELECTROMAGNETIC WAVES AND MAGNETISM IN MATTER ===== -->
+<section class="pane" id="pane-elm15">
+<h2><span class="num">15</span>Electromagnetic waves and magnetism in matter</h2>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Maxwell's equations and electromagnetic waves</h4>
+  <ul class="idlist">
+    <li><code>c = 1/(√(μ₀ε₀)) ≈ 3 × 10⁸ m/s</code></li>
+    <li><code>E = cB</code>, &nbsp; <code>c = λf</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> four laws describe all of electricity and magnetism: Gauss's law for <code>E⃗</code>, Gauss's law for <code>B⃗</code> (no single poles), Faraday's law (a changing <code>B⃗</code> makes <code>E⃗</code>), and Ampère's law completed by Maxwell (a changing <code>E⃗</code> also makes <code>B⃗</code>). Together they allow fields that keep each other going and travel through empty space: an <b>electromagnetic wave</b>, at a speed that comes out exactly <code>c</code>, the speed of light.</p>
+  <p class="muted"><b>The wave:</b> <code>E⃗</code> and <code>B⃗</code> oscillate at right angles to each other and to the direction of travel (a transverse wave), in step. Any accelerating charge sends one out: an antenna drives electrons up and down to broadcast. FM radio at 100 MHz has <code>λ = 3 m</code>. The spectrum: Electromagnetic waves and the spectrum (Optics).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Magnetic fields in matter</h4>
+  <ul>
+    <li><b>Diamagnetic</b> materials (water, copper) are weakly pushed out of a field.</li>
+    <li><b>Paramagnetic</b> materials (aluminium, oxygen) are weakly pulled in: their atoms are tiny magnets that partly line up with the field.</li>
+    <li><b>Ferromagnetic</b> materials (iron, nickel, cobalt) are strongly pulled: their atomic magnets line up together in regions (domains), and can stay lined up: a permanent magnet. Heating above a certain temperature (the Curie point) destroys it.</li>
+  </ul>
+  <p class="muted"><b>The atomic magnets</b> come from the electrons' orbits and their spin (Modern physics).</p>
+</div>
+</section>
+
 </div><!-- /folder-elm -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"],["b:elm6","b:elm4"],["b:elm7","b:elm6"],["b:elm8","b:elm7"],["b:elm8","b:mec14"],["b:elm9","b:elm5"],["b:elm9","b:elm7"],["b:elm9","b:p2"]],"m":[["pp_bi_elmkirch","pp_bi_elmres"],["pp_bi_elmpower","pp_bi_elmres"],["pp_bi_elmcapc","pp_bi_elmcap"],["pp_bi_elmrc","pp_bi_elmcapc"],["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["c","elm9","Charging and discharging through a resistor","x"],["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"],["b:elm6","b:elm4"],["b:elm7","b:elm6"],["b:elm8","b:elm7"],["b:elm8","b:mec14"],["b:elm9","b:elm5"],["b:elm9","b:elm7"],["b:elm9","b:p2"],["b:elm10","b:elm2"],["b:elm10","b:mec4"],["b:elm10","b:mec17"],["b:elm11","b:elm10"],["b:elm11","b:elm6"],["b:elm12","b:elm11"],["b:elm12","b:elm3"],["b:elm13","b:elm12"],["b:elm13","b:dv1"],["b:elm14","b:elm13"],["b:elm14","b:elm8"],["b:elm15","b:elm13"],["b:elm15","b:opt1"]],"m":[["pp_bi_elmbfield","pp_bi_elmlorentz"],["pp_bi_elminduct","pp_bi_elmbfield"],["pp_bi_elmac","pp_bi_elminduct"],["pp_bi_elmkirch","pp_bi_elmres"],["pp_bi_elmpower","pp_bi_elmres"],["pp_bi_elmcapc","pp_bi_elmcap"],["pp_bi_elmrc","pp_bi_elmcapc"],["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["c","elm14","Coils and capacitors in AC circuits","x"],["c","elm9","Charging and discharging through a resistor","x"],["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_elmlorentz", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "Magnetic force on a charge or a wire",
+  "description": "Find the size and direction of the magnetic force on a moving charge or a current, and the radius of a charge's circle.",
+  "uses": [["c", "elm10", "The force on a moving charge"], ["c", "elm10", "Circular motion in a magnetic field"], ["c", "elm11", "The force on a current-carrying wire"]],
+  "parts": [
+    { "id": "st_bi_elmlorentz1", "cat": "stage", "name": "Size", "text": "Charge: `F = q v B sin θ`. Wire: `F = I L B sin θ`. `θ` is the angle between the velocity (or current) and the field." },
+    { "id": "st_bi_elmlorentz2", "cat": "stage", "name": "Direction", "text": "Right-hand rule for `v⃗ × B⃗` (or `L⃗ × B⃗`); reverse it for a negative charge. The force is perpendicular to both." },
+    { "id": "st_bi_elmlorentz3", "cat": "stage", "name": "Circular path", "text": "Charge moving across a uniform field: `R = mv/(qB)`, `T = 2πm/(qB)`." },
+    { "id": "st_bi_elmlorentz4", "cat": "example", "name": "Examples", "text": "**A proton** (`m = 1.67 × 10⁻²⁷ kg`) at `2 × 10⁶ m/s` across 0.5 T.\n1. `F = 1.6 × 10⁻¹⁹ · 2 × 10⁶ · 0.5 ≈ 1.6 × 10⁻¹³ N`\n3. `R = (1.67 × 10⁻²⁷ · 2 × 10⁶)/(1.6 × 10⁻¹⁹ · 0.5) ≈ 0.042 m`; `T ≈ 1.3 × 10⁻⁷ s`\n**A wire** 0.2 m long with 5 A, across 0.4 T: `F = 5 · 0.2 · 0.4 = 0.4 N`." }
+  ] },
+{ "id": "pp_bi_elmbfield", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "The magnetic field of currents",
+  "description": "Find the field of a straight wire, a loop or a solenoid, and the force between two wires.",
+  "uses": [["c", "elm12", "A long straight wire"], ["c", "elm12", "A loop and a solenoid"], ["c", "elm12", "The force between two currents"]],
+  "parts": [
+    { "id": "st_bi_elmbfield1", "cat": "stage", "name": "Pick the shape", "text": "Wire `μ₀I/(2πr)`; loop centre `μ₀I/(2R)`; solenoid `μ₀nI` with `n` = turns per metre." },
+    { "id": "st_bi_elmbfield2", "cat": "stage", "name": "Direction", "text": "Right hand: thumb along the current, fingers give the field (for a loop or solenoid, fingers along the current, thumb gives the field inside)." },
+    { "id": "st_bi_elmbfield3", "cat": "stage", "name": "Several currents", "text": "Add the fields as vectors. Two parallel wires: `F/L = μ₀I₁I₂/(2πd)`, attracting if the currents are parallel." },
+    { "id": "st_bi_elmbfield4", "cat": "example", "name": "Examples", "text": "**Wire** 10 A, at 5 cm: `B = (4π × 10⁻⁷ · 10)/(2π · 0.05) = 4 × 10⁻⁵ T`.\n**Loop** radius 10 cm, 5 A: `B ≈ 3.1 × 10⁻⁵ T`.\n**Solenoid** 1000 turns/m, 2 A: `B ≈ 2.5 × 10⁻³ T`.\n**Two wires** 10 A and 20 A, 10 cm apart, same direction: `4 × 10⁻⁴ N` per metre, attracting." }
+  ] },
+{ "id": "pp_bi_elminduct", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "Induced emf and current",
+  "description": "Find the emf and current induced by a changing flux, and their direction by Lenz's law.",
+  "uses": [["c", "elm13", "Faraday's law and Lenz's law"], ["c", "elm13", "Magnetic flux"], ["c", "elm13", "Motional emf and the generator"]],
+  "parts": [
+    { "id": "st_bi_elminduct1", "cat": "stage", "name": "Flux before and after", "text": "`φ_(B) = BA cos α` for each moment (or as a function of time)." },
+    { "id": "st_bi_elminduct2", "cat": "stage", "name": "Rate of change", "text": "`ε = (N |Δφ_(B)|)/(Δt)` (or `N dφ/dt`). Moving rod: `B L v`. Turning coil: peak `N B Aω`." },
+    { "id": "st_bi_elminduct3", "cat": "stage", "name": "Current", "text": "`I = ε/R`." },
+    { "id": "st_bi_elminduct4", "cat": "stage", "name": "Direction (Lenz)", "text": "The induced current makes a field that opposes the change: flux growing → its field points against the outside field; flux shrinking → along it." },
+    { "id": "st_bi_elminduct5", "cat": "example", "name": "Example", "text": "A 200-turn coil of `0.01 m²`, resistance 4 Ω, in a field perpendicular to it that drops from 0.5 T to 0.1 T in 0.2 s.\n1. `0.005 Wb` → `0.001 Wb` per turn\n2. `ε = 200 · 0.004/0.2 = 4 V`\n3. `I = 1 A`\n4. The flux shrinks, so the current flows so that its field points along the outside field, trying to keep it." }
+  ] },
+{ "id": "pp_bi_elmac", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "AC power and transformers",
+  "description": "Convert between peak and rms values, find the power used on AC, and the voltages and currents of a transformer.",
+  "uses": [["c", "elm14", "AC voltage and current, rms values"], ["c", "elm14", "The transformer"]],
+  "parts": [
+    { "id": "st_bi_elmac1", "cat": "stage", "name": "rms or peak?", "text": "Mains voltages are rms. Peak = rms × √2." },
+    { "id": "st_bi_elmac2", "cat": "stage", "name": "Power", "text": "With rms values: `P = V_(rms)²/R = I_(rms)²R`." },
+    { "id": "st_bi_elmac3", "cat": "stage", "name": "Transformer", "text": "`V₂ = V₁N₂/N₁`; ideal: `I₁V₁ = I₂V₂`." },
+    { "id": "st_bi_elmac4", "cat": "example", "name": "Example", "text": "A 50 Ω heater on 230 V mains.\n1. Peak `≈ 325 V`\n2. `P = 230²/50 ≈ 1058 W`; `I_(rms) = 4.6 A`\nA charger: 1000 turns in, 50 out.\n3. `V₂ = 230 · 50/1000 = 11.5 V`; a 2 A load draws `11.5 · 2/230 = 0.1 A` from the mains." }
+  ] },
 { "id": "pp_bi_elmres", "v": 1, "subject": "f:elm", "kind": "problem",
   "name": "Solving a series–parallel circuit",
   "description": "Find the total resistance, the current from the source and the current and voltage of every resistor.",
