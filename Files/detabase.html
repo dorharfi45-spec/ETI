@@ -2647,7 +2647,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B144</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B145</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4959,6 +4959,7 @@ function __detabaseMain() {
     calc:    { name: "Calculus", icon: "∑" },
     stats:   { name: "Statistics", icon: "📊" },
     physics: { name: "Physics",  icon: "🔬" },
+    physc:   { name: "Physics course", icon: "📘", parent: "physics" },   // parent: where it sits until the owner moves it (B145)
     ee:      { name: "EE",       icon: "⚡" },
     me:      { name: "ME",       icon: "⚙️" }
   };
@@ -4970,12 +4971,23 @@ function __detabaseMain() {
     return BUILTIN_GROUPS[id] ? ((store.etiEdits && store.etiEdits.names && store.etiEdits.names["g|" + id]) || BUILTIN_GROUPS[id].name)
       : ((store.groups.filter(function (g) { return g.id === id; })[0] || {}).name || id);
   }
-  var BUILTIN_GROUP_ORDER = ["base", "calc", "stats", "physics", "ee", "me"];
+  var BUILTIN_GROUP_ORDER = ["base", "calc", "stats", "physics", "physc", "ee", "me"];
   function everyGroupId() {
     return BUILTIN_GROUP_ORDER.concat(store.groups.map(function (g) { return g.id; }));
   }
   // ---- folders inside folders (B94): store.groupParent = { <group id>: <parent group id> }, no entry = at the
   // top. In the UI a group is a "folder". Siblings are ordered by one shared list, store.order.etiGroups.
+  // A built-in folder with a `parent` sits there while it has no entry; moved to the top, its entry is "" (B145).
+  function groupParentRaw(gid) {
+    var gp = store.groupParent;
+    return gp && Object.prototype.hasOwnProperty.call(gp, gid) ? gp[gid] : (BUILTIN_GROUPS[gid] && BUILTIN_GROUPS[gid].parent) || null;
+  }
+  function groupSetParent(gid, parent) {
+    store.groupParent = store.groupParent || {};
+    if (parent) store.groupParent[gid] = parent;
+    else if (BUILTIN_GROUPS[gid] && BUILTIN_GROUPS[gid].parent) store.groupParent[gid] = "";
+    else delete store.groupParent[gid];
+  }
   function groupOrderSort(ids) {
     var all = everyGroupId(), ord = (store.order && store.order.etiGroups) || [];
     return ids.slice().sort(function (a, b) {
@@ -4986,9 +4998,9 @@ function __detabaseMain() {
     });
   }
   function groupParentOf(gid) {
-    var p = store.groupParent && store.groupParent[gid];
+    var p = groupParentRaw(gid);
     if (!p || !groupExists(p)) return null;
-    for (var n = p, i = 0; n && i < 100; n = store.groupParent[n], i++) if (n === gid) return null;   // a loop (two devices) reads as the top
+    for (var n = p, i = 0; n && i < 100; n = groupParentRaw(n), i++) if (n === gid) return null;   // a loop (two devices) reads as the top
     return p;
   }
   function groupKidsOf(parent) {
@@ -5005,8 +5017,7 @@ function __detabaseMain() {
   // a folder into another (parent null = the top), at `index` among its new siblings (the end when null)
   function groupMoveTo(gid, parent, index) {
     if (!groupExists(gid) || (parent && (!groupExists(parent) || groupInside(parent, gid)))) return false;
-    store.groupParent = store.groupParent || {};
-    if (parent) store.groupParent[gid] = parent; else delete store.groupParent[gid];
+    groupSetParent(gid, parent);
     var sibs = groupKidsOf(parent).filter(function (x) { return x !== gid; });
     if (index == null || index > sibs.length) index = sibs.length;
     var ord = groupOrderSort(everyGroupId()).filter(function (x) { return x !== gid; });
@@ -5235,7 +5246,7 @@ function __detabaseMain() {
       if (up) store.builtinGroup[f] = up; else delete store.builtinGroup[f];
     });
     store.subjects.forEach(function (s) { if (s.folder === "eti" && s.group === id) s.group = up || "base"; });
-    groupKidsOf(id).forEach(function (g) { if (up) store.groupParent[g] = up; else delete store.groupParent[g]; });
+    groupKidsOf(id).forEach(function (g) { groupSetParent(g, up); });
     if (store.groupParent) delete store.groupParent[id];
     sumEnsure().forEach(function (sm) { if (sm.groupId === id) delete sm.groupId; });   // its study sheets: no group now
     store.groups = store.groups.filter(function (g) { return g.id !== id; });
