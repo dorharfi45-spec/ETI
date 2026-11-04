@@ -2634,6 +2634,11 @@
   <button data-target="mec8"><span class="tnum">8</span>Projectiles and reference frames</button>
   <button data-target="mec9"><span class="tnum">9</span>Equilibrium and elasticity</button>
   <button data-target="mec10"><span class="tnum">10</span>Pressure and fluids</button>
+  <button data-target="mec11"><span class="tnum">11</span>Work and kinetic energy</button>
+  <button data-target="mec12"><span class="tnum">12</span>Potential energy and conservation of mechanical energy</button>
+  <button data-target="mec13"><span class="tnum">13</span>Heat and the molecular theory</button>
+  <button data-target="mec14"><span class="tnum">14</span>Conservation of energy and power</button>
+  <button data-target="mec15"><span class="tnum">15</span>Simple machines, the lever law and torques</button>
 </nav>
 
 <main id="paneHost">
@@ -2665,7 +2670,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B147</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B148</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4676,7 +4681,7 @@ function __detabaseMain() {
     rv: { title: "Random variables — for Intro to Statistics",
       sub: 'Discrete random variables, special distributions, expectation and variance; two-dimensional and continuous variables, the normal distribution.' },
     mec: { title: "Mechanics — for Physics course",
-      sub: "Units, motion, vectors, Newton's laws, gravitation, friction and slopes, projectiles, statics, fluids; more to come: energy, momentum, rotation, oscillations." }
+      sub: "Units, motion, vectors, Newton's laws, gravitation, friction and slopes, projectiles, statics, fluids, work and energy, heat, power, machines and torques; more to come: momentum, circular motion, rotation, oscillations." }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -19377,7 +19382,7 @@ function __detabaseMain() {
   // =========================================================
   function plainToTex(text) {
     var PAR = "\\((?:[^()]|\\((?:[^()]|\\([^()]*\\))*\\))+\\)";   // (…) with up to two levels of (…) inside: (∑ (x_(i) − x̄)…)/n (B144)
-    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304\u0302\u20d7ȳμσρλωταβγφ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
+    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304\u0302\u20d7ȳμσρℓλωταβγφ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
     var TERM = "(?:√?" + PAR + "|" + CALL + "(?:\\s" + CALL + ")?)";
     var SRC = "(" + TERM + ")\\s*/\\s*(" + TERM + ")";
     var SKIP = { and: 1, or: 1, AND: 1, OR: 1 };
@@ -19418,7 +19423,7 @@ function __detabaseMain() {
       return w.length > 2 ? "\\text{ " + w + " }" : w;
     });
     var SYM = { "π": "\\pi ", "θ": "\\theta ", "α": "\\alpha ", "β": "\\beta ", "γ": "\\gamma ", "δ": "\\delta ", "ε": "\\varepsilon ", "λ": "\\lambda ", "μ": "\\mu ", "σ": "\\sigma ", "φ": "\\varphi ", "ω": "\\omega ", "Δ": "\\Delta ", "Ω": "\\Omega ", "Σ": "\\Sigma ",
-      "≤": "\\le ", "≥": "\\ge ", "≠": "\\ne ", "≈": "\\approx ", "≅": "\\cong ", "∼": "\\sim ", "∞": "\\infty ", "∀": "\\forall ", "∃": "\\exists ", "∈": "\\in ", "∉": "\\notin ", "∪": "\\cup ", "∩": "\\cap ", "⊂": "\\subset ",
+      "≤": "\\le ", "≥": "\\ge ", "≠": "\\ne ", "≈": "\\approx ", "≅": "\\cong ", "∼": "\\sim ", "∞": "\\infty ", "ℓ": "\\ell ", "∀": "\\forall ", "∃": "\\exists ", "∈": "\\in ", "∉": "\\notin ", "∪": "\\cup ", "∩": "\\cap ", "⊂": "\\subset ",
       "·": "\\cdot ", "×": "\\times ", "÷": "\\div ", "±": "\\pm ", "∓": "\\mp ", "−": "-", "–": "-", "′": "'", "°": "^{\\circ}", "∘": "\\circ ", "∠": "\\angle ", "△": "\\triangle ", "∥": "\\parallel ", "⊥": "\\perp ",
       "→": "\\to ", "←": "\\leftarrow ", "⇒": "\\Rightarrow ", "⇔": "\\iff ", "⟺": "\\iff ", "∫": "\\int ", "∑": "\\sum ", "…": "\\ldots ", "ℝ": "\\mathbb{R}", "ℤ": "\\mathbb{Z}", "ℕ": "\\mathbb{N}", "ℚ": "\\mathbb{Q}", "⌊": "\\lfloor ", "⌋": "\\rfloor ", "ȳ": "\\bar{y}", "∅": "\\emptyset ", "⊆": "\\subseteq ", "⊇": "\\supseteq ", "∖": "\\setminus ", "ρ": "\\rho ", "Φ": "\\Phi " };
     // a gap the author typed (two spaces, a no-break space) is a \quad; read before the symbols get their own trailing space (B136)

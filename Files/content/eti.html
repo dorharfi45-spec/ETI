@@ -6627,13 +6627,297 @@
 </div>
 </section>
 
+<!-- ===== MEC11 · WORK AND KINETIC ENERGY ===== -->
+<section class="pane" id="pane-mec11">
+<h2><span class="num">11</span>Work and kinetic energy</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Work</h4>
+  <ul class="idlist">
+    <li><code>W = FS cos θ = F⃗ · S⃗</code></li>
+    <li><code>1 J = 1 N · m</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a box pulled by a force F at angle theta to its path moves a displacement S along the floor">
+    <path class="ax" d="M30 150 H400"/>
+    <rect class="box" x="70" y="100" width="80" height="50"/><rect class="gd" x="280" y="100" width="80" height="50"/>
+    <path class="cv" d="M110 120 L173.9 75.3"/><path class="vh" d="M183.7 68.4 L176.8 79.4 L171 71.2 Z"/>
+    <path class="gd" d="M110 120 H180"/><path class="ax" d="M145 120 A35 35 0 0 0 138.7 99.9"/>
+    <path class="cv2" d="M80 175 L318 175"/><path class="vh2" d="M330 175 L318 180 L318 170 Z"/>
+    <text x="190" y="66"><tspan font-weight="bold">F</tspan></text><text x="152" y="114">θ</text><text x="200" y="194"><tspan font-weight="bold">S</tspan></text>
+  </svg>
+  <p class="muted"><b>In words:</b> a force does <b>work</b> on a body when the body moves along the force. Only the part of the force along the displacement counts: <code>F cos θ</code>. Work is a <b>scalar</b>, measured in joules (J).</p>
+  <ul data-cpart="expl">
+    <li><code>θ = 0</code> (force along the motion): <code>W = FS</code>, positive.</li>
+    <li><code>θ = 90°</code> (force across the motion): <code>W = 0</code>. The normal force and the weight do no work on a body sliding on a level floor; carrying a bag along a level road does no work on it either, in this physics sense.</li>
+    <li><code>θ &gt; 90°</code> (force against the motion, like friction): <code>W &lt; 0</code>.</li>
+  </ul>
+  <p class="muted"><b>Several forces:</b> each one does its own work, and the work of the net force is the sum of them all.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The work of a varying force</h4>
+  <ul class="idlist">
+    <li><code>W = ∑ F⃗(r⃗_(i)) · Δr⃗_(i)</code> &nbsp; → &nbsp; <code>W = ∫_(A)^(B) F⃗ · dr⃗</code></li>
+    <li>along a line: <code>W = ∫_(x₁)^(x₂) F(x) dx</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> when the force changes along the way, cut the path into small pieces on which it is almost constant, add the works of the pieces, and let the pieces shrink: an integral (Integrals). Along a line, the work is the <b>area under the graph</b> of <code>F</code> against <code>x</code>.</p>
+  <p class="muted"><b>A spring</b> (<code>F = kx</code> to stretch it): the area under the straight line from 0 to <code>x</code> is a triangle, <code>W = (1/2)kx²</code>. Stretching 10 cm takes a quarter of the work of stretching 20 cm.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Kinetic energy and the work–energy theorem</h4>
+  <ul class="idlist">
+    <li><code>K = (1/2)mv²</code></li>
+    <li><code>W_(net) = (1/2)mv₂² − (1/2)mv₁² = ΔK</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>kinetic energy</b> is the energy a body has because it moves. The theorem: the work of the <b>net</b> force on a body equals the change in its kinetic energy. Positive work speeds it up, negative work slows it down.</p>
+  <p class="muted"><b>Where it comes from:</b> for a constant force along the motion, <code>W = FS = ma S</code>; with <code>a = (v₂ − v₁)/t</code> and <code>S = ((v₁ + v₂)/2)t</code> the time cancels and <code>W = (m/2)(v₂² − v₁²)</code>. (The same comes out for any force, by integrating.)</p>
+  <p class="muted"><b>Why it is useful:</b> it connects speeds with distances directly, without the time. Twice the speed is four times the kinetic energy, so a car needs four times the braking distance.</p>
+</div>
+</section>
+
+<!-- ===== MEC12 · POTENTIAL ENERGY AND CONSERVATION OF MECHANICAL ENERGY ===== -->
+<section class="pane" id="pane-mec12">
+<h2><span class="num">12</span>Potential energy and conservation of mechanical energy</h2>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Gravitational potential energy and mechanical energy</h4>
+  <ul class="idlist">
+    <li><code>U = m g h</code></li>
+    <li><code>E = K + U = (1/2)mv² + m g h</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> lifting a body by <code>h</code> takes work <code>m g h</code> against gravity. That work is stored as <b>potential energy</b>: let the body fall, and it gets it back as kinetic energy. <code>h</code> is measured from any level you choose; only <b>changes</b> of <code>U</code> matter.</p>
+  <p class="muted"><b>Conservation of mechanical energy:</b> when only gravity (or other conservative forces) does work, the sum <code>E = K + U</code> stays the same. Energy only moves between the two forms.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["1 kg dropped from 5 m","U (J)","K (J)","E (J)"]},{"c":["at the top","49","0","49"]},{"c":["half way down","24.5","24.5","49"]},{"c":["at the ground","0","49","49"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>So</b> its speed at the ground is <code>v = √(2gh) ≈ 9.9 m/s</code>, the free-fall result, found without any time.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Conservative forces</h4>
+  <p>A force is <b>conservative</b> when the work needed to move a body from A to B against it depends only on A and B, <b>not on the path</b>. Equivalently: its total work around any closed path is zero.</p>
+  <p class="muted"><b>Gravity is conservative:</b> lifting a body by <code>h</code> takes <code>m g h</code>, whether straight up, up a ramp or along a winding track (without friction). That is what makes a potential energy possible: it depends only on the position.</p>
+  <p class="muted"><b>Friction is not:</b> a longer path means more work against it, and around a closed path its work is not zero (it always opposes the motion). The energy it takes doesn't come back as mechanical energy; it turns into heat (Heat and the molecular theory).</p>
+  <p class="muted"><b>The spring force is conservative too</b>; electric forces are as well (Electricity and magnetism).</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The potential energy of a spring</h4>
+  <ul class="idlist">
+    <li><code>F = −kx</code></li>
+    <li><code>U = (1/2)kx²</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a spring stretched or squeezed by <code>x</code> pulls back toward its natural length (the minus sign). The work done to stretch it, <code>(1/2)kx²</code> (the area under <code>F = kx</code>, The work of a varying force), is stored as <b>elastic potential energy</b> and comes back when it is released.</p>
+  <p class="muted"><b>With a spring:</b> <code>E = (1/2)mv² + (1/2)kx² (+ m g h)</code> is conserved. A spring gun compressed 10 cm (<code>k = 400 N/m</code>) stores <code>2 J</code>; it launches a 0.2 kg ball at <code>√(2 · 2/0.2) ≈ 4.5 m/s</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>When friction acts</h4>
+  <p><code>E_(final) = E_(initial) − f d</code></p>
+  <p class="muted"><b>In words:</b> friction (kinetic, constant, over a distance <code>d</code>) takes <code>fd</code> out of the mechanical energy. That energy isn't destroyed: it becomes heat (the surfaces warm up). More generally, the work of the non-conservative forces equals the change in mechanical energy.</p>
+  <p class="muted"><b>Example:</b> a 20 kg sled slides 10 m down a <code>30°</code> slope (5 m drop) from rest, <code>μ_(k) = 0.1</code>. Friction <code>0.1 · 196 · cos 30° ≈ 17.0 N</code> takes <code>≈ 170 J</code> of the <code>980 J</code>; it reaches the bottom with <code>810 J</code>, about <code>9.0 m/s</code> (without friction <code>9.9 m/s</code>).</p>
+</div>
+</section>
+
+<!-- ===== MEC13 · HEAT AND THE MOLECULAR THEORY ===== -->
+<section class="pane" id="pane-mec13">
+<h2><span class="num">13</span>Heat and the molecular theory</h2>
+<div class="card" data-tags="Definition">
+  <h4>Heat is a form of energy</h4>
+  <p><code>1 cal = 4.184 J</code></p>
+  <p class="muted"><b>In words:</b> when friction stops a sliding body, its mechanical energy seems lost; actually it becomes <b>thermal energy</b>: the bodies warm up. <b>Heat</b> is energy passing from a hotter body to a colder one because of the temperature difference.</p>
+  <p class="muted"><b>Joule's experiment</b> (1840s): a falling weight turned paddles in water; the water warmed by an amount always proportional to the mechanical energy spent. The old heat unit, the <b>calorie</b> (the heat that warms 1 g of water by 1°C), turned out to be 4.184 joules.</p>
+  <p class="muted"><b>Food "calories"</b> are kilocalories: a 2,700 kcal daily diet is about <code>1.1 × 10⁷ J</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Specific heat and calorimetry</h4>
+  <ul class="idlist">
+    <li><code>Q = mcΔT</code></li>
+    <li><code>C = mc</code> &nbsp; (heat capacity), &nbsp; <code>Q = CΔT</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the heat <code>Q</code> needed to warm a body by <code>ΔT</code> is proportional to its mass and to the <b>specific heat</b> <code>c</code> of its material: the heat for 1 kg and 1°C (or 1 K: a temperature difference is the same in both).</p>
+  <div class="bi-table" data-cpart="expl" data-table='{"rows":[{"c":["Material","c (J/(kg·K))"]},{"c":["water","4184"]},{"c":["ice","2050"]},{"c":["aluminium","900"]},{"c":["iron","447"]},{"c":["copper","386"]},{"c":["lead","128"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Water's specific heat is very large:</b> it takes a lot of heat to warm, and gives out a lot as it cools. That is why the sea keeps coastal climates mild.</p>
+  <p class="muted"><b>Calorimetry:</b> mix bodies at different temperatures in an insulated vessel (a calorimeter) and they reach a common temperature. No heat leaks out, so the heat given by the hot ones equals the heat taken by the cold ones: <code>∑ m c ΔT = 0</code>. This is how specific heats are measured.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Phase changes and latent heat</h4>
+  <p><code>Q = mL</code></p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="temperature of a piece of ice against the heat added: it rises to 0 degrees, stays flat while the ice melts, rises to 100 degrees, stays flat while the water boils, then rises again as steam">
+    <path class="ax" d="M40 200 H405 M40 205 V15"/>
+    <path class="gd" d="M40 150 H90 M40 60 H260"/>
+    <path class="cv" d="M40 180 L90 150 L180 150 L260 60 L380 60 L400 40"/>
+    <text class="sm" x="34" y="154" text-anchor="end">0°C</text><text class="sm" x="34" y="64" text-anchor="end">100°C</text>
+    <text class="sm" x="135" y="142" text-anchor="middle">melting</text><text class="sm" x="320" y="52" text-anchor="middle">boiling</text>
+    <text class="sm" x="62" y="196">ice</text><text class="sm" x="232" y="120">water</text><text class="sm" x="388" y="32">steam</text>
+    <text class="sm" x="400" y="216" text-anchor="end">heat added</text><text class="sm" x="46" y="24">T</text>
+  </svg>
+  <p class="muted"><b>In words:</b> while a substance melts or boils, the heat it takes doesn't raise its temperature: it goes into pulling the molecules apart. The heat per kilogram is the <b>latent heat</b> <code>L</code> (heat of fusion for melting, heat of vaporisation for boiling). Freezing and condensing give the same heat back.</p>
+  <p class="muted"><b>Water</b> (at normal air pressure): melting at 0°C, <code>L_(f) = 334 kJ/kg</code> (80 cal/g); boiling at 100°C, <code>L_(v) = 2256 kJ/kg</code> (539 cal/g). Boiling points drop with lower pressure: on a high mountain water boils below 100°C.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Heat conduction and heat of combustion</h4>
+  <p><b>Conduction:</b> heat flows through a material from the hot side to the cold side, faster for a bigger area <code>A</code>, a bigger temperature difference and a thinner layer <code>L</code>. The material's <b>thermal conductivity</b> <code>k</code> says how well it conducts: metals (copper <code>401 W/(m·K)</code>) much better than wood (0.11) or air (0.026). Trapped air makes good insulation (wool, fibreglass, double glazing).</p>
+  <p class="muted"><b>Heat of combustion:</b> the heat released by burning 1 kg of a fuel: petrol about <code>4.6 × 10⁷ J/kg</code>, wood about <code>1.9 × 10⁷ J/kg</code>. Food is "burned" slowly in the body; its calorie value is its heat of combustion.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>The molecular theory of heat</h4>
+  <p>Matter is made of <b>molecules</b> in constant random motion. <b>Temperature</b> measures their average kinetic energy; heating a body makes its molecules move faster.</p>
+  <ul data-cpart="expl">
+    <li><b>Gas:</b> the molecules fly freely, far apart, and only collide now and then.</li>
+    <li><b>Liquid:</b> they stay close and attract each other, but slide past one another.</li>
+    <li><b>Solid:</b> each one vibrates around a fixed place.</li>
+  </ul>
+  <p class="muted"><b>Internal energy</b> is the total kinetic and potential energy of all the molecules. Heat taken in raises it. In a phase change the potential part grows (the bonds loosen) while the kinetic part, and so the temperature, stays the same.</p>
+  <p class="muted"><b>Absolute zero</b>, 0 K <code>= −273.15°C</code>, is where the molecular motion would be the least possible; nothing can be colder. The Kelvin scale starts there: <code>T(K) = T(°C) + 273.15</code>. The theory explains heat conduction too: fast molecules hand on their energy to slower neighbours in collisions.</p>
+</div>
+</section>
+
+<!-- ===== MEC14 · CONSERVATION OF ENERGY AND POWER ===== -->
+<section class="pane" id="pane-mec14">
+<h2><span class="num">14</span>Conservation of energy and power</h2>
+<div class="card" data-tags="Theorem">
+  <h4>The law of conservation of energy</h4>
+  <p><b>Energy is neither created nor destroyed.</b> In a closed system (no energy exchanged with the surroundings) the total energy stays constant; otherwise its change equals the energy that came in or went out.</p>
+  <p class="muted"><b>Energy takes many forms</b> and turns from one into another: mechanical (kinetic and potential), internal (heat), <b>chemical</b> (stored in the bonds of molecules, released by burning or by food), electric, light, nuclear. A power station turns the chemical energy of fuel into heat, then motion, then electricity.</p>
+  <p class="muted"><b>Mechanical energy alone</b> is conserved only without friction; the <b>total</b> energy always is. The law grew out of the discovery that heat is energy, and it has never been seen to fail.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Power</h4>
+  <ul class="idlist">
+    <li><code>P = W/t</code></li>
+    <li><code>1 W = 1 J/s</code>, &nbsp; <code>1 kWh = 3.6 × 10⁶ J</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> <b>power</b> is how fast work is done (or energy changes form): joules per second, the watt. Two cranes lifting the same load to the same height do the same work, but the faster one has the greater power.</p>
+  <p class="muted"><b>Units you meet:</b> kilowatt <code>10³ W</code>, megawatt <code>10⁶ W</code> (power stations), horsepower <code>≈ 746 W</code> (engines). The electricity bill counts <b>energy</b> in kilowatt-hours: a 1.5 kW heater on for 2 hours uses 3 kWh.</p>
+  <p class="muted"><b>Example:</b> lifting a 300 kg lift 20 m in 15 s takes <code>300 · 9.8 · 20 = 58 800 J</code>: a power of <code>58 800/15 = 3920 W</code>, about 5.3 hp.</p>
+</div>
+</section>
+
+<!-- ===== MEC15 · SIMPLE MACHINES, THE LEVER LAW AND TORQUES ===== -->
+<section class="pane" id="pane-mec15">
+<h2><span class="num">15</span>Simple machines, the lever law and torques</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mechanical advantage and efficiency</h4>
+  <ul class="idlist">
+    <li><code>R = (F₂)/(F₁)</code> &nbsp; (mechanical advantage)</li>
+    <li><code>E = (W₂)/(W₁) ≤ 1</code> &nbsp; (efficiency)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> a <b>simple machine</b> (lever, pulley, wheel and axle, hydraulic press) lets a small force <code>F₁</code> overcome a large load <code>F₂</code>. <code>R</code> says how many times the force is multiplied. <code>E</code> compares the useful work out (<code>W₂ = F₂d₂</code>) with the work put in (<code>W₁ = F₁d₁</code>).</p>
+  <p class="muted"><b>No machine gives energy for free:</b> without friction <code>W₂ = W₁</code>, so <code>F₁d₁ = F₂d₂</code>: multiplying the force by <code>R</code> means moving <code>R</code> times further. The <b>ideal</b> mechanical advantage is <code>d₁/d₂</code>. With friction some work becomes heat, so <code>E &lt; 1</code> and the real advantage is smaller.</p>
+  <p class="muted"><b>Example:</b> a wheel of radius 0.5 m on an axle of radius 0.1 m: ideal <code>R = 5</code>. If lifting a 980 N load actually takes 245 N, the real <code>R = 4</code> and the efficiency is <code>4/5 = 80%</code>.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The lever law</h4>
+  <p><code>F₁ℓ₁ = F₂ℓ₂</code></p>
+  <svg class="ill" viewBox="0 0 420 160" role="img" aria-label="a lever resting on a fulcrum; a load F2 hangs at the short arm l2 on one side and a small force F1 pushes down at the long arm l1 on the other side">
+    <path class="cv" d="M60 110 H400"/>
+    <path class="box" d="M150 112 L135 140 L165 140 Z"/>
+    <path class="ax" d="M100 150 H200"/>
+    <path class="cv3" d="M90 40 L90 93"/><path class="vh3" d="M90 105 L85 93 L95 93 Z"/>
+    <path class="cv" d="M370 40 L370 93"/><path class="vh" d="M370 105 L365 93 L375 93 Z"/>
+    <path class="gd" d="M90 125 H150 M150 125 H370"/>
+    <text x="72" y="36"><tspan font-weight="bold">F</tspan>₂</text><text x="378" y="36"><tspan font-weight="bold">F</tspan>₁</text>
+    <text class="sm" x="120" y="138" text-anchor="middle">ℓ₂</text><text class="sm" x="260" y="138" text-anchor="middle">ℓ₁</text>
+  </svg>
+  <p class="muted"><b>In words:</b> a lever (a rigid bar turning about a fixed point, the <b>fulcrum</b>) balances when force times arm is the same on both sides. A long arm lets a small force hold a big load: <code>F₁ = F₂ ℓ₂/ℓ₁</code>.</p>
+  <p class="muted"><b>Example:</b> a 600 N rock 0.3 m from the fulcrum is lifted by pushing 1.5 m from it on the other side with only <code>600 · 0.3/1.5 = 120 N</code>. The hand moves 5 times as far as the rock, so the work is the same.</p>
+  <p class="muted"><b>Everyday levers:</b> a crowbar, scissors, a bottle opener, a wheelbarrow, the forearm.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Torque (moment of force)</h4>
+  <ul class="idlist">
+    <li><code>M = Fℓ sin θ</code></li>
+    <li>equilibrium of a rigid body: <code>∑F⃗ = 0</code> &nbsp; and &nbsp; <code>∑M = 0</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="a force F acts at a point a distance l from the axis, at angle theta to the line from the axis; the lever arm l sin theta is the perpendicular distance from the axis to the force's line">
+    <circle class="dot" cx="80" cy="120" r="5"/>
+    <path class="ax" d="M80 120 H300"/>
+    <path class="gd" d="M300 120 L245 215.3 M80 120 L245 215.3"/>
+    <path class="cv" d="M300 120 L339 52.5"/><path class="vh" d="M345 42.1 L343.3 55 L334.7 50 Z"/>
+    <path class="ax" d="M330 120 A30 30 0 0 0 315 94"/>
+    <text class="sm" x="72" y="110" text-anchor="end">axis</text><text class="sm" x="190" y="112" text-anchor="middle">ℓ</text>
+    <text class="sm" x="138" y="184">ℓ sin θ</text><text x="336" y="110">θ</text><text x="352" y="44"><tspan font-weight="bold">F</tspan></text>
+  </svg>
+  <p class="muted"><b>In words:</b> the turning effect of a force about an axis is its <b>torque</b> (the book calls it the moment, <code>M</code>): the force times its <b>lever arm</b>, the perpendicular distance from the axis to the force's line. <code>ℓ</code> is the distance from the axis to where the force acts and <code>θ</code> the angle between the force and that line. Unit: N·m.</p>
+  <ul data-cpart="expl">
+    <li>A force pointing at (or away from) the axis has no turning effect: <code>θ = 0</code>.</li>
+    <li>It turns most when it pushes at right angles, far from the axis: that's why a door handle is far from the hinges.</li>
+    <li>Sign: counter-clockwise positive, clockwise negative (a choice). The lever law is <code>∑M = 0</code> about the fulcrum.</li>
+  </ul>
+  <p class="muted"><b>A body at rest</b> needs both: no net force (it doesn't slide off) and no net torque (it doesn't start turning). If the forces balance, the torques can be taken about <b>any</b> point; pick the one where an unknown force acts, and it drops out. Torque is really a vector, <code>M⃗ = r⃗ × F⃗</code> (Angular momentum).</p>
+</div>
+</section>
+
 </div><!-- /folder-mec -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"]],"m":[["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"]],"m":[["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_mecwork", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Work and the work–energy theorem",
+  "description": "Find the work of each force on a body, the net work, and from it the change in speed.",
+  "uses": [["c", "mec11", "Work"], ["c", "mec11", "Kinetic energy and the work–energy theorem"], ["c", "mec7", "Free-body diagrams and the normal force"]],
+  "parts": [
+    { "id": "st_bi_mecwork1", "cat": "stage", "name": "Draw the forces", "text": "A free-body diagram; mark the displacement `S`." },
+    { "id": "st_bi_mecwork2", "cat": "stage", "name": "Work of each force", "text": "`W = FS cos θ`, with `θ` between that force and the displacement. Perpendicular forces: `0`. Friction: `−fS`." },
+    { "id": "st_bi_mecwork3", "cat": "stage", "name": "Net work", "text": "Add them (they are numbers, with signs)." },
+    { "id": "st_bi_mecwork4", "cat": "stage", "name": "Work–energy theorem", "text": "`W_(net) = (1/2)mv₂² − (1/2)mv₁²`; solve for the unknown speed (or distance)." },
+    { "id": "st_bi_mecwork5", "cat": "example", "name": "Example", "text": "An 8 kg box starts from rest and is pulled 10 m along the floor by a 50 N rope at `30°` above the horizontal; `μ_(k) = 0.25`.\n1. Weight `78.4 N`, `N`, the pull, friction. Vertically `N = 78.4 − 50 sin 30° = 53.4 N`, so `f = 0.25 · 53.4 ≈ 13.35 N`.\n2. Pull: `50 · 10 · cos 30° ≈ 433 J`; friction: `−13.35 · 10 ≈ −133.5 J`; weight and normal: `0`.\n3. `W_(net) ≈ 299.5 J`\n4. `299.5 = (1/2) · 8 · v²`, `v ≈ 8.65 m/s`" }
+  ] },
+{ "id": "pp_bi_mecenergy", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Using conservation of energy",
+  "description": "Find a speed, height or compression by comparing the energy at two moments, with or without friction.",
+  "uses": [["c", "mec12", "Gravitational potential energy and mechanical energy"], ["c", "mec12", "The potential energy of a spring"], ["c", "mec12", "When friction acts"], ["c", "mec11", "Kinetic energy and the work–energy theorem"]],
+  "parts": [
+    { "id": "st_bi_mecenergy1", "cat": "stage", "name": "Pick two moments", "text": "\"Before\" and \"after\": the one you know everything about and the one you ask about. Choose the zero level for `h`." },
+    { "id": "st_bi_mecenergy2", "cat": "stage", "name": "Write E at both", "text": "`E = (1/2)mv² + m g h (+ (1/2)kx²)` at each moment." },
+    { "id": "st_bi_mecenergy3", "cat": "stage", "name": "Set them equal", "text": "No friction: `E_(after) = E_(before)`. Friction over a distance `d`: `E_(after) = E_(before) − fd`." },
+    { "id": "st_bi_mecenergy4", "cat": "stage", "name": "Solve", "text": "The mass often cancels. The path's shape doesn't matter (gravity is conservative): only the heights." },
+    { "id": "st_bi_mecenergy5", "cat": "example", "name": "Example — a slide", "text": "A child slides from rest down a smooth slide 5 m high. Speed at the bottom?\n1. Top and bottom; `h = 0` at the bottom.\n3. `mg · 5 = (1/2)mv²`\n4. `v = √(2 · 9.8 · 5) ≈ 9.9 m/s`, whatever the slide's shape." },
+    { "id": "st_bi_mecenergy6", "cat": "example", "name": "Example — thrown from a roof", "text": "A ball is thrown at `12 m/s` (in any direction) from a roof 15 m high. How fast does it hit the ground?\n3. `(1/2)m · 12² + m · 9.8 · 15 = (1/2)mv²`\n4. `v = √(144 + 294) ≈ 20.9 m/s`. The direction of the throw doesn't change the landing speed." },
+    { "id": "st_bi_mecenergy7", "cat": "example", "name": "Example — a spring gun", "text": "A spring (`k = 400 N/m`) compressed 0.1 m launches a 0.2 kg ball straight up.\n2. Before: `(1/2) · 400 · 0.1² = 2 J`; at launch: `(1/2) · 0.2 · v²`; at the top: `0.2 · 9.8 · h`.\n4. `v = √(2 · 2/0.2) ≈ 4.47 m/s`; `h = 2/1.96 ≈ 1.02 m`" },
+    { "id": "st_bi_mecenergy8", "cat": "example", "name": "Example — with friction", "text": "A 20 kg sled slides from rest 10 m down a `30°` slope (`μ_(k) = 0.1`).\n2. Before: `20 · 9.8 · 5 = 980 J` (height `10 sin 30° = 5 m`); after: `(1/2) · 20 · v²`.\n3. `f = 0.1 · 20 · 9.8 · cos 30° ≈ 16.97 N`, `fd ≈ 169.7 J`; `(1/2) · 20 · v² = 980 − 169.7 = 810.3`\n4. `v ≈ 9.0 m/s`" }
+  ] },
+{ "id": "pp_bi_mecheat", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Calorimetry: mixing and melting",
+  "description": "Find the final temperature of bodies that exchange heat, or the heat for a temperature change and a phase change.",
+  "uses": [["c", "mec13", "Specific heat and calorimetry"], ["c", "mec13", "Phase changes and latent heat"]],
+  "parts": [
+    { "id": "st_bi_mecheat1", "cat": "stage", "name": "List the bodies", "text": "Each body's mass, specific heat and starting temperature; note any that melt or boil." },
+    { "id": "st_bi_mecheat2", "cat": "stage", "name": "Heat of each step", "text": "Warming or cooling: `Q = mcΔT`. Melting or boiling: `Q = mL`, at a constant temperature." },
+    { "id": "st_bi_mecheat3", "cat": "stage", "name": "Balance", "text": "Insulated: heat given by the hot bodies = heat taken by the cold ones. Write `ΔT = T_(final) − T_(start)` for every body and set the sum of all the `mcΔT` to 0." },
+    { "id": "st_bi_mecheat4", "cat": "stage", "name": "Check", "text": "The final temperature lies between the starting ones." },
+    { "id": "st_bi_mecheat5", "cat": "example", "name": "Example — mixing water", "text": "0.2 kg of water at 80°C is poured into 0.3 kg of water at 20°C.\n3. `0.2c(T − 80) + 0.3c(T − 20) = 0`: `c` cancels, `0.5T = 16 + 6`, `T = 44°C`\n4. Between 20 and 80 ✓ (closer to 20: there is more cold water)." },
+    { "id": "st_bi_mecheat6", "cat": "example", "name": "Example — hot iron in water", "text": "0.5 kg of iron at 100°C is dropped into 1 kg of water at 20°C. `c_(iron) = 447`, `c_(water) = 4184 J/(kg·K)`.\n3. `0.5 · 447(T − 100) + 1 · 4184(T − 20) = 0`, so `T = (22 350 + 83 680)/(223.5 + 4184) ≈ 24.1°C`\n4. The water hardly warms: its specific heat is nearly ten times the iron's." },
+    { "id": "st_bi_mecheat7", "cat": "example", "name": "Example — melting ice", "text": "How much heat turns 0.1 kg of ice at 0°C into water at 20°C?\n2. Melting: `0.1 · 334 000 = 33 400 J`; warming: `0.1 · 4184 · 20 = 8368 J`\n3. Total `≈ 41 800 J`: melting takes four times as much as the warming." }
+  ] },
+{ "id": "pp_bi_mecpower", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Power and energy use",
+  "description": "Find the power for a job done in a given time, or the energy a device uses in kilowatt-hours.",
+  "uses": [["c", "mec14", "Power"], ["c", "mec12", "Gravitational potential energy and mechanical energy"]],
+  "parts": [
+    { "id": "st_bi_mecpower1", "cat": "stage", "name": "Find the work or energy", "text": "Lifting: `m g h`; speeding up: `ΔK`; heating: `mcΔT`." },
+    { "id": "st_bi_mecpower2", "cat": "stage", "name": "Divide by the time", "text": "`P = W/t` in watts (seconds!). With an efficiency `E`, the input power is `P_(out)/E`." },
+    { "id": "st_bi_mecpower3", "cat": "stage", "name": "Or the other way", "text": "Energy = power × time: `kW × h = kWh`; `1 kWh = 3.6 × 10⁶ J`." },
+    { "id": "st_bi_mecpower4", "cat": "example", "name": "Example", "text": "**A lift:** 300 kg raised 20 m in 15 s.\n1. `300 · 9.8 · 20 = 58 800 J`\n2. `P = 58 800/15 = 3920 W ≈ 5.3 hp` (`3920/746`).\n**A heater:** 2 kW for 3 hours.\n3. `2 · 3 = 6 kWh = 6 · 3.6 × 10⁶ = 2.16 × 10⁷ J`" }
+  ] },
+{ "id": "pp_bi_meclever", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Levers and bodies in equilibrium (torques)",
+  "description": "Find an unknown force on a lever or a beam at rest, using the sum of torques and the sum of forces.",
+  "uses": [["c", "mec15", "Torque (moment of force)"], ["c", "mec15", "The lever law"], ["c", "mec9", "Equilibrium of forces"]],
+  "parts": [
+    { "id": "st_bi_meclever1", "cat": "stage", "name": "Draw every force where it acts", "text": "The weight of a uniform beam acts at its middle." },
+    { "id": "st_bi_meclever2", "cat": "stage", "name": "Choose the axis", "text": "At the point of an unknown force: its torque is zero there, so it disappears from the equation." },
+    { "id": "st_bi_meclever3", "cat": "stage", "name": "Sum of torques = 0", "text": "Each force × its lever arm, counter-clockwise `+`, clockwise `−`." },
+    { "id": "st_bi_meclever4", "cat": "stage", "name": "Sum of forces = 0", "text": "Gives the remaining unknown force." },
+    { "id": "st_bi_meclever5", "cat": "example", "name": "Example — a crowbar", "text": "A 600 N rock rests on a bar 0.3 m from the fulcrum; you push down 1.5 m from it on the other side.\n2. Axis at the fulcrum.\n3. `F · 1.5 − 600 · 0.3 = 0`, `F = 120 N`" },
+    { "id": "st_bi_meclever6", "cat": "example", "name": "Example — a plank on two supports", "text": "A uniform 4 m plank weighing 200 N rests on supports at its ends; a 500 N person stands 1 m from the left end. Find both support forces.\n2. Axis at the left support.\n3. `R · 4 − 200 · 2 − 500 · 1 = 0`, `R = 225 N` (right)\n4. `L + 225 = 700`, `L = 475 N`. The left support carries more: the person is nearer to it ✓" }
+  ] },
+{ "id": "pp_bi_mecmachine", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Mechanical advantage and efficiency of a machine",
+  "description": "Find the ideal and real mechanical advantage and the efficiency of a simple machine.",
+  "uses": [["c", "mec15", "Mechanical advantage and efficiency"]],
+  "parts": [
+    { "id": "st_bi_mecmachine1", "cat": "stage", "name": "Ideal advantage", "text": "From the distances: `d₁/d₂` (the input moves `d₁` while the load moves `d₂`); for a wheel and axle, the ratio of the radii; for a hydraulic press, `S/s`." },
+    { "id": "st_bi_mecmachine2", "cat": "stage", "name": "Real advantage", "text": "From the forces actually needed: `R = F₂/F₁`." },
+    { "id": "st_bi_mecmachine3", "cat": "stage", "name": "Efficiency", "text": "`E = W₂/W₁ = (F₂d₂)/(F₁d₁)` = real ÷ ideal advantage." },
+    { "id": "st_bi_mecmachine4", "cat": "example", "name": "Example — a wheel and axle", "text": "Wheel radius 0.5 m, axle radius 0.1 m; lifting a 100 kg load (980 N) actually takes 245 N.\n1. `0.5/0.1 = 5`\n2. `980/245 = 4`\n3. `E = 4/5 = 80%`: a fifth of the work goes into friction." }
+  ] },
 { "id": "pp_bi_mecnewton", "v": 1, "subject": "f:mec", "kind": "problem",
   "name": "Solving a problem with Newton's second law",
   "description": "Find an acceleration or a force from a free-body diagram and the second law along each axis.",
