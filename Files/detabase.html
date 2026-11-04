@@ -1461,6 +1461,11 @@
   svg.ill .cv2 { stroke: #16a34a; stroke-width: 2.2; fill: none; }
   svg.ill .box { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: var(--accent); stroke-width: 1.6; }
   svg.ill .arr { fill: var(--text-muted); }
+  /* vectors (B146): a .cv / .cv2 / .cv3 shaft and a .vh / .vh2 / .vh3 head in the same colour */
+  svg.ill .cv3 { stroke: #ea580c; stroke-width: 2.4; fill: none; }
+  svg.ill .vh { fill: var(--accent); }
+  svg.ill .vh2 { fill: #16a34a; }
+  svg.ill .vh3 { fill: #ea580c; }
   /* trees and tables (B135) — the editor's Tree / Table and the built-in ones */
   .pt-pic { overflow-x: auto; }
   svg.pt-tree .pt-edge { stroke: var(--text-muted); stroke-width: 1.4; }
@@ -2424,6 +2429,7 @@
     <button data-folder="prb" data-group="stats"><span class="ficon">🎲</span>Probability</button>
     <button data-folder="cmb" data-group="stats"><span class="ficon">🔢</span>Combinatorics</button>
     <button data-folder="rv" data-group="stats"><span class="ficon">🎯</span>Random variables</button>
+    <button data-folder="mec" data-group="physc"><span class="ficon">🍎</span>Mechanics</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2617,6 +2623,12 @@
   <button data-target="rv8"><span class="tnum">8</span>Continuous random variables</button>
   <button data-target="rv9"><span class="tnum">9</span>The normal distribution</button>
 </nav>
+<nav class="tabbar" data-folder="mec" id="tabbar-mec">
+  <button data-target="mec1" class="on"><span class="tnum">1</span>Measurement and units</button>
+  <button data-target="mec2"><span class="tnum">2</span>Motion in one dimension</button>
+  <button data-target="mec3"><span class="tnum">3</span>Vectors</button>
+  <button data-target="mec4"><span class="tnum">4</span>Scalar and vector products</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2647,7 +2659,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B145</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B146</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4656,7 +4668,9 @@ function __detabaseMain() {
     cmb: { title: "Combinatorics — for Intro to Statistics",
       sub: 'The multiplication rule, ordered and unordered samples, arrangements with repeats, counting for probability.' },
     rv: { title: "Random variables — for Intro to Statistics",
-      sub: 'Discrete random variables, special distributions, expectation and variance; two-dimensional and continuous variables, the normal distribution.' }
+      sub: 'Discrete random variables, special distributions, expectation and variance; two-dimensional and continuous variables, the normal distribution.' },
+    mec: { title: "Mechanics — for Physics course",
+      sub: "Units, motion in one dimension, vectors; more to come: Newton's laws, energy, momentum, rotation, oscillations." }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -19357,7 +19371,7 @@ function __detabaseMain() {
   // =========================================================
   function plainToTex(text) {
     var PAR = "\\((?:[^()]|\\((?:[^()]|\\([^()]*\\))*\\))+\\)";   // (…) with up to two levels of (…) inside: (∑ (x_(i) − x̄)…)/n (B144)
-    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304ȳμσ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
+    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304\u0302\u20d7ȳμσ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
     var TERM = "(?:√?" + PAR + "|" + CALL + "(?:\\s" + CALL + ")?)";
     var SRC = "(" + TERM + ")\\s*/\\s*(" + TERM + ")";
     var SKIP = { and: 1, or: 1, AND: 1, OR: 1 };
@@ -19375,7 +19389,7 @@ function __detabaseMain() {
         return (SKIP[a] || SKIP[b]) ? m : "\\frac{" + fracs(bare(a)) + "}{" + fracs(bare(b)) + "}";
       });
     }
-    var s = fracs(String(text).replace(/\u00a0/g, "  ").replace(/~/g, "\u223c").replace(/[{}%&#$]/g, "\\$&"));   // ~ is TeX's space: "X ~ N(\u2026)" means \u223c (B141)
+    var s = fracs(String(text).replace(/[\u0177\u1e91]/g, function (c) { return c.normalize("NFD"); }).replace(/\u00a0/g, "  ").replace(/~/g, "\u223c").replace(/[{}%&#$]/g, "\\$&"));   // ~ is TeX's space: "X ~ N(\u2026)" means \u223c (B141); y and z with a hat (one character each) split into letter + hat (B146)
     s = s.replace(/lim_\(([^()]*)\)/g, "\\lim_{$1}").replace(/log_\(([^()]*)\)/g, "\\log_{$1}").replace(/log_([0-9A-Za-zπ])/g, "\\log_{$1}");
     for (var at; (at = s.indexOf("√(")) >= 0;) {          // √(…), brackets inside it kept whole
       var d = 0, i = at + 1;
@@ -19391,7 +19405,7 @@ function __detabaseMain() {
     }
     runs(SUP, "^"); runs(SUB, "_");
     var FN = { sin: 1, cos: 1, tan: 1, cot: 1, sec: 1, csc: 1, arcsin: 1, arccos: 1, arctan: 1, sinh: 1, cosh: 1, ln: 1, log: 1, exp: 1, max: 1, min: 1, lim: 1 };
-    s = s.replace(/([A-Za-z])\u0304/g, "\\bar{$1}").replace(/([A-Za-z])\u0303/g, "\\tilde{$1}").replace(/binom\(([^(),]*),([^(),]*)\)/g, "\\binom{$1}{$2}");   // x̄, x̃ (combining marks), binom(n,k) (B136)
+    s = s.replace(/([A-Za-z])\u0304/g, "\\bar{$1}").replace(/([A-Za-z])\u20d7/g, "\\vec{$1}").replace(/([A-Za-z])\u0302/g, "\\hat{$1}").replace(/([A-Za-z])\u0303/g, "\\tilde{$1}").replace(/binom\(([^(),]*),([^(),]*)\)/g, "\\binom{$1}{$2}");   // x̄, x̃ (combining marks), binom(n,k) (B136); A⃗, x̂ (B146)
     s = s.replace(/[A-Za-z]{2,}/g, function (w, at, all) {
       if (all[at - 1] === "\\") return w;
       if (FN[w]) return "\\" + w;

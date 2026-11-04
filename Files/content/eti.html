@@ -6037,12 +6037,366 @@
 </div>
 </section>
 </div><!-- /folder-rv -->
+<div class="folder" id="folder-mec">
+
+<!-- ===== MEC1 · MEASUREMENT AND UNITS ===== -->
+<section class="pane on" id="pane-mec1">
+<h2><span class="num">1</span>Measurement and units</h2>
+<div class="card" data-tags="Definition">
+  <h4>Physical quantities and SI units</h4>
+  <p>Physics describes the world with <b>measurements</b>. Every physical quantity is a <b>number times a unit</b>: <code>5 m</code>, <code>4.2 kg</code>, <code>2 × 10⁻³ s</code>. The number alone means nothing: "the table is 2 long" could be 2 metres or 2 centimetres.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Quantity","Unit","Symbol"]},{"c":["length","metre","m"]},{"c":["mass","kilogram","kg"]},{"c":["time","second","s"]},{"c":["temperature","kelvin","K"]},{"c":["electric current","ampere","A"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>The SI system</b> (Système International) is the agreed set of units used in science. Mechanics needs only the first three: <b>metre, kilogram, second</b> (sometimes called the MKS system). Every other unit is built from them.</p>
+  <p class="muted"><b>Scientific notation:</b> a very large or very small number is written as a number between 1 and 10 times a power of ten: the electron's charge is <code>1.602 × 10⁻¹⁹ C</code>, the Earth–Sun distance <code>1.496 × 10¹¹ m</code>. Powers of ten: Powers &amp; Logs.</p>
+  <p class="muted"><b>Always write the unit</b> next to every number in a calculation. It catches mistakes, and an answer without a unit is not an answer.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Derived units and prefixes</h4>
+  <p>A <b>derived unit</b> is made of base units. Some have their own names:</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Quantity","Unit","In base units"]},{"c":["force","newton (N)","kg·m/s²"]},{"c":["pressure","pascal (Pa)","N/m²"]},{"c":["work, energy","joule (J)","N·m"]},{"c":["power","watt (W)","J/s"]},{"c":["frequency","hertz (Hz)","1/s"]},{"c":["charge","coulomb (C)","A·s"]},{"c":["voltage","volt (V)","J/C"]},{"c":["resistance","ohm (Ω)","V/A"]}],"head":1,"side":1}'></div>
+  <p>A <b>prefix</b> multiplies a unit by a power of ten:</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Prefix","Symbol","Times"]},{"c":["tera","T","10¹²"]},{"c":["giga","G","10⁹"]},{"c":["mega","M","10⁶"]},{"c":["kilo","k","10³"]},{"c":["centi","c","10⁻²"]},{"c":["milli","m","10⁻³"]},{"c":["micro","μ","10⁻⁶"]},{"c":["nano","n","10⁻⁹"]},{"c":["pico","p","10⁻¹²"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Reading them:</b> <code>1 km = 10³ m</code>, <code>1 ns = 10⁻⁹ s</code>, <code>5 MΩ = 5 × 10⁶ Ω</code>. Never stack two prefixes: a thousandth of a gram is a milligram, not a "milli-kilo-gram".</p>
+  <p class="muted"><b>Before putting numbers into a formula,</b> turn every quantity into plain SI units (m, kg, s): <code>30 kV = 30 × 10³ V</code>, <code>2 cm = 2 × 10⁻² m</code>. Then the answer comes out in SI units too.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Units of area and volume</h4>
+  <ul class="idlist">
+    <li><code>1 cm² = (10⁻² m)² = 10⁻⁴ m²</code></li>
+    <li><code>1 km² = (10³ m)² = 10⁶ m²</code></li>
+    <li><code>1 cm³ = (10⁻² m)³ = 10⁻⁶ m³</code></li>
+    <li><code>1 L = 1 dm³ = 10⁻³ m³</code></li>
+  </ul>
+  <p class="muted"><b>The trap:</b> a square centimetre is not a hundredth of a square metre. A square 1 m on a side holds 100 × 100 = 10,000 squares of 1 cm, so the power of ten is squared too (cubed for volume).</p>
+  <p class="muted"><b>Safest way:</b> convert each length to metres first, then multiply: a sheet 80 cm by 120 cm is <code>0.8 m × 1.2 m = 0.96 m²</code>.</p>
+  <p class="muted"><b>Area and volume formulas</b> (rectangle, triangle, circle, sphere, cylinder, cone…): Geometry base. The sphere: <code>S = 4πR²</code>, <code>V = (4/3)πR³</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Explanation">
+  <h4>Dimensions</h4>
+  <p>The <b>dimension</b> of a quantity says what it is made of, whatever units are used: <code>[L]</code> length, <code>[T]</code> time, <code>[M]</code> mass.</p>
+  <ul class="idlist">
+    <li><code>[area] = [L]²</code>, &nbsp; <code>[volume] = [L]³</code></li>
+    <li><code>[velocity] = ([L])/([T])</code>, &nbsp; <code>[acceleration] = ([L])/([T]²)</code></li>
+    <li><code>[force] = ([M][L])/([T]²)</code></li>
+  </ul>
+  <p class="muted"><b>The rule:</b> both sides of an equation, and every term added or subtracted, must have the <b>same dimension</b>. You can't add metres to seconds.</p>
+  <p class="muted"><b>Why it's useful:</b> it checks a formula you half remember. <code>x = v₀t + (1/2)at²</code>: <code>[L/T][T] = [L]</code> and <code>[L/T²][T²] = [L]</code>, both length, as <code>x</code> is. But <code>v = at²</code> would give <code>[L]</code> for a velocity, so it must be wrong.</p>
+  <p class="muted"><b>Numbers have no dimension</b>, and neither does an angle in radians (arc length over radius, <code>([L])/([L])</code>). A derivative <code>dy/dx</code> has dimension <code>([y])/([x])</code>, an integral <code>∫ f(x) dx</code> has <code>[f][x]</code>.</p>
+</div>
+</section>
+
+<!-- ===== MEC2 · MOTION IN ONE DIMENSION ===== -->
+<section class="pane" id="pane-mec2">
+<h2><span class="num">2</span>Motion in one dimension</h2>
+<div class="card" data-tags="Definition">
+  <h4>Position, velocity and acceleration</h4>
+  <p>A body moves along a straight line. Pick a point as the <b>origin</b> and a positive direction. Its <b>position</b> <code>x(t)</code> is its distance from the origin at time <code>t</code>, positive on one side and negative on the other.</p>
+  <ul class="idlist">
+    <li><code>v_(avg) = (Δx)/(Δt) = (x₂ − x₁)/(t₂ − t₁)</code></li>
+    <li><code>v(t) = (dx)/(dt) = lim_(Δt→0) (x(t + Δt) − x(t))/(Δt)</code></li>
+    <li><code>a(t) = (dv)/(dt) = (d²x)/(dt²)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>average velocity</b> is the change in position over the time it took. The <b>instantaneous velocity</b> is the same thing over a tiny time: the derivative of the position. The <b>acceleration</b> is how fast the velocity changes: the derivative of the velocity. Units: <code>m/s</code> and <code>m/s²</code>.</p>
+  <p class="muted"><b>Signs matter:</b> <code>v &gt; 0</code> means moving in the positive direction, <code>v &lt; 0</code> the other way. <code>a</code> and <code>v</code> with the same sign: speeding up. Opposite signs: slowing down (decelerating).</p>
+  <p class="muted"><b>Displacement vs. distance:</b> <code>x₂ − x₁</code> is the <b>displacement</b>; the <b>distance travelled</b> is the whole path. Drive 100 km north and 50 km back south: displacement 50 km, distance 150 km. The average velocity uses the displacement.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Reading motion graphs</h4>
+  <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="three graphs for constant acceleration: acceleration against time is a horizontal line, velocity against time is a rising straight line starting at v0, position against time is a curve bending upward (part of a parabola)">
+    <path class="ax" d="M15 120 H125 M20 125 V20 M155 120 H265 M160 125 V20 M295 120 H405 M300 125 V20"/>
+    <path class="cv" d="M20 60 H120"/>
+    <path class="cv" d="M160 95 L260 30"/>
+    <path class="cv" d="M300 120 L308.8 114.4 L322.5 106.9 L336.3 97.8 L350 86.8 L363.8 74 L377.5 59.4 L391.3 43.1 L405 25"/>
+    <text class="sm" x="24" y="30">a</text><text class="sm" x="164" y="30">v</text><text class="sm" x="304" y="30">x</text>
+    <text class="sm" x="120" y="138">t</text><text class="sm" x="260" y="138">t</text><text class="sm" x="400" y="138">t</text>
+    <text class="sm" x="146" y="99">v₀</text>
+  </svg>
+  <ul>
+    <li><b>Position graph</b> <code>x(t)</code>: its <b>slope</b> at a point is the velocity there. Steeper means faster; going down means moving backwards.</li>
+    <li><b>Velocity graph</b> <code>v(t)</code>: its slope is the acceleration. The <b>area</b> between it and the time axis is the displacement (area below the axis counts as negative).</li>
+    <li><b>Acceleration graph</b> <code>a(t)</code>: the area under it is the change in velocity.</li>
+  </ul>
+  <p class="muted"><b>Why the area:</b> over a very short time <code>Δt</code> the velocity is almost constant, so the body moves <code>v Δt</code>, a thin rectangle under the graph. Adding all the rectangles gives the area: that's the integral <code>x − x₀ = ∫ v dt</code> (Integrals).</p>
+  <p class="muted"><b>The picture above</b> is constant acceleration: <code>a</code> flat, <code>v</code> a straight line, <code>x</code> a parabola.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Constant velocity</h4>
+  <ul class="idlist">
+    <li><code>v = v₀</code>, &nbsp; <code>a = 0</code></li>
+    <li><code>x(t) = x₀ + v₀t</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> each second the body moves the same <code>v₀</code> metres. <code>x₀</code> is where it is at <code>t = 0</code> (an <b>initial condition</b>). The position graph is a straight line with slope <code>v₀</code>; the velocity graph is flat, and the rectangle under it is <code>v₀t</code>, the distance moved.</p>
+  <p class="muted"><b>Short form:</b> starting at the origin, <code>x = vt</code>, so <code>v = x/t</code> and <code>t = x/v</code>.</p>
+  <p class="muted"><b>From calculus:</b> <code>x = ∫ v₀ dt = v₀t + x₀</code>, with <code>x₀</code> the constant of integration.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Constant acceleration: the equations of motion</h4>
+  <ul class="idlist">
+    <li><code>v(t) = v₀ + at</code></li>
+    <li><code>x(t) = x₀ + v₀t + (1/2)at²</code></li>
+    <li><code>v² − v₀² = 2a(x − x₀)</code></li>
+    <li><code>x − x₀ = ((v + v₀)/2) t</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="velocity against time rising in a straight line from v0; the area under it is a rectangle of height v0 plus a triangle of height a t">
+    <rect class="band" x="40" y="130" width="320" height="40"/>
+    <path class="band2" d="M40 130 L360 130 L360 40 Z"/>
+    <path class="ax" d="M30 170 H400 M40 180 V20"/>
+    <path class="cv" d="M40 130 L360 40"/>
+    <path class="gd" d="M360 40 V170"/>
+    <text class="sm" x="30" y="134" text-anchor="end">v₀</text>
+    <text x="200" y="155" text-anchor="middle">v₀t</text>
+    <text x="290" y="118" text-anchor="middle">½at²</text>
+    <text class="sm" x="366" y="90">at</text>
+    <text class="sm" x="360" y="186" text-anchor="middle">t</text>
+    <text class="sm" x="46" y="28">v</text>
+  </svg>
+  <p class="muted"><b>Where they come from:</b> the velocity grows by <code>a</code> every second, so <code>v = v₀ + at</code>. The displacement is the area under the velocity line: a rectangle <code>v₀t</code> plus a triangle <code>(1/2) · t · at</code>. The third equation comes from eliminating <code>t</code> between the first two; it is the one to use when the time isn't given or asked. The fourth says the average velocity is the average of the start and end velocities (true only for constant acceleration).</p>
+  <p class="muted"><b>Slowing down</b> is the same equations with <code>a</code> of the opposite sign to <code>v₀</code>. Choose the positive direction first and keep it: the signs of <code>v₀</code>, <code>a</code> and <code>x</code> all follow from that choice.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Free fall</h4>
+  <p>A body that falls with only gravity acting on it (no air resistance) moves with <b>constant acceleration</b> <code>g ≈ 9.8 m/s²</code>, downward, whatever its mass.</p>
+  <p class="muted"><b>Signs:</b> with "up" as positive, <code>a = −g</code>; with "down" as positive, <code>a = +g</code>. A ball thrown up keeps the same acceleration all the way: it slows on the way up, stops for an instant at the top (<code>v = 0</code>, but <code>a</code> is still <code>−g</code>), and speeds up on the way down.</p>
+  <p class="muted"><b>Useful results</b> (dropped from rest, down positive): <code>v = gt</code>, <code>h = (1/2)gt²</code>, <code>t = √((2h)/g)</code>. Thrown up at <code>v₀</code>: it rises <code>h_(max) = (v₀²)/(2g)</code> and comes back down at the same speed <code>v₀</code>.</p>
+  <p class="muted"><b>History:</b> Galileo showed that a heavy and a light body fall together (air resistance aside), against the old belief that heavy bodies fall faster. On the Moon, a hammer and a feather dropped together land together.</p>
+</div>
+</section>
+
+<!-- ===== MEC3 · VECTORS ===== -->
+<section class="pane" id="pane-mec3">
+<h2><span class="num">3</span>Vectors</h2>
+<div class="card" data-tags="Definition">
+  <h4>Scalars, vectors and coordinates</h4>
+  <p>A <b>scalar</b> is a quantity with a size only: mass, time, temperature, energy. A <b>vector</b> has a size <b>and a direction</b>: displacement, velocity, acceleration, force. "10 km" is a scalar; "10 km to the north-east" is a vector.</p>
+  <p class="muted"><b>Notation:</b> the book writes a vector in bold, <b>A</b>; here it is <code>A⃗</code>. Its size (<b>magnitude</b>) is <code>A</code> or <code>|A⃗|</code>, always positive or zero.</p>
+  <p class="muted"><b>Coordinates:</b> in a plane, a point is given by <code>(x, y)</code>: <code>x</code> along the horizontal axis (often east), <code>y</code> along the vertical one (often north). In space a third axis <code>z</code> is added. The axes are chosen <b>right-handed</b>: point your right hand's thumb along <code>x</code>, index finger along <code>y</code>, and the middle finger shows <code>z</code>.</p>
+  <p class="muted"><b>A moving body</b> in a plane is described by two functions, <code>x(t)</code> and <code>y(t)</code>. For example <code>x(t) = 0.02t² + t</code>, <code>y(t) = 3t + 1</code> gives its place at every moment.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Components, magnitude and direction</h4>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a vector A from the origin at angle theta above the x axis; its x component A_x lies along the x axis and its y component A_y rises vertically to the tip">
+    <path class="ax" d="M40 180 H405 M60 195 V15"/>
+    <path class="gd" d="M60 60 H300"/>
+    <path class="cv" d="M60 180 L289.3 65.4"/><path class="vh" d="M300 60 L291.5 69.8 L287 60.9 Z"/>
+    <path class="cv2" d="M60 180 L288 180"/><path class="vh2" d="M300 180 L288 185 L288 175 Z"/>
+    <path class="cv2" d="M300 180 L300 72"/><path class="vh2" d="M300 60 L305 72 L295 72 Z"/>
+    <path class="ax" d="M100 180 A40 40 0 0 0 95.8 162.1"/>
+    <text x="110" y="172">θ</text>
+    <text x="165" y="110"><tspan font-weight="bold">A</tspan></text>
+    <text x="180" y="198" text-anchor="middle">A<tspan font-size="10" dy="4">x</tspan></text>
+    <text x="310" y="125">A<tspan font-size="10" dy="4">y</tspan></text>
+    <text class="sm" x="396" y="196">x</text><text class="sm" x="66" y="24">y</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>A_(x) = A cos θ</code>, &nbsp; <code>A_(y) = A sin θ</code></li>
+    <li><code>A = √(A_(x)² + A_(y)²)</code>, &nbsp; <code>tan θ = (A_(y))/(A_(x))</code></li>
+    <li><code>A⃗ = A_(x) x̂ + A_(y) ŷ</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>components</b> are the vector's shadows on the axes: how far it goes in <code>x</code> and how far in <code>y</code>. They are numbers that can be negative. <code>θ</code> is measured from the positive <code>x</code> axis, counter-clockwise. The magnitude is Pythagoras (Triangles, Geometry base); the formulas with <code>cos</code> and <code>sin</code> come from the right triangle (Trig base).</p>
+  <p class="muted"><b>Unit vectors</b> <code>x̂</code>, <code>ŷ</code>, <code>ẑ</code> (the book also writes <b>i</b>, <b>j</b>, <b>k</b>) have length 1 and point along the axes. <code>A⃗ = 3x̂ − 2ŷ</code> means "3 along <code>x</code>, 2 backwards along <code>y</code>".</p>
+  <p class="muted"><b>The angle trap:</b> <code>arctan</code> only returns angles between <code>−90°</code> and <code>90°</code>. Look at the signs of the components to see the quarter: <code>A⃗ = −3x̂ + 4ŷ</code> has <code>arctan(−4/3) = −53.13°</code>, but it points up and to the left, so <code>θ = 180° − 53.13° = 126.87°</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Adding, subtracting and scaling vectors</h4>
+  <ul class="idlist">
+    <li><code>C⃗ = A⃗ + B⃗</code>: &nbsp; <code>C_(x) = A_(x) + B_(x)</code>, &nbsp; <code>C_(y) = A_(y) + B_(y)</code></li>
+    <li><code>C⃗ = A⃗ − B⃗</code>: &nbsp; <code>C_(x) = A_(x) − B_(x)</code>, &nbsp; <code>C_(y) = A_(y) − B_(y)</code></li>
+    <li><code>s A⃗</code>: every component times <code>s</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 175" role="img" aria-label="left: head to tail, B starts where A ends and the sum C goes from the start of A to the end of B; right: the parallelogram, A and B start at the same point and C is the diagonal">
+    <path class="cv" d="M30 120 L110.5 57.4"/><path class="vh" d="M120 50 L113.6 61.3 L107.5 53.4 Z"/>
+    <path class="cv2" d="M120 50 L179.6 84"/><path class="vh2" d="M190 90 L177.1 88.4 L182.1 79.7 Z"/>
+    <path class="cv3" d="M30 120 L178.2 92.2"/><path class="vh3" d="M190 90 L179.1 97.1 L177.3 87.3 Z"/>
+    <path class="gd" d="M340 50 L410 90 M320 160 L410 90"/>
+    <path class="cv" d="M250 120 L330.5 57.4"/><path class="vh" d="M340 50 L333.6 61.3 L327.5 53.4 Z"/>
+    <path class="cv2" d="M250 120 L309.6 154"/><path class="vh2" d="M320 160 L307.1 158.4 L312.1 149.7 Z"/>
+    <path class="cv3" d="M250 120 L398.2 92.2"/><path class="vh3" d="M410 90 L399.1 97.1 L397.3 87.3 Z"/>
+    <text x="60" y="78"><tspan font-weight="bold">A</tspan></text><text x="160" y="58"><tspan font-weight="bold">B</tspan></text><text x="100" y="128"><tspan font-weight="bold">C</tspan></text>
+    <text x="280" y="78"><tspan font-weight="bold">A</tspan></text><text x="270" y="158"><tspan font-weight="bold">B</tspan></text><text x="345" y="122"><tspan font-weight="bold">C</tspan></text>
+    <text class="sm" x="110" y="168" text-anchor="middle">head to tail</text><text class="sm" x="330" y="172" text-anchor="middle">parallelogram</text>
+  </svg>
+  <p class="muted"><b>Drawing it (head to tail):</b> draw <code>A⃗</code>, start <code>B⃗</code> at the tip of <code>A⃗</code>; the sum goes from the start of <code>A⃗</code> to the tip of <code>B⃗</code>. Or start both at one point: the sum is the diagonal of the parallelogram they make. Both pictures give the same <code>C⃗</code>, and the order doesn't matter: <code>A⃗ + B⃗ = B⃗ + A⃗</code>.</p>
+  <p class="muted"><b>Subtracting:</b> <code>A⃗ − B⃗ = A⃗ + (−B⃗)</code>, where <code>−B⃗</code> has the same length as <code>B⃗</code> and the opposite direction.</p>
+  <p class="muted"><b>Scaling:</b> <code>s A⃗</code> points like <code>A⃗</code> (opposite if <code>s &lt; 0</code>) and has length <code>|s| A</code>.</p>
+  <p class="muted"><b>Magnitudes don't add:</b> walking 3 km east and 4 km north leaves you 5 km from the start, not 7. Add the <b>components</b>, then take the magnitude.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Position, velocity and acceleration vectors</h4>
+  <ul class="idlist">
+    <li><code>r⃗(t) = x(t) x̂ + y(t) ŷ</code> &nbsp; (position)</li>
+    <li><code>d⃗ = r⃗₂ − r⃗₁</code> &nbsp; (displacement)</li>
+    <li><code>v_(x) = (dx)/(dt)</code>, &nbsp; <code>v_(y) = (dy)/(dt)</code></li>
+    <li><code>a_(x) = (dv_(x))/(dt)</code>, &nbsp; <code>a_(y) = (dv_(y))/(dt)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> in a plane, the motion of one dimension happens in each direction separately: differentiate each component on its own. The <b>velocity vector</b> always points along the path (it is tangent to it); its size is the <b>speed</b>, <code>v = √(v_(x)² + v_(y)²)</code>.</p>
+  <p class="muted"><b>Velocity vs. speed:</b> the velocity is the vector, the speed is its size. A car going round a bend at a steady 50 km/h keeps its speed but changes its velocity, so it is accelerating.</p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a river between two banks; the boat heads straight across at 4 metres per second, the current carries it 3 metres per second sideways, and its velocity relative to the bank is the 5 metres per second diagonal; the dashed line shows where it lands downstream">
+    <rect class="band" x="10" y="40" width="400" height="130"/>
+    <path class="ax" d="M10 40 H410 M10 170 H410"/>
+    <path class="gd" d="M80 170 L177.5 40"/>
+    <path class="cv" d="M80 170 L80 82"/><path class="vh" d="M80 70 L85 82 L75 82 Z"/>
+    <path class="cv2" d="M80 70 L143 70"/><path class="vh2" d="M155 70 L143 75 L143 65 Z"/>
+    <path class="cv3" d="M80 170 L147.8 79.6"/><path class="vh3" d="M155 70 L151.8 82.6 L143.8 76.6 Z"/>
+    <text class="sm" x="72" y="118" text-anchor="end">4 m/s</text><text class="sm" x="72" y="132" text-anchor="end">in water</text>
+    <text class="sm" x="160" y="66">3 m/s current</text>
+    <text class="sm" x="132" y="140">5 m/s</text>
+    <text class="sm" x="180" y="34">lands here</text>
+  </svg>
+  <p class="muted"><b>Adding velocities:</b> a boat moving at <code>v⃗₁</code> relative to the water, in water moving at <code>v⃗₂</code> relative to the bank, moves at <code>v⃗ = v⃗₁ + v⃗₂</code> relative to the bank (the picture).</p>
+</div>
+</section>
+
+<!-- ===== MEC4 · SCALAR AND VECTOR PRODUCTS ===== -->
+<section class="pane" id="pane-mec4">
+<h2><span class="num">4</span>Scalar and vector products</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>The scalar (dot) product</h4>
+  <ul class="idlist">
+    <li><code>A⃗ · B⃗ = AB cos α</code></li>
+    <li><code>A⃗ · B⃗ = A_(x)B_(x) + A_(y)B_(y) + A_(z)B_(z)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="vector A along a horizontal line and vector B at angle alpha to it; dropping a dashed line from the tip of B to A marks off the length B cos alpha">
+    <path class="cv" d="M60 170 L348 170"/><path class="vh" d="M360 170 L348 175 L348 165 Z"/>
+    <path class="cv2" d="M60 170 L180.9 26"/><path class="vh2" d="M188.6 16.8 L184.7 29.2 L177.1 22.8 Z"/>
+    <path class="gd" d="M188.6 16.8 V170"/>
+    <path class="ax" d="M95 170 A35 35 0 0 0 82.5 143.2"/>
+    <text x="100" y="160">α</text>
+    <text x="350" y="160"><tspan font-weight="bold">A</tspan></text><text x="112" y="80"><tspan font-weight="bold">B</tspan></text>
+    <text class="sm" x="124" y="186" text-anchor="middle">B cos α</text>
+  </svg>
+  <p class="muted"><b>In words:</b> the dot product of two vectors is a <b>number</b> (a scalar): the length of one times the part of the other that points along it. <code>α</code> is the angle between them.</p>
+  <ul data-cpart="expl">
+    <li>Same direction (<code>α = 0</code>): <code>A⃗ · B⃗ = AB</code>, as large as it gets.</li>
+    <li><b>Perpendicular</b> (<code>α = 90°</code>): <code>A⃗ · B⃗ = 0</code>. This is the quick test for "perpendicular".</li>
+    <li>More than <code>90°</code> apart: negative.</li>
+    <li><code>A⃗ · A⃗ = A²</code>, and the order doesn't matter: <code>A⃗ · B⃗ = B⃗ · A⃗</code>.</li>
+  </ul>
+  <p class="muted"><b>Where it is used:</b> the <b>work</b> of a force along a displacement, <code>W = F⃗ · S⃗ = FS cos θ</code> (Work, later in Mechanics), and the flux of an electric field (Electricity and magnetism).</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>The vector (cross) product</h4>
+  <ul class="idlist">
+    <li><code>|A⃗ × B⃗| = AB sin θ</code></li>
+    <li><code>(A⃗ × B⃗)_(x) = A_(y)B_(z) − A_(z)B_(y)</code></li>
+    <li><code>(A⃗ × B⃗)_(y) = A_(z)B_(x) − A_(x)B_(z)</code></li>
+    <li><code>(A⃗ × B⃗)_(z) = A_(x)B_(y) − A_(y)B_(x)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="two vectors A and B lying in a plane drawn in perspective; their cross product C points straight up out of the plane">
+    <path class="band" d="M60 190 L140 120 L380 120 L300 190 Z"/>
+    <path class="ax" d="M60 190 L140 120 L380 120 L300 190 Z"/>
+    <path class="cv" d="M200 150 L121.2 180.7"/><path class="vh" d="M110 185 L119.4 176 L123 185.3 Z"/>
+    <path class="cv2" d="M200 150 L308.3 172.6"/><path class="vh2" d="M320 175 L307.2 177.4 L309.3 167.7 Z"/>
+    <path class="cv3" d="M200 150 L200 42"/><path class="vh3" d="M200 30 L205 42 L195 42 Z"/>
+    <text x="120" y="172"><tspan font-weight="bold">A</tspan></text><text x="280" y="160"><tspan font-weight="bold">B</tspan></text><text x="210" y="45"><tspan font-weight="bold">C</tspan> = <tspan font-weight="bold">A</tspan> × <tspan font-weight="bold">B</tspan></text>
+    <text x="196" y="174">θ</text>
+  </svg>
+  <p class="muted"><b>In words:</b> the cross product of two vectors is a <b>vector</b>, perpendicular to both of them (to the plane they lie in). Its length <code>AB sin θ</code> is the area of the parallelogram they make.</p>
+  <p class="muted"><b>Its direction</b> (the right-hand rule): curl the fingers of your right hand from <code>A⃗</code> toward <code>B⃗</code> through the smaller angle; the thumb points along <code>A⃗ × B⃗</code>. (Or: a standard screw turned from <code>A⃗</code> to <code>B⃗</code> moves along it.)</p>
+  <ul data-cpart="expl">
+    <li><b>The order matters:</b> <code>B⃗ × A⃗ = −A⃗ × B⃗</code>.</li>
+    <li>Parallel vectors (<code>θ = 0</code>): the product is zero; so <code>A⃗ × A⃗ = 0</code>.</li>
+    <li>The unit vectors: <code>x̂ × ŷ = ẑ</code>, <code>ŷ × ẑ = x̂</code>, <code>ẑ × x̂ = ŷ</code> (in a cycle).</li>
+    <li>It distributes: <code>A⃗ × (B⃗ + C⃗) = A⃗ × B⃗ + A⃗ × C⃗</code>.</li>
+  </ul>
+  <p class="muted"><b>Remembering the components:</b> it is the determinant with <code>x̂, ŷ, ẑ</code> in the first row, <code>A</code>'s components in the second and <code>B</code>'s in the third. <b>Where it is used:</b> torque, angular momentum, the magnetic force on a moving charge.</p>
+</div>
+</section>
+</div><!-- /folder-mec -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"]],"m":[["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"]],"m":[["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_mecconv", "v": 1, "subject": "f:mec", "kind": "action",
+  "name": "Converting units",
+  "description": "Turn a quantity into SI units (or any other unit) without losing a power of ten.",
+  "uses": [["c", "mec1", "Derived units and prefixes"], ["c", "mec1", "Units of area and volume"], ["c", "mec1", "Physical quantities and SI units"]],
+  "parts": [
+    { "id": "st_bi_mecconv1", "cat": "stage", "name": "Write each unit in base units", "text": "Replace every prefix by its power of ten (`km = 10³ m`, `g = 10⁻³ kg`) and every hour by `3600 s`." },
+    { "id": "st_bi_mecconv2", "cat": "stage", "name": "Raise to the unit's power", "text": "A unit squared or cubed takes its power of ten squared or cubed: `cm³ = (10⁻² m)³ = 10⁻⁶ m³`." },
+    { "id": "st_bi_mecconv3", "cat": "stage", "name": "Multiply out and check", "text": "Collect the numbers and the powers of ten. Sanity check: a bigger unit gives a smaller number, and the other way round." },
+    { "id": "st_bi_mecconv4", "cat": "example", "name": "Examples", "text": "**Speed:** `72 km/h`\n1. `72 · (10³ m)/(3600 s)`\n3. `= 72000/3600 = 20 m/s`. The metre per second is the bigger unit, so the number got smaller ✓\n**Density:** `2.5 g/cm³`\n1. `2.5 · (10⁻³ kg)/(cm³)`\n2. `cm³ = 10⁻⁶ m³`\n3. `2.5 · (10⁻³)/(10⁻⁶) = 2500 kg/m³`\n**Area:** `350 cm²`\n2. `cm² = 10⁻⁴ m²`\n3. `350 · 10⁻⁴ = 0.035 m²`" }
+  ] },
+{ "id": "pp_bi_mecdim", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Checking a formula with dimensions",
+  "description": "Use dimensions to test whether a formula can be right, or to find the units of a constant.",
+  "uses": [["c", "mec1", "Dimensions"]],
+  "parts": [
+    { "id": "st_bi_mecdim1", "cat": "stage", "name": "Write each quantity's dimension", "text": "Length `[L]`, time `[T]`, mass `[M]`; velocity `([L])/([T])`, acceleration `([L])/([T]²)`, force `([M][L])/([T]²)`. Pure numbers (½, 2, π) have none." },
+    { "id": "st_bi_mecdim2", "cat": "stage", "name": "Work out every term", "text": "Find the dimension of each side and of every term that is added or subtracted." },
+    { "id": "st_bi_mecdim3", "cat": "stage", "name": "Compare", "text": "All the same: the formula **may** be right (dimensions can't see a wrong number like ½). Any mismatch: it is surely wrong." },
+    { "id": "st_bi_mecdim4", "cat": "example", "name": "Examples", "text": "**Is `x = v₀t + (1/2)at²` possible?**\n1. `[x] = [L]`, `[v₀] = ([L])/([T])`, `[a] = ([L])/([T]²)`\n2. `[v₀t] = [L]`; `[at²] = [L]`\n3. Every term is a length ✓\n**Is `v = at²` possible?**\n2. `[at²] = ([L])/([T]²) · [T]² = [L]`, but `[v] = ([L])/([T])`\n3. Mismatch: wrong.\n**Units of `k` in `F = kx`:**\n2. `[k] = ([F])/([x]) = (([M][L])/([T]²))/([L]) = ([M])/([T]²)`\n3. In SI: `N/m`, which is `kg/s²`." }
+  ] },
+{ "id": "pp_bi_mecconst", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Solving a constant-acceleration problem",
+  "description": "Find a missing time, distance, velocity or acceleration for motion along a line with constant acceleration (free fall included).",
+  "uses": [["c", "mec2", "Constant acceleration: the equations of motion"], ["c", "mec2", "Free fall"], ["c", "mec2", "Position, velocity and acceleration"]],
+  "parts": [
+    { "id": "st_bi_mecconst1", "cat": "stage", "name": "Draw and choose a direction", "text": "Sketch the line, mark the start, and choose which way is positive (and where `x = 0` is). Every sign below follows from this choice." },
+    { "id": "st_bi_mecconst2", "cat": "stage", "name": "List the five quantities", "text": "`x − x₀`, `v₀`, `v`, `a`, `t`: write the three you know (with signs, in SI units) and the one you want. Hidden facts: \"from rest\" is `v₀ = 0`, \"stops\" is `v = 0`, \"at the top\" is `v = 0`, free fall is `a = ±g`." },
+    { "id": "st_bi_mecconst3", "cat": "stage", "name": "Pick the equation", "text": "Choose the equation that contains your three knowns and the unknown, and skips the fifth quantity: no `x` → `v = v₀ + at`; no `v` → `x − x₀ = v₀t + (1/2)at²`; no `t` → `v² − v₀² = 2a(x − x₀)`; no `a` → `x − x₀ = ((v + v₀)/2) t`." },
+    { "id": "st_bi_mecconst4", "cat": "stage", "name": "Solve and check", "text": "Solve for the unknown. Check the sign and the size (a car doesn't brake at `200 m/s²`), and if possible check with a second equation." },
+    { "id": "st_bi_mecconst5", "cat": "example", "name": "Example — braking", "text": "A car moving at `20 m/s` brakes evenly and stops after `40 m`. Find the deceleration and the braking time.\n1. Positive = the direction of motion.\n2. `v₀ = 20 m/s`, `v = 0`, `x − x₀ = 40 m`; want `a`, then `t`.\n3. No `t` → `v² − v₀² = 2a(x − x₀)`\n4. `0 − 400 = 2a · 40`, so `a = −5 m/s²` (negative: against the motion ✓). Then `t = (v − v₀)/a = (0 − 20)/(−5) = 4 s`. Check: `((20 + 0)/2) · 4 = 40 m` ✓" },
+    { "id": "st_bi_mecconst6", "cat": "example", "name": "Example — thrown straight up", "text": "A ball is thrown straight up at `15 m/s`. How high does it go, and when does it come back down?\n1. Up = positive, start at `x = 0`, so `a = −9.8 m/s²`.\n2. Top: `v = 0`; `v₀ = 15 m/s`.\n3. No `t` → `v² − v₀² = 2a(x − x₀)`\n4. `0 − 225 = 2(−9.8) h`, so `h = 225/19.6 ≈ 11.5 m`. Time to the top: `t = (0 − 15)/(−9.8) ≈ 1.53 s`; up and down takes twice that, `≈ 3.06 s`, and it returns at `15 m/s` downward." },
+    { "id": "st_bi_mecconst7", "cat": "example", "name": "Example — dropped from a height", "text": "A stone is dropped from `45 m`. When does it land, and how fast?\n1. Down = positive, so `a = +9.8 m/s²`.\n2. `v₀ = 0`, `x − x₀ = 45 m`; want `t` and `v`.\n3. No `v` → `x − x₀ = v₀t + (1/2)at²`\n4. `45 = 4.9t²`, `t = √(45/4.9) ≈ 3.03 s`; then `v = v₀ + at = 9.8 · 3.03 ≈ 29.7 m/s`." }
+  ] },
+{ "id": "pp_bi_mecgraph", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Reading a velocity–time graph",
+  "description": "Get the acceleration, the displacement and the average velocity from a graph of v against t.",
+  "uses": [["c", "mec2", "Reading motion graphs"], ["c", "mec2", "Position, velocity and acceleration"]],
+  "parts": [
+    { "id": "st_bi_mecgraph1", "cat": "stage", "name": "Split into straight pieces", "text": "Mark where the graph changes slope. On each piece the acceleration is constant." },
+    { "id": "st_bi_mecgraph2", "cat": "stage", "name": "Acceleration = slope", "text": "On each piece `a = (Δv)/(Δt)`: rise over run." },
+    { "id": "st_bi_mecgraph3", "cat": "stage", "name": "Displacement = area", "text": "Add the areas between the graph and the time axis: rectangles, triangles, trapezoids. Area below the axis counts as negative (moving backwards)." },
+    { "id": "st_bi_mecgraph4", "cat": "stage", "name": "Average velocity", "text": "Total displacement over total time." },
+    { "id": "st_bi_mecgraph5", "cat": "example", "name": "Example — a trip between two stops", "text": "A train speeds up evenly from rest to `20 m/s` in `10 s`, keeps that speed for `20 s`, then slows evenly to a stop in `10 s`.\n1. Three pieces: 0–10 s, 10–30 s, 30–40 s.\n2. `a = 20/10 = 2 m/s²`; `0`; `−20/10 = −2 m/s²`\n3. Triangle `(1/2) · 10 · 20 = 100 m`; rectangle `20 · 20 = 400 m`; triangle `100 m`; total `600 m`.\n4. `v_(avg) = 600/40 = 15 m/s`" }
+  ] },
+{ "id": "pp_bi_meccalc", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "From x(t) to v(t) and a(t), and back",
+  "description": "Differentiate a position function to get the velocity and acceleration, or integrate back using the initial conditions.",
+  "uses": [["c", "mec2", "Position, velocity and acceleration"], ["c", "mec2", "Constant velocity"]],
+  "parts": [
+    { "id": "st_bi_meccalc1", "cat": "stage", "name": "Down: differentiate", "text": "`v(t) = (dx)/(dt)`, `a(t) = (dv)/(dt)` (Differentiation formulas, Derivatives)." },
+    { "id": "st_bi_meccalc2", "cat": "stage", "name": "Answer the question", "text": "\"When does it stop / turn back?\" → `v(t) = 0`. \"When is the acceleration zero?\" → `a(t) = 0`. \"Where is it then?\" → put that `t` into `x(t)`." },
+    { "id": "st_bi_meccalc3", "cat": "stage", "name": "Up: integrate", "text": "`v(t) = ∫ a dt`, `x(t) = ∫ v dt`. Each integral adds a constant: find it from the initial conditions `v(0) = v₀`, `x(0) = x₀`." },
+    { "id": "st_bi_meccalc4", "cat": "example", "name": "Example — differentiating", "text": "`x(t) = 2t³ − 12t² + 18t` (metres, seconds)\n1. `v(t) = 6t² − 24t + 18 = 6(t − 1)(t − 3)`; `a(t) = 12t − 24`\n2. It stops at `t = 1 s` (at `x = 8 m`) and at `t = 3 s` (back at `x = 0`): it went forward, turned at 8 m and came back. `a = 0` at `t = 2 s`, where `v(2) = 24 − 48 + 18 = −6 m/s`, its fastest speed backwards." },
+    { "id": "st_bi_meccalc5", "cat": "example", "name": "Example — integrating", "text": "`a = 6 m/s²` (constant), `v(0) = −4 m/s`, `x(0) = 1 m`\n3. `v(t) = 6t + C₁`, and `v(0) = −4` gives `C₁ = −4`: `v(t) = 6t − 4`. Then `x(t) = 3t² − 4t + C₂`, and `x(0) = 1` gives `C₂ = 1`: `x(t) = 3t² − 4t + 1`. These are the constant-acceleration equations with `x₀ = 1`, `v₀ = −4`, `a = 6`." }
+  ] },
+{ "id": "pp_bi_mecvec", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Adding vectors by components",
+  "description": "Find the sum of several vectors (displacements, velocities, forces): its components, magnitude and direction.",
+  "uses": [["c", "mec3", "Components, magnitude and direction"], ["c", "mec3", "Adding, subtracting and scaling vectors"], ["c", "mec3", "Position, velocity and acceleration vectors"]],
+  "parts": [
+    { "id": "st_bi_mecvec1", "cat": "stage", "name": "Draw and set axes", "text": "Sketch the vectors; choose `x` and `y` axes (east and north, or along the motion). Write each vector's angle from the positive `x` axis." },
+    { "id": "st_bi_mecvec2", "cat": "stage", "name": "Split each vector", "text": "`A_(x) = A cos θ`, `A_(y) = A sin θ`. Check the signs against the drawing." },
+    { "id": "st_bi_mecvec3", "cat": "stage", "name": "Add the components", "text": "`C_(x) = A_(x) + B_(x) + …`, `C_(y) = A_(y) + B_(y) + …`" },
+    { "id": "st_bi_mecvec4", "cat": "stage", "name": "Back to size and direction", "text": "`C = √(C_(x)² + C_(y)²)`, `tan θ = (C_(y))/(C_(x))`. Fix the quarter from the signs of `C_(x)` and `C_(y)`." },
+    { "id": "st_bi_mecvec5", "cat": "example", "name": "Example — a ship's course", "text": "A ship sails `12 km` at `30°` (from east toward north), then `5 km` at `120°`. How far is it from the start, and in which direction?\n2. `A_(x) = 12 cos 30° ≈ 10.39`, `A_(y) = 12 sin 30° = 6`; `B_(x) = 5 cos 120° = −2.5`, `B_(y) = 5 sin 120° ≈ 4.33`\n3. `C_(x) ≈ 7.89 km`, `C_(y) ≈ 10.33 km`\n4. `C = √(7.89² + 10.33²) ≈ 13.0 km`; `θ = arctan(10.33/7.89) ≈ 52.6°` (both components positive: first quarter ✓). Check: the two legs are at right angles, so `√(12² + 5²) = 13` ✓" },
+    { "id": "st_bi_mecvec6", "cat": "example", "name": "Example — the angle trap", "text": "`A⃗ = −3x̂ + 4ŷ`\n4. `A = √(9 + 16) = 5`. The calculator gives `arctan(4/(−3)) = −53.13°`, but `A_(x) < 0` and `A_(y) > 0`: the second quarter. `θ = 180° − 53.13° = 126.87°`." },
+    { "id": "st_bi_mecvec7", "cat": "example", "name": "Example — crossing a river", "text": "A boat moves at `4 m/s` relative to the water, heading straight across a river `120 m` wide; the current is `3 m/s`. (The picture in Position, velocity and acceleration vectors.)\n1. `x` along the current, `y` straight across.\n3. `v_(x) = 3 m/s`, `v_(y) = 4 m/s`\n4. Speed `√(9 + 16) = 5 m/s`, at `arctan(3/4) ≈ 36.9°` from straight across. Crossing takes `120/4 = 30 s` (only `v_(y)` brings it across), and meanwhile the current carries it `3 · 30 = 90 m` downstream." }
+  ] },
+{ "id": "pp_bi_mecdot", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "The angle between two vectors",
+  "description": "Use the dot product to find the angle between two vectors given by components, or to test whether they are perpendicular.",
+  "uses": [["c", "mec4", "The scalar (dot) product"], ["c", "mec3", "Components, magnitude and direction"]],
+  "parts": [
+    { "id": "st_bi_mecdot1", "cat": "stage", "name": "Dot product from components", "text": "`A⃗ · B⃗ = A_(x)B_(x) + A_(y)B_(y) + A_(z)B_(z)`. If it is `0`, the vectors are perpendicular: done." },
+    { "id": "st_bi_mecdot2", "cat": "stage", "name": "Both magnitudes", "text": "`A = √(A_(x)² + A_(y)² + A_(z)²)`, the same for `B`." },
+    { "id": "st_bi_mecdot3", "cat": "stage", "name": "Solve for the angle", "text": "`cos α = (A⃗ · B⃗)/(AB)`, then `α = arccos(…)`, between `0°` and `180°` (no quarter trouble here)." },
+    { "id": "st_bi_mecdot4", "cat": "example", "name": "Example", "text": "`A⃗ = 3x̂ + 4ŷ`, `B⃗ = 4x̂ − 2ŷ`\n1. `A⃗ · B⃗ = 12 − 8 = 4`\n2. `A = 5`, `B = √(16 + 4) = √20 ≈ 4.47`\n3. `cos α = 4/(5 · 4.47) ≈ 0.179`, `α ≈ 79.7°`: nearly, but not quite, perpendicular." }
+  ] },
+{ "id": "pp_bi_meccross", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Computing a cross product",
+  "description": "Find A × B from components, check it, and use it for the area of a parallelogram.",
+  "uses": [["c", "mec4", "The vector (cross) product"], ["c", "mec4", "The scalar (dot) product"]],
+  "parts": [
+    { "id": "st_bi_meccross1", "cat": "stage", "name": "Write both as (x, y, z)", "text": "A missing component is `0`: `2x̂ + ŷ` is `(2, 1, 0)`." },
+    { "id": "st_bi_meccross2", "cat": "stage", "name": "The three components", "text": "`x`: `A_(y)B_(z) − A_(z)B_(y)`; `y`: `A_(z)B_(x) − A_(x)B_(z)`; `z`: `A_(x)B_(y) − A_(y)B_(x)`. (Each one skips its own letter; the letters follow the cycle `x → y → z → x`.)" },
+    { "id": "st_bi_meccross3", "cat": "stage", "name": "Check", "text": "The result must be perpendicular to both: `C⃗ · A⃗ = 0` and `C⃗ · B⃗ = 0`." },
+    { "id": "st_bi_meccross4", "cat": "stage", "name": "Use it", "text": "Its length `|A⃗ × B⃗|` is the area of the parallelogram on `A⃗` and `B⃗` (half of it: the triangle)." },
+    { "id": "st_bi_meccross5", "cat": "example", "name": "Example", "text": "`A⃗ = 2x̂ + ŷ`, `B⃗ = x̂ + 3ŷ − ẑ`\n1. `(2, 1, 0)` and `(1, 3, −1)`\n2. `x`: `1 · (−1) − 0 · 3 = −1`; `y`: `0 · 1 − 2 · (−1) = 2`; `z`: `2 · 3 − 1 · 1 = 5`. So `A⃗ × B⃗ = −x̂ + 2ŷ + 5ẑ`.\n3. With `A⃗`: `−2 + 2 + 0 = 0` ✓; with `B⃗`: `−1 + 6 − 5 = 0` ✓\n4. Area `√(1 + 4 + 25) = √30 ≈ 5.48`" }
+  ] },
 { "id": "pp_bi_rvjoint", "v": 1, "subject": "f:rv", "kind": "problem",
   "name": "Working with a joint table",
   "description": "From a joint probability table, find the marginals, check independence, and compute the covariance and correlation.",
