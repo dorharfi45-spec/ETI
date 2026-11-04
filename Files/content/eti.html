@@ -5252,14 +5252,42 @@
   </ul>
 </div>
 <div class="card" data-tags="Definition, Formula">
+  <h4>Covariance: the numerator of r</h4>
+  <ul class="idlist">
+    <li><code>cov(x, y) = (∑_(i=1)^(n) (x_(i) − x̄)(y_(i) − ȳ))/n</code></li>
+    <li><code>cov(x, y) = (∑ x_(i) y_(i))/n − x̄ ȳ</code> (shortcut)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>covariance</b> (in the book: שונות משותפת, "shared variance") is the average product of the distances from the two means. The shortcut reads: the mean of the products minus the product of the means, just like the variance's shortcut.</p>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="scatter diagram of five points with a vertical line at the mean of x and a horizontal line at the mean of y; the top-right and bottom-left quarters are marked plus, the top-left and bottom-right quarters minus">
+    <rect class="band" x="210" y="20" width="175" height="60"/>
+    <rect class="band" x="40" y="80" width="170" height="120"/>
+    <path class="ax" d="M40 200 H390 M40 200 V15"/>
+    <path class="gd" d="M210 15 V200 M40 80 H390"/>
+    <circle class="dot" cx="96.7" cy="140" r="4"/><circle class="dot" cx="153.3" cy="80" r="4"/><circle class="dot" cx="210" cy="50" r="4"/><circle class="dot" cx="266.7" cy="80" r="4"/><circle class="dot" cx="323.3" cy="50" r="4"/>
+    <text class="sm" x="380" y="34" text-anchor="end">above both: +</text>
+    <text class="sm" x="48" y="190">below both: +</text>
+    <text class="sm" x="48" y="34">x below, y above: −</text>
+    <text class="sm" x="380" y="190" text-anchor="end">x above, y below: −</text>
+    <text x="210" y="213" text-anchor="middle">x̄</text><text x="30" y="85" text-anchor="middle">ȳ</text>
+  </svg>
+  <p class="muted"><b>Why it measures a relation:</b> draw lines at <code>x̄</code> and <code>ȳ</code>. A point above both means, or below both, adds a <b>positive</b> product; a point in one of the other two corners adds a <b>negative</b> one; a point on a line adds <code>0</code>. Mostly "+" corners: the covariance is positive, and <code>y</code> tends to rise with <code>x</code>.</p>
+  <p class="muted"><b>Example</b> (the points drawn): <code>x = 1, 2, 3, 4, 5</code>, <code>y = 2, 4, 5, 4, 5</code>, <code>x̄ = 3</code>, <code>ȳ = 4</code>. Distances <code>−2, −1, 0, 1, 2</code> and <code>−2, 0, 1, 0, 1</code>; products <code>4, 0, 0, 0, 2</code>: <code>cov = 6/5 = 1.2</code>. Shortcut: <code>66/5 − 3 · 4 = 1.2</code>.</p>
+  <p class="muted"><b>The variance is the covariance of a variable with itself:</b> <code>cov(x, x) = (∑ (x_(i) − x̄)²)/n = s_(x)²</code>.</p>
+  <p class="muted"><b>Why <code>r</code> divides by <code>s_(x) s_(y)</code>:</b> the covariance depends on the units. Measure <code>x</code> in mm instead of cm and it becomes 10 times bigger (in general <code>cov(bx + a, cy + d) = bc cov(x, y)</code>), although the relation is the same. Dividing by the two standard deviations, which grow by the same factors, cancels the units, and the result <code>r</code> is always between <code>−1</code> and <code>1</code>.</p>
+  <p class="muted"><b>Not the pooled variance:</b> the pooled variance (Combining groups) is the variance of several groups put together, one variable. The covariance is about <b>two</b> variables measured on the same cases.</p>
+  <p class="muted"><b>The same idea for random variables:</b> <b>Covariance</b> in Random variables, with averages replaced by expectations.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
   <h4>Pearson's correlation coefficient</h4>
   <ul class="idlist">
+    <li><code>r = (cov(x, y))/(s_(x) s_(y))</code></li>
     <li><code>r = (∑ z_(x) z_(y))/n</code> (one product per case)</li>
     <li><code>r = (∑ (x_(i) − x̄)(y_(i) − ȳ))/(n s_(x) s_(y))</code></li>
     <li><code>r = ((∑ x_(i) y_(i))/n − x̄ ȳ)/(s_(x) s_(y))</code></li>
   </ul>
+  <p class="muted"><b>The numerator is the covariance</b> <code>cov(x, y)</code> (<b>Covariance: the numerator of r</b>, above), and the denominator is the product of the two <b>standard deviations</b> (not the variances). All four forms are the same number: the last three just write the covariance out.</p>
   <p class="muted"><b>Why it works:</b> a point above both means, or below both, gives a positive product of z-scores; a point above one mean and below the other gives a negative one. If most points are of the first kind, <code>r</code> comes out positive.</p>
-  <p class="muted"><b>The third form</b> is the shortcut for hand calculation, like the shortcut for the variance.</p>
+  <p class="muted"><b>The last form</b> is the shortcut for hand calculation, like the shortcut for the variance. Step by step: the method <b>Computing Pearson's r</b>.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Properties of r</h4>
@@ -6320,16 +6348,21 @@
     { "id": "st_bi_dstz3", "cat": "stage", "name": "Back to a raw value", "text": "To find the value with a given `z`: `x = x̄ + z s`." },
     { "id": "st_bi_dstz4", "cat": "example", "name": "Example", "text": "Math 70 (`x̄ = 65`, `s = 3`); English 75 (`x̄ = 70`, `s = 4`)\n1. `z_(math) = 5/3 ≈ 1.67`; `z_(Eng) = 5/4 = 1.25`\n2. The math grade is relatively better.\n3. What English grade would match the math one? `70 + 1.67 · 4 ≈ 76.7`" }
   ] },
-{ "id": "pp_bi_dstr", "v": 1, "subject": "f:dst", "kind": "problem",
+{ "id": "pp_bi_dstr", "v": 2, "subject": "f:dst", "kind": "problem",
   "name": "Computing Pearson's r",
-  "description": "Compute the correlation coefficient of paired data and interpret it.",
-  "uses": [["c", "dst10", "Pearson's correlation coefficient"], ["c", "dst10", "Properties of r"], ["c", "dst7", "The shortcut formula for the variance"]],
+  "description": "Compute the correlation coefficient of paired data by hand with a table of x, y, x², y² and xy, and interpret it.",
+  "uses": [["c", "dst10", "Pearson's correlation coefficient"], ["c", "dst10", "Covariance: the numerator of r"], ["c", "dst10", "Properties of r"], ["c", "dst7", "The shortcut formula for the variance"]],
   "parts": [
-    { "id": "st_bi_dstr1", "cat": "stage", "name": "Look at the scatter diagram", "text": "Is a straight line a sensible summary? If the points follow a curve, `r` is the wrong tool." },
-    { "id": "st_bi_dstr2", "cat": "stage", "name": "Means and standard deviations", "text": "`x̄`, `ȳ`, `s_(x)`, `s_(y)` (shortcut: `s² = (∑ x²)/n − x̄²`)." },
-    { "id": "st_bi_dstr3", "cat": "stage", "name": "The products", "text": "`(∑ x y)/n − x̄ ȳ`, or the deviations `∑ (x − x̄)(y − ȳ)/n`." },
-    { "id": "st_bi_dstr4", "cat": "stage", "name": "Divide and interpret", "text": "`r = ` products `/(s_(x) s_(y))`. Check `−1 ≤ r ≤ 1`; give the direction (sign) and the strength (how close to ±1)." },
-    { "id": "st_bi_dstr5", "cat": "example", "name": "Example", "text": "`x`: `1, 2, 3, 4, 5`; `y`: `2, 4, 5, 4, 5`\n2. `x̄ = 3`, `ȳ = 4`; `s_(x)² = 55/5 − 9 = 2`; `s_(y)² = 86/5 − 16 = 1.2`\n3. `∑ x y = 2 + 8 + 15 + 16 + 25 = 66`; `66/5 − 12 = 1.2`\n4. `r = 1.2/√(2 · 1.2) = 1.2/√(2.4) ≈ 0.77`: a fairly strong positive linear relation." }
+    { "id": "st_bi_dstr1", "cat": "stage", "name": "Build the table", "text": "One row per case, with columns `x`, `y`, `x²`, `y²`, `xy`, and a totals row: `∑ x`, `∑ y`, `∑ x²`, `∑ y²`, `∑ xy` (the editor's Table with totals adds them for you). Count the cases: `n`." },
+    { "id": "st_bi_dstr2", "cat": "stage", "name": "Means", "text": "`x̄ = (∑ x)/n`, `ȳ = (∑ y)/n`." },
+    { "id": "st_bi_dstr6", "cat": "stage", "name": "Variances and standard deviations", "text": "Shortcut: `s_(x)² = (∑ x²)/n − x̄²`, `s_(y)² = (∑ y²)/n − ȳ²` (divide by `n`, as everywhere in this course). Then `s_(x) = √(s_(x)²)`, `s_(y) = √(s_(y)²)`." },
+    { "id": "st_bi_dstr3", "cat": "stage", "name": "Covariance: the numerator", "text": "`cov(x, y) = (∑ xy)/n − x̄ ȳ`: the mean of the products minus the product of the means. Its sign is already the sign of `r`." },
+    { "id": "st_bi_dstr4", "cat": "stage", "name": "Divide by the standard deviations", "text": "`r = (cov(x, y))/(s_(x) s_(y))`: the standard deviations, not the variances." },
+    { "id": "st_bi_dstr7", "cat": "stage", "name": "Check and interpret", "text": "`−1 ≤ r ≤ 1`, or there is a mistake (often variances used instead of standard deviations). The sign gives the direction: positive, `y` tends to rise with `x`; negative, it tends to fall. The size says how close the points are to a straight line: near `±1` strong, near `0` weak. `r` only sees straight lines, so a glance at the scatter diagram is worth it." },
+    { "id": "st_bi_dstr5", "cat": "example", "name": "Example — a positive relation", "text": "`x`: `1, 2, 3, 4, 5`; `y`: `2, 4, 5, 4, 5`\n1. Totals: `∑ x = 15`, `∑ y = 20`, `∑ x² = 55`, `∑ y² = 86`, `∑ xy = 66`; `n = 5`\n2. `x̄ = 15/5 = 3`; `ȳ = 20/5 = 4`\n3. `s_(x)² = 55/5 − 9 = 2`, `s_(x) ≈ 1.414`; `s_(y)² = 86/5 − 16 = 1.2`, `s_(y) ≈ 1.095`\n4. `cov(x, y) = 66/5 − 3 · 4 = 13.2 − 12 = 1.2`\n5. `r = 1.2/(1.414 · 1.095) ≈ 0.77`\n6. Between −1 and 1 ✓. Positive and fairly strong: larger `x` goes with larger `y`, roughly along a line.",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["i", "x", "y", "x²", "y²", "xy"] }, { "c": ["1", "1", "2", "1", "4", "2"] }, { "c": ["2", "2", "4", "4", "16", "8"] }, { "c": ["3", "3", "5", "9", "25", "15"] }, { "c": ["4", "4", "4", "16", "16", "16"] }, { "c": ["5", "5", "5", "25", "25", "25"] }], "head": 1, "side": 1, "totR": 1 } }] },
+    { "id": "st_bi_dstr8", "cat": "example", "name": "Example — a negative relation", "text": "Hours of TV the night before (`x`) and quiz score (`y`) of 5 students: `x`: `1, 2, 3, 4, 5`; `y`: `9, 8, 6, 5, 2`\n1. Totals: `∑ x = 15`, `∑ y = 30`, `∑ x² = 55`, `∑ y² = 210`, `∑ xy = 73`; `n = 5`\n2. `x̄ = 3`; `ȳ = 30/5 = 6`\n3. `s_(x)² = 2`, `s_(x) ≈ 1.414`; `s_(y)² = 210/5 − 36 = 6`, `s_(y) ≈ 2.449`\n4. `cov(x, y) = 73/5 − 3 · 6 = 14.6 − 18 = −3.4`\n5. `r = −3.4/(1.414 · 2.449) ≈ −0.98`\n6. Between −1 and 1 ✓. Negative and very strong: more TV goes with a lower score, almost exactly along a falling line. (It doesn't show that the TV causes it.)",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["i", "x", "y", "x²", "y²", "xy"] }, { "c": ["1", "1", "9", "1", "81", "9"] }, { "c": ["2", "2", "8", "4", "64", "16"] }, { "c": ["3", "3", "6", "9", "36", "18"] }, { "c": ["4", "4", "5", "16", "25", "20"] }, { "c": ["5", "5", "2", "25", "4", "10"] }], "head": 1, "side": 1, "totR": 1 } }] }
   ] },
 { "id": "pp_bi_invol", "v": 1, "subject": "f:int", "kind": "problem",
   "name": "Setting up a volume of revolution",
