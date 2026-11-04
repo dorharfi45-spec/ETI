@@ -4916,13 +4916,14 @@
   <h4>Grouping into classes</h4>
   <p>With many different values, group them into <b>classes</b> (intervals) and count how many fall in each. The classes must be <b>disjoint</b> (no value in two classes) and <b>exhaustive</b> (every value in some class).</p>
   <ul>
-    <li><b>Apparent limits</b> are the limits as written: <code>50–59</code>, <code>60–69</code>.</li>
-    <li><b>Real limits</b> close the gaps between classes: split each gap in half, <code>49.5–59.5</code>, <code>59.5–69.5</code>. Each class ends exactly where the next begins.</li>
-    <li><b>Class width</b> <code>a</code> = upper real limit − lower real limit (here <code>10</code>).</li>
-    <li><b>Midpoint</b> = the average of a class's limits: <code>(49.5 + 59.5)/2 = 54.5</code>. It stands for the whole class in calculations.</li>
+    <li><b>Apparent limits</b> are the limits as written: 50–59, 60–69.</li>
+    <li><b>Real limits</b> close the gaps between classes: split each gap in half, 49.5–59.5, 59.5–69.5. Each class ends exactly where the next begins.</li>
+    <li><b>Class width</b> <code>a = L₁ − L₀</code>, the upper real limit minus the lower one (here <code>10</code>). Use the real limits, not the apparent ones: <code>59 − 50 = 9</code> would be wrong.</li>
+    <li><b>Midpoint</b> <code>m_(x) = (L₀ + L₁)/2</code>, the average of the class's two real limits: <code>(49.5 + 59.5)/2 = 54.5</code>. It stands for the whole class in calculations.</li>
     <li><b>Open class:</b> one with only one limit, such as "90 and up".</li>
   </ul>
   <p class="muted"><b>How many classes:</b> too few hide the shape, too many leave single cases in each class. About 5 to 10 is usual. The width is roughly <code>(largest − smallest)/(number of classes)</code>, rounded to a convenient number.</p>
+  <p class="muted"><b>Where the width and the midpoint are used:</b> see the card <b>Discrete or continuous: which table?</b> below, which builds the full table row by row.</p>
 </div>
 <div class="card" data-tags="Definition">
   <h4>Cumulative and relative frequency</h4>
@@ -4933,6 +4934,28 @@
   </ul>
   <div class="bi-table" data-table='{"rows":[{"c":["Class (real limits)","f(x)","F(x)","f(x)/n"]},{"c":["39.5–49.5","2","2","0.05"]},{"c":["49.5–59.5","5","7","0.125"]},{"c":["59.5–69.5","9","16","0.225"]},{"c":["69.5–79.5","14","30","0.35"]},{"c":["79.5–89.5","7","37","0.175"]},{"c":["89.5–99.5","3","40","0.075"]}],"head":1,"side":1}'></div>
   <p class="muted"><b>Reading <code>F</code>:</b> <code>F = 16</code> at <code>69.5</code> says 16 of the 40 students scored below 69.5. The relative frequencies always add up to 1.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Discrete or continuous: which table?</h4>
+  <p>First ask what kind of variable you have (<b>Variables and values</b>, in Statistics, data and variables):</p>
+  <ul>
+    <li><b>Discrete:</b> separate values you can list (0, 1, 2 siblings). The same values come up again and again, so <b>count each value</b>: a table with 3 rows.</li>
+    <li><b>Continuous:</b> any value in a range (a time, a weight). Two people rarely have exactly the same value, so <b>group the values into classes</b>: a table with 6 rows.</li>
+  </ul>
+  <p><b>Discrete</b>: siblings of 20 students.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["x (siblings)","0","1","2","3","4"]},{"c":["f(x)","3","7","6","3","1"]},{"c":["F(x)","3","10","16","19","20"]}],"head":1,"side":1}'></div>
+  <p><b>Continuous</b>: the commute of 40 workers, in minutes. The last class is three times as wide as the others.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["x (class, L₀–L₁)","0–10","10–20","20–30","30–60"]},{"c":["f(x)","5","14","12","9"]},{"c":["F(x)","5","19","31","40"]},{"c":["`m_(x)` (midpoint)","5","15","25","45"]},{"c":["a (width)","10","10","10","30"]},{"c":["`d = f(x)/a` (density)","0.5","1.4","1.2","0.3"]}],"head":1,"side":1}'></div>
+  <ul data-cpart="expl">
+    <li><b><code>x</code>, the class:</b> the interval, written with its <b>real limits</b> L₀–L₁, so each class ends exactly where the next begins. Everything below is built from it.</li>
+    <li><b><code>f(x)</code>, the frequency:</b> how many observations fall in the class. Used for the mean, the variance and the density.</li>
+    <li><b><code>F(x)</code>, the cumulative frequency:</b> how many observations are at most <code>L₁</code>, the class's upper real limit. Used to find the median, the quartiles and the percentiles.</li>
+    <li><b><code>m_(x)</code>, the midpoint:</b> <code>(L₀ + L₁)/2</code>, the value that stands for the whole class. Used for the mean and the variance of grouped data: <code>x̄ = (∑ m_(x) f(x))/n</code>.</li>
+    <li><b><code>a</code>, the class width:</b> <code>L₁ − L₀</code>. Used for the density, and in the median, quartile and percentile formulas.</li>
+    <li><b><code>d</code>, the density:</b> <code>f(x)/a</code>, the frequency per unit (here, workers per minute). It is the <b>height of the histogram bar</b>.</li>
+  </ul>
+  <p class="muted"><b>Why the density row matters here:</b> the class 30–60 has 9 workers, not far below the 12 of 20–30, but they are spread over 30 minutes instead of 10. Per minute it holds only <code>0.3</code> workers, the thinnest class of all. Compare classes by <code>d</code>, not by <code>f</code>, when the widths differ.</p>
+  <p class="muted"><b>A discrete table has no width or density row:</b> each value is a single point, so there is nothing to spread over.</p>
 </div>
 </section>
 
@@ -4954,7 +4977,25 @@
     <text x="248" y="30" text-anchor="middle">14</text><text x="74" y="162" text-anchor="middle">2</text>
     <text class="sm" x="46" y="18">f(x)</text>
   </svg>
-  <p class="muted"><b>In a histogram the area counts, not the height.</b> When all classes have the same width the two agree. With different widths, draw each height as <code>f/(width)</code> (frequency per unit), or a wide class would look far bigger than it is.</p>
+  <p><b>The height of each bar is the density</b> <code>d = f(x)/a</code>, and so <b>the area of the bar is the frequency</b>: <code>d · a = f(x)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 250" role="img" aria-label="histogram of the commute table: bars over 0 to 10, 10 to 20 and 20 to 30 with heights 0.5, 1.4 and 1.2, and one wide low bar over 30 to 60 with height 0.3; the wide bar is marked with its height d = 0.3, its width a = 30 and its area 9, which is its frequency">
+    <path class="ax" d="M40 200 H405 M45 205 V20"/>
+    <rect class="box" x="50" y="150" width="55" height="50"/>
+    <rect class="box" x="105" y="60" width="55" height="140"/>
+    <rect class="box" x="160" y="80" width="55" height="120"/>
+    <rect class="band" x="215" y="170" width="165" height="30"/>
+    <rect class="box" x="215" y="170" width="165" height="30"/>
+    <text class="sm" x="77" y="144" text-anchor="middle">0.5</text><text class="sm" x="132" y="54" text-anchor="middle">1.4</text><text class="sm" x="187" y="74" text-anchor="middle">1.2</text>
+    <text class="sm" x="297" y="163" text-anchor="middle">height d = 0.3</text>
+    <text class="sm" x="297" y="190" text-anchor="middle">area = 0.3 · 30 = 9 = f</text>
+    <text class="sm" x="50" y="215" text-anchor="middle">0</text><text class="sm" x="105" y="215" text-anchor="middle">10</text><text class="sm" x="160" y="215" text-anchor="middle">20</text><text class="sm" x="215" y="215" text-anchor="middle">30</text><text class="sm" x="380" y="215" text-anchor="middle">60</text>
+    <path class="gd" d="M215 224 V230 H380 V224"/>
+    <text class="sm" x="297" y="244" text-anchor="middle">width a = 30</text>
+    <text class="sm" x="52" y="28">d = f/a</text>
+    <text class="sm" x="416" y="215" text-anchor="end">min</text>
+  </svg>
+  <p class="muted"><b>Why not draw the height as <code>f</code>?</b> The eye judges a bar by its area. Drawn with height 9, the 30–60 bar would be 30 wide and tall: the biggest block in the picture, although it holds fewer workers than 10–20 or 20–30. With height <code>d</code>, its 9 workers are spread thinly over 30 minutes, and the picture tells the truth.</p>
+  <p class="muted"><b>Equal widths:</b> then every <code>d</code> is <code>f</code> divided by the same number, so drawing <code>f</code> as the height gives the same shape (the grades histogram above). The table with all the rows: <b>Discrete or continuous: which table?</b> (Frequency tables).</p>
   <p class="muted"><b>Other charts:</b> a <b>pie chart</b> gives each class a slice with angle <code>360° · f/n</code> (good for nominal data); a <b>frequency polygon</b> joins the tops of the sticks, or the midpoints of the rectangles' tops, with straight lines.</p>
 </div>
 <div class="card" data-tags="Definition">
@@ -5023,16 +5064,20 @@
 </div>
 <div class="card" data-tags="Formula">
   <h4>The median of a grouped table</h4>
-  <p><code>Md = L₀ + (n/2 − F_(before))/(f_(m)) · (L₁ − L₀)</code></p>
-  <p class="muted"><b>The parts:</b> the median class is the first class where <code>F</code> reaches <code>n/2</code>; <code>L₀</code>, <code>L₁</code> are its real limits, <code>f_(m)</code> its frequency, and <code>F_(before)</code> the cumulative frequency up to the class before it.</p>
-  <p class="muted"><b>Why it works:</b> the cases inside a class are taken as spread evenly over it. We need <code>n/2 − F_(before)</code> more cases out of the class's <code>f_(m)</code>, so we go that fraction of the way across it. It is the point that cuts the histogram's area in half.</p>
+  <p><code>Md = L₀ + (n/2 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></p>
+  <p class="muted"><b>The parts:</b> the median class <code>x_(m)</code> is the first class where <code>F</code> reaches <code>n/2</code>; <code>L₀</code>, <code>L₁</code> are its real limits and <code>f(x_(m))</code> its frequency; <code>F(x_(m−1))</code> is the cumulative frequency up to the end of the class before it.</p>
+  <p class="muted"><b>The width <code>a</code>:</b> <code>L₁ − L₀ = a</code> is the width of the median class (not of any other class). The fraction says what <b>part</b> of the class to cross; times the width, it becomes a distance in the data's units.</p>
+  <p class="muted"><b>Why it works:</b> the cases inside a class are taken as spread evenly over it. We need <code>n/2 − F(x_(m−1))</code> more cases out of the class's <code>f(x_(m))</code>, so we go that fraction of the way across it: start at <code>L₀</code> and move that fraction of <code>a</code>. It is the point that cuts the histogram's area in half.</p>
+  <p class="muted"><b>Example:</b> the commute table (<b>Discrete or continuous: which table?</b>): place <code>20</code>, class 20–30, <code>F(x_(m−1)) = 19</code>, <code>f(x_(m)) = 12</code>: <code>Md = 20 + (20 − 19)/12 · 10 ≈ 20.83</code> minutes.</p>
 </div>
 <div class="card" data-tags="Definition, Formula">
   <h4>The mean</h4>
   <ul class="idlist">
     <li><code>x̄ = (∑_(i=1)^(n) x_(i))/n</code></li>
-    <li><code>x̄ = (∑ x f(x))/n</code> (a frequency table; for classes, <code>x</code> is the midpoint)</li>
+    <li><code>x̄ = (∑ x f(x))/n</code> (a frequency table)</li>
+    <li><code>x̄ = (∑ m_(x) f(x))/n</code> (a table of classes, <code>m_(x)</code> the midpoint)</li>
   </ul>
+  <p class="muted"><b>With classes</b> the exact values are lost, so each case is counted at its class's midpoint. The result is an estimate. Commute table: <code>(5 · 5 + 15 · 14 + 25 · 12 + 45 · 9)/40</code> <code>= 940/40 = 23.5</code> minutes.</p>
   <p class="muted"><b>Example:</b> the quiz table (Frequency tables): <code>(4 · 1 + 5 · 3 + 6 · 5 + 7 · 6 + 8 · 3 + 9 · 2)/20 = 133/20 = 6.65</code>.</p>
   <p class="muted"><b>The balance point:</b> the deviations from the mean always cancel, <code>∑ (x_(i) − x̄) = 0</code>. If the values were weights on a ruler, the ruler would balance at <code>x̄</code>.</p>
 </div>
@@ -5090,8 +5135,8 @@
   <h4>Quartiles and the interquartile range</h4>
   <p>The <b>lower quartile</b> <code>Q₁</code> has 25% of the data below it; the <b>upper quartile</b> <code>Q₃</code> has 75% below it. The <b>interquartile range</b> <code>IQR = Q₃ − Q₁</code> is the width of the middle half of the data.</p>
   <ul class="idlist">
-    <li><code>Q₁ = L₀ + (n/4 − F_(before))/(f_(m)) · (L₁ − L₀)</code></li>
-    <li><code>Q₃ = L₀ + ((3n)/4 − F_(before))/(f_(m)) · (L₁ − L₀)</code></li>
+    <li><code>Q₁ = L₀ + (n/4 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></li>
+    <li><code>Q₃ = L₀ + ((3n)/4 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></li>
   </ul>
   <svg class="ill" viewBox="0 0 420 90" role="img" aria-label="a number line from the minimum to the maximum; Q1 and Q3 mark off the middle half of the data, which is the IQR">
     <path class="ax" d="M20 55 H400"/>
@@ -5101,7 +5146,7 @@
     <text class="sm" x="40" y="88" text-anchor="middle">min</text><text x="140" y="24" text-anchor="middle">Q₁</text><text x="270" y="24" text-anchor="middle">Q₃</text><text class="sm" x="380" y="88" text-anchor="middle">max</text>
     <text class="sm" x="205" y="59" text-anchor="middle">middle 50%: IQR</text>
   </svg>
-  <p class="muted"><b>Same idea as the median</b> (Measures of center), with <code>n/4</code> and <code>3n/4</code> in place of <code>n/2</code>.</p>
+  <p class="muted"><b>Same idea as the median</b> (Measures of center), with <code>n/4</code> and <code>3n/4</code> in place of <code>n/2</code>. Here <code>x_(m)</code> is the class the quartile falls in, and <code>L₁ − L₀ = a</code> is <b>that class's</b> width: you cross a fraction of the class, so the fraction is multiplied by its width.</p>
   <p class="muted"><b>A plain list</b> (not grouped): sort it, compute <code>n/4</code> and <code>3n/4</code>, and round to the nearest whole number to get the places. <code>n = 39</code>: <code>9.75 → 10th</code> value and <code>29.25 → 29th</code> value.</p>
   <p class="muted"><b>Strength:</b> the extremes don't affect it at all.</p>
 </div>
@@ -5116,7 +5161,7 @@
   <h4>Variance and standard deviation</h4>
   <ul class="idlist">
     <li><code>s_(x)² = (∑_(i=1)^(n) (x_(i) − x̄)²)/n</code></li>
-    <li><code>s_(x)² = (∑ (x − x̄)² f(x))/n</code> (a frequency table)</li>
+    <li><code>s_(x)² = (∑ (x − x̄)² f(x))/n</code> (a frequency table; with classes, <code>m_(x)</code> in place of <code>x</code>)</li>
     <li><code>s_(x) = √(s_(x)²)</code></li>
   </ul>
   <p class="muted"><b>In words:</b> the variance is the average squared distance from the mean. Its units are squared (cm²), so we take the root: the <b>standard deviation</b> <code>s_(x)</code> is back in the data's own units and is the usual measure of spread.</p>
@@ -5168,10 +5213,11 @@
   <h4>Percentiles</h4>
   <p>The <b>k-th percentile</b> <code>C_(k)</code> is the value with <code>k%</code> of the data below it and <code>(100 − k)%</code> above it.</p>
   <ul class="idlist">
-    <li><code>C_(k) = L₀ + ((n · k)/100 − F_(before))/(f_(m)) · (L₁ − L₀)</code></li>
-    <li><code>k = (F_(before) + (C − L₀)/(L₁ − L₀) · f_(m)) · 100/n</code></li>
+    <li><code>C_(k) = L₀ + ((n · k)/100 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></li>
+    <li><code>k = (F(x_(m−1)) + (C − L₀)/(L₁ − L₀) · f(x_(m))) · 100/n</code></li>
   </ul>
   <p class="muted"><b>The first</b> finds the value for a given percent (the same steps as the median); <b>the second</b> goes back, from a value <code>C</code> to its percent.</p>
+  <p class="muted"><b>The width <code>a = L₁ − L₀</code></b> is the width of the class <code>x_(m)</code> the percentile falls in. In the first formula it turns "this fraction of the class" into a distance; in the second, <code>(C − L₀)/a</code> is the fraction of the class below <code>C</code>, so that fraction of its cases is added. With unequal widths this matters: in the commute table, <code>C_(90)</code> falls in 30–60, so <code>C_(90) = 30 + (36 − 31)/9 · 30 ≈ 46.67</code>, with <code>a = 30</code>, not 10.</p>
   <p class="muted"><b>Familiar ones:</b> <code>C_(25) = Q₁</code>, <code>C_(50) = Md</code>, <code>C_(75) = Q₃</code>.</p>
   <p class="muted"><b>Limit:</b> percentiles keep the order but not the distances. The gap from <code>C_(50)</code> to <code>C_(60)</code> can be tiny in the middle and wide in the tails.</p>
 </div>
@@ -6067,30 +6113,34 @@
     { "id": "st_bi_prbunif5", "cat": "example", "name": "Example", "text": "Two dice: `P(at least one 6)`\n1. The 36 pairs. 2. `N = 36`.\n3. No six at all: `5 · 5 = 25` pairs, so `N(A) = 36 − 25 = 11`\n4. `P = 11/36`" },
     { "id": "st_bi_prbunif6", "cat": "example", "name": "Example — difference at most 1", "text": "Two dice: `P(|first − second| ≤ 1)`\n3. Equal: 6 pairs; difference exactly 1: `5 + 5 = 10` pairs; `N(A) = 16`\n4. `P = 16/36 = 4/9`" }
   ] },
-{ "id": "pp_bi_dstfreq", "v": 1, "subject": "f:dst", "kind": "action",
+{ "id": "pp_bi_dstfreq", "v": 2, "subject": "f:dst", "kind": "action",
   "name": "Building a grouped frequency table",
-  "description": "Turn a long list of numbers into a table of classes with frequencies, cumulative and relative frequencies.",
-  "uses": [["c", "dst3", "Grouping into classes"], ["c", "dst3", "Cumulative and relative frequency"]],
+  "description": "Turn a long list of numbers into the full table of classes: x, f(x), F(x), the midpoint, the width and the density.",
+  "uses": [["c", "dst3", "Discrete or continuous: which table?"], ["c", "dst3", "Grouping into classes"], ["c", "dst3", "Cumulative and relative frequency"]],
   "parts": [
+    { "id": "st_bi_dstfreq7", "cat": "stage", "name": "Discrete or continuous?", "text": "A discrete variable with a few values (siblings, a die): count each value and write the 3 rows `x`, `f(x)`, `F(x)`. Done. A continuous variable, or one with many values: group into classes and build all 6 rows, as below." },
     { "id": "st_bi_dstfreq1", "cat": "stage", "name": "Choose the number of classes", "text": "Usually 5 to 10: enough to show the shape, few enough that most classes hold several values." },
     { "id": "st_bi_dstfreq2", "cat": "stage", "name": "Find the class width", "text": "`a ≈ (largest − smallest)/(number of classes)`, rounded up to a convenient number." },
     { "id": "st_bi_dstfreq3", "cat": "stage", "name": "Write the classes", "text": "Start at (or just below) the smallest value and step by `a`. Check that every value falls in exactly one class." },
-    { "id": "st_bi_dstfreq4", "cat": "stage", "name": "Count", "text": "Go through the list once and tally each value into its class: `f(x)`. The frequencies must add up to `n`." },
-    { "id": "st_bi_dstfreq5", "cat": "stage", "name": "Add the extra columns", "text": "Real limits (split each gap in half), midpoints, `F(x)` (running total, ends at `n`) and `f(x)/n` (adds up to 1)." },
-    { "id": "st_bi_dstfreq6", "cat": "example", "name": "Example", "text": "12 waiting times (minutes): 3, 7, 12, 5, 9, 14, 6, 8, 11, 4, 10, 7\n1. 4 classes.\n2. `a ≈ (14 − 3)/4 = 2.75` → `a = 3`.\n3. `3–5`, `6–8`, `9–11`, `12–14`.\n4. Frequencies `3, 4, 3, 2` (sum `12` ✓).\n5. Real limits `2.5–5.5`, `5.5–8.5`, `8.5–11.5`, `11.5–14.5`; midpoints `4, 7, 10, 13`; `F = 3, 7, 10, 12`.",
-      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["Class", "f(x)", "F(x)", "f(x)/n"] }, { "c": ["2.5–5.5", "3", "3", "3/12"] }, { "c": ["5.5–8.5", "4", "7", "4/12"] }, { "c": ["8.5–11.5", "3", "10", "3/12"] }, { "c": ["11.5–14.5", "2", "12", "2/12"] }], "head": 1, "side": 1 } }] }
+    { "id": "st_bi_dstfreq8", "cat": "stage", "name": "Row x: the real limits", "text": "Split each gap between classes in half, so each class runs from `L₀` to `L₁` and ends where the next begins. Every other row is built from these limits." },
+    { "id": "st_bi_dstfreq4", "cat": "stage", "name": "Row f(x): count", "text": "Go through the list once and tally each value into its class. The frequencies must add up to `n`. This row feeds the mean, the variance and the density." },
+    { "id": "st_bi_dstfreq9", "cat": "stage", "name": "Row F(x): running total", "text": "Add the frequencies as you go: `F(x)` is how many values are at most `L₁`. It must end at `n`. This row finds the median, quartiles and percentiles." },
+    { "id": "st_bi_dstfreq5", "cat": "stage", "name": "Rows m_x, a and d", "text": "Midpoint `m_(x) = (L₀ + L₁)/2`, which stands for the class in the mean and the variance. Width `a = L₁ − L₀`, which goes into the density and the median formula. Density `d = f(x)/a`, which is the histogram bar's height. (Relative frequency `f(x)/n` if asked: it adds up to 1.)" },
+    { "id": "st_bi_dstfreq6", "cat": "example", "name": "Example", "text": "12 waiting times (minutes): 3, 7, 12, 5, 9, 14, 6, 8, 11, 4, 10, 7\n1. Time is continuous: classes.\n2. 4 classes.\n3. `a ≈ (14 − 3)/4 = 2.75` → `a = 3`.\n4. 3–5, 6–8, 9–11, 12–14.\n5. The times were rounded to whole minutes, so the gap from 5 to 6 splits at 5.5: 2.5–5.5, 5.5–8.5, 8.5–11.5, 11.5–14.5.\n6. `f = 3, 4, 3, 2`; sum `12` ✓\n7. `F = 3, 7, 10, 12`; ends at `n` ✓\n8. `m_(x) = 4, 7, 10, 13`; `a = 3` for every class; `d = 3/3 = 1`, `4/3`, `1`, `2/3` per minute.",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["x", "2.5–5.5", "5.5–8.5", "8.5–11.5", "11.5–14.5"] }, { "c": ["f(x)", "3", "4", "3", "2"] }, { "c": ["F(x)", "3", "7", "10", "12"] }, { "c": ["`m_(x)`", "4", "7", "10", "13"] }, { "c": ["a", "3", "3", "3", "3"] }, { "c": ["`d = f(x)/a`", "1", "4/3", "1", "2/3"] }], "head": 1, "side": 1 } }] }
   ] },
-{ "id": "pp_bi_dsthist", "v": 1, "subject": "f:dst", "kind": "action",
+{ "id": "pp_bi_dsthist", "v": 2, "subject": "f:dst", "kind": "action",
   "name": "Drawing a histogram",
-  "description": "Draw a histogram from a grouped frequency table, including classes of different widths.",
-  "uses": [["c", "dst4", "Bar chart and histogram"], ["c", "dst3", "Grouping into classes"]],
+  "description": "Draw a histogram from a grouped frequency table, with the density as each bar's height, including classes of different widths.",
+  "uses": [["c", "dst4", "Bar chart and histogram"], ["c", "dst3", "Discrete or continuous: which table?"], ["c", "dst3", "Grouping into classes"]],
   "parts": [
-    { "id": "st_bi_dsthist1", "cat": "stage", "name": "Use the real limits", "text": "Mark the real limits on the `x` axis, so the rectangles touch." },
-    { "id": "st_bi_dsthist2", "cat": "stage", "name": "Check the widths", "text": "All the same width: the height is the frequency `f`. Different widths: the height is `f/(width)`, so that the **area** shows the frequency." },
-    { "id": "st_bi_dsthist3", "cat": "stage", "name": "Draw and read the shape", "text": "Draw one rectangle per class. Then describe it: symmetric, skewed right or skewed left; where the peak is." },
-    { "id": "st_bi_dsthist4", "cat": "example", "name": "Example — unequal widths", "text": "Classes `0–10` (`f = 20`), `10–20` (`f = 30`), `20–50` (`f = 30`)\n2. Heights `20/10 = 2`, `30/10 = 3`, `30/30 = 1` per unit.\nThe last class has as many cases as the second, but spread over three times the width, so it's drawn three times lower and three times wider: the same area." }
+    { "id": "st_bi_dsthist1", "cat": "stage", "name": "Use the real limits", "text": "Mark the real limits `L₀`, `L₁` on the `x` axis, to scale, so the rectangles touch and a wide class looks wide." },
+    { "id": "st_bi_dsthist2", "cat": "stage", "name": "Fill in the d row", "text": "For each class `d = f(x)/a`, its frequency over its width. All widths equal: `d` is `f` divided by the same number, so you may draw `f` itself. Different widths: you must use `d`." },
+    { "id": "st_bi_dsthist3", "cat": "stage", "name": "Draw, check and read the shape", "text": "One rectangle per class, from `L₀` to `L₁`, height `d`. Check: each area `d · a` is the class's `f`, and the areas add up to `n`. Then describe it: symmetric, skewed right or skewed left; where the peak is." },
+    { "id": "st_bi_dsthist4", "cat": "example", "name": "Example — unequal widths", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60 with `f = 5, 14, 12, 9`\n1. Mark 0, 10, 20, 30 and 60: the last class is three times as wide.\n2. `d = 5/10 = 0.5`; `14/10 = 1.4`; `12/10 = 1.2`; `9/30 = 0.3`\n3. Areas `0.5 · 10 = 5`, `14`, `12`, `0.3 · 30 = 9`: the frequencies ✓, total `40` ✓. The peak is at 10–20 with a long, thin tail to the right: positive skew.\nDrawn with height `f = 9`, the last bar would have been the biggest block, although it holds the fewest workers per minute.",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["x", "0–10", "10–20", "20–30", "30–60"] }, { "c": ["f(x)", "5", "14", "12", "9"] }, { "c": ["a", "10", "10", "10", "30"] }, { "c": ["`d = f(x)/a`", "0.5", "1.4", "1.2", "0.3"] }], "head": 1, "side": 1 } }] }
   ] },
-{ "id": "pp_bi_dstcenter", "v": 1, "subject": "f:dst", "kind": "problem",
+{ "id": "pp_bi_dstcenter", "v": 2, "subject": "f:dst", "kind": "problem",
   "name": "Finding the mode, median, mean and mid-range",
   "description": "Compute the four measures of center from a list or a frequency table, and say which one fits.",
   "uses": [["c", "dst6", "Mode, mid-range and median"], ["c", "dst6", "The mean"], ["c", "dst2", "Which measure fits which scale"]],
@@ -6098,32 +6148,36 @@
     { "id": "st_bi_dstcenter1", "cat": "stage", "name": "Sort the data", "text": "Or use the frequency table, which is already in order." },
     { "id": "st_bi_dstcenter2", "cat": "stage", "name": "Mode and mid-range", "text": "`Mo`: the value with the biggest `f`. `MR = (x_(max) + x_(min))/2`." },
     { "id": "st_bi_dstcenter3", "cat": "stage", "name": "Median", "text": "Find the place: `(n + 1)/2` for odd `n`; the two places `n/2` and `n/2 + 1` for even `n` (average them). In a table, run down `F(x)` until it reaches the place." },
-    { "id": "st_bi_dstcenter4", "cat": "stage", "name": "Mean", "text": "`x̄ = (∑ x f(x))/n`: multiply each value by its frequency, add, divide by `n`." },
+    { "id": "st_bi_dstcenter4", "cat": "stage", "name": "Mean", "text": "`x̄ = (∑ x f(x))/n`: multiply each value by its frequency, add, divide by `n`. A table of classes: use the midpoint row, `x̄ = (∑ m_(x) f(x))/n`." },
     { "id": "st_bi_dstcenter5", "cat": "stage", "name": "Choose", "text": "Nominal → mode. Ordinal or strongly skewed → median. Otherwise the mean." },
-    { "id": "st_bi_dstcenter6", "cat": "example", "name": "Example — the quiz table", "text": "Scores `4…9` with `f = 1, 3, 5, 6, 3, 2`, `n = 20`\n2. `Mo = 7`; `MR = (9 + 4)/2 = 6.5`\n3. Places 10 and 11. `F = 1, 4, 9, 15, …`: both are `7`, so `Md = 7`.\n4. `x̄ = (4 + 15 + 30 + 42 + 24 + 18)/20 = 133/20 = 6.65`" }
+    { "id": "st_bi_dstcenter6", "cat": "example", "name": "Example — the quiz table", "text": "Scores `4…9` with `f = 1, 3, 5, 6, 3, 2`, `n = 20`\n2. `Mo = 7`; `MR = (9 + 4)/2 = 6.5`\n3. Places 10 and 11. `F = 1, 4, 9, 15, …`: both are `7`, so `Md = 7`.\n4. `x̄ = (4 + 15 + 30 + 42 + 24 + 18)/20 = 133/20 = 6.65`" },
+    { "id": "st_bi_dstcenter7", "cat": "example", "name": "Example — a table of classes", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60; `f = 5, 14, 12, 9`; `n = 40`\n1. Already in order.\n2. The class 10–20 has the biggest `f`, so `Mo = 15`, its midpoint.\n3. Place `20`. `F = 5, 19, 31, …`: class 20–30, so `Md = 20 + (20 − 19)/12 · 10 ≈ 20.83` (see Median, quartiles and percentiles of a grouped table).\n4. `m_(x) = 5, 15, 25, 45`: `x̄ = (25 + 210 + 300 + 405)/40 = 940/40 = 23.5`\n5. `Mo < Md < x̄`: the long tail to the right pulls the mean up, so the median describes a typical commute better." }
   ] },
-{ "id": "pp_bi_dstgrp", "v": 1, "subject": "f:dst", "kind": "problem",
+{ "id": "pp_bi_dstgrp", "v": 2, "subject": "f:dst", "kind": "problem",
   "name": "Median, quartiles and percentiles of a grouped table",
   "description": "Find Md, Q₁, Q₃, the IQR or any percentile C_k from a grouped frequency table.",
-  "uses": [["c", "dst6", "The median of a grouped table"], ["c", "dst7", "Quartiles and the interquartile range"], ["c", "dst9", "Percentiles"]],
+  "uses": [["c", "dst6", "The median of a grouped table"], ["c", "dst7", "Quartiles and the interquartile range"], ["c", "dst9", "Percentiles"], ["c", "dst3", "Discrete or continuous: which table?"]],
   "parts": [
-    { "id": "st_bi_dstgrp1", "cat": "stage", "name": "Add the cumulative column", "text": "Write `F(x)` next to each class, with real limits." },
+    { "id": "st_bi_dstgrp1", "cat": "stage", "name": "Write the rows you need", "text": "`x` with real limits L₀–L₁, `f(x)`, and the running total `F(x)`, which ends at `n`. Also the width `a = L₁ − L₀` of each class (the widths may differ)." },
     { "id": "st_bi_dstgrp2", "cat": "stage", "name": "Find the place", "text": "Median `n/2`; `Q₁` `n/4`; `Q₃` `(3n)/4`; percentile `C_(k)` `(n · k)/100`." },
-    { "id": "st_bi_dstgrp3", "cat": "stage", "name": "Find the class", "text": "The first class whose `F` reaches the place. Note its limits `L₀`, `L₁`, its `f_(m)` and the `F_(before)` of the class above it." },
-    { "id": "st_bi_dstgrp4", "cat": "stage", "name": "Go part of the way across", "text": "`L₀ + (place − F_(before))/(f_(m)) · (L₁ − L₀)`" },
-    { "id": "st_bi_dstgrp5", "cat": "example", "name": "Example", "text": "The grades table (Frequency tables), `n = 40`, `F = 2, 7, 16, 30, 37, 40`\nMedian: place `20`, class `69.5–79.5`: `69.5 + (20 − 16)/14 · 10 ≈ 72.36`\n`Q₁`: place `10`, class `59.5–69.5`: `59.5 + (10 − 7)/9 · 10 ≈ 62.83`\n`Q₃`: place `30`, class `69.5–79.5`: `69.5 + (30 − 16)/14 · 10 = 79.5`\n`IQR ≈ 79.5 − 62.83 = 16.67`\n`C_(90)`: place `36`, class `79.5–89.5`: `79.5 + (36 − 30)/7 · 10 ≈ 88.07`" },
-    { "id": "st_bi_dstgrp6", "cat": "example", "name": "Example — the other way: the percentile of a value", "text": "Which percentile is a grade of `75`?\n`k = (F_(before) + (75 − 69.5)/10 · 14) · 100/40 = (16 + 7.7) · 2.5 ≈ 59`\nSo `75` is about the 59th percentile." }
+    { "id": "st_bi_dstgrp3", "cat": "stage", "name": "Find the class x_m", "text": "The first class whose `F` reaches the place. Note its limits `L₀`, `L₁`, its width `a`, its frequency `f(x_(m))`, and `F(x_(m−1))`, the running total up to the class before it." },
+    { "id": "st_bi_dstgrp4", "cat": "stage", "name": "Go part of the way across", "text": "`L₀ + (place − F(x_(m−1)))/(f(x_(m))) · a`\nThe fraction is the part of this class's cases you still need; times **this class's** width `a`, it is how far past `L₀` to go." },
+    { "id": "st_bi_dstgrp5", "cat": "example", "name": "Example", "text": "The grades table (Frequency tables), `n = 40`, `F = 2, 7, 16, 30, 37, 40`, every `a = 10`\nMedian: place `20`, class 69.5–79.5: `69.5 + (20 − 16)/14 · 10 ≈ 72.36`\n`Q₁`: place `10`, class 59.5–69.5: `59.5 + (10 − 7)/9 · 10 ≈ 62.83`\n`Q₃`: place `30`, class 69.5–79.5: `69.5 + (30 − 16)/14 · 10 = 79.5`\n`IQR ≈ 79.5 − 62.83 = 16.67`\n`C_(90)`: place `36`, class 79.5–89.5: `79.5 + (36 − 30)/7 · 10 ≈ 88.07`" },
+    { "id": "st_bi_dstgrp7", "cat": "example", "name": "Example — unequal widths", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60; `f = 5, 14, 12, 9`; `F = 5, 19, 31, 40`\n`Q₁`: place `10`, class 10–20 (`a = 10`): `10 + (10 − 5)/14 · 10 ≈ 13.57`\n`Q₃`: place `30`, class 20–30 (`a = 10`): `20 + (30 − 19)/12 · 10 ≈ 29.17`\n`C_(90)`: place `36`, class 30–60 (`a = 30`): `30 + (36 − 31)/9 · 30 ≈ 46.67`\nIn the last one the width is 30: the 5 cases needed are 5 of 9 spread over 30 minutes." },
+    { "id": "st_bi_dstgrp6", "cat": "example", "name": "Example — the other way: the percentile of a value", "text": "Which percentile is a grade of `75`? It is in the class 69.5–79.5, with `F(x_(m−1)) = 16`, `f(x_(m)) = 14`, `a = 10`.\n`k = (16 + (75 − 69.5)/10 · 14) · 100/40 = (16 + 7.7) · 2.5 ≈ 59`\nSo `75` is about the 59th percentile." }
   ] },
-{ "id": "pp_bi_dstvar", "v": 1, "subject": "f:dst", "kind": "problem",
+{ "id": "pp_bi_dstvar", "v": 2, "subject": "f:dst", "kind": "problem",
   "name": "Computing the variance and the standard deviation",
   "description": "Find s² and s from a list or a frequency table, by the definition or by the shortcut.",
   "uses": [["c", "dst7", "Variance and standard deviation"], ["c", "dst7", "The shortcut formula for the variance"], ["c", "dst5", "Rules for sums"]],
   "parts": [
-    { "id": "st_bi_dstvar1", "cat": "stage", "name": "Find the mean", "text": "`x̄ = (∑ x f(x))/n`." },
-    { "id": "st_bi_dstvar2", "cat": "stage", "name": "Pick a route", "text": "**Definition:** square each deviation `(x − x̄)²`, times `f(x)`, add, divide by `n`. **Shortcut:** `(∑ x² f(x))/n − x̄²`. The shortcut is quicker when `x̄` isn't a round number." },
+    { "id": "st_bi_dstvar1", "cat": "stage", "name": "Find the mean", "text": "`x̄ = (∑ x f(x))/n`. A table of classes: every `x` in this method becomes the midpoint `m_(x)`." },
+    { "id": "st_bi_dstvar2", "cat": "stage", "name": "Pick a route", "text": "**Definition:** square each deviation `(x − x̄)²`, times `f(x)`, add, divide by `n`. **Shortcut:** `(∑ x² f(x))/n − x̄²` (classes: `(∑ m_(x)² f(x))/n − x̄²`). The shortcut is quicker when `x̄` isn't a round number." },
     { "id": "st_bi_dstvar3", "cat": "stage", "name": "Take the root", "text": "`s = √(s²)`. Check: `s` is in the data's units and is never negative." },
     { "id": "st_bi_dstvar4", "cat": "example", "name": "Example — by the definition", "text": "`2, 4, 4, 5, 10`\n1. `x̄ = 25/5 = 5`\n2. Deviations `−3, −1, −1, 0, 5`; squares `9, 1, 1, 0, 25`; `s² = 36/5 = 7.2`\n3. `s ≈ 2.68`" },
-    { "id": "st_bi_dstvar5", "cat": "example", "name": "Example — the shortcut on a table", "text": "The quiz table, `x̄ = 6.65`\n2. `∑ x² f(x) = 16 + 75 + 180 + 294 + 192 + 162 = 919`; `s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275`\n3. `s ≈ 1.31`" }
+    { "id": "st_bi_dstvar5", "cat": "example", "name": "Example — the shortcut on a table", "text": "The quiz table, `x̄ = 6.65`\n2. `∑ x² f(x) = 16 + 75 + 180 + 294 + 192 + 162 = 919`; `s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275`\n3. `s ≈ 1.31`" },
+    { "id": "st_bi_dstvar6", "cat": "example", "name": "Example — a table of classes", "text": "The commute table, `n = 40`, midpoints `m_(x) = 5, 15, 25, 45`\n1. `x̄ = 940/40 = 23.5` (the `m_(x) f(x)` column)\n2. Shortcut with the `m_(x)² f(x)` column: `∑ m_(x)² f(x) = 125 + 3150 + 7500 + 18225 = 29000`; `s² = 29000/40 − 23.5² = 725 − 552.25 = 172.75`\n3. `s ≈ 13.14` minutes",
+      "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["x (`m_(x)`)", "f(x)", "`m_(x) f(x)`", "`m_(x)² f(x)`"] }, { "c": ["0–10 (5)", "5", "25", "125"] }, { "c": ["10–20 (15)", "14", "210", "3150"] }, { "c": ["20–30 (25)", "12", "300", "7500"] }, { "c": ["30–60 (45)", "9", "405", "18225"] }], "head": 1, "side": 1, "totR": 1 } }] }
   ] },
 { "id": "pp_bi_dstlin", "v": 1, "subject": "f:dst", "kind": "problem",
   "name": "Measures after a change of units",
