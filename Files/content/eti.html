@@ -7540,12 +7540,260 @@
 </div>
 </section>
 </div><!-- /folder-opt -->
+<div class="folder" id="folder-elm">
+
+<!-- ===== ELM1 · ELECTRIC CHARGE ===== -->
+<section class="pane on" id="pane-elm1">
+<h2><span class="num">1</span>Electric charge</h2>
+<div class="card" data-tags="Definition">
+  <h4>Two kinds of charge</h4>
+  <p>Rub a plastic rod with wool and it attracts bits of paper: it has an <b>electric charge</b>. There are two kinds, called <b>positive</b> and <b>negative</b>. <b>Like charges repel, unlike charges attract.</b></p>
+  <p class="muted"><b>Where charge comes from:</b> atoms have a small, positive nucleus (protons, with neutrons) surrounded by negative electrons; a neutral atom has as many electrons as protons. Rubbing moves some electrons from one body to the other: the one that gains electrons becomes negative, the other positive.</p>
+  <p class="muted"><b>History:</b> electricity was a curiosity of rubbed amber until the 1700s; Galvani's frog legs and Volta's first battery (about 1800) led to electric currents, and Maxwell (1864) united electricity, magnetism and light in four equations.</p>
+</div>
+<div class="card" data-tags="Theorem, Definition">
+  <h4>Conservation and quantization of charge</h4>
+  <ul class="idlist">
+    <li><code>e = 1.602 × 10⁻¹⁹ C</code></li>
+    <li><code>q = Ne</code>, &nbsp; <code>N</code> a whole number</li>
+  </ul>
+  <p class="muted"><b>Conservation:</b> charge is never created or destroyed; the total charge of a closed system stays the same. Rubbing only moves it around.</p>
+  <p class="muted"><b>Quantization:</b> every charge is a whole multiple of the <b>elementary charge</b> <code>e</code>, the size of the electron's charge (electron <code>−e</code>, proton <code>+e</code>). The SI unit is the <b>coulomb</b> (C), about <code>6.24 × 10¹⁸</code> electrons' worth: a huge charge; static charges are usually micro- or nanocoulombs.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Conductors and insulators</h4>
+  <p>In a <b>conductor</b> (metals, salt water) some charges move freely: in a metal, the outer electrons of each atom wander through the whole piece. In an <b>insulator</b> (plastic, glass, dry air) every charge stays near its atom.</p>
+  <ul data-cpart="expl">
+    <li><b>Charging by contact:</b> touch a charged body to a conductor and charge spreads onto it.</li>
+    <li><b>Induction:</b> bring a charged rod near a conductor without touching: its free electrons shift, one side becomes positive, the other negative. That is why a charged rod attracts a neutral object.</li>
+    <li><b>Grounding:</b> the Earth is a huge conductor that can give or take any amount of charge.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== ELM2 · COULOMB'S LAW AND THE ELECTRIC FIELD ===== -->
+<section class="pane" id="pane-elm2">
+<h2><span class="num">2</span>Coulomb's law and the electric field</h2>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Coulomb's law</h4>
+  <ul class="idlist">
+    <li><code>F = k (q₁q₂)/(r²) = 1/(4πε₀) (q₁q₂)/(r²)</code></li>
+    <li><code>k = 1/(4πε₀) ≈ 9.0 × 10⁹ N·m²/C²</code>, &nbsp; <code>ε₀ = 8.85 × 10⁻¹² C²/(N·m²)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> two point charges push or pull each other along the line between them, with a force proportional to both charges and inversely proportional to the square of the distance, just like gravity (Gravitation, Mechanics) but much stronger, and it can repel. <code>ε₀</code> is the permittivity of free space.</p>
+  <p class="muted"><b>Example:</b> <code>2 μC</code> and <code>−3 μC</code> 0.3 m apart: <code>F = 9 × 10⁹ · 6 × 10⁻¹²/0.09 = 0.6 N</code>, attractive.</p>
+  <p class="muted"><b>Several charges:</b> the forces add as vectors (superposition): find each one separately, then add the components.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>The electric field</h4>
+  <ul class="idlist">
+    <li><code>E⃗ = F⃗/q</code> &nbsp; (N/C)</li>
+    <li>a point charge: <code>E = k q/(r²)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a charge changes the space around it: any other charge <code>q</code> placed there feels a force <code>qE⃗</code>. The <b>electric field</b> <code>E⃗</code> is the force per unit of (positive) test charge at each point. It points away from positive charges and toward negative ones, and fields of several charges add as vectors.</p>
+  <p class="muted"><b>Why a field:</b> it lets us split a problem into two steps: what the charges create (the field), and what the field does to a charge put there. The field is real: it carries energy, and changing fields travel as light (Optics).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Field lines</h4>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="field lines of a positive charge point straight outward in all directions; those of a negative charge point straight inward">
+    <path class="cv" d="M130 100 L172 100"/><path class="vh" d="M182 100 L172 104 L172 96 Z"/>
+    <path class="cv" d="M124.1 85.9 L153.8 56.2"/><path class="vh" d="M160.9 49.1 L156.7 59 L151 53.3 Z"/>
+    <path class="cv" d="M110 80 L110 38"/><path class="vh" d="M110 28 L114 38 L106 38 Z"/>
+    <path class="cv" d="M95.9 85.9 L66.2 56.2"/><path class="vh" d="M59.1 49.1 L69 53.3 L63.3 59 Z"/>
+    <path class="cv" d="M90 100 L48 100"/><path class="vh" d="M38 100 L48 96 L48 104 Z"/>
+    <path class="cv" d="M95.9 114.1 L66.2 143.8"/><path class="vh" d="M59.1 150.9 L63.3 141 L69 146.7 Z"/>
+    <path class="cv" d="M110 120 L110 162"/><path class="vh" d="M110 172 L106 162 L114 162 Z"/>
+    <path class="cv" d="M124.1 114.1 L153.8 143.8"/><path class="vh" d="M160.9 150.9 L151 146.7 L156.7 141 Z"/>
+    <path class="cv3" d="M382 100 L340 100"/><path class="vh3" d="M330 100 L340 96 L340 104 Z"/>
+    <path class="cv3" d="M360.9 49.1 L331.2 78.8"/><path class="vh3" d="M324.1 85.9 L328.4 76 L334 81.6 Z"/>
+    <path class="cv3" d="M310 28 L310 70"/><path class="vh3" d="M310 80 L306 70 L314 70 Z"/>
+    <path class="cv3" d="M259.1 49.1 L288.8 78.8"/><path class="vh3" d="M295.9 85.9 L286 81.6 L291.6 76 Z"/>
+    <path class="cv3" d="M238 100 L280 100"/><path class="vh3" d="M290 100 L280 104 L280 96 Z"/>
+    <path class="cv3" d="M259.1 150.9 L288.8 121.2"/><path class="vh3" d="M295.9 114.1 L291.6 124 L286 118.4 Z"/>
+    <path class="cv3" d="M310 172 L310 130"/><path class="vh3" d="M310 120 L314 130 L306 130 Z"/>
+    <path class="cv3" d="M360.9 150.9 L331.2 121.2"/><path class="vh3" d="M324.1 114.1 L334 118.4 L328.4 124 Z"/>
+    <circle class="box" cx="110" cy="100" r="13"/><circle class="box" cx="310" cy="100" r="13"/>
+    <text x="110" y="105" text-anchor="middle">+</text><text x="310" y="105" text-anchor="middle">−</text>
+  </svg>
+  <p class="muted"><b>In words:</b> lines drawn so that at every point the field is along the line (tangent to it), pointing the way the arrows go. They start on positive charges and end on negative ones (or go to infinity), and never cross.</p>
+  <p class="muted"><b>Their density shows the strength:</b> where the lines crowd together the field is strong; spread out, weak. Around a point charge they spread out like the spokes of a wheel, and their density falls as <code>1/r²</code>, exactly like the field. Between two opposite charges they curve from one to the other; between two like charges they push apart.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Fields of extended charges</h4>
+  <ul class="idlist">
+    <li>long straight line, charge <code>λ</code> per metre: <code>E = λ/(2πε₀r)</code></li>
+    <li>large flat sheet, charge <code>σ</code> per m²: <code>E = σ/(2ε₀)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a charge spread along a line or over a surface is cut into tiny pieces, each a point charge; their fields are added by integration (Integrals). By symmetry, the field of a long line points straight away from it and weakens only as <code>1/r</code>; that of a large sheet is the same at every distance. Gauss's law gives these quickly.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>A charge in a uniform field</h4>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="two parallel plates, positive on top and negative below, with a uniform field pointing down between them; an electron entering horizontally curves up toward the positive plate in a parabola">
+    <path class="ax" d="M60 40 H360 M60 160 H360"/>
+    <path class="cv" d="M100 50 L100 140"/><path class="vh" d="M100 150 L96 140 L104 140 Z"/>
+    <path class="cv" d="M160 50 L160 140"/><path class="vh" d="M160 150 L156 140 L164 140 Z"/>
+    <path class="cv" d="M220 50 L220 140"/><path class="vh" d="M220 150 L216 140 L224 140 Z"/>
+    <path class="cv" d="M280 50 L280 140"/><path class="vh" d="M280 150 L276 140 L284 140 Z"/>
+    <path class="cv" d="M340 50 L340 140"/><path class="vh" d="M340 150 L336 140 L344 140 Z"/>
+    <path class="cv3" d="M40 100 L80 100 L100 99.8 L120 99 L140 97.8 L160 96.1 L180 93.9 L200 91.2 L220 88.1 L240 84.4 L260 80.3 L280 75.7 L300 70.6 L320 65 L400 41.7"/>
+    <text class="sm" x="40" y="44" text-anchor="end">+</text><text class="sm" x="40" y="164" text-anchor="end">−</text>
+    <text class="sm" x="370" y="104"><tspan font-weight="bold">E</tspan></text><text class="sm" x="44" y="94">electron</text>
+  </svg>
+  <p class="muted"><b>In words:</b> between two parallel charged plates the field is <b>uniform</b> (the same everywhere). A charge there feels a constant force <code>qE</code>, so a constant acceleration <code>qE/m</code>: it moves exactly like a ball thrown in gravity (Projectiles, Mechanics), along a parabola. An electron, being negative, is pushed against the field, toward the positive plate.</p>
+  <p class="muted"><b>Uses:</b> this is how an oscilloscope (and the old TV tube) steers its electron beam to draw on the screen.</p>
+</div>
+</section>
+
+<!-- ===== ELM3 · GAUSS'S LAW ===== -->
+<section class="pane" id="pane-elm3">
+<h2><span class="num">3</span>Gauss's law</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Electric flux</h4>
+  <ul class="idlist">
+    <li><code>Φ = EA cos θ = E⃗ · A⃗</code></li>
+    <li><code>Φ = ∫_(A) E⃗ · dA⃗</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>flux</b> through a surface measures how much field passes through it: in the picture of field lines, the number of lines crossing it. <code>A⃗</code> is a vector perpendicular to the surface with length equal to its area; <code>θ</code> is the angle between the field and that perpendicular. A field along the surface gives no flux. For a curved surface in a varying field, cut it into small pieces and add (integrate).</p>
+  <p class="muted"><b>Closed surfaces:</b> the perpendicular is taken outward, so lines leaving count positive and lines entering negative.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Gauss's law</h4>
+  <p><code>Φ = Q/ε₀</code> &nbsp; (<code>Q</code> the total charge inside the closed surface)</p>
+  <p class="muted"><b>In words:</b> the total flux out of any closed surface depends only on the charge enclosed. Charges outside contribute nothing: every line that enters also leaves. It is one of Maxwell's four equations, equivalent to Coulomb's law, and the easy way to find the field when there is a lot of symmetry.</p>
+  <p class="muted"><b>How it is used:</b> choose an imaginary closed surface (a <b>Gaussian surface</b>) on which, by symmetry, the field has the same size everywhere and is perpendicular to it. Then <code>Φ = EA</code>, and <code>E = Q/(ε₀A)</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Fields from Gauss's law</h4>
+  <ul class="idlist">
+    <li>outside a charged sphere: <code>E = Q/(4πε₀r²)</code> &nbsp; (as if all at the centre)</li>
+    <li>inside a charged spherical shell: <code>E = 0</code></li>
+    <li>infinite line: <code>E = λ/(2πε₀r)</code>; &nbsp; infinite plane: <code>E = σ/(2ε₀)</code></li>
+  </ul>
+  <p class="muted"><b>The sphere:</b> a Gaussian sphere of radius <code>r</code> around it: <code>E · 4πr² = Q/ε₀</code>. Inside a hollow charged shell a Gaussian sphere encloses no charge, so there is no field at all.</p>
+  <p class="muted"><b>The line:</b> a Gaussian cylinder of radius <code>r</code> and length <code>L</code> around it: <code>E · 2πrL = λL/ε₀</code>. <b>The plane:</b> a box sticking through it, with flux through its two ends: <code>2EA = σA/ε₀</code>.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Conductors in electrostatics</h4>
+  <ul>
+    <li>Inside a conductor in equilibrium the field is <b>zero</b> (otherwise its free charges would still be moving).</li>
+    <li>Any extra charge sits on the <b>surface</b> (a Gaussian surface just inside encloses none).</li>
+    <li>Just outside, the field is <b>perpendicular to the surface</b>, with size <code>σ/ε₀</code>; charge crowds at sharp points, where the field is strongest (lightning rods).</li>
+  </ul>
+  <p class="muted"><b>Shielding:</b> a closed metal box keeps outside fields out (a Faraday cage): you are safe in a car struck by lightning, and a phone in a metal box loses signal.</p>
+</div>
+</section>
+
+<!-- ===== ELM4 · ENERGY AND POTENTIAL ===== -->
+<section class="pane" id="pane-elm4">
+<h2><span class="num">4</span>Energy and potential</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Electric potential energy</h4>
+  <p><code>U = k (qQ)/r</code></p>
+  <p class="muted"><b>In words:</b> the electric force is conservative (like gravity): the work to move a charge from one place to another doesn't depend on the path. So a charge in a field has potential energy. For two point charges it is <code>k q Q/r</code>, with zero when they are far apart; positive for like charges (work was needed to push them together), negative for unlike ones.</p>
+  <p class="muted"><b>Energy is conserved:</b> a charge released in a field gains kinetic energy as it loses potential energy.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Electric potential and voltage</h4>
+  <ul class="idlist">
+    <li><code>V = U/q</code> &nbsp; (volt, <code>1 V = 1 J/C</code>)</li>
+    <li>point charge: <code>V = k Q/r</code>; &nbsp; several: <code>V = k ∑ (Q_(i))/(r_(i))</code></li>
+    <li><code>W = qΔV</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>potential</b> at a point is the potential energy per unit charge there: a property of the place, set by the surrounding charges. The <b>potential difference</b> (voltage) between two points is the work per coulomb to carry a charge between them. Potentials are numbers (scalars), so several charges' potentials simply add, which is easier than adding fields.</p>
+  <p class="muted"><b>The electron-volt:</b> the energy an electron gains crossing 1 V, <code>1 eV = 1.602 × 10⁻¹⁹ J</code>. An electron accelerated through 1000 V reaches about <code>1.9 × 10⁷ m/s</code>.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Field and potential</h4>
+  <ul class="idlist">
+    <li><code>E = −(dV)/(dx)</code></li>
+    <li>uniform field: <code>V = Ed</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the field points "downhill" in potential, from high to low, and is as strong as the potential changes per metre. That's why the unit of field is also V/m. Between two plates <code>d</code> apart with a voltage <code>V</code> across them, <code>E = V/d</code>: 400 V across 2 cm is <code>2 × 10⁴ V/m</code>.</p>
+  <p class="muted"><b>Equipotential surfaces</b> connect points of equal potential; they cut the field lines at right angles, and moving a charge along one takes no work. Around a point charge they are spheres; between parallel plates, planes. A conductor's whole body is one equipotential.</p>
+</div>
+</section>
+
+<!-- ===== ELM5 · CAPACITANCE AND ENERGY OF A CHARGED CONDUCTOR ===== -->
+<section class="pane" id="pane-elm5">
+<h2><span class="num">5</span>Capacitance and energy of a charged conductor</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Capacitance</h4>
+  <ul class="idlist">
+    <li><code>C = Q/V</code> &nbsp; (farad, <code>1 F = 1 C/V</code>)</li>
+    <li>a conducting sphere: <code>C = 4πε₀R</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> charging a conductor raises its potential in proportion to the charge; the ratio, the <b>capacitance</b>, says how much charge it holds per volt. It depends only on its size and shape. A metal ball of radius 10 cm has about <code>11 pF</code>; even the whole Earth only about <code>7 × 10⁻⁴ F</code>: a farad is huge.</p>
+  <p class="muted"><b>Capacitors</b> (two conductors close together, Direct current) reach far bigger capacitances.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The energy of a charged conductor</h4>
+  <p><code>W = (1/2)QV = (Q²)/(2C) = (1/2)CV²</code></p>
+  <p class="muted"><b>In words:</b> charging a conductor takes work, because each new bit of charge is pushed onto charge already there. Since the potential grows from 0 to <code>V</code> during the charging, the average is half of it, hence the <code>1/2</code>. The work is stored in the electric field around the conductor.</p>
+  <p class="muted"><b>Example:</b> the 10 cm ball charged to <code>10 kV</code> holds <code>Q = 1.1 × 10⁻⁷ C</code> and about <code>5.6 × 10⁻⁴ J</code>. A Van de Graaff generator builds up such charges by carrying them on a moving belt into a large metal sphere.</p>
+</div>
+</section>
+</div><!-- /folder-elm -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"]],"m":[["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"]],"m":[["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_elmcoul", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "Forces and fields of point charges",
+  "description": "Find the force between point charges, or the electric field they make at a point, adding several by components.",
+  "uses": [["c", "elm2", "Coulomb's law"], ["c", "elm2", "The electric field"], ["c", "mec3", "Adding, subtracting and scaling vectors"]],
+  "parts": [
+    { "id": "st_bi_elmcoul1", "cat": "stage", "name": "SI units", "text": "`μC = 10⁻⁶ C`, `nC = 10⁻⁹ C`; distances in metres." },
+    { "id": "st_bi_elmcoul2", "cat": "stage", "name": "Size of each part", "text": "Force `(k|q₁q₂|)/(r²)`; field `(k|q|)/(r²)`. Signs only decide the direction." },
+    { "id": "st_bi_elmcoul3", "cat": "stage", "name": "Direction of each part", "text": "Force: like charges repel, unlike attract. Field: away from a positive charge, toward a negative one. Draw them." },
+    { "id": "st_bi_elmcoul4", "cat": "stage", "name": "Add as vectors", "text": "On a line: with signs. In a plane: by components (Vectors)." },
+    { "id": "st_bi_elmcoul5", "cat": "example", "name": "Example — two charges", "text": "`+2 μC` and `−3 μC`, 0.3 m apart.\n2. `F = 9 × 10⁹ · (2 × 10⁻⁶)(3 × 10⁻⁶)/0.3² = 0.6 N`\n3. Attraction: each is pulled toward the other." },
+    { "id": "st_bi_elmcoul6", "cat": "example", "name": "Example — the field between two charges", "text": "`+4 μC` at `x = 0` and `−4 μC` at `x = 0.4 m`. The field at the midpoint?\n2. Each: `(9 × 10⁹ · 4 × 10⁻⁶)/(0.2²) = 9 × 10⁵ N/C`\n3. The positive one pushes away from itself, `+x`; the negative one pulls toward itself, also `+x`.\n4. `E = 1.8 × 10⁶ N/C` toward the negative charge." },
+    { "id": "st_bi_elmcoul7", "cat": "example", "name": "Example — where the field is zero", "text": "`+4 μC` at `x = 0` and `+1 μC` at `x = 0.3 m`. Where between them is `E = 0`?\n2. At `x`: `k · 4/x² = k · 1/(0.3 − x)²` (in μC)\n4. Square roots: `2/x = 1/(0.3 − x)`, so `0.6 − 2x = x`, `x = 0.2 m`: nearer the smaller charge ✓" }
+  ] },
+{ "id": "pp_bi_elmgauss", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "Using Gauss's law",
+  "description": "Find the field of a symmetric charge distribution (sphere, line, plane) with a Gaussian surface.",
+  "uses": [["c", "elm3", "Gauss's law"], ["c", "elm3", "Fields from Gauss's law"], ["c", "elm3", "Electric flux"]],
+  "parts": [
+    { "id": "st_bi_elmgauss1", "cat": "stage", "name": "Spot the symmetry", "text": "Sphere → a Gaussian sphere; long line or cylinder → a coaxial cylinder; large plane → a box (\"pillbox\") through it." },
+    { "id": "st_bi_elmgauss2", "cat": "stage", "name": "Flux through the surface", "text": "Where `E⃗` is perpendicular to the surface and constant: `EA`. Where it runs along the surface: 0." },
+    { "id": "st_bi_elmgauss3", "cat": "stage", "name": "Charge inside", "text": "Only what the surface encloses: `Q`, `λL` or `σA`." },
+    { "id": "st_bi_elmgauss4", "cat": "stage", "name": "Solve", "text": "Flux `= Q/ε₀`, then solve for `E`." },
+    { "id": "st_bi_elmgauss5", "cat": "example", "name": "Examples", "text": "**A shell** of radius 0.1 m with 2 nC: outside at 0.3 m, `E · 4πr² = Q/ε₀` gives `E = (9 × 10⁹ · 2 × 10⁻⁹)/0.09 = 200 N/C`; inside, 0.\n**A line** with `λ = 1 nC/m`, at 0.1 m: `E = λ/(2πε₀r) = (2 · 9 × 10⁹ · 10⁻⁹)/0.1 = 180 N/C`.\n**A plane** with `σ = 8.85 × 10⁻⁹ C/m²`: `E = σ/(2ε₀) = 500 N/C`, at any distance." }
+  ] },
+{ "id": "pp_bi_elmpot", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "Potential, work and speed of charges",
+  "description": "Find the potential of point charges, the work to move a charge, and the speed a charge gains crossing a voltage.",
+  "uses": [["c", "elm4", "Electric potential and voltage"], ["c", "elm4", "Electric potential energy"], ["c", "elm4", "Field and potential"], ["c", "mec12", "Gravitational potential energy and mechanical energy"]],
+  "parts": [
+    { "id": "st_bi_elmpot1", "cat": "stage", "name": "Potential at a point", "text": "`V = k ∑ Q_(i)/r_(i)` with the **signs** of the charges (numbers, no directions)." },
+    { "id": "st_bi_elmpot2", "cat": "stage", "name": "Work", "text": "Bringing a charge `q` from A to B: `W = q(V_(B) − V_(A))` (from infinity: `V_(A) = 0`)." },
+    { "id": "st_bi_elmpot3", "cat": "stage", "name": "Speed", "text": "Energy conservation: `(1/2)mv² = |q|ΔV` from rest." },
+    { "id": "st_bi_elmpot4", "cat": "example", "name": "Examples", "text": "**Potential:** 2 nC, at 0.3 m: `V = (9 × 10⁹ · 2 × 10⁻⁹)/0.3 = 60 V`. Bringing `1 μC` there from far away takes `60 μJ`.\n**Two charges:** `+3 nC` at the origin, `−3 nC` at `(0.4, 0)`; at `(0, 0.3)` the distances are 0.3 m and 0.5 m: `V = 90 − 54 = 36 V`. (At the midpoint between them `V = 0`, though `E` isn't.)\n**An electron through 1000 V:** `(1/2)(9.11 × 10⁻³¹)v² = 1.602 × 10⁻¹⁶`, `v ≈ 1.9 × 10⁷ m/s`" }
+  ] },
+{ "id": "pp_bi_elmbeam", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "A charged particle between parallel plates",
+  "description": "Find the deflection and exit angle of a charge entering the uniform field between two plates.",
+  "uses": [["c", "elm2", "A charge in a uniform field"], ["c", "elm4", "Field and potential"], ["c", "mec8", "Throwing horizontally and at an angle"]],
+  "parts": [
+    { "id": "st_bi_elmbeam1", "cat": "stage", "name": "The field", "text": "`E = V/d` (voltage over plate gap)." },
+    { "id": "st_bi_elmbeam2", "cat": "stage", "name": "The acceleration", "text": "`a = |q|E/m`, across the plates (gravity is negligible for electrons)." },
+    { "id": "st_bi_elmbeam3", "cat": "stage", "name": "A projectile", "text": "Along the plates: constant velocity, `t = L/v₀`. Across: `y = (1/2)at²`, `v_(y) = at`. Exit angle `arctan(v_(y)/v₀)`." },
+    { "id": "st_bi_elmbeam4", "cat": "stage", "name": "Check", "text": "`y` must be less than the distance to the plate, or the particle hits it." },
+    { "id": "st_bi_elmbeam5", "cat": "example", "name": "Example", "text": "An electron enters midway between plates 2 cm apart and 6 cm long, at `3 × 10⁷ m/s`; 400 V across the plates.\n1. `E = 400/0.02 = 2 × 10⁴ V/m`\n2. `a = (1.602 × 10⁻¹⁹ · 2 × 10⁴)/(9.11 × 10⁻³¹) ≈ 3.5 × 10¹⁵ m/s²`\n3. `t = 0.06/(3 × 10⁷) = 2 × 10⁻⁹ s`; `y = (1/2) · 3.5 × 10¹⁵ · (2 × 10⁻⁹)² ≈ 7.0 mm`; `v_(y) ≈ 7.0 × 10⁶ m/s`, angle `≈ 13.2°`\n4. 7 mm is less than the 10 mm to the plate ✓" }
+  ] },
+{ "id": "pp_bi_elmcap", "v": 1, "subject": "f:elm", "kind": "problem",
+  "name": "Capacitance and energy of a sphere",
+  "description": "Find the capacitance, charge and stored energy of a charged conducting sphere.",
+  "uses": [["c", "elm5", "Capacitance"], ["c", "elm5", "The energy of a charged conductor"]],
+  "parts": [
+    { "id": "st_bi_elmcap1", "cat": "stage", "name": "Capacitance", "text": "`C = 4πε₀R` (`R` in metres)." },
+    { "id": "st_bi_elmcap2", "cat": "stage", "name": "Charge at a given potential", "text": "`Q = CV`." },
+    { "id": "st_bi_elmcap3", "cat": "stage", "name": "Energy", "text": "`W = (1/2)CV² = (1/2)QV`." },
+    { "id": "st_bi_elmcap4", "cat": "example", "name": "Example", "text": "A metal ball of radius 10 cm charged to `10 kV`.\n1. `C = 4π · 8.85 × 10⁻¹² · 0.1 ≈ 1.1 × 10⁻¹¹ F = 11 pF`\n2. `Q ≈ 1.1 × 10⁻⁷ C`\n3. `W ≈ (1/2) · 1.1 × 10⁻¹¹ · 10⁸ ≈ 5.6 × 10⁻⁴ J`" }
+  ] },
 { "id": "pp_bi_optsnell", "v": 1, "subject": "f:opt", "kind": "problem",
   "name": "Refraction and the critical angle",
   "description": "Find the angle of a refracted ray, the speed of light in a material, or the critical angle for total internal reflection.",
