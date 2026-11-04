@@ -6301,13 +6301,429 @@
   <p class="muted"><b>Remembering the components:</b> it is the determinant with <code>x̂, ŷ, ẑ</code> in the first row, <code>A</code>'s components in the second and <code>B</code>'s in the third. <b>Where it is used:</b> torque, angular momentum, the magnetic force on a moving charge.</p>
 </div>
 </section>
+<!-- ===== MEC5 · NEWTON'S LAWS ===== -->
+<section class="pane" id="pane-mec5">
+<h2><span class="num">5</span>Newton's laws</h2>
+<div class="card" data-tags="Theorem">
+  <h4>Newton's first law (the law of inertia)</h4>
+  <p><b>A body stays at rest, or keeps moving at a constant velocity in a straight line, as long as no (net) force acts on it.</b></p>
+  <p class="muted"><b>In words:</b> moving doesn't need a force; <b>changing</b> the motion does. For two thousand years people believed the opposite (Aristotle): a cart stops when you stop pushing, so motion seemed to need a force. Galileo saw that it stops because of friction and air resistance, forces that act against the motion. Without them it would roll on forever.</p>
+  <p class="muted"><b>Inertia</b> is this tendency to keep the same motion. Standing in a bus that brakes, your body keeps going forward: nothing pushed you, you just weren't stopped together with the bus.</p>
+  <p class="muted"><b>It is a special case of the second law:</b> <code>F = 0</code> gives <code>a = 0</code>, constant velocity. It is stated on its own because it says something new: rest and steady straight motion are the same "natural" state.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Newton's second law</h4>
+  <ul class="idlist">
+    <li><code>∑ F⃗ = m a⃗</code></li>
+    <li><code>∑ F_(x) = m a_(x)</code>, &nbsp; <code>∑ F_(y) = m a_(y)</code>, &nbsp; <code>∑ F_(z) = m a_(z)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>net force</b> (the vector sum of all the forces on the body) gives it an acceleration in the <b>same direction</b> as the net force, proportional to it, and inversely proportional to the body's mass. Twice the force: twice the acceleration. Twice the mass: half.</p>
+  <p class="muted"><b>Forces add as vectors</b> (Vectors). The law holds separately along each axis, so a problem in a plane becomes two problems on a line: one for <code>x</code>, one for <code>y</code>.</p>
+  <p class="muted"><b>Only forces acting on this body</b> go into the sum. Forces the body exerts on others belong in their equations.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Force, mass and the newton</h4>
+  <p><b>Mass</b> <code>m</code> is a property of the body itself: how hard it is to change its motion (its inertia), measured in kilograms. <b>Force</b> is something outside acting on it: a push or a pull, measured in newtons.</p>
+  <ul class="idlist">
+    <li><code>1 N = 1 kg · m/s²</code></li>
+    <li><code>[force] = ([M][L])/([T]²)</code></li>
+  </ul>
+  <p class="muted"><b>One newton</b> is the force that gives a 1 kg mass an acceleration of <code>1 m/s²</code>. Holding a 100 g apple still takes about 1 N.</p>
+  <p class="muted"><b>How a force is measured:</b> a spring stretches in proportion to the force on it (Hooke's law, Equilibrium and elasticity), so a calibrated spring is a force meter.</p>
+  <p class="muted"><b>Old units:</b> in the cgs system force was in dynes, <code>1 N = 10⁵ dyn</code>; "kilogram-force" (<code>≈ 9.8 N</code>) is not an SI unit.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>Newton's third law</h4>
+  <p><b>If body A exerts a force on body B, then B exerts on A a force of the same size and the opposite direction:</b> <code>F⃗_(AB) = −F⃗_(BA)</code>.</p>
+  <svg class="ill" viewBox="0 0 420 160" role="img" aria-label="two bodies m1 and m2 a distance r apart; each pulls the other with a force of the same size, pointing toward the other body">
+    <circle class="box" cx="90" cy="90" r="25"/><circle class="box" cx="330" cy="90" r="18"/>
+    <path class="cv" d="M115 90 L173 90"/><path class="vh" d="M185 90 L173 95 L173 85 Z"/>
+    <path class="cv" d="M312 90 L254 90"/><path class="vh" d="M242 90 L254 85 L254 95 Z"/>
+    <path class="gd" d="M90 140 H330 M90 132 V148 M330 132 V148"/>
+    <text x="90" y="95" text-anchor="middle">m₁</text><text x="330" y="95" text-anchor="middle">m₂</text>
+    <text class="sm" x="150" y="80" text-anchor="middle">on m₁</text><text class="sm" x="278" y="80" text-anchor="middle">on m₂</text>
+    <text class="sm" x="210" y="156" text-anchor="middle">r</text>
+  </svg>
+  <p class="muted"><b>The two forces act on different bodies,</b> so they never cancel each other. The Earth pulls an apple down, and the apple pulls the Earth up just as hard; the apple accelerates a lot, the Earth (huge mass) not measurably.</p>
+  <p class="muted"><b>Everyday examples:</b> a gun recoils when it fires; a rocket pushes gas backward and the gas pushes it forward; you push the floor backward when you walk, and the floor pushes you forward.</p>
+  <p class="muted"><b>A trap:</b> a book on a table: its weight (Earth on book) and the normal force (table on book) are equal and opposite, but they are <b>not</b> a third-law pair; both act on the book. The pair of the weight is the book pulling the Earth.</p>
+</div>
+</section>
+
+<!-- ===== MEC6 · GRAVITATION, WEIGHT AND DENSITY ===== -->
+<section class="pane" id="pane-mec6">
+<h2><span class="num">6</span>Gravitation, weight and density</h2>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The law of universal gravitation</h4>
+  <ul class="idlist">
+    <li><code>F = G (m₁m₂)/(r²)</code></li>
+    <li><code>G = 6.67 × 10⁻¹¹ N·m²/kg²</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> every two bodies attract each other, along the line between them, with a force proportional to both masses and inversely proportional to the <b>square</b> of the distance between them. Twice as far: a quarter of the force. (The picture is in Newton's third law: the two forces are a third-law pair.)</p>
+  <p class="muted"><b>Why we don't notice it</b> between everyday objects: <code>G</code> is tiny. Two 1000 kg cars 2 m apart attract with about <code>1.7 × 10⁻⁵ N</code>. Only a huge mass like the Earth makes it big. Cavendish first measured <code>G</code> in 1798 with a delicate torsion balance.</p>
+  <p class="muted"><b>Spheres:</b> for a uniform ball, <code>r</code> is measured from its <b>centre</b>, as if all its mass sat there. The same law keeps the Moon around the Earth and the planets around the Sun: one law for falling apples and for the sky.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The acceleration of gravity g</h4>
+  <ul class="idlist">
+    <li><code>g = G M/(R²)</code></li>
+    <li><code>g ≈ 9.8 m/s²</code> at the Earth's surface</li>
+  </ul>
+  <p class="muted"><b>Where it comes from:</b> a body of mass <code>m</code> on the Earth (mass <code>M</code>, radius <code>R</code>) is pulled with <code>F = GM m/(R²)</code>. By the second law its acceleration is <code>F/m = GM/R²</code>: the <code>m</code> cancels. That is why every body falls with the same <code>g</code>, heavy or light.</p>
+  <p class="muted"><b>It changes a little from place to place:</b> from about <code>9.78</code> at the equator to <code>9.83 m/s²</code> at the poles (the Earth is not a perfect sphere and it spins), and it drops with height. At a height <code>h</code>, use <code>R + h</code> in place of <code>R</code>.</p>
+  <p class="muted"><b>Other worlds:</b> the same formula with their own mass and radius: on the Moon <code>g ≈ 1.6 m/s²</code>, about a sixth of the Earth's.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mass and weight</h4>
+  <p><code>W = mg</code></p>
+  <p class="muted"><b>Mass and weight are different things.</b> The <b>mass</b> (kg) belongs to the body and is the same everywhere. The <b>weight</b> (N) is the gravitational force on it, so it depends on where it is. A 10 kg body weighs <code>98 N</code> on Earth and about <code>16 N</code> on the Moon, but it is 10 kg in both places.</p>
+  <p class="muted"><b>Everyday language</b> says "I weigh 70 kg"; physics says your mass is 70 kg and your weight about <code>686 N</code>.</p>
+  <p class="muted"><b>Weightless</b> astronauts still have their full mass: pushing a heavy object in orbit is just as hard as on Earth, even though it "weighs nothing".</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Density</h4>
+  <ul class="idlist">
+    <li><code>ρ = m/V</code> &nbsp; (kg/m³)</li>
+    <li><code>s = ρ/(10³ kg/m³)</code> &nbsp; (relative density)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> the density is the mass of one unit of volume of a material: how tightly packed it is. Iron is about <code>7900 kg/m³</code>, water <code>1000 kg/m³</code>, air about <code>1.3 kg/m³</code>.</p>
+  <p class="muted"><b>Relative density</b> compares a material with water, so it has no units: iron <code>7.9</code>, wood about <code>0.6</code>. It is also the density in <code>g/cm³</code>.</p>
+  <p class="muted"><b>Using it:</b> <code>m = ρV</code> and <code>V = m/ρ</code>. A 3 cm wooden cube of 18.9 g: <code>V = 2.7 × 10⁻⁵ m³</code>, <code>ρ = 700 kg/m³</code>.</p>
+</div>
+</section>
+
+<!-- ===== MEC7 · FORCES IN PRACTICE ===== -->
+<section class="pane" id="pane-mec7">
+<h2><span class="num">7</span>Forces in practice: friction, slopes and pulleys</h2>
+<div class="card" data-tags="Definition">
+  <h4>Free-body diagrams and the normal force</h4>
+  <svg class="ill" viewBox="0 0 420 230" role="img" aria-label="a crate on the floor pulled by a rope at 25 degrees: the forces on it are its weight mg down, the normal force N up, the pull F along the rope and the friction f backward">
+    <path class="ax" d="M30 170 H390"/>
+    <rect class="box" x="150" y="110" width="100" height="60"/>
+    <path class="cv2" d="M200 140 L200 57"/><path class="vh2" d="M200 45 L205 57 L195 57 Z"/>
+    <path class="cv3" d="M200 140 L200 210"/><path class="vh3" d="M200 222 L195 210 L205 210 Z"/>
+    <path class="cv" d="M200 140 L297.9 94.4"/><path class="vh" d="M308.8 89.3 L300 98.9 L295.8 89.8 Z"/>
+    <path class="cv" d="M150 162 L104 162"/><path class="vh" d="M92 162 L104 157 L104 167 Z"/>
+    <path class="gd" d="M200 140 H290"/>
+    <path class="ax" d="M240 140 A40 40 0 0 0 236.3 123.1"/>
+    <text x="210" y="55"><tspan font-weight="bold">N</tspan></text><text x="210" y="220">m<tspan font-weight="bold">g</tspan></text>
+    <text x="300" y="82"><tspan font-weight="bold">F</tspan></text><text x="100" y="152"><tspan font-weight="bold">f</tspan></text>
+    <text class="sm" x="246" y="134">25°</text>
+  </svg>
+  <p>A <b>free-body diagram</b> shows one body alone, with an arrow for every force acting <b>on it</b>, starting at the body. It is the first step of almost every mechanics problem.</p>
+  <ul data-cpart="expl">
+    <li><b>Weight</b> <code>mg</code>: always straight down.</li>
+    <li><b>Normal force</b> <code>N</code>: a surface pushes back on a body pressing on it, perpendicular to the surface. It is only as big as it needs to be; it is <code>mg</code> on a flat floor only when nothing else pushes or pulls up or down (here the rope lifts a little, so <code>N &lt; mg</code>).</li>
+    <li><b>Tension</b> <code>T</code>: a rope or string pulls along itself, away from the body.</li>
+    <li><b>Friction</b> <code>f</code>: along the surface, against the sliding (or the tendency to slide).</li>
+  </ul>
+  <p class="muted"><b>Contact forces</b> (normal, tension, friction) need touching; gravity (and later electric and magnetic forces) act from a distance.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Friction</h4>
+  <ul class="idlist">
+    <li><code>f_(s) ≤ μ_(s) N</code> &nbsp; (static: not sliding)</li>
+    <li><code>f_(k) = μ_(k) N</code> &nbsp; (kinetic: sliding)</li>
+  </ul>
+  <p class="muted"><b>Static friction</b> holds a body still. It matches whatever force tries to slide it, up to a maximum <code>μ_(s)N</code>; push harder than that and the body starts to slide. <b>Kinetic friction</b> acts while sliding and is constant, <code>μ_(k)N</code>, against the motion.</p>
+  <p class="muted"><b>The coefficients</b> <code>μ_(s)</code>, <code>μ_(k)</code> are pure numbers that depend on the two surfaces, not on the area of contact or (roughly) on the speed. Usually <code>μ_(k) &lt; μ_(s)</code>: it is harder to get something moving than to keep it moving.</p>
+  <div class="bi-table" data-cpart="expl" data-table='{"rows":[{"c":["Surfaces","μ_s","μ_k"]},{"c":["steel on steel","0.75","0.50"]},{"c":["wood on wood","0.35","0.15"]},{"c":["glass on glass","0.90","0.40"]},{"c":["Teflon on steel","0.04","0.04"]},{"c":["ice on ice","0.05","0.04"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Example:</b> a crate on a truck with <code>μ_(s) = 0.4</code> stays put as long as static friction can give it the truck's acceleration: <code>μ_(s)mg ≥ ma</code>, so up to <code>a = μ_(s)g ≈ 3.9 m/s²</code>, whatever the crate's mass. <b>Rolling friction</b> (a wheel rolling) is much smaller than sliding friction, which is why wheels work.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The inclined plane</h4>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="a block on a slope at angle theta; its weight mg points straight down and splits into mg sin theta along the slope and mg cos theta into the slope; the normal force N is perpendicular to the slope and the friction f points up the slope">
+    <path class="band" d="M40 215 L370 215 L370 24.5 Z"/>
+    <path class="ax" d="M40 215 L370 215 L370 24.5 Z"/>
+    <rect class="box" x="181.5" y="72.9" width="60" height="40" transform="rotate(-30 211.5 92.9)"/>
+    <path class="gd" d="M211.5 92.9 L168.2 117.9 M211.5 92.9 L254.8 167.9"/>
+    <path class="cv3" d="M211.5 92.9 L211.5 180.9"/><path class="vh3" d="M211.5 192.9 L206.5 180.9 L216.5 180.9 Z"/>
+    <path class="cv2" d="M211.5 92.9 L172.5 25.4"/><path class="vh2" d="M166.5 15 L176.8 22.9 L168.2 27.9 Z"/>
+    <path class="cv" d="M211.5 92.9 L261.7 63.9"/><path class="vh" d="M272.1 57.9 L264.2 68.2 L259.2 59.6 Z"/>
+    <path class="ax" d="M80 215 A40 40 0 0 0 74.6 195"/>
+    <text x="88" y="208">θ</text>
+    <text x="152" y="22"><tspan font-weight="bold">N</tspan></text><text x="276" y="54"><tspan font-weight="bold">f</tspan></text><text x="218" y="200">m<tspan font-weight="bold">g</tspan></text>
+    <text class="sm" x="104" y="122">mg sin θ</text><text class="sm" x="262" y="176">mg cos θ</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>N = mg cos θ</code></li>
+    <li><code>a = g sin θ</code> &nbsp; (no friction)</li>
+    <li><code>a = g (sin θ − μ_(k) cos θ)</code> &nbsp; (sliding down, with friction)</li>
+  </ul>
+  <p class="muted"><b>The trick:</b> tilt the axes with the slope: <code>x</code> along it, <code>y</code> perpendicular. Then <code>N</code> and friction lie on the axes and only the weight needs splitting: <code>mg sin θ</code> pulls down the slope, <code>mg cos θ</code> presses into it. (The angle between <code>mg</code> and the <code>y</code> axis equals the slope's angle <code>θ</code>.)</p>
+  <p class="muted"><b>Nothing moves across the slope,</b> so <code>∑F_(y) = 0</code> gives <code>N = mg cos θ</code>; along it, <code>∑F_(x) = ma</code>. A steeper slope: more pull along it, less pressing (and so less friction).</p>
+  <p class="muted"><b>When it starts to slide:</b> at the angle where <code>mg sin θ = μ_(s) mg cos θ</code>, that is <code>tan θ = μ_(s)</code>. Tilting a board until a coin slides measures <code>μ_(s)</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Tension, pulleys and connected bodies</h4>
+  <svg class="ill" viewBox="0 0 420 240" role="img" aria-label="two masses M and m hang from the two ends of a string over a pulley; on each, the tension T pulls up and its weight pulls down; M is heavier and goes down while m goes up">
+    <path class="ax" d="M150 10 H270 M210 10 V28"/>
+    <circle class="box" cx="210" cy="50" r="22"/>
+    <path class="ax" d="M188 50 V150 M232 50 V110"/>
+    <rect class="box" x="168" y="150" width="40" height="45"/><rect class="box" x="217" y="110" width="30" height="30"/>
+    <path class="cv2" d="M160 160 L160 127"/><path class="vh2" d="M160 115 L165 127 L155 127 Z"/>
+    <path class="cv3" d="M160 185 L160 220"/><path class="vh3" d="M160 232 L155 220 L165 220 Z"/>
+    <path class="cv2" d="M262 118 L262 85"/><path class="vh2" d="M262 73 L267 85 L257 85 Z"/>
+    <path class="cv3" d="M262 138 L262 166"/><path class="vh3" d="M262 178 L257 166 L267 166 Z"/>
+    <text x="188" y="178" text-anchor="middle">M</text><text x="232" y="130" text-anchor="middle">m</text>
+    <text x="146" y="128" text-anchor="end"><tspan font-weight="bold">T</tspan></text><text x="146" y="222" text-anchor="end">M<tspan font-weight="bold">g</tspan></text>
+    <text x="272" y="88"><tspan font-weight="bold">T</tspan></text><text x="272" y="174">m<tspan font-weight="bold">g</tspan></text>
+    <text class="sm" x="300" y="128">a ↑</text><text class="sm" x="110" y="190">a ↓</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>a = ((M − m)g)/(M + m)</code></li>
+    <li><code>T = (2M m g)/(M + m)</code></li>
+  </ul>
+  <p class="muted"><b>A light string</b> (its mass ignored) has the <b>same tension</b> <code>T</code> all along it, and a light, frictionless pulley only turns the string's direction. Bodies tied by a taut string move together: the same size of acceleration.</p>
+  <p class="muted"><b>How the formulas come out</b> (the Atwood machine, above): one free-body diagram and one second-law equation per body, each in its own direction of motion: <code>Mg − T = Ma</code> for <code>M</code> (going down), <code>T − mg = ma</code> for <code>m</code> (going up). Adding them removes <code>T</code>.</p>
+  <p class="muted"><b>Checks:</b> equal masses give <code>a = 0</code>; <code>T</code> lies between <code>mg</code> and <code>Mg</code>: less than the heavy weight (so <code>M</code> falls), more than the light one (so <code>m</code> rises).</p>
+</div>
+</section>
+
+<!-- ===== MEC8 · PROJECTILES AND REFERENCE FRAMES ===== -->
+<section class="pane" id="pane-mec8">
+<h2><span class="num">8</span>Projectiles and reference frames</h2>
+<div class="card" data-tags="Formula">
+  <h4>Throwing straight up or down</h4>
+  <ul class="idlist">
+    <li><code>v = v₀ − gt</code>, &nbsp; <code>y = v₀t − (1/2)gt²</code></li>
+    <li><code>t_(m) = (v₀)/g</code>, &nbsp; <code>y_(m) = (v₀²)/(2g)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the only force is the weight, so the acceleration is <code>−g</code> (up positive) going up, at the top and coming down. It rises for <code>t_(m) = v₀/g</code> to the height <code>y_(m)</code>, and comes back to the start after <code>2v₀/g</code>, at the same speed <code>v₀</code>, downward.</p>
+  <p class="muted"><b>Thrown down</b> at <code>v₀</code>: the same equations with <code>−v₀</code> in place of <code>v₀</code>. Dropped: <code>v₀ = 0</code>. These are the constant-acceleration equations with <code>a = −g</code> (Free fall, Motion in one dimension).</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Throwing horizontally and at an angle</h4>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a parabolic path from the launch point to the landing point; at launch the velocity v0 splits into a horizontal part v0 cos alpha and a vertical part v0 sin alpha; at the top only the horizontal part is left">
+    <path class="ax" d="M20 190 H410"/>
+    <path class="cv3" d="M40 190 L57 165.3 L74 143.2 L91 123.7 L108 106.8 L125 92.5 L142 80.8 L159 71.7 L176 65.2 L193 61.3 L210 60 L227 61.3 L244 65.2 L261 71.7 L278 80.8 L295 92.5 L312 106.8 L329 123.7 L346 143.2 L363 165.3 L380 190"/>
+    <path class="gd" d="M210 60 V190"/>
+    <path class="cv" d="M40 190 L86.3 155.1"/><path class="vh" d="M95.9 147.9 L89.3 159.1 L83.3 151.1 Z"/>
+    <path class="cv2" d="M40 190 L83.9 190"/><path class="vh2" d="M95.9 190 L83.9 195 L83.9 185 Z"/>
+    <path class="cv2" d="M40 190 L40 159.9"/><path class="vh2" d="M40 147.9 L45 159.9 L35 159.9 Z"/>
+    <path class="cv2" d="M210 60 L254 60"/><path class="vh2" d="M266 60 L254 65 L254 55 Z"/>
+    <text x="98" y="146">v₀</text><text class="sm" x="62" y="206">v₀ cos α</text><text class="sm" x="34" y="146" text-anchor="end">v₀ sin α</text>
+    <text class="sm" x="270" y="56">only vₓ</text><text class="sm" x="216" y="130">h_max</text><text class="sm" x="380" y="206" text-anchor="middle">range</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>x = (v₀ cos α) t</code>, &nbsp; <code>v_(x) = v₀ cos α</code></li>
+    <li><code>y = (v₀ sin α) t − (1/2)gt²</code>, &nbsp; <code>v_(y) = v₀ sin α − gt</code></li>
+  </ul>
+  <p class="muted"><b>The key idea:</b> the two directions are independent. Horizontally no force acts (air resistance aside), so the motion is at <b>constant velocity</b>. Vertically only gravity acts: <b>free fall</b>. Solve each one separately; they share only the time <code>t</code>.</p>
+  <p class="muted"><b>Horizontal throw</b> (<code>α = 0</code>, from a height): <code>x = v₀t</code>, the drop is <code>(1/2)gt²</code>. A bullet fired horizontally and one dropped at the same moment hit the flat ground together.</p>
+  <p class="muted"><b>From flat ground at an angle:</b> it rises for <code>t = (v₀ sin α)/g</code>, reaching <code>h_(max) = ((v₀ sin α)²)/(2g)</code>; it lands after twice that time, at the range <code>R = (v₀² sin 2α)/g</code>, the largest at <code>α = 45°</code>. The path is a parabola.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Inertial frames and fictitious forces</h4>
+  <p>A <b>reference frame</b> is the "point of view" from which motion is measured: the ground, a train, a ship. An <b>inertial frame</b> is one in which Newton's laws hold as written. Any frame moving at a <b>constant velocity</b> relative to an inertial frame is inertial too.</p>
+  <p class="muted"><b>Galileo's ship:</b> in a ship sailing smoothly at a steady speed, a dropped stone falls straight down beside the mast, and no experiment inside can tell whether the ship moves. The same in a plane cruising steadily: you pour a drink normally.</p>
+  <p class="muted"><b>An accelerating frame is not inertial.</b> When a bus brakes, you feel "thrown" forward although no force pushes you: the bus slows and you keep going. Seen from inside the bus, you seem to feel a force <code>F = −ma</code> (<code>a</code> the bus's acceleration): a <b>fictitious force</b>. Such forces have no source and no third-law pair.</p>
+  <p class="muted"><b>So:</b> solve problems from an inertial frame (the ground) whenever you can; then there are no fictitious forces to worry about.</p>
+</div>
+</section>
+
+<!-- ===== MEC9 · EQUILIBRIUM AND ELASTICITY ===== -->
+<section class="pane" id="pane-mec9">
+<h2><span class="num">9</span>Equilibrium and elasticity</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Equilibrium of forces</h4>
+  <ul class="idlist">
+    <li><code>∑ F⃗ = 0</code>: &nbsp; <code>∑ F_(x) = 0</code>, &nbsp; <code>∑ F_(y) = 0</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 215" role="img" aria-label="a mass hangs from a knot A held by two strings to the ceiling, one at 60 degrees on the right and one at 30 degrees on the left; at the knot the tensions T1 and T2 pull along the strings and T3 pulls down">
+    <path class="ax" d="M40 20 H380"/><path class="gd" d="M40 14 H380"/>
+    <path class="ax" d="M230 120 L287.7 20 M230 120 L56.8 20 M230 120 V170"/>
+    <rect class="box" x="210" y="170" width="40" height="35"/>
+    <path class="cv" d="M230 120 L254 78.4"/><path class="vh" d="M260 68 L258.3 80.9 L249.7 75.9 Z"/>
+    <path class="cv2" d="M230 120 L188.4 96"/><path class="vh2" d="M178 90 L190.9 91.7 L185.9 100.3 Z"/>
+    <path class="cv3" d="M230 128 L230 160"/><path class="vh3" d="M230 172 L225 160 L235 160 Z"/>
+    <circle class="dot" cx="230" cy="120" r="3"/>
+    <text x="268" y="74"><tspan font-weight="bold">T</tspan>₁</text><text x="160" y="96"><tspan font-weight="bold">T</tspan>₂</text><text x="238" y="158"><tspan font-weight="bold">T</tspan>₃</text>
+    <text class="sm" x="240" y="125">A</text><text x="230" y="193" text-anchor="middle">m</text>
+    <text class="sm" x="268" y="36">60°</text><text class="sm" x="92" y="36">30°</text>
+  </svg>
+  <p class="muted"><b>In words:</b> a body at rest (or moving at a constant velocity) has zero net force: the forces cancel along every axis. This is the second law with <code>a = 0</code>. The branch of mechanics about bodies at rest is <b>statics</b>.</p>
+  <p class="muted"><b>The knot</b> above is in equilibrium: <code>T₃ = mg</code> (the hanging mass), and along <code>x</code> and <code>y</code>: <code>T₁ cos 60° = T₂ cos 30°</code>, <code>T₁ sin 60° + T₂ sin 30° = mg</code>. Two equations, two unknown tensions.</p>
+  <p class="muted"><b>A ball hung on a string and pushed sideways by the wind</b> (force <code>F</code>) settles at the angle where <code>T sin α = F</code> and <code>T cos α = mg</code>: <code>F = mg tan α</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Rigid bodies: translation and rotation</h4>
+  <p>A <b>rigid body</b> keeps its shape and size whatever forces act on it (an idealisation: real bodies bend a little). Its motion combines two kinds: <b>translation</b> (sliding, every point moving the same way) and <b>rotation</b>.</p>
+  <ul data-cpart="expl">
+    <li>A force acts along its <b>line of action</b>; sliding the force along that line changes nothing.</li>
+    <li>Forces whose lines of action all meet at one point: <code>∑F⃗ = 0</code> is enough for equilibrium.</li>
+    <li>Two equal, opposite forces <b>not on the same line</b> (a <b>couple</b>): the net force is zero, yet the body starts to turn. So a rigid body needs a second condition: no net turning effect (torque). Torques: The lever law and torques.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Hooke's law</h4>
+  <p><code>F = kΔL</code></p>
+  <p class="muted"><b>In words:</b> stretching (or squeezing) a spring takes a force proportional to how far it is stretched. Twice the force, twice the stretch. <code>k</code>, the <b>spring constant</b> (N/m), says how stiff the spring is. The spring pulls back with the same force, <code>F = −kx</code> (toward its natural length).</p>
+  <p class="muted"><b>Only up to a limit:</b> stretched too far, a spring (or any material) deforms for good and the law no longer holds. Hooke's law is an observed rule (from 1678), not a basic law like Newton's; it comes from the forces between the material's molecules.</p>
+  <p class="muted"><b>A spring as a scale:</b> a 30 N weight stretches a spring 6 cm: <code>k = 30/0.06 = 500 N/m</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Stress, strain and Young's modulus</h4>
+  <ul class="idlist">
+    <li><code>stress = F/A</code> &nbsp; (N/m²), &nbsp; <code>strain = (ΔL)/L</code> &nbsp; (no units)</li>
+    <li><code>Y = (F/A)/((ΔL)/L)</code>, &nbsp; so <code>ΔL = (FL)/(AY)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a rod or wire stretches more when the force is bigger, when it is longer, and when it is thinner. Dividing out the size of the sample leaves a property of the <b>material</b>: <b>Young's modulus</b> <code>Y</code>, the stress divided by the strain. Steel: <code>Y ≈ 2 × 10¹¹ N/m²</code>.</p>
+  <p class="muted"><b>Example:</b> a steel wire 2 m long, cross-section <code>1 mm² = 10⁻⁶ m²</code>, pulled with 200 N: <code>ΔL = (200 · 2)/(10⁻⁶ · 2 × 10¹¹) = 2 × 10⁻³ m</code>, two millimetres.</p>
+  <p class="muted"><b>Other deformations</b> follow the same pattern (stress proportional to strain): squeezing from all sides (a body under water) changes the volume; a sideways force on the top face of a block (shear) slants it.</p>
+</div>
+</section>
+
+<!-- ===== MEC10 · PRESSURE AND FLUIDS ===== -->
+<section class="pane" id="pane-mec10">
+<h2><span class="num">10</span>Pressure and fluids</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Pressure and Pascal's law</h4>
+  <ul class="idlist">
+    <li><code>P = F/A</code> &nbsp; (<code>1 Pa = 1 N/m²</code>)</li>
+    <li><code>F₂ = (S/s) F₁</code> &nbsp; (hydraulic press)</li>
+  </ul>
+  <p class="muted"><b>Pressure</b> is force per unit area, the force pressing perpendicular on a surface spread over it. The same force on a smaller area makes more pressure: a knife edge cuts, snowshoes don't sink.</p>
+  <p class="muted"><b>Pascal's law:</b> pressure applied to a closed fluid (liquid or gas) is passed on undiminished to every part of it. In a <b>hydraulic press</b>, a small force <code>F₁</code> on a small piston (area <code>s</code>) makes a pressure <code>F₁/s</code>, which pushes the large piston (area <code>S</code>) with <code>F₂ = PS</code>. A 200 N push on a piston 50 times smaller lifts <code>10 000 N</code>. (The small piston moves 50 times further: nothing is free, see Work.)</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Hydrostatic pressure</h4>
+  <p><code>P = P₀ + ρgh</code></p>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a tank of liquid; a point at depth h below the surface has pressure P0 plus rho g h; a body under the surface has the buoyant force pointing up and its weight pointing down">
+    <rect class="band" x="40" y="60" width="340" height="140"/>
+    <path class="ax" d="M40 40 V200 H380 V40 M40 60 H380"/>
+    <path class="gd" d="M80 60 V150"/><circle class="dot" cx="80" cy="150" r="4"/>
+    <text class="sm" x="86" y="108">h</text><text class="sm" x="90" y="168">P = P₀ + ρgh</text><text class="sm" x="44" y="54">P₀</text>
+    <circle class="box" cx="270" cy="130" r="30"/>
+    <path class="cv2" d="M270 130 L270 74"/><path class="vh2" d="M270 62 L275 74 L265 74 Z"/>
+    <path class="cv3" d="M270 130 L270 183"/><path class="vh3" d="M270 195 L265 183 L275 183 Z"/>
+    <text class="sm" x="280" y="76">buoyancy Vρg</text><text class="sm" x="280" y="196">weight mg</text>
+  </svg>
+  <p class="muted"><b>In words:</b> a liquid presses on everything in it because of its own weight. At depth <code>h</code>, the column of liquid above each square metre weighs <code>ρgh</code>; add the pressure <code>P₀</code> on the surface (usually the air's). The pressure depends only on the depth, not on the shape of the container, and at a given depth it pushes equally in every direction.</p>
+  <p class="muted"><b>In water</b> (<code>ρ = 1000 kg/m³</code>) every 10 m of depth adds about one atmosphere: at 10 m, <code>P ≈ 1.013 × 10⁵ + 98 000 ≈ 2 × 10⁵ Pa</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Atmospheric pressure, barometers and manometers</h4>
+  <p>The air above us has weight too: at sea level it presses with <b>atmospheric pressure</b> <code>P_(a) ≈ 1.013 × 10⁵ Pa</code> (1 atm), about the weight of 1 kg on every square centimetre.</p>
+  <ul data-cpart="expl">
+    <li><b>Barometer</b> (Torricelli): a tube of mercury turned upside down in a dish. The mercury falls until the column's pressure balances the air's: about 76 cm of mercury (<code>ρgh = P_(a)</code>). With water the column would be about 10 m.</li>
+    <li><b>Manometer:</b> a U-tube of liquid connected to a gas. The difference <code>h</code> between the two levels gives <code>ΔP = P − P_(a) = ρgh</code>.</li>
+    <li><b>Absolute vs. gauge pressure:</b> <code>P</code> is the absolute pressure; <code>P − P_(a)</code> (what a tyre gauge shows) is the <b>gauge pressure</b>, which can be negative.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Archimedes' principle</h4>
+  <ul class="idlist">
+    <li><code>F_(b) = Vρg</code></li>
+    <li><code>∑ F_(y) = Vg(ρ − ρ')</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a body in a fluid is pushed up with a force equal to the <b>weight of the fluid it pushes aside</b> (<code>V</code> the volume under the surface, <code>ρ</code> the fluid's density). <code>ρ'</code> is the body's own density.</p>
+  <p class="muted"><b>Why:</b> the pressure grows with depth, so the fluid pushes harder on the body's bottom than on its top. That difference is exactly the weight of the fluid that would fill the body's place, since such fluid would just float there.</p>
+  <ul data-cpart="expl">
+    <li><code>ρ' &lt; ρ</code>: it floats up and settles partly out of the fluid, with the submerged fraction <code>ρ'/ρ</code> (wood of relative density 0.6 floats 60% under water).</li>
+    <li><code>ρ' &gt; ρ</code>: it sinks (but weighs less in the fluid).</li>
+    <li><code>ρ' = ρ</code>: it floats at any depth (a fish, a submarine).</li>
+  </ul>
+</div>
+</section>
+
 </div><!-- /folder-mec -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"]],"m":[["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"]],"m":[["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_mecnewton", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Solving a problem with Newton's second law",
+  "description": "Find an acceleration or a force from a free-body diagram and the second law along each axis.",
+  "uses": [["c", "mec5", "Newton's second law"], ["c", "mec7", "Free-body diagrams and the normal force"], ["c", "mec7", "Friction"], ["c", "mec3", "Components, magnitude and direction"]],
+  "parts": [
+    { "id": "st_bi_mecnewton1", "cat": "stage", "name": "Pick the body and draw its forces", "text": "One body at a time. Draw every force acting **on** it: weight, normal force, tensions, friction, pushes and pulls." },
+    { "id": "st_bi_mecnewton2", "cat": "stage", "name": "Choose axes", "text": "One axis along the motion (along a slope if there is one), the other perpendicular. Then most forces lie on an axis." },
+    { "id": "st_bi_mecnewton3", "cat": "stage", "name": "Split the slanted forces", "text": "Components with `cos` and `sin` (Vectors). Mark the sign of each component." },
+    { "id": "st_bi_mecnewton4", "cat": "stage", "name": "Write the law on each axis", "text": "`∑F_(x) = ma_(x)`, `∑F_(y) = ma_(y)`. Across the motion `a = 0` (it doesn't lift off or sink in): that gives the normal force, and from it the friction." },
+    { "id": "st_bi_mecnewton5", "cat": "stage", "name": "Solve and check", "text": "Solve for the unknown. Check units, signs, and a limit case (no friction, angle 0)." },
+    { "id": "st_bi_mecnewton6", "cat": "example", "name": "Example — pulling a crate", "text": "A 40 kg crate is pulled along the floor by a rope at `25°` above the horizontal with a force of 150 N; `μ_(k) = 0.3`. Find its acceleration.\n1. Weight `392 N` down, `N` up, `F = 150 N` along the rope, friction `f` backward (the picture in Free-body diagrams and the normal force).\n2. `x` along the floor, `y` up.\n3. `F_(x) = 150 cos 25° ≈ 135.9 N`, `F_(y) = 150 sin 25° ≈ 63.4 N`\n4. `y`: `N + 63.4 − 392 = 0`, so `N ≈ 328.6 N` (less than `mg`: the rope lifts a little). Friction `f = 0.3 · 328.6 ≈ 98.6 N`. `x`: `135.9 − 98.6 = 40a`\n5. `a ≈ 0.93 m/s²`. Without friction it would be `135.9/40 ≈ 3.4 m/s²`." }
+  ] },
+{ "id": "pp_bi_mecincline", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "A body on an inclined plane",
+  "description": "Find the acceleration of a body sliding on a slope, with or without friction, or the angle at which it starts to slide.",
+  "uses": [["c", "mec7", "The inclined plane"], ["c", "mec7", "Friction"], ["c", "mec5", "Newton's second law"]],
+  "parts": [
+    { "id": "st_bi_mecincline1", "cat": "stage", "name": "Tilt the axes", "text": "`x` down the slope (the way it slides), `y` perpendicular to it." },
+    { "id": "st_bi_mecincline2", "cat": "stage", "name": "Split the weight", "text": "`mg sin θ` along the slope, `mg cos θ` into it." },
+    { "id": "st_bi_mecincline3", "cat": "stage", "name": "Normal force and friction", "text": "`y`: `N = mg cos θ`. Sliding: `f = μ_(k) mg cos θ`, pointing up the slope (against the motion)." },
+    { "id": "st_bi_mecincline4", "cat": "stage", "name": "Second law along the slope", "text": "`mg sin θ − f = ma`. The mass cancels: `a = g(sin θ − μ_(k) cos θ)`. Will it start to slide at all? Only if `tan θ > μ_(s)`." },
+    { "id": "st_bi_mecincline5", "cat": "example", "name": "Example", "text": "A 5 kg block on a `30°` slope, `μ_(k) = 0.2`, `μ_(s) = 0.5`.\n2. Along: `5 · 9.8 · 0.5 = 24.5 N`; into: `5 · 9.8 · 0.866 ≈ 42.4 N`\n3. `N ≈ 42.4 N`; `f = 0.2 · 42.4 ≈ 8.5 N`\n4. Does it slide? `tan 30° ≈ 0.58 > 0.5`: yes. `a = 9.8(0.5 − 0.2 · 0.866) ≈ 3.2 m/s²` (without friction `4.9 m/s²`). It would stay put on any slope up to `arctan 0.5 ≈ 26.6°`." }
+  ] },
+{ "id": "pp_bi_mecpulley", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Connected bodies: strings and pulleys",
+  "description": "Find the common acceleration and the tension of bodies tied by a string over a pulley.",
+  "uses": [["c", "mec7", "Tension, pulleys and connected bodies"], ["c", "mec7", "Free-body diagrams and the normal force"], ["c", "mec5", "Newton's second law"]],
+  "parts": [
+    { "id": "st_bi_mecpulley1", "cat": "stage", "name": "Guess the direction of motion", "text": "Decide which way the system will move (the heavier side goes down). Each body gets its own positive direction: the way it moves." },
+    { "id": "st_bi_mecpulley2", "cat": "stage", "name": "A diagram per body", "text": "Each body: its weight, the tension `T` along the string, and any normal force or friction." },
+    { "id": "st_bi_mecpulley3", "cat": "stage", "name": "One equation per body", "text": "Second law along each body's own direction, with the **same** `a` and the **same** `T` (light string, light pulley)." },
+    { "id": "st_bi_mecpulley4", "cat": "stage", "name": "Solve the system", "text": "Add the equations to eliminate `T`, find `a`, then `T`. A negative `a` means the guess of direction was wrong." },
+    { "id": "st_bi_mecpulley5", "cat": "example", "name": "Example — two hanging masses", "text": "`M = 5 kg` and `m = 3 kg` hang over a pulley.\n1. `M` goes down, `m` up.\n3. `M`: `49 − T = 5a`; `m`: `T − 29.4 = 3a`\n4. Adding: `19.6 = 8a`, `a = 2.45 m/s²`; then `T = 29.4 + 3 · 2.45 = 36.75 N` (between `29.4` and `49` ✓). The formula `(M − m)g/(M + m) = 2 · 9.8/8` agrees." },
+    { "id": "st_bi_mecpulley6", "cat": "example", "name": "Example — a block on a table", "text": "A 4 kg block on a smooth table is tied over a pulley at the edge to a hanging 1 kg mass.\n1. The hanging mass goes down, the block slides toward the edge.\n2. Block: `T` toward the edge (`N` and weight cancel). Hanging mass: `T` up, `9.8 N` down.\n3. Block: `T = 4a`; mass: `9.8 − T = 1a`\n4. `9.8 = 5a`, `a = 1.96 m/s²`; `T = 4 · 1.96 = 7.84 N` (less than the hanging weight ✓)." }
+  ] },
+{ "id": "pp_bi_mecproj", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Projectile problems",
+  "description": "Find the time of flight, range, height and landing velocity of a body thrown horizontally or at an angle.",
+  "uses": [["c", "mec8", "Throwing horizontally and at an angle"], ["c", "mec8", "Throwing straight up or down"], ["c", "mec2", "Constant acceleration: the equations of motion"]],
+  "parts": [
+    { "id": "st_bi_mecproj1", "cat": "stage", "name": "Axes and initial velocity", "text": "Origin at the launch point, `x` horizontal, `y` up. Split `v₀`: `v_(0x) = v₀ cos α`, `v_(0y) = v₀ sin α`." },
+    { "id": "st_bi_mecproj2", "cat": "stage", "name": "Two separate motions", "text": "`x`: constant velocity, `x = v_(0x) t`. `y`: free fall, `y = v_(0y) t − (1/2)gt²`, `v_(y) = v_(0y) − gt`." },
+    { "id": "st_bi_mecproj3", "cat": "stage", "name": "Find the time from the vertical motion", "text": "Landing: `y` = the landing height (`−h` if it falls `h` below the start). Top: `v_(y) = 0`." },
+    { "id": "st_bi_mecproj4", "cat": "stage", "name": "Use the time everywhere else", "text": "Range `x = v_(0x) t`; landing velocity from `v_(x)` and `v_(y)`: size `√(v_(x)² + v_(y)²)`, angle `arctan((|v_(y)|)/(v_(x)))` below the horizontal." },
+    { "id": "st_bi_mecproj5", "cat": "example", "name": "Example — thrown horizontally from a cliff", "text": "A stone is thrown horizontally at `12 m/s` from a cliff 20 m high.\n1. `v_(0x) = 12`, `v_(0y) = 0`\n3. `−20 = −4.9t²`, `t = √(20/4.9) ≈ 2.02 s`\n4. It lands `12 · 2.02 ≈ 24.2 m` from the foot of the cliff. `v_(y) = −9.8 · 2.02 ≈ −19.8 m/s`; speed `√(144 + 392) ≈ 23.2 m/s`, at `arctan(19.8/12) ≈ 58.8°` below the horizontal." },
+    { "id": "st_bi_mecproj6", "cat": "example", "name": "Example — kicked at an angle", "text": "A ball is kicked from flat ground at `20 m/s`, `37°` above the horizontal.\n1. `v_(0x) = 20 cos 37° ≈ 15.97 m/s`, `v_(0y) = 20 sin 37° ≈ 12.04 m/s`\n3. Top: `12.04 − 9.8t = 0`, `t ≈ 1.23 s`; height `12.04²/(2 · 9.8) ≈ 7.39 m`. Landing (`y = 0`): `t = 2 · 1.23 ≈ 2.46 s`.\n4. Range `15.97 · 2.46 ≈ 39.2 m` (the formula `v₀² sin 74°/g` agrees)." }
+  ] },
+{ "id": "pp_bi_mecgrav", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Gravitational force and g on other worlds",
+  "description": "Compute a gravitational force, the acceleration of gravity on a planet or at a height, and a body's weight there.",
+  "uses": [["c", "mec6", "The law of universal gravitation"], ["c", "mec6", "The acceleration of gravity g"], ["c", "mec6", "Mass and weight"]],
+  "parts": [
+    { "id": "st_bi_mecgrav1", "cat": "stage", "name": "Write the masses and the distance", "text": "In SI units; the distance between **centres** (`R + h` for a height `h` above a planet of radius `R`)." },
+    { "id": "st_bi_mecgrav2", "cat": "stage", "name": "Use the right formula", "text": "Force between two bodies: `F = Gm₁m₂/r²`. Acceleration of gravity: `g = GM/R²`. Weight: `W = mg` with that `g`." },
+    { "id": "st_bi_mecgrav3", "cat": "stage", "name": "Ratios save work", "text": "Comparing two places, divide: `g₂/g₁ = (M₂/M₁)(R₁/R₂)²`, and `G` cancels." },
+    { "id": "st_bi_mecgrav4", "cat": "example", "name": "Example — Mars", "text": "Mars: `M = 6.42 × 10²³ kg`, `R = 3.39 × 10⁶ m`. Find `g` there and the weight of a 70 kg astronaut.\n2. `g = (6.67 × 10⁻¹¹ · 6.42 × 10²³)/(3.39 × 10⁶)² ≈ 3.73 m/s²`; `W = 70 · 3.73 ≈ 261 N` (on Earth `686 N`). The mass is still 70 kg." },
+    { "id": "st_bi_mecgrav5", "cat": "example", "name": "Example — at a height", "text": "How high above the Earth's surface is `g` a quarter of its value at the surface?\n3. `g` goes as `1/r²`, so a quarter means twice the distance from the centre: `r = 2R`, a height of one Earth radius, about 6400 km." }
+  ] },
+{ "id": "pp_bi_mecequil", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Finding forces in equilibrium",
+  "description": "Find unknown tensions or forces on a body (or a knot) at rest.",
+  "uses": [["c", "mec9", "Equilibrium of forces"], ["c", "mec3", "Components, magnitude and direction"]],
+  "parts": [
+    { "id": "st_bi_mecequil1", "cat": "stage", "name": "Choose the point or body", "text": "Where the unknown forces meet: a knot, a hanging body." },
+    { "id": "st_bi_mecequil2", "cat": "stage", "name": "Draw the forces and their angles", "text": "Each string pulls along itself, away from the point. Mark each angle from the horizontal." },
+    { "id": "st_bi_mecequil3", "cat": "stage", "name": "Sum to zero on each axis", "text": "`∑F_(x) = 0`, `∑F_(y) = 0`: as many equations as axes." },
+    { "id": "st_bi_mecequil4", "cat": "stage", "name": "Solve", "text": "Usually express one tension from the `x` equation and put it into the `y` equation." },
+    { "id": "st_bi_mecequil5", "cat": "example", "name": "Example — a mass on two strings", "text": "A 10 kg mass hangs from a knot held by two strings to the ceiling, at `60°` (right) and `30°` (left) above the horizontal (the picture in Equilibrium of forces).\n2. `T₃ = mg = 98 N` down; `T₁` at `60°`, `T₂` at `150°`.\n3. `x`: `T₁ cos 60° − T₂ cos 30° = 0`; `y`: `T₁ sin 60° + T₂ sin 30° − 98 = 0`\n4. From `x`: `T₂ = T₁ · 0.5/0.866 ≈ 0.577 T₁`. Into `y`: `T₁(0.866 + 0.289) = 98`, `T₁ ≈ 84.9 N`, `T₂ = 49.0 N`. The steeper string carries more. Check `x`: `84.9 · 0.5 ≈ 49 · 0.866 ≈ 42.4` ✓" }
+  ] },
+{ "id": "pp_bi_mecfluid", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Pressure and buoyancy problems",
+  "description": "Find the pressure at a depth, and decide whether and how a body floats, using Archimedes' principle.",
+  "uses": [["c", "mec10", "Hydrostatic pressure"], ["c", "mec10", "Archimedes' principle"], ["c", "mec10", "Pressure and Pascal's law"], ["c", "mec6", "Density"]],
+  "parts": [
+    { "id": "st_bi_mecfluid1", "cat": "stage", "name": "Pressure at a depth", "text": "`P = P₀ + ρgh` (`P₀` the pressure on the surface, usually `1.013 × 10⁵ Pa`). Gauge pressure: just `ρgh`." },
+    { "id": "st_bi_mecfluid2", "cat": "stage", "name": "Floating or sinking?", "text": "Compare the body's density `ρ'` with the fluid's `ρ`. Floating: weight = buoyancy, so the submerged fraction is `ρ'/ρ`." },
+    { "id": "st_bi_mecfluid3", "cat": "stage", "name": "Held under or hanging", "text": "Add the extra force (a string, a hand) to the free-body diagram: buoyancy `Vρg` up, weight `Vρ'g` down, and the string makes up the difference." },
+    { "id": "st_bi_mecfluid4", "cat": "example", "name": "Example — a diver", "text": "What is the pressure 10 m under the sea surface (`ρ ≈ 1000 kg/m³`)?\n1. `P = 1.013 × 10⁵ + 1000 · 9.8 · 10 ≈ 1.99 × 10⁵ Pa`, about twice the air pressure." },
+    { "id": "st_bi_mecfluid5", "cat": "example", "name": "Example — a wooden cube", "text": "A wooden cube, 10 cm on a side, relative density 0.6, in water.\n2. `0.6 < 1`: it floats, 60% under water, so 6 cm of its height is below the surface.\n3. Held fully under by a string to the bottom: `V = 10⁻³ m³`; buoyancy `10⁻³ · 1000 · 9.8 = 9.8 N`, weight `5.88 N`, so the string pulls down with `9.8 − 5.88 = 3.92 N`." }
+  ] },
+{ "id": "pp_bi_mecelastic", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Springs and stretching wires",
+  "description": "Use Hooke's law and Young's modulus to find a stretch, a force or a spring constant.",
+  "uses": [["c", "mec9", "Hooke's law"], ["c", "mec9", "Stress, strain and Young's modulus"]],
+  "parts": [
+    { "id": "st_bi_mecelastic1", "cat": "stage", "name": "Spring or material?", "text": "A spring: `F = kΔL`. A rod or wire of a known material: `ΔL = FL/(AY)`." },
+    { "id": "st_bi_mecelastic2", "cat": "stage", "name": "SI units", "text": "Area in `m²` (`1 mm² = 10⁻⁶ m²`), lengths in metres, `Y` in `N/m²`." },
+    { "id": "st_bi_mecelastic3", "cat": "stage", "name": "Solve and judge", "text": "A spring stretch of centimetres is normal; a steel wire stretches by millimetres." },
+    { "id": "st_bi_mecelastic4", "cat": "example", "name": "Examples", "text": "**Spring:** a 30 N weight stretches a spring 6 cm. Its constant: `k = 30/0.06 = 500 N/m`; a 45 N weight would stretch it `45/500 = 0.09 m = 9 cm`.\n**Wire:** steel (`Y = 2 × 10¹¹ N/m²`), 2 m long, `1 mm²` thick, carrying 200 N.\n2. `A = 10⁻⁶ m²`\n3. `ΔL = (200 · 2)/(10⁻⁶ · 2 × 10¹¹) = 2 × 10⁻³ m = 2 mm`" }
+  ] },
 { "id": "pp_bi_mecconv", "v": 1, "subject": "f:mec", "kind": "action",
   "name": "Converting units",
   "description": "Turn a quantity into SI units (or any other unit) without losing a power of ten.",

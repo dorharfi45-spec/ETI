@@ -2628,6 +2628,12 @@
   <button data-target="mec2"><span class="tnum">2</span>Motion in one dimension</button>
   <button data-target="mec3"><span class="tnum">3</span>Vectors</button>
   <button data-target="mec4"><span class="tnum">4</span>Scalar and vector products</button>
+  <button data-target="mec5"><span class="tnum">5</span>Newton's laws</button>
+  <button data-target="mec6"><span class="tnum">6</span>Gravitation, weight and density</button>
+  <button data-target="mec7"><span class="tnum">7</span>Forces in practice: friction, slopes and pulleys</button>
+  <button data-target="mec8"><span class="tnum">8</span>Projectiles and reference frames</button>
+  <button data-target="mec9"><span class="tnum">9</span>Equilibrium and elasticity</button>
+  <button data-target="mec10"><span class="tnum">10</span>Pressure and fluids</button>
 </nav>
 
 <main id="paneHost">
@@ -2659,7 +2665,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B146</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B147</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4670,7 +4676,7 @@ function __detabaseMain() {
     rv: { title: "Random variables — for Intro to Statistics",
       sub: 'Discrete random variables, special distributions, expectation and variance; two-dimensional and continuous variables, the normal distribution.' },
     mec: { title: "Mechanics — for Physics course",
-      sub: "Units, motion in one dimension, vectors; more to come: Newton's laws, energy, momentum, rotation, oscillations." }
+      sub: "Units, motion, vectors, Newton's laws, gravitation, friction and slopes, projectiles, statics, fluids; more to come: energy, momentum, rotation, oscillations." }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -19371,7 +19377,7 @@ function __detabaseMain() {
   // =========================================================
   function plainToTex(text) {
     var PAR = "\\((?:[^()]|\\((?:[^()]|\\([^()]*\\))*\\))+\\)";   // (…) with up to two levels of (…) inside: (∑ (x_(i) − x̄)…)/n (B144)
-    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304\u0302\u20d7ȳμσ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
+    var TOK = "[0-9A-Za-zπθΔ°²³⁴⁵⁶⁷ⁿᵏᵐˣ⁺⁻¹⁰∞εδ√.'′ₙₖ₀₁₂ᵢⱼ\u0303\u0304\u0302\u20d7ȳμσρλωταβγφ]+", CALL = TOK + "(?:" + PAR + ")?";   // x, 2π
     var TERM = "(?:√?" + PAR + "|" + CALL + "(?:\\s" + CALL + ")?)";
     var SRC = "(" + TERM + ")\\s*/\\s*(" + TERM + ")";
     var SKIP = { and: 1, or: 1, AND: 1, OR: 1 };
