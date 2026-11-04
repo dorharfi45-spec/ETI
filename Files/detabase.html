@@ -2431,6 +2431,7 @@
     <button data-folder="rv" data-group="stats"><span class="ficon">🎯</span>Random variables</button>
     <button data-folder="mec" data-group="physc"><span class="ficon">🍎</span>Mechanics</button>
     <button data-folder="wav" data-group="physc"><span class="ficon">🌊</span>Waves</button>
+    <button data-folder="opt" data-group="physc"><span class="ficon">🔦</span>Optics</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2654,6 +2655,13 @@
   <button data-target="wav5"><span class="tnum">5</span>Standing waves</button>
   <button data-target="wav6"><span class="tnum">6</span>Interference and diffraction</button>
 </nav>
+<nav class="tabbar" data-folder="opt" id="tabbar-opt">
+  <button data-target="opt1" class="on"><span class="tnum">1</span>Light as a wave</button>
+  <button data-target="opt2"><span class="tnum">2</span>Reflection and refraction</button>
+  <button data-target="opt3"><span class="tnum">3</span>Spherical mirrors and lenses</button>
+  <button data-target="opt4"><span class="tnum">4</span>Optical instruments</button>
+  <button data-target="opt5"><span class="tnum">5</span>Physical optics</button>
+</nav>
 
 <main id="paneHost">
 
@@ -2684,7 +2692,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B150</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B151</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4697,7 +4705,9 @@ function __detabaseMain() {
     mec: { title: "Mechanics — for Physics course",
       sub: "Units, motion, vectors, Newton's laws, gravitation, friction and slopes, projectiles, statics, fluids, work and energy, heat, power, machines and torques, momentum and collisions, circular motion, rotation, oscillations, viscosity." },
     wav: { title: "Waves — for Physics course",
-      sub: "What a wave is, its mathematical description, sound and the Doppler effect, reflection and refraction, standing waves, interference and diffraction." }
+      sub: "What a wave is, its mathematical description, sound and the Doppler effect, reflection and refraction, standing waves, interference and diffraction." },
+    opt: { title: "Optics — for Physics course",
+      sub: "Light as an electromagnetic wave, reflection and refraction, mirrors and lenses, optical instruments, interference, thin films, diffraction and polarization." }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 

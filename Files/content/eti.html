@@ -7342,12 +7342,252 @@
 </div>
 </section>
 </div><!-- /folder-wav -->
+<div class="folder" id="folder-opt">
+
+<!-- ===== OPT1 · LIGHT AS A WAVE ===== -->
+<section class="pane on" id="pane-opt1">
+<h2><span class="num">1</span>Light as a wave</h2>
+<div class="card" data-tags="Definition">
+  <h4>The speed of light</h4>
+  <ul class="idlist">
+    <li><code>c = 299 792 458 m/s ≈ 3 × 10⁸ m/s</code></li>
+    <li>in a material: <code>v = c/n</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> light in empty space travels at <code>c</code>, about 300 000 km every second: from the Sun to us in about 8 minutes. In air it is very slightly slower; in water or glass noticeably slower (<code>n</code>, the refractive index, in Reflection and refraction).</p>
+  <p class="muted"><b>How it was measured:</b> Rømer (1676) from the timing of Jupiter's moons; Fizeau and Foucault in the 1800s with fast-turning wheels and mirrors on Earth; Michelson to high precision. Since 1983 the value is exact: the metre is defined from it.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Particle or wave?</h4>
+  <p>Newton (1704) thought light was a stream of tiny particles; Huygens, his contemporary, that it was a wave. Both explained reflection and refraction. The wave view won when <b>interference</b> of light was shown: Young's two-slit experiment (about 1801) gives bright and dark fringes, which particles can't do (Physical optics).</p>
+  <p class="muted"><b>Why light doesn't seem to bend around corners</b> like sound: its wavelength is tiny (under a millionth of a metre), so diffraction only shows at very small openings (Waves, Interference and diffraction).</p>
+  <p class="muted"><b>The story isn't over:</b> in the 20th century light turned out to also come in packets, photons (Modern physics).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Electromagnetic waves and the spectrum</h4>
+  <svg class="ill" viewBox="0 0 420 110" role="img" aria-label="the electromagnetic spectrum from long radio waves through microwaves, infrared, the narrow visible band, ultraviolet and X-rays to gamma rays, with the wavelength getting shorter to the right">
+    <rect class="band" x="10" y="30" width="400" height="34"/>
+    <path class="ax" d="M80 30 V64 M140 30 V64 M200 30 V64 M218 30 V64 M270 30 V64 M330 30 V64"/>
+    <rect class="box" x="200" y="30" width="18" height="34"/>
+    <text class="sm" x="45" y="52" text-anchor="middle">radio</text><text class="sm" x="110" y="52" text-anchor="middle">micro</text>
+    <text class="sm" x="170" y="52" text-anchor="middle">infrared</text><text class="sm" x="209" y="22" text-anchor="middle">visible</text>
+    <text class="sm" x="244" y="52" text-anchor="middle">UV</text><text class="sm" x="300" y="52" text-anchor="middle">X-rays</text><text class="sm" x="370" y="52" text-anchor="middle">gamma</text>
+    <path class="ax" d="M20 85 H390"/><path class="arr" d="M398 85 L386 79 L386 91 Z"/>
+    <text class="sm" x="20" y="104">long λ, low f</text><text class="sm" x="400" y="104" text-anchor="end">short λ, high f</text>
+  </svg>
+  <p class="muted"><b>In words:</b> Maxwell (1860s) showed from the laws of electricity and magnetism that changing electric and magnetic fields can travel through space as a wave, at a speed <code>1/√(μ₀ε₀)</code> that came out equal to the speed of light. So light <b>is</b> an electromagnetic wave. Hertz (1887) made such waves with electric circuits: radio.</p>
+  <p class="muted"><b>The spectrum:</b> all electromagnetic waves travel at <code>c</code> in vacuum (<code>c = λf</code>) and differ only in wavelength. Visible light is a narrow band, about <code>400 nm</code> (violet) to <code>700 nm</code> (red). Radio waves are metres to kilometres long; X-rays and gamma rays far shorter than atoms.</p>
+</div>
+</section>
+
+<!-- ===== OPT2 · REFLECTION AND REFRACTION ===== -->
+<section class="pane" id="pane-opt2">
+<h2><span class="num">2</span>Reflection and refraction</h2>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The laws of reflection and refraction</h4>
+  <ul class="idlist">
+    <li><code>θ₁ = θ₃</code> &nbsp; (reflection)</li>
+    <li><code>n₁ sin θ₁ = n₂ sin θ₂</code> &nbsp; (refraction, Snell's law)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 220" role="img" aria-label="a ray of light hits a flat glass surface; part is reflected at the same angle and part enters the glass, bending toward the normal">
+    <rect class="band" x="20" y="110" width="380" height="105"/>
+    <path class="ax" d="M20 110 H400"/><path class="gd" d="M210 15 V215"/>
+    <path class="cv" d="M129.7 20.8 L202 101.1"/><path class="vh" d="M210 110 L198.3 104.4 L205.7 97.7 Z"/>
+    <path class="cv2" d="M210 110 L282.3 29.7"/><path class="vh2" d="M290.3 20.8 L286 33.1 L278.6 26.4 Z"/>
+    <path class="cv3" d="M210 110 L253.1 198"/><path class="vh3" d="M258.4 208.8 L248.7 200.2 L257.6 195.8 Z"/>
+    <text x="186" y="80">θ₁</text><text x="222" y="80">θ₃</text><text x="222" y="156">θ₂</text>
+    <text class="sm" x="30" y="104">air (n₁)</text><text class="sm" x="30" y="130">glass (n₂)</text>
+    <text class="sm" x="296" y="30">reflected</text><text class="sm" x="264" y="200">refracted</text><text class="sm" x="80" y="30">incident</text>
+  </svg>
+  <p class="muted"><b>In words:</b> light treated as straight <b>rays</b> (geometric optics, fine when everything is much bigger than the wavelength). At a boundary part of the light bounces back at the same angle, and part goes in, bending: toward the normal entering a denser medium (bigger <code>n</code>), away from it leaving. All angles are measured from the <b>normal</b>, the line perpendicular to the surface, and all three rays lie in one plane.</p>
+  <p class="muted"><b>Example:</b> light from air at <code>42°</code> into crown glass (<code>n = 1.52</code>): <code>sin θ₂ = sin 42°/1.52 ≈ 0.440</code>, <code>θ₂ ≈ 26.1°</code>.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>The refractive index</h4>
+  <p><code>n = c/v</code></p>
+  <p class="muted"><b>In words:</b> the refractive index says how many times slower light is in a material than in vacuum, which is why it bends at the boundary (Refraction of waves, Waves). It has no units, and is 1 for vacuum.</p>
+  <div class="bi-table" data-cpart="expl" data-table='{"rows":[{"c":["Material","n"]},{"c":["vacuum","1"]},{"c":["air","1.0003"]},{"c":["water","1.33"]},{"c":["crown glass","1.52"]},{"c":["diamond","2.42"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Dispersion:</b> <code>n</code> depends slightly on the wavelength (bigger for violet than for red), so a prism spreads white light into its colours, and raindrops make rainbows.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Total internal reflection</h4>
+  <p><code>sin θ_(c) = n₂/n₁</code> &nbsp; (from the denser medium <code>n₁</code> to <code>n₂ &lt; n₁</code>)</p>
+  <p class="muted"><b>In words:</b> going from glass or water into air, the ray bends away from the normal. At the <b>critical angle</b> <code>θ_(c)</code> the refracted ray skims along the surface (<code>θ₂ = 90°</code>); beyond it no light gets out at all: it is <b>totally reflected</b>, with no loss.</p>
+  <p class="muted"><b>Values:</b> water to air <code>48.8°</code>, glass to air about <code>41°</code>, diamond to air <code>24.4°</code> (that small angle traps light inside a cut diamond and makes it sparkle).</p>
+  <p class="muted"><b>Uses:</b> prisms in binoculars and periscopes (a 45° prism reflects better than a mirror); <b>optical fibres</b>, thin glass threads that guide light along their length by bouncing it off their walls, carrying telephone and internet signals and letting doctors see inside the body.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Plane mirrors</h4>
+  <p>A flat mirror forms an <b>image</b> behind it, as far behind as the object is in front, the same size and the same way up, but left and right swapped. The image is <b>virtual</b>: the reflected rays only seem to come from it; no light is really there, so it can't be caught on a screen.</p>
+  <p class="muted"><b>Why:</b> by the law of reflection, all the rays from a point of the object leave the mirror as if they came from one point behind it.</p>
+</div>
+</section>
+
+<!-- ===== OPT3 · SPHERICAL MIRRORS AND LENSES ===== -->
+<section class="pane" id="pane-opt3">
+<h2><span class="num">3</span>Spherical mirrors and lenses</h2>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The mirror and lens equation</h4>
+  <ul class="idlist">
+    <li><code>1/s + 1/p = 1/f</code></li>
+    <li><code>m = −p/s</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> <code>s</code> is the object's distance from the mirror or lens, <code>p</code> the image's, <code>f</code> the <b>focal length</b>, and <code>m</code> the magnification (image height over object height). The same equation serves mirrors and thin lenses, with these signs:</p>
+  <ul data-cpart="expl">
+    <li><code>f &gt; 0</code> for a <b>converging</b> mirror or lens (concave mirror, convex lens); <code>f &lt; 0</code> for a diverging one.</li>
+    <li><code>p &gt; 0</code>: a <b>real</b> image (light really meets there; it can be caught on a screen). <code>p &lt; 0</code>: a virtual image.</li>
+    <li><code>m &lt; 0</code>: the image is upside down; <code>|m| &gt; 1</code>: bigger than the object.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Spherical mirrors</h4>
+  <p><code>f = R/2</code></p>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="a concave mirror: an object between the centre of curvature C and the focus F; a ray parallel to the axis reflects through F, a ray through F reflects parallel; they meet below the axis beyond C, giving a real, inverted, larger image">
+    <path class="ax" d="M20 110 H400"/>
+    <path class="cv" d="M352 25 Q372 110 352 195"/>
+    <circle class="dot" cx="300" cy="110" r="3"/><circle class="dot" cx="240" cy="110" r="3"/>
+    <path class="cv2" d="M270 110 V80"/><path class="vh2" d="M270 80 L265 92 L275 92 Z"/>
+    <path class="gd" d="M270 80 H360 L180 170 M270 80 L360 170 H180"/>
+    <path class="cv3" d="M180 110 V170"/><path class="vh3" d="M180 170 L175 158 L185 158 Z"/>
+    <text class="sm" x="300" y="126" text-anchor="middle">F</text><text class="sm" x="240" y="126" text-anchor="middle">C</text>
+    <text class="sm" x="270" y="72" text-anchor="middle">object</text><text class="sm" x="180" y="188" text-anchor="middle">image</text>
+  </svg>
+  <p class="muted"><b>In words:</b> a <b>concave</b> mirror (curved inward, like the inside of a spoon) gathers rays parallel to its axis at the <b>focus</b> F, halfway to the centre of curvature C. A <b>convex</b> mirror spreads them as if from a focus behind it (<code>f &lt; 0</code>).</p>
+  <p class="muted"><b>Drawing the image</b> takes two of these rays from the object's tip: parallel to the axis → reflected through F; through F → reflected parallel; through C → straight back. Where they meet (or seem to meet) is the image.</p>
+  <p class="muted"><b>What you get:</b> concave, object beyond F: a real, inverted image (make-up mirrors far away, telescopes). Object inside F: a virtual, upright, magnified image (a shaving mirror close up). Convex: always virtual, upright and smaller, but a wide view (car mirrors, shop mirrors).</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Thin lenses</h4>
+  <ul class="idlist">
+    <li><code>1/f = (n − 1)(1/(R₁) + 1/(R₂))</code> &nbsp; (lens maker's formula)</li>
+    <li><code>D = 1/f</code> &nbsp; (power, in diopters, <code>f</code> in metres)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a converging lens: an object between F1 and twice the focal length; three rays from its tip, parallel then through F2, straight through the centre, and through F1 then parallel, meet beyond the lens in a real, inverted, enlarged image">
+    <path class="ax" d="M20 110 H410"/>
+    <ellipse class="box" cx="200" cy="110" rx="8" ry="80"/>
+    <circle class="dot" cx="140" cy="110" r="3"/><circle class="dot" cx="260" cy="110" r="3"/>
+    <path class="cv2" d="M110 110 V70"/><path class="vh2" d="M110 70 L105 82 L115 82 Z"/>
+    <path class="gd" d="M110 70 H200 L380 190 M110 70 L380 190 M110 70 L200 190 H380"/>
+    <path class="cv3" d="M380 110 V190"/><path class="vh3" d="M380 190 L375 178 L385 178 Z"/>
+    <text class="sm" x="140" y="128" text-anchor="middle">F₁</text><text class="sm" x="260" y="100" text-anchor="middle">F₂</text>
+    <text class="sm" x="110" y="62" text-anchor="middle">object</text><text class="sm" x="380" y="206" text-anchor="middle">image</text>
+  </svg>
+  <p class="muted"><b>In words:</b> a lens thicker in the middle (<b>convex</b>) is <b>converging</b>; thinner in the middle (concave), diverging. <code>R₁</code>, <code>R₂</code> are the radii of its two faces (positive for a face bulging outward), <code>n</code> the glass's index: more curved faces or denser glass give a shorter focal length.</p>
+  <p class="muted"><b>The three rays</b> (the picture): parallel to the axis → through the far focus F₂; through the centre → straight on; through the near focus F₁ → out parallel.</p>
+  <p class="muted"><b>Example:</b> <code>f = 10 cm</code>, object at 15 cm: <code>1/p = 1/10 − 1/15 = 1/30</code>, a real image 30 cm behind the lens, <code>m = −2</code>: inverted and twice as big (a projector). Object at 5 cm (inside F): <code>p = −10 cm</code>, <code>m = +2</code>: a virtual, upright magnified image (a magnifying glass).</p>
+</div>
+</section>
+
+<!-- ===== OPT4 · OPTICAL INSTRUMENTS ===== -->
+<section class="pane" id="pane-opt4">
+<h2><span class="num">4</span>Optical instruments</h2>
+<div class="card" data-tags="Explanation">
+  <h4>The camera and the eye</h4>
+  <p>A <b>camera</b> is a converging lens that forms a real, inverted, small image on a sensor (or film). Focusing means moving the lens to change <code>p</code> for objects at different distances; the aperture controls how much light enters.</p>
+  <p class="muted"><b>The eye</b> works the same way: the cornea and lens form an image on the retina. Instead of moving the lens, muscles change its shape (its focal length) to focus near or far (accommodation).</p>
+  <ul data-cpart="expl">
+    <li><b>Near-sighted</b> (myopia): far objects focus in front of the retina; corrected with diverging lenses.</li>
+    <li><b>Far-sighted</b> (hyperopia, and with age): near objects focus behind it; corrected with converging lenses. Glasses are labelled by their power in diopters.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The magnifying glass and the microscope</h4>
+  <ul class="idlist">
+    <li><code>M = d/f</code> &nbsp; (magnifier, <code>d ≈ 25 cm</code>)</li>
+    <li><code>M = m₁ M₂</code> &nbsp; (microscope)</li>
+  </ul>
+  <p class="muted"><b>A magnifying glass</b> is a converging lens held so the object is just inside its focus: you see a virtual, upright, enlarged image. What counts is the <b>angular magnification</b> <code>M</code>: how much bigger the object looks than at the nearest comfortable reading distance <code>d ≈ 25 cm</code>. With <code>f = 5 cm</code>, <code>M = 5</code>.</p>
+  <p class="muted"><b>A microscope</b> uses two converging lenses: the <b>objective</b> (very short focal length) makes a real, enlarged image <code>m₁</code> times the object; the <b>eyepiece</b> then works as a magnifier on that image, <code>M₂</code>. The total magnification is their product.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Telescopes</h4>
+  <p><code>M = f₁/f₂</code></p>
+  <p class="muted"><b>In words:</b> a telescope also has two converging lenses, but the objective has a <b>long</b> focal length <code>f₁</code> and the eyepiece a short one <code>f₂</code>; the lenses sit <code>f₁ + f₂</code> apart. The objective forms a small real image of a far object; the eyepiece magnifies it. The angular magnification is the ratio of the focal lengths: <code>f₁ = 100 cm</code>, <code>f₂ = 2.5 cm</code> gives 40.</p>
+  <p class="muted"><b>A big objective</b> also gathers more light (faint stars). Large astronomical telescopes use a concave mirror instead of the objective lens. Binoculars are two short telescopes with prisms that turn the image upright.</p>
+</div>
+</section>
+
+<!-- ===== OPT5 · PHYSICAL OPTICS ===== -->
+<section class="pane" id="pane-opt5">
+<h2><span class="num">5</span>Physical optics</h2>
+<div class="card" data-tags="Formula">
+  <h4>Two slits and the diffraction grating</h4>
+  <ul class="idlist">
+    <li>bright: <code>d sin θ = nλ</code>, &nbsp; <code>n = 0, ±1, ±2, …</code></li>
+    <li>dark (two slits): <code>d sin θ = (n + 1/2)λ</code></li>
+  </ul>
+  <p class="muted"><b>Two slits</b> (Young): light must be <b>coherent</b> (the two slits fed by the same wave) and preferably of one colour (monochromatic); then bright and dark fringes appear, as for any waves (Waves, Two slits).</p>
+  <p class="muted"><b>A diffraction grating</b> has thousands of equally spaced slits (<code>d</code> apart). The bright lines fall at the same angles as for two slits, but are much sharper and brighter. Since the angle depends on <code>λ</code>, a grating spreads white light into a spectrum of each order; a <b>spectroscope</b> uses this to measure wavelengths and identify the elements in a light source.</p>
+  <p class="muted"><b>Example:</b> 500 lines per mm (<code>d = 2 × 10⁻⁶ m</code>), <code>λ = 600 nm</code>: <code>sin θ = 0.3, 0.6, 0.9</code> for <code>n = 1, 2, 3</code> (about <code>17.5°</code>, <code>36.9°</code>, <code>64.2°</code>); no 4th order, since the sine can't exceed 1.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Thin films</h4>
+  <ul class="idlist">
+    <li>dark (destructive): <code>2d = (λ/n) m</code></li>
+    <li>bright (constructive): <code>2d = (λ/n)(m + 1/2)</code>, &nbsp; <code>m = 0, 1, 2, …</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> light reflected from the top and from the bottom of a thin film (a soap bubble, oil on water) interferes. The second ray travels an extra <code>2d</code> inside the film, where the wavelength is <code>λ/n</code>; the reflection off the top (into a denser medium) also flips it by half a wave. These formulas are for a film surrounded by a less dense medium (a soap film in air).</p>
+  <p class="muted"><b>Colours:</b> with white light, different thicknesses reinforce different colours, so bubbles and oil slicks shimmer. The thinnest soap film bright in <code>600 nm</code> light: <code>d = λ/(4n) = 600/(4 · 1.33) ≈ 113 nm</code>. The same effect makes anti-reflection coatings on lenses, and measures tiny thicknesses (interferometers).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Diffraction and resolution</h4>
+  <p>Light passing a narrow slit (width <code>b</code>) spreads: a bright central band with dark directions at <code>b sin θ = nλ</code>. The narrower the slit, the wider the spread.</p>
+  <p class="muted"><b>Why it matters:</b> every lens and the pupil of the eye is an opening, so the image of a point is always a small blurred spot. Two points closer than about that blur can't be told apart: diffraction limits the <b>resolution</b> of every microscope and telescope. A bigger lens (or a shorter wavelength) sees finer detail.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Polarization</h4>
+  <p>Light is a <b>transverse</b> wave: its electric field oscillates across the direction of travel. In ordinary light that direction changes at random; in <b>polarized</b> light it stays in one plane.</p>
+  <p class="muted"><b>A polarizing filter</b> lets through only the light oscillating along its axis. Two filters at right angles block everything. Light reflected off water or a road is partly polarized, so polarizing sunglasses cut the glare. Sound, a longitudinal wave, can't be polarized: polarization is a proof that light is transverse.</p>
+</div>
+</section>
+</div><!-- /folder-opt -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"]],"m":[["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"]],"m":[["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_optsnell", "v": 1, "subject": "f:opt", "kind": "problem",
+  "name": "Refraction and the critical angle",
+  "description": "Find the angle of a refracted ray, the speed of light in a material, or the critical angle for total internal reflection.",
+  "uses": [["c", "opt2", "The laws of reflection and refraction"], ["c", "opt2", "The refractive index"], ["c", "opt2", "Total internal reflection"]],
+  "parts": [
+    { "id": "st_bi_optsnell1", "cat": "stage", "name": "Draw the normal", "text": "At the point where the ray meets the surface; measure the angles from it." },
+    { "id": "st_bi_optsnell2", "cat": "stage", "name": "Snell's law", "text": "`n₁ sin θ₁ = n₂ sin θ₂`, so `sin θ₂ = (n₁/n₂) sin θ₁`. If that comes out above 1, there is no refracted ray: total internal reflection." },
+    { "id": "st_bi_optsnell3", "cat": "stage", "name": "Critical angle", "text": "Only from the denser side: `sin θ_(c) = n₂/n₁`." },
+    { "id": "st_bi_optsnell4", "cat": "example", "name": "Example", "text": "Light from air hits crown glass (`n = 1.52`) at `42°`.\n2. `sin θ₂ = sin 42°/1.52 ≈ 0.440`, `θ₂ ≈ 26.1°`. In the glass `v = c/1.52 ≈ 1.97 × 10⁸ m/s`.\n3. From the glass back into air: `sin θ_(c) = 1/1.52`, `θ_(c) ≈ 41.1°`. A ray inside the glass hitting the surface at `45°` is totally reflected (this is how a 45° prism works)." }
+  ] },
+{ "id": "pp_bi_optimage", "v": 1, "subject": "f:opt", "kind": "problem",
+  "name": "Finding the image of a mirror or a lens",
+  "description": "Find where the image is, how big, real or virtual, upright or inverted.",
+  "uses": [["c", "opt3", "The mirror and lens equation"], ["c", "opt3", "Spherical mirrors"], ["c", "opt3", "Thin lenses"]],
+  "parts": [
+    { "id": "st_bi_optimage1", "cat": "stage", "name": "Focal length with its sign", "text": "Mirror: `f = R/2`. Converging (concave mirror, convex lens): `f > 0`; diverging: `f < 0`." },
+    { "id": "st_bi_optimage2", "cat": "stage", "name": "Solve for p", "text": "`1/p = 1/f − 1/s`." },
+    { "id": "st_bi_optimage3", "cat": "stage", "name": "Magnification", "text": "`m = −p/s`." },
+    { "id": "st_bi_optimage4", "cat": "stage", "name": "Describe and check with rays", "text": "`p > 0` real, `p < 0` virtual; `m < 0` inverted; `|m|` the size ratio. A rough ray sketch should agree." },
+    { "id": "st_bi_optimage5", "cat": "example", "name": "Example — a concave mirror", "text": "`R = 40 cm`; object at 30 cm, then at 10 cm.\n1. `f = 20 cm`\n2. At 30 cm: `1/p = 1/20 − 1/30 = 1/60`, `p = 60 cm`. At 10 cm: `1/p = 1/20 − 1/10`, `p = −20 cm`.\n3. `m = −2`; `m = +2`\n4. First: real, inverted, twice as big, in front of the mirror. Second: virtual, upright, twice as big, \"behind\" the mirror (a make-up mirror)." },
+    { "id": "st_bi_optimage6", "cat": "example", "name": "Example — lenses", "text": "A converging lens `f = 10 cm`, object at 15 cm; and a diverging lens `f = −10 cm`, object at 15 cm.\n2. `1/p = 1/10 − 1/15`, `p = 30 cm`; `1/p = −1/10 − 1/15 = −1/6`, `p = −6 cm`.\n3. `m = −2`; `m = 0.4`\n4. Converging: real, inverted, enlarged (on a screen 30 cm away). Diverging: virtual, upright, smaller, on the object's side: a diverging lens always does this." },
+    { "id": "st_bi_optimage7", "cat": "example", "name": "Example — making a lens", "text": "Glass `n = 1.5`, both faces bulging, radii 20 cm.\n1. `1/f = 0.5 · (1/20 + 1/20) = 1/20`, so `f = 20 cm`, power `1/0.2 = 5` diopters." }
+  ] },
+{ "id": "pp_bi_optinstr", "v": 1, "subject": "f:opt", "kind": "problem",
+  "name": "Magnifiers, telescopes and glasses",
+  "description": "Find the magnification of a magnifier or telescope, or the lens that corrects a near point.",
+  "uses": [["c", "opt4", "The magnifying glass and the microscope"], ["c", "opt4", "Telescopes"], ["c", "opt4", "The camera and the eye"], ["c", "opt3", "The mirror and lens equation"]],
+  "parts": [
+    { "id": "st_bi_optinstr1", "cat": "stage", "name": "Which instrument?", "text": "Magnifier: `M = (25 cm)/f`. Telescope: `M = f₁/f₂`. Microscope: `m₁ · M₂`." },
+    { "id": "st_bi_optinstr2", "cat": "stage", "name": "Glasses", "text": "The lens must put a virtual image of the object where the eye can focus: object at the wanted distance `s`, image at the eye's near (or far) point, `p` negative. Then `1/f = 1/s + 1/p`, power `D = 1/f` (metres)." },
+    { "id": "st_bi_optinstr3", "cat": "example", "name": "Examples", "text": "**Magnifier** `f = 5 cm`: `M = 25/5 = 5`.\n**Telescope** `f₁ = 100 cm`, `f₂ = 2.5 cm`: `M = 40`; the lenses are `102.5 cm` apart.\n**Reading glasses:** a person's near point is 75 cm; they want to read at 25 cm.\n2. `s = 25 cm`, `p = −75 cm`: `1/f = 1/25 − 1/75 = 2/75`, `f = 37.5 cm`, `D ≈ +2.7` diopters (converging)." }
+  ] },
+{ "id": "pp_bi_optgrating", "v": 1, "subject": "f:opt", "kind": "problem",
+  "name": "Interference: gratings and thin films",
+  "description": "Find the angles of the bright lines of a grating, or the thickness of a film that reflects a colour strongly or not at all.",
+  "uses": [["c", "opt5", "Two slits and the diffraction grating"], ["c", "opt5", "Thin films"]],
+  "parts": [
+    { "id": "st_bi_optgrating1", "cat": "stage", "name": "Grating spacing", "text": "`N` lines per mm → `d = 1/N` mm, in metres." },
+    { "id": "st_bi_optgrating2", "cat": "stage", "name": "Each order", "text": "`sin θ = nλ/d` for `n = 1, 2, …` while it stays `≤ 1`." },
+    { "id": "st_bi_optgrating3", "cat": "stage", "name": "Thin film", "text": "Film in air: bright `2d = (λ/n)(m + 1/2)`, dark `2d = (λ/n)m`. The thinnest bright film (`m = 0`): `d = λ/(4n)`." },
+    { "id": "st_bi_optgrating4", "cat": "example", "name": "Examples", "text": "**Grating**, 500 lines per mm, `λ = 600 nm`.\n1. `d = 2 × 10⁻⁶ m`\n2. `sin θ = 0.3, 0.6, 0.9`: `θ ≈ 17.5°, 36.9°, 64.2°`; the 4th order would need `sin θ = 1.2`: none.\n**Soap film** (`n = 1.33`), bright in `600 nm` light:\n3. `d = 600/(4 · 1.33) ≈ 113 nm`" }
+  ] },
 { "id": "pp_bi_wavbasic", "v": 1, "subject": "f:wav", "kind": "problem",
   "name": "Wave quantities from a description",
   "description": "Find the period, frequency, wavelength and speed of a wave from what is observed.",
