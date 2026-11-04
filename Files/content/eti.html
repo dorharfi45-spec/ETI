@@ -6841,13 +6841,315 @@
 </div>
 </section>
 
+<!-- ===== MEC16 · MOMENTUM AND ITS CONSERVATION ===== -->
+<section class="pane" id="pane-mec16">
+<h2><span class="num">16</span>Momentum and its conservation</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Momentum and Newton's second law</h4>
+  <ul class="idlist">
+    <li><code>p⃗ = m v⃗</code> &nbsp; (kg·m/s)</li>
+    <li><code>F⃗ = (dp⃗)/(dt)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>momentum</b> (linear momentum) of a body is its mass times its velocity: a vector pointing along the motion. A slow truck and a fast bullet can have the same momentum.</p>
+  <p class="muted"><b>The second law in its general form:</b> the net force equals the rate of change of momentum. With a constant mass, <code>dp/dt = m dv/dt = ma</code>, the familiar <code>F = ma</code>; but <code>F = dp/dt</code> also holds when the mass changes (a rocket burning fuel).</p>
+  <p class="muted"><b>So</b> a force acting for a time <code>Δt</code> changes the momentum by <code>FΔt</code>: a small force for a long time can do what a big force does in a short one.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>The law of conservation of momentum</h4>
+  <p><code>P⃗ = ∑ m_(i) v⃗_(i) = const</code> &nbsp; (no external forces)</p>
+  <p class="muted"><b>In words:</b> in a system of bodies on which no outside forces act (or they cancel), the <b>total</b> momentum never changes, whatever the bodies do to each other. It holds for each component separately: <code>P_(x)</code>, <code>P_(y)</code>, <code>P_(z)</code>.</p>
+  <p class="muted"><b>Why:</b> by the third law, every internal force comes with an equal and opposite partner; their momentum changes cancel in pairs.</p>
+  <p class="muted"><b>Recoil:</b> a 4 kg gun fires a 20 g bullet at <code>400 m/s</code>. Before, nothing moves (<code>P = 0</code>); after, <code>0.02 · 400 + 4v = 0</code>, so the gun kicks back at <code>2 m/s</code>. Two bodies pushed apart by a spring move off with <code>m₁v₁ = −m₂v₂</code>: the lighter one faster.</p>
+  <p class="muted"><b>Momentum and energy together:</b> momentum is conserved whenever there are no external forces, even with friction or a crash; mechanical energy only without non-conservative forces. Many problems need both.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Collisions</h4>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="before: a 2 kg ball moving at 3 metres per second toward a 1 kg ball at rest; after an elastic collision the 2 kg ball moves on at 1 metre per second and the 1 kg ball at 4 metres per second">
+    <path class="ax" d="M20 85 H400 M20 175 H400"/>
+    <circle class="box" cx="70" cy="60" r="24"/><circle class="box" cx="220" cy="66" r="18"/>
+    <path class="cv" d="M95 60 L153 60"/><path class="vh" d="M165 60 L153 65 L153 55 Z"/>
+    <circle class="box" cx="70" cy="150" r="24"/><circle class="box" cx="225" cy="156" r="18"/>
+    <path class="cv" d="M95 150 L113 150"/><path class="vh" d="M125 150 L113 155 L113 145 Z"/>
+    <path class="cv2" d="M250 150 L358 150"/><path class="vh2" d="M370 150 L358 155 L358 145 Z"/>
+    <text x="70" y="65" text-anchor="middle">2</text><text x="220" y="71" text-anchor="middle">1</text><text x="70" y="155" text-anchor="middle">2</text><text x="225" y="161" text-anchor="middle">1</text>
+    <text class="sm" x="130" y="50">3 m/s</text><text class="sm" x="104" y="140">1 m/s</text><text class="sm" x="300" y="140">4 m/s</text>
+    <text class="sm" x="330" y="30">before</text><text class="sm" x="330" y="120">after</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>m₁V₁ + m₂V₂ = m₁v₁ + m₂v₂</code> &nbsp; (always)</li>
+    <li><code>(1/2)m₁V₁² + (1/2)m₂V₂² = (1/2)m₁v₁² + (1/2)m₂v₂²</code> &nbsp; (elastic only)</li>
+  </ul>
+  <p class="muted"><b>In words</b> (<code>V</code> before, <code>v</code> after): in a collision the bodies push each other hard for a short time; outside forces are negligible then, so momentum is always conserved. An <b>elastic</b> collision also keeps the kinetic energy (hard balls, billiards). An <b>inelastic</b> one turns some into heat and deformation; a <b>perfectly inelastic</b> one, where the bodies stick together, loses the most.</p>
+  <p class="muted"><b>The picture:</b> 2 kg at <code>3 m/s</code> hits 1 kg at rest, elastically: momentum <code>6 = 2 · 1 + 1 · 4</code> ✓, energy <code>9 = 1 + 8</code> ✓.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Sticking together, collisions in a plane, changing mass</h4>
+  <ul data-cpart="desc">
+    <li><b>Perfectly inelastic:</b> <code>m₁V₁ + m₂V₂ = (m₁ + m₂)V</code>. A 1000 kg car at <code>20 m/s</code> hits a 1500 kg car at rest and they lock: <code>V = 8 m/s</code>; the kinetic energy drops from <code>200 kJ</code> to <code>80 kJ</code>.</li>
+    <li><b>Ballistic pendulum:</b> a bullet sticks in a hanging block, which then swings up by <code>h</code>. Two steps: the collision (momentum: <code>mv = (m + M)V</code>) and the swing (energy: <code>V = √(2gh)</code>). Energy is <b>not</b> conserved in the first step.</li>
+    <li><b>In a plane:</b> momentum is a vector, so it is conserved along <code>x</code> and along <code>y</code> separately: two equations (three with the energy, if elastic).</li>
+    <li><b>Changing mass</b> (a rocket, a cart filling with rain): <code>∑ m_(i)(t)v⃗_(i)(t) = const</code> for the whole system, gas or rain included.</li>
+  </ul>
+  <p class="muted"><b>Another frame:</b> the law holds in every inertial frame; sometimes a moving frame (in which the total momentum is zero) makes a problem easier.</p>
+</div>
+</section>
+
+<!-- ===== MEC17 · CIRCULAR MOTION ===== -->
+<section class="pane" id="pane-mec17">
+<h2><span class="num">17</span>Circular motion</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Describing circular motion</h4>
+  <ul class="idlist">
+    <li><code>f = 1/T</code></li>
+    <li><code>ω = (Δθ)/(Δt) = (2π)/T = 2πf</code></li>
+    <li><code>v = (2πR)/T = ωR</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a body going round a circle of radius <code>R</code> at a constant speed (<b>uniform circular motion</b>) takes the <b>period</b> <code>T</code> for one round; the <b>frequency</b> <code>f</code> is rounds per second (Hz). The <b>angular velocity</b> <code>ω</code> is the angle swept per second, in radians per second (Radians, Trig base).</p>
+  <p class="muted"><b>Linear vs. angular:</b> every point of a turning wheel has the same <code>ω</code>, but points further out move faster: <code>v = ωr</code>. The arc covered is <code>S = Rθ</code>.</p>
+  <p class="muted"><b>Example:</b> a wheel making 10 turns a second: <code>T = 0.1 s</code>, <code>ω = 20π ≈ 62.8 rad/s</code>.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Centripetal acceleration</h4>
+  <svg class="ill" viewBox="0 0 420 210" role="img" aria-label="a body on a circle; its velocity is tangent to the circle and its acceleration points to the centre">
+    <circle class="gd" cx="200" cy="115" r="80" fill="none"/>
+    <circle class="dot" cx="200" cy="115" r="3"/><circle class="dot" cx="261.3" cy="63.6" r="6"/>
+    <path class="ax" d="M200 115 L261.3 63.6"/>
+    <path class="cv" d="M261.3 63.6 L220.8 15.3"/><path class="vh" d="M213.1 6.1 L224.6 12.1 L217 18.5 Z"/>
+    <path class="cv3" d="M261.3 63.6 L236 84.8"/><path class="vh3" d="M226.8 92.5 L232.8 81 L239.2 88.6 Z"/>
+    <text x="196" y="22"><tspan font-weight="bold">v</tspan></text><text x="214" y="104"><tspan font-weight="bold">a</tspan></text><text class="sm" x="240" y="104">R</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>a_(R) = (v²)/R = ω²R</code> &nbsp; (toward the centre)</li>
+    <li><code>a_(T) = (dv)/(dt)</code> &nbsp; (along the motion, when the speed changes)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> even at a constant speed, a body on a circle accelerates, because the <b>direction</b> of its velocity keeps turning. That acceleration points to the centre (<b>centripetal</b>, "centre-seeking"), and it is bigger for faster motion and tighter circles. If the speed also changes, there is a second part along the path, <code>a_(T)</code>.</p>
+  <p class="muted"><b>The velocity</b> is always tangent to the circle, at right angles to the radius. Let go of a whirled stone and it flies off along the tangent, not outward.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Centripetal force</h4>
+  <p><code>F = m (v²)/R = mω²R</code> &nbsp; (net force toward the centre)</p>
+  <p class="muted"><b>In words:</b> to keep a body on a circle, the forces on it must add up to <code>mv²/R</code> toward the centre (the second law with the centripetal acceleration). It isn't a new kind of force: it is the job done by a tension, friction, gravity or a normal force.</p>
+  <ul data-cpart="expl">
+    <li><b>A car on a flat curve:</b> static friction supplies it, <code>μ_(s)mg ≥ mv²/R</code>, so <code>v_(max) = √(μ_(s)gR)</code>: on <code>R = 50 m</code> with <code>μ_(s) = 0.6</code>, about <code>17 m/s ≈ 62 km/h</code>.</li>
+    <li><b>A stone on a string:</b> the tension. 0.5 kg on 0.8 m at 2 turns a second (ignoring gravity): <code>ω = 4π</code>, tension <code>0.5 · (4π)² · 0.8 ≈ 63 N</code>.</li>
+    <li><b>The Earth's spin:</b> part of gravity is used up keeping us on our circle, so the measured <code>g</code> is a little smaller at the equator than at the poles.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Satellites and planets</h4>
+  <ul class="idlist">
+    <li><code>G (Mm)/(r²) = m (v²)/r</code></li>
+    <li><code>v = √((GM)/r)</code>, &nbsp; <code>T = (2πr^(3/2))/(√(GM))</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> for a satellite on a circular orbit of radius <code>r</code> (from the planet's centre), gravity is the centripetal force. The satellite's own mass cancels. Higher orbits are slower and take longer: <code>T²</code> is proportional to <code>r³</code> (Kepler's third law).</p>
+  <p class="muted"><b>Handy:</b> <code>GM = gR²</code> for the Earth. At 400 km up (<code>r ≈ 6771 km</code>): <code>v ≈ 7.7 km/s</code>, one round in about 92 minutes. A <b>geostationary</b> satellite takes exactly a day and stays above one point of the equator: <code>r ≈ 42 000 km</code>, about 36 000 km up.</p>
+  <p class="muted"><b>"Weightless" astronauts</b> are not out of gravity's reach (it is about 90% as strong at 400 km); they and their ship fall around the Earth together.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Fictitious forces in a rotating frame</h4>
+  <p>The Earth turns, so a frame fixed to it is not inertial. Seen from a rotating frame, bodies seem to feel extra (fictitious) forces:</p>
+  <ul data-cpart="desc">
+    <li><b>Centrifugal force</b> <code>mω²R</code>, pointing outward: what you "feel" pressing you to the door of a car in a curve. From the ground there is no such force; your body just tends to go straight.</li>
+    <li><b>Coriolis force:</b> acts on bodies moving in the rotating frame, sideways to their motion. It turns winds (to the right in the northern hemisphere), which makes storms swirl around low-pressure areas, and slowly turns the swing plane of <b>Foucault's pendulum</b>, a direct proof that the Earth rotates.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ===== MEC18 · ANGULAR MOMENTUM, TORQUE AND RIGID BODIES ===== -->
+<section class="pane" id="pane-mec18">
+<h2><span class="num">18</span>Angular momentum, torque and rigid bodies</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Rotational kinetic energy and moment of inertia</h4>
+  <ul class="idlist">
+    <li><code>K = (1/2)Iω²</code></li>
+    <li><code>I = ∑ m_(i)R_(i)²</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a rigid body turning at <code>ω</code> has kinetic energy: each small piece <code>m_(i)</code> at distance <code>R_(i)</code> from the axis moves at <code>ωR_(i)</code>. Adding <code>(1/2)m_(i)(ωR_(i))²</code> gives <code>(1/2)Iω²</code>, where <code>I</code>, the <b>moment of inertia</b>, plays the role the mass plays in <code>(1/2)mv²</code>.</p>
+  <p class="muted"><b>Mass far from the axis counts more</b> (it enters squared). A ring is harder to spin up than a disc of the same mass and size. <code>I</code> depends on the axis chosen. Unit: kg·m².</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Moments of inertia of common bodies</h4>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Body (mass M, about its centre)","I"]},{"c":["thin ring, radius R (axis through the centre, perpendicular)","MR²"]},{"c":["solid disc or cylinder, radius R","(1/2)MR²"]},{"c":["solid sphere, radius R","(2/5)MR²"]},{"c":["thin rod, length L (axis through the middle, perpendicular)","(1/12)ML²"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Where they come from:</b> <code>I = ∑ m_(i)R_(i)²</code> turns into an integral over the body. A ring has all its mass at <code>R</code>: <code>MR²</code>. A disc has mass at every distance from 0 to <code>R</code>, so it averages to half.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Angular momentum and its conservation</h4>
+  <ul class="idlist">
+    <li><code>J = m v r</code> &nbsp; (a point on a circle), &nbsp; <code>J⃗ = r⃗ × p⃗</code></li>
+    <li><code>J = Iω</code> &nbsp; (a rigid body about its axis)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> <b>angular momentum</b> is the "amount of rotation", as momentum is the amount of straight motion. The book writes it <code>J</code>. For a body moving past a point <code>O</code>, it is the momentum times the perpendicular distance from <code>O</code> to the line of motion; even a body moving in a straight line has angular momentum about a point not on its line.</p>
+  <p class="muted"><b>Conservation:</b> with no external torque, the angular momentum stays constant. A spinning skater who pulls in her arms (smaller <code>I</code>) spins faster: <code>I₁ω₁ = I₂ω₂</code>. From <code>I = 4</code> to <code>1.6 kg·m²</code>, 2 turns a second become 5. A planet's angular momentum about the Sun is conserved too: it moves faster when nearer (Kepler's second law).</p>
+  <p class="muted"><b>Energy is not conserved</b> in the skater's case: <code>(1/2)Iω²</code> grows, from about 316 J to 790 J; her arms did that work.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Torque as a vector</h4>
+  <ul class="idlist">
+    <li><code>N⃗ = r⃗ × F⃗</code>, &nbsp; <code>N = rF sin θ</code></li>
+    <li><code>N⃗ = (dJ⃗)/(dt)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the torque of a force about a point <code>O</code> is the cross product of the position <code>r⃗</code> (from <code>O</code> to where the force acts) with the force (Scalar and vector products); its size is the "force times lever arm" of The lever law and torques, and its direction is the axis it tries to turn about (right-hand rule). The book writes it <code>N</code> here (<code>M</code> earlier).</p>
+  <p class="muted"><b>The rotational second law:</b> torque changes angular momentum, as force changes momentum. No net torque, no change: that is the conservation law above. For a rigid body about a fixed axis, <code>N = Iα</code> with <code>α = dω/dt</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>The centre of mass</h4>
+  <ul class="idlist">
+    <li><code>R⃗ = (∑ m_(i) r⃗_(i))/M</code></li>
+    <li><code>F⃗ = M (d²R⃗)/(dt²)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the <b>centre of mass</b> is the mass-weighted average position of all the parts of a body (or system). Whatever the body does (spinning, tumbling), its centre of mass moves as if all the mass sat there and all the external forces acted there. A thrown hammer wobbles, but its centre of mass follows a clean parabola.</p>
+  <p class="muted"><b>Gravity</b> acts as if at the centre of mass: lifting it by <code>Δh</code> changes the potential energy by <code>MgΔh</code>. A body hung from a point settles with its centre of mass straight below that point.</p>
+  <p class="muted"><b>Equilibrium of a rigid body:</b> no net force <b>and</b> no net torque, <code>∑F⃗ = 0</code>, <code>∑N⃗ = 0</code>.</p>
+</div>
+</section>
+
+<!-- ===== MEC19 · HARMONIC MOTION ===== -->
+<section class="pane" id="pane-mec19">
+<h2><span class="num">19</span>Harmonic motion</h2>
+<div class="card" data-tags="Definition">
+  <h4>Simple harmonic motion</h4>
+  <ul class="idlist">
+    <li><code>F = −kx</code></li>
+    <li><code>a = −(k/m) x</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a body pulled back toward a point (the <b>equilibrium point</b>, <code>x = 0</code>) by a force proportional to its distance from it oscillates back and forth: <b>harmonic motion</b>. A mass on a spring is the standard example.</p>
+  <p class="muted"><b>How it goes:</b> released at <code>x = A</code>, it speeds up toward 0 (the force pulls it in), passes 0 at its top speed (no force there, but it keeps going), slows down on the other side and stops at <code>x = −A</code>, then comes back. Without friction it repeats forever. <code>A</code> is the <b>amplitude</b>.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The equation of motion and its solution</h4>
+  <ul class="idlist">
+    <li><code>(d²x)/(dt²) = −(k/m) x</code></li>
+    <li><code>x(t) = A cos ωt</code>, &nbsp; <code>ω² = k/m</code></li>
+    <li><code>T = (2π)/ω = 2π√(m/k)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="the position x against time is a cosine wave between A and minus A; one full wave takes the period T">
+    <path class="ax" d="M95 110 H410 M100 180 V35"/>
+    <path class="gd" d="M95 50 H410 M95 170 H410"/>
+    <path class="cv" d="M100 50 L110 55.2 L120 69.9 L130 91.5 L140 116.3 L150 140 L160 158.5 L170 168.7 L180 168.7 L190 158.5 L200 140 L210 116.3 L220 91.5 L230 69.9 L240 55.2 L250 50 L260 55.2 L270 69.9 L280 91.5 L290 116.3 L300 140 L310 158.5 L320 168.7 L330 168.7 L340 158.5 L350 140 L360 116.3 L370 91.5 L380 69.9 L390 55.2 L400 50"/>
+    <text class="sm" x="90" y="54" text-anchor="end">A</text><text class="sm" x="90" y="174" text-anchor="end">−A</text><text class="sm" x="106" y="40">x</text><text class="sm" x="404" y="124">t</text>
+    <path class="gd" d="M100 30 V36 M250 30 V36"/><text class="sm" x="175" y="28" text-anchor="middle">T</text>
+  </svg>
+  <p class="muted"><b>In words:</b> the second law gives a <b>differential equation</b>: an equation for the function <code>x(t)</code> itself. Sine and cosine solve it, because differentiating them twice gives back minus themselves times <code>ω²</code> (Differentiation formulas). The starting conditions (here: at rest at <code>x = A</code> when <code>t = 0</code>) pick the cosine.</p>
+  <p class="muted"><b>The period doesn't depend on the amplitude:</b> a big swing and a small swing take the same time. A heavier mass oscillates slower, a stiffer spring faster. <code>f = 1/T</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Velocity, acceleration and energy</h4>
+  <ul class="idlist">
+    <li><code>v = −Aω sin ωt</code>, &nbsp; <code>v_(max) = Aω</code> (at <code>x = 0</code>)</li>
+    <li><code>a = −Aω² cos ωt = −ω²x</code>, &nbsp; <code>a_(max) = Aω²</code> (at <code>x = ±A</code>)</li>
+    <li><code>E = (1/2)mv² + (1/2)kx² = (1/2)kA²</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the speed is greatest in the middle and zero at the ends; the acceleration the other way round. The energy keeps moving between kinetic (middle) and spring potential (ends), and the total stays <code>(1/2)kA²</code>.</p>
+  <p class="muted"><b>Example:</b> 0.5 kg on a spring with <code>k = 200 N/m</code>, amplitude 0.1 m: <code>ω = 20 rad/s</code>, <code>T ≈ 0.31 s</code>, <code>v_(max) = 2 m/s</code>, <code>a_(max) = 40 m/s²</code>, <code>E = 1 J</code>.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>A hanging spring and the pendulum</h4>
+  <ul class="idlist">
+    <li><code>x₀ = (mg)/k</code> &nbsp; (a hanging spring's new equilibrium)</li>
+    <li><code>T = 2π√(ℓ/g)</code> &nbsp; (simple pendulum, small swings)</li>
+  </ul>
+  <p class="muted"><b>A spring hanging vertically:</b> the weight stretches it by <code>x₀</code> to a new equilibrium; around that point the motion is the same harmonic motion, with the same <code>T = 2π√(m/k)</code>. Gravity only moves the centre.</p>
+  <p class="muted"><b>A pendulum</b> (a small mass on a string of length <code>ℓ</code>) swinging through small angles is harmonic too: the restoring force is about <code>mg</code> times the angle. Its period depends only on <code>ℓ</code> and <code>g</code>, not on the mass: a 1 m pendulum takes about 2 s. That is why pendulums kept time in clocks.</p>
+</div>
+</section>
+
+<!-- ===== MEC20 · VISCOSITY AND STOKES' LAW ===== -->
+<section class="pane" id="pane-mec20">
+<h2><span class="num">20</span>Viscosity and Stokes' law</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Drag and viscosity</h4>
+  <p><code>f_(v) = −Kηv</code></p>
+  <p class="muted"><b>In words:</b> a body moving slowly through a fluid feels a resisting force (drag) proportional to its speed and opposite to it. <code>K</code> depends on the body's size and shape; <code>η</code> (eta), the <b>viscosity</b>, is a property of the fluid: how "thick" it is. Honey and glycerin have a high viscosity, water a low one, air much lower still.</p>
+  <p class="muted"><b>Why:</b> the body drags the fluid next to it along; that layer drags the next one, and so on. Viscosity is the friction between layers of fluid sliding past each other.</p>
+  <p class="muted"><b>Units:</b> <code>kg/(m·s)</code> (= Pa·s); the old unit is the poise, <code>1 P = 0.1 kg/(m·s)</code>. Viscosity drops quickly as a liquid warms (hot oil flows easily).</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Stokes' law and terminal velocity</h4>
+  <ul class="idlist">
+    <li><code>K = 6πr</code>, &nbsp; so &nbsp; <code>f_(v) = 6πηrv</code> &nbsp; (a sphere)</li>
+    <li><code>v_(t) = (2r²g(ρ − ρ_(f)))/(9η)</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a ball falling in a liquid feels its weight down and the buoyancy and the drag up; its speed against time rises and levels off at the terminal velocity">
+    <rect class="band" x="40" y="20" width="110" height="160"/>
+    <circle class="box" cx="90" cy="100" r="14"/>
+    <path class="cv3" d="M90 114 L90 153"/><path class="vh3" d="M90 165 L85 153 L95 153 Z"/>
+    <path class="cv2" d="M80 86 L80 62"/><path class="vh2" d="M80 50 L85 62 L75 62 Z"/>
+    <path class="cv" d="M100 86 L100 55"/><path class="vh" d="M100 43 L105 55 L95 55 Z"/>
+    <text class="sm" x="98" y="178">mg</text><text class="sm" x="44" y="40">buoyancy</text><text class="sm" x="106" y="40">drag</text>
+    <path class="ax" d="M225 170 H410 M230 175 V30"/>
+    <path class="gd" d="M230 61 H410"/>
+    <path class="cv" d="M230 170 L240 148.1 L250 130.5 L260 116.5 L270 105.2 L280 96.2 L290 89 L300 83.2 L310 78.6 L320 74.9 L330 71.9 L340 69.5 L350 67.6 L360 66.1 L370 64.9 L380 63.9 L390 63.1 L400 62.5 L410 62"/>
+    <text class="sm" x="236" y="40">v</text><text class="sm" x="404" y="184">t</text><text class="sm" x="410" y="54" text-anchor="end">v_t</text>
+  </svg>
+  <p class="muted"><b>In words:</b> for a small sphere of radius <code>r</code>, Stokes (1845) found <code>K = 6πr</code>. A ball dropped into a liquid speeds up until the drag (growing with speed) plus the buoyancy balance its weight; from then on it falls at a constant <b>terminal velocity</b> <code>v_(t)</code>. Setting <code>mg = buoyancy + 6πηrv</code> with <code>m = (4/3)πr³ρ</code> gives the formula (<code>ρ</code> the ball's density, <code>ρ_(f)</code> the fluid's).</p>
+  <p class="muted"><b>Example:</b> a steel ball (<code>r = 1 mm</code>, <code>ρ = 7800 kg/m³</code>) in glycerin (<code>η = 1.5 kg/(m·s)</code>, <code>ρ_(f) = 1260 kg/m³</code>) sinks at <code>v_(t) ≈ 9.5 mm/s</code>. Timing such a fall measures <code>η</code>. Stokes' law holds only for slow motion; fast bodies (a car, a skydiver) feel a drag closer to <code>v²</code>.</p>
+</div>
+</section>
+
 </div><!-- /folder-mec -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"]],"m":[["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"]],"m":[["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_meccoll", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Collision and recoil problems",
+  "description": "Find velocities after a collision or an explosion with conservation of momentum (and of energy, if elastic).",
+  "uses": [["c", "mec16", "The law of conservation of momentum"], ["c", "mec16", "Collisions"], ["c", "mec16", "Sticking together, collisions in a plane, changing mass"], ["c", "mec12", "Gravitational potential energy and mechanical energy"]],
+  "parts": [
+    { "id": "st_bi_meccoll1", "cat": "stage", "name": "Before and after", "text": "Sketch both moments; choose a positive direction (two axes if the motion is in a plane). Velocities against it are negative." },
+    { "id": "st_bi_meccoll2", "cat": "stage", "name": "Momentum", "text": "Total momentum before = after (on each axis)." },
+    { "id": "st_bi_meccoll3", "cat": "stage", "name": "What kind of collision?", "text": "Elastic: add the kinetic-energy equation. They stick: one common velocity. Neither said: momentum alone (you need another fact)." },
+    { "id": "st_bi_meccoll4", "cat": "stage", "name": "Solve and check", "text": "Check the energy never grows (unless an explosion supplies it) and the signs make sense (the bodies don't pass through each other)." },
+    { "id": "st_bi_meccoll5", "cat": "example", "name": "Example — elastic", "text": "A 2 kg ball at `3 m/s` hits a 1 kg ball at rest, elastically.\n2. `6 = 2v₁ + v₂`\n3. `9 = v₁² + (1/2)v₂²` (energies with the ½ cancelled out of each side: `(1/2) · 2 · 9 = (1/2) · 2v₁² + (1/2) · 1 · v₂²`)\n4. `v₂ = 6 − 2v₁` gives `9 = v₁² + (1/2)(6 − 2v₁)²`, so `3v₁² − 12v₁ + 9 = 0`, `v₁ = 1` or `3`. `v₁ = 3` is \"no collision\"; so `v₁ = 1 m/s`, `v₂ = 4 m/s`." },
+    { "id": "st_bi_meccoll6", "cat": "example", "name": "Example — they stick", "text": "A 1000 kg car at `20 m/s` crashes into a 1500 kg car at rest; they lock together.\n2. `1000 · 20 = 2500V`, `V = 8 m/s`\n4. Kinetic energy: `200 kJ` before, `80 kJ` after; `120 kJ` went into deformation and heat." },
+    { "id": "st_bi_meccoll7", "cat": "example", "name": "Example — ballistic pendulum", "text": "A 10 g bullet hits a 2 kg hanging block and stays in it; the block swings up 5 cm. How fast was the bullet?\n3. Two stages. The swing (energy): `V = √(2 · 9.8 · 0.05) ≈ 0.99 m/s`. The hit (momentum, they stick): `0.01v = 2.01 · 0.99`\n4. `v ≈ 199 m/s`" }
+  ] },
+{ "id": "pp_bi_meccirc", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Circular motion problems",
+  "description": "Find a speed, period, force or radius for a body moving on a circle, including satellites.",
+  "uses": [["c", "mec17", "Describing circular motion"], ["c", "mec17", "Centripetal acceleration"], ["c", "mec17", "Centripetal force"], ["c", "mec17", "Satellites and planets"]],
+  "parts": [
+    { "id": "st_bi_meccirc1", "cat": "stage", "name": "Find the centre and the radius", "text": "Of the circle the body actually moves on." },
+    { "id": "st_bi_meccirc2", "cat": "stage", "name": "Which forces point to the centre?", "text": "Free-body diagram; take the components toward the centre (tension, friction, gravity, normal force)." },
+    { "id": "st_bi_meccirc3", "cat": "stage", "name": "Net force toward the centre = mv²/R", "text": "Use `v = ωR = 2πR/T` to switch between speed, angular velocity and period." },
+    { "id": "st_bi_meccirc4", "cat": "example", "name": "Example — a car on a curve", "text": "Fastest safe speed on a flat curve of radius 50 m, `μ_(s) = 0.6`?\n2. Only friction points to the centre; at most `μ_(s)mg`.\n3. `μ_(s)mg = mv²/R`, so `v = √(0.6 · 9.8 · 50) ≈ 17.1 m/s ≈ 62 km/h`. The car's mass doesn't matter." },
+    { "id": "st_bi_meccirc5", "cat": "example", "name": "Example — a satellite", "text": "A satellite 400 km above the Earth (`R = 6371 km`, `GM = gR² ≈ 3.98 × 10¹⁴ m³/s²`).\n1. `r = 6.771 × 10⁶ m`\n2. Gravity alone.\n3. `GM m/(r²) = mv²/r`: `v = √(GM/r) ≈ 7660 m/s`; `T = 2πr/v ≈ 5550 s ≈ 92.5 min`" }
+  ] },
+{ "id": "pp_bi_mecrot", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Using conservation of angular momentum",
+  "description": "Find the new rotation speed when a spinning body changes shape or a mass moves closer to the axis.",
+  "uses": [["c", "mec18", "Angular momentum and its conservation"], ["c", "mec18", "Rotational kinetic energy and moment of inertia"]],
+  "parts": [
+    { "id": "st_bi_mecrot1", "cat": "stage", "name": "Check: no external torque", "text": "Only internal forces change the shape (arms pulled in, a string pulled through a hole at the centre)." },
+    { "id": "st_bi_mecrot2", "cat": "stage", "name": "Angular momentum before = after", "text": "`I₁ω₁ = I₂ω₂`; for a point mass `mv₁r₁ = mv₂r₂`." },
+    { "id": "st_bi_mecrot3", "cat": "stage", "name": "Energy, if asked", "text": "`(1/2)Iω²` before and after: it is not conserved; the difference is the work done in changing the shape." },
+    { "id": "st_bi_mecrot4", "cat": "example", "name": "Example — a skater", "text": "A skater spins at 2 turns a second with `I = 4 kg·m²` and pulls her arms in to `I = 1.6 kg·m²`.\n2. `4 · 2 = 1.6ω₂`, `ω₂ = 5` turns a second\n3. `ω₁ = 4π`, `ω₂ = 10π rad/s`: `(1/2) · 4 · (4π)² ≈ 316 J` before, `(1/2) · 1.6 · (10π)² ≈ 790 J` after; her muscles supplied the difference." },
+    { "id": "st_bi_mecrot5", "cat": "example", "name": "Example — a string through a hole", "text": "A 2 kg puck on smooth ice circles at `3 m/s` on a 0.5 m string that passes through a hole; the string is pulled until the radius is 0.25 m.\n2. `2 · 3 · 0.5 = 2 · v · 0.25`, `v = 6 m/s`: half the radius, twice the speed." }
+  ] },
+{ "id": "pp_bi_mecshm", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Harmonic motion problems",
+  "description": "Find the period, frequency, top speed, top acceleration and energy of a mass on a spring or a pendulum.",
+  "uses": [["c", "mec19", "The equation of motion and its solution"], ["c", "mec19", "Velocity, acceleration and energy"], ["c", "mec19", "A hanging spring and the pendulum"]],
+  "parts": [
+    { "id": "st_bi_mecshm1", "cat": "stage", "name": "Find ω", "text": "Spring: `ω = √(k/m)`. Pendulum: `ω = √(g/ℓ)`. If `k` isn't given, find it from a stretch: `k = F/Δx`." },
+    { "id": "st_bi_mecshm2", "cat": "stage", "name": "Period and frequency", "text": "`T = 2π/ω`, `f = 1/T`." },
+    { "id": "st_bi_mecshm3", "cat": "stage", "name": "Extremes", "text": "`v_(max) = Aω` (at the centre), `a_(max) = Aω²` (at the ends), `F_(max) = kA`." },
+    { "id": "st_bi_mecshm4", "cat": "stage", "name": "Energy", "text": "`E = (1/2)kA²`; at any `x`: `(1/2)mv² = (1/2)k(A² − x²)`." },
+    { "id": "st_bi_mecshm5", "cat": "example", "name": "Example — a mass on a spring", "text": "0.5 kg on a spring with `k = 200 N/m`, pulled 0.1 m and released.\n1. `ω = √(200/0.5) = 20 rad/s`\n2. `T = 2π/20 ≈ 0.314 s`, `f ≈ 3.18 Hz`\n3. `v_(max) = 0.1 · 20 = 2 m/s`; `a_(max) = 0.1 · 400 = 40 m/s²`\n4. `E = (1/2) · 200 · 0.01 = 1 J`. Hung vertically it would first stretch `x₀ = 0.5 · 9.8/200 ≈ 2.5 cm`, then oscillate about that point with the same period." },
+    { "id": "st_bi_mecshm6", "cat": "example", "name": "Example — a pendulum", "text": "Period of a 1 m pendulum? And one 4 times longer?\n1. `ω = √(9.8/1) ≈ 3.13 rad/s`\n2. `T = 2π√(1/9.8) ≈ 2.0 s`; four times longer: twice the period, `≈ 4.0 s`." }
+  ] },
+{ "id": "pp_bi_mecstokes", "v": 1, "subject": "f:mec", "kind": "problem",
+  "name": "Terminal velocity in a viscous fluid",
+  "description": "Find how fast a small sphere settles in a liquid, or the liquid's viscosity from a measured speed.",
+  "uses": [["c", "mec20", "Stokes' law and terminal velocity"], ["c", "mec20", "Drag and viscosity"], ["c", "mec10", "Archimedes' principle"]],
+  "parts": [
+    { "id": "st_bi_mecstokes1", "cat": "stage", "name": "Three forces", "text": "Weight `(4/3)πr³ρg` down; buoyancy `(4/3)πr³ρ_(f)g` up; drag `6πηrv` up (against the motion)." },
+    { "id": "st_bi_mecstokes2", "cat": "stage", "name": "Balance at terminal speed", "text": "`(4/3)πr³(ρ − ρ_(f))g = 6πηrv_(t)`, so `v_(t) = 2r²g(ρ − ρ_(f))/(9η)`. Or solve it for `η`." },
+    { "id": "st_bi_mecstokes3", "cat": "stage", "name": "SI units and a check", "text": "Radius in metres, viscosity in `kg/(m·s)`. The result should be a slow speed; Stokes' law is for slow motion." },
+    { "id": "st_bi_mecstokes4", "cat": "example", "name": "Example", "text": "A steel ball, `r = 1 mm`, `ρ = 7800 kg/m³`, in glycerin, `η = 1.5 kg/(m·s)`, `ρ_(f) = 1260 kg/m³`.\n2. `v_(t) = (2 · (10⁻³)² · 9.8 · 6540)/(9 · 1.5) ≈ 9.5 × 10⁻³ m/s`\n3. About 1 cm a second, slow ✓. A ball twice as wide sinks 4 times as fast (`r²`)." }
+  ] },
 { "id": "pp_bi_mecwork", "v": 1, "subject": "f:mec", "kind": "problem",
   "name": "Work and the work–energy theorem",
   "description": "Find the work of each force on a body, the net work, and from it the change in speed.",
