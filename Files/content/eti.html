@@ -7087,12 +7087,328 @@
 </section>
 
 </div><!-- /folder-mec -->
+<div class="folder" id="folder-wav">
+
+<!-- ===== WAV1 · BASIC CONCEPTS ===== -->
+<section class="pane on" id="pane-wav1">
+<h2><span class="num">1</span>Basic concepts</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a wave is</h4>
+  <p>A <b>wave</b> is a disturbance that travels through a medium (a string, water, air), carrying <b>energy</b> from place to place, while the medium itself only moves back and forth around where it was. Shake one end of a stretched rope once and a single bump, a <b>pulse</b>, runs along it; shake it steadily up and down (harmonic motion) and a <b>sine wave</b> runs along it.</p>
+  <p class="muted"><b>The medium stays put:</b> a cork on the sea bobs up and down as waves pass under it, but isn't carried along. What travels is the <b>shape</b> of the disturbance and its energy.</p>
+  <p class="muted"><b>Why it matters:</b> sound, water waves, earthquakes, light and radio are all waves; the same few ideas (wavelength, frequency, speed, interference) describe all of them.</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Transverse and longitudinal waves</h4>
+  <svg class="ill" viewBox="0 0 420 170" role="img" aria-label="top: a transverse wave on a rope, the rope moves up and down while the wave moves along; bottom: a longitudinal wave on a spring, the coils crowd together and spread apart along the direction of travel">
+    <path class="ax" d="M20 50 H405"/>
+    <path class="cv" d="M30 50 L36 42.3 L42 35.3 L48 29.8 L54 26.2 L60 25 L66 26.2 L72 29.8 L78 35.3 L84 42.3 L90 50 L96 57.7 L102 64.7 L108 70.2 L114 73.8 L120 75 L126 73.8 L132 70.2 L138 64.7 L144 57.7 L150 50 L156 42.3 L162 35.3 L168 29.8 L174 26.2 L180 25 L186 26.2 L192 29.8 L198 35.3 L204 42.3 L210 50 L216 57.7 L222 64.7 L228 70.2 L234 73.8 L240 75 L246 73.8 L252 70.2 L258 64.7 L264 57.7 L270 50 L276 42.3 L282 35.3 L288 29.8 L294 26.2 L300 25 L306 26.2 L312 29.8 L318 35.3 L324 42.3 L330 50 L336 57.7 L342 64.7 L348 70.2 L354 73.8 L360 75 L366 73.8 L372 70.2 L378 64.7 L384 57.7 L390 50"/>
+    <text class="sm" x="22" y="18">transverse: the medium moves ↕, the wave moves →</text>
+    <path class="ax" d="M20 130 H405"/>
+    <circle class="dot" cx="34.1" cy="130" r="3"/><circle class="dot" cx="43.1" cy="130" r="3"/><circle class="dot" cx="54" cy="130" r="3"/><circle class="dot" cx="67.1" cy="130" r="3"/><circle class="dot" cx="82.1" cy="130" r="3"/><circle class="dot" cx="97.9" cy="130" r="3"/><circle class="dot" cx="112.9" cy="130" r="3"/><circle class="dot" cx="126" cy="130" r="3"/><circle class="dot" cx="136.9" cy="130" r="3"/><circle class="dot" cx="145.9" cy="130" r="3"/><circle class="dot" cx="154.1" cy="130" r="3"/><circle class="dot" cx="163.1" cy="130" r="3"/><circle class="dot" cx="174" cy="130" r="3"/><circle class="dot" cx="187.1" cy="130" r="3"/><circle class="dot" cx="202.1" cy="130" r="3"/><circle class="dot" cx="217.9" cy="130" r="3"/><circle class="dot" cx="232.9" cy="130" r="3"/><circle class="dot" cx="246" cy="130" r="3"/><circle class="dot" cx="256.9" cy="130" r="3"/><circle class="dot" cx="265.9" cy="130" r="3"/><circle class="dot" cx="274.1" cy="130" r="3"/><circle class="dot" cx="283.1" cy="130" r="3"/><circle class="dot" cx="294" cy="130" r="3"/><circle class="dot" cx="307.1" cy="130" r="3"/><circle class="dot" cx="322.1" cy="130" r="3"/><circle class="dot" cx="337.9" cy="130" r="3"/><circle class="dot" cx="352.9" cy="130" r="3"/><circle class="dot" cx="366" cy="130" r="3"/><circle class="dot" cx="376.9" cy="130" r="3"/><circle class="dot" cx="385.9" cy="130" r="3"/>
+    <text class="sm" x="22" y="105">longitudinal: the medium moves ↔, along the wave</text>
+  </svg>
+  <ul>
+    <li><b>Transverse:</b> the medium moves <b>across</b> the direction the wave travels (a rope shaken up and down, light).</li>
+    <li><b>Longitudinal:</b> the medium moves <b>along</b> it, in compressions and rarefactions (a spring pushed and pulled at one end, sound in air).</li>
+  </ul>
+  <p class="muted"><b>Solids carry both;</b> liquids and gases (deep inside) only longitudinal waves, because they can't resist being sheared. In an earthquake the longitudinal wave arrives first: it is faster.</p>
+</div>
+<div class="card" data-tags="Theorem">
+  <h4>The superposition principle</h4>
+  <p><b>When two waves meet, the displacement at each point is the sum of the displacements each wave would cause alone.</b></p>
+  <p class="muted"><b>In words:</b> two pulses running toward each other on a rope add up while they overlap (a tall bump if both are up; they may cancel if one is up and the other down), and then each continues on its way unchanged, as if the other had never been there.</p>
+  <p class="muted"><b>It explains</b> interference, standing waves and beats, and lets us build any complicated wave as a sum of simple sine waves.</p>
+</div>
+</section>
+
+<!-- ===== WAV2 · DESCRIBING A WAVE MATHEMATICALLY ===== -->
+<section class="pane" id="pane-wav2">
+<h2><span class="num">2</span>Describing a wave mathematically</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Amplitude, wavelength, period and frequency</h4>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="a sine wave: the amplitude A is the height of a crest above the middle line, the wavelength lambda is the distance between two neighbouring crests">
+    <path class="ax" d="M30 100 H410 M40 175 V20"/>
+    <path class="cv" d="M40 100 L48 84.5 L56 70.6 L64 59.5 L72 52.4 L80 50 L88 52.4 L96 59.5 L104 70.6 L112 84.5 L120 100 L128 115.5 L136 129.4 L144 140.5 L152 147.6 L160 150 L168 147.6 L176 140.5 L184 129.4 L192 115.5 L200 100 L208 84.5 L216 70.6 L224 59.5 L232 52.4 L240 50 L248 52.4 L256 59.5 L264 70.6 L272 84.5 L280 100 L288 115.5 L296 129.4 L304 140.5 L312 147.6 L320 150 L328 147.6 L336 140.5 L344 129.4 L352 115.5 L360 100 L368 84.5 L376 70.6 L384 59.5 L392 52.4 L400 50"/>
+    <path class="gd" d="M80 50 V35 M240 50 V35 M80 42 H240 M300 100 V150 M300 150 H320"/>
+    <text x="160" y="32" text-anchor="middle">λ</text><text x="312" y="130">A</text>
+    <text class="sm" x="46" y="28">ψ</text><text class="sm" x="404" y="114">x</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>v = λf = λ/T</code></li>
+    <li><code>f = 1/T</code> &nbsp; (Hz)</li>
+  </ul>
+  <p class="muted"><b>The quantities</b> (ψ, "psi", is the displacement of the medium from its rest position):</p>
+  <ul data-cpart="expl">
+    <li><b>Amplitude</b> <code>A</code>: the largest displacement, from the middle to a crest.</li>
+    <li><b>Wavelength</b> <code>λ</code>: the distance between two neighbouring crests (or any two points in the same state).</li>
+    <li><b>Period</b> <code>T</code>: the time for one full oscillation of a point; <b>frequency</b> <code>f</code>: oscillations per second.</li>
+  </ul>
+  <p class="muted"><b>Why <code>v = λf</code>:</b> in one period each point does one full oscillation and the wave moves on by exactly one wavelength. The <b>frequency</b> is set by the source; the <b>speed</b> by the medium; the wavelength follows from both.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The displacement in space and time</h4>
+  <ul class="idlist">
+    <li><code>ψ(x) = A sin(2π x/λ)</code> &nbsp; (a snapshot)</li>
+    <li><code>ψ(t) = A sin(2π t/T)</code> &nbsp; (one point)</li>
+    <li><code>ψ(x, t) = A sin(2π(x/λ − t/T))</code> &nbsp; (moving in <code>+x</code>)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> a photograph of the wave at one moment is a sine of position, repeating every <code>λ</code>; one point watched over time does harmonic motion, repeating every <code>T</code>. Both together give the travelling wave: a minus sign between the two terms means it moves toward <code>+x</code>, a plus sign toward <code>−x</code>.</p>
+  <p class="muted"><b>Points half a wavelength apart</b> are always opposite (one up when the other is down): they are out of <b>phase</b> by half a cycle.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Wave speed, dispersion and group velocity</h4>
+  <ul class="idlist">
+    <li><code>v = √(F₀/μ)</code> &nbsp; (a string: tension <code>F₀</code>, mass per length <code>μ</code>)</li>
+    <li><code>v = √((λg)/(2π))</code> &nbsp; (deep-water waves)</li>
+  </ul>
+  <p class="muted"><b>On a string</b> the speed depends only on the string: a tighter string (bigger force pulling each bit back) or a lighter one (less inertia) carries waves faster.</p>
+  <p class="muted"><b>Dispersion:</b> in some media the speed depends on the wavelength; then a pulse made of many sine waves changes shape as it travels. On deep water long waves run faster, which is why the long swell of a distant storm reaches the beach first. Light in glass disperses too (a prism splits the colours).</p>
+  <p class="muted"><b>Group velocity:</b> in a dispersive medium the "bunch" of waves (and the energy) moves at the <b>group velocity</b>, which can differ from the speed of the individual crests (the phase velocity).</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The wave equation of a string</h4>
+  <p><code>(∂²ψ)/(∂x²) = (1/(v²)) (∂²ψ)/(∂t²)</code></p>
+  <p class="muted"><b>In words:</b> Newton's second law for a small bit of the string gives this equation: the curvature of the string (left) decides each bit's acceleration (right). The <code>∂</code> means a derivative with respect to one variable while the other is held fixed (a <b>partial derivative</b>).</p>
+  <p class="muted"><b>Its solutions</b> are exactly the travelling waves: any shape <code>f(x − vt)</code> moving right and <code>g(x + vt)</code> moving left, and their sums, at the speed <code>v = √(F₀/μ)</code>. The sine wave is the special case of a harmonic source.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Energy and intensity; plane and spherical waves</h4>
+  <ul class="idlist">
+    <li><code>I = P/A</code> &nbsp; (W/m²)</li>
+    <li><code>I = P/(4πr²)</code> &nbsp; (a point source in all directions)</li>
+  </ul>
+  <p class="muted"><b>Energy:</b> each bit of the medium oscillates harmonically, with energy <code>(1/2)kA²</code>; so the energy a wave carries is proportional to the <b>square of its amplitude</b>. Twice the amplitude, four times the energy.</p>
+  <p class="muted"><b>Intensity</b> is the power passing through each square metre across the direction of travel. A <b>plane wave</b> (flat wavefronts) keeps its intensity. A <b>spherical wave</b> from a point source spreads its power over a sphere of area <code>4πr²</code>: the intensity falls as <code>1/r²</code>, the amplitude as <code>1/r</code>. A 100 W source gives about <code>0.88 W/m²</code> at 3 m.</p>
+  <p class="muted"><b>Wavefronts</b> are the surfaces of equal phase (all the crests); the waves travel perpendicular to them. Circular waves on water, spherical waves in air.</p>
+</div>
+</section>
+
+<!-- ===== WAV3 · SOUND ===== -->
+<section class="pane" id="pane-wav3">
+<h2><span class="num">3</span>Sound</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>The speed of sound</h4>
+  <ul class="idlist">
+    <li><code>v = √(B/ρ)</code></li>
+    <li><code>B = −(ΔP)/((ΔV)/V)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> sound is a longitudinal pressure wave. Its speed depends on how hard the medium is to squeeze (the <b>bulk modulus</b> <code>B</code>, the pressure change needed per fractional change of volume) and on its density <code>ρ</code>.</p>
+  <p class="muted"><b>Typical speeds:</b> air about <code>331 m/s</code> at 0°C and about <code>340 m/s</code> at room temperature (faster when warmer); water about <code>1500 m/s</code>; steel about <code>5000 m/s</code>. Liquids and solids are much denser than air, but far harder to squeeze, and that wins.</p>
+  <p class="muted"><b>Counting a storm's distance:</b> light arrives almost at once, thunder at about 340 m per second: 3 seconds between flash and bang is about 1 km.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Loudness: the decibel scale</h4>
+  <p><code>β = 10 log(I/I₀)</code> &nbsp; (dB), &nbsp; <code>I₀ = 10⁻¹² W/m²</code></p>
+  <p class="muted"><b>In words:</b> the ear hears intensities from about <code>10⁻¹² W/m²</code> (the threshold of hearing) to about <code>1 W/m²</code> (pain): a range of a million million. So loudness is measured on a logarithmic scale (Powers &amp; Logs): every factor of 10 in intensity adds 10 dB.</p>
+  <div class="bi-table" data-cpart="expl" data-table='{"rows":[{"c":["Sound","dB","I (W/m²)"]},{"c":["threshold of hearing","0","10⁻¹²"]},{"c":["whisper","20","10⁻¹⁰"]},{"c":["conversation","60","10⁻⁶"]},{"c":["busy street","70","10⁻⁵"]},{"c":["threshold of pain","120","1"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Doubling the intensity</b> (two equal sources instead of one) adds only about 3 dB, not double the decibels.</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Pitch and musical tones</h4>
+  <p>The <b>pitch</b> of a tone is its frequency: high notes, high frequency. The ear hears about 20 Hz to 20 000 Hz (less with age). A musical <b>octave</b> is a doubling of frequency: the A above middle C is 440 Hz, the next A 880 Hz.</p>
+  <p class="muted"><b>Why instruments sound different</b> playing the same note: a string or pipe vibrates at its basic frequency and, at the same time, at whole multiples of it (the overtones, Standing waves). The mix of overtones, the <b>timbre</b>, differs from instrument to instrument.</p>
+  <p class="muted"><b>The scale:</b> the notes of an octave are chosen with simple frequency ratios between them (9/8 for a whole tone, 16/15 for a semitone in the classic scale); instruments today divide the octave into 12 equal semitones.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The Doppler effect</h4>
+  <svg class="ill" viewBox="0 0 420 260" role="img" aria-label="circular wavefronts sent out by a source moving to the right are crowded together in front of it and spread apart behind it">
+    <circle class="gd" cx="242" cy="130" r="30" fill="none"/><circle class="gd" cx="224" cy="130" r="60" fill="none"/>
+    <circle class="gd" cx="206" cy="130" r="90" fill="none"/><circle class="gd" cx="188" cy="130" r="120" fill="none"/>
+    <circle class="dot" cx="260" cy="130" r="5"/>
+    <path class="cv" d="M268 130 L298 130"/><path class="vh" d="M310 130 L298 135 L298 125 Z"/>
+    <text class="sm" x="330" y="120">ahead: crowded,</text><text class="sm" x="330" y="134">higher pitch</text>
+    <text class="sm" x="10" y="120">behind:</text><text class="sm" x="10" y="134">lower pitch</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>f' = f (v ± v_(D))/v</code> &nbsp; (listener moving at <code>v_(D)</code>, source at rest)</li>
+    <li><code>f' = f v/(v ∓ v_(s))</code> &nbsp; (source moving at <code>v_(s)</code>, listener at rest)</li>
+  </ul>
+  <p class="muted"><b>In words:</b> when the source and the listener approach each other the pitch heard is <b>higher</b>; when they move apart, <b>lower</b>. Upper signs: approaching; lower signs: moving apart. <code>v</code> is the speed of sound.</p>
+  <p class="muted"><b>Why:</b> a listener moving toward the source meets the crests more often. A moving source chases its own waves ahead of it, squeezing them into a shorter wavelength in front (the picture) and stretching them behind. A passing ambulance's siren drops in pitch as it goes by.</p>
+  <p class="muted"><b>Uses:</b> police radar, measuring blood flow, and (with light) the speeds of stars and galaxies.</p>
+</div>
+</section>
+
+<!-- ===== WAV4 · REFLECTION AND TRANSMISSION ===== -->
+<section class="pane" id="pane-wav4">
+<h2><span class="num">4</span>Reflection and transmission</h2>
+<div class="card" data-tags="Explanation">
+  <h4>Reflection at the end of a string</h4>
+  <ul>
+    <li><b>Fixed end</b> (tied to a wall): the pulse comes back <b>upside down</b>: a phase change of half a cycle (180°). The wall pulls back on the string, making an inverted pulse.</li>
+    <li><b>Free end</b> (a ring sliding on a pole): the pulse comes back <b>the same way up</b>.</li>
+  </ul>
+  <p class="muted"><b>Why inverted at a fixed end:</b> the end can't move, so its displacement must stay 0. Superposition makes that happen if an inverted pulse comes back: the incoming and returning pulses cancel exactly at the wall.</p>
+  <p class="muted"><b>A sine wave reflected</b> from a fixed end runs back over the incoming one; the two together form a <b>standing wave</b> (next concept).</p>
+</div>
+<div class="card" data-tags="Explanation">
+  <h4>Waves crossing into another medium</h4>
+  <p>Where two media meet (a thin string tied to a thick one, shallow water next to deep), part of the wave is <b>reflected</b> and part is <b>transmitted</b> into the second medium.</p>
+  <ul data-cpart="expl">
+    <li>The <b>frequency stays the same</b> (each bit of the boundary is shaken at the incoming rate).</li>
+    <li>The <b>speed changes</b> (it belongs to the medium), so the wavelength changes: <code>λ₂/λ₁ = v₂/v₁</code>.</li>
+    <li>Going into a slower (heavier) medium, the reflected part is inverted, as at a fixed end; into a faster one, it isn't.</li>
+  </ul>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Refraction of waves</h4>
+  <p><code>(sin θ₁)/(sin θ₂) = v₁/v₂</code></p>
+  <p class="muted"><b>In words:</b> a wave reaching the boundary at an angle changes direction as it crosses, because the part of each wavefront that enters first changes speed first. Angles are measured from the line perpendicular to the boundary (the normal). Entering a slower medium the wave bends <b>toward</b> the normal; a faster one, away from it. The reflected wave leaves at the same angle it came in.</p>
+  <p class="muted"><b>Example:</b> water waves cross from deep water (<code>2 m/s</code>) into shallow water (<code>1.2 m/s</code>) at <code>40°</code>: <code>sin θ₂ = 0.6 sin 40° ≈ 0.386</code>, <code>θ₂ ≈ 22.7°</code>. Waves approaching a beach turn to run in almost straight. The same law for light: Optics.</p>
+</div>
+</section>
+
+<!-- ===== WAV5 · STANDING WAVES ===== -->
+<section class="pane" id="pane-wav5">
+<h2><span class="num">5</span>Standing waves</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a standing wave is</h4>
+  <p>Two sine waves of the same frequency and amplitude running in <b>opposite directions</b> add up (superposition) to a wave that doesn't travel: a <b>standing wave</b>. Some points, the <b>nodes</b>, never move; between them, the <b>antinodes</b> swing with the largest amplitude.</p>
+  <ul class="idlist">
+    <li>node to node: <code>λ/2</code>; &nbsp; node to antinode: <code>λ/4</code></li>
+  </ul>
+  <p class="muted"><b>No energy flows along it:</b> it just sloshes back and forth between the nodes. Every point oscillates at the same frequency, but with an amplitude that depends on where it is.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>A string fixed at both ends</h4>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="the first three modes of a string fixed at both ends: one loop, two loops and three loops">
+    <path class="ax" d="M60 15 V185 M360 15 V185"/>
+    <path class="cv" d="M60 40 L66 38.6 L72 37.2 L78 35.9 L84 34.5 L90 33.2 L96 31.9 L102 30.6 L108 29.4 L114 28.2 L120 27.1 L126 26 L132 24.9 L138 24 L144 23 L150 22.2 L156 21.4 L162 20.7 L168 20.1 L174 19.5 L180 19.1 L186 18.7 L192 18.4 L198 18.2 L204 18 L210 18 L216 18 L222 18.2 L228 18.4 L234 18.7 L240 19.1 L246 19.5 L252 20.1 L258 20.7 L264 21.4 L270 22.2 L276 23 L282 24 L288 24.9 L294 26 L300 27.1 L306 28.2 L312 29.4 L318 30.6 L324 31.9 L330 33.2 L336 34.5 L342 35.9 L348 37.2 L354 38.6 L360 40"/><path class="gd" d="M60 40 L66 41.4 L72 42.8 L78 44.1 L84 45.5 L90 46.8 L96 48.1 L102 49.4 L108 50.6 L114 51.8 L120 52.9 L126 54 L132 55.1 L138 56 L144 57 L150 57.8 L156 58.6 L162 59.3 L168 59.9 L174 60.5 L180 60.9 L186 61.3 L192 61.6 L198 61.8 L204 62 L210 62 L216 62 L222 61.8 L228 61.6 L234 61.3 L240 60.9 L246 60.5 L252 59.9 L258 59.3 L264 58.6 L270 57.8 L276 57 L282 56 L288 55.1 L294 54 L300 52.9 L306 51.8 L312 50.6 L318 49.4 L324 48.1 L330 46.8 L336 45.5 L342 44.1 L348 42.8 L354 41.4 L360 40"/>
+    <path class="cv" d="M60 100 L66 97.2 L72 94.5 L78 91.9 L84 89.4 L90 87.1 L96 84.9 L102 83 L108 81.4 L114 80.1 L120 79.1 L126 78.4 L132 78 L138 78 L144 78.4 L150 79.1 L156 80.1 L162 81.4 L168 83 L174 84.9 L180 87.1 L186 89.4 L192 91.9 L198 94.5 L204 97.2 L210 100 L216 102.8 L222 105.5 L228 108.1 L234 110.6 L240 112.9 L246 115.1 L252 117 L258 118.6 L264 119.9 L270 120.9 L276 121.6 L282 122 L288 122 L294 121.6 L300 120.9 L306 119.9 L312 118.6 L318 117 L324 115.1 L330 112.9 L336 110.6 L342 108.1 L348 105.5 L354 102.8 L360 100"/><path class="gd" d="M60 100 L66 102.8 L72 105.5 L78 108.1 L84 110.6 L90 112.9 L96 115.1 L102 117 L108 118.6 L114 119.9 L120 120.9 L126 121.6 L132 122 L138 122 L144 121.6 L150 120.9 L156 119.9 L162 118.6 L168 117 L174 115.1 L180 112.9 L186 110.6 L192 108.1 L198 105.5 L204 102.8 L210 100 L216 97.2 L222 94.5 L228 91.9 L234 89.4 L240 87.1 L246 84.9 L252 83 L258 81.4 L264 80.1 L270 79.1 L276 78.4 L282 78 L288 78 L294 78.4 L300 79.1 L306 80.1 L312 81.4 L318 83 L324 84.9 L330 87.1 L336 89.4 L342 91.9 L348 94.5 L354 97.2 L360 100"/>
+    <path class="cv" d="M60 160 L66 155.9 L72 151.9 L78 148.2 L84 144.9 L90 142.2 L96 140.1 L102 138.7 L108 138 L114 138.2 L120 139.1 L126 140.7 L132 143 L138 146 L144 149.4 L150 153.2 L156 157.2 L162 161.4 L168 165.5 L174 169.4 L180 172.9 L186 176 L192 178.6 L198 180.5 L204 181.6 L210 182 L216 181.6 L222 180.5 L228 178.6 L234 176 L240 172.9 L246 169.4 L252 165.5 L258 161.4 L264 157.2 L270 153.2 L276 149.4 L282 146 L288 143 L294 140.7 L300 139.1 L306 138.2 L312 138 L318 138.7 L324 140.1 L330 142.2 L336 144.9 L342 148.2 L348 151.9 L354 155.9 L360 160"/><path class="gd" d="M60 160 L66 164.1 L72 168.1 L78 171.8 L84 175.1 L90 177.8 L96 179.9 L102 181.3 L108 182 L114 181.8 L120 180.9 L126 179.3 L132 177 L138 174 L144 170.6 L150 166.8 L156 162.8 L162 158.6 L168 154.5 L174 150.6 L180 147.1 L186 144 L192 141.4 L198 139.5 L204 138.4 L210 138 L216 138.4 L222 139.5 L228 141.4 L234 144 L240 147.1 L246 150.6 L252 154.5 L258 158.6 L264 162.8 L270 166.8 L276 170.6 L282 174 L288 177 L294 179.3 L300 180.9 L306 181.8 L312 182 L318 181.3 L324 179.9 L330 177.8 L336 175.1 L342 171.8 L348 168.1 L354 164.1 L360 160"/>
+    <text class="sm" x="370" y="44">n = 1</text><text class="sm" x="370" y="104">n = 2</text><text class="sm" x="370" y="164">n = 3</text>
+  </svg>
+  <ul class="idlist">
+    <li><code>L = n λ/2</code> &nbsp; (<code>n = 1, 2, 3, …</code>)</li>
+    <li><code>f_(n) = n v/(2L) = n f₁</code>, &nbsp; <code>v = √(F₀/μ)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> both ends must be nodes, so only a whole number of half-wavelengths fits on the string: these are its <b>modes</b> (normal modes). The lowest, <code>f₁ = v/(2L)</code>, is the <b>fundamental</b>; the others are its whole multiples, the <b>harmonics</b>.</p>
+  <p class="muted"><b>Tuning:</b> a guitarist shortens the string with a finger (higher <code>f</code>) or tightens it (bigger <code>F₀</code>, higher <code>f</code>); thick strings (bigger <code>μ</code>) give low notes.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Standing sound waves in pipes</h4>
+  <ul class="idlist">
+    <li>open at both ends: <code>f_(n) = n v/(2L)</code>, &nbsp; <code>n = 1, 2, 3, …</code></li>
+    <li>closed at one end: <code>f_(n) = n v/(4L)</code>, &nbsp; <code>n = 1, 3, 5, …</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> in a pipe the air oscillates along it. At a closed end the air can't move (a node of motion); at an open end it moves freely (an antinode). An open pipe fits half-wavelengths like a string; a pipe closed at one end fits odd quarter-wavelengths, so its fundamental is an octave lower and only odd harmonics sound.</p>
+  <p class="muted"><b>Example</b> (<code>v = 340 m/s</code>): a 0.5 m pipe open at both ends: <code>f₁ = 340 Hz</code>; closed at one end: <code>170 Hz</code>. Organs, flutes and clarinets work this way.</p>
+</div>
+</section>
+
+<!-- ===== WAV6 · INTERFERENCE AND DIFFRACTION ===== -->
+<section class="pane" id="pane-wav6">
+<h2><span class="num">6</span>Interference and diffraction</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Interference</h4>
+  <ul class="idlist">
+    <li>constructive: <code>Δr = nλ</code></li>
+    <li>destructive: <code>Δr = (n + 1/2)λ</code>, &nbsp; <code>n = 0, ±1, ±2, …</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> two waves of the same frequency from two sources (in step with each other) overlap. Where they arrive crest on crest they reinforce (<b>constructive</b> interference); crest on trough, they cancel (<b>destructive</b>). Which happens at a point depends on the <b>path difference</b> <code>Δr</code>: the difference between its distances from the two sources.</p>
+  <p class="muted"><b>Example:</b> two loudspeakers in step, <code>λ = 1 m</code>; a listener 3 m from one and 4.5 m from the other: <code>Δr = 1.5 m = 1.5λ</code>, a quiet spot.</p>
+  <p class="muted"><b>Energy isn't lost:</b> it is moved from the quiet places to the loud ones.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>Two slits</h4>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="two slits A and B a distance d apart; rays to a far point at angle theta differ in length by d sin theta">
+    <path class="ax" d="M60 20 V80 M60 92 V128 M60 140 V180"/>
+    <circle class="dot" cx="60" cy="86" r="3"/><circle class="dot" cx="60" cy="134" r="3"/>
+    <path class="gd" d="M60 86 L400 30 M60 134 L400 78 M60 110 H400"/>
+    <path class="ax" d="M60 86 L67.8 133.2"/>
+    <path class="ax" d="M120 110 A60 60 0 0 0 119.2 100.2"/>
+    <text class="sm" x="44" y="90" text-anchor="end">A</text><text class="sm" x="44" y="138" text-anchor="end">B</text>
+    <text class="sm" x="30" y="114" text-anchor="end">d</text><text x="126" y="106">θ</text>
+    <text class="sm" x="76" y="160">d sin θ</text>
+  </svg>
+  <ul class="idlist">
+    <li>bright: <code>d sin θ = nλ</code></li>
+    <li>dark: <code>d sin θ = (n + 1/2)λ</code></li>
+    <li>small angles: fringe spacing <code>Δy = λL/d</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> a plane wave through two narrow slits a distance <code>d</code> apart makes them two sources in step. Toward a far point at angle <code>θ</code>, the ray from B is longer by <code>d sin θ</code>: whole wavelengths give bright fringes, half-wavelengths dark ones. On a screen at distance <code>L</code> the fringes are evenly spaced.</p>
+  <p class="muted"><b>Example:</b> <code>d = 0.5 mm</code>, <code>λ = 600 nm</code>, <code>L = 2 m</code>: <code>Δy = 2.4 mm</code>. For light this is Young's experiment, the proof that light is a wave (Optics).</p>
+</div>
+<div class="card" data-tags="Definition">
+  <h4>Diffraction</h4>
+  <p><b>Diffraction</b> is the spreading of a wave around obstacles and through openings, into the "shadow" region. <b>Huygens' principle</b> explains it: every point of a wavefront acts as a small source of circular waves, and the new wavefront is their common envelope.</p>
+  <ul data-cpart="expl">
+    <li><b>Opening much smaller than <code>λ</code>:</b> it acts like a single point source: the wave spreads out in circles in all forward directions.</li>
+    <li><b>Opening a few wavelengths wide:</b> the waves from different parts of the opening interfere: a strong central beam with weaker side lobes (dark directions where <code>b sin θ = nλ</code>, <code>b</code> the width).</li>
+    <li><b>Opening much wider than <code>λ</code>:</b> the wave goes straight through with a sharp shadow; diffraction only blurs the edges.</li>
+  </ul>
+  <p class="muted"><b>So</b> we hear around corners (sound: wavelengths of metres) but don't see around them (light: under a micrometre).</p>
+</div>
+</section>
+</div><!-- /folder-wav -->
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"]],"m":[["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"]],"m":[["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:wav","Physics course"],["s","f:mec","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
+{ "id": "pp_bi_wavbasic", "v": 1, "subject": "f:wav", "kind": "problem",
+  "name": "Wave quantities from a description",
+  "description": "Find the period, frequency, wavelength and speed of a wave from what is observed.",
+  "uses": [["c", "wav2", "Amplitude, wavelength, period and frequency"], ["c", "wav1", "What a wave is"]],
+  "parts": [
+    { "id": "st_bi_wavbasic1", "cat": "stage", "name": "Read off what is given", "text": "Distances between crests → `λ`. Crests passing in a time, or a point's oscillations → `T` or `f`. Height from the middle → `A` (half the crest-to-trough height)." },
+    { "id": "st_bi_wavbasic2", "cat": "stage", "name": "Connect them", "text": "`f = 1/T`, `v = λf = λ/T`." },
+    { "id": "st_bi_wavbasic3", "cat": "stage", "name": "Check", "text": "Units (m, s, Hz) and size: water waves move a few m/s, sound in air about 340 m/s." },
+    { "id": "st_bi_wavbasic4", "cat": "example", "name": "Example", "text": "From a pier you see crests 4 m apart, and 10 crests pass a post in 20 s; the crests are 0.6 m above the troughs.\n1. `λ = 4 m`; `T = 20/10 = 2 s`; `A = 0.3 m`\n2. `f = 0.5 Hz`; `v = 4 · 0.5 = 2 m/s`" }
+  ] },
+{ "id": "pp_bi_wavstring", "v": 1, "subject": "f:wav", "kind": "problem",
+  "name": "Harmonics of a string or a pipe",
+  "description": "Find the frequencies of the modes of a string fixed at both ends or of a pipe, or the tension needed for a given note.",
+  "uses": [["c", "wav5", "A string fixed at both ends"], ["c", "wav5", "Standing sound waves in pipes"], ["c", "wav2", "Wave speed, dispersion and group velocity"]],
+  "parts": [
+    { "id": "st_bi_wavstring1", "cat": "stage", "name": "Wave speed", "text": "String: `μ = m/L` (in kg/m), `v = √(F₀/μ)`. Pipe: the speed of sound." },
+    { "id": "st_bi_wavstring2", "cat": "stage", "name": "Which lengths fit", "text": "String or open pipe: `L = nλ/2`. Pipe closed at one end: `L = nλ/4`, odd `n` only." },
+    { "id": "st_bi_wavstring3", "cat": "stage", "name": "Frequencies", "text": "`f_(n) = v/λ_(n)`: all multiples of the fundamental (odd multiples for a closed pipe)." },
+    { "id": "st_bi_wavstring4", "cat": "example", "name": "Example — tuning a string", "text": "A 0.6 m string of mass 3 g should sound 220 Hz as its fundamental. What tension?\n1. `μ = 0.003/0.6 = 0.005 kg/m`\n2. `λ₁ = 2L = 1.2 m`\n3. `v = λ₁f₁ = 1.2 · 220 = 264 m/s`, so `F₀ = μv² = 0.005 · 264² ≈ 349 N`. Its harmonics: 440, 660, 880 Hz…" },
+    { "id": "st_bi_wavstring5", "cat": "example", "name": "Example — pipes", "text": "A 0.5 m pipe, `v = 340 m/s`.\n2. Open: `λ₁ = 1 m`; closed at one end: `λ₁ = 2 m`.\n3. Open: `340, 680, 1020 Hz…`; closed: `170, 510, 850 Hz…`" }
+  ] },
+{ "id": "pp_bi_wavdb", "v": 1, "subject": "f:wav", "kind": "problem",
+  "name": "Intensity and decibels",
+  "description": "Find the intensity of a point source at a distance, and convert between intensity and decibels.",
+  "uses": [["c", "wav3", "Loudness: the decibel scale"], ["c", "wav2", "Energy and intensity; plane and spherical waves"]],
+  "parts": [
+    { "id": "st_bi_wavdb1", "cat": "stage", "name": "Intensity at a distance", "text": "Point source of power `P`: `I = P/(4πr²)`. Twice as far: a quarter." },
+    { "id": "st_bi_wavdb2", "cat": "stage", "name": "To decibels", "text": "`β = 10 log(I/(10⁻¹²))`. Back: `I = 10⁻¹² · 10^(β/10)`." },
+    { "id": "st_bi_wavdb3", "cat": "stage", "name": "Shortcuts", "text": "×10 in intensity: +10 dB; ×2: +3 dB; `N` equal sources: `+10 log N` dB." },
+    { "id": "st_bi_wavdb4", "cat": "example", "name": "Example", "text": "A street's noise is `10⁻⁵ W/m²`.\n2. `β = 10 log(10⁻⁵/10⁻¹²) = 10 · 7 = 70 dB`\n3. Two such streets meeting: `≈ 73 dB`; ten: `80 dB`.\nA 100 W loudspeaker radiating evenly, at 3 m: `I = 100/(4π · 9) ≈ 0.88 W/m²`, about `119 dB`: close to the pain threshold." }
+  ] },
+{ "id": "pp_bi_wavdoppler", "v": 1, "subject": "f:wav", "kind": "problem",
+  "name": "The Doppler effect",
+  "description": "Find the frequency heard when the source or the listener moves.",
+  "uses": [["c", "wav3", "The Doppler effect"], ["c", "wav3", "The speed of sound"]],
+  "parts": [
+    { "id": "st_bi_wavdoppler1", "cat": "stage", "name": "Who moves, and which way?", "text": "Source or listener; toward each other or apart." },
+    { "id": "st_bi_wavdoppler2", "cat": "stage", "name": "Pick the formula and the sign", "text": "Moving listener: `f' = f(v ± v_(D))/v`. Moving source: `f' = f v/(v ∓ v_(s))`. Choose the signs so that approaching gives a **higher** frequency." },
+    { "id": "st_bi_wavdoppler3", "cat": "stage", "name": "Compute and check", "text": "A few percent shift for car speeds; higher when approaching ✓" },
+    { "id": "st_bi_wavdoppler4", "cat": "example", "name": "Example", "text": "A siren of 440 Hz, sound speed `340 m/s`, car speed `20 m/s` (72 km/h).\n2. Car approaching a standing listener: `440 · 340/(340 − 20) ≈ 467.5 Hz`; moving away: `440 · 340/360 ≈ 415.6 Hz`. A listener driving at 20 m/s toward a parked siren: `440 · 360/340 ≈ 465.9 Hz` (slightly different from the moving source).\n3. The pitch drops by about 50 Hz as the car passes." }
+  ] },
+{ "id": "pp_bi_wavinterf", "v": 1, "subject": "f:wav", "kind": "problem",
+  "name": "Interference of two sources",
+  "description": "Decide whether a point is loud or quiet, or find the bright fringes of two slits.",
+  "uses": [["c", "wav6", "Interference"], ["c", "wav6", "Two slits"]],
+  "parts": [
+    { "id": "st_bi_wavinterf1", "cat": "stage", "name": "Path difference", "text": "`Δr = |r₂ − r₁|` from the point to the two sources; or, for a far point at angle `θ` from two slits, `d sin θ`." },
+    { "id": "st_bi_wavinterf2", "cat": "stage", "name": "In wavelengths", "text": "Divide by `λ`. A whole number: constructive. A whole number and a half: destructive." },
+    { "id": "st_bi_wavinterf3", "cat": "stage", "name": "Positions of fringes", "text": "Small angles: bright fringes `λL/d` apart on a screen at distance `L`." },
+    { "id": "st_bi_wavinterf4", "cat": "example", "name": "Examples", "text": "**Two speakers** in step, `λ = 1 m`, a listener 3 m from one and 4.5 m from the other.\n1. `Δr = 1.5 m`\n2. `1.5λ`: destructive, a quiet spot.\n**Two slits** `d = 0.5 mm`, light `λ = 600 nm`, screen 2 m away.\n2. First bright fringe: `sin θ = λ/d = 1.2 × 10⁻³`\n3. `Δy = (600 × 10⁻⁹ · 2)/(0.5 × 10⁻³) = 2.4 × 10⁻³ m = 2.4 mm`" }
+  ] },
+{ "id": "pp_bi_wavsnell", "v": 1, "subject": "f:wav", "kind": "problem",
+  "name": "A wave crossing into another medium",
+  "description": "Find the new direction, wavelength and frequency of a wave entering a medium of different speed.",
+  "uses": [["c", "wav4", "Refraction of waves"], ["c", "wav4", "Waves crossing into another medium"]],
+  "parts": [
+    { "id": "st_bi_wavsnell1", "cat": "stage", "name": "Angles from the normal", "text": "Measure `θ₁` from the line perpendicular to the boundary." },
+    { "id": "st_bi_wavsnell2", "cat": "stage", "name": "The law", "text": "`sin θ₂ = (v₂/v₁) sin θ₁`." },
+    { "id": "st_bi_wavsnell3", "cat": "stage", "name": "Frequency and wavelength", "text": "`f` unchanged; `λ₂ = λ₁ v₂/v₁`." },
+    { "id": "st_bi_wavsnell4", "cat": "example", "name": "Example", "text": "Water waves (`λ = 3 m`) go from deep water at `2 m/s` into shallow water at `1.2 m/s`, at `40°` to the normal.\n2. `sin θ₂ = 0.6 · sin 40° ≈ 0.386`, `θ₂ ≈ 22.7°`: bent toward the normal.\n3. `f = 2/3 ≈ 0.67 Hz` stays; `λ₂ = 3 · 0.6 = 1.8 m`." }
+  ] },
 { "id": "pp_bi_meccoll", "v": 1, "subject": "f:mec", "kind": "problem",
   "name": "Collision and recoil problems",
   "description": "Find velocities after a collision or an explosion with conservation of momentum (and of energy, if elastic).",
