@@ -2429,11 +2429,12 @@
     <button data-folder="prb" data-group="stats"><span class="ficon">🎲</span>Probability</button>
     <button data-folder="cmb" data-group="stats"><span class="ficon">🔢</span>Combinatorics</button>
     <button data-folder="rv" data-group="stats"><span class="ficon">🎯</span>Random variables</button>
-    <button data-folder="mec" data-group="physc"><span class="ficon">🍎</span>Mechanics</button>
-    <button data-folder="wav" data-group="physc"><span class="ficon">🌊</span>Waves</button>
-    <button data-folder="opt" data-group="physc"><span class="ficon">🔦</span>Optics</button>
-    <button data-folder="elm" data-group="physc"><span class="ficon">🧲</span>Electricity and magnetism</button>
-    <button data-folder="mod" data-group="physc"><span class="ficon">⚛</span>Modern physics</button>
+    <button data-folder="mec" data-group="physics"><span class="ficon">🍎</span>Mechanics</button>
+    <button data-folder="thm" data-group="physics"><span class="ficon">🌡</span>Thermodynamics</button>
+    <button data-folder="wav" data-group="physics"><span class="ficon">🌊</span>Waves</button>
+    <button data-folder="opt" data-group="physics"><span class="ficon">🔦</span>Optics</button>
+    <button data-folder="elm" data-group="physics"><span class="ficon">🧲</span>Electricity and magnetism</button>
+    <button data-folder="mod" data-group="physics"><span class="ficon">⚛</span>Modern physics</button>
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
@@ -2640,14 +2641,18 @@
   <button data-target="mec10"><span class="tnum">10</span>Pressure and fluids</button>
   <button data-target="mec11"><span class="tnum">11</span>Work and kinetic energy</button>
   <button data-target="mec12"><span class="tnum">12</span>Potential energy and conservation of mechanical energy</button>
-  <button data-target="mec13"><span class="tnum">13</span>Heat and the molecular theory</button>
-  <button data-target="mec14"><span class="tnum">14</span>Conservation of energy and power</button>
-  <button data-target="mec15"><span class="tnum">15</span>Simple machines, the lever law and torques</button>
-  <button data-target="mec16"><span class="tnum">16</span>Momentum and its conservation</button>
-  <button data-target="mec17"><span class="tnum">17</span>Circular motion</button>
-  <button data-target="mec18"><span class="tnum">18</span>Angular momentum, torque and rigid bodies</button>
-  <button data-target="mec19"><span class="tnum">19</span>Harmonic motion</button>
-  <button data-target="mec20"><span class="tnum">20</span>Viscosity and Stokes' law</button>
+  <button data-target="mec14"><span class="tnum">13</span>Conservation of energy and power</button>
+  <button data-target="mec15"><span class="tnum">14</span>Simple machines, the lever law and torques</button>
+  <button data-target="mec16"><span class="tnum">15</span>Momentum and its conservation</button>
+  <button data-target="mec17"><span class="tnum">16</span>Circular motion</button>
+  <button data-target="mec18"><span class="tnum">17</span>Angular momentum, torque and rigid bodies</button>
+  <button data-target="mec19"><span class="tnum">18</span>Harmonic motion</button>
+  <button data-target="mec20"><span class="tnum">19</span>Viscosity and Stokes' law</button>
+</nav>
+<!-- Thermodynamics (B157): its concepts keep their old ids (mec13, mod2), so everything saved about them stays attached -->
+<nav class="tabbar" data-folder="thm" id="tabbar-thm">
+  <button data-target="mec13" class="on"><span class="tnum">1</span>Heat and the molecular theory</button>
+  <button data-target="mod2"><span class="tnum">2</span>The kinetic theory of gases</button>
 </nav>
 <nav class="tabbar" data-folder="wav" id="tabbar-wav">
   <button data-target="wav1" class="on"><span class="tnum">1</span>Basic concepts</button>
@@ -2683,15 +2688,14 @@
 </nav>
 <nav class="tabbar" data-folder="mod" id="tabbar-mod">
   <button data-target="mod1" class="on"><span class="tnum">1</span>The structure of matter</button>
-  <button data-target="mod2"><span class="tnum">2</span>The kinetic theory of gases</button>
-  <button data-target="mod3"><span class="tnum">3</span>Electricity and the building blocks of the atom</button>
-  <button data-target="mod4"><span class="tnum">4</span>Special relativity</button>
-  <button data-target="mod5"><span class="tnum">5</span>Photons: the particle nature of light</button>
-  <button data-target="mod6"><span class="tnum">6</span>The Bohr model</button>
-  <button data-target="mod7"><span class="tnum">7</span>Quantum mechanics</button>
-  <button data-target="mod8"><span class="tnum">8</span>The nucleus</button>
-  <button data-target="mod9"><span class="tnum">9</span>Radioactivity</button>
-  <button data-target="mod10"><span class="tnum">10</span>Fission, fusion and elementary particles</button>
+  <button data-target="mod3"><span class="tnum">2</span>Electricity and the building blocks of the atom</button>
+  <button data-target="mod4"><span class="tnum">3</span>Special relativity</button>
+  <button data-target="mod5"><span class="tnum">4</span>Photons: the particle nature of light</button>
+  <button data-target="mod6"><span class="tnum">5</span>The Bohr model</button>
+  <button data-target="mod7"><span class="tnum">6</span>Quantum mechanics</button>
+  <button data-target="mod8"><span class="tnum">7</span>The nucleus</button>
+  <button data-target="mod9"><span class="tnum">8</span>Radioactivity</button>
+  <button data-target="mod10"><span class="tnum">9</span>Fission, fusion and elementary particles</button>
 </nav>
 
 <main id="paneHost">
@@ -2723,7 +2727,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B156</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B157</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4734,7 +4738,9 @@ function __detabaseMain() {
     rv: { title: "Random variables — for Intro to Statistics",
       sub: 'Discrete random variables, special distributions, expectation and variance; two-dimensional and continuous variables, the normal distribution.' },
     mec: { title: "Mechanics — for Physics course",
-      sub: "Units, motion, vectors, Newton's laws, gravitation, friction and slopes, projectiles, statics, fluids, work and energy, heat, power, machines and torques, momentum and collisions, circular motion, rotation, oscillations, viscosity." },
+      sub: "Units, motion, vectors, Newton's laws, gravitation, friction and slopes, projectiles, statics, fluids, work and energy, power, machines and torques, momentum and collisions, circular motion, rotation, oscillations, viscosity." },
+    thm: { title: "Thermodynamics — for Physics course",
+      sub: "Heat as energy, specific heat and calorimetry, phase changes, conduction, the molecular theory, the gas laws and absolute temperature, the kinetic theory of gases." },
     wav: { title: "Waves — for Physics course",
       sub: "What a wave is, its mathematical description, sound and the Doppler effect, reflection and refraction, standing waves, interference and diffraction." },
     opt: { title: "Optics — for Physics course",
@@ -4742,7 +4748,7 @@ function __detabaseMain() {
     elm: { title: "Electricity and magnetism — for Physics course",
       sub: "Electrostatics: charge, Coulomb's law and the field, Gauss's law, potential, capacitance; direct current: Ohm's law, circuits, Kirchhoff, power, capacitors; magnetism: magnetic forces, fields of currents, induction, alternating current, electromagnetic waves." },
     mod: { title: "Modern physics — for Physics course",
-      sub: "Atoms and molecules, the kinetic theory of gases, the electron and the nucleus, special relativity, photons, the Bohr model, quantum mechanics, the nucleus, radioactivity, fission and fusion, elementary particles." }
+      sub: "Atoms and molecules, the electron and the nucleus, special relativity, photons, the Bohr model, quantum mechanics, the nucleus, radioactivity, fission and fusion, elementary particles." }
   };
   var folderButtons = Array.prototype.slice.call(document.querySelectorAll("#folderbar button"));
 
@@ -5045,7 +5051,6 @@ function __detabaseMain() {
     calc:    { name: "Calculus", icon: "∑" },
     stats:   { name: "Statistics", icon: "📊" },
     physics: { name: "Physics",  icon: "🔬" },
-    physc:   { name: "Physics course", icon: "📘", parent: "physics" },   // parent: where it sits until the owner moves it (B145)
     ee:      { name: "EE",       icon: "⚡" },
     me:      { name: "ME",       icon: "⚙️" }
   };
@@ -5057,21 +5062,16 @@ function __detabaseMain() {
     return BUILTIN_GROUPS[id] ? ((store.etiEdits && store.etiEdits.names && store.etiEdits.names["g|" + id]) || BUILTIN_GROUPS[id].name)
       : ((store.groups.filter(function (g) { return g.id === id; })[0] || {}).name || id);
   }
-  var BUILTIN_GROUP_ORDER = ["base", "calc", "stats", "physics", "physc", "ee", "me"];
+  var BUILTIN_GROUP_ORDER = ["base", "calc", "stats", "physics", "ee", "me"];
   function everyGroupId() {
     return BUILTIN_GROUP_ORDER.concat(store.groups.map(function (g) { return g.id; }));
   }
   // ---- folders inside folders (B94): store.groupParent = { <group id>: <parent group id> }, no entry = at the
   // top. In the UI a group is a "folder". Siblings are ordered by one shared list, store.order.etiGroups.
-  // A built-in folder with a `parent` sits there while it has no entry; moved to the top, its entry is "" (B145).
-  function groupParentRaw(gid) {
-    var gp = store.groupParent;
-    return gp && Object.prototype.hasOwnProperty.call(gp, gid) ? gp[gid] : (BUILTIN_GROUPS[gid] && BUILTIN_GROUPS[gid].parent) || null;
-  }
+  function groupParentRaw(gid) { return (store.groupParent || {})[gid] || null; }
   function groupSetParent(gid, parent) {
     store.groupParent = store.groupParent || {};
     if (parent) store.groupParent[gid] = parent;
-    else if (BUILTIN_GROUPS[gid] && BUILTIN_GROUPS[gid].parent) store.groupParent[gid] = "";
     else delete store.groupParent[gid];
   }
   function groupOrderSort(ids) {
@@ -9714,6 +9714,53 @@ function __detabaseMain() {
     store.schema = 9;
     try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
+  // schema 10 (B157): the built-in folder "Physics course" (physc) is gone — "Physics course" is a course label now.
+  // Whatever the owner put in or under it moves up to where that folder sat (as deleting a folder does). And the
+  // new subject Thermodynamics (thm) takes the concepts mec13 and mod2 and their methods: a saved place or method
+  // subject that still says the old subject is let go, so they follow the new home. No id changes.
+  (function migratePhysicsCourseFolder() {
+    if (store.schema >= 10) return;
+    try { window.DBX.put("__pre_s10", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    var G = "physc", gp = store.groupParent = store.groupParent || {}, ord = store.order = store.order || {};
+    var up = Object.prototype.hasOwnProperty.call(gp, G) ? gp[G] || null : "physics";   // no entry: it sat in Physics
+    if (up && !groupExists(up)) up = "physics";
+    var home = up || "physics";
+    if (store.builtinGroup) Object.keys(store.builtinGroup).forEach(function (f) {
+      if (store.builtinGroup[f] !== G) return;
+      if (up) store.builtinGroup[f] = up; else delete store.builtinGroup[f];
+    });
+    (store.subjects || []).forEach(function (s) { if (s.folder === "eti" && s.group === G) s.group = home; });
+    Object.keys(gp).forEach(function (k) { if (gp[k] === G) { if (up) gp[k] = up; else delete gp[k]; } });
+    delete gp[G];
+    (store.summaries || []).forEach(function (sm) { if (sm.groupId === G) { if (up && !groupParentRaw(up)) sm.groupId = up; else delete sm.groupId; } });
+    if (ord.etiKids && ord.etiKids[G]) {
+      var into = ord.etiKids[home] = ord.etiKids[home] || [];
+      ord.etiKids[G].forEach(function (k) { if (into.indexOf(k) < 0) into.push(k); });
+      delete ord.etiKids[G];
+    }
+    Object.keys(ord.etiKids || {}).forEach(function (g) {   // an order the owner set: Thermodynamics right after Mechanics
+      var l = ord.etiKids[g], i = l.indexOf("f:mec");
+      if (i >= 0 && l.indexOf("f:thm") < 0) l.splice(i + 1, 0, "f:thm");
+    });
+    if (ord.etiGroups) ord.etiGroups = ord.etiGroups.filter(function (x) { return x !== G; });
+    if (store.etiEdits && store.etiEdits.names) delete store.etiEdits.names["g|" + G];
+    if (store.ui) {
+      if (store.ui.group === G) store.ui.group = home;
+      if (store.ui.closedGroups) delete store.ui.closedGroups[G];
+      if (store.ui.lsum) delete store.ui.lsum["x|g:" + G];
+    }
+    [["mec13", "f:mec"], ["mod2", "f:mod"]].forEach(function (t) {
+      var k = "t|b:" + t[0];
+      if (store.place && store.place[k] && store.place[k].p === t[1]) delete store.place[k];
+    });
+    [["pp_bi_mecheat", "f:mec"], ["pp_bi_modgas", "f:mod"]].forEach(function (m) {
+      ((store.ps && store.ps.pages) || []).forEach(function (pg) {
+        if (pg.id === m[0] && pg.subject === m[1]) { pg.subject = "f:thm"; delete pg.folder; }
+      });
+    });
+    store.schema = 10;
+    try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
 
   function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function btnLabel(b) {   // "2.2 Unit circle"
@@ -10075,12 +10122,17 @@ function __detabaseMain() {
     var bl = JSON.parse($("biLinks").textContent), done = seed.l = seed.l || {};
     var newLinks = bl.c.map(function (p) { return ["c", p[0], p[1]]; }).concat(bl.m.map(function (p) { return ["m", p[0], p[1]]; }))
       .filter(function (p) { return !done[p.join(">")]; });
+    // built-in courses (#biLinks "courseDefs", B157): made once if no course has that name; a fixed id, so every
+    // device makes the same course. Deleted by the owner later → not made again.
+    var cdDone = seed.cd = seed.cd || {};
+    var newDefs = (bl.courseDefs || []).filter(function (d) { return !cdDone[d.id]; });
+    function defNamed(name) { return newDefs.some(function (d) { return String(d.name).trim().toLowerCase() === String(name).trim().toLowerCase(); }); }
     var coDone = seed.co = seed.co || {};
     var newCourses = (bl.courses || []).filter(function (e) {
       var name = e[e.length - 1];
-      return !coDone[e.join(">")] && (name === "x" || courseByName(name));
+      return !coDone[e.join(">")] && (name === "x" || courseByName(name) || defNamed(name));
     });
-    if (!methods.length && !typed.length && !newLinks.length && !newCourses.length) return;
+    if (!methods.length && !typed.length && !newLinks.length && !newCourses.length && !newDefs.length) return;
     try {
       if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", mainRead() || "");
     } catch (e) {}
@@ -10116,6 +10168,10 @@ function __detabaseMain() {
       if (p[0] === "c") { var l = conceptLinkMap(), a = l[p[1]] = l[p[1]] || []; if (a.indexOf(p[2]) < 0) a.push(p[2]); }
       else { var pg = psPageById(p[1]); if (pg) { pg.methodIds = pg.methodIds || []; if (pg.methodIds.indexOf(p[2]) < 0) pg.methodIds.push(p[2]); } }
       done[p.join(">")] = 1;
+    });
+    newDefs.forEach(function (d) {
+      if (!courseByName(d.name) && !byId(courses(), d.id)) courses().push({ id: d.id, name: d.name, color: COURSE_COLORS[courses().length % COURSE_COLORS.length] });
+      cdDone[d.id] = 1;
     });
     // built-in course labels: each set once, so the owner's own label (or removing it) wins
     newCourses.forEach(function (e) {
