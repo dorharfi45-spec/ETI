@@ -2032,6 +2032,276 @@
 </section>
 
 </div><!-- /folder-precalc -->
+<div class="folder" id="folder-la">
+
+<!-- ===== LA1 · GEOMETRIC VECTORS ===== -->
+<section class="pane on" id="pane-la1">
+<h2><span class="num">1</span>Geometric vectors</h2>
+<div class="card" data-tags="Definition">
+  <h4>What a vector is</h4>
+  <p>A <b>vector</b> is a quantity that has a <b>size</b> and a <b>direction</b>. It is drawn as a <b>directed segment</b>: an arrow. The arrow from point <code>A</code> to point <code>B</code> is written <code>AB⃗</code>; <code>A</code> is its <b>tail</b> (start) and <code>B</code> its <b>head</b> (end). A vector can also get one small letter: <code>a⃗</code> (books often print it in bold, <b>a</b>).</p>
+  <p>The <b>magnitude</b> (length) of a vector is written <code>|AB⃗|</code> or <code>|a⃗|</code>. It is a number, never negative. An ordinary number, with no direction, is called a <b>scalar</b>.</p>
+  <svg class="ill" viewBox="0 0 420 175" role="img" aria-label="left: the vector a from A to B; middle: an equal vector, the same length and direction drawn somewhere else; right: the opposite vector minus a, the same length pointing the other way">
+    <path class="cv" d="M30 140 L120.6 67.5"/><path class="vh" d="M130 60 L123.8 71.4 L117.5 63.6 Z"/>
+    <path class="cv" d="M165 140 L255.6 67.5"/><path class="vh" d="M265 60 L258.8 71.4 L252.5 63.6 Z"/>
+    <path class="cv3" d="M395 60 L304.4 132.5"/><path class="vh3" d="M295 140 L301.2 128.6 L307.5 136.4 Z"/>
+    <circle class="dot" cx="30" cy="140" r="3.5"/><circle class="dot" cx="130" cy="60" r="3.5"/>
+    <text x="16" y="156">A</text><text x="136" y="54">B</text>
+    <text x="64" y="92"><tspan font-weight="bold">a</tspan></text>
+    <text x="198" y="92"><tspan font-weight="bold">a</tspan></text>
+    <text x="352" y="92">−<tspan font-weight="bold">a</tspan></text>
+    <text class="sm" x="80" y="168" text-anchor="middle">a = AB</text>
+    <text class="sm" x="215" y="168" text-anchor="middle">an equal vector</text>
+    <text class="sm" x="345" y="168" text-anchor="middle">the opposite vector</text>
+  </svg>
+  <p class="muted"><b>Equal vectors:</b> two vectors are equal when they have the <b>same magnitude and the same direction</b>. Where they are drawn doesn't matter: you may slide an arrow anywhere (without turning or stretching it) and it is still the same vector. That is why the arrow in the middle of the picture is also <code>a⃗</code>.</p>
+  <p class="muted"><b>Direction includes the way it points.</b> <code>AB⃗</code> and <code>BA⃗</code> lie on the same line and have the same length, but they point opposite ways, so they are <b>not</b> equal: <code>BA⃗ = −AB⃗</code>. The vector <code>−a⃗</code> is the <b>opposite vector</b> of <code>a⃗</code>: the same length, the opposite direction.</p>
+  <p class="muted"><b>The zero vector</b> <code>0⃗</code> starts and ends at the same point (<code>AA⃗ = 0⃗</code>). Its length is <code>0</code> and it has no direction.</p>
+  <p class="muted"><b>Example:</b> in a parallelogram <code>ABCD</code>, opposite sides are parallel and equal, so <code>AB⃗ = DC⃗</code> and <code>AD⃗ = BC⃗</code>. But <code>CD⃗ = −AB⃗</code>: the same side walked the other way.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Adding and subtracting vectors</h4>
+  <ul class="idlist">
+    <li><code>AB⃗ + BC⃗ = AC⃗</code> &nbsp; (triangle rule)</li>
+    <li><code>a⃗ − b⃗ = a⃗ + (−b⃗)</code></li>
+    <li><code>a⃗ + b⃗ = b⃗ + a⃗</code>, &nbsp; <code>(a⃗ + b⃗) + c⃗ = a⃗ + (b⃗ + c⃗)</code></li>
+    <li><code>a⃗ + 0⃗ = a⃗</code>, &nbsp; <code>a⃗ + (−a⃗) = 0⃗</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 185" role="img" aria-label="left: the triangle rule, b starts at the head of a and the sum goes from the tail of a to the head of b; right: the parallelogram rule, a and b start at one point, a plus b is one diagonal and a minus b is the other diagonal, from the head of b to the head of a">
+    <path class="cv" d="M30 140 L111 68"/><path class="vh" d="M120 60 L114.4 71.7 L107.7 64.2 Z"/>
+    <path class="cv2" d="M120 60 L190.4 112.8"/><path class="vh2" d="M200 120 L187.4 116.8 L193.4 108.8 Z"/>
+    <path class="cv3" d="M30 140 L188.1 121.4"/><path class="vh3" d="M200 120 L188.7 126.4 L187.5 116.4 Z"/>
+    <path class="gd" d="M305 45 L390 75 M310 150 L390 75"/>
+    <path class="cv" d="M225 120 L296.2 53.2"/><path class="vh" d="M305 45 L299.7 56.9 L292.8 49.6 Z"/>
+    <path class="cv2" d="M225 120 L298.7 146"/><path class="vh2" d="M310 150 L297 150.7 L300.3 141.3 Z"/>
+    <path class="cv3" d="M225 120 L378.4 78.2"/><path class="vh3" d="M390 75 L379.7 83 L377.1 73.3 Z"/>
+    <path class="cv3" d="M310 150 L305.6 57"/><path class="vh3" d="M305 45 L310.6 56.7 L300.6 57.2 Z"/>
+    <text x="58" y="92"><tspan font-weight="bold">a</tspan></text><text x="168" y="82"><tspan font-weight="bold">b</tspan></text>
+    <text x="84" y="150"><tspan font-weight="bold">a</tspan> + <tspan font-weight="bold">b</tspan></text>
+    <text x="244" y="76"><tspan font-weight="bold">a</tspan></text><text x="256" y="154"><tspan font-weight="bold">b</tspan></text>
+    <text x="344" y="96"><tspan font-weight="bold">a</tspan> + <tspan font-weight="bold">b</tspan></text>
+    <text x="262" y="112"><tspan font-weight="bold">a</tspan> − <tspan font-weight="bold">b</tspan></text>
+    <text class="sm" x="115" y="178" text-anchor="middle">triangle rule</text><text class="sm" x="310" y="178" text-anchor="middle">parallelogram rule</text>
+  </svg>
+  <p class="muted"><b>Why the triangle rule works:</b> think of a vector as a <b>move</b>. Moving from <code>A</code> to <code>B</code> and then from <code>B</code> to <code>C</code> ends in the same place as moving from <code>A</code> straight to <code>C</code>. So put the tail of the second vector on the head of the first; the sum goes from the first tail to the last head.</p>
+  <p class="muted"><b>Chains:</b> the inner letters cancel like links of a chain: <code>AB⃗ + BC⃗ + CD⃗ = AD⃗</code>. A path that comes back to its start adds up to nothing: <code>AB⃗ + BC⃗ + CA⃗ = 0⃗</code>.</p>
+  <p class="muted"><b>The parallelogram rule</b> is the same thing drawn differently: start <code>a⃗</code> and <code>b⃗</code> at one point and complete the parallelogram. The diagonal from that point is <code>a⃗ + b⃗</code>. The order of adding doesn't matter (the two ways around the parallelogram reach the same corner).</p>
+  <p class="muted"><b>Subtracting</b> means adding the opposite vector. In the parallelogram, <code>a⃗ − b⃗</code> is the <b>other</b> diagonal, from the head of <code>b⃗</code> to the head of <code>a⃗</code> (check: <code>b⃗ + (a⃗ − b⃗) = a⃗</code>). A handy form: <code>AC⃗ − AB⃗ = BC⃗</code> (two vectors from the same point: the difference goes from the head of the second to the head of the first).</p>
+  <p class="muted"><b>Lengths don't add:</b> <code>|a⃗ + b⃗| ≤ |a⃗| + |b⃗|</code> (the triangle inequality, Geometry base), with equality only when <code>a⃗</code> and <code>b⃗</code> point the same way.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Multiplying a vector by a scalar</h4>
+  <ul class="idlist">
+    <li><code>|k a⃗| = |k| · |a⃗|</code></li>
+    <li><code>k &gt; 0</code>: the same direction as <code>a⃗</code>; &nbsp; <code>k &lt; 0</code>: the opposite direction; &nbsp; <code>k = 0</code>: <code>0⃗</code></li>
+    <li><code>k(a⃗ + b⃗) = k a⃗ + k b⃗</code>, &nbsp; <code>(k + m) a⃗ = k a⃗ + m a⃗</code>, &nbsp; <code>k(m a⃗) = (km) a⃗</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 190" role="img" aria-label="the vector a and its multiples: 2a twice as long, one half a half as long, both pointing the same way; minus a and minus 1.5 a pointing the opposite way">
+    <path class="cv" d="M40 25 L88 25"/><path class="vh" d="M100 25 L88 30 L88 20 Z"/>
+    <path class="cv" d="M40 60 L148 60"/><path class="vh" d="M160 60 L148 65 L148 55 Z"/>
+    <path class="cv" d="M40 95 L58 95"/><path class="vh" d="M70 95 L58 100 L58 90 Z"/>
+    <path class="cv3" d="M100 130 L52 130"/><path class="vh3" d="M40 130 L52 125 L52 135 Z"/>
+    <path class="cv3" d="M130 165 L52 165"/><path class="vh3" d="M40 165 L52 160 L52 170 Z"/>
+    <text x="110" y="30"><tspan font-weight="bold">a</tspan></text>
+    <text x="170" y="65">2<tspan font-weight="bold">a</tspan></text>
+    <text x="80" y="100">½<tspan font-weight="bold">a</tspan></text>
+    <text x="110" y="135">−<tspan font-weight="bold">a</tspan></text>
+    <text x="140" y="170">−1.5<tspan font-weight="bold">a</tspan></text>
+    <text class="sm" x="235" y="45">k &gt; 0: the same direction</text>
+    <text class="sm" x="235" y="75">k &lt; 0: the opposite direction</text>
+    <text class="sm" x="235" y="115">|k| &gt; 1: longer than a</text>
+    <text class="sm" x="235" y="145">|k| &lt; 1: shorter than a</text>
+  </svg>
+  <p class="muted"><b>In words:</b> multiplying a vector by a number <code>k</code> (a scalar) keeps it on the same line. The <b>sign</b> of <code>k</code> decides the direction and the <b>size</b> of <code>k</code> decides the length. So the direction flips <b>only when <code>k</code> is negative</b>: <code>−2a⃗</code> is twice as long as <code>a⃗</code> and points backwards; <code>0.5 a⃗</code> is half as long and points the same way; <code>−0.5 a⃗</code> is half as long and points backwards.</p>
+  <p class="muted"><b>Special cases:</b> <code>1 · a⃗ = a⃗</code>, <code>(−1) · a⃗ = −a⃗</code> (the opposite vector), <code>0 · a⃗ = 0⃗</code>. Dividing by a number <code>k ≠ 0</code> is multiplying by <code>1/k</code>.</p>
+  <p class="muted"><b>Calculating with vectors:</b> the rules above are the same as the rules for letters in algebra, so you can open brackets and collect like terms: <code>2(a⃗ + 3b⃗) − a⃗ = a⃗ + 6b⃗</code>. Two vectors are <b>not</b> multiplied together here; that is a different operation, the dot product (Algebraic vectors).</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Collinear vectors: one letter for one direction</h4>
+  <ul class="idlist">
+    <li><code>a⃗ ≠ 0⃗</code>: &nbsp; <code>b⃗ ∥ a⃗ ⇔ b⃗ = k a⃗</code> for some real number <code>k</code></li>
+    <li><code>A</code>, <code>B</code>, <code>C</code> lie on one line &nbsp; <code>⇔ AC⃗ = k AB⃗</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="two parallel dashed lines; on the lower line the vectors a and 2a, on the upper line minus a and 1.5 a, all multiples of a; on the right a vector b in another direction, not a multiple of a">
+    <path class="gd" d="M20 170 L400 56 M20 105 L360 3"/>
+    <path class="cv" d="M40 164 L98.5 146.4"/><path class="vh" d="M110 143 L99.9 151.2 L97.1 141.7 Z"/>
+    <path class="cv" d="M160 128 L288.5 89.4"/><path class="vh" d="M300 86 L289.9 94.2 L287.1 84.7 Z"/>
+    <path class="cv3" d="M140 69 L81.5 86.6"/><path class="vh3" d="M70 90 L80.1 81.8 L82.9 91.3 Z"/>
+    <path class="cv" d="M200 51 L293.5 22.9"/><path class="vh" d="M305 19.5 L294.9 27.7 L292.1 18.2 Z"/>
+    <path class="cv2" d="M320 185 L371.5 133.5"/><path class="vh2" d="M380 125 L375.1 137 L368 129.9 Z"/>
+    <text x="62" y="146"><tspan font-weight="bold">a</tspan></text>
+    <text x="222" y="98">2<tspan font-weight="bold">a</tspan></text>
+    <text x="96" y="70">−<tspan font-weight="bold">a</tspan></text>
+    <text x="238" y="26">1.5<tspan font-weight="bold">a</tspan></text>
+    <text x="364" y="168"><tspan font-weight="bold">b</tspan></text>
+    <text class="sm" x="20" y="196">along a line or any parallel line: k<tspan font-weight="bold">a</tspan></text>
+  </svg>
+  <p class="muted"><b>Collinear (parallel) vectors</b> are vectors that lie on one line or on parallel lines. The theorem says they are exactly the multiples of each other.</p>
+  <p class="muted"><b>One letter for a whole direction:</b> pick one vector <code>a⃗</code> in some direction (along some line). Every other vector along that line, or along any line parallel to it, is the same arrow stretched, shrunk or flipped, so it can be written as <code>k a⃗</code>: the same letter with a number in front. The number says how long it is compared with <code>a⃗</code> (<code>|k|</code> times) and whether it points the same way (<code>k &gt; 0</code>) or backwards (<code>k &lt; 0</code>). That is why one letter is chosen per direction in a figure, and a new letter is needed only for a new direction.</p>
+  <p class="muted"><b>Example:</b> in a trapezoid <code>ABCD</code> with <code>DC ∥ AB</code> and <code>DC</code> half as long, choose <code>a⃗ = AB⃗</code>. Then <code>DC⃗ = 1/(2) a⃗</code> and <code>CD⃗ = −1/(2) a⃗</code>: no new letter needed.</p>
+  <p class="muted"><b>Using it in proofs:</b> to show two segments are parallel, show one vector is a multiple of the other. For three points: if <code>AC⃗ = k AB⃗</code>, the two vectors are parallel <b>and</b> share the point <code>A</code>, so they lie on the same line: the points are collinear. Vectors that are not multiples of each other (different letters, like <code>a⃗</code> and <code>b⃗</code> in the picture) are called <b>non-collinear</b>.</p>
+</div>
+<div class="card" data-tags="Definition, Theorem">
+  <h4>Linear combinations and a basis</h4>
+  <ul class="idlist">
+    <li><b>Plane:</b> <code>a⃗</code>, <code>b⃗</code> non-collinear &nbsp; <code>⇒</code> &nbsp; every <code>v⃗ = α a⃗ + β b⃗</code>, in exactly one way</li>
+    <li><b>Space:</b> <code>a⃗</code>, <code>b⃗</code>, <code>c⃗</code> non-coplanar &nbsp; <code>⇒</code> &nbsp; every <code>v⃗ = α a⃗ + β b⃗ + γ c⃗</code>, in exactly one way</li>
+    <li><code>α a⃗ + β b⃗ = α' a⃗ + β' b⃗ &nbsp; ⇒ &nbsp; α = α'</code>, <code>β = β'</code> &nbsp; (comparing coefficients)</li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="from a point O: the vector a and the vector b in two directions; the vector v reaches its point by going twice a and then one and a half times b">
+    <path class="gd" d="M40 170 L220 130 L265 25"/>
+    <path class="cv2" d="M40 170 L65.3 111"/><path class="vh2" d="M70 100 L69.9 113 L60.7 109.1 Z"/>
+    <path class="cv" d="M40 170 L118.3 152.6"/><path class="vh" d="M130 150 L119.4 157.5 L117.2 147.7 Z"/>
+    <path class="cv3" d="M40 170 L254.9 31.5"/><path class="vh3" d="M265 25 L257.6 35.7 L252.2 27.3 Z"/>
+    <circle class="dot" cx="40" cy="170" r="3"/><text x="24" y="186">O</text>
+    <text x="80" y="180"><tspan font-weight="bold">a</tspan></text>
+    <text x="30" y="128"><tspan font-weight="bold">b</tspan></text>
+    <text x="172" y="160">2<tspan font-weight="bold">a</tspan></text>
+    <text x="250" y="92">1.5<tspan font-weight="bold">b</tspan></text>
+    <text x="104" y="88"><tspan font-weight="bold">v</tspan> = 2<tspan font-weight="bold">a</tspan> + 1.5<tspan font-weight="bold">b</tspan></text>
+    <text class="sm" x="290" y="130">line: 1 vector</text>
+    <text class="sm" x="290" y="155">plane: 2 non-collinear</text>
+    <text class="sm" x="290" y="180">space: 3 non-coplanar</text>
+  </svg>
+  <p class="muted"><b>A linear combination</b> of vectors is what you get by multiplying each by a number and adding: <code>α a⃗ + β b⃗</code>. A set of vectors that gives every vector in exactly one way is a <b>basis</b>, and the numbers <code>α</code>, <code>β</code> (<code>γ</code>) are the <b>components</b> of <code>v⃗</code> in that basis.</p>
+  <p class="muted"><b>How many vectors you need = the number of dimensions.</b> Multiples of one vector <code>k a⃗</code> only move you back and forth along one line: one dimension. To reach every point of a plane you need a second vector <code>b⃗</code> in a new direction (not a multiple of <code>a⃗</code>, so a "different letter"): go <code>α</code> times along <code>a⃗</code>, then <code>β</code> times along <code>b⃗</code>, like the picture. In space you need a third vector <code>c⃗</code> that sticks out of the plane of <code>a⃗</code> and <code>b⃗</code>. Three vectors are <b>coplanar</b> when, drawn from one point, they lie in one plane; then the third is already a combination of the other two and adds nothing new.</p>
+  <p class="muted"><b>Why the way is unique (plane):</b> if <code>α a⃗ + β b⃗ = α' a⃗ + β' b⃗</code>, then <code>(α − α') a⃗ = (β' − β) b⃗</code>. If <code>α ≠ α'</code>, dividing would make <code>a⃗</code> a multiple of <code>b⃗</code>, but they are non-collinear. So <code>α = α'</code>, and then <code>β = β'</code>. The same argument works in space.</p>
+  <p class="muted"><b>Why it matters:</b> this is the key to almost every problem with vectors in shapes. Write the same vector in two ways, then compare the coefficients of each basis vector to get equations.</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>Vector facts in shapes</h4>
+  <ul class="idlist">
+    <li>Midpoint <code>M</code> of <code>AB</code>, any point <code>O</code>: &nbsp; <code>OM⃗ = (OA⃗ + OB⃗)/2</code></li>
+    <li>Median: <code>M</code> the midpoint of <code>BC</code>: &nbsp; <code>AM⃗ = (AB⃗ + AC⃗)/2</code></li>
+    <li><code>P</code> on <code>AB</code>, <code>AP : PB = m : n</code>: &nbsp; <code>AP⃗ = (m)/(m + n) AB⃗</code></li>
+    <li>Midsegment: <code>N</code>, <code>P</code> midpoints of <code>AB</code>, <code>AC</code>: &nbsp; <code>NP⃗ = 1/(2) BC⃗</code></li>
+    <li>Parallelogram <code>ABCD</code>: &nbsp; <code>AC⃗ = AB⃗ + AD⃗</code>, &nbsp; <code>BD⃗ = AD⃗ − AB⃗</code></li>
+    <li>Centroid <code>G</code> (where the medians meet): &nbsp; <code>AG⃗ = 2/(3) AM⃗ = (AB⃗ + AC⃗)/3</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 200" role="img" aria-label="triangle ABC with a equal to AB and b equal to AC; M is the midpoint of BC and AM is the median; N and P are the midpoints of AB and AC, and the midsegment NP is parallel to BC and half as long">
+    <path class="ax" d="M170 30 L380 170"/>
+    <path class="cv" d="M40 170 L161.8 38.8"/><path class="vh" d="M170 30 L165.5 42.2 L158.2 35.4 Z"/>
+    <path class="cv2" d="M40 170 L368 170"/><path class="vh2" d="M380 170 L368 175 L368 165 Z"/>
+    <path class="cv3" d="M40 170 L263.5 103.4"/><path class="vh3" d="M275 100 L264.9 108.2 L262.1 98.6 Z"/>
+    <path class="cv3" d="M105 100 L200 163.3"/><path class="vh3" d="M210 170 L197.2 167.5 L202.8 159.2 Z"/>
+    <circle class="dot" cx="275" cy="100" r="3"/><circle class="dot" cx="105" cy="100" r="3"/><circle class="dot" cx="210" cy="170" r="3"/>
+    <text x="26" y="186">A</text><text x="166" y="22">B</text><text x="384" y="186">C</text>
+    <text x="282" y="96">M</text><text x="86" y="96">N</text><text x="204" y="190">P</text>
+    <text x="64" y="118"><tspan font-weight="bold">a</tspan></text><text x="300" y="190"><tspan font-weight="bold">b</tspan></text>
+    <text x="226" y="128">AM</text><text x="152" y="128">NP</text>
+  </svg>
+  <p class="muted"><b>Where the midpoint formula comes from:</b> <code>OM⃗ = OA⃗ + AM⃗ = OA⃗ + 1/(2) AB⃗</code> <code>= OA⃗ + 1/(2) (OB⃗ − OA⃗) = (OA⃗ + OB⃗)/2</code>. With <code>O = A</code> it gives the median formula.</p>
+  <p class="muted"><b>The midsegment:</b> <code>NP⃗ = NA⃗ + AP⃗ = −1/(2) a⃗ + 1/(2) b⃗</code> <code>= 1/(2) (b⃗ − a⃗) = 1/(2) BC⃗</code>. A multiple of <code>BC⃗</code>, so <code>NP ∥ BC</code> and <code>NP</code> is half of <code>BC</code> (Collinear vectors). Proofs like this are worked step by step in the method "Proving segments parallel or points collinear".</p>
+  <p class="muted"><b>In space (cubes, boxes, pyramids)</b> the same facts hold. In a box with edges <code>a⃗</code>, <code>b⃗</code>, <code>c⃗</code> from one corner, the face diagonals are <code>a⃗ + b⃗</code>, <code>a⃗ + c⃗</code>, <code>b⃗ + c⃗</code> and the space diagonal is <code>a⃗ + b⃗ + c⃗</code>.</p>
+</div>
+</section>
+
+<!-- ===== LA2 · ALGEBRAIC VECTORS ===== -->
+<section class="pane" id="pane-la2">
+<h2><span class="num">2</span>Algebraic vectors</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Coordinates in space and the components of a vector</h4>
+  <ul class="idlist">
+    <li><code>A(x₁, y₁, z₁)</code>, <code>B(x₂, y₂, z₂)</code>: &nbsp; <code>AB⃗ = (x₂ − x₁, y₂ − y₁, z₂ − z₁)</code></li>
+    <li><code>OP⃗ = (x, y, z)</code> for the point <code>P(x, y, z)</code> &nbsp; (position vector)</li>
+    <li><code>(x, y, z) = x i⃗ + y j⃗ + z k⃗</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 225" role="img" aria-label="three axes x, y and z meeting at the origin O; the point P with coordinates 3, 4, 2 and its position vector OP; dashed lines show 3 along x, 4 along y and 2 up">
+    <path class="ax" d="M130 150 L50 214 M130 150 L350 150 M130 150 L130 38"/>
+    <path class="gd" d="M70 198 L230 198 L290 150 M230 198 L230 118 M130 70 L230 118"/>
+    <path class="cv3" d="M130 150 L218.6 121.7"/><path class="vh3" d="M230 118 L220.1 126.4 L217 116.9 Z"/>
+    <circle class="dot" cx="230" cy="118" r="3.5"/>
+    <text x="114" y="146">O</text><text class="sm" x="40" y="214">x</text><text class="sm" x="352" y="146">y</text><text class="sm" x="136" y="40">z</text>
+    <text x="238" y="112">P(3, 4, 2)</text>
+    <text class="sm" x="80" y="186">3</text><text class="sm" x="255" y="178">4</text><text class="sm" x="236" y="160">2</text><text class="sm" x="118" y="74">2</text>
+    <text x="168" y="124"><tspan font-weight="bold">OP</tspan></text>
+  </svg>
+  <p class="muted"><b>Coordinates in space:</b> three number lines, the axes <code>x</code>, <code>y</code>, <code>z</code>, meet at right angles at the <b>origin</b> <code>O</code>. A point is given by three numbers, <code>P(x, y, z)</code>: how far to go along <code>x</code>, then along <code>y</code>, then up along <code>z</code>. In a plane there are only two axes and two numbers.</p>
+  <p class="muted"><b>The components of a vector</b> are the three moves from its tail to its head: how much <code>x</code> changes, how much <code>y</code> changes and how much <code>z</code> changes. So <b>head minus tail</b>: from <code>A(1, 2, 0)</code> to <code>B(4, 0, 5)</code> the vector is <code>AB⃗ = (3, −2, 5)</code>: 3 forward in <code>x</code>, 2 back in <code>y</code> (a negative component means moving the negative way along that axis), 5 up.</p>
+  <p class="muted"><b>A vector doesn't remember where it sits:</b> every arrow with the same three moves is the same vector (Equal vectors, Geometric vectors). So two vectors are equal exactly when all their components are equal. Going back: the head is the tail plus the vector, <code>B = A + AB⃗</code>.</p>
+  <p class="muted"><b>The link to a basis:</b> the vectors <code>i⃗ = (1, 0, 0)</code>, <code>j⃗ = (0, 1, 0)</code>, <code>k⃗ = (0, 0, 1)</code> have length 1 and point along the axes. They are three non-coplanar vectors, so they are a basis, and the components are just the coefficients: <code>(3, −2, 5) = 3i⃗ − 2j⃗ + 5k⃗</code>. (Mechanics writes them <code>x̂</code>, <code>ŷ</code>, <code>ẑ</code>.) The <b>position vector</b> of a point goes from the origin to it, so it has the same numbers as the point, and <code>AB⃗ = OB⃗ − OA⃗</code>.</p>
+</div>
+<div class="card" data-tags="Formula, Theorem">
+  <h4>Adding vectors and multiplying by a scalar with components</h4>
+  <ul class="idlist">
+    <li><code>(x₁, y₁, z₁) + (x₂, y₂, z₂) = (x₁ + x₂, y₁ + y₂, z₁ + z₂)</code></li>
+    <li><code>(x₁, y₁, z₁) − (x₂, y₂, z₂) = (x₁ − x₂, y₁ − y₂, z₁ − z₂)</code></li>
+    <li><code>k (x, y, z) = (kx, ky, kz)</code></li>
+    <li><code>b⃗ ∥ a⃗ ⇔ b⃗ = k a⃗</code>: every component multiplied by the same <code>k</code></li>
+    <li>Midpoint of <code>AB</code>: &nbsp; <code>M((x₁ + x₂)/2, (y₁ + y₂)/2, (z₁ + z₂)/2)</code></li>
+  </ul>
+  <p class="muted"><b>Why it works component by component:</b> the moves along <code>x</code>, <code>y</code> and <code>z</code> don't affect each other. Doing two moves one after the other (the triangle rule) adds the <code>x</code>-moves, adds the <code>y</code>-moves and adds the <code>z</code>-moves. Multiplying by <code>k</code> stretches every move by the same factor, so the vector keeps its line (and flips if <code>k &lt; 0</code>).</p>
+  <p class="muted"><b>Example:</b> <code>a⃗ = (2, −1, 4)</code>, <code>b⃗ = (1, 3, 0)</code>: <code>a⃗ + b⃗ = (3, 2, 4)</code>, <code>a⃗ − b⃗ = (1, −4, 4)</code>, <code>3a⃗ = (6, −3, 12)</code>, <code>2a⃗ − b⃗ = (3, −5, 8)</code>.</p>
+  <p class="muted"><b>The parallel test:</b> <code>(−6, 3, −12) = −3 · (2, −1, 4)</code>: the same <code>k = −3</code> for all three components, so the vectors are parallel and point opposite ways. <code>(4, −2, 7)</code> is not parallel to <code>(2, −1, 4)</code>: the first two components give <code>k = 2</code> but the third gives <code>7/4</code>. A zero component in one vector must be zero in the other too.</p>
+  <p class="muted"><b>The midpoint</b> is the average of the end points: it is the formula <code>OM⃗ = (OA⃗ + OB⃗)/2</code> (Vector facts in shapes) written with components.</p>
+</div>
+<div class="card" data-tags="Formula">
+  <h4>The magnitude of a vector</h4>
+  <ul class="idlist">
+    <li><code>|(x, y)| = √(x² + y²)</code></li>
+    <li><code>|(x, y, z)| = √(x² + y² + z²)</code></li>
+    <li><code>|AB| = √((x₂ − x₁)² + (y₂ − y₁)² + (z₂ − z₁)²)</code> &nbsp; (distance between points)</li>
+    <li>Unit vector in the direction of <code>a⃗</code>: &nbsp; <code>1/(|a⃗|) a⃗</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 225" role="img" aria-label="the vector from O to P(3, 4, 2) as the long side of a right triangle: one leg is the floor diagonal d from O to (3, 4, 0), the other leg goes straight up 2; the floor diagonal is itself the long side of a right triangle with legs 3 and 4">
+    <path class="ax" d="M130 150 L50 214 M130 150 L350 150 M130 150 L130 38"/>
+    <path class="gd" d="M70 198 L230 198 L290 150"/>
+    <path class="cv2" d="M130 150 L219.2 192.8"/><path class="vh2" d="M230 198 L217 197.3 L221.3 188.3 Z"/>
+    <path class="cv" d="M230 198 L230 118"/>
+    <path class="cv3" d="M130 150 L218.6 121.7"/><path class="vh3" d="M230 118 L220.1 126.4 L217 116.9 Z"/>
+    <path class="ax" d="M230 186 L220 181 L220 193"/>
+    <text x="114" y="146">O</text><text class="sm" x="40" y="214">x</text><text class="sm" x="352" y="146">y</text><text class="sm" x="136" y="40">z</text>
+    <text x="238" y="112">P(3, 4, 2)</text>
+    <text class="sm" x="84" y="186">3</text><text class="sm" x="262" y="178">4</text><text x="238" y="162">2</text>
+    <text x="160" y="190">d</text>
+    <text x="150" y="122">|<tspan font-weight="bold">v</tspan>|</text>
+    <text class="sm" x="290" y="60">d² = 3² + 4²</text>
+    <text class="sm" x="290" y="85">|<tspan font-weight="bold">v</tspan>|² = d² + 2²</text>
+  </svg>
+  <p class="muted"><b>Where the formula comes from: Pythagoras, twice.</b> First on the floor: going <code>x</code> along one axis and <code>y</code> along the other makes a right triangle, so the floor diagonal is <code>d = √(x² + y²)</code>. Then the vector is the long side (hypotenuse) of a second right triangle, with legs <code>d</code> (on the floor) and <code>z</code> (straight up): <code>|v⃗|² = d² + z² = x² + y² + z²</code>. Negative components don't matter: they are squared.</p>
+  <p class="muted"><b>Example:</b> <code>|(2, −3, 6)| = √(4 + 9 + 36) = √49 = 7</code>. For the picture, <code>|(3, 4, 2)| = √(9 + 16 + 4) = √29 ≈ 5.39</code>.</p>
+  <p class="muted"><b>Distance between two points</b> is the magnitude of the vector between them (head minus tail, then the formula). In the plane it is the distance formula of Geometry base.</p>
+  <p class="muted"><b>A unit vector</b> has length 1. Dividing a vector by its own length keeps its direction and makes the length 1: for <code>a⃗ = (2, −3, 6)</code> it is <code>(2/7, −3/7, 6/7)</code>. And <code>|k a⃗| = |k| · |a⃗|</code>, as in Multiplying a vector by a scalar.</p>
+</div>
+<div class="card" data-tags="Definition, Formula, Theorem">
+  <h4>The dot (scalar) product</h4>
+  <ul class="idlist">
+    <li><code>a⃗ · b⃗ = |a⃗| |b⃗| cos θ</code>, &nbsp; <code>θ</code> = the angle between them, <code>0° ≤ θ ≤ 180°</code></li>
+    <li><code>a⃗ · b⃗ = x₁x₂ + y₁y₂ + z₁z₂</code></li>
+    <li><code>a⃗ · b⃗ = b⃗ · a⃗</code>, &nbsp; <code>a⃗ · (b⃗ + c⃗) = a⃗ · b⃗ + a⃗ · c⃗</code>, &nbsp; <code>(k a⃗) · b⃗ = k (a⃗ · b⃗)</code></li>
+    <li><code>a⃗ · a⃗ = |a⃗|²</code></li>
+  </ul>
+  <svg class="ill" viewBox="0 0 420 195" role="img" aria-label="vectors a and b drawn from one point with the angle theta between them; a dashed line drops from the head of b to the line of a; the piece of a's line under b has length |b| cos theta">
+    <path class="cv" d="M60 160 L368 160"/><path class="vh" d="M380 160 L368 165 L368 155 Z"/>
+    <path class="cv2" d="M60 160 L210.1 56.8"/><path class="vh2" d="M220 50 L212.9 60.9 L207.3 52.7 Z"/>
+    <path class="gd" d="M220 50 L220 160"/>
+    <path class="ax" d="M210 160 L210 150 L220 150"/>
+    <path class="ax" d="M100 160 A40 40 0 0 0 93 137.4"/>
+    <text x="106" y="150">θ</text>
+    <text x="360" y="150"><tspan font-weight="bold">a</tspan></text><text x="122" y="94"><tspan font-weight="bold">b</tspan></text>
+    <path class="cv3" d="M60 172 L220 172"/>
+    <text class="sm" x="140" y="190" text-anchor="middle">|<tspan font-weight="bold">b</tspan>| cos θ</text>
+  </svg>
+  <p class="muted"><b>The result is a number</b> (a scalar), not a vector: that is where the name "scalar product" comes from. To find the angle <code>θ</code>, draw both vectors from the same point.</p>
+  <p class="muted"><b>What it measures:</b> <code>|b⃗| cos θ</code> is the "shadow" (projection) of <code>b⃗</code> on the line of <code>a⃗</code> (the orange piece in the picture). The dot product is the length of <code>a⃗</code> times that shadow: how much the two vectors go the same way. So its sign tells the angle: positive when <code>θ &lt; 90°</code>, zero when <code>θ = 90°</code>, negative when <code>θ &gt; 90°</code>.</p>
+  <p class="muted"><b>Why the two formulas agree:</b> the vectors <code>a⃗</code>, <code>b⃗</code> and <code>a⃗ − b⃗</code> make a triangle. The law of cosines (Geometry base) gives <code>|a⃗ − b⃗|² = |a⃗|² + |b⃗|² − 2|a⃗||b⃗| cos θ</code>. With components, the left side is <code>(x₁ − x₂)² + (y₁ − y₂)² + (z₁ − z₂)²</code> <code>= |a⃗|² + |b⃗|² − 2(x₁x₂ + y₁y₂ + z₁z₂)</code>. Comparing the two lines, <code>|a⃗||b⃗| cos θ = x₁x₂ + y₁y₂ + z₁z₂</code>.</p>
+  <p class="muted"><b>Example:</b> <code>(1, 2, 2) · (3, 0, −4) = 3 + 0 − 8 = −5</code>: negative, so the angle between them is obtuse.</p>
+  <p class="muted"><b>Careful:</b> there is no dividing by a vector, and <code>a⃗ · b⃗ = a⃗ · c⃗</code> does <b>not</b> mean <code>b⃗ = c⃗</code> (both could just make the same shadow on <code>a⃗</code>).</p>
+</div>
+<div class="card" data-tags="Theorem, Formula">
+  <h4>The angle between vectors and perpendicular vectors</h4>
+  <ul class="idlist">
+    <li><code>cos θ = (a⃗ · b⃗)/(|a⃗| |b⃗|)</code> &nbsp; (<code>a⃗</code>, <code>b⃗ ≠ 0⃗</code>)</li>
+    <li><code>a⃗ ⊥ b⃗ ⇔ a⃗ · b⃗ = 0</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> divide the dot product by both lengths to get <code>cos θ</code>, then <code>θ = arccos(…)</code>. <code>arccos</code> gives angles from <code>0°</code> to <code>180°</code>, exactly the possible angles between two vectors, so there is no quarter to fix (Inverse trig, Trig base).</p>
+  <p class="muted"><b>Perpendicular:</b> <code>cos 90° = 0</code>, so two (non-zero) vectors are perpendicular exactly when their dot product is <code>0</code>. Example: <code>(2, −1, 3) · (1, 5, 1) = 2 − 5 + 3 = 0</code>, so they are perpendicular.</p>
+  <p class="muted"><b>Example:</b> <code>a⃗ = (1, 1, 0)</code>, <code>b⃗ = (0, 1, 1)</code>: <code>a⃗ · b⃗ = 1</code>, <code>|a⃗| = |b⃗| = √2</code>, so <code>cos θ = 1/2</code> and <code>θ = 60°</code>.</p>
+  <p class="muted"><b>An angle in a shape:</b> for the angle of triangle <code>ABC</code> at <code>A</code>, use two vectors that <b>both start at <code>A</code></b>: <code>AB⃗</code> and <code>AC⃗</code>. Using <code>BA⃗</code> instead flips one of them and gives <code>180° − θ</code>. The angle between two <b>lines</b> is never more than <code>90°</code>: if <code>cos θ</code> comes out negative, the angle between the lines is <code>180° − θ</code>.</p>
+</div>
+</section>
+
+</div><!-- /folder-la -->
 
 <div class="folder" id="folder-fn">
 
@@ -8324,7 +8594,7 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"courseDefs":[{"id":"co_bi_physics","name":"Physics course"}],"c":[["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"],["b:elm6","b:elm4"],["b:elm7","b:elm6"],["b:elm8","b:elm7"],["b:elm8","b:mec14"],["b:elm9","b:elm5"],["b:elm9","b:elm7"],["b:elm9","b:p2"],["b:elm10","b:elm2"],["b:elm10","b:mec4"],["b:elm10","b:mec17"],["b:elm11","b:elm10"],["b:elm11","b:elm6"],["b:elm12","b:elm11"],["b:elm12","b:elm3"],["b:elm13","b:elm12"],["b:elm13","b:dv1"],["b:elm14","b:elm13"],["b:elm14","b:elm8"],["b:elm15","b:elm13"],["b:elm15","b:opt1"],["b:mod2","b:mod1"],["b:mod2","b:mec13"],["b:mod2","b:mec16"],["b:mod3","b:mod1"],["b:mod3","b:elm10"],["b:mod3","b:elm6"],["b:mod4","b:mec8"],["b:mod4","b:opt1"],["b:mod5","b:mod4"],["b:mod5","b:opt1"],["b:mod5","b:elm4"],["b:mod6","b:mod5"],["b:mod6","b:mod3"],["b:mod6","b:mec17"],["b:mod7","b:mod6"],["b:mod7","b:wav6"],["b:mod8","b:mod3"],["b:mod8","b:mod4"],["b:mod9","b:mod8"],["b:mod9","b:p2"],["b:mod10","b:mod8"],["b:mod10","b:mod9"]],"m":[["pp_bi_modbohr","pp_bi_modphoton"],["pp_bi_moddebroglie","pp_bi_modbohr"],["pp_bi_moddecay","pp_bi_modbind"],["pp_bi_modrel","pp_bi_modgas"],["pp_bi_modphoton","pp_bi_modrel"],["pp_bi_modelec","pp_bi_modgas"],["pp_bi_elmbfield","pp_bi_elmlorentz"],["pp_bi_elminduct","pp_bi_elmbfield"],["pp_bi_elmac","pp_bi_elminduct"],["pp_bi_elmkirch","pp_bi_elmres"],["pp_bi_elmpower","pp_bi_elmres"],["pp_bi_elmcapc","pp_bi_elmcap"],["pp_bi_elmrc","pp_bi_elmcapc"],["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mod","Physics course"],["c","elm14","Coils and capacitors in AC circuits","x"],["c","elm9","Charging and discharging through a resistor","x"],["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["s","f:thm","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"courseDefs":[{"id":"co_bi_physics","name":"Physics course"}],"c":[["b:la1","b:g2"],["b:la1","b:g3"],["b:la2","b:la1"],["b:la2","b:g7"],["b:la2","b:g6"],["b:la2","b:s4"],["b:mec3","b:la1"],["b:mec4","b:la2"],["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"],["b:elm6","b:elm4"],["b:elm7","b:elm6"],["b:elm8","b:elm7"],["b:elm8","b:mec14"],["b:elm9","b:elm5"],["b:elm9","b:elm7"],["b:elm9","b:p2"],["b:elm10","b:elm2"],["b:elm10","b:mec4"],["b:elm10","b:mec17"],["b:elm11","b:elm10"],["b:elm11","b:elm6"],["b:elm12","b:elm11"],["b:elm12","b:elm3"],["b:elm13","b:elm12"],["b:elm13","b:dv1"],["b:elm14","b:elm13"],["b:elm14","b:elm8"],["b:elm15","b:elm13"],["b:elm15","b:opt1"],["b:mod2","b:mod1"],["b:mod2","b:mec13"],["b:mod2","b:mec16"],["b:mod3","b:mod1"],["b:mod3","b:elm10"],["b:mod3","b:elm6"],["b:mod4","b:mec8"],["b:mod4","b:opt1"],["b:mod5","b:mod4"],["b:mod5","b:opt1"],["b:mod5","b:elm4"],["b:mod6","b:mod5"],["b:mod6","b:mod3"],["b:mod6","b:mec17"],["b:mod7","b:mod6"],["b:mod7","b:wav6"],["b:mod8","b:mod3"],["b:mod8","b:mod4"],["b:mod9","b:mod8"],["b:mod9","b:p2"],["b:mod10","b:mod8"],["b:mod10","b:mod9"]],"m":[["pp_bi_laparallel","pp_bi_lafig"],["pp_bi_lameet","pp_bi_lafig"],["pp_bi_lacoll","pp_bi_lapoints"],["pp_bi_laangle","pp_bi_lapoints"],["pp_bi_lamissing","pp_bi_lapoints"],["pp_bi_lacoord","pp_bi_lapoints"],["pp_bi_lacoord","pp_bi_laangle"],["pp_bi_modbohr","pp_bi_modphoton"],["pp_bi_moddebroglie","pp_bi_modbohr"],["pp_bi_moddecay","pp_bi_modbind"],["pp_bi_modrel","pp_bi_modgas"],["pp_bi_modphoton","pp_bi_modrel"],["pp_bi_modelec","pp_bi_modgas"],["pp_bi_elmbfield","pp_bi_elmlorentz"],["pp_bi_elminduct","pp_bi_elmbfield"],["pp_bi_elmac","pp_bi_elminduct"],["pp_bi_elmkirch","pp_bi_elmres"],["pp_bi_elmpower","pp_bi_elmres"],["pp_bi_elmcapc","pp_bi_elmcap"],["pp_bi_elmrc","pp_bi_elmcapc"],["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mod","Physics course"],["c","elm14","Coils and capacitors in AC circuits","x"],["c","elm9","Charging and discharging through a resistor","x"],["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["s","f:thm","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
 { "id": "pp_bi_modbohr", "v": 1, "subject": "f:mod", "kind": "problem",
@@ -10448,6 +10718,110 @@
     { "id": "st_bi_inharm7", "cat": "example", "name": "Example — the first try gives nothing", "text": "`∫_(2)^(∞) 1/(x² − x) dx`, guess converges.\n**First try:** `x² − x < x²`, so `1/(x² − x) > 1/x²`. Bigger than a convergent integral: **no conclusion**.\n**Second try:** for `x ≥ 2`, `x ≤ x²/2`, so `x² − x ≥ x²/2` and `1/(x² − x) ≤ 2/x²`.\n`∫_(2)^(∞) 2/(x²) dx` converges, so ours converges." },
     { "id": "st_bi_inharm8", "cat": "example", "name": "Example — change the numerator", "text": "`∫_(1)^(∞) (2 + sin x)/(x) dx`\n`2 + sin x ≥ 1`, so the function is positive and `(2 + sin x)/x ≥ 1/x`.\n`∫_(1)^(∞) 1/(x) dx` diverges, so ours diverges." },
     { "id": "st_bi_inharm9", "cat": "example", "name": "Example — an unbounded function", "text": "`∫_(0)^(1) 1/(√x + x²) dx`: blows up at `0`.\nNear `0` the biggest term is `√x`. `√x + x² ≥ √x`, so `1/(√x + x²) ≤ 1/√x`.\n`∫_(0)^(1) 1/(x^(1/2)) dx` converges (`p = 1/2 < 1`), so ours converges." }
+  ] },
+{ "id": "pp_bi_lafig", "v": 1, "subject": "f:la", "kind": "action",
+  "name": "Expressing a vector in a figure with basis vectors",
+  "description": "Write any vector in a triangle, parallelogram, cube or pyramid using two (plane) or three (space) chosen vectors.",
+  "uses": [["c", "la1", "Linear combinations and a basis"], ["c", "la1", "Adding and subtracting vectors"], ["c", "la1", "Collinear vectors: one letter for one direction"], ["c", "la1", "Vector facts in shapes"]],
+  "parts": [
+    { "id": "st_bi_lafig1", "cat": "stage", "name": "Choose the basis", "text": "In a plane figure pick **two non-collinear** vectors, in a solid **three non-coplanar** ones. Usually they are given; if not, take edges that start at one corner. Give each a letter: `a⃗`, `b⃗` (`c⃗`)." },
+    { "id": "st_bi_lafig2", "cat": "stage", "name": "Mark what you know", "text": "Equal vectors (opposite sides of a parallelogram, parallel edges of a cube: same letter), opposite vectors (walking a side backwards: a minus sign) and multiples (midpoints: `1/(2)`, a ratio `m : n`: `(m)/(m + n)` of the segment)." },
+    { "id": "st_bi_lafig3", "cat": "stage", "name": "Find a path", "text": "Walk from the tail of the wanted vector to its head along segments you can already write (triangle rule): `XY⃗ = XP⃗ + PQ⃗ + QY⃗`. Any path works; pick the shortest." },
+    { "id": "st_bi_lafig4", "cat": "stage", "name": "Substitute and simplify", "text": "Replace every piece by the basis vectors and collect the terms of each letter, like in algebra." },
+    { "id": "st_bi_lafig5", "cat": "example", "name": "Example — a parallelogram", "text": "Parallelogram `ABCD`, `AB⃗ = a⃗`, `AD⃗ = b⃗`, `M` the midpoint of `CD`. Write `AM⃗` and `BM⃗`.\n1. The basis is given: `a⃗` and `b⃗` (two sides from `A`, not parallel).\n2. `DC⃗ = a⃗` (opposite side, same way), so `DM⃗ = 1/(2) a⃗` and `CM⃗ = −1/(2) a⃗` (walking `CD` backwards); `BC⃗ = b⃗`.\n3. `AM⃗ = AD⃗ + DM⃗`; `BM⃗ = BC⃗ + CM⃗`\n4. `AM⃗ = b⃗ + 1/(2) a⃗`; `BM⃗ = b⃗ − 1/(2) a⃗`" },
+    { "id": "st_bi_lafig6", "cat": "example", "name": "Example — a point dividing a side", "text": "Triangle `ABC`, `AB⃗ = a⃗`, `AC⃗ = b⃗`, `P` on `BC` with `BP : PC = 1 : 2`. Write `AP⃗`.\n2. `BC⃗ = AC⃗ − AB⃗ = b⃗ − a⃗`; `BP` is `1/(3)` of `BC`, so `BP⃗ = 1/(3) (b⃗ − a⃗)`\n3. `AP⃗ = AB⃗ + BP⃗`\n4. `AP⃗ = a⃗ + 1/(3) b⃗ − 1/(3) a⃗ = 2/(3) a⃗ + 1/(3) b⃗`. Check: the coefficients add up to 1, as they must for a point on `BC`." },
+    { "id": "st_bi_lafig7", "cat": "example", "name": "Example — a cube", "text": "Cube `ABCDEFGH`: base `ABCD`, top `EFGH` with `E` above `A`, `F` above `B`, `G` above `C`. `AB⃗ = a⃗`, `AD⃗ = b⃗`, `AE⃗ = c⃗`. Write the space diagonal `AG⃗`, and `AM⃗` for `M` the midpoint of `FG`.\n1. Three edges from `A`, not in one plane: a basis of space.\n2. Parallel edges get the same letter: `BC⃗ = FG⃗ = b⃗`, `CG⃗ = BF⃗ = c⃗`; `FM⃗ = 1/(2) b⃗`.\n3. `AG⃗ = AB⃗ + BC⃗ + CG⃗`; `AM⃗ = AB⃗ + BF⃗ + FM⃗`\n4. `AG⃗ = a⃗ + b⃗ + c⃗`; `AM⃗ = a⃗ + 1/(2) b⃗ + c⃗`" },
+    { "id": "st_bi_lafig8", "cat": "example", "name": "Example — a square pyramid", "text": "Pyramid `SABCD` with a square base `ABCD` and apex `S`. `AB⃗ = a⃗`, `AD⃗ = b⃗`, `AS⃗ = c⃗`. `O` is the centre of the base, `M` the midpoint of `SC`. Write `SO⃗` and `AM⃗`.\n2. `AC⃗ = a⃗ + b⃗` (diagonal of the square, parallelogram rule); `O` is its midpoint: `AO⃗ = 1/(2) (a⃗ + b⃗)`.\n3. `SO⃗ = SA⃗ + AO⃗`; `M` is the midpoint of `SC`, so `AM⃗ = (AS⃗ + AC⃗)/2` (Vector facts in shapes).\n4. `SO⃗ = −c⃗ + 1/(2) a⃗ + 1/(2) b⃗`; `AM⃗ = 1/(2) a⃗ + 1/(2) b⃗ + 1/(2) c⃗`" }
+  ] },
+{ "id": "pp_bi_laparallel", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Proving segments parallel or points collinear",
+  "description": "Show that two segments in a figure are parallel (and find the ratio of their lengths), or that three points lie on one line.",
+  "uses": [["c", "la1", "Collinear vectors: one letter for one direction"], ["c", "la1", "Linear combinations and a basis"], ["c", "la1", "Vector facts in shapes"]],
+  "parts": [
+    { "id": "st_bi_lapar1", "cat": "stage", "name": "Write both vectors in one basis", "text": "Use the method Expressing a vector in a figure with basis vectors. For three points `A`, `B`, `C`, write two vectors from the same point: `AB⃗` and `AC⃗`." },
+    { "id": "st_bi_lapar2", "cat": "stage", "name": "Look for k", "text": "Find `k` from the coefficient of one basis vector, then check that the **same** `k` works for every other basis vector: `u⃗ = k v⃗`." },
+    { "id": "st_bi_lapar3", "cat": "stage", "name": "Conclude", "text": "The same `k` everywhere: the segments are parallel and one is `|k|` times as long as the other. If the two vectors share a point, the three points are on one line. A different `k` for some basis vector: not parallel." },
+    { "id": "st_bi_lapar4", "cat": "example", "name": "Example — the midsegment theorem", "text": "Triangle `ABC`, `N` and `P` the midpoints of `AB` and `AC`. Prove `NP ∥ BC` and `NP = 1/(2) BC`.\n1. Basis `AB⃗ = a⃗`, `AC⃗ = b⃗`. `NP⃗ = NA⃗ + AP⃗ = −1/(2) a⃗ + 1/(2) b⃗`; `BC⃗ = −a⃗ + b⃗`\n2. `NP⃗ = 1/(2) (−a⃗ + b⃗) = 1/(2) BC⃗`: `k = 1/(2)` for both `a⃗` and `b⃗`\n3. `NP ∥ BC` and `NP` is half of `BC`." },
+    { "id": "st_bi_lapar5", "cat": "example", "name": "Example — three points on one line", "text": "Parallelogram `ABCD`, `AB⃗ = a⃗`, `AD⃗ = b⃗`. `M` is the midpoint of `BC`, and `P` is on the diagonal `BD` with `BP = 1/(3) BD`. Show that `A`, `P`, `M` are collinear.\n1. `BD⃗ = b⃗ − a⃗`. `AP⃗ = AB⃗ + BP⃗ = a⃗ + 1/(3) (b⃗ − a⃗) = 2/(3) a⃗ + 1/(3) b⃗`; `AM⃗ = AB⃗ + BM⃗ = a⃗ + 1/(2) b⃗`\n2. From `a⃗`: `2/(3) = k · 1`, so `k = 2/(3)`. Check `b⃗`: `k · 1/(2) = 1/(3)` ✓\n3. `AP⃗ = 2/(3) AM⃗` and both start at `A`: the points are collinear, and `P` is `2/(3)` of the way from `A` to `M`." },
+    { "id": "st_bi_lapar6", "cat": "example", "name": "Example — not parallel", "text": "Are `u⃗ = 2a⃗ + b⃗` and `v⃗ = 4a⃗ + 3b⃗` parallel (`a⃗`, `b⃗` non-collinear)?\n2. From `a⃗`: `k = 2`. From `b⃗`: `k = 3`.\n3. Different `k`: not parallel." }
+  ] },
+{ "id": "pp_bi_lameet", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Finding where two segments meet by comparing coefficients",
+  "description": "Find the point where two segments in a figure cross, and the ratio in which it divides each of them.",
+  "uses": [["c", "la1", "Linear combinations and a basis"], ["c", "la1", "Collinear vectors: one letter for one direction"], ["c", "la1", "Vector facts in shapes"]],
+  "parts": [
+    { "id": "st_bi_lameet1", "cat": "stage", "name": "Choose a basis", "text": "Two non-collinear vectors from one point (plane), as in Expressing a vector in a figure with basis vectors." },
+    { "id": "st_bi_lameet2", "cat": "stage", "name": "Two unknowns, one for each segment", "text": "The meeting point `P` lies on both segments. On the first, `AX`: `AP⃗ = t AX⃗`. On the second, `BY`: `BP⃗ = s BY⃗`, so `AP⃗ = AB⃗ + s BY⃗`." },
+    { "id": "st_bi_lameet3", "cat": "stage", "name": "Write both in the basis", "text": "Open the brackets so each expression reads `(…) a⃗ + (…) b⃗`." },
+    { "id": "st_bi_lameet4", "cat": "stage", "name": "Compare coefficients and solve", "text": "Both expressions are the same vector `AP⃗`, and a vector is written in only one way: the coefficients of `a⃗` are equal and the coefficients of `b⃗` are equal. Two equations, two unknowns." },
+    { "id": "st_bi_lameet5", "cat": "stage", "name": "Answer with ratios", "text": "`t` says how far along `AX` the point is (`AP : PX = t : (1 − t)`), and `s` the same for `BY`." },
+    { "id": "st_bi_lameet6", "cat": "example", "name": "Example — the diagonals of a parallelogram", "text": "Parallelogram `ABCD`, `AB⃗ = a⃗`, `AD⃗ = b⃗`. The diagonals `AC` and `BD` meet at `P`. Where?\n2. `AP⃗ = t AC⃗`; `AP⃗ = AB⃗ + s BD⃗`\n3. `AP⃗ = t(a⃗ + b⃗) = t a⃗ + t b⃗`; `AP⃗ = a⃗ + s(b⃗ − a⃗) = (1 − s) a⃗ + s b⃗`\n4. `a⃗`: `t = 1 − s`; `b⃗`: `t = s`. So `s = 1 − s`, `s = 1/(2)`, `t = 1/(2)`.\n5. `P` is the midpoint of both diagonals: the diagonals of a parallelogram bisect each other." },
+    { "id": "st_bi_lameet7", "cat": "example", "name": "Example — the medians of a triangle", "text": "Triangle `ABC`, `AB⃗ = a⃗`, `AC⃗ = b⃗`. `M` is the midpoint of `BC`, `N` the midpoint of `AC`. The medians `AM` and `BN` meet at `G`.\n2. `AG⃗ = t AM⃗`; `AG⃗ = AB⃗ + s BN⃗`\n3. `AM⃗ = 1/(2) a⃗ + 1/(2) b⃗`, so `AG⃗ = t/(2) a⃗ + t/(2) b⃗`. `BN⃗ = −a⃗ + 1/(2) b⃗`, so `AG⃗ = (1 − s) a⃗ + s/(2) b⃗`\n4. `b⃗`: `t/(2) = s/(2)`, so `t = s`. `a⃗`: `t/(2) = 1 − t`, so `3t = 2`, `t = 2/(3)`.\n5. `AG = 2/(3) AM` and `BG = 2/(3) BN`: the medians cut each other in the ratio `2 : 1` from the vertex." }
+  ] },
+{ "id": "pp_bi_lapoints", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Finding a vector from two points, and its length",
+  "description": "From the coordinates of two points find the vector between them, its magnitude and a unit vector, or find an end point.",
+  "uses": [["c", "la2", "Coordinates in space and the components of a vector"], ["c", "la2", "The magnitude of a vector"]],
+  "parts": [
+    { "id": "st_bi_lapts1", "cat": "stage", "name": "Tail and head", "text": "Write the coordinates of the tail and of the head. `AB⃗` goes **from** `A` **to** `B`." },
+    { "id": "st_bi_lapts2", "cat": "stage", "name": "Head minus tail", "text": "`AB⃗ = (x₂ − x₁, y₂ − y₁, z₂ − z₁)`" },
+    { "id": "st_bi_lapts3", "cat": "stage", "name": "Magnitude", "text": "`|AB⃗| = √(x² + y² + z²)` with the components found." },
+    { "id": "st_bi_lapts4", "cat": "stage", "name": "What else is asked", "text": "A unit vector: divide each component by the magnitude. An end point: head `=` tail `+` vector." },
+    { "id": "st_bi_lapts5", "cat": "example", "name": "Example — vector, length and unit vector", "text": "`A(1, −2, 3)`, `B(4, 2, 3)`\n2. `AB⃗ = (4 − 1, 2 − (−2), 3 − 3) = (3, 4, 0)`\n3. `|AB⃗| = √(9 + 16 + 0) = 5`\n4. Unit vector: `(3/5, 4/5, 0)`" },
+    { "id": "st_bi_lapts6", "cat": "example", "name": "Example — finding the head", "text": "`A(2, 0, −1)` and `AB⃗ = (−1, 4, 2)`. Find `B`.\n4. `B = (2 + (−1), 0 + 4, −1 + 2) = (1, 4, 1)`" },
+    { "id": "st_bi_lapts7", "cat": "example", "name": "Example — what kind of triangle", "text": "`A(1, 0, 0)`, `B(0, 1, 0)`, `C(0, 0, 1)`\n2. `AB⃗ = (−1, 1, 0)`; `BC⃗ = (0, −1, 1)`; `AC⃗ = (−1, 0, 1)`\n3. Each has length `√(1 + 1 + 0) = √2`\nAll three sides are equal: the triangle is equilateral." }
+  ] },
+{ "id": "pp_bi_lacoll", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Checking whether vectors are parallel or points are collinear",
+  "description": "With components: decide whether two vectors are parallel, or whether three points lie on one line.",
+  "uses": [["c", "la2", "Adding vectors and multiplying by a scalar with components"], ["c", "la1", "Collinear vectors: one letter for one direction"]],
+  "parts": [
+    { "id": "st_bi_lacoll1", "cat": "stage", "name": "The vectors", "text": "For two vectors: write them. For three points `A`, `B`, `C`: find `AB⃗` and `AC⃗` (head minus tail), both from `A`." },
+    { "id": "st_bi_lacoll2", "cat": "stage", "name": "Find k", "text": "Divide a non-zero component of one vector by the matching component of the other: that is the candidate `k`." },
+    { "id": "st_bi_lacoll3", "cat": "stage", "name": "Check every component", "text": "Multiply all components by `k`. They must all match (a zero must match a zero)." },
+    { "id": "st_bi_lacoll4", "cat": "stage", "name": "Conclude", "text": "All match: parallel (`k < 0`: opposite ways); for points, collinear, and `k` gives the ratio. One mismatch: not parallel." },
+    { "id": "st_bi_lacoll5", "cat": "example", "name": "Example — two vectors", "text": "`u⃗ = (2, −1, 4)`, `v⃗ = (−6, 3, −12)`\n2. `−6/2 = −3`\n3. `−3 · (2, −1, 4) = (−6, 3, −12)` ✓\n4. `v⃗ = −3u⃗`: parallel, opposite directions, `v⃗` three times as long." },
+    { "id": "st_bi_lacoll6", "cat": "example", "name": "Example — three points on one line", "text": "`A(1, 2, 3)`, `B(3, 3, 1)`, `C(7, 5, −3)`\n1. `AB⃗ = (2, 1, −2)`; `AC⃗ = (6, 3, −6)`\n2. `6/2 = 3`\n3. `3 · (2, 1, −2) = (6, 3, −6)` ✓\n4. `AC⃗ = 3AB⃗`: collinear. `k = 3 > 0`, so `B` lies between `A` and `C`, with `AB : BC = 1 : 2`." },
+    { "id": "st_bi_lacoll7", "cat": "example", "name": "Example — not on one line", "text": "`A(0, 1, 2)`, `B(1, 3, 3)`, `C(2, 5, 5)`\n1. `AB⃗ = (1, 2, 1)`; `AC⃗ = (2, 4, 3)`\n2. `2/1 = 2`\n3. `2 · (1, 2, 1) = (2, 4, 2) ≠ (2, 4, 3)`\n4. Not collinear: `A`, `B`, `C` make a triangle." }
+  ] },
+{ "id": "pp_bi_laangle", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Finding the angle between two vectors",
+  "description": "Find the angle between two vectors, or an angle of a triangle from the coordinates of its vertices.",
+  "uses": [["c", "la2", "The dot (scalar) product"], ["c", "la2", "The angle between vectors and perpendicular vectors"], ["c", "la2", "The magnitude of a vector"]],
+  "parts": [
+    { "id": "st_bi_laang1", "cat": "stage", "name": "Two vectors from one point", "text": "For an angle of a triangle at `A`: `AB⃗` and `AC⃗`, both starting at `A`." },
+    { "id": "st_bi_laang2", "cat": "stage", "name": "Dot product", "text": "`a⃗ · b⃗ = x₁x₂ + y₁y₂ + z₁z₂`" },
+    { "id": "st_bi_laang3", "cat": "stage", "name": "Magnitudes", "text": "`|a⃗|` and `|b⃗|`" },
+    { "id": "st_bi_laang4", "cat": "stage", "name": "cos and arccos", "text": "`cos θ = (a⃗ · b⃗)/(|a⃗| |b⃗|)`, then `θ = arccos(…)`. A negative cosine means an obtuse angle." },
+    { "id": "st_bi_laang5", "cat": "example", "name": "Example — two vectors", "text": "`a⃗ = (1, 1, 0)`, `b⃗ = (0, 1, 1)`\n2. `a⃗ · b⃗ = 0 + 1 + 0 = 1`\n3. `|a⃗| = √2`; `|b⃗| = √2`\n4. `cos θ = 1/(√2 · √2) = 1/2`; `θ = 60°`" },
+    { "id": "st_bi_laang6", "cat": "example", "name": "Example — an angle of a triangle", "text": "`A(1, 0, 1)`, `B(2, 1, 1)`, `C(1, 1, 3)`. Find the angle at `A`.\n1. `AB⃗ = (1, 1, 0)`; `AC⃗ = (0, 1, 2)`\n2. `AB⃗ · AC⃗ = 0 + 1 + 0 = 1`\n3. `|AB⃗| = √2`; `|AC⃗| = √5`\n4. `cos θ = 1/(√10) ≈ 0.316`; `θ ≈ 71.57°`" },
+    { "id": "st_bi_laang7", "cat": "example", "name": "Example — an obtuse angle", "text": "`a⃗ = (2, −1, 0)`, `b⃗ = (−1, 1, 1)`\n2. `a⃗ · b⃗ = −2 − 1 + 0 = −3`\n3. `|a⃗| = √5`; `|b⃗| = √3`\n4. `cos θ = (−3)/(√15) ≈ −0.775`; `θ ≈ 140.77°` (negative cosine: obtuse)" }
+  ] },
+{ "id": "pp_bi_lamissing", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Finding a missing coordinate from a condition",
+  "description": "A vector has an unknown component: find it so that the vector is perpendicular to another, has a given length, or is parallel to another.",
+  "uses": [["c", "la2", "The angle between vectors and perpendicular vectors"], ["c", "la2", "The magnitude of a vector"], ["c", "la2", "Adding vectors and multiplying by a scalar with components"]],
+  "parts": [
+    { "id": "st_bi_lamis1", "cat": "stage", "name": "Write the vectors", "text": "Write every vector involved, with the unknown in its place." },
+    { "id": "st_bi_lamis2", "cat": "stage", "name": "Turn the condition into an equation", "text": "**Perpendicular:** dot product `= 0`. **A given length `L`:** `x² + y² + z² = L²` (square both sides, no root). **Parallel:** `b⃗ = k a⃗`, one equation per component." },
+    { "id": "st_bi_lamis3", "cat": "stage", "name": "Solve", "text": "Solve for the unknown (and for `k` in the parallel case)." },
+    { "id": "st_bi_lamis4", "cat": "stage", "name": "Check", "text": "Put the answer back. A length condition usually gives two answers (`±`); keep both unless the question rules one out." },
+    { "id": "st_bi_lamis5", "cat": "example", "name": "Example — perpendicular", "text": "`a⃗ = (2, t, −1)`, `b⃗ = (3, 4, 2)`, `a⃗ ⊥ b⃗`\n2. `2 · 3 + 4t + (−1) · 2 = 0`\n3. `6 + 4t − 2 = 0`; `t = −1`\n4. `(2, −1, −1) · (3, 4, 2) = 6 − 4 − 2 = 0` ✓" },
+    { "id": "st_bi_lamis6", "cat": "example", "name": "Example — a given length", "text": "`a⃗ = (t, 2, 2)`, `|a⃗| = 3`\n2. `t² + 4 + 4 = 9`\n3. `t² = 1`; `t = 1` or `t = −1`\n4. `√(1 + 4 + 4) = 3` ✓ for both" },
+    { "id": "st_bi_lamis7", "cat": "example", "name": "Example — parallel", "text": "`b⃗ = (4, s, −2)` is parallel to `a⃗ = (2, 3, −1)`\n2. `(4, s, −2) = k(2, 3, −1)`: `4 = 2k`; `s = 3k`; `−2 = −k`\n3. The first and the last both give `k = 2`, so `s = 6`\n4. `(4, 6, −2) = 2 · (2, 3, −1)` ✓" }
+  ] },
+{ "id": "pp_bi_lacoord", "v": 1, "subject": "f:la", "kind": "problem",
+  "name": "Solving a shape problem with coordinates",
+  "description": "Put a cube, box or pyramid on axes and find lengths and angles with vectors.",
+  "uses": [["c", "la2", "Coordinates in space and the components of a vector"], ["c", "la2", "The magnitude of a vector"], ["c", "la2", "The angle between vectors and perpendicular vectors"]],
+  "parts": [
+    { "id": "st_bi_lacrd1", "cat": "stage", "name": "Place the shape on axes", "text": "Put a corner at the origin and the edges that meet there along the axes (a box), or the base on the `xy` floor (a pyramid). Choose so that many coordinates are `0`." },
+    { "id": "st_bi_lacrd2", "cat": "stage", "name": "Coordinates of the points", "text": "Write the coordinates of the points you need, from the edge lengths (a centre or a midpoint: the average)." },
+    { "id": "st_bi_lacrd3", "cat": "stage", "name": "Vectors", "text": "Head minus tail for each segment in the question." },
+    { "id": "st_bi_lacrd4", "cat": "stage", "name": "Compute and answer", "text": "Lengths with the magnitude, angles with the dot product, perpendicular or parallel with their tests. Answer in words about the shape." },
+    { "id": "st_bi_lacrd5", "cat": "example", "name": "Example — the angle between two space diagonals of a cube", "text": "Cube `ABCDEFGH`, edge `2` (base `ABCD`, `E` above `A`, `F` above `B`, `G` above `C`, `H` above `D`). The angle between the diagonals `AG` and `BH`?\n1. `A` at the origin, `AB` along `x`, `AD` along `y`, `AE` along `z`.\n2. `A(0, 0, 0)`; `B(2, 0, 0)`; `G(2, 2, 2)`; `H(0, 2, 2)`\n3. `AG⃗ = (2, 2, 2)`; `BH⃗ = (−2, 2, 2)`\n4. `AG⃗ · BH⃗ = −4 + 4 + 4 = 4`; both lengths `√12`; `cos θ = 4/12 = 1/3`; `θ ≈ 70.53°`. The space diagonals of a cube cross at about `70.5°` (whatever the edge length)." },
+    { "id": "st_bi_lacrd6", "cat": "example", "name": "Example — a space diagonal and a face diagonal", "text": "The same cube: the angle between `AG` and the base diagonal `AC`.\n2. `C(2, 2, 0)`\n3. `AG⃗ = (2, 2, 2)`; `AC⃗ = (2, 2, 0)`\n4. `AG⃗ · AC⃗ = 8`; `|AG⃗| = √12`; `|AC⃗| = √8`; `cos θ = 8/(√96) ≈ 0.816`; `θ ≈ 35.26°`" },
+    { "id": "st_bi_lacrd7", "cat": "example", "name": "Example — a square pyramid", "text": "Pyramid `SABCD`: square base with side `4`, apex `S` straight above the centre of the base at height `3`. Find a side edge and the angle `ASC` at the apex.\n1. Base on the floor: `A(0, 0, 0)`; `B(4, 0, 0)`; `C(4, 4, 0)`; `D(0, 4, 0)`\n2. The centre is `(2, 2, 0)` (the midpoint of `AC`), so `S(2, 2, 3)`\n3. `SA⃗ = (−2, −2, −3)`; `SC⃗ = (2, 2, −3)`\n4. `|SA⃗| = √(4 + 4 + 9) = √17 ≈ 4.12`, the side edge. `SA⃗ · SC⃗ = −4 − 4 + 9 = 1`; `cos θ = 1/17`; `θ ≈ 86.63°`" }
   ] }
 ]
 </script>

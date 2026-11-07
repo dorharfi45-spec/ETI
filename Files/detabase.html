@@ -2420,6 +2420,7 @@
     <button data-folder="geo" data-group="base"><span class="ficon">△</span>Geometry base</button>
     <button data-folder="powlog" data-group="base"><span class="ficon">🔟</span>Powers &amp; Logs</button>
     <button data-folder="precalc" data-group="base"><span class="ficon">∫</span>Precalc</button>
+    <button data-folder="la" data-group="base"><span class="ficon">↗</span>Linear algebra base</button>
     <button data-folder="fn" data-group="calc"><span class="ficon">ƒ</span>Functions</button>
     <button data-folder="lim" data-group="calc"><span class="ficon">→</span>Limits and continuity</button>
     <button data-folder="der" data-group="calc"><span class="ficon">′</span>Derivatives</button>
@@ -2517,6 +2518,10 @@
   <button data-target="c3"><span class="tnum">2</span>Integrals</button>
   <button data-target="c4"><span class="tnum">3</span>Trig calculus</button>
   <button data-target="c5"><span class="tnum">4</span>Exp &amp; log calculus</button>
+</nav>
+<nav class="tabbar" data-folder="la" id="tabbar-la">
+  <button data-target="la1" class="on"><span class="tnum">1</span>Geometric vectors</button>
+  <button data-target="la2"><span class="tnum">2</span>Algebraic vectors</button>
 </nav>
 
 <nav class="tabbar" data-folder="fn" id="tabbar-fn">
@@ -2727,7 +2732,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B157</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B158</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4719,6 +4724,8 @@ function __detabaseMain() {
       sub: 'From <span class="mono">Powers and Logs base.md</span> — exponent &amp; log rules, equations, inequalities.' },
     precalc: { title: "Precalculus — Derivatives & Integrals",
       sub: 'From <span class="mono">Precalc.md</span> — domain, derivatives, integrals, trig &amp; exp/log calculus.' },
+    la: { title: "Linear algebra base — vectors",
+      sub: "Geometric vectors: addition, scalar multiples, collinear vectors, a basis, vectors in shapes; algebraic vectors: components, magnitude, the dot product and angles." },
     fn: { title: "Functions — for Calculus 1",
       sub: 'What a function is, piecewise and absolute-value functions, trig with an inner argument, composition.' },
     lim: { title: "Limits and continuity — for Calculus 1",
@@ -19537,7 +19544,7 @@ function __detabaseMain() {
     }
     runs(SUP, "^"); runs(SUB, "_");
     var FN = { sin: 1, cos: 1, tan: 1, cot: 1, sec: 1, csc: 1, arcsin: 1, arccos: 1, arctan: 1, sinh: 1, cosh: 1, ln: 1, log: 1, exp: 1, max: 1, min: 1, lim: 1 };
-    s = s.replace(/([A-Za-z])\u0304/g, "\\bar{$1}").replace(/([A-Za-z])\u20d7/g, "\\vec{$1}").replace(/([A-Za-z])\u0302/g, "\\hat{$1}").replace(/([A-Za-z])\u0303/g, "\\tilde{$1}").replace(/binom\(([^(),]*),([^(),]*)\)/g, "\\binom{$1}{$2}");   // x̄, x̃ (combining marks), binom(n,k) (B136); A⃗, x̂ (B146)
+    s = s.replace(/([A-Za-z])\u0304/g, "\\bar{$1}").replace(/([A-Z]{2})\u20d7/g, "\\overrightarrow{$1}").replace(/([A-Za-z])\u20d7/g, "\\vec{$1}")   // AB⃗: the arrow over both points (B158).replace(/([A-Za-z])\u0302/g, "\\hat{$1}").replace(/([A-Za-z])\u0303/g, "\\tilde{$1}").replace(/binom\(([^(),]*),([^(),]*)\)/g, "\\binom{$1}{$2}");   // x̄, x̃ (combining marks), binom(n,k) (B136); A⃗, x̂ (B146)
     s = s.replace(/[A-Za-z]{2,}/g, function (w, at, all) {
       if (all[at - 1] === "\\") return w;
       if (FN[w]) return "\\" + w;
