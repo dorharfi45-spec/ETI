@@ -2597,12 +2597,16 @@
   <button data-target="dst3"><span class="tnum">3</span>Frequency tables</button>
   <button data-target="dst4"><span class="tnum">4</span>Charts and the shape of a distribution</button>
   <button data-target="dst5"><span class="tnum">5</span>Summation notation</button>
-  <button data-target="dst6"><span class="tnum">6</span>Measures of center</button>
-  <button data-target="dst7"><span class="tnum">7</span>Measures of spread</button>
-  <button data-target="dst8"><span class="tnum">8</span>Combining groups</button>
-  <button data-target="dst9"><span class="tnum">9</span>Relative position: percentiles and z-scores</button>
-  <button data-target="dst10"><span class="tnum">10</span>Correlation</button>
-  <button data-target="dst11"><span class="tnum">11</span>How changes in the data affect the measures</button>
+  <button data-target="dst6"><span class="tnum">6</span>Measures of center: overview</button>
+  <button data-target="dst12"><span class="tnum">7</span>Measures of center: ungrouped data (single values)</button>
+  <button data-target="dst13"><span class="tnum">8</span>Measures of center: grouped data (classes)</button>
+  <button data-target="dst7"><span class="tnum">9</span>Measures of spread: overview</button>
+  <button data-target="dst14"><span class="tnum">10</span>Measures of spread: ungrouped data (single values)</button>
+  <button data-target="dst15"><span class="tnum">11</span>Measures of spread: grouped data (classes)</button>
+  <button data-target="dst8"><span class="tnum">12</span>Combining groups</button>
+  <button data-target="dst9"><span class="tnum">13</span>Relative position: percentiles and z-scores</button>
+  <button data-target="dst10"><span class="tnum">14</span>Correlation</button>
+  <button data-target="dst11"><span class="tnum">15</span>How changes in the data affect the measures</button>
 </nav>
 <nav class="tabbar" data-folder="prb" id="tabbar-prb">
   <button data-target="prb1" class="on"><span class="tnum">1</span>Sets</button>
@@ -2732,7 +2736,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B159</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B160</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -8237,6 +8241,8 @@ function __detabaseMain() {
   // elKey: a value that already is a key (lowercase slug, at most 40 characters) is used as is, anything else is slugged
   function elKey(s) { s = String(s || ""); return /^[a-z0-9-]{1,40}$/.test(s) ? s : elSlug(s); }
   function biKeyOf(node) { return elKey(node.getAttribute("data-key") || builtinElTitle(node)); }
+  // a card moved to another concept in the HTML keeps its whole old id through data-id="<old tab>:<key>" (B160),
+  // so everything saved about it (tags, links, sheets, Clipboard items) stays attached
   function tagBuiltinElements() {
     document.querySelectorAll("#topfolder-eti section.pane:not(.ue-pane)").forEach(function (pane) {
       var target = pane.id.replace("pane-", ""), used = {}, runKey = null;
@@ -8246,15 +8252,16 @@ function __detabaseMain() {
         used[k] = 1;
         return k;
       }
+      function cardId(node) { var fixed = node.getAttribute("data-id"); return fixed || keyFor(biKeyOf(node)); }
       Array.prototype.slice.call(pane.children).forEach(function (ch) {
         if (ch.matches(".ue-extra")) return;   // user elements appended by the library
         if (ch.matches("h2, .accordion-controls")) { runKey = null; return; }
         if (ch.matches(".grid2")) {
           runKey = null;
-          ch.querySelectorAll(":scope > .card").forEach(function (c) { c.setAttribute("data-el", keyFor(biKeyOf(c))); });
+          ch.querySelectorAll(":scope > .card").forEach(function (c) { c.setAttribute("data-el", cardId(c)); });
           return;
         }
-        if (ch.matches(".subject, .card, .tool")) { runKey = null; ch.setAttribute("data-el", keyFor(biKeyOf(ch))); return; }
+        if (ch.matches(".subject, .card, .tool")) { runKey = null; ch.setAttribute("data-el", cardId(ch)); return; }
         if (ch.matches("h3") || !runKey) runKey = keyFor(biKeyOf(ch));
         ch.setAttribute("data-el", runKey);
       });
@@ -9766,6 +9773,21 @@ function __detabaseMain() {
       });
     });
     store.schema = 10;
+    try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+  // schema 11 (B160): Descriptive statistics' center and spread cards moved into concepts by kind of data
+  // (ungrouped / grouped). Their ids are kept (data-id), so nothing is renamed; only a saved place that
+  // still pins one of them to its old concept is let go, so it shows in its new one.
+  (function migrateDstMovedCards() {
+    if (store.schema >= 11) return;
+    try { window.DBX.put("__pre_s11", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    ["dst6:mode-mid-range-and-median", "dst6:the-median-of-a-grouped-table", "dst6:the-mean",
+     "dst7:error-rate-largest-error-and-range", "dst7:quartiles-and-the-interquartile-range", "dst7:mean-absolute-deviation",
+     "dst7:variance-and-standard-deviation", "dst7:the-shortcut-formula-for-the-variance"].forEach(function (id) {
+      var k = "c|" + id, old = "b:" + id.slice(0, id.indexOf(":"));
+      if (store.place && store.place[k] && store.place[k].p === old) delete store.place[k];
+    });
+    store.schema = 11;
     try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 

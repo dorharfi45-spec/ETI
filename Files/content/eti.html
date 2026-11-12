@@ -5310,49 +5310,27 @@
 </div>
 </section>
 
-<!-- ===== DST6 · MEASURES OF CENTER ===== -->
+<!-- ===== DST6 · MEASURES OF CENTER: OVERVIEW ===== -->
 <section class="pane" id="pane-dst6">
-<h2><span class="num">6</span>Measures of center</h2>
+<h2><span class="num">6</span>Measures of center: overview</h2>
 <div class="card" data-tags="Explanation">
   <h4>A center as the best single guess</h4>
   <p>A measure of center is one number <code>x̃</code> that stands for all the data. Which number is "best" depends on how you count a wrong guess: a <b>loss function</b> adds up the errors <code>x_(i) − x̃</code>, and the best center is the one with the smallest loss.</p>
   <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["How errors are counted","Smallest when x̃ is","Smallest loss gives the spread measure"]},{"c":["the number of misses","the mode","error rate"]},{"c":["the largest error","the mid-range","largest error = range/2"]},{"c":["the sum of |errors|","the median","mean absolute deviation"]},{"c":["the sum of errors²","the mean","variance"]}],"head":1,"side":1}'></div>
   <p class="muted"><b>So no center is "the right one":</b> each is the best answer to a different question. A shop ordering one shoe size wants the mode; someone who hates big mistakes wants the mid-range.</p>
 </div>
-<div class="card" data-tags="Definition, Formula">
-  <h4>Mode, mid-range and median</h4>
-  <ul>
-    <li><b>Mode</b> <code>Mo</code>: the value with the highest frequency. In a grouped table, the midpoint of the class with the highest frequency.</li>
-    <li><b>Mid-range</b> <code>MR = (x_(max) + x_(min))/2</code>, halfway between the largest and the smallest.</li>
-    <li><b>Median</b> <code>Md</code>: the middle value once the data is sorted. Half the data is below it, half above.</li>
-  </ul>
-  <ul class="idlist">
-    <li><code>n</code> odd: <code>Md = x_((n+1)/2)</code></li>
-    <li><code>n</code> even: <code>Md = (x_(n/2) + x_(n/2+1))/2</code></li>
-  </ul>
-  <p class="muted"><b>Example:</b> <code>4, 5, 5, 6, 7, 8, 9, 10, 10</code> (9 values): <code>Md</code> is the 5th, <code>7</code>. Add a <code>4</code> (10 values): the 5th and 6th are <code>6</code> and <code>7</code>, so <code>Md = 6.5</code>.</p>
-</div>
 <div class="card" data-tags="Formula">
-  <h4>The median of a grouped table</h4>
-  <p><code>Md = L₀ + (n/2 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></p>
-  <p class="muted"><b>The parts:</b> the median class <code>x_(m)</code> is the first class where <code>F</code> reaches <code>n/2</code>; <code>L₀</code>, <code>L₁</code> are its real limits and <code>f(x_(m))</code> its frequency; <code>F(x_(m−1))</code> is the cumulative frequency up to the end of the class before it.</p>
-  <p class="muted"><b>The width <code>a</code>:</b> <code>L₁ − L₀ = a</code> is the width of the median class (not of any other class). The fraction says what <b>part</b> of the class to cross; times the width, it becomes a distance in the data's units.</p>
-  <p class="muted"><b>Why it works:</b> the cases inside a class are taken as spread evenly over it. We need <code>n/2 − F(x_(m−1))</code> more cases out of the class's <code>f(x_(m))</code>, so we go that fraction of the way across it: start at <code>L₀</code> and move that fraction of <code>a</code>. It is the point that cuts the histogram's area in half.</p>
-  <p class="muted"><b>Example:</b> the commute table (<b>Discrete or continuous: which table?</b>): place <code>20</code>, class 20–30, <code>F(x_(m−1)) = 19</code>, <code>f(x_(m)) = 12</code>: <code>Md = 20 + (20 − 19)/12 · 10 ≈ 20.83</code> minutes.</p>
-</div>
-<div class="card" data-tags="Definition, Formula">
-  <h4>The mean</h4>
-  <ul class="idlist">
-    <li><code>x̄ = (∑_(i=1)^(n) x_(i))/n</code></li>
-    <li><code>x̄ = (∑ x f(x))/n</code> (a frequency table)</li>
-    <li><code>x̄ = (∑ m_(x) f(x))/n</code> (a table of classes, <code>m_(x)</code> the midpoint)</li>
+  <h4>Measures of center: which formula for which data</h4>
+  <p>Every measure of center is calculated one way for <b>ungrouped data</b> and another way for <b>grouped data</b>:</p>
+  <ul>
+    <li><b>Ungrouped data (single values):</b> every value is known exactly. It comes as a <b>list</b> or as a <b>frequency table of single values</b> (each row one value <code>x</code> with its frequency <code>f(x)</code>). This is usual for a <b>discrete</b> variable. Formulas: <b>Measures of center: ungrouped data</b>.</li>
+    <li><b>Grouped data (classes):</b> the values are counted in <b>classes</b> (intervals with real limits <code>L₀</code>–<code>L₁</code>). This is usual for a <b>continuous</b> variable. The exact values are lost, so each class is represented by its midpoint <code>m_(x)</code> or spread evenly over its width, and every result is an <b>estimate</b>. Formulas: <b>Measures of center: grouped data</b>.</li>
   </ul>
-  <p class="muted"><b>With classes</b> the exact values are lost, so each case is counted at its class's midpoint. The result is an estimate. Commute table: <code>(5 · 5 + 15 · 14 + 25 · 12 + 45 · 9)/40</code> <code>= 940/40 = 23.5</code> minutes.</p>
-  <p class="muted"><b>Example:</b> the quiz table (Frequency tables): <code>(4 · 1 + 5 · 3 + 6 · 5 + 7 · 6 + 8 · 3 + 9 · 2)/20 = 133/20 = 6.65</code>.</p>
-  <p class="muted"><b>The balance point:</b> the deviations from the mean always cancel, <code>∑ (x_(i) − x̄) = 0</code>. If the values were weights on a ruler, the ruler would balance at <code>x̄</code>.</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Measure","Ungrouped: a list","Ungrouped: a frequency table","Grouped: classes"]},{"c":["Mode `Mo`","the value that appears most often","the `x` with the largest `f(x)`","the midpoint of the class with the largest density `d = f(x)/a`"]},{"c":["Median `Md`","the middle value of the sorted list, place `(n + 1)/2`","the `x` where `F(x)` first reaches the middle place","`L₀ + (n/2 − F(x_(m−1)))/(f(x_(m))) · a`"]},{"c":["Mean `x̄`","`(∑ x_(i))/n`","`(∑ x f(x))/n`","`(∑ m_(x) f(x))/n`"]},{"c":["Mid-range `MR`","`(x_(max) + x_(min))/2`","`(x_(max) + x_(min))/2`","(upper limit of the top class + lower limit of the bottom class) / 2"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Which kind of table you have</b> is decided by the variable (<b>Discrete or continuous: which table?</b>, Frequency tables). A table whose rows are intervals is grouped; a table whose rows are single values is not.</p>
 </div>
-<div class="card" data-tags="Theorem">
-  <h4>Skew and how the centers sit</h4>
+<div class="card" data-tags="Theorem" data-key="skew-and-how-the-centers-sit">
+  <h4>Skew and how the mode, median and mean sit</h4>
   <svg class="ill" viewBox="0 0 420 180" role="img" aria-label="a curve with a long tail to the right; from left to right the mode at the peak, then the median, then the mean pulled toward the tail">
     <path class="ax" d="M20 150 H405"/>
     <path class="cv" d="M30 149 C60 145 80 30 115 30 C150 30 190 110 395 147"/>
@@ -5366,17 +5344,95 @@
   </ul>
   <p class="muted"><b>Why:</b> the mean uses the size of every value, so one extreme value moves it a lot. The median only cares about order, so it barely moves. For skewed data such as income, the median describes a typical case better.</p>
 </div>
-<div class="card" data-tags="Theorem">
-  <h4>Changing units: y = bx + a</h4>
-  <p>If every value is multiplied by <code>b</code> and then <code>a</code> is added, every measure of center does the same: <code>ȳ = b x̄ + a</code>, and likewise for <code>Md</code>, <code>Mo</code> and <code>MR</code>.</p>
+<div class="card" data-tags="Theorem" data-key="changing-units-y-bx-a">
+  <h4>Measures of center after a change of units y = bx + a</h4>
+  <p>If every value is multiplied by <code>b</code> and then <code>a</code> is added, every measure of center does the same: <code>ȳ = b x̄ + a</code>, and likewise for <code>Md</code>, <code>Mo</code> and <code>MR</code>. This holds for ungrouped and grouped data alike.</p>
   <p class="muted"><b>Example:</b> the mean temperature is <code>20 °C</code>. In Fahrenheit, <code>F = 1.8C + 32</code>, so the mean is <code>1.8 · 20 + 32 = 68 °F</code>. No need to convert every value first.</p>
   <p class="muted"><b>Why:</b> the book calls <code>y = bx + a</code> a <b>linear transformation</b>. Every value goes through the same rule, so the middle value stays in the middle and the most common stays the most common; for the mean, the rules for sums give <code>(∑ (b x_(i) + a))/n = b x̄ + a</code>. Other changes (adding or removing values, changing one value): <b>How changes in the data affect the measures</b>.</p>
 </div>
 </section>
 
-<!-- ===== DST7 · MEASURES OF SPREAD ===== -->
+<!-- ===== DST12 · MEASURES OF CENTER: UNGROUPED DATA ===== -->
+<section class="pane" id="pane-dst12">
+<h2><span class="num">7</span>Measures of center: ungrouped data (single values)</h2>
+<div class="card" data-tags="Definition">
+  <h4>Mode of ungrouped data</h4>
+  <p>The <b>mode</b> <code>Mo</code> is the value that appears <b>most often</b>: in a frequency table, the <code>x</code> with the largest <code>f(x)</code>.</p>
+  <p class="muted"><b>Example:</b> the quiz table (Frequency tables), scores <code>4</code> to <code>9</code> with <code>f = 1, 3, 5, 6, 3, 2</code>: the largest frequency is <code>6</code>, at the score <code>7</code>, so <code>Mo = 7</code>.</p>
+  <p class="muted"><b>More than one, or none:</b> two values tied for the largest frequency give two modes (bimodal data). If every value appears the same number of times, the mode tells you nothing.</p>
+  <p class="muted"><b>The only center for nominal data</b> (Which measure fits which scale): you can count names or categories, but not order or add them.</p>
+</div>
+<div class="card" data-tags="Definition, Formula" data-id="dst6:mode-mid-range-and-median">
+  <h4>Median of ungrouped data (a list or a frequency table)</h4>
+  <p>The <b>median</b> <code>Md</code> is the middle value once the data is sorted: half the data is below it, half above.</p>
+  <ul class="idlist">
+    <li><code>n</code> odd: <code>Md = x_((n+1)/2)</code></li>
+    <li><code>n</code> even: <code>Md = (x_(n/2) + x_(n/2+1))/2</code></li>
+  </ul>
+  <p class="muted"><b>Example, a list:</b> <code>4, 5, 5, 6, 7, 8, 9, 10, 10</code> (9 values): <code>Md</code> is the 5th, <code>7</code>. Add a <code>4</code> (10 values): the 5th and 6th are <code>6</code> and <code>7</code>, so <code>Md = 6.5</code>.</p>
+  <p class="muted"><b>Example, a frequency table:</b> the table is already sorted, so run down the cumulative frequency <code>F(x)</code> until it reaches the place. Quiz table, <code>n = 20</code>: places <code>10</code> and <code>11</code>. <code>F = 1, 4, 9, 15, …</code>: <code>F</code> first reaches 10 at the score <code>7</code>, and place 11 is also a <code>7</code>, so <code>Md = 7</code>.</p>
+  <p class="muted"><b>For grouped data</b> (classes) there is a different formula: <b>Median of grouped data</b>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula" data-id="dst6:the-mean">
+  <h4>Mean of ungrouped data (a list or a frequency table)</h4>
+  <ul class="idlist">
+    <li>A list: &nbsp; <code>x̄ = (∑_(i=1)^(n) x_(i))/n</code></li>
+    <li>A frequency table: &nbsp; <code>x̄ = (∑ x f(x))/n</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> add all the values and divide by how many there are. In a table each value <code>x</code> appears <code>f(x)</code> times, so it is added <code>f(x)</code> times: multiply, then add.</p>
+  <p class="muted"><b>Example, a list:</b> <code>2, 4, 4, 5, 10</code>: <code>x̄ = 25/5 = 5</code>.</p>
+  <p class="muted"><b>Example, a frequency table:</b> the quiz table: <code>(4 · 1 + 5 · 3 + 6 · 5 + 7 · 6 + 8 · 3 + 9 · 2)/20</code> <code>= 133/20 = 6.65</code>.</p>
+  <p class="muted"><b>The balance point:</b> the deviations from the mean always cancel, <code>∑ (x_(i) − x̄) = 0</code>. If the values were weights on a ruler, the ruler would balance at <code>x̄</code>.</p>
+  <p class="muted"><b>For grouped data</b> (classes): <b>Mean of grouped data</b>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mid-range of ungrouped data</h4>
+  <p><code>MR = (x_(max) + x_(min))/2</code></p>
+  <p class="muted"><b>In words:</b> halfway between the largest and the smallest value. It is the center that makes the largest error as small as possible (A center as the best single guess).</p>
+  <p class="muted"><b>Example:</b> the quiz table, scores from <code>4</code> to <code>9</code>: <code>MR = (9 + 4)/2 = 6.5</code>.</p>
+  <p class="muted"><b>Weakness:</b> it uses only the two most extreme values, so one odd value moves it a lot.</p>
+</div>
+</section>
+
+<!-- ===== DST13 · MEASURES OF CENTER: GROUPED DATA ===== -->
+<section class="pane" id="pane-dst13">
+<h2><span class="num">8</span>Measures of center: grouped data (classes)</h2>
+<div class="card" data-tags="Definition">
+  <h4>Mode of grouped data (classes)</h4>
+  <p>The <b>modal class</b> is the class with the <b>largest density</b> <code>d = f(x)/a</code> (the tallest bar of the histogram). The mode is its midpoint: <code>Mo = m_(x)</code> of the modal class.</p>
+  <p class="muted"><b>Density, not frequency:</b> a wide class collects many cases just because it covers many values. The density counts cases <b>per unit</b> of width, so it shows where the data is really most crowded. When all the classes have the <b>same width</b>, the class with the largest density is also the class with the largest frequency, so either rule gives the same answer (that is how the book states it).</p>
+  <p class="muted"><b>Example, where the two rules differ:</b></p>
+  <div class="bi-table" data-cpart="expl" data-table='{"rows":[{"c":["x (class)","0–10","10–15","15–20","20–40"]},{"c":["f(x)","8","6","5","11"]},{"c":["a (width)","10","5","5","20"]},{"c":["`d = f(x)/a`","0.8","1.2","1","0.55"]}],"head":1,"side":1}'></div>
+  <p class="muted">The class 20–40 has the most cases (11), but they are spread over 20 units. The class 10–15 is the most crowded, <code>1.2</code> per unit: it is the modal class, and <code>Mo = 12.5</code>.</p>
+  <p class="muted"><b>The commute table</b> (Discrete or continuous: which table?): the densities are <code>0.5, 1.4, 1.2, 0.3</code>; the largest is the class 10–20, so <code>Mo = 15</code> minutes.</p>
+</div>
+<div class="card" data-tags="Formula" data-id="dst6:the-median-of-a-grouped-table">
+  <h4>Median of grouped data (classes)</h4>
+  <p><code>Md = L₀ + (n/2 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></p>
+  <p class="muted"><b>The parts:</b> the median class <code>x_(m)</code> is the first class where <code>F</code> reaches <code>n/2</code>; <code>L₀</code>, <code>L₁</code> are its real limits and <code>f(x_(m))</code> its frequency; <code>F(x_(m−1))</code> is the cumulative frequency up to the end of the class before it.</p>
+  <p class="muted"><b>The width <code>a</code>:</b> <code>L₁ − L₀ = a</code> is the width of the median class (not of any other class). The fraction says what <b>part</b> of the class to cross; times the width, it becomes a distance in the data's units.</p>
+  <p class="muted"><b>Why it works:</b> the cases inside a class are taken as spread evenly over it. We need <code>n/2 − F(x_(m−1))</code> more cases out of the class's <code>f(x_(m))</code>, so we go that fraction of the way across it: start at <code>L₀</code> and move that fraction of <code>a</code>. It is the point that cuts the histogram's area in half.</p>
+  <p class="muted"><b>Example:</b> the commute table (<b>Discrete or continuous: which table?</b>): place <code>20</code>, class 20–30, <code>F(x_(m−1)) = 19</code>, <code>f(x_(m)) = 12</code>: <code>Md = 20 + (20 − 19)/12 · 10 ≈ 20.83</code> minutes.</p>
+  <p class="muted"><b>For ungrouped data:</b> <b>Median of ungrouped data</b>. The same "part of the way across" idea gives the quartiles and percentiles of grouped data.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mean of grouped data (classes)</h4>
+  <p><code>x̄ = (∑ m_(x) f(x))/n</code>, &nbsp; <code>m_(x) = (L₀ + L₁)/2</code> the class midpoint</p>
+  <p class="muted"><b>In words:</b> the exact values inside a class are lost, so every case in the class is counted as if it were at the class's midpoint. Then it is the frequency-table formula with <code>m_(x)</code> in place of <code>x</code>. The result is an <b>estimate</b> of the true mean.</p>
+  <p class="muted"><b>Example:</b> the commute table, midpoints <code>5, 15, 25, 45</code>, <code>f = 5, 14, 12, 9</code>: <code>x̄ = (5 · 5 + 15 · 14 + 25 · 12 + 45 · 9)/40</code> <code>= 940/40 = 23.5</code> minutes.</p>
+  <p class="muted"><b>Use the midpoint even for unequal widths:</b> the class 30–60 is represented by <code>45</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Mid-range of grouped data (classes)</h4>
+  <p><code>MR = (L_(top) + L_(bottom))/2</code>, &nbsp; <code>L_(top)</code> = the upper limit of the top class, <code>L_(bottom)</code> = the lower limit of the bottom class</p>
+  <p class="muted"><b>In words:</b> the largest and smallest values are not known, so the outer limits of the table stand for them: the upper limit of the highest class and the lower limit of the lowest class.</p>
+  <p class="muted"><b>Example:</b> the commute table runs from <code>0</code> to <code>60</code>: <code>MR = (60 + 0)/2 = 30</code> minutes.</p>
+</div>
+</section>
+
+<!-- ===== DST7 · MEASURES OF SPREAD: OVERVIEW ===== -->
 <section class="pane" id="pane-dst7">
-<h2><span class="num">7</span>Measures of spread</h2>
+<h2><span class="num">9</span>Measures of spread: overview</h2>
 <div class="card" data-tags="Definition">
   <h4>What a measure of spread must do</h4>
   <svg class="ill" viewBox="0 0 420 150" role="img" aria-label="two bell curves with the same center: a narrow tall one and a wide flat one">
@@ -5393,17 +5449,102 @@
     <li>Adding the same constant to every value doesn't change it (shifting the data doesn't spread it).</li>
   </ul>
 </div>
-<div class="card" data-tags="Definition">
-  <h4>Error rate, largest error and range</h4>
-  <ul>
-    <li><b>Error rate</b> (percentage error): the percentage of values <b>not</b> equal to the mode, <code>(1 − f(Mo)/n) · 100%</code>. The only spread measure for nominal data.</li>
-    <li><b>Largest error</b> (maximum deviation) from the mid-range: <code>(x_(max) − x_(min))/2</code>.</li>
-    <li><b>Range</b>: <code>x_(max) − x_(min)</code>.</li>
+<div class="card" data-tags="Formula">
+  <h4>Measures of spread: which formula for which data</h4>
+  <p>As with the centers, each measure of spread has a version for <b>ungrouped data</b> (a list or a frequency table of single values) and one for <b>grouped data</b> (classes, where each class counts at its midpoint <code>m_(x)</code> and every result is an estimate).</p>
+  <div class="bi-table" data-cpart="desc" data-table='{"rows":[{"c":["Measure","Ungrouped: a list","Ungrouped: a frequency table","Grouped: classes"]},{"c":["Error rate","`(1 − f(Mo)/n) · 100%`","`(1 − f(Mo)/n) · 100%`","the same, with `f` of the modal class"]},{"c":["Range","`x_(max) − x_(min)`","`x_(max) − x_(min)`","upper limit of the top class − lower limit of the bottom class"]},{"c":["Largest error","range / 2","range / 2","range / 2"]},{"c":["Quartiles `Q₁`, `Q₃`","places `n/4`, `3n/4` of the sorted list (rounded)","the same places, read from `F(x)`","`L₀ + (n/4 − F(x_(m−1)))/(f(x_(m))) · a` (and `3n/4`)"]},{"c":["Mean absolute deviation","`(∑ |x_(i) − Md|)/n`","`(∑ |x − Md| f(x))/n`","`(∑ |m_(x) − Md| f(x))/n`"]},{"c":["Variance `s²`","`(∑ (x_(i) − x̄)²)/n`","`(∑ (x − x̄)² f(x))/n`","`(∑ (m_(x) − x̄)² f(x))/n`"]},{"c":["Variance, shortcut","`(∑ x_(i)²)/n − x̄²`","`(∑ x² f(x))/n − x̄²`","`(∑ m_(x)² f(x))/n − x̄²`"]},{"c":["Standard deviation `s`","`√(s²)`","`√(s²)`","`√(s²)`"]}],"head":1,"side":1}'></div>
+  <p class="muted"><b>Details and examples:</b> <b>Measures of spread: ungrouped data</b> and <b>Measures of spread: grouped data</b>.</p>
+</div>
+<div class="card" data-tags="Theorem" data-key="spread-after-y-bx-a">
+  <h4>Measures of spread after a change of units y = bx + a</h4>
+  <ul class="idlist">
+    <li><code>s_(y) = |b| s_(x)</code></li>
+    <li><code>s_(y)² = b² s_(x)²</code></li>
   </ul>
-  <p class="muted"><b>Their weakness:</b> the last two use only the two most extreme values. One odd value makes them huge even when everything else is packed together.</p>
+  <p class="muted"><b>In words:</b> adding <code>a</code> shifts the data and changes no spread at all; multiplying by <code>b</code> stretches every distance by <code>|b|</code>. The same goes for the range, the IQR and the mean absolute deviation, for ungrouped and grouped data alike.</p>
+  <p class="muted"><b>Example:</b> <code>s = 5 °C</code> becomes <code>1.8 · 5 = 9 °F</code>; the variance <code>25</code> becomes <code>1.8² · 25 = 81</code>.</p>
+  <p class="muted"><b>Every kind of change in one table:</b> <b>Summary: what each change does</b> (How changes in the data affect the measures).</p>
+</div>
+</section>
+
+<!-- ===== DST14 · MEASURES OF SPREAD: UNGROUPED DATA ===== -->
+<section class="pane" id="pane-dst14">
+<h2><span class="num">10</span>Measures of spread: ungrouped data (single values)</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Error rate of ungrouped data</h4>
+  <p><code>(1 − f(Mo)/n) · 100%</code></p>
+  <p class="muted"><b>In words:</b> the <b>error rate</b> (percentage error) is the percentage of values <b>not</b> equal to the mode: how often guessing the mode would be wrong. It is the only measure of spread for nominal data.</p>
+  <p class="muted"><b>Example:</b> the quiz table, <code>Mo = 7</code> with <code>f(Mo) = 6</code>, <code>n = 20</code>: <code>(1 − 6/20) · 100% = 70%</code>.</p>
+</div>
+<div class="card" data-tags="Definition" data-id="dst7:error-rate-largest-error-and-range">
+  <h4>Range and largest error of ungrouped data</h4>
+  <ul class="idlist">
+    <li>Range: &nbsp; <code>x_(max) − x_(min)</code></li>
+    <li>Largest error (maximum deviation) from the mid-range: &nbsp; <code>(x_(max) − x_(min))/2</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the range is the distance from the smallest value to the largest. If you guess the mid-range, the worst you can be off is half of it, the largest error.</p>
+  <p class="muted"><b>Example:</b> the quiz table, from <code>4</code> to <code>9</code>: range <code>5</code>, largest error <code>2.5</code>.</p>
+  <p class="muted"><b>Their weakness:</b> both use only the two most extreme values. One odd value makes them huge even when everything else is packed together.</p>
 </div>
 <div class="card" data-tags="Definition, Formula">
-  <h4>Quartiles and the interquartile range</h4>
+  <h4>Quartiles and the IQR of ungrouped data</h4>
+  <p>The <b>lower quartile</b> <code>Q₁</code> has 25% of the data below it; the <b>upper quartile</b> <code>Q₃</code> has 75% below it. The <b>interquartile range</b> <code>IQR = Q₃ − Q₁</code> is the width of the middle half of the data.</p>
+  <ul class="idlist">
+    <li><code>Q₁</code>: the value at place <code>n/4</code> of the sorted data</li>
+    <li><code>Q₃</code>: the value at place <code>(3n)/4</code></li>
+  </ul>
+  <p class="muted"><b>Not a whole number?</b> Round to the nearest whole number to get the place (the book's rule). <code>n = 39</code>: <code>9.75 → 10th</code> value and <code>29.25 → 29th</code> value.</p>
+  <p class="muted"><b>Example, a frequency table:</b> the quiz table, <code>n = 20</code>, <code>F = 1, 4, 9, 15, 18, 20</code>. Place <code>5</code>: <code>F</code> first reaches 5 at the score <code>6</code>, so <code>Q₁ = 6</code>. Place <code>15</code>: at the score <code>7</code>, so <code>Q₃ = 7</code>. <code>IQR = 1</code>.</p>
+  <p class="muted"><b>Strength:</b> the extremes don't affect it at all. For grouped data: <b>Quartiles and the IQR of grouped data</b>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula" data-id="dst7:mean-absolute-deviation">
+  <h4>Mean absolute deviation of ungrouped data</h4>
+  <ul class="idlist">
+    <li>A list: &nbsp; <code>(∑_(i=1)^(n) |x_(i) − Md|)/n</code></li>
+    <li>A frequency table: &nbsp; <code>(∑ |x − Md| f(x))/n</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the average distance of a value from the median. It uses every value. It is measured from the median because that is where the sum of distances is smallest.</p>
+  <p class="muted"><b>Example:</b> the quiz table, <code>Md = 7</code>: distances <code>3, 2, 1, 0, 1, 2</code> with <code>f = 1, 3, 5, 6, 3, 2</code>: <code>(3 + 6 + 5 + 0 + 3 + 4)/20 = 21/20 = 1.05</code>.</p>
+  <p class="muted"><b>Why not just average <code>x_(i) − x̄</code>?</b> Those always add up to <code>0</code>: the positive and negative deviations cancel. Taking absolute values (here) or squares (variance) stops the cancelling.</p>
+</div>
+<div class="card" data-tags="Definition, Formula" data-id="dst7:variance-and-standard-deviation">
+  <h4>Variance and standard deviation of ungrouped data</h4>
+  <ul class="idlist">
+    <li>A list: &nbsp; <code>s_(x)² = (∑_(i=1)^(n) (x_(i) − x̄)²)/n</code></li>
+    <li>A frequency table: &nbsp; <code>s_(x)² = (∑ (x − x̄)² f(x))/n</code></li>
+    <li><code>s_(x) = √(s_(x)²)</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the variance is the average squared distance from the mean. Its units are squared (cm²), so we take the root: the <b>standard deviation</b> <code>s_(x)</code> is back in the data's own units and is the usual measure of spread.</p>
+  <p class="muted"><b>Example:</b> <code>2, 4, 4, 5, 10</code>, <code>x̄ = 5</code>: deviations <code>−3, −1, −1, 0, 5</code>, squares <code>9, 1, 1, 0, 25</code>: <code>s² = 36/5 = 7.2</code>, <code>s ≈ 2.68</code>.</p>
+  <p class="muted"><b>Notation:</b> <code>s</code> is for data you have (a sample); <code>σ</code> is for a whole population. In this course both divide by <code>n</code>.</p>
+</div>
+<div class="card" data-tags="Theorem" data-id="dst7:the-shortcut-formula-for-the-variance">
+  <h4>Shortcut formula for the variance of ungrouped data</h4>
+  <ul class="idlist">
+    <li>A list: &nbsp; <code>s_(x)² = (∑ x_(i)²)/n − x̄²</code></li>
+    <li>A frequency table: &nbsp; <code>s_(x)² = (∑ x² f(x))/n − x̄²</code></li>
+  </ul>
+  <p class="muted"><b>In words:</b> the mean of the squares minus the square of the mean. It's quicker by hand: no deviations to compute.</p>
+  <p class="muted"><b>Where it comes from:</b> open the square, <code>(x_(i) − x̄)² = x_(i)² − 2x̄ x_(i) + x̄²</code>, and sum with the rules for sums using <code>∑ x_(i) = n x̄</code>: <code>∑ x_(i)² − 2n x̄² + n x̄² = ∑ x_(i)² − n x̄²</code>. Divide by <code>n</code>.</p>
+  <p class="muted"><b>Example:</b> the quiz table: <code>∑ x² f(x) = 919</code>, so <code>s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275</code> and <code>s ≈ 1.31</code>.</p>
+</div>
+</section>
+
+<!-- ===== DST15 · MEASURES OF SPREAD: GROUPED DATA ===== -->
+<section class="pane" id="pane-dst15">
+<h2><span class="num">11</span>Measures of spread: grouped data (classes)</h2>
+<div class="card" data-tags="Definition, Formula">
+  <h4>Error rate, range and largest error of grouped data</h4>
+  <ul class="idlist">
+    <li>Error rate: &nbsp; <code>(1 − f/n) · 100%</code>, &nbsp; <code>f</code> the frequency of the modal class</li>
+    <li>Range: &nbsp; <code>L_(top) − L_(bottom)</code> (the upper limit of the top class minus the lower limit of the bottom class)</li>
+    <li>Largest error: &nbsp; range / 2</li>
+  </ul>
+  <p class="muted"><b>In words:</b> the exact values are not known, so the modal class (largest density) plays the part of the mode, and the outer limits of the table play the parts of the largest and smallest values, as for the mid-range of grouped data.</p>
+  <p class="muted"><b>Example:</b> the commute table: the modal class 10–20 has <code>f = 14</code>, so the error rate is <code>(1 − 14/40) · 100% = 65%</code>. The table runs from <code>0</code> to <code>60</code>: range <code>60</code>, largest error <code>30</code>.</p>
+</div>
+<div class="card" data-tags="Definition, Formula" data-id="dst7:quartiles-and-the-interquartile-range">
+  <h4>Quartiles and the IQR of grouped data (classes)</h4>
   <p>The <b>lower quartile</b> <code>Q₁</code> has 25% of the data below it; the <b>upper quartile</b> <code>Q₃</code> has 75% below it. The <b>interquartile range</b> <code>IQR = Q₃ − Q₁</code> is the width of the middle half of the data.</p>
   <ul class="idlist">
     <li><code>Q₁ = L₀ + (n/4 − F(x_(m−1)))/(f(x_(m))) · (L₁ − L₀)</code></li>
@@ -5417,49 +5558,32 @@
     <text class="sm" x="40" y="88" text-anchor="middle">min</text><text x="140" y="24" text-anchor="middle">Q₁</text><text x="270" y="24" text-anchor="middle">Q₃</text><text class="sm" x="380" y="88" text-anchor="middle">max</text>
     <text class="sm" x="205" y="59" text-anchor="middle">middle 50%: IQR</text>
   </svg>
-  <p class="muted"><b>Same idea as the median</b> (Measures of center), with <code>n/4</code> and <code>3n/4</code> in place of <code>n/2</code>. Here <code>x_(m)</code> is the class the quartile falls in, and <code>L₁ − L₀ = a</code> is <b>that class's</b> width: you cross a fraction of the class, so the fraction is multiplied by its width.</p>
-  <p class="muted"><b>A plain list</b> (not grouped): sort it, compute <code>n/4</code> and <code>3n/4</code>, and round to the nearest whole number to get the places. <code>n = 39</code>: <code>9.75 → 10th</code> value and <code>29.25 → 29th</code> value.</p>
-  <p class="muted"><b>Strength:</b> the extremes don't affect it at all.</p>
+  <p class="muted"><b>Same idea as the median of grouped data</b>, with <code>n/4</code> and <code>3n/4</code> in place of <code>n/2</code>. Here <code>x_(m)</code> is the class the quartile falls in, and <code>L₁ − L₀ = a</code> is <b>that class's</b> width: you cross a fraction of the class, so the fraction is multiplied by its width.</p>
+  <p class="muted"><b>Example:</b> the commute table, <code>F = 5, 19, 31, 40</code>: <code>Q₁</code> at place <code>10</code>, class 10–20: <code>10 + (10 − 5)/14 · 10 ≈ 13.57</code>; <code>Q₃</code> at place <code>30</code>, class 20–30: <code>20 + (30 − 19)/12 · 10 ≈ 29.17</code>; <code>IQR ≈ 15.6</code> minutes.</p>
+  <p class="muted"><b>Strength:</b> the extremes don't affect it at all. For ungrouped data: <b>Quartiles and the IQR of ungrouped data</b>.</p>
 </div>
 <div class="card" data-tags="Definition, Formula">
-  <h4>Mean absolute deviation</h4>
-  <p><code>(∑_(i=1)^(n) |x_(i) − Md|)/n</code></p>
-  <p class="muted"><b>In words:</b> the average distance of a value from the median. It uses every value. It is measured from the median because that is where the sum of distances is smallest.</p>
-  <p class="muted"><b>A grouped table:</b> <code>(∑ |m_(x) − Md| f(x))/n</code>, with <code>m_(x)</code> the class midpoint.</p>
-  <p class="muted"><b>Why not just average <code>x_(i) − x̄</code>?</b> Those always add up to <code>0</code>: the positive and negative deviations cancel. Taking absolute values (here) or squares (variance) stops the cancelling.</p>
+  <h4>Mean absolute deviation of grouped data (classes)</h4>
+  <p><code>(∑ |m_(x) − Md| f(x))/n</code></p>
+  <p class="muted"><b>In words:</b> as for ungrouped data, the average distance from the median, but every case in a class is counted at the class midpoint <code>m_(x)</code>, and <code>Md</code> is the median of grouped data.</p>
+  <p class="muted"><b>Example:</b> the commute table, <code>Md ≈ 20.83</code>, midpoints <code>5, 15, 25, 45</code>: distances <code>15.83, 5.83, 4.17, 24.17</code>, times <code>f = 5, 14, 12, 9</code>: <code>79.17 + 81.67 + 50 + 217.5 ≈ 428.33</code>; divided by <code>40</code>: <code>≈ 10.71</code> minutes.</p>
 </div>
 <div class="card" data-tags="Definition, Formula">
-  <h4>Variance and standard deviation</h4>
+  <h4>Variance and standard deviation of grouped data (classes)</h4>
   <ul class="idlist">
-    <li><code>s_(x)² = (∑_(i=1)^(n) (x_(i) − x̄)²)/n</code></li>
-    <li><code>s_(x)² = (∑ (x − x̄)² f(x))/n</code> (a frequency table; with classes, <code>m_(x)</code> in place of <code>x</code>)</li>
+    <li>Definition: &nbsp; <code>s_(x)² = (∑ (m_(x) − x̄)² f(x))/n</code></li>
+    <li>Shortcut: &nbsp; <code>s_(x)² = (∑ m_(x)² f(x))/n − x̄²</code></li>
     <li><code>s_(x) = √(s_(x)²)</code></li>
   </ul>
-  <p class="muted"><b>In words:</b> the variance is the average squared distance from the mean. Its units are squared (cm²), so we take the root: the <b>standard deviation</b> <code>s_(x)</code> is back in the data's own units and is the usual measure of spread.</p>
-  <p class="muted"><b>Notation:</b> <code>s</code> is for data you have (a sample); <code>σ</code> is for a whole population. In this course both divide by <code>n</code>.</p>
-</div>
-<div class="card" data-tags="Theorem">
-  <h4>The shortcut formula for the variance</h4>
-  <p><code>s_(x)² = (∑ x_(i)²)/n − x̄²</code></p>
-  <p class="muted"><b>In words:</b> the mean of the squares minus the square of the mean. It's quicker by hand: no deviations to compute.</p>
-  <p class="muted"><b>Where it comes from:</b> open the square, <code>(x_(i) − x̄)² = x_(i)² − 2x̄ x_(i) + x̄²</code>, and sum with the rules for sums using <code>∑ x_(i) = n x̄</code>: <code>∑ x_(i)² − 2n x̄² + n x̄² = ∑ x_(i)² − n x̄²</code>. Divide by <code>n</code>.</p>
-  <p class="muted"><b>Example:</b> the quiz table: <code>∑ x² f(x) = 919</code>, so <code>s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275</code> and <code>s ≈ 1.31</code>.</p>
-</div>
-<div class="card" data-tags="Theorem">
-  <h4>Spread after y = bx + a</h4>
-  <ul class="idlist">
-    <li><code>s_(y) = |b| s_(x)</code></li>
-    <li><code>s_(y)² = b² s_(x)²</code></li>
-  </ul>
-  <p class="muted"><b>In words:</b> adding <code>a</code> shifts the data and changes no spread at all; multiplying by <code>b</code> stretches every distance by <code>|b|</code>. The same goes for the range, the IQR and the mean absolute deviation.</p>
-  <p class="muted"><b>Example:</b> <code>s = 5 °C</code> becomes <code>1.8 · 5 = 9 °F</code>; the variance <code>25</code> becomes <code>1.8² · 25 = 81</code>.</p>
-  <p class="muted"><b>Every kind of change in one table:</b> <b>Summary: what each change does</b> (How changes in the data affect the measures).</p>
+  <p class="muted"><b>In words:</b> the frequency-table formulas with the class midpoint <code>m_(x)</code> in place of <code>x</code>, and <code>x̄</code> the mean of grouped data. The result is an estimate.</p>
+  <p class="muted"><b>Example:</b> the commute table, <code>x̄ = 23.5</code>: <code>∑ m_(x)² f(x) = 125 + 3150 + 7500 + 18225 = 29000</code>, so <code>s² = 29000/40 − 23.5²</code> <code>= 725 − 552.25 = 172.75</code> and <code>s ≈ 13.14</code> minutes.</p>
+  <p class="muted"><b>Why the shortcut also works here:</b> the derivation (Shortcut formula for the variance of ungrouped data) never used where the values came from, only that each one is counted <code>f</code> times.</p>
 </div>
 </section>
 
 <!-- ===== DST8 · WEIGHTED MEAN AND POOLED VARIANCE ===== -->
 <section class="pane" id="pane-dst8">
-<h2><span class="num">8</span>Combining groups</h2>
+<h2><span class="num">12</span>Combining groups</h2>
 <div class="card" data-tags="Formula">
   <h4>Weighted mean</h4>
   <p><code>x̄_(T) = (∑_(j=1)^(k) n_(j) x̄_(j))/N</code>, &nbsp; <code>N = n_(1) + … + n_(k)</code></p>
@@ -5476,7 +5600,7 @@
 
 <!-- ===== DST9 · RELATIVE POSITION ===== -->
 <section class="pane" id="pane-dst9">
-<h2><span class="num">9</span>Relative position: percentiles and z-scores</h2>
+<h2><span class="num">13</span>Relative position: percentiles and z-scores</h2>
 <div class="card" data-tags="Explanation">
   <h4>Why relative position</h4>
   <p>A grade of 70 in math and 75 in English can't be compared directly: the exams differ in difficulty and in spread. A <b>relative</b> measure places each value inside its own distribution, so values from different distributions (even different units) become comparable.</p>
@@ -5504,7 +5628,7 @@
 
 <!-- ===== DST10 · CORRELATION ===== -->
 <section class="pane" id="pane-dst10">
-<h2><span class="num">10</span>Correlation</h2>
+<h2><span class="num">14</span>Correlation</h2>
 <div class="card" data-tags="Definition">
   <h4>Scatter diagrams and linear relations</h4>
   <p>With two variables measured on each case, draw one point <code>(x_(i), y_(i))</code> per case: a <b>scatter diagram</b>. If the points lie close to a straight line, there is a <b>linear relation</b> between <code>x</code> and <code>y</code>.</p>
@@ -5573,7 +5697,7 @@
 
 <!-- ===== DST11 · HOW CHANGES IN THE DATA AFFECT THE MEASURES ===== -->
 <section class="pane" id="pane-dst11">
-<h2><span class="num">11</span>How changes in the data affect the measures</h2>
+<h2><span class="num">15</span>How changes in the data affect the measures</h2>
 <div class="card" data-tags="Theorem">
   <h4>Adding or multiplying by a constant</h4>
   <ul>
@@ -5582,7 +5706,7 @@
   </ul>
   <p class="muted"><b>Why:</b> adding <code>a</code> slides the whole data along the line. Everything moves together, so the center moves, but no distance between two values changes. Multiplying by <code>b</code> stretches every distance by <code>|b|</code> (distances are never negative); the variance is made of <b>squared</b> distances, so it grows by <code>b²</code>.</p>
   <p class="muted"><b>Example:</b> <code>2, 4, 6, 8, 10</code> has <code>x̄ = Md = 6</code>, range <code>8</code>, <code>s² = 8</code>. Add 5: <code>x̄ = Md = 11</code>, range still <code>8</code>, <code>s²</code> still <code>8</code>. Multiply by <code>−2</code>: <code>x̄ = Md = −12</code>, range <code>16</code>, <code>s² = 4 · 8 = 32</code>.</p>
-  <p class="muted"><b>Both at once</b> (<code>y = bx + a</code>, a <b>linear transformation</b>): the cards <b>Changing units: y = bx + a</b> (Measures of center) and <b>Spread after y = bx + a</b> (Measures of spread), and the method <b>Measures after a change of units</b>.</p>
+  <p class="muted"><b>Both at once</b> (<code>y = bx + a</code>, a <b>linear transformation</b>): the cards <b>Measures of center after a change of units y = bx + a</b> and <b>Measures of spread after a change of units y = bx + a</b> (the two overview concepts), and the method <b>Measures after a change of units</b>.</p>
 </div>
 <div class="card" data-tags="Theorem">
   <h4>Adding one observation</h4>
@@ -8598,7 +8722,7 @@
 
 <!-- built-in methods (seedBuiltins copies them into the owner's data). Never change an id; bump v on any change.
      Part text markup: `…` math, **…** bold, "f(x) = { value ; condition" + "{ value ; condition" lines = piecewise. -->
-<script type="application/json" id="biLinks">{"courseDefs":[{"id":"co_bi_physics","name":"Physics course"}],"c":[["b:la1","b:g2"],["b:la1","b:g3"],["b:la2","b:la1"],["b:la2","b:g7"],["b:la2","b:g6"],["b:la2","b:s4"],["b:mec3","b:la1"],["b:mec4","b:la2"],["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"],["b:elm6","b:elm4"],["b:elm7","b:elm6"],["b:elm8","b:elm7"],["b:elm8","b:mec14"],["b:elm9","b:elm5"],["b:elm9","b:elm7"],["b:elm9","b:p2"],["b:elm10","b:elm2"],["b:elm10","b:mec4"],["b:elm10","b:mec17"],["b:elm11","b:elm10"],["b:elm11","b:elm6"],["b:elm12","b:elm11"],["b:elm12","b:elm3"],["b:elm13","b:elm12"],["b:elm13","b:dv1"],["b:elm14","b:elm13"],["b:elm14","b:elm8"],["b:elm15","b:elm13"],["b:elm15","b:opt1"],["b:mod2","b:mod1"],["b:mod2","b:mec13"],["b:mod2","b:mec16"],["b:mod3","b:mod1"],["b:mod3","b:elm10"],["b:mod3","b:elm6"],["b:mod4","b:mec8"],["b:mod4","b:opt1"],["b:mod5","b:mod4"],["b:mod5","b:opt1"],["b:mod5","b:elm4"],["b:mod6","b:mod5"],["b:mod6","b:mod3"],["b:mod6","b:mec17"],["b:mod7","b:mod6"],["b:mod7","b:wav6"],["b:mod8","b:mod3"],["b:mod8","b:mod4"],["b:mod9","b:mod8"],["b:mod9","b:p2"],["b:mod10","b:mod8"],["b:mod10","b:mod9"]],"m":[["pp_bi_mecmeet","pp_bi_mecconst"],["pp_bi_laparallel","pp_bi_lafig"],["pp_bi_lameet","pp_bi_lafig"],["pp_bi_lacoll","pp_bi_lapoints"],["pp_bi_laangle","pp_bi_lapoints"],["pp_bi_lamissing","pp_bi_lapoints"],["pp_bi_lacoord","pp_bi_lapoints"],["pp_bi_lacoord","pp_bi_laangle"],["pp_bi_modbohr","pp_bi_modphoton"],["pp_bi_moddebroglie","pp_bi_modbohr"],["pp_bi_moddecay","pp_bi_modbind"],["pp_bi_modrel","pp_bi_modgas"],["pp_bi_modphoton","pp_bi_modrel"],["pp_bi_modelec","pp_bi_modgas"],["pp_bi_elmbfield","pp_bi_elmlorentz"],["pp_bi_elminduct","pp_bi_elmbfield"],["pp_bi_elmac","pp_bi_elminduct"],["pp_bi_elmkirch","pp_bi_elmres"],["pp_bi_elmpower","pp_bi_elmres"],["pp_bi_elmcapc","pp_bi_elmcap"],["pp_bi_elmrc","pp_bi_elmcapc"],["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["s","f:mod","Physics course"],["c","elm14","Coils and capacitors in AC circuits","x"],["c","elm9","Charging and discharging through a resistor","x"],["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["s","f:thm","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
+<script type="application/json" id="biLinks">{"courseDefs":[{"id":"co_bi_physics","name":"Physics course"}],"c":[["b:dst12","b:dst6"],["b:dst12","b:dst3"],["b:dst13","b:dst12"],["b:dst13","b:dst4"],["b:dst14","b:dst7"],["b:dst14","b:dst12"],["b:dst15","b:dst14"],["b:dst15","b:dst13"],["b:la1","b:g2"],["b:la1","b:g3"],["b:la2","b:la1"],["b:la2","b:g7"],["b:la2","b:g6"],["b:la2","b:s4"],["b:mec3","b:la1"],["b:mec4","b:la2"],["b:s1","b:s2"],["b:s2","b:g6"],["b:s3","b:g4"],["b:s4","b:s2"],["b:s4","b:s3"],["b:s5","b:s2"],["b:s5","b:s3"],["b:s6","b:s1"],["b:s6","b:s4"],["b:s6","b:s5"],["b:a2","b:a1"],["b:a2","b:a3"],["b:g2","b:g1"],["b:g3","b:g2"],["b:g4","b:g2"],["b:g5","b:g1"],["b:g5","b:g2"],["b:g6","b:g2"],["b:p2","b:p1"],["b:c1","b:a2"],["b:c1","b:a3"],["b:c1","b:p2"],["b:c2","b:fn1"],["b:c2","b:lm1"],["b:c2","b:lm3"],["b:c2","b:lm5"],["b:c3","b:c2"],["b:c4","b:c2"],["b:c4","b:c3"],["b:c4","b:s1"],["b:c5","b:c2"],["b:c5","b:c3"],["b:c5","b:p2"],["b:fn1","b:c1"],["b:fn2","b:fn1"],["b:fn2","b:a1"],["b:fn3","b:fn1"],["b:fn3","b:s3"],["b:fn3","b:s5"],["b:fn3","b:s6"],["b:fn4","b:fn1"],["b:fn4","b:c1"],["b:lm1","b:fn1"],["b:lm1","b:a1"],["b:lm1","b:a2"],["b:lm2","b:lm1"],["b:lm3","b:lm2"],["b:lm3","b:p1"],["b:lm4","b:lm3"],["b:lm4","b:c2"],["b:lm5","b:lm1"],["b:lm5","b:fn2"],["b:lm6","b:lm5"],["b:lm6","b:lm2"],["b:lm7","b:lm5"],["b:lm7","b:lm6"],["b:lm7","b:fn4"],["b:lm8","b:lm5"],["b:lm4","b:dv2"],["b:dv1","b:lm1"],["b:dv1","b:lm5"],["b:dv2","b:dv1"],["b:dv2","b:lm3"],["b:dv2","b:s1"],["b:dv2","b:fn4"],["b:dv2","b:c5"],["b:dv3","b:dv1"],["b:dv3","b:lm5"],["b:dv3","b:fn2"],["b:dv3","b:a1"],["b:dv4","b:dv3"],["b:dv4","b:dv2"],["b:dv4","b:lm6"],["b:dv5","b:dv1"],["b:dv6","b:dv5"],["b:dv6","b:lm5"],["b:dv7","b:dv6"],["b:dv7","b:dv3"],["b:dv8","b:dv7"],["b:in1","b:dv1"],["b:in1","b:dv2"],["b:in2","b:in1"],["b:in2","b:dv1"],["b:in2","b:dv7"],["b:in2","b:lm5"],["b:in3","b:in1"],["b:in3","b:dv2"],["b:in4","b:in3"],["b:in4","b:dv2"],["b:in4","b:p1"],["b:in4","b:p2"],["b:in5","b:in4"],["b:in5","b:in2"],["b:in5","b:fn4"],["b:in6","b:in4"],["b:in6","b:dv2"],["b:in7","b:in2"],["b:in7","b:fn2"],["b:in7","b:a1"],["b:in8","b:in2"],["b:in8","b:dv6"],["b:in9","b:in2"],["b:in9","b:lm1"],["b:in9","b:in8"],["b:se1","b:lm1"],["b:se2","b:se1"],["b:se3","b:se1"],["b:se3","b:se2"],["b:se4","b:se3"],["b:se4","b:in9"],["b:se5","b:se4"],["b:se6","b:se5"],["b:se7","b:se6"],["b:se8","b:se7"],["b:se8","b:dv2"],["b:se9","b:se8"],["b:se9","b:in4"],["b:dv9","b:dv2"],["b:dv10","b:dv9"],["b:dv11","b:dv6"],["b:dv11","b:dv5"],["b:dv12","b:dv1"],["b:dv12","b:lm8"],["b:dv13","b:dv1"],["b:g7","b:a2"],["b:g8","b:g7"],["b:g8","b:g4"],["b:fn5","b:fn1"],["b:fn5","b:fn4"],["b:fn6","b:fn5"],["b:fn6","b:s4"],["b:fn6","b:dv2"],["b:fn7","b:fn6"],["b:fn8","b:p1"],["b:fn8","b:fn5"],["b:in10","b:in5"],["b:in10","b:s1"],["b:in11","b:in10"],["b:in11","b:fn7"],["b:in12","b:in4"],["b:in12","b:fn6"],["b:in13","b:in5"],["b:in14","b:in1"],["b:in15","b:in7"],["b:in16","b:in15"],["b:in16","b:dv1"],["b:in17","b:in7"],["b:in17","b:dv13"],["b:in18","b:in4"],["b:in18","b:p2"],["b:dst3","b:dst1"],["b:dst4","b:dst3"],["b:dst6","b:dst5"],["b:dst6","b:dst3"],["b:dst6","b:dst2"],["b:dst7","b:dst6"],["b:dst8","b:dst6"],["b:dst8","b:dst7"],["b:dst9","b:dst7"],["b:dst9","b:dst6"],["b:dst10","b:dst9"],["b:dst10","b:dst7"],["b:dst11","b:dst6"],["b:dst11","b:dst7"],["b:dst11","b:dst8"],["b:dst11","b:dst10"],["b:prb2","b:prb1"],["b:prb3","b:prb2"],["b:prb4","b:prb3"],["b:prb4","b:prb1"],["b:prb5","b:prb3"],["b:cmb2","b:cmb1"],["b:cmb3","b:cmb2"],["b:cmb4","b:cmb2"],["b:cmb5","b:cmb3"],["b:cmb5","b:prb5"],["b:prb6","b:prb3"],["b:prb6","b:prb5"],["b:prb7","b:prb6"],["b:prb8","b:prb6"],["b:prb8","b:prb4"],["b:prb9","b:prb8"],["b:prb9","b:prb7"],["b:prb9","b:cmb1"],["b:rv1","b:prb2"],["b:rv2","b:rv1"],["b:rv3","b:rv2"],["b:rv3","b:cmb3"],["b:rv3","b:prb7"],["b:rv4","b:rv2"],["b:rv4","b:dst6"],["b:rv5","b:rv4"],["b:rv5","b:dst7"],["b:rv6","b:rv2"],["b:rv7","b:rv6"],["b:rv7","b:rv5"],["b:rv7","b:dst10"],["b:rv8","b:rv2"],["b:rv8","b:dst4"],["b:rv9","b:rv8"],["b:rv9","b:dst9"],["b:mec2","b:mec1"],["b:mec2","b:dv13"],["b:mec2","b:dv1"],["b:mec2","b:in1"],["b:mec3","b:mec2"],["b:mec3","b:g2"],["b:mec3","b:s2"],["b:mec4","b:mec3"],["b:mec5","b:mec3"],["b:mec5","b:mec2"],["b:mec6","b:mec5"],["b:mec7","b:mec5"],["b:mec7","b:mec6"],["b:mec8","b:mec7"],["b:mec8","b:mec2"],["b:mec9","b:mec5"],["b:mec9","b:mec3"],["b:mec10","b:mec9"],["b:mec10","b:mec6"],["b:mec11","b:mec5"],["b:mec11","b:mec4"],["b:mec11","b:in1"],["b:mec12","b:mec11"],["b:mec12","b:mec6"],["b:mec13","b:mec12"],["b:mec14","b:mec12"],["b:mec14","b:mec13"],["b:mec15","b:mec14"],["b:mec15","b:mec9"],["b:mec16","b:mec5"],["b:mec16","b:mec12"],["b:mec17","b:mec2"],["b:mec17","b:mec5"],["b:mec17","b:mec6"],["b:mec18","b:mec15"],["b:mec18","b:mec4"],["b:mec18","b:mec17"],["b:mec19","b:mec9"],["b:mec19","b:mec12"],["b:mec19","b:dv2"],["b:mec20","b:mec10"],["b:mec20","b:mec5"],["b:wav1","b:mec19"],["b:wav2","b:wav1"],["b:wav2","b:mec19"],["b:wav2","b:s2"],["b:wav3","b:wav2"],["b:wav3","b:mec10"],["b:wav3","b:p2"],["b:wav4","b:wav2"],["b:wav5","b:wav4"],["b:wav5","b:wav2"],["b:wav6","b:wav1"],["b:wav6","b:wav2"],["b:opt1","b:wav2"],["b:opt1","b:wav1"],["b:opt2","b:opt1"],["b:opt2","b:wav4"],["b:opt3","b:opt2"],["b:opt4","b:opt3"],["b:opt5","b:opt1"],["b:opt5","b:wav6"],["b:elm2","b:elm1"],["b:elm2","b:mec6"],["b:elm2","b:mec3"],["b:elm3","b:elm2"],["b:elm3","b:in1"],["b:elm4","b:elm2"],["b:elm4","b:mec12"],["b:elm5","b:elm4"],["b:elm6","b:elm4"],["b:elm7","b:elm6"],["b:elm8","b:elm7"],["b:elm8","b:mec14"],["b:elm9","b:elm5"],["b:elm9","b:elm7"],["b:elm9","b:p2"],["b:elm10","b:elm2"],["b:elm10","b:mec4"],["b:elm10","b:mec17"],["b:elm11","b:elm10"],["b:elm11","b:elm6"],["b:elm12","b:elm11"],["b:elm12","b:elm3"],["b:elm13","b:elm12"],["b:elm13","b:dv1"],["b:elm14","b:elm13"],["b:elm14","b:elm8"],["b:elm15","b:elm13"],["b:elm15","b:opt1"],["b:mod2","b:mod1"],["b:mod2","b:mec13"],["b:mod2","b:mec16"],["b:mod3","b:mod1"],["b:mod3","b:elm10"],["b:mod3","b:elm6"],["b:mod4","b:mec8"],["b:mod4","b:opt1"],["b:mod5","b:mod4"],["b:mod5","b:opt1"],["b:mod5","b:elm4"],["b:mod6","b:mod5"],["b:mod6","b:mod3"],["b:mod6","b:mec17"],["b:mod7","b:mod6"],["b:mod7","b:wav6"],["b:mod8","b:mod3"],["b:mod8","b:mod4"],["b:mod9","b:mod8"],["b:mod9","b:p2"],["b:mod10","b:mod8"],["b:mod10","b:mod9"]],"m":[["pp_bi_dstcentergrp","pp_bi_dstgrp"],["pp_bi_mecmeet","pp_bi_mecconst"],["pp_bi_laparallel","pp_bi_lafig"],["pp_bi_lameet","pp_bi_lafig"],["pp_bi_lacoll","pp_bi_lapoints"],["pp_bi_laangle","pp_bi_lapoints"],["pp_bi_lamissing","pp_bi_lapoints"],["pp_bi_lacoord","pp_bi_lapoints"],["pp_bi_lacoord","pp_bi_laangle"],["pp_bi_modbohr","pp_bi_modphoton"],["pp_bi_moddebroglie","pp_bi_modbohr"],["pp_bi_moddecay","pp_bi_modbind"],["pp_bi_modrel","pp_bi_modgas"],["pp_bi_modphoton","pp_bi_modrel"],["pp_bi_modelec","pp_bi_modgas"],["pp_bi_elmbfield","pp_bi_elmlorentz"],["pp_bi_elminduct","pp_bi_elmbfield"],["pp_bi_elmac","pp_bi_elminduct"],["pp_bi_elmkirch","pp_bi_elmres"],["pp_bi_elmpower","pp_bi_elmres"],["pp_bi_elmcapc","pp_bi_elmcap"],["pp_bi_elmrc","pp_bi_elmcapc"],["pp_bi_elmgauss","pp_bi_elmcoul"],["pp_bi_elmpot","pp_bi_elmcoul"],["pp_bi_elmbeam","pp_bi_elmpot"],["pp_bi_elmbeam","pp_bi_mecproj"],["pp_bi_elmcap","pp_bi_elmpot"],["pp_bi_optimage","pp_bi_optsnell"],["pp_bi_optinstr","pp_bi_optimage"],["pp_bi_optgrating","pp_bi_wavinterf"],["pp_bi_wavstring","pp_bi_wavbasic"],["pp_bi_wavdb","pp_bi_wavbasic"],["pp_bi_wavdoppler","pp_bi_wavbasic"],["pp_bi_wavinterf","pp_bi_wavbasic"],["pp_bi_wavsnell","pp_bi_wavbasic"],["pp_bi_meccoll","pp_bi_mecenergy"],["pp_bi_meccirc","pp_bi_mecnewton"],["pp_bi_mecrot","pp_bi_meccirc"],["pp_bi_mecshm","pp_bi_mecenergy"],["pp_bi_mecstokes","pp_bi_mecfluid"],["pp_bi_mecenergy","pp_bi_mecwork"],["pp_bi_mecpower","pp_bi_mecenergy"],["pp_bi_meclever","pp_bi_mecequil"],["pp_bi_mecmachine","pp_bi_meclever"],["pp_bi_mecnewton","pp_bi_mecvec"],["pp_bi_mecincline","pp_bi_mecnewton"],["pp_bi_mecpulley","pp_bi_mecnewton"],["pp_bi_mecproj","pp_bi_mecconst"],["pp_bi_mecequil","pp_bi_mecvec"],["pp_bi_mecfluid","pp_bi_mecequil"],["pp_bi_mecconst","pp_bi_mecconv"],["pp_bi_mecgraph","pp_bi_mecconst"],["pp_bi_meccalc","pp_bi_mecgraph"],["pp_bi_mecdot","pp_bi_mecvec"],["pp_bi_meccross","pp_bi_mecdot"],["pp_bi_rvjoint","pp_bi_rvev"],["pp_bi_rvnorminv","pp_bi_rvnorm"],["pp_bi_rvbinom","pp_bi_rvwhich"],["pp_bi_rvev","pp_bi_rvpmf"],["pp_bi_prbindep","pp_bi_prbcond"],["pp_bi_prbtree","pp_bi_prbcond"],["pp_bi_prbtable","pp_bi_prbtree"],["pp_bi_cmbspecial","pp_bi_cmbcount"],["pp_bi_cmbdiff","pp_bi_cmbcount"],["pp_bi_cmbspecial","pp_bi_prbunif"],["pp_bi_prbrules","pp_bi_prbwords"],["pp_bi_prbunif","pp_bi_prbrules"],["pp_bi_dsthist","pp_bi_dstfreq"],["pp_bi_dstgrp","pp_bi_dstfreq"],["pp_bi_dstvar","pp_bi_dstcenter"],["pp_bi_dstpool","pp_bi_dstvar"],["pp_bi_dstz","pp_bi_dstvar"],["pp_bi_dstr","pp_bi_dstvar"],["pp_bi_dstchange","pp_bi_dstlin"],["pp_bi_dstchange","pp_bi_dstvar"],["pp_bi_invol","pp_bi_indef"],["pp_bi_intsub","pp_bi_intrig"],["pp_bi_fnatan","pp_bi_inquot"],["pp_bi_dvrel","pp_bi_dvimp"],["pp_bi_dvopt","pp_bi_dvabs"],["pp_bi_serint","pp_bi_serabs"],["pp_bi_serabs","pp_bi_sertest"],["pp_bi_serapprox","pp_bi_serbuild"],["pp_bi_seqmono","pp_bi_seqlim"],["pp_bi_gesolve","pp_bi_gessa"],["pp_bi_trsolve","pp_bi_trexact"],["pp_bi_trquad","pp_bi_trsolve"],["pp_bi_lmgen","pp_bi_lmfac"],["pp_bi_lmgen","pp_bi_lmcon"],["pp_bi_lmgen","pp_bi_lmbig"],["pp_bi_lmgen","pp_bi_lmsub"],["pp_bi_lmgen","pp_bi_lmlho"],["pp_bi_lmsub","pp_bi_lmfac"],["pp_bi_lmcpt","pp_bi_lmgen"],["pp_bi_lmcpt","pp_bi_fnabs"],["pp_bi_lmivt","pp_bi_lmcpt"],["pp_bi_dvrule","pp_bi_dvpiece"],["pp_bi_dvpiece","pp_bi_lmcpt"],["pp_bi_dvpiece","pp_bi_fnabs"],["pp_bi_dvabs","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_dvloc"],["pp_bi_dvinf","pp_bi_lmgen"],["pp_bi_dv2nd","pp_bi_dvloc"],["pp_bi_dvcvx","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_dvloc"],["pp_bi_dvsketch","pp_bi_dvconv"],["pp_bi_dvsketch","pp_bi_lmgen"],["pp_bi_dvrolpr","pp_bi_dvrol"],["pp_bi_dvr1","pp_bi_lmivt"],["pp_bi_dvr2","pp_bi_dvrol"],["pp_bi_dvr2","pp_bi_lmivt"],["pp_bi_dvr3","pp_bi_dvloc"],["pp_bi_dvr3","pp_bi_dvinf"],["pp_bi_inchoose","pp_bi_insub"],["pp_bi_inchoose","pp_bi_inparts"],["pp_bi_inchoose","pp_bi_inquot"],["pp_bi_inarea","pp_bi_indef"],["pp_bi_inbetween","pp_bi_indef"],["pp_bi_inabs","pp_bi_fnabs"],["pp_bi_inabs","pp_bi_indef"],["pp_bi_inabs","pp_bi_insym"],["pp_bi_insym","pp_bi_indef"],["pp_bi_inpiece","pp_bi_lmcpt"],["pp_bi_inest","pp_bi_dvabs"],["pp_bi_inest","pp_bi_dvloc"],["pp_bi_inconv","pp_bi_indef"],["pp_bi_inconv","pp_bi_insym"],["pp_bi_inharm","pp_bi_inconv"]],"courses":[["c","dst15","Error rate, range and largest error of grouped data","x"],["s","f:mod","Physics course"],["c","elm14","Coils and capacitors in AC circuits","x"],["c","elm9","Charging and discharging through a resistor","x"],["s","f:elm","Physics course"],["s","f:opt","Physics course"],["c","opt5","Diffraction and resolution","x"],["s","f:wav","Physics course"],["s","f:mec","Physics course"],["s","f:thm","Physics course"],["c","mec18","Moments of inertia of common bodies","x"],["s","f:rv","Intro to Statistics"],["s","f:cmb","Intro to Statistics"],["s","f:prb","Intro to Statistics"],["s","f:dst","Intro to Statistics"],["t","b:in15","x"],["t","b:in16","x"],["t","b:in17","x"],["t","b:in18","x"],["p","pp_bi_invol","x"],["p","pp_bi_inwork","x"],["p","pp_bi_insep","x"],["p","pp_bi_inlinde","x"],["t","b:in10","x"],["t","b:in11","x"],["t","b:in12","x"],["t","b:in13","x"],["t","b:in14","x"],["p","pp_bi_intrig","x"],["p","pp_bi_intsub","x"],["p","pp_bi_inpf","x"],["p","pp_bi_innum","x"],["t","b:fn5","Calc 1"],["t","b:fn6","Calc 1"],["t","b:fn7","x"],["t","b:fn8","x"],["p","pp_bi_fninv","Calc 1"],["p","pp_bi_fninvd","Calc 1"],["p","pp_bi_fnatan","Calc 1"],["p","pp_bi_fnatand","Calc 1"],["p","pp_bi_fntri","x"],["t","b:g7","x"],["t","b:g8","x"],["p","pp_bi_geline","x"],["p","pp_bi_gecirc","x"],["t","b:dv9","x"],["t","b:dv10","x"],["t","b:dv11","x"],["t","b:dv12","x"],["t","b:dv13","x"],["p","pp_bi_dvimp","x"],["p","pp_bi_dvlin","x"],["p","pp_bi_dvrel","x"],["p","pp_bi_dvopt","x"],["p","pp_bi_dvnewton","x"],["s","f:int","Calc 1"],["s","f:ser","Calc 1"],["c","in1","Darboux and Riemann sums","x"],["c","in3","Properties of the definite integral","x"],["c","in4","Exponential functions","x"],["c","in7","Area between two curves","x"],["c","in9","Improper integrals of unbounded functions","x"],["p","pp_bi_inbetween","x"]]}</script>
 <script type="application/json" id="biMethods">
 [
 { "id": "pp_bi_modbohr", "v": 1, "subject": "f:mod", "kind": "problem",
@@ -9474,43 +9598,56 @@
     { "id": "st_bi_dsthist4", "cat": "example", "name": "Example — unequal widths", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60 with `f = 5, 14, 12, 9`\n1. Mark 0, 10, 20, 30 and 60: the last class is three times as wide.\n2. `d = 5/10 = 0.5`; `14/10 = 1.4`; `12/10 = 1.2`; `9/30 = 0.3`\n3. Areas `0.5 · 10 = 5`, `14`, `12`, `0.3 · 30 = 9`: the frequencies ✓, total `40` ✓. The peak is at 10–20 with a long, thin tail to the right: positive skew.\nDrawn with height `f = 9`, the last bar would have been the biggest block, although it holds the fewest workers per minute.",
       "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["x", "0–10", "10–20", "20–30", "30–60"] }, { "c": ["f(x)", "5", "14", "12", "9"] }, { "c": ["a", "10", "10", "10", "30"] }, { "c": ["`d = f(x)/a`", "0.5", "1.4", "1.2", "0.3"] }], "head": 1, "side": 1 } }] }
   ] },
-{ "id": "pp_bi_dstcenter", "v": 2, "subject": "f:dst", "kind": "problem",
-  "name": "Finding the mode, median, mean and mid-range",
-  "description": "Compute the four measures of center from a list or a frequency table, and say which one fits.",
-  "uses": [["c", "dst6", "Mode, mid-range and median"], ["c", "dst6", "The mean"], ["c", "dst2", "Which measure fits which scale"]],
+{ "id": "pp_bi_dstcenter", "v": 3, "subject": "f:dst", "kind": "problem",
+  "name": "Finding the measures of center of ungrouped data (a list or a frequency table)",
+  "description": "Compute the mode, median, mean and mid-range from a list or a frequency table of single values, and say which one fits.",
+  "uses": [["c", "dst12", "Mode of ungrouped data"], ["c", "dst6", "mode-mid-range-and-median"], ["c", "dst6", "the-mean"], ["c", "dst12", "Mid-range of ungrouped data"], ["c", "dst2", "Which measure fits which scale"]],
   "parts": [
-    { "id": "st_bi_dstcenter1", "cat": "stage", "name": "Sort the data", "text": "Or use the frequency table, which is already in order." },
+    { "id": "st_bi_dstcenter1", "cat": "stage", "name": "Sort the data", "text": "Or use the frequency table, which is already in order. If the rows are classes (intervals), this is grouped data: use Finding the measures of center of grouped data instead." },
     { "id": "st_bi_dstcenter2", "cat": "stage", "name": "Mode and mid-range", "text": "`Mo`: the value with the biggest `f`. `MR = (x_(max) + x_(min))/2`." },
     { "id": "st_bi_dstcenter3", "cat": "stage", "name": "Median", "text": "Find the place: `(n + 1)/2` for odd `n`; the two places `n/2` and `n/2 + 1` for even `n` (average them). In a table, run down `F(x)` until it reaches the place." },
-    { "id": "st_bi_dstcenter4", "cat": "stage", "name": "Mean", "text": "`x̄ = (∑ x f(x))/n`: multiply each value by its frequency, add, divide by `n`. A table of classes: use the midpoint row, `x̄ = (∑ m_(x) f(x))/n`." },
+    { "id": "st_bi_dstcenter4", "cat": "stage", "name": "Mean", "text": "A list: `x̄ = (∑ x_(i))/n`. A frequency table: `x̄ = (∑ x f(x))/n`: multiply each value by its frequency, add, divide by `n`." },
     { "id": "st_bi_dstcenter5", "cat": "stage", "name": "Choose", "text": "Nominal → mode. Ordinal or strongly skewed → median. Otherwise the mean." },
-    { "id": "st_bi_dstcenter6", "cat": "example", "name": "Example — the quiz table", "text": "Scores `4…9` with `f = 1, 3, 5, 6, 3, 2`, `n = 20`\n2. `Mo = 7`; `MR = (9 + 4)/2 = 6.5`\n3. Places 10 and 11. `F = 1, 4, 9, 15, …`: both are `7`, so `Md = 7`.\n4. `x̄ = (4 + 15 + 30 + 42 + 24 + 18)/20 = 133/20 = 6.65`" },
-    { "id": "st_bi_dstcenter7", "cat": "example", "name": "Example — a table of classes", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60; `f = 5, 14, 12, 9`; `n = 40`\n1. Already in order.\n2. The class 10–20 has the biggest `f`, so `Mo = 15`, its midpoint.\n3. Place `20`. `F = 5, 19, 31, …`: class 20–30, so `Md = 20 + (20 − 19)/12 · 10 ≈ 20.83` (see Median, quartiles and percentiles of a grouped table).\n4. `m_(x) = 5, 15, 25, 45`: `x̄ = (25 + 210 + 300 + 405)/40 = 940/40 = 23.5`\n5. `Mo < Md < x̄`: the long tail to the right pulls the mean up, so the median describes a typical commute better." }
+    { "id": "st_bi_dstcenter6", "cat": "example", "name": "Example — a frequency table (the quiz table)", "text": "Scores `4…9` with `f = 1, 3, 5, 6, 3, 2`, `n = 20`\n2. `Mo = 7`; `MR = (9 + 4)/2 = 6.5`\n3. Places 10 and 11. `F = 1, 4, 9, 15, …`: both are `7`, so `Md = 7`.\n4. `x̄ = (4 + 15 + 30 + 42 + 24 + 18)/20 = 133/20 = 6.65`" },
+    { "id": "st_bi_dstcenter8", "cat": "example", "name": "Example — a list", "text": "`2, 4, 4, 5, 10`\n1. Already sorted.\n2. `Mo = 4`; `MR = (10 + 2)/2 = 6`\n3. `n = 5`, place `3`: `Md = 4`\n4. `x̄ = 25/5 = 5`\n5. The `10` pulls the mean above the median: a little positive skew." }
   ] },
-{ "id": "pp_bi_dstgrp", "v": 2, "subject": "f:dst", "kind": "problem",
-  "name": "Median, quartiles and percentiles of a grouped table",
-  "description": "Find Md, Q₁, Q₃, the IQR or any percentile C_k from a grouped frequency table.",
+{ "id": "pp_bi_dstcentergrp", "v": 1, "subject": "f:dst", "kind": "problem",
+  "name": "Finding the measures of center of grouped data (classes)",
+  "description": "Compute the mode (by density), median, mean and mid-range from a table of classes.",
+  "uses": [["c", "dst13", "Mode of grouped data (classes)"], ["c", "dst6", "the-median-of-a-grouped-table"], ["c", "dst13", "Mean of grouped data (classes)"], ["c", "dst13", "Mid-range of grouped data (classes)"], ["c", "dst3", "Discrete or continuous: which table?"]],
+  "parts": [
+    { "id": "st_bi_dstcg1", "cat": "stage", "name": "Complete the table", "text": "Rows: the classes with real limits L₀–L₁, `f(x)`, the running total `F(x)`, the midpoint `m_(x) = (L₀ + L₁)/2`, the width `a = L₁ − L₀` and the density `d = f(x)/a`." },
+    { "id": "st_bi_dstcg2", "cat": "stage", "name": "Mode: the largest density", "text": "The modal class is the one with the largest `d` (not the largest `f`, unless all widths are equal). `Mo` is its midpoint." },
+    { "id": "st_bi_dstcg3", "cat": "stage", "name": "Median: part of the way across", "text": "Place `n/2`; the first class whose `F` reaches it; `Md = L₀ + (n/2 − F(x_(m−1)))/(f(x_(m))) · a` (Median, quartiles and percentiles of grouped data)." },
+    { "id": "st_bi_dstcg4", "cat": "stage", "name": "Mean: the midpoints", "text": "`x̄ = (∑ m_(x) f(x))/n`" },
+    { "id": "st_bi_dstcg5", "cat": "stage", "name": "Mid-range: the outer limits", "text": "`MR = (L_(top) + L_(bottom))/2`: the upper limit of the top class and the lower limit of the bottom class." },
+    { "id": "st_bi_dstcg6", "cat": "example", "name": "Example — the commute table", "text": "Classes 0–10, 10–20, 20–30, 30–60; `f = 5, 14, 12, 9`; `n = 40`\n1. `F = 5, 19, 31, 40`; `m_(x) = 5, 15, 25, 45`; `a = 10, 10, 10, 30`; `d = 0.5, 1.4, 1.2, 0.3`\n2. Largest `d`: 10–20, so `Mo = 15`\n3. Place `20`, class 20–30: `Md = 20 + (20 − 19)/12 · 10 ≈ 20.83`\n4. `x̄ = (25 + 210 + 300 + 405)/40 = 940/40 = 23.5`\n5. `MR = (60 + 0)/2 = 30`\n`Mo < Md < x̄`: the long tail to the right pulls the mean up, so the median describes a typical commute better." },
+    { "id": "st_bi_dstcg7", "cat": "example", "name": "Example — density and frequency disagree", "text": "Classes 0–10, 10–15, 15–20, 20–40; `f = 8, 6, 5, 11`; `n = 30`\n1. `a = 10, 5, 5, 20`; `d = 0.8, 1.2, 1, 0.55`\n2. The largest `f` is in 20–40, but the largest `d` is in 10–15: the modal class is 10–15 and `Mo = 12.5`.\n4. `m_(x) = 5, 12.5, 17.5, 30`: `x̄ = (40 + 75 + 87.5 + 330)/30 = 532.5/30 = 17.75`\n5. `MR = (40 + 0)/2 = 20`" }
+  ] },
+{ "id": "pp_bi_dstgrp", "v": 3, "subject": "f:dst", "kind": "problem",
+  "name": "Median, quartiles and percentiles of grouped data (classes)",
+  "description": "Find Md, Q₁, Q₃, the IQR or any percentile C_k from a table of classes.",
   "uses": [["c", "dst6", "The median of a grouped table"], ["c", "dst7", "Quartiles and the interquartile range"], ["c", "dst9", "Percentiles"], ["c", "dst3", "Discrete or continuous: which table?"]],
   "parts": [
     { "id": "st_bi_dstgrp1", "cat": "stage", "name": "Write the rows you need", "text": "`x` with real limits L₀–L₁, `f(x)`, and the running total `F(x)`, which ends at `n`. Also the width `a = L₁ − L₀` of each class (the widths may differ)." },
     { "id": "st_bi_dstgrp2", "cat": "stage", "name": "Find the place", "text": "Median `n/2`; `Q₁` `n/4`; `Q₃` `(3n)/4`; percentile `C_(k)` `(n · k)/100`." },
     { "id": "st_bi_dstgrp3", "cat": "stage", "name": "Find the class x_m", "text": "The first class whose `F` reaches the place. Note its limits `L₀`, `L₁`, its width `a`, its frequency `f(x_(m))`, and `F(x_(m−1))`, the running total up to the class before it." },
     { "id": "st_bi_dstgrp4", "cat": "stage", "name": "Go part of the way across", "text": "`L₀ + (place − F(x_(m−1)))/(f(x_(m))) · a`\nThe fraction is the part of this class's cases you still need; times **this class's** width `a`, it is how far past `L₀` to go." },
-    { "id": "st_bi_dstgrp5", "cat": "example", "name": "Example", "text": "The grades table (Frequency tables), `n = 40`, `F = 2, 7, 16, 30, 37, 40`, every `a = 10`\nMedian: place `20`, class 69.5–79.5: `69.5 + (20 − 16)/14 · 10 ≈ 72.36`\n`Q₁`: place `10`, class 59.5–69.5: `59.5 + (10 − 7)/9 · 10 ≈ 62.83`\n`Q₃`: place `30`, class 69.5–79.5: `69.5 + (30 − 16)/14 · 10 = 79.5`\n`IQR ≈ 79.5 − 62.83 = 16.67`\n`C_(90)`: place `36`, class 79.5–89.5: `79.5 + (36 − 30)/7 · 10 ≈ 88.07`" },
-    { "id": "st_bi_dstgrp7", "cat": "example", "name": "Example — unequal widths", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60; `f = 5, 14, 12, 9`; `F = 5, 19, 31, 40`\n`Q₁`: place `10`, class 10–20 (`a = 10`): `10 + (10 − 5)/14 · 10 ≈ 13.57`\n`Q₃`: place `30`, class 20–30 (`a = 10`): `20 + (30 − 19)/12 · 10 ≈ 29.17`\n`C_(90)`: place `36`, class 30–60 (`a = 30`): `30 + (36 − 31)/9 · 30 ≈ 46.67`\nIn the last one the width is 30: the 5 cases needed are 5 of 9 spread over 30 minutes." },
+    { "id": "st_bi_dstgrp5", "cat": "example", "name": "Example — equal widths (the grades table)", "text": "The grades table (Frequency tables), `n = 40`, `F = 2, 7, 16, 30, 37, 40`, every `a = 10`\nMedian: place `20`, class 69.5–79.5: `69.5 + (20 − 16)/14 · 10 ≈ 72.36`\n`Q₁`: place `10`, class 59.5–69.5: `59.5 + (10 − 7)/9 · 10 ≈ 62.83`\n`Q₃`: place `30`, class 69.5–79.5: `69.5 + (30 − 16)/14 · 10 = 79.5`\n`IQR ≈ 79.5 − 62.83 = 16.67`\n`C_(90)`: place `36`, class 79.5–89.5: `79.5 + (36 − 30)/7 · 10 ≈ 88.07`" },
+    { "id": "st_bi_dstgrp7", "cat": "example", "name": "Example — unequal widths (the commute table)", "text": "The commute table: classes 0–10, 10–20, 20–30, 30–60; `f = 5, 14, 12, 9`; `F = 5, 19, 31, 40`\n`Q₁`: place `10`, class 10–20 (`a = 10`): `10 + (10 − 5)/14 · 10 ≈ 13.57`\n`Q₃`: place `30`, class 20–30 (`a = 10`): `20 + (30 − 19)/12 · 10 ≈ 29.17`\n`C_(90)`: place `36`, class 30–60 (`a = 30`): `30 + (36 − 31)/9 · 30 ≈ 46.67`\nIn the last one the width is 30: the 5 cases needed are 5 of 9 spread over 30 minutes." },
     { "id": "st_bi_dstgrp6", "cat": "example", "name": "Example — the other way: the percentile of a value", "text": "Which percentile is a grade of `75`? It is in the class 69.5–79.5, with `F(x_(m−1)) = 16`, `f(x_(m)) = 14`, `a = 10`.\n`k = (16 + (75 − 69.5)/10 · 14) · 100/40 = (16 + 7.7) · 2.5 ≈ 59`\nSo `75` is about the 59th percentile." }
   ] },
-{ "id": "pp_bi_dstvar", "v": 2, "subject": "f:dst", "kind": "problem",
-  "name": "Computing the variance and the standard deviation",
-  "description": "Find s² and s from a list or a frequency table, by the definition or by the shortcut.",
-  "uses": [["c", "dst7", "Variance and standard deviation"], ["c", "dst7", "The shortcut formula for the variance"], ["c", "dst5", "Rules for sums"]],
+{ "id": "pp_bi_dstvar", "v": 3, "subject": "f:dst", "kind": "problem",
+  "name": "Computing the variance and the standard deviation (ungrouped and grouped data)",
+  "description": "Find s² and s from a list, a frequency table or a table of classes, by the definition or by the shortcut.",
+  "uses": [["c", "dst7", "Variance and standard deviation"], ["c", "dst7", "The shortcut formula for the variance"], ["c", "dst15", "Variance and standard deviation of grouped data (classes)"], ["c", "dst5", "Rules for sums"]],
   "parts": [
-    { "id": "st_bi_dstvar1", "cat": "stage", "name": "Find the mean", "text": "`x̄ = (∑ x f(x))/n`. A table of classes: every `x` in this method becomes the midpoint `m_(x)`." },
+    { "id": "st_bi_dstvar1", "cat": "stage", "name": "Find the mean", "text": "Ungrouped: `x̄ = (∑ x f(x))/n`. Grouped (classes): every `x` in this method becomes the midpoint `m_(x)`." },
     { "id": "st_bi_dstvar2", "cat": "stage", "name": "Pick a route", "text": "**Definition:** square each deviation `(x − x̄)²`, times `f(x)`, add, divide by `n`. **Shortcut:** `(∑ x² f(x))/n − x̄²` (classes: `(∑ m_(x)² f(x))/n − x̄²`). The shortcut is quicker when `x̄` isn't a round number." },
     { "id": "st_bi_dstvar3", "cat": "stage", "name": "Take the root", "text": "`s = √(s²)`. Check: `s` is in the data's units and is never negative." },
-    { "id": "st_bi_dstvar4", "cat": "example", "name": "Example — by the definition", "text": "`2, 4, 4, 5, 10`\n1. `x̄ = 25/5 = 5`\n2. Deviations `−3, −1, −1, 0, 5`; squares `9, 1, 1, 0, 25`; `s² = 36/5 = 7.2`\n3. `s ≈ 2.68`" },
-    { "id": "st_bi_dstvar5", "cat": "example", "name": "Example — the shortcut on a table", "text": "The quiz table, `x̄ = 6.65`\n2. `∑ x² f(x) = 16 + 75 + 180 + 294 + 192 + 162 = 919`; `s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275`\n3. `s ≈ 1.31`" },
-    { "id": "st_bi_dstvar6", "cat": "example", "name": "Example — a table of classes", "text": "The commute table, `n = 40`, midpoints `m_(x) = 5, 15, 25, 45`\n1. `x̄ = 940/40 = 23.5` (the `m_(x) f(x)` column)\n2. Shortcut with the `m_(x)² f(x)` column: `∑ m_(x)² f(x) = 125 + 3150 + 7500 + 18225 = 29000`; `s² = 29000/40 − 23.5² = 725 − 552.25 = 172.75`\n3. `s ≈ 13.14` minutes",
+    { "id": "st_bi_dstvar4", "cat": "example", "name": "Example — ungrouped: a list, by the definition", "text": "`2, 4, 4, 5, 10`\n1. `x̄ = 25/5 = 5`\n2. Deviations `−3, −1, −1, 0, 5`; squares `9, 1, 1, 0, 25`; `s² = 36/5 = 7.2`\n3. `s ≈ 2.68`" },
+    { "id": "st_bi_dstvar5", "cat": "example", "name": "Example — ungrouped: a frequency table, by the shortcut", "text": "The quiz table, `x̄ = 6.65`\n2. `∑ x² f(x) = 16 + 75 + 180 + 294 + 192 + 162 = 919`; `s² = 919/20 − 6.65² = 45.95 − 44.2225 = 1.7275`\n3. `s ≈ 1.31`" },
+    { "id": "st_bi_dstvar6", "cat": "example", "name": "Example — grouped data: a table of classes", "text": "The commute table, `n = 40`, midpoints `m_(x) = 5, 15, 25, 45`\n1. `x̄ = 940/40 = 23.5` (the `m_(x) f(x)` column)\n2. Shortcut with the `m_(x)² f(x)` column: `∑ m_(x)² f(x) = 125 + 3150 + 7500 + 18225 = 29000`; `s² = 29000/40 − 23.5² = 725 − 552.25 = 172.75`\n3. `s ≈ 13.14` minutes",
       "blocks": [{ "kind": "table", "table": { "rows": [{ "c": ["x (`m_(x)`)", "f(x)", "`m_(x) f(x)`", "`m_(x)² f(x)`"] }, { "c": ["0–10 (5)", "5", "25", "125"] }, { "c": ["10–20 (15)", "14", "210", "3150"] }, { "c": ["20–30 (25)", "12", "300", "7500"] }, { "c": ["30–60 (45)", "9", "405", "18225"] }], "head": 1, "side": 1, "totR": 1 } }] }
   ] },
 { "id": "pp_bi_dstlin", "v": 1, "subject": "f:dst", "kind": "problem",
