@@ -5510,12 +5510,16 @@
 <div class="card" data-tags="Definition, Formula" data-id="dst7:variance-and-standard-deviation">
   <h4>Variance and standard deviation of ungrouped data</h4>
   <ul class="idlist">
-    <li>A list: &nbsp; <code>s_(x)² = (∑_(i=1)^(n) (x_(i) − x̄)²)/n</code></li>
-    <li>A frequency table: &nbsp; <code>s_(x)² = (∑ (x − x̄)² f(x))/n</code></li>
+    <li>Shortcut, a frequency table: &nbsp; <code>s_(x)² = (∑ x² f(x))/n − x̄²</code></li>
+    <li>Shortcut, a list: &nbsp; <code>s_(x)² = (∑ x_(i)²)/n − x̄²</code></li>
+    <li>Definition, a frequency table: &nbsp; <code>s_(x)² = (∑ (x − x̄)² f(x))/n</code></li>
+    <li>Definition, a list: &nbsp; <code>s_(x)² = (∑_(i=1)^(n) (x_(i) − x̄)²)/n</code></li>
     <li><code>s_(x) = √(s_(x)²)</code></li>
   </ul>
   <p class="muted"><b>In words:</b> the variance is the average squared distance from the mean. Its units are squared (cm²), so we take the root: the <b>standard deviation</b> <code>s_(x)</code> is back in the data's own units and is the usual measure of spread.</p>
-  <p class="muted"><b>Example:</b> <code>2, 4, 4, 5, 10</code>, <code>x̄ = 5</code>: deviations <code>−3, −1, −1, 0, 5</code>, squares <code>9, 1, 1, 0, 25</code>: <code>s² = 36/5 = 7.2</code>, <code>s ≈ 2.68</code>.</p>
+  <p class="muted"><b>The shortcut</b> gives the same number with less work: square every value, multiply by its frequency, add, divide by <code>n</code> (the mean of the squares), then subtract the mean squared. No deviations to compute. Why it is the same: <b>Shortcut formula for the variance of ungrouped data</b>.</p>
+  <p class="muted"><b>Example, the shortcut on a frequency table:</b> the quiz table, <code>x̄ = 6.65</code>: <code>∑ x² f(x) = 16 + 75 + 180 + 294 + 192 + 162 = 919</code>, so <code>s² = 919/20 − 6.65²</code> <code>= 45.95 − 44.2225 = 1.7275</code> and <code>s ≈ 1.31</code>.</p>
+  <p class="muted"><b>Example, the definition on a list:</b> <code>2, 4, 4, 5, 10</code>, <code>x̄ = 5</code>: deviations <code>−3, −1, −1, 0, 5</code>, squares <code>9, 1, 1, 0, 25</code>: <code>s² = 36/5 = 7.2</code>, <code>s ≈ 2.68</code>. The shortcut agrees: <code>(4 + 16 + 16 + 25 + 100)/5 − 5² = 32.2 − 25 = 7.2</code>.</p>
   <p class="muted"><b>Notation:</b> <code>s</code> is for data you have (a sample); <code>σ</code> is for a whole population. In this course both divide by <code>n</code>.</p>
 </div>
 <div class="card" data-tags="Theorem" data-id="dst7:the-shortcut-formula-for-the-variance">
@@ -5571,8 +5575,8 @@
 <div class="card" data-tags="Definition, Formula">
   <h4>Variance and standard deviation of grouped data (classes)</h4>
   <ul class="idlist">
-    <li>Definition: &nbsp; <code>s_(x)² = (∑ (m_(x) − x̄)² f(x))/n</code></li>
     <li>Shortcut: &nbsp; <code>s_(x)² = (∑ m_(x)² f(x))/n − x̄²</code></li>
+    <li>Definition: &nbsp; <code>s_(x)² = (∑ (m_(x) − x̄)² f(x))/n</code></li>
     <li><code>s_(x) = √(s_(x)²)</code></li>
   </ul>
   <p class="muted"><b>In words:</b> the frequency-table formulas with the class midpoint <code>m_(x)</code> in place of <code>x</code>, and <code>x̄</code> the mean of grouped data. The result is an estimate.</p>
