@@ -1810,6 +1810,8 @@
   .co-views button + button { border-left: 1px solid var(--border-strong); }
   .co-views button.active { background: var(--accent); color: #fff; }
   .co-plan-body { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; align-items: start; }
+  .co-plan-body.wide { grid-template-columns: minmax(0, 1fr); }
+  .co-plan-body.wide .co-active { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); max-height: none; }
   @media (max-width: 900px) { .co-plan-body { grid-template-columns: minmax(0, 1fr); } }
   .co-plan-side .fp-h { margin-top: 0; }
   .co-calnav { margin-bottom: 8px; }
@@ -1817,6 +1819,37 @@
   .co-libq { min-height: 36px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); padding: 4px 10px; min-width: 0; flex: 1; max-width: 280px; }
   .co-libsec { margin-top: 12px; }
   .co-libgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+  /* the Gantt view */
+  .co-gtools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .co-gtools .co-views { margin-left: 0; }
+  .co-gantt { display: flex; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface-1); }
+  .co-glabels { position: relative; flex: 0 0 150px; border-right: 1px solid var(--border); background: var(--bg); z-index: 2; }
+  .co-ghead { border-bottom: 1px solid var(--border); }
+  .co-glabel { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 10px; border: 0; background: none; text-align: left; color: var(--text-primary); cursor: pointer; overflow: hidden; }
+  .co-glabel b { font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .co-glabel small { font-size: .7rem; color: var(--text-muted); }
+  .co-glabel.head { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); cursor: default; background: var(--surface-2); }
+  .co-glabel:not(.head):hover b { color: var(--accent); }
+  .co-gscroll { flex: 1; overflow-x: auto; overflow-y: hidden; }
+  .co-gcanvas { position: relative; }
+  .co-glines { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 3; overflow: visible; }
+  .co-gtick { position: absolute; top: 0; border-left: 1px solid var(--border); }
+  .co-gtick.wk { border-left-style: dashed; opacity: .6; }
+  .co-gtick span { position: absolute; top: 4px; left: 4px; font-size: .7rem; color: var(--text-muted); white-space: nowrap; font-weight: 700; }
+  .co-gtick.wk span { top: 24px; font-weight: 500; }
+  .co-gtoday { position: absolute; top: 0; width: 0; border-left: 2px solid #ef4444; z-index: 2; }
+  .co-gband { position: absolute; left: 0; right: 0; background: var(--surface-2); opacity: .55; }
+  .co-gbar { position: absolute; z-index: 4; border-radius: 7px; background: color-mix(in srgb, var(--goal-color) 22%, var(--surface-1)); border: 1px solid var(--goal-color); overflow: hidden; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .co-gbar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--goal-color); opacity: .55; }
+  .co-gbar.done { border-color: #16a34a; }
+  .co-gbar.done i { background: #16a34a; }
+  .co-gbar.drag { box-shadow: var(--shadow); opacity: .9; cursor: grabbing; }
+  .co-gname { position: relative; display: block; padding: 0 14px; line-height: 22px; font-size: .74rem; font-weight: 650; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+  .co-gend { position: absolute; top: 0; bottom: 0; width: 12px; cursor: ew-resize; z-index: 1; }
+  .co-gend.l { left: 0; } .co-gend.r { right: 0; }
+  .co-gbar:hover .co-gend { background: color-mix(in srgb, var(--goal-color) 40%, transparent); }
+  .co-garrow { fill: none; stroke: var(--text-muted); stroke-width: 1.5; }
+  .co-garrow.late { stroke: #ef4444; }
   /* the sketch maker */
   .sk-grid .sk-tile { padding: 8px; gap: 6px; }
   .sk-thumb { display: flex; align-items: center; justify-content: center; height: 120px; background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
@@ -2854,7 +2887,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B168</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B169</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6587,14 +6620,14 @@ function __detabaseMain() {
     bar.appendChild(views);
     host.appendChild(bar);
     var body = document.createElement("div");
-    body.className = "co-plan-body";
+    body.className = "co-plan-body" + (u.view === "calendar" ? "" : " wide");   // a chart gets the full width; Active plans go below
     body.innerHTML = '<div class="co-plan-main"></div><aside class="co-plan-side"><h3 class="fp-h">Active plans</h3><div class="pl-goal-list co-active"></div></aside>';
     host.appendChild(body);
     var main = body.querySelector(".co-plan-main");
     coCal = null;
     if (u.view === "calendar") coDrawCalendar(main);
     else if (u.view === "tree") coDrawTree(main);
-    else main.innerHTML = '<div class="side-empty co-later"><b>Gantt view</b>Comes in the next build.</div>';
+    else coDrawGantt(main);
     var act = bizPlans().filter(coPlanActive).sort(function (a, b) { return String(a.deadline || "~").localeCompare(String(b.deadline || "~")); });
     var side = body.querySelector(".co-active");
     side.innerHTML = act.length ? act.map(function (g) { return goalCardHtml(g); }).join("") : '<div class="pl-empty-hint">Nothing running right now.</div>';
@@ -6666,6 +6699,142 @@ function __detabaseMain() {
     q.addEventListener("input", function () { u.q = q.value; draw(); });
     q.addEventListener("change", saveStore);
     draw();
+  }
+
+  // ---- the Gantt view (B169): one row per shown plan, grouped by category (or product); a bar from start to
+  // deadline filled to its progress; "comes after" arrows; a today line; zoom; drag a bar or its ends (Undo). ----
+  var CO_GZ = { weeks: 26, months: 7, quarters: 2.4 };          // px per day
+  function coDayN(iso) { var d = fromISODate(iso); return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5); }
+  function coNDay(n) { var d = new Date(n * 864e5); return toISODate(new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); }
+  function coSpan(g) {                           // [first day, last day] as day numbers; a missing date is filled in
+    var today = coDayN(toISODate(new Date()));
+    var a = g.start ? coDayN(g.start) : null, b = g.deadline ? coDayN(g.deadline) : null;
+    if (a == null && b == null) a = today;
+    if (a == null) a = b - 13;
+    if (b == null || b < a) b = Math.max(a, b == null ? a + 13 : a);
+    return [a, b];
+  }
+  function coDrawGantt(main) {
+    var u = coPlanUi(), z = CO_GZ[u.gz] ? u.gz : "weeks", px = CO_GZ[z], by = u.gg === "product" ? "product" : "category";
+    var plans = bizPlans().filter(coPlanShown);
+    var tools = document.createElement("div");
+    tools.className = "co-gtools";
+    var zs = document.createElement("span"); zs.className = "co-views";
+    [["weeks", "Weeks"], ["months", "Months"], ["quarters", "Quarters"]].forEach(function (x) {
+      zs.appendChild(actBtn(x[1], "zoom", function () { u.gz = x[0]; saveStore(); renderCoathPage(); }, z === x[0] ? "active" : ""));
+    });
+    var gs = document.createElement("span"); gs.className = "co-views";
+    [["category", "By category"], ["product", "By product"]].forEach(function (x) {
+      gs.appendChild(actBtn(x[1], "rows grouped", function () { u.gg = x[0]; saveStore(); renderCoathPage(); }, by === x[0] ? "active" : ""));
+    });
+    tools.appendChild(gs); tools.appendChild(zs);
+    main.appendChild(tools);
+    if (!plans.length) { main.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No plans to show.</b>Add one with “＋ New plan”, or change the filters.</div>'); return; }
+    // rows: group headers, then plans (stages in order, the rest by start)
+    var groups = [];
+    if (by === "category") bizCats().forEach(function (c) { var l = plans.filter(function (g) { return bizCat(g).id === c.id; }); if (l.length) groups.push({ name: c.icon + " " + c.name, list: l }); });
+    else {
+      coAllProducts().forEach(function (p) { var l = plans.filter(function (g) { return g.product === p.id; }); if (l.length) groups.push({ name: "📦 " + p.name, list: l }); });
+      var none = plans.filter(function (g) { return !cprById(g.product); });
+      if (none.length) groups.push({ name: "No product", list: none });
+    }
+    groups.forEach(function (gr) {
+      gr.list.sort(function (a, b) {
+        var sa = a.stage == null ? 1e6 : a.stage, sb = b.stage == null ? 1e6 : b.stage;
+        return (a.product === b.product ? sa - sb : 0) || coSpan(a)[0] - coSpan(b)[0] || String(a.title).localeCompare(String(b.title));
+      });
+    });
+    var today = coDayN(toISODate(new Date())), lo = today, hi = today;
+    plans.forEach(function (g) { var s = coSpan(g); lo = Math.min(lo, s[0]); hi = Math.max(hi, s[1]); });
+    lo -= z === "weeks" ? 7 : 20; hi += z === "weeks" ? 14 : 45;
+    var lod = fromISODate(coNDay(lo)); lo = coDayN(toISODate(new Date(lod.getFullYear(), lod.getMonth(), 1)));   // start on a month
+    var W = (hi - lo + 1) * px, RH = 40, HH = 44, rows = [];
+    groups.forEach(function (gr) { rows.push({ head: gr.name }); gr.list.forEach(function (g) { rows.push({ g: g }); }); });
+    var H = HH + rows.length * RH;
+    var wrap = document.createElement("div");
+    wrap.className = "co-gantt";
+    wrap.innerHTML = '<div class="co-glabels" style="height:' + H + 'px"><div class="co-ghead" style="height:' + HH + 'px"></div></div><div class="co-gscroll"><div class="co-gcanvas" style="width:' + W + 'px;height:' + H + 'px"><svg class="co-glines" width="' + W + '" height="' + H + '"></svg></div></div>';
+    main.appendChild(wrap);
+    var labels = wrap.querySelector(".co-glabels"), canvas = wrap.querySelector(".co-gcanvas"), scroll = wrap.querySelector(".co-gscroll");
+    function xOf(n) { return (n - lo) * px; }
+    // the time scale: months (+ weeks when zoomed in), quarter labels when zoomed out
+    var scale = "", MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    for (var n = lo; n <= hi; n++) {
+      var d = fromISODate(coNDay(n));
+      if (d.getDate() === 1) {
+        var lbl = z === "quarters" ? (d.getMonth() % 3 === 0 ? "Q" + (d.getMonth() / 3 + 1) + " " + d.getFullYear() : MON[d.getMonth()]) : MON[d.getMonth()] + " " + d.getFullYear();
+        scale += '<div class="co-gtick mon" style="left:' + xOf(n) + 'px;height:' + H + 'px"><span>' + lbl + '</span></div>';
+      } else if (z === "weeks" && d.getDay() === 1) scale += '<div class="co-gtick wk" style="left:' + xOf(n) + 'px;height:' + H + 'px"><span>' + d.getDate() + '</span></div>';
+    }
+    scale += '<div class="co-gtoday" style="left:' + (xOf(today) + px / 2) + 'px;height:' + H + 'px" title="today"></div>';
+    canvas.insertAdjacentHTML("afterbegin", scale);
+    var pos = {};
+    rows.forEach(function (r, i) {
+      var y = HH + i * RH;
+      if (r.head) {
+        labels.insertAdjacentHTML("beforeend", '<div class="co-glabel head" style="top:' + y + 'px;height:' + RH + 'px"></div>');
+        labels.lastChild.textContent = r.head;
+        canvas.insertAdjacentHTML("beforeend", '<div class="co-gband" style="top:' + y + 'px;height:' + RH + 'px"></div>');
+        return;
+      }
+      var g = r.g, s = coSpan(g), pr = goalProgress(g), done = goalIsComplete(g);
+      var lab = actBtn("", "open the plan", function () { openPlannerEditor("goal", g.id); }, "co-glabel");
+      lab.style.top = y + "px"; lab.style.height = RH + "px";
+      lab.innerHTML = '<b></b><small></small>';
+      lab.querySelector("b").textContent = g.title;
+      lab.querySelector("small").textContent = pr.pct + "% · " + pr.done + "/" + pr.total;
+      labels.appendChild(lab);
+      var bar = document.createElement("div");
+      bar.className = "co-gbar" + (done ? " done" : "");
+      bar.setAttribute("data-id", g.id);
+      bar.style.cssText = "left:" + xOf(s[0]) + "px;width:" + Math.max(px, (s[1] - s[0] + 1) * px) + "px;top:" + (y + 8) + "px;height:" + (RH - 16) + "px;--goal-color:" + (g.color || "var(--accent)");
+      bar.innerHTML = '<i style="width:' + pr.pct + '%"></i><span class="co-gname"></span><b class="co-gend l"></b><b class="co-gend r"></b>';
+      bar.querySelector(".co-gname").textContent = g.title;
+      bar.title = g.title + " · " + coFmtDate(coNDay(s[0])) + " → " + coFmtDate(coNDay(s[1])) + " · " + pr.pct + "%";
+      canvas.appendChild(bar);
+      pos[g.id] = { x0: xOf(s[0]), x1: xOf(s[1] + 1), y: y + RH / 2 };
+      coGanttDrag(bar, g, s, px);
+    });
+    // "comes after" arrows: from the end of the plan before to the start of the one after
+    var svg = '<defs><marker id="coGArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--text-muted)"/></marker></defs>';
+    plans.forEach(function (g) {
+      (g.reqGoals || []).forEach(function (rid) {
+        var a = pos[rid], b = pos[g.id]; if (!a || !b) return;
+        var x1 = a.x1, y1 = a.y, x2 = b.x0, y2 = b.y, mx = Math.max(x1 + 12, x2 - 12);
+        svg += '<path class="co-garrow' + (x2 < x1 ? " late" : "") + '" d="M' + x1 + ' ' + y1 + ' C' + (x1 + 24) + ' ' + y1 + ' ' + (mx - 24) + ' ' + y2 + ' ' + x2 + ' ' + y2 + '" marker-end="url(#coGArrow)"/>';
+      });
+    });
+    canvas.querySelector(".co-glines").innerHTML = svg;
+    main.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Drag a bar to move the plan; drag an end to change its start or deadline. Tap a name to open the plan. A red arrow = a plan starts before the one it comes after has ended.</p>');
+    scroll.scrollLeft = Math.max(0, xOf(today) - 120);
+  }
+  // dragging a bar (both dates) or one end (start or deadline); snaps to days; the data changes once, on release
+  function coGanttDrag(bar, g, span, px) {
+    bar.addEventListener("pointerdown", function (e) {
+      if (e.button > 0) return;
+      e.preventDefault();
+      var mode = e.target.classList.contains("co-gend") ? (e.target.classList.contains("l") ? "l" : "r") : "m";
+      var sx = e.clientX, x0 = parseFloat(bar.style.left), w0 = parseFloat(bar.style.width), moved = false, dd = 0;
+      try { bar.setPointerCapture(e.pointerId); } catch (er) {}
+      function mv(ev) {
+        var dx = ev.clientX - sx;
+        if (!moved && Math.abs(dx) < 5) return;
+        moved = true;
+        dd = Math.round(dx / px);
+        bar.classList.add("drag");
+        if (mode === "m") bar.style.left = (x0 + dd * px) + "px";
+        else if (mode === "l") { dd = Math.min(dd, span[1] - span[0]); bar.style.left = (x0 + dd * px) + "px"; bar.style.width = (w0 - dd * px) + "px"; }
+        else { dd = Math.max(dd, span[0] - span[1]); bar.style.width = (w0 + dd * px) + "px"; }
+      }
+      function up() {
+        bar.removeEventListener("pointermove", mv); bar.removeEventListener("pointerup", up); bar.removeEventListener("pointercancel", up);
+        if (!moved) { openPlannerEditor("goal", g.id); return; }
+        if (!dd) { renderCoathPage(); return; }
+        var a = span[0] + (mode === "r" ? 0 : dd), b = span[1] + (mode === "l" ? 0 : dd);
+        libMoved((mode === "m" ? "Moved “" : "Changed the dates of “") + g.title + "”", function () { g.start = coNDay(a); g.deadline = coNDay(b); }, ["planner"]);
+      }
+      bar.addEventListener("pointermove", mv); bar.addEventListener("pointerup", up); bar.addEventListener("pointercancel", up);
+    });
   }
 
   // =========================================================
