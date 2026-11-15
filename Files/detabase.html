@@ -1819,6 +1819,16 @@
   .co-libq { min-height: 36px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); padding: 4px 10px; min-width: 0; flex: 1; max-width: 280px; }
   .co-libsec { margin-top: 12px; }
   .co-libgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+  /* the flow chart (the goal tree, left to right) */
+  .gt-node.gt-box { justify-content: flex-start; gap: 8px; padding: 6px 26px 6px 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,.06)); }
+  .gt-node.gt-box:hover { transform: translateY(-1px); }
+  .gt-boxring { position: relative; width: 42px; height: 42px; flex: 0 0 42px; }
+  .gt-boxring .gt-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .66rem; }
+  .gt-boxt { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; }
+  .gt-boxt .gt-name { font-size: .8rem; font-weight: 700; color: var(--text-primary); line-height: 1.15; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .gt-box .orb-star { position: absolute; top: 4px; right: 4px; }
+  .gt-colh { left: auto; }
+  .gt-loose { position: absolute; top: 0; border-left: 1px dashed var(--border-strong); }
   /* the Gantt view */
   .co-gtools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
   .co-gtools .co-views { margin-left: 0; }
@@ -2887,7 +2897,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B169</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B170</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6561,7 +6571,8 @@ function __detabaseMain() {
   function coPlanUi() {
     var u = store.ui.coPlan = store.ui.coPlan || {};
     if (!Array.isArray(u.cats)) u.cats = [];
-    if (["calendar", "gantt", "tree"].indexOf(u.view) < 0) u.view = "calendar";
+    if (u.view === "tree") u.view = "flow";          // B168 called the flow chart "Tree"
+    if (["calendar", "gantt", "flow"].indexOf(u.view) < 0) u.view = "calendar";
     return u;
   }
   function coPlanShown(g) {
@@ -6613,7 +6624,7 @@ function __detabaseMain() {
     bar.appendChild(sel);
     var views = document.createElement("span");
     views.className = "co-views";
-    [["calendar", "Calendar"], ["gantt", "Gantt"], ["tree", "Tree"]].forEach(function (v) {
+    [["calendar", "Calendar"], ["gantt", "Gantt"], ["flow", "Flow chart"]].forEach(function (v) {
       var b = actBtn(v[1], "", function () { u.view = v[0]; saveStore(); renderCoathPage(); }, u.view === v[0] ? "active" : "");
       views.appendChild(b);
     });
@@ -6626,7 +6637,7 @@ function __detabaseMain() {
     var main = body.querySelector(".co-plan-main");
     coCal = null;
     if (u.view === "calendar") coDrawCalendar(main);
-    else if (u.view === "tree") coDrawTree(main);
+    else if (u.view === "flow") coDrawFlow(main);
     else coDrawGantt(main);
     var act = bizPlans().filter(coPlanActive).sort(function (a, b) { return String(a.deadline || "~").localeCompare(String(b.deadline || "~")); });
     var side = body.querySelector(".co-active");
@@ -6652,11 +6663,21 @@ function __detabaseMain() {
     renderCalendar(coCal);
   }
   // the planner's goal tree, business plans only
-  function coDrawTree(main) {
-    var keep = bizPlans().filter(coPlanShown);
-    if (!keep.length) { main.innerHTML = '<div class="side-empty"><b>No plans to show.</b>Add one with “＋ New plan”, or change the filters.</div>'; return; }
-    main.innerHTML = '<div class="gp-tree co-tree"><div class="gp-tree-inner"></div></div><p class="muted co-tip">← do first · unlocks →. Tap a plan to open it.</p>';
-    layoutGoalTree(main.querySelector(".gp-tree"), main.querySelector(".gp-tree-inner"), coPlanShown);
+  // the flow chart (B170) = the planner's goal tree laid out left to right; "Top-down" = the planner's own layout
+  function coDrawFlow(main) {
+    var u = coPlanUi(), lr = u.flow !== "tb";
+    var tools = document.createElement("div");
+    tools.className = "co-gtools";
+    var t = document.createElement("span"); t.className = "co-views";
+    [["lr", "→ Left to right"], ["tb", "↓ Top-down"]].forEach(function (x) {
+      t.appendChild(actBtn(x[1], "layout", function () { u.flow = x[0]; saveStore(); renderCoathPage(); }, (lr ? "lr" : "tb") === x[0] ? "active" : ""));
+    });
+    tools.appendChild(t);
+    main.appendChild(tools);
+    if (!bizPlans().filter(coPlanShown).length) { main.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No plans to show.</b>Add one with “＋ New plan”, or change the filters.</div>'); return; }
+    main.insertAdjacentHTML("beforeend", '<div class="gp-tree co-tree"><div class="gp-tree-inner"></div></div><p class="muted co-tip">' +
+      (lr ? "Each plan sits right of the plans it comes after. Plans with no link stand apart on the right. Tap a plan to open it." : "← do first · unlocks →. Tap a plan to open it.") + '</p>');
+    (lr ? layoutGoalFlow : layoutGoalTree)(main.querySelector(".gp-tree"), main.querySelector(".gp-tree-inner"), coPlanShown);
     wireGoalTree(main);
   }
   // the plan library: four sections (the categories), Products grouped by product; search by name
@@ -8305,6 +8326,64 @@ function __detabaseMain() {
         Array.prototype.slice.call(inner.querySelectorAll(".hl,.dim")).forEach(function (n) { n.classList.remove("hl", "dim"); });
       });
     });
+  }
+  // the same tree, left to right (B170: the flow chart): short goals as boxes in columns by "comes after"
+  // (a goal sits one column right of the latest goal it needs), arrows between them; goals with no link
+  // to any other drawn goal stand apart in a last column. keep(g) as for layoutGoalTree.
+  function layoutGoalFlow(scroll, inner, keep) {
+    var all = store.planner.goals.filter(function (g) { return goalMode(g) === "short" && (!keep || keep(g)); });
+    var byId = {}; all.forEach(function (g) { byId[g.id] = g; });
+    function reqs(g) { return (g.reqGoals || []).filter(function (r) { return byId[r] && r !== g.id; }); }
+    var needed = {}; all.forEach(function (g) { reqs(g).forEach(function (r) { needed[r] = 1; }); });
+    var linked = all.filter(function (g) { return reqs(g).length || needed[g.id]; }), loose = all.filter(function (g) { return !reqs(g).length && !needed[g.id]; });
+    var depth = {};
+    function dep(g, seen) {
+      if (depth[g.id] != null) return depth[g.id];
+      if (seen[g.id]) return 0;                    // a loop of requirements: stop
+      seen[g.id] = 1;
+      var d = 0; reqs(g).forEach(function (r) { d = Math.max(d, dep(byId[r], seen) + 1); });
+      delete seen[g.id];
+      return (depth[g.id] = d);
+    }
+    linked.forEach(function (g) { dep(g, {}); });
+    var BW = 196, BH = 64, CG = 64, RG = 16, PAD = 22, cols = [], pos = {};
+    linked.forEach(function (g) { (cols[depth[g.id]] = cols[depth[g.id]] || []).push(g); });
+    cols = cols.filter(Boolean);
+    var maxRows = 0;
+    cols.forEach(function (col, ci) {             // order each column by where its requirements sit (fewer crossings)
+      col.sort(function (a, b) {
+        function at(g) { var rs = reqs(g).filter(function (r) { return pos[r]; }); return rs.length ? rs.reduce(function (s, r) { return s + pos[r].y; }, 0) / rs.length : 1e9; }
+        return at(a) - at(b) || String(a.start || "").localeCompare(String(b.start || "")) || String(a.title).localeCompare(String(b.title));
+      });
+      col.forEach(function (g, ri) { pos[g.id] = { x: PAD + ci * (BW + CG), y: PAD + 26 + ri * (BH + RG) }; });
+      maxRows = Math.max(maxRows, col.length);
+    });
+    var looseX = PAD + cols.length * (BW + CG) + (cols.length ? 30 : 0);
+    loose.sort(function (a, b) { return String(a.title).localeCompare(String(b.title)); }).forEach(function (g, ri) { pos[g.id] = { x: looseX, y: PAD + 26 + ri * (BH + RG) }; });
+    maxRows = Math.max(maxRows, loose.length);
+    var W = Math.max(scroll.clientWidth || 600, (loose.length ? looseX + BW : PAD + cols.length * (BW + CG) - CG) + PAD);
+    var H = PAD * 2 + 26 + maxRows * (BH + RG);
+    var heads = cols.map(function (c, ci) { return '<div class="gt-tier gt-colh" style="left:' + (PAD + ci * (BW + CG)) + 'px;top:' + PAD + 'px">' + (ci ? "then " + (ci + 1) : "first") + '</div>'; }).join("") +
+      (loose.length ? '<div class="gt-tier gt-colh" style="left:' + looseX + 'px;top:' + PAD + 'px">not connected</div><div class="gt-loose" style="left:' + (looseX - 16) + 'px;height:' + H + 'px"></div>' : '');
+    var nodes = "";
+    all.forEach(function (g) {
+      var p = pos[g.id], pr = goalProgress(g), rq = goalReqStatus(g), complete = goalIsComplete(g), locked = !complete && rq.any && !rq.allMet;
+      var state = complete ? "done" : locked ? "locked" : (g.current ? "current" : "open");
+      nodes += '<div class="gt-node gt-box ' + state + '" data-id="' + g.id + '" style="left:' + p.x + 'px;top:' + p.y + 'px;width:' + BW + 'px;height:' + BH + 'px">' +
+        '<div class="gt-boxring">' + orbSvg(pr.pct) + '<span class="gt-pct">' + pr.pct + '</span></div>' +
+        '<div class="gt-boxt"><span class="gt-name">' + escapeHtml(g.title) + (locked ? " 🔒" : complete ? " ✓" : "") + '</span>' + bizChipHtml(g) + '</div>' +
+        '<button type="button" class="orb-star' + (g.current ? ' on' : '') + '" data-star="' + g.id + '" title="working on now">' + (g.current ? '★' : '☆') + '</button></div>';
+    });
+    inner.style.width = W + "px"; inner.style.height = H + "px";
+    inner.innerHTML = '<svg class="gp-lines"></svg>' + heads + nodes;
+    var edges = '<defs><marker id="gfArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--text-muted)"></path></marker></defs>';
+    linked.forEach(function (g) {
+      reqs(g).forEach(function (r) {
+        var a = pos[r], b = pos[g.id], x1 = a.x + BW, y1 = a.y + BH / 2, x2 = b.x, y2 = b.y + BH / 2, mx = (x1 + x2) / 2;
+        edges += '<path class="gt-edge req" d="M' + x1 + ' ' + y1 + ' C' + mx + ' ' + y1 + ' ' + mx + ' ' + y2 + ' ' + (x2 - 2) + ' ' + y2 + '" marker-end="url(#gfArrow)"></path>';
+      });
+    });
+    inner.querySelector(".gp-lines").innerHTML = edges;
   }
 
   // month grid (day cells with event/session chips)
