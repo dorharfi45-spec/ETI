@@ -1766,6 +1766,16 @@
   .co-idgo b { overflow-wrap: anywhere; }
   .co-idgo small { color: var(--text-muted); font-size: .78rem; }
   .co-crumbtxt { color: var(--text-secondary); font-size: .88rem; }
+  /* business plans (planner goals with business: true) */
+  .biz-chip { display: inline-flex; align-items: center; gap: 3px; padding: 1px 8px; border-radius: 999px; font-size: .72rem; font-weight: 600; white-space: nowrap; border: 1px solid; }
+  .biz-products { color: #1d4ed8; border-color: #93c5fd; background: #eff6ff; }
+  .biz-management { color: #7c2d12; border-color: #fdba74; background: #fff7ed; }
+  .biz-marketing { color: #9d174d; border-color: #f9a8d4; background: #fdf2f8; }
+  .biz-maintenance { color: #166534; border-color: #86efac; background: #f0fdf4; }
+  @media (prefers-color-scheme: dark) { .biz-chip { background: transparent !important; } .biz-products { color: #93c5fd; } .biz-management { color: #fdba74; } .biz-marketing { color: #f9a8d4; } .biz-maintenance { color: #86efac; } }
+  .plg-biz { margin-top: 2px; }
+  .ed-biz { align-items: flex-start; gap: 8px; margin: 6px 0 10px; }
+  .ed-biz small { font-weight: 400; }
   /* the sketch maker */
   .sk-grid .sk-tile { padding: 8px; gap: 6px; }
   .sk-thumb { display: flex; align-items: center; justify-content: center; height: 120px; background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
@@ -2803,7 +2813,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B165</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B166</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5930,16 +5940,20 @@ function __detabaseMain() {
     var o = coObj(ref); if (!o) return;
     var back = ref.lvl === "cg" ? cgParent(o) : cprGroup(o), c = coEnsure();
     if (ref.lvl === "cpr") {
-      if (!confirmDelete(o.name)) return;
-      libMoved("Deleted “" + o.name + "”", function () {
-        if (coathProduct === o.id) { coathProduct = null; coathGroup = back; }
-        c.products = c.products.filter(function (x) { return x !== o; });
+      coAskPlans([o.id], o.name, function (plans) {
+        if (!confirmDelete(o.name)) return;
+        libMoved("Deleted “" + o.name + "”", function () {
+          if (coathProduct === o.id) { coathProduct = null; coathGroup = back; }
+          c.products = c.products.filter(function (x) { return x !== o; });
+          coPlansGo([o.id], plans);
+        }, plans ? ["planner"] : null);
       });
       return;
     }
-    var deep = cgDeep(o.id);
+    var deep = cgDeep(o.id), deepIds = deep.products.map(function (p) { return p.id; }), plans = null;
     function drop(all) {
       libMoved("Deleted the group “" + o.name + "”", function () {
+        if (all) coPlansGo(deepIds, plans);
         var openAt = coathProduct ? cprGroup(cprById(coathProduct)) : coathGroup, inside = openAt === o.id || cgInside(openAt, o.id);
         if (all) {
           var gone = {}; gone[o.id] = 1;
@@ -5956,7 +5970,7 @@ function __detabaseMain() {
           cprIn(back).forEach(function (p, i) { p.order = i; });
           if (coathGroup === o.id) coathGroup = back;
         }
-      });
+      }, all && plans ? ["planner"] : null);
     }
     if (!deep.groups.length && !deep.products.length) { if (confirmDelete(o.name)) drop(false); return; }
     var box = ovOpen("Delete the group “" + o.name + "”");
@@ -5965,10 +5979,33 @@ function __detabaseMain() {
     var row = box.body.querySelector(".co-del");
     row.appendChild(actBtn("⤴ Move them to " + (back ? "“" + cgById(back).name + "”" : "the top of Products"), "", function () { box.close(true); drop(false); }, "btn-primary"));
     row.appendChild(actBtn("🗑 Delete them too", "", function () {
-      if (!confirmDelete(o.name + " + " + coCountText(deep.groups.length, deep.products.length))) return;
-      box.close(true); drop(true);
+      box.close(true);
+      coAskPlans(deepIds, o.name, function (pl) {
+        if (!confirmDelete(o.name + " + " + coCountText(deep.groups.length, deep.products.length))) return;
+        plans = pl; drop(true);
+      });
     }, "btn-danger"));
     box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+  }
+  // products about to be deleted that have business plans: keep the plans (without a product) or delete them too?
+  //   go(null) = no plans; go({ ids, keep })
+  function coAskPlans(pids, name, go) {
+    var ids = bizPlans().filter(function (g) { return pids.indexOf(g.product) >= 0; }).map(function (g) { return g.id; });
+    if (!ids.length) { go(null); return; }
+    var box = ovOpen("Plans of “" + name + "”");
+    box.body.innerHTML = '<p class="lw-hint"></p><div class="co-del"></div>';
+    box.body.firstChild.textContent = (ids.length === 1 ? "1 business plan belongs" : ids.length + " business plans belong") + " to " + (pids.length === 1 ? "this product" : "these products") + ". What happens to " + (ids.length === 1 ? "it" : "them") + "?";
+    var row = box.body.querySelector(".co-del");
+    row.appendChild(actBtn("📅 Keep " + (ids.length === 1 ? "it" : "them") + " (no product)", "they stay in the planner and in Planning", function () { box.close(true); go({ ids: ids, keep: true }); }, "btn-primary"));
+    row.appendChild(actBtn("🗑 Delete " + (ids.length === 1 ? "it" : "them") + " too", "with their to-dos; dated tasks stay on the calendar", function () { box.close(true); go({ ids: ids, keep: false }); }, "btn-danger"));
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+  }
+  function coPlansGo(pids, plans) {
+    if (!plans) return;
+    plans.ids.forEach(function (id) {
+      var g = goalById(id); if (!g) return;
+      if (plans.keep) delete g.product; else plDeleteGoal(id, true);
+    });
   }
   function coMenu(anchor, ref) {
     libMenu(anchor, [
@@ -8305,10 +8342,29 @@ function __detabaseMain() {
       return { mode: "long", total: kids.length, done: complete, pct: Math.round(sum / kids.length), kids: kids.length };
     }
     var sess = goalSessions(g.id);
-    var total = g.targetCount || sess.length || 0;
+    var total = goalBiz(g) ? sess.length : (g.targetCount || sess.length || 0);   // a business plan: done tasks / all its tasks
     var done = sess.filter(function (s) { return s.done; }).length;
     return { mode: "short", total: total, done: done, pct: total ? Math.min(100, Math.round(done / total * 100)) : 0 };
   }
+  // ---- business plans (B166): a short-term goal with business: true, a category (a Coath folder that is not
+  // Planning), an optional product and a start date. Its sessions are its TASKS: dated = on the calendar,
+  // undated = a to-do. No session cap (targetCount is ignored), no slot merging.
+  function bizCats() { return COATH_FOLDERS.filter(function (f) { return f.id !== "planning"; }); }
+  function goalBiz(g) { return !!(g && g.business === true && goalMode(g) === "short"); }
+  function goalById(id) { return id ? store.planner.goals.filter(function (x) { return x.id === id; })[0] || null : null; }
+  function bizCat(g) { var c = g && g.category; return bizCats().filter(function (x) { return x.id === c; })[0] || bizCats()[0]; }
+  function bizChipHtml(g) {
+    if (!goalBiz(g)) return "";
+    var c = bizCat(g);
+    return '<span class="biz-chip biz-' + c.id + '" title="business plan · ' + c.name + '">' + c.icon + ' ' + c.name + '</span>';
+  }
+  function goalSessLabel(g, id) {
+    var ss = goalSessions(id);
+    if (goalBiz(g)) return "Tasks (" + ss.filter(function (s) { return s.done; }).length + " / " + ss.length + " done)";
+    return "Sessions in this goal (" + ss.length + " / " + ((g && g.targetCount) || 0) + ")";
+  }
+  function bizPlans() { return store.planner.goals.filter(goalBiz); }
+  function bizPlansOf(pid) { return bizPlans().filter(function (g) { return g.product === pid; }); }
   // sessions changed — refresh the sidebar card, but NEVER touch the goal's target count.
   // only the user, typing in the "Target sessions" field, changes that number.
   function syncGoalTarget(goalId) {
@@ -8326,6 +8382,7 @@ function __detabaseMain() {
   // how many more sessions this goal can hold before hitting its limit
   function goalRoom(goalId) {
     var g = store.planner.goals.filter(function (x) { return x.id === goalId; })[0];
+    if (goalBiz(g)) return 1e9;                    // a business plan has no session cap
     return Math.max(0, (g ? (g.targetCount || 0) : 0) - goalSessions(goalId).length);
   }
   function goalLimitAlert(goalId) {
@@ -8406,7 +8463,7 @@ function __detabaseMain() {
       ? ('Lv ' + pr.level + ' · ' + fmtXp(pr.into) + ' / ' + fmtXp(pr.need))
       : (m === "long"
         ? ((pr.done || 0) + ' / ' + (pr.kids || 0) + ' goals done')
-        : ((pr.done || 0) + ' / ' + (pr.total || 0) + ' sessions'));
+        : ((pr.done || 0) + ' / ' + (pr.total || 0) + (goalBiz(g) ? ' tasks' : ' sessions')));
     var rqHtml = rq.any
       ? '<div class="pl-goal-reqs">' + rq.reqs.map(function (r) {
           return '<span class="req-chip ' + (r.met ? 'ok' : 'no') + '">' + (r.met ? '✓' : '🔒') + ' ' + r.label + '</span>';
@@ -8418,6 +8475,7 @@ function __detabaseMain() {
       '<div class="plg-ring">' + orbSvg(pr.pct) + '<span class="plg-pct">' + pr.pct + '%</span></div>' +
       '<div class="plg-body">' +
         '<div class="plg-name">' + (opts.tags || '') + (m === "long" ? '<span class="pl-goal-badge">LT</span> ' : '') + escapeHtml(g.title) + (locked ? ' 🔒' : '') + '</div>' +
+        (goalBiz(g) ? '<div class="plg-biz">' + bizChipHtml(g) + '</div>' : '') +
         '<div class="plg-sub">' + label + '</div>' +
         rqHtml +
       '</div>' + star +
@@ -8524,7 +8582,6 @@ function __detabaseMain() {
     var goalId = plEd.id;
     var listBox = $("edGoalSessions");
     if (!listBox) return;
-    var lim = (store.planner.goals.filter(function (x) { return x.id === goalId; })[0] || {}).targetCount || 0;
     var linked = store.planner.sessions.filter(function (s) { return s.goalId === goalId; })
       .sort(function (a, b) {
         var ae = isSessionEdited(a) ? 0 : 1, be = isSessionEdited(b) ? 0 : 1;   // edited sessions float to the top
@@ -8532,12 +8589,12 @@ function __detabaseMain() {
         return (a.date || "~").localeCompare(b.date || "~") || timeToMin(a.start || "0:0") - timeToMin(b.start || "0:0");
       });
     var hLbl = $("goalSessHead") && $("goalSessHead").querySelector("label");
-    if (hLbl) hLbl.textContent = "Sessions in this goal (" + linked.length + " / " + lim + ")";
-    if (!linked.length) { listBox.innerHTML = '<div class="pl-empty-hint">No sessions yet.</div>'; }
+    if (hLbl) hLbl.textContent = goalSessLabel(plEd.draft, goalId);
+    if (!linked.length) { listBox.innerHTML = '<div class="pl-empty-hint">' + (goalBiz(plEd.draft) ? 'No tasks yet.' : 'No sessions yet.') + '</div>'; }
     else {
       var html = "";
       linked.forEach(function (s) {
-        var when = s.date ? (s.date + ' · ' + s.start) : 'Not scheduled';
+        var when = s.date ? (s.date + ' · ' + s.start) : (goalBiz(plEd.draft) ? 'To-do' : 'Not scheduled');
         html += '<div class="pl-check-item pl-day-item-row' + (s.done ? ' checked' : '') + (isSessionEdited(s) ? '' : ' not-edited') + '" data-id="' + s.id + '">' +
           '<input type="checkbox" class="gs-done"' + (s.done ? ' checked' : '') + '>' +
           '<span>' + (s._merge ? '↩ ' : '') + when + ' — ' + escapeHtml(sessionListLabel(s)) + '</span>' +
@@ -8802,9 +8859,28 @@ function __detabaseMain() {
         '<option value="long"' + (gm === "long" ? " selected" : "") + '>Long-term goal — made of other goals</option>' +
         '<option value="skill"' + (gm === "skill" ? " selected" : "") + '>Skill — levels up, never finishes</option>' +
         '</select></div>';
+      var biz = gm === "short" && d.business === true;
+      if (gm === "short") {                        // business plan: Coath Inc. shows it; category, product, start date
+        html += '<label class="pl-checkbox-row ed-biz"><input type="checkbox" id="edBusiness"' + (biz ? ' checked' : '') + '>' +
+          '<span><b>Business plan</b> <small class="muted">— shows in Coath Inc. too; its sessions are its tasks</small></span></label>';
+        if (biz) {
+          var prods = [];
+          (function walk(gid) {
+            cprIn(gid).forEach(function (p) { prods.push(p); });
+            cgKids(gid).forEach(function (g2) { walk(g2.id); });
+          })("");
+          html += '<div class="pl-row2"><div class="pl-field"><label>Category</label><select id="edCategory">' +
+            bizCats().map(function (c) { return '<option value="' + c.id + '"' + (bizCat(d).id === c.id ? ' selected' : '') + '>' + c.icon + ' ' + c.name + '</option>'; }).join('') +
+            '</select></div><div class="pl-field"><label>Product (optional)</label><select id="edProduct"><option value="">— none —</option>' +
+            prods.map(function (p) { return '<option value="' + p.id + '"' + (p.id === d.product ? ' selected' : '') + '>' + escapeHtml(p.name) + '</option>'; }).join('') +
+            (d.product && !cprById(d.product) ? '<option value="' + escapeHtml(d.product) + '" selected>(deleted product)</option>' : '') +
+            '</select></div></div>';
+        }
+      }
       if (gm !== "skill") {
-        html += '<div class="pl-row2"><div class="pl-field"><label>Deadline</label><input type="date" id="edDeadline" value="' + (d.deadline || "") + '"></div>' +
-          (gm === "long" ? '' : '<div class="pl-field"><label>Target sessions (limit)</label><input type="number" id="edTarget" min="0" step="1" value="' + d.targetCount + '"></div>') + '</div>';
+        html += '<div class="pl-row2">' + (biz ? '<div class="pl-field"><label>Start</label><input type="date" id="edPlanStart" value="' + (d.start || "") + '"></div>' : '') +
+          '<div class="pl-field"><label>Deadline</label><input type="date" id="edDeadline" value="' + (d.deadline || "") + '"></div>' +
+          (gm === "long" || biz ? '' : '<div class="pl-field"><label>Target sessions (limit)</label><input type="number" id="edTarget" min="0" step="1" value="' + d.targetCount + '"></div>') + '</div>';
       }
       html += plColorPicker(d.color);
       if (gm === "skill") {
@@ -8835,8 +8911,9 @@ function __detabaseMain() {
           '<div class="pl-field"><label>Or</label><div class="pl-row2"><button type="button" id="edLtNew" class="tool-btn">＋ New short-term goal</button></div></div>' +
           '<p class="muted" style="font-size:.78rem;">This goal\'s progress is the average of its short-term goals\' progress. A short-term goal can belong to several long-term goals at once.</p>';
       } else {
-        html += '<div class="pl-field"><div class="pl-collapse-head" id="goalSessHead"><label>Sessions in this goal (' + goalSessions(plEd.id).length + ' / ' + (d.targetCount || 0) + ')</label><button type="button" class="pl-collapse-toggle" id="goalSessToggle">' + (plGoalSessionsOpen ? '▾' : '▸') + '</button></div>' +
+        html += '<div class="pl-field"><div class="pl-collapse-head" id="goalSessHead"><label>' + goalSessLabel(d, plEd.id) + '</label><button type="button" class="pl-collapse-toggle" id="goalSessToggle">' + (plGoalSessionsOpen ? '▾' : '▸') + '</button></div>' +
           '<div id="edGoalSessions"' + (plGoalSessionsOpen ? '' : ' hidden') + '></div></div>' +
+          (biz ? '<div class="pl-field"><label>Add a task (a to-do; give it a date to put it on the calendar)</label><div class="pl-add-check"><input type="text" id="edTaskNew" maxlength="80" placeholder="Task…"><button type="button" id="edTaskAdd">Add</button></div></div>' : '') +
           '<div class="pl-field"><label>Add a session</label><div class="pl-row2"><button type="button" id="edGoalAddSession" class="tool-btn">＋ New session</button><button type="button" id="edGoalAddEvent" class="tool-btn">＋ Event</button></div></div>' +
           (store.planner.templates.length
             ? '<div class="pl-field"><div class="pl-collapse-head" id="goalBulkHead"><label>Add sessions by type (unscheduled — set the day later)</label><button type="button" class="pl-collapse-toggle" id="goalBulkToggle">' + (plGoalBulkOpen ? '▾' : '▸') + '</button></div>' +
@@ -8972,6 +9049,31 @@ function __detabaseMain() {
         if (plView === "goals") renderGoalsPage();
       });
       if ($("edDeadline")) $("edDeadline").addEventListener("input", function () { d.deadline = this.value; var g = storedGoal(); if (g) { g.deadline = this.value; saveStore(); } });
+      // business plan fields: written straight through like the rest
+      function bizSet(k, v) { if (v === undefined) delete d[k]; else d[k] = v; var g = storedGoal(); if (g) { if (v === undefined) delete g[k]; else g[k] = v; saveStore(); } }
+      if ($("edBusiness")) $("edBusiness").addEventListener("change", function () {
+        bizSet("business", this.checked);
+        if (this.checked && !d.category) bizSet("category", "products");
+        if (this.checked && !d.start) bizSet("start", toISODate(new Date()));
+        renderPlannerEditor(); renderGoalList();
+      });
+      if ($("edCategory")) $("edCategory").addEventListener("change", function () { bizSet("category", this.value); renderGoalList(); });
+      if ($("edProduct")) $("edProduct").addEventListener("change", function () { bizSet("product", this.value || undefined); });
+      if ($("edPlanStart")) $("edPlanStart").addEventListener("input", function () { bizSet("start", this.value || undefined); });
+      if ($("edTaskAdd")) {
+        var addTask = function () {
+          var t = $("edTaskNew").value.trim(); if (!t) { $("edTaskNew").focus(); return; }
+          var gid = plEd.id;
+          if (!gid) { libToast("Save the plan first, then add its tasks."); return; }
+          store.planner.sessions.push({ id: uid("ps_"), date: null, start: null, duration: 60, title: t, checklist: [], notes: "", goalId: gid, templateId: null, done: false });
+          $("edTaskNew").value = "";
+          plGoalSessionsOpen = true; if ($("edGoalSessions")) $("edGoalSessions").hidden = false;
+          saveStore(); refreshGoalEditorSessions(); renderGoalList(); renderCalendar();
+          $("edTaskNew").focus();
+        };
+        $("edTaskAdd").addEventListener("click", addTask);
+        $("edTaskNew").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addTask(); } });
+      }
       $("edTitle").addEventListener("input", function () {
         var g = storedGoal(), nv = this.value;
         if (g) {
@@ -9188,7 +9290,7 @@ function __detabaseMain() {
     if (kind === "session" && saved && saved.goalId) {
       var slots = store.planner.sessions.filter(function (s) { return s.goalId === saved.goalId && !s.date && s.id !== saved.id; });
       // newly joined a goal that has open slots → offer to turn this session into one of them
-      if (saved.goalId !== priorGoal && slots.length && !saved._merge) {
+      if (saved.goalId !== priorGoal && slots.length && !saved._merge && !goalBiz(goalById(saved.goalId))) {   // a plan's undated tasks are to-dos, not slots
         saveStore();
         showSessionToSlotPicker(saved.id, saved.goalId);
         return; // picker finishes the flow
@@ -9244,20 +9346,24 @@ function __detabaseMain() {
     saveStore(); renderTemplateList();
     renderPlannerEditor();        // refresh so the new type shows selected in the dropdown
   }
+  // removing a goal: its sessions stay (unlinked) — or, with dropUndated, its undated ones go (they would be
+  // invisible anywhere else); it leaves every other goal's parents, requirements and components
+  function plDeleteGoal(id, dropUndated) {
+    store.planner.goals = store.planner.goals.filter(function (x) { return x.id !== id; });
+    if (dropUndated) store.planner.sessions = store.planner.sessions.filter(function (s) { return !(s.goalId === id && !s.date); });
+    store.planner.sessions.forEach(function (s) { if (s.goalId === id) s.goalId = null; });
+    store.planner.goals.forEach(function (g) {
+      if (g.parentIds) { var i = g.parentIds.indexOf(id); if (i >= 0) g.parentIds.splice(i, 1); }
+      if (g.reqGoals) { var j = g.reqGoals.indexOf(id); if (j >= 0) g.reqGoals.splice(j, 1); }
+      if (g.components) g.components = g.components.filter(function (c) { return c.skillId !== id; });
+    });
+  }
   function deletePlannerDraft() {
     var kind = plEd.kind, id = plEd.id;
     if (!id) { closePlannerEditor(); return; }
     if (!confirm("Delete this?")) return;
     var sessGoal = kind === "session" ? (plannerCollection("session").filter(function (x) { return x.id === id; })[0] || {}).goalId : null;
-    if (kind === "goal") {
-      store.planner.goals = store.planner.goals.filter(function (x) { return x.id !== id; });
-      store.planner.sessions.forEach(function (s) { if (s.goalId === id) s.goalId = null; });
-      store.planner.goals.forEach(function (g) {
-        if (g.parentIds) { var i = g.parentIds.indexOf(id); if (i >= 0) g.parentIds.splice(i, 1); }
-        if (g.reqGoals) { var j = g.reqGoals.indexOf(id); if (j >= 0) g.reqGoals.splice(j, 1); }
-        if (g.components) g.components = g.components.filter(function (c) { return c.skillId !== id; });
-      });
-    }
+    if (kind === "goal") plDeleteGoal(id);
     else { var list = plannerCollection(kind); var filtered = list.filter(function (x) { return x.id !== id; }); list.length = 0; Array.prototype.push.apply(list, filtered); }
     if (sessGoal) syncGoalTarget(sessGoal);
     saveStore(); closePlannerEditor(); renderPlanner();
@@ -11136,6 +11242,14 @@ function __detabaseMain() {
       if (store.place && store.place[k] && store.place[k].p === old) delete store.place[k];
     });
     store.schema = 11;
+    try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+  // B166: planner goals get the business-plan fields — every existing goal is a personal one (business: false)
+  (function migrateBusinessPlans() {
+    if (store.schema >= 12) return;
+    try { window.DBX.put("__pre_s12", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    ((store.planner && store.planner.goals) || []).forEach(function (g) { if (typeof g.business !== "boolean") g.business = false; });
+    store.schema = 12;
     try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
@@ -13556,14 +13670,14 @@ function __detabaseMain() {
   // ---- undo: what a move changed, put back ----
   // Every move touches only the library's shape, so a copy of those parts of the store is the undo.
   var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "order", "subjects", "builtinGroup", "groupParent", "summaries", "coath"];
-  function shapeSnap() {
-    var s = {};
-    UNDO_KEYS.forEach(function (k) { s[k] = store[k] === undefined ? undefined : JSON.stringify(store[k]); });
+  function shapeSnap(more) {                     // more: extra store keys this one change also touches (e.g. "planner")
+    var s = { keys: UNDO_KEYS.concat(more || []) };
+    s.keys.forEach(function (k) { s[k] = store[k] === undefined ? undefined : JSON.stringify(store[k]); });
     s.pages = JSON.stringify((store.ps.pages || []).map(function (pg) { return { id: pg.id, subject: pg.subject, folder: pg.folder, order: pg.order, also: (pg.alsoSubjects || []).slice() }; }));   // the fields a move changes
     return s;
   }
   function shapeRestore(s) {
-    UNDO_KEYS.forEach(function (k) { if (s[k] === undefined) delete store[k]; else store[k] = JSON.parse(s[k]); });
+    s.keys.forEach(function (k) { if (s[k] === undefined) delete store[k]; else store[k] = JSON.parse(s[k]); });
     JSON.parse(s.pages).forEach(function (x) {
       var pg = psPageById(x.id); if (!pg) return;
       pg.subject = x.subject;
@@ -13573,8 +13687,8 @@ function __detabaseMain() {
     });
   }
   // do a move, save, redraw, and offer it back
-  function libMoved(label, fn) {
-    var before = shapeSnap();
+  function libMoved(label, fn, more) {
+    var before = shapeSnap(more);
     if (fn() === false) return;
     saveStore();
     libAfterMove();
