@@ -1874,6 +1874,7 @@
   .sk-name { margin: 0 6px; font-size: 1.05rem; cursor: pointer; flex: 1; min-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sk-name:hover { color: var(--accent); }
   .sk-tools { display: flex; flex-wrap: wrap; gap: 4px; }
+  @media (max-width: 640px) { .sk-txt, .sk-zb { display: none; } .sk-name { flex-basis: 100%; order: 2; margin: 2px 0 0; font-size: .95rem; } .sk-top { gap: 4px; } .sk-top button { min-width: 40px; } }
   .sk-tog.on { background: color-mix(in srgb, var(--accent) 16%, var(--surface-1)); border-color: var(--accent); color: var(--accent); }
   .sk-main { position: relative; flex: 1; min-height: 0; background: #fff; }
   .sk-svg { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; display: block; }
@@ -2897,7 +2898,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B170</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B171</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -7269,14 +7270,15 @@ function __detabaseMain() {
     var g = document.createElement("span"); g.className = "sk-tools";
     g.appendChild(actBtn("↶", "undo", skUndo, "sk-undo"));
     g.appendChild(actBtn("↷", "redo", skRedo, "sk-redo"));
-    g.appendChild(actBtn("−", "zoom out", function () { skZoom(1 / 1.25); }));
+    g.appendChild(actBtn("−", "zoom out", function () { skZoom(1 / 1.25); }, "sk-zb"));   // − and ＋ hide on a phone: pinch there
     g.appendChild(actBtn("⤢", "fit everything in view", function () { skFit(); skRender(); }));
-    g.appendChild(actBtn("＋", "zoom in", function () { skZoom(1.25); }));
+    g.appendChild(actBtn("＋", "zoom in", function () { skZoom(1.25); }, "sk-zb"));
     [["grid", "▦ Grid", "show the grid"], ["snap", "🧲 Snap", "snap points to the grid"], ["labels", "📏 Lengths", "show the real lengths"]].forEach(function (x) {
       var b = actBtn(x[1], x[2], function () {
         if (x[0] === "labels" && !(m.ref && m.ref.len > 0)) { libToast("Set a length first: select a shape, tap the ◆ on one edge, then “📏 Set length”."); return; }
         m[x[0]] = m[x[0]] === false ? true : !m[x[0]]; saveStore(); skTop(); skRender();
       }, "sk-tog");
+      var sp = x[1].indexOf(" "); b.innerHTML = escapeHtml(x[1].slice(0, sp)) + '<span class="sk-txt">' + escapeHtml(x[1].slice(sp)) + '</span>';   // icon only on a phone
       b.classList.toggle("on", x[0] === "labels" ? !!(m.ref && m.ref.len > 0) && m.labels !== false : !!m[x[0]]);
       g.appendChild(b);
     });
