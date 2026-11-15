@@ -1776,6 +1776,30 @@
   .plg-biz { margin-top: 2px; }
   .ed-biz { align-items: flex-start; gap: 8px; margin: 6px 0 10px; }
   .ed-biz small { font-weight: 400; }
+  /* product planning: a vertical timeline of stages (business plans) */
+  .co-timeline { display: flex; flex-direction: column; margin-top: 8px; }
+  .co-stage { display: flex; gap: 10px; }
+  .co-stage-rail { position: relative; width: 18px; flex: 0 0 18px; }
+  .co-stage-rail::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border-strong); }
+  .co-stage:first-child .co-stage-rail::before { top: 22px; }
+  .co-stage:last-child .co-stage-rail::before { bottom: calc(100% - 22px); }
+  .co-stage-rail span { position: absolute; left: 3px; top: 16px; width: 12px; height: 12px; border-radius: 50%; background: var(--goal-color, var(--accent)); box-shadow: 0 0 0 3px var(--bg); }
+  .co-stage-card, .co-other { flex: 1; min-width: 0; margin-bottom: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
+  .co-others { display: flex; flex-direction: column; margin-top: 8px; }
+  .co-stage-top { display: flex; align-items: center; gap: 10px; }
+  .co-ring .orb-prog { stroke: var(--goal-color, var(--accent)); }
+  .co-stage-top.done .co-ring .orb-prog { stroke: #16a34a; }
+  .co-stage-top.locked .co-ring .orb-prog { stroke: var(--text-muted); }
+  .co-stage-t { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .co-stage-t small { color: var(--text-muted); font-size: .78rem; }
+  .co-stage-name { border: 0; background: none; padding: 0; font: inherit; font-weight: 700; color: var(--text-primary); text-align: left; cursor: pointer; min-height: 28px; }
+  .co-stage-name:hover { color: var(--accent); }
+  .co-stage-desc { margin: 6px 0 0; font-size: .86rem; color: var(--text-secondary); white-space: pre-wrap; }
+  .co-tasks { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
+  .co-task { display: flex; align-items: center; gap: 8px; min-height: 36px; font-size: .88rem; cursor: pointer; }
+  .co-task input { width: 20px; height: 20px; flex: 0 0 auto; }
+  .co-task.done span { text-decoration: line-through; color: var(--text-muted); }
+  .co-addtask { margin-top: 4px; }
   /* the sketch maker */
   .sk-grid .sk-tile { padding: 8px; gap: 6px; }
   .sk-thumb { display: flex; align-items: center; justify-content: center; height: 120px; background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
@@ -2813,7 +2837,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B166</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B167</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6144,7 +6168,7 @@ function __detabaseMain() {
       });
       ie.appendChild(r);
     });
-    sec("📅 Product planning").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No development stages yet.</b>Its plans, with their tasks and progress rings, come in a later build.</div>');
+    coPlanSection(host, p);
   }
   // a section on a Coath page: heading + the span its buttons go in
   function coSec(host, title) {
@@ -6192,12 +6216,11 @@ function __detabaseMain() {
   }
   function cidAttach(p, xid) { p.idents = (p.idents || []).filter(function (i) { return i !== xid; }).concat([xid]); }
   // pick one of the folders that can own identity types
-  function coPickFolder(title, hint, onPick) {
+  function coPickFolder(title, hint, onPick, list) {   // list: the folders to offer (default: all but Products)
     var box = ovOpen(title);
     box.body.innerHTML = '<p class="lw-hint"></p><div class="lw-opts"></div>';
     box.body.firstChild.textContent = hint;
-    COATH_FOLDERS.forEach(function (f) {
-      if (f.id === "products") return;
+    (list || COATH_FOLDERS.filter(function (f) { return f.id !== "products"; })).forEach(function (f) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "lw-opt"; b.textContent = f.icon + " " + f.name + "  ›";
       b.addEventListener("click", function () { box.close(true); onPick(f.id); });
@@ -6329,6 +6352,158 @@ function __detabaseMain() {
     g.className = "sums-grid fp-grid co-grid";
     users.forEach(function (p) { g.appendChild(coTile({ lvl: "cpr", id: p.id }, "📦 " + p.name, coWhere({ lvl: "cpr", id: p.id }), function () { openProduct(p.id); })); });
     us.appendChild(g);
+  }
+
+  // ---- Product planning (B167): the product's development stages = its business plans in Products,
+  // in order (goal.stage); each one "comes after" the one before it (reqGoals). The same goals as the planner. ----
+  var CO_STD_STAGES = ["Idea", "Research", "Design and sketches", "Prototype", "Testing", "Production", "Launch"];
+  function coStages(pid) {
+    return bizPlansOf(pid).filter(function (g) { return bizCat(g).id === "products"; }).sort(function (a, b) {
+      var sa = a.stage == null ? 1e6 : a.stage, sb = b.stage == null ? 1e6 : b.stage;
+      return sa - sb || String(a.start || "").localeCompare(String(b.start || "")) || String(a.title).localeCompare(String(b.title));
+    });
+  }
+  function coOtherPlans(pid) { return bizPlansOf(pid).filter(function (g) { return bizCat(g).id !== "products"; }); }
+  // number the stages in this order and chain them: each needs the one before it (other requirements are kept)
+  function coChainStages(list) {
+    var ids = list.map(function (g) { return g.id; });
+    list.forEach(function (g, i) {
+      g.stage = i;
+      g.reqGoals = (g.reqGoals || []).filter(function (r) { return ids.indexOf(r) < 0; });
+      if (i) g.reqGoals.push(list[i - 1].id);
+    });
+  }
+  // a new business plan (a planner short-term goal)
+  function bizNewPlan(o) {
+    var start = o.start || toISODate(new Date());
+    var g = { id: uid("pl_"), title: o.title, mode: "short", long: false, business: true, category: o.category || "products", start: start,
+      deadline: o.deadline || toISODate(addDays(fromISODate(start), 13)), targetCount: 0, parentIds: [], reqSkills: [], reqGoals: [], components: [],
+      reqTotalLevel: 0, current: false, color: PL_COLORS[store.planner.goals.length % PL_COLORS.length] };
+    if (o.product) g.product = o.product;
+    store.planner.goals.push(g);
+    return g;
+  }
+  function coLastEnd(list) {                     // the day after the last stage ends (or today)
+    var last = list.map(function (g) { return g.deadline || g.start || ""; }).sort().pop();
+    return last ? toISODate(addDays(fromISODate(last), 1)) : toISODate(new Date());
+  }
+  function coAddStage(p) {
+    askName("New stage", "A plan in Products for “" + p.name + "”; it comes after the last stage.", "", function (n) {
+      libMoved("Added the stage “" + n + "”", function () {
+        var list = coStages(p.id);
+        list.push(bizNewPlan({ title: n, product: p.id, start: coLastEnd(list) }));
+        coChainStages(list);
+      }, ["planner"]);
+    });
+  }
+  function coStdStages(p) {
+    libMoved("Added the standard stages", function () {
+      var list = [], d = toISODate(new Date());
+      CO_STD_STAGES.forEach(function (n) {
+        var g = bizNewPlan({ title: n, product: p.id, start: d });
+        list.push(g);
+        d = toISODate(addDays(fromISODate(g.deadline), 1));
+      });
+      coChainStages(list);
+    }, ["planner"]);
+  }
+  function coDropPlan(g) {
+    if (!confirmDelete(g.title)) return;
+    libMoved("Deleted the plan “" + g.title + "”", function () {
+      var pid = g.product, wasStage = bizCat(g).id === "products";
+      plDeleteGoal(g.id, true);
+      if (wasStage) coChainStages(coStages(pid));      // the ones around it join up
+    }, ["planner"]);
+  }
+  function coPlanMenu(anchor, g) {
+    libMenu(anchor, [
+      { label: "Open the plan…", run: function () { openPlannerEditor("goal", g.id); } },
+      { label: "✎ Rename", run: function () { askName("Rename plan", "", g.title, function (n) { g.title = n; saveStore(); renderCoathPage(); }); } },
+      { sep: true },
+      { label: "Delete plan…", danger: true, run: function () { coDropPlan(g); } }
+    ]);
+  }
+  function coFmtDate(s) { if (!s) return "?"; var d = fromISODate(s); return d.getDate() + " " + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""); }
+  // a plan's ring (the planner's ring), its tasks checkable here, and a quick "add a task"
+  function coPlanBody(card, g) {
+    var pr = goalProgress(g), rq = goalReqStatus(g), done = goalIsComplete(g), locked = !done && rq.any && !rq.allMet;
+    var top = document.createElement("div");
+    top.className = "co-stage-top" + (done ? " done" : locked ? " locked" : "");
+    top.innerHTML = '<div class="plg-ring co-ring">' + orbSvg(pr.pct) + '<span class="plg-pct">' + pr.pct + '%</span></div><div class="co-stage-t"><button type="button" class="co-stage-name"></button><small></small></div>';
+    top.querySelector(".co-stage-name").textContent = g.title + (done ? " ✓" : locked ? " 🔒" : "");
+    top.querySelector(".co-stage-name").addEventListener("click", function () { openPlannerEditor("goal", g.id); });
+    var after = (g.reqGoals || []).map(goalById).filter(Boolean).map(function (x) { return x.title; });
+    top.querySelector("small").textContent = coFmtDate(g.start) + " → " + coFmtDate(g.deadline) + " · " + pr.done + " / " + pr.total + " tasks" + (after.length ? " · after " + after.join(", ") : "");
+    var dots = actBtn("⋯", "plan options", function () { coPlanMenu(dots, g); }, "lib-dots");
+    top.appendChild(dots);
+    card.appendChild(top);
+    if (String(g.desc || "").trim()) { var dsc = document.createElement("p"); dsc.className = "co-stage-desc"; dsc.textContent = g.desc; card.appendChild(dsc); }
+    var tl = document.createElement("div");
+    tl.className = "co-tasks";
+    goalSessions(g.id).slice().sort(function (a, b) { return (a.done ? 1 : 0) - (b.done ? 1 : 0) || (a.date || "~").localeCompare(b.date || "~"); }).forEach(function (s) {
+      var row = document.createElement("label");
+      row.className = "co-task" + (s.done ? " done" : "");
+      row.innerHTML = '<input type="checkbox"' + (s.done ? " checked" : "") + '><span></span>';
+      row.querySelector("span").textContent = sessionListLabel(s) + (s.date ? " · " + coFmtDate(s.date) : "");
+      row.querySelector("input").addEventListener("change", function () { s.done = this.checked; saveStore(); renderCoathPage(); });
+      tl.appendChild(row);
+    });
+    var add = document.createElement("div");
+    add.className = "pl-add-check co-addtask";
+    add.innerHTML = '<input type="text" maxlength="80" placeholder="Add a task…"><button type="button">Add</button>';
+    function addTask() {
+      var t = add.querySelector("input").value.trim(); if (!t) { add.querySelector("input").focus(); return; }
+      store.planner.sessions.push({ id: uid("ps_"), date: null, start: null, duration: 60, title: t, checklist: [], notes: "", goalId: g.id, templateId: null, done: false });
+      saveStore(); renderCoathPage();
+    }
+    add.querySelector("button").addEventListener("click", addTask);
+    add.querySelector("input").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addTask(); } });
+    tl.appendChild(add);
+    card.appendChild(tl);
+  }
+  function coPlanSection(host, p) {
+    var s = coSec(host, "📅 Product planning"), head = s.querySelector(".sums-head"), list = coStages(p.id);
+    if (!list.length) head.appendChild(actBtn("Use the standard stages", CO_STD_STAGES.join(" → "), function () { coStdStages(p); }));
+    head.appendChild(actBtn("＋ Add stage", "a new development stage (a business plan in Products)", function () { coAddStage(p); }, "btn-primary"));
+    if (!list.length) s.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No development stages yet.</b>Each stage is a business plan with its own tasks and ring. “Use the standard stages” adds ' + escapeHtml(CO_STD_STAGES.join(" → ")) + '.</div>');
+    else {
+      var tl = document.createElement("div");
+      tl.className = "co-timeline";
+      list.forEach(function (g) {
+        var st = document.createElement("div");
+        st.className = "co-stage";
+        st.setAttribute("data-id", g.id);
+        st.style.setProperty("--goal-color", g.color || "var(--accent)");
+        st.innerHTML = '<div class="co-stage-rail"><span></span></div><div class="co-stage-card"></div>';
+        coPlanBody(st.querySelector(".co-stage-card"), g);
+        tl.appendChild(st);
+      });
+      dndList(tl, { type: "cstage", item: ".co-stage", onDrop: function (drag, index) {
+        libMoved("Moved “" + goalById(drag.id).title + "”", function () {
+          var l = coStages(p.id), g = goalById(drag.id);
+          l = l.filter(function (x) { return x !== g; }); l.splice(Math.min(index, l.length), 0, g);
+          coChainStages(l);
+        }, ["planner"]);
+      } });
+      s.appendChild(tl);
+      s.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Hold a stage to drag it: the order is the order they come in (each comes after the one above). Tap a name to open the plan.</p>');
+      animateRings(tl);
+    }
+    // the product's plans in the other categories
+    var others = coOtherPlans(p.id), o = coSec(host, "📎 Other plans for this product");
+    o.querySelector(".sums-head").appendChild(actBtn("＋ Plan", "a plan in Management, Marketing or Maintenance for this product", function () {
+      askName("New plan for “" + p.name + "”", "E.g. “Launch campaign”.", "", function (n) {
+        coPickFolder("Which category?", "The plan shows under that category in Planning.", function (cat) {
+          libMoved("Added the plan “" + n + "”", function () { bizNewPlan({ title: n, product: p.id, category: cat }); }, ["planner"]);
+        }, bizCats().filter(function (c) { return c.id !== "products"; }));
+      });
+    }));
+    if (!others.length) { o.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>None yet.</b>Marketing, management or maintenance plans that belong to this product show here.</div>'); return; }
+    var ol = document.createElement("div");
+    ol.className = "co-others";
+    others.forEach(function (g) { var c = document.createElement("div"); c.className = "co-other"; coPlanBody(c, g); c.querySelector(".co-stage-t small").insertAdjacentHTML("beforebegin", bizChipHtml(g)); ol.appendChild(c); });
+    o.appendChild(ol);
+    animateRings(ol);
   }
 
   // =========================================================
@@ -8624,6 +8799,7 @@ function __detabaseMain() {
 
   function closePlannerEditor() {
     $("plEditor").hidden = true; $("plBackdrop").hidden = true; plEd = null;
+    if (!$("coathPane").hidden) renderCoathPage();   // a plan opened from Coath Inc. (product planning, Planning)
     if (!$("topfolder-planner").hidden) {
       renderTotalSkillBar();
       renderSkillStrip();
@@ -8874,7 +9050,8 @@ function __detabaseMain() {
             '</select></div><div class="pl-field"><label>Product (optional)</label><select id="edProduct"><option value="">— none —</option>' +
             prods.map(function (p) { return '<option value="' + p.id + '"' + (p.id === d.product ? ' selected' : '') + '>' + escapeHtml(p.name) + '</option>'; }).join('') +
             (d.product && !cprById(d.product) ? '<option value="' + escapeHtml(d.product) + '" selected>(deleted product)</option>' : '') +
-            '</select></div></div>';
+            '</select></div></div>' +
+            '<div class="pl-field"><label>Description</label><textarea id="edPlanDesc" maxlength="2000">' + escapeHtml(d.desc || "") + '</textarea></div>';
         }
       }
       if (gm !== "skill") {
@@ -9060,6 +9237,7 @@ function __detabaseMain() {
       if ($("edCategory")) $("edCategory").addEventListener("change", function () { bizSet("category", this.value); renderGoalList(); });
       if ($("edProduct")) $("edProduct").addEventListener("change", function () { bizSet("product", this.value || undefined); });
       if ($("edPlanStart")) $("edPlanStart").addEventListener("input", function () { bizSet("start", this.value || undefined); });
+      if ($("edPlanDesc")) $("edPlanDesc").addEventListener("input", function () { bizSet("desc", this.value || undefined); });
       if ($("edTaskAdd")) {
         var addTask = function () {
           var t = $("edTaskNew").value.trim(); if (!t) { $("edTaskNew").focus(); return; }
@@ -9145,7 +9323,7 @@ function __detabaseMain() {
         });
       } else {
       // ---- short-term goal fields ----
-      $("edTarget").addEventListener("change", function () { applyTargetCount(this.value); });
+      if ($("edTarget")) $("edTarget").addEventListener("change", function () { applyTargetCount(this.value); });   // not on a business plan
       Array.prototype.slice.call(box.querySelectorAll(".par-cb")).forEach(function (cb) {
         cb.addEventListener("change", function () {
           var pid = this.value, sg = storedGoal();
