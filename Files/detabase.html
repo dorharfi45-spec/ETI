@@ -1755,6 +1755,17 @@
   .co-desc { line-height: 1.6; color: var(--text-primary); }
   .co-later { border: 1px dashed var(--border-strong); border-radius: var(--r-md); }
   .co-del { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .co-idchips { margin-top: 10px; }
+  .co-idtype { margin-top: 14px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
+  .co-idhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .co-idhead h4 { margin: 0; flex: 1; font-size: .98rem; }
+  .co-idlist { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .co-idrow { display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .co-idgo { flex: 1; display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 2px; min-height: var(--tap); border: 0; background: none; color: var(--text-primary); padding: 4px 6px; border-radius: 8px; cursor: pointer; }
+  .co-idgo:hover { background: var(--surface-2); }
+  .co-idgo b { overflow-wrap: anywhere; }
+  .co-idgo small { color: var(--text-muted); font-size: .78rem; }
+  .co-crumbtxt { color: var(--text-secondary); font-size: .88rem; }
 
   .empty-note {
     margin-top: 40px; padding: 40px 24px;
@@ -2756,7 +2767,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B163</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B164</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5673,12 +5684,14 @@ function __detabaseMain() {
     } else if (onCoath) {
       var cf = coathFolder(coathPage);
       $("pageTitle").textContent = "Coath Inc.";
-      var cpx = coathProduct && cprById(coathProduct), cgx = cgById(cpx ? cprGroup(cpx) : coathGroup);
+      renderCoathNav(); renderCoathPage();           // first: drawing the page clears whatever no longer exists
+      var onProd = cf.id === "products", cpx = onProd && cprById(coathProduct), cgx = onProd && cgById(cpx ? cprGroup(cpx) : coathGroup);
+      var cix = !onProd && cidById(coathIdent);
       $("pageSubtitle").innerHTML = cpx ? 'A product in <b>' + escapeHtml(cgx ? cgx.name : "Products") + '</b>'
         : cgx ? 'A group in <b>' + escapeHtml(cgParent(cgx) ? cgById(cgParent(cgx)).name : "Products") + '</b>'
+        : cix ? 'One of the <b>' + escapeHtml(citById(cix.type).name) + '</b> — ' + escapeHtml(cf.name)
         : escapeHtml(cf.name) + " — " + escapeHtml(cf.sub);
-      history.replaceState(null, "", "#coath:" + (cpx ? "product:" + cpx.id : cgx ? "products:" + cgx.id : cf.id));
-      renderCoathNav(); renderCoathPage();
+      history.replaceState(null, "", "#coath:" + (cpx ? "product:" + cpx.id : cgx ? "products:" + cgx.id : cix ? "identity:" + cix.id : cf.id));
     } else if (showingPlanner) {
       $("pageTitle").textContent = "Planner";
       $("pageSubtitle").innerHTML = 'Events, sessions and goals — <b>everything here is editable and moveable</b>.';
@@ -5706,15 +5719,16 @@ function __detabaseMain() {
   var COATH_FOLDERS = [
     { id: "products",    name: "Products",    icon: "📦", sub: "every product, filed in groups", render: coRenderProducts },
     { id: "planning",    name: "Planning",    icon: "📅", sub: "the business plans",
-      soon: "The business plans on the calendar, a Gantt chart and a flow chart, the plans being worked on now, and the plan library." },
-    { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    soon: "" },
-    { id: "marketing",   name: "Marketing",   icon: "📣", sub: "customers and campaigns", soon: "" },
-    { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  soon: "" }
+      soon: "The business plans on the calendar, a Gantt chart and a flow chart, the plans being worked on now, and the plan library.", render: coRenderFolder },
+    { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    soon: "", render: coRenderFolder },
+    { id: "marketing",   name: "Marketing",   icon: "📣", sub: "customers and campaigns", soon: "", render: coRenderFolder },
+    { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  soon: "", render: coRenderFolder }
   ];
   var coathPage = null;                          // the open Coath folder's id
   var coathGroup = "";                           // Products: the open group ("" = the top of Products)
   var coathProduct = null;                       // Products: the open product's id
-  var coathDescEdit = false;                     // the open product's description is being edited
+  var coathIdent = null;                         // an identity's page (shown in the folder that owns its type)
+  var coathDescEdit = false;                     // the open product's (or identity's) description is being edited
   function coathFolder(id) { return COATH_FOLDERS.filter(function (f) { return f.id === id; })[0] || COATH_FOLDERS[0]; }
   function openCoath(id) { selectTop("coath", id); }
   function openProductGroup(gid) { selectTop("coath", "products", { group: cgById(gid) ? gid : "" }); }
@@ -5722,6 +5736,11 @@ function __detabaseMain() {
     var p = cprById(pid);
     if (!p) { openCoath("products"); return; }
     selectTop("coath", "products", { group: cprGroup(p), product: p.id });
+  }
+  function openIdent(xid) {
+    var x = cidById(xid);
+    if (!x) { openCoath(); return; }
+    selectTop("coath", citOwner(citById(x.type)), { ident: x.id });
   }
   function renderCoathNav() {
     var nav = $("coathNav");
@@ -5737,13 +5756,20 @@ function __detabaseMain() {
   function renderCoathPage() {
     var host = $("coathPane"), f = coathFolder(coathPage);
     host.innerHTML = "";
-    if (f.render) { f.render(host); return; }
+    f.render(host);
+  }
+  // a folder whose own page is not built yet: "Coming soon", then the identity types it owns
+  function coRenderFolder(host) {
+    var f = coathFolder(coathPage), x = cidById(coathIdent);
+    if (x && citOwner(citById(x.type)) === f.id) { coRenderIdent(host, x); return; }
+    coathIdent = null;
     coHead(host, f.icon + " " + f.name);
     var note = document.createElement("div");
     note.className = "empty-note co-soon";
     note.innerHTML = '<span class="big">' + f.icon + '</span><b>Coming soon</b>' + (f.soon ? '<span class="co-what"></span>' : '');
     if (f.soon) note.querySelector(".co-what").textContent = f.soon;
     host.appendChild(note);
+    coRenderIdTypes(host, f.id);
   }
   // a page's heading; returns the span its action buttons go in
   function coHead(host, title, onTitle) {
@@ -5763,10 +5789,22 @@ function __detabaseMain() {
   //   "" = the top of Products; order = place among its siblings (coPlace renumbers them 0…n).
   //   A parent that is missing, or a loop of parents, reads as the top, so nothing can go out of sight.
   //   Refs for the shared menus and the asset window: { lvl: "cg" | "cpr", id }.
+  //   identities (B164): idTypes: [{ id: "cit_…", name, owner: folder id (not "products"), order }]
+  //                      idents:  [{ id: "cid_…", type: type id, name, order, desc }]
+  //                      product.idents = [identity ids]  (flat lists only — the cloud copy refuses nested arrays)
+  //   The two starting types are made once (idSeed), so deleting them sticks — even though the cloud drops empty lists.
   function coEnsure() {
     var c = store.coath = store.coath || {};
     if (!Array.isArray(c.groups)) c.groups = [];
     if (!Array.isArray(c.products)) c.products = [];
+    if (!Array.isArray(c.idTypes)) c.idTypes = [];
+    if (!Array.isArray(c.idents)) c.idents = [];
+    if (!c.idSeed) {
+      c.idSeed = 1;
+      if (!c.idTypes.length) c.idTypes.push({ id: "cit_customers", name: "Target customers", owner: "marketing", order: 0 },
+                                            { id: "cit_sectors", name: "Sectors", owner: "planning", order: 1 });
+      saveStore();
+    }
     return c;
   }
   function cgById(id) { return id ? byId(coEnsure().groups, id) : null; }
@@ -6007,32 +6045,216 @@ function __detabaseMain() {
     acts.appendChild(actBtn("⚙ Properties", "its name, where it is filed, and the rest", function () { assetWindow(ref); }));
     var dots = actBtn("⋯", "product options", function () { coMenu(dots, ref); }, "btn-quiet lib-dots");
     acts.appendChild(dots);
-    function sec(title) {
-      var s = document.createElement("section");
-      s.className = "co-sec";
-      s.innerHTML = '<div class="sums-head"><h3></h3></div>';
-      s.querySelector("h3").textContent = title;
-      host.appendChild(s);
-      return s;
-    }
+    function sec(title) { return coSec(host, title); }
     sec("✏️ Sketches").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No sketches yet.</b>The sketch maker comes in a later build.</div>');
-    var de = sec("📝 Description"), dh = de.querySelector(".sums-head");
+    coDescSec(host, p);
+    var ie = sec("🏷 Identities");
+    ie.querySelector(".sums-head").appendChild(actBtn("＋ Attach", "attach a target customer, a sector…", function () { coAttach(p); }));
+    var mine = cprIdents(p);
+    if (!mine.length) ie.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No identities yet.</b>Tap “＋ Attach” to add a target customer, a sector and the like.</div>');
+    coEnsure().idTypes.slice().sort(coByOrder).forEach(function (t) {
+      var here = mine.filter(function (x) { return x.type === t.id; });
+      if (!here.length) return;
+      var r = document.createElement("div");
+      r.className = "ps-chips pc-list co-idchips";
+      r.innerHTML = '<b class="lk-head"></b>';
+      r.firstChild.textContent = t.name;
+      here.forEach(function (x) {
+        var chip = document.createElement("span");
+        chip.className = "ps-chip";
+        chip.appendChild(actBtn(x.name, "open it", function () { openIdent(x.id); }, "ps-chip-go"));
+        chip.appendChild(actBtn("✕", "detach it from this product", function () {
+          libMoved("Detached “" + x.name + "”", function () { p.idents = (p.idents || []).filter(function (i) { return i !== x.id; }); });
+        }, "ps-chip-x"));
+        r.appendChild(chip);
+      });
+      ie.appendChild(r);
+    });
+    sec("📅 Product planning").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No development stages yet.</b>Its plans, with their tasks and progress rings, come in a later build.</div>');
+  }
+  // a section on a Coath page: heading + the span its buttons go in
+  function coSec(host, title) {
+    var s = document.createElement("section");
+    s.className = "co-sec";
+    s.innerHTML = '<div class="sums-head"><h3></h3></div>';
+    s.querySelector("h3").textContent = title;
+    host.appendChild(s);
+    return s;
+  }
+  // a Description section for o (a product, an identity): o.desc in the content editor's text
+  function coDescSec(host, o) {
+    var de = coSec(host, "📝 Description"), dh = de.querySelector(".sums-head");
     if (coathDescEdit) {
       var t = null;
       dh.appendChild(actBtn("✓ Done", "finish writing", function () { clearTimeout(t); saveStore(); coathDescEdit = false; renderCoathPage(); }, "btn-primary"));
-      de.appendChild(textEditorEl(p.desc || "", function (v) { p.desc = v; clearTimeout(t); t = setTimeout(saveStore, 400); }));
-    } else {
-      dh.appendChild(actBtn("✎ Edit", "write the description", function () { coathDescEdit = true; renderCoathPage(); }));
-      if (String(p.desc || "").trim()) {
-        var v = document.createElement("div");
-        v.className = "co-desc";
-        v.appendChild(partTextEl(p.desc));
-        de.appendChild(v);
-        texify(v);
-      } else de.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No description yet.</b>Tap “✎ Edit” to write one.</div>');
+      de.appendChild(textEditorEl(o.desc || "", function (v) { o.desc = v; clearTimeout(t); t = setTimeout(saveStore, 400); }));
+      return;
     }
-    sec("🏷 Identities").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No identities yet.</b>Target customers, sectors and the rest come in the next build.</div>');
-    sec("📅 Product planning").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No development stages yet.</b>Its plans, with their tasks and progress rings, come in a later build.</div>');
+    dh.appendChild(actBtn("✎ Edit", "write the description", function () { coathDescEdit = true; renderCoathPage(); }));
+    if (!String(o.desc || "").trim()) { de.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No description yet.</b>Tap “✎ Edit” to write one.</div>'); return; }
+    var v = document.createElement("div");
+    v.className = "co-desc";
+    v.appendChild(partTextEl(o.desc));
+    de.appendChild(v);
+    texify(v);
+  }
+
+  // ---- Identities: shared tags (target customers, sectors…) attached to products ----
+  // Each type is owned by a folder (not Products); its list is managed on that folder's page.
+  function citById(id) { return id ? byId(coEnsure().idTypes, id) : null; }
+  function cidById(id) { return id ? byId(coEnsure().idents, id) : null; }
+  function citOwner(t) { return t && t.owner && t.owner !== "products" && coathFolder(t.owner).id === t.owner ? t.owner : "marketing"; }
+  function citOwned(fid) { return coEnsure().idTypes.filter(function (t) { return citOwner(t) === fid; }).sort(coByOrder); }
+  function cidOf(tid) { return coEnsure().idents.filter(function (x) { return x.type === tid; }).sort(coByOrder); }
+  function cprIdents(p) { return (p.idents || []).map(cidById).filter(function (x) { return x && citById(x.type); }); }
+  function cidUsers(xid) { return coEnsure().products.filter(function (p) { return (p.idents || []).indexOf(xid) >= 0; }).sort(coByOrder); }
+  function citAdd(name, owner) {
+    var t = { id: uid("cit_"), name: name, owner: owner, order: coEnsure().idTypes.length };
+    coEnsure().idTypes.push(t); saveStore(); return t;
+  }
+  function cidAdd(name, tid) {
+    var x = { id: uid("cid_"), type: tid, name: name, order: cidOf(tid).length, desc: "" };
+    coEnsure().idents.push(x); saveStore(); return x;
+  }
+  function cidAttach(p, xid) { p.idents = (p.idents || []).filter(function (i) { return i !== xid; }).concat([xid]); }
+  // pick one of the folders that can own identity types
+  function coPickFolder(title, hint, onPick) {
+    var box = ovOpen(title);
+    box.body.innerHTML = '<p class="lw-hint"></p><div class="lw-opts"></div>';
+    box.body.firstChild.textContent = hint;
+    COATH_FOLDERS.forEach(function (f) {
+      if (f.id === "products") return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "lw-opt"; b.textContent = f.icon + " " + f.name + "  ›";
+      b.addEventListener("click", function () { box.close(true); onPick(f.id); });
+      box.body.querySelector(".lw-opts").appendChild(b);
+    });
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+  }
+  // which type a new identity gets — an existing one, or a new type (then: which folder owns it)
+  function coPickType(name, onType) {
+    var types = coEnsure().idTypes.slice().sort(coByOrder);
+    pickOrNew("What is “" + name + "”?", "Pick its type, or make a new type.", types.map(function (t) {
+      return { id: t.id, name: t.name, group: coathFolder(citOwner(t)).name };
+    }), "New type name…", function (tid, tn) {
+      if (tid) { onType(tid); return; }
+      coPickFolder("Which folder owns “" + tn + "”?", "Its list is managed on that folder's page.", function (fid) { onType(citAdd(tn, fid).id); });
+    });
+  }
+  // ＋ Attach on a product: any identity it doesn't have yet (by type), or a new one
+  function coAttach(p) {
+    var have = p.idents || [], opts = [];
+    coEnsure().idTypes.slice().sort(coByOrder).forEach(function (t) {
+      cidOf(t.id).forEach(function (x) { if (have.indexOf(x.id) < 0) opts.push({ id: x.id, name: x.name, group: t.name }); });
+    });
+    pickOrNew("Attach to “" + p.name + "”", "A target customer, a sector… — or type a new one below.", opts, "New identity name…", function (xid, nn) {
+      if (xid) { libMoved("Attached “" + cidById(xid).name + "”", function () { cidAttach(p, xid); }); return; }
+      coPickType(nn, function (tid) { libMoved("Attached the new “" + nn + "”", function () { cidAttach(p, cidAdd(nn, tid).id); }); });
+    });
+  }
+  function cidRename(x) {
+    askName("Rename", citById(x.type).name, x.name, function (n) { x.name = n; saveStore(); applyView(); libToast("Renamed to “" + n + "”"); });
+  }
+  function cidDelete(x) {
+    var n = cidUsers(x.id).length;
+    if (!confirmDelete(x.name + (n ? " (" + n + (n === 1 ? " product" : " products") + ")" : ""))) return;
+    libMoved("Deleted “" + x.name + "”", function () {
+      var c = coEnsure();
+      c.idents = c.idents.filter(function (i) { return i !== x; });
+      c.products.forEach(function (p) { if (p.idents) p.idents = p.idents.filter(function (i) { return i !== x.id; }); });
+      if (coathIdent === x.id) coathIdent = null;
+    });
+  }
+  function citDelete(t) {
+    var xs = cidOf(t.id), gone = {};
+    if (!confirmDelete(t.name + (xs.length ? " + " + xs.length + (xs.length === 1 ? " identity" : " identities") : ""))) return;
+    xs.forEach(function (x) { gone[x.id] = 1; });
+    libMoved("Deleted the type “" + t.name + "”", function () {
+      var c = coEnsure();
+      c.idTypes = c.idTypes.filter(function (i) { return i !== t; });
+      c.idents = c.idents.filter(function (x) { return !gone[x.id]; });
+      c.products.forEach(function (p) { if (p.idents) p.idents = p.idents.filter(function (i) { return !gone[i]; }); });
+      if (gone[coathIdent]) coathIdent = null;
+    });
+  }
+  function citMenu(anchor, t) {
+    libMenu(anchor, [
+      { label: "✎ Rename type", run: function () { askName("Rename type", "", t.name, function (n) { t.name = n; saveStore(); applyView(); }); } },
+      { label: "↪ Owner folder…", run: function () {
+        coPickFolder("Which folder owns “" + t.name + "”?", "Its list moves to that folder's page.", function (fid) {
+          libMoved("“" + t.name + "” is now in " + coathFolder(fid).name, function () { t.owner = fid; });
+        });
+      } },
+      { sep: true },
+      { label: "Delete type…", danger: true, run: function () { citDelete(t); } }
+    ]);
+  }
+  // a folder's identity types, each a list: rename, delete, which products use each one
+  function coRenderIdTypes(host, fid) {
+    var s = coSec(host, "🏷 Identities");
+    s.querySelector(".sums-head").appendChild(actBtn("＋ Type", "a new kind of identity, listed here", function () {
+      askName("New identity type", "E.g. “Price range”. Its list lives on this page.", "", function (n) { citAdd(n, fid); applyView(); libToast("Created the type “" + n + "”"); });
+    }));
+    var types = citOwned(fid);
+    if (!types.length) { s.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No identity types here.</b>Tap “＋ Type” to add one; products can then be tagged with it.</div>'); return; }
+    types.forEach(function (t) {
+      var b = document.createElement("div");
+      b.className = "co-idtype";
+      b.innerHTML = '<div class="co-idhead"><h4></h4><span class="cd-acts"></span></div><div class="co-idlist"></div>';
+      b.querySelector("h4").textContent = t.name;
+      var acts = b.querySelector(".cd-acts"), list = b.querySelector(".co-idlist");
+      acts.appendChild(actBtn("＋ Add", "a new " + t.name.toLowerCase(), function () {
+        askName("New — " + t.name, "", "", function (n) { cidAdd(n, t.id); applyView(); libToast("Added “" + n + "”"); });
+      }));
+      var dots = actBtn("⋯", "type options", function () { citMenu(dots, t); }, "btn-quiet lib-dots");
+      acts.appendChild(dots);
+      var xs = cidOf(t.id);
+      if (!xs.length) list.innerHTML = '<p class="muted">None yet.</p>';
+      xs.forEach(function (x) {
+        var n = cidUsers(x.id).length, row = document.createElement("div");
+        row.className = "co-idrow";
+        row.appendChild(actBtn("", "open it", function () { openIdent(x.id); }, "co-idgo"));
+        row.firstChild.innerHTML = '<b></b><small></small>';
+        row.firstChild.querySelector("b").textContent = x.name;
+        row.firstChild.querySelector("small").textContent = n ? "used by " + n + (n === 1 ? " product" : " products") : "not used yet";
+        var d = actBtn("⋯", "options", function () {
+          libMenu(d, [{ label: "Open", run: function () { openIdent(x.id); } }, { label: "✎ Rename", run: function () { cidRename(x); } },
+            { sep: true }, { label: "Delete…", danger: true, run: function () { cidDelete(x); } }]);
+        }, "lib-dots");
+        row.appendChild(d);
+        list.appendChild(row);
+      });
+      s.appendChild(b);
+    });
+  }
+  // an identity's page: its type, a description, and the products that use it
+  function coRenderIdent(host, x) {
+    var t = citById(x.type), f = coathFolder(citOwner(t));
+    var nav = document.createElement("nav");
+    nav.className = "fp-path";
+    nav.appendChild(actBtn(f.icon + " " + f.name, "back to " + f.name, function () { openCoath(f.id); }, "fp-crumb"));
+    nav.insertAdjacentHTML("beforeend", '<span class="fp-sep">›</span><span class="co-crumbtxt"></span>');
+    nav.lastChild.textContent = t.name;
+    host.appendChild(nav);
+    var acts = coHead(host, "🏷 " + x.name, function () { cidRename(x); });
+    var dots = actBtn("⋯", "options", function () {
+      libMenu(dots, [{ label: "✎ Rename", run: function () { cidRename(x); } }, { sep: true }, { label: "Delete…", danger: true, run: function () { cidDelete(x); } }]);
+    }, "btn-quiet lib-dots");
+    acts.appendChild(dots);
+    coDescSec(host, x);
+    var users = cidUsers(x.id), us = coSec(host, "📦 Used by " + users.length + (users.length === 1 ? " product" : " products"));
+    us.querySelector(".sums-head").appendChild(actBtn("＋ Product", "attach it to a product", function () {
+      var all = coEnsure().products.filter(function (p) { return users.indexOf(p) < 0; }).sort(coByOrder);
+      pickOrNew("Attach “" + x.name + "” to", "Which product?", all.map(function (p) { return { id: p.id, name: "📦 " + p.name, group: coWhere({ lvl: "cpr", id: p.id }) }; }),
+        "New product name…", function (pid, nn) {
+          libMoved("Attached “" + x.name + "”", function () { cidAttach(pid ? cprById(pid) : cprAdd(nn, ""), x.id); });
+        });
+    }));
+    if (!users.length) { us.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No product uses it yet.</b>Attach it here, or from a product&rsquo;s page.</div>'); return; }
+    var g = document.createElement("div");
+    g.className = "sums-grid fp-grid co-grid";
+    users.forEach(function (p) { g.appendChild(coTile({ lvl: "cpr", id: p.id }, "📦 " + p.name, coWhere({ lvl: "cpr", id: p.id }), function () { openProduct(p.id); })); });
+    us.appendChild(g);
   }
 
   function selectTop(id, coathId, coathOpts) {
@@ -6041,7 +6263,7 @@ function __detabaseMain() {
     if (id === "notebook") { openNotebook(); return; }
     if (id === "coath") {                        // opens on the folder last opened (store.ui.coathPage, synced like ui.group)
       coathPage = coathFolder(coathId || store.ui.coathPage).id;
-      coathGroup = (coathOpts && coathOpts.group) || ""; coathProduct = (coathOpts && coathOpts.product) || null; coathDescEdit = false;
+      coathGroup = (coathOpts && coathOpts.group) || ""; coathProduct = (coathOpts && coathOpts.product) || null; coathIdent = (coathOpts && coathOpts.ident) || null; coathDescEdit = false;
       if (store.ui.coathPage !== coathPage) { store.ui.coathPage = coathPage; saveStore(); }
     }
     renderSubjectList();
@@ -19882,9 +20104,10 @@ function __detabaseMain() {
     } else { openSub(dk, did); if (!activeSub) selectTop("eti"); }
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
-  } else if (/^coath:/.test(initial)) {             // #coath:<folder> · #coath:products:<group id> · #coath:product:<product id>
+  } else if (/^coath:/.test(initial)) {             // #coath:<folder> · #coath:products:<group id> · #coath:product:<product id> · #coath:identity:<id>
     var cparts = decodeURIComponent(initial.slice(6)).split(":");
     if (cparts[0] === "product") openProduct(cparts[1]);
+    else if (cparts[0] === "identity") openIdent(cparts[1]);
     else if (cparts[0] === "products" && cparts[1]) openProductGroup(cparts[1]);
     else openCoath(cparts[0]);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
