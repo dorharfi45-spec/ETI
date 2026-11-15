@@ -1744,6 +1744,17 @@
   /* Coath Inc. */
   .co-soon { margin-top: 18px; }
   .co-soon .co-what { display: block; margin-top: 10px; font-size: .9rem; color: var(--text-secondary); }
+  #coathPane .cp-head h2.co-ren { cursor: pointer; }
+  #coathPane .cp-head h2.co-ren:hover { color: var(--accent); }
+  .co-empty { margin-top: 14px; }
+  .co-tip { margin-top: 18px; font-size: .82rem; }
+  .co-tile b { overflow-wrap: anywhere; }
+  .co-tile b.dnd-hot { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  .co-sec { margin-top: 28px; }
+  .co-sec .sums-head h3 { font-size: 1.05rem; }
+  .co-desc { line-height: 1.6; color: var(--text-primary); }
+  .co-later { border: 1px dashed var(--border-strong); border-radius: var(--r-md); }
+  .co-del { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 
   .empty-note {
     margin-top: 40px; padding: 40px 24px;
@@ -2745,7 +2756,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B162</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B163</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4815,6 +4826,7 @@ function __detabaseMain() {
       if (p.methodKinds) store.methodKinds = p.methodKinds;
       if (p.partCats) store.partCats = p.partCats;
       if (p.biSeed) store.biSeed = p.biSeed;               // which built-in methods / card types were copied (seedBuiltins)
+      if (p.coath) store.coath = p.coath;                  // Coath Inc.: product groups and products (B163)
       // a bench left in the stored metadata by an older build is a stale copy of a board's items:
       // drop it, so the doc binds to the real one again and nothing gets pushed to the cloud
       [store.canvases, store.elements, (store.ps || {}).pages].forEach(function (list) {
@@ -5661,8 +5673,11 @@ function __detabaseMain() {
     } else if (onCoath) {
       var cf = coathFolder(coathPage);
       $("pageTitle").textContent = "Coath Inc.";
-      $("pageSubtitle").innerHTML = escapeHtml(cf.name) + " — " + escapeHtml(cf.sub);
-      history.replaceState(null, "", "#coath:" + cf.id);
+      var cpx = coathProduct && cprById(coathProduct), cgx = cgById(cpx ? cprGroup(cpx) : coathGroup);
+      $("pageSubtitle").innerHTML = cpx ? 'A product in <b>' + escapeHtml(cgx ? cgx.name : "Products") + '</b>'
+        : cgx ? 'A group in <b>' + escapeHtml(cgParent(cgx) ? cgById(cgParent(cgx)).name : "Products") + '</b>'
+        : escapeHtml(cf.name) + " — " + escapeHtml(cf.sub);
+      history.replaceState(null, "", "#coath:" + (cpx ? "product:" + cpx.id : cgx ? "products:" + cgx.id : cf.id));
       renderCoathNav(); renderCoathPage();
     } else if (showingPlanner) {
       $("pageTitle").textContent = "Planner";
@@ -5689,8 +5704,7 @@ function __detabaseMain() {
   // One registry. A folder whose page is not built yet shows a placeholder; giving its entry a
   // render(host) later makes it a real page — no saved data depends on which pages exist.
   var COATH_FOLDERS = [
-    { id: "products",    name: "Products",    icon: "📦", sub: "every product, filed in groups",
-      soon: "Groups of products, and a page for each product: sketches, description, identities and its development plans." },
+    { id: "products",    name: "Products",    icon: "📦", sub: "every product, filed in groups", render: coRenderProducts },
     { id: "planning",    name: "Planning",    icon: "📅", sub: "the business plans",
       soon: "The business plans on the calendar, a Gantt chart and a flow chart, the plans being worked on now, and the plan library." },
     { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    soon: "" },
@@ -5698,8 +5712,17 @@ function __detabaseMain() {
     { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  soon: "" }
   ];
   var coathPage = null;                          // the open Coath folder's id
+  var coathGroup = "";                           // Products: the open group ("" = the top of Products)
+  var coathProduct = null;                       // Products: the open product's id
+  var coathDescEdit = false;                     // the open product's description is being edited
   function coathFolder(id) { return COATH_FOLDERS.filter(function (f) { return f.id === id; })[0] || COATH_FOLDERS[0]; }
   function openCoath(id) { selectTop("coath", id); }
+  function openProductGroup(gid) { selectTop("coath", "products", { group: cgById(gid) ? gid : "" }); }
+  function openProduct(pid) {
+    var p = cprById(pid);
+    if (!p) { openCoath("products"); return; }
+    selectTop("coath", "products", { group: cprGroup(p), product: p.id });
+  }
   function renderCoathNav() {
     var nav = $("coathNav");
     if (!nav.children.length) COATH_FOLDERS.forEach(function (f) {
@@ -5714,25 +5737,311 @@ function __detabaseMain() {
   function renderCoathPage() {
     var host = $("coathPane"), f = coathFolder(coathPage);
     host.innerHTML = "";
-    var head = document.createElement("div");
-    head.className = "cp-head";
-    head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
-    head.querySelector("h2").textContent = f.icon + " " + f.name;
-    host.appendChild(head);
     if (f.render) { f.render(host); return; }
+    coHead(host, f.icon + " " + f.name);
     var note = document.createElement("div");
     note.className = "empty-note co-soon";
     note.innerHTML = '<span class="big">' + f.icon + '</span><b>Coming soon</b>' + (f.soon ? '<span class="co-what"></span>' : '');
     if (f.soon) note.querySelector(".co-what").textContent = f.soon;
     host.appendChild(note);
   }
+  // a page's heading; returns the span its action buttons go in
+  function coHead(host, title, onTitle) {
+    var head = document.createElement("div");
+    head.className = "cp-head";
+    head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
+    var h = head.querySelector("h2");
+    h.textContent = title;
+    if (onTitle) { h.title = "tap to rename"; h.classList.add("co-ren"); h.addEventListener("click", onTitle); }
+    host.appendChild(head);
+    return head.querySelector(".cd-acts");
+  }
 
-  function selectTop(id, coathId) {
+  // ---- Products: groups (nested to any depth) and products ----
+  //   store.coath = { groups:   [{ id: "cg_…",  name, parent: "" | group id, order }],
+  //                   products: [{ id: "cpr_…", name, group: "" | group id, order, desc, created }] }
+  //   "" = the top of Products; order = place among its siblings (coPlace renumbers them 0…n).
+  //   A parent that is missing, or a loop of parents, reads as the top, so nothing can go out of sight.
+  //   Refs for the shared menus and the asset window: { lvl: "cg" | "cpr", id }.
+  function coEnsure() {
+    var c = store.coath = store.coath || {};
+    if (!Array.isArray(c.groups)) c.groups = [];
+    if (!Array.isArray(c.products)) c.products = [];
+    return c;
+  }
+  function cgById(id) { return id ? byId(coEnsure().groups, id) : null; }
+  function cprById(id) { return id ? byId(coEnsure().products, id) : null; }
+  function cgParent(g) {
+    var p = g && g.parent;
+    if (!p || !cgById(p)) return "";
+    for (var x = cgById(p), n = 0; x; x = cgById(x.parent), n++) if (x.id === g.id || n > 500) return "";
+    return p;
+  }
+  function cprGroup(p) { return p && p.group && cgById(p.group) ? p.group : ""; }
+  function coByOrder(a, b) { return (a.order || 0) - (b.order || 0) || String(a.name).localeCompare(String(b.name)); }
+  function cgKids(gid) { return coEnsure().groups.filter(function (g) { return cgParent(g) === (gid || ""); }).sort(coByOrder); }
+  function cprIn(gid) { return coEnsure().products.filter(function (p) { return cprGroup(p) === (gid || ""); }).sort(coByOrder); }
+  function cgPath(gid) {                         // the top's first group … gid
+    var out = [];
+    for (var g = cgById(gid); g && out.length < 500; g = cgById(cgParent(g))) out.unshift(g.id);
+    return out;
+  }
+  function cgInside(gid, anc) { return gid !== anc && cgPath(gid).indexOf(anc) >= 0; }
+  function cgDeep(gid) {                         // every group and product inside, at any depth
+    var gs = [], ps = cprIn(gid).slice();
+    cgKids(gid).forEach(function (g) { var d = cgDeep(g.id); gs = gs.concat([g], d.groups); ps = ps.concat(d.products); });
+    return { groups: gs, products: ps };
+  }
+  function coCountText(ng, np) {
+    var bits = [];
+    if (np || !ng) bits.push(np + (np === 1 ? " product" : " products"));
+    if (ng) bits.push(ng + (ng === 1 ? " group" : " groups"));
+    return bits.join(" · ");
+  }
+  function coPlace(sibs, item, index) {          // item among its new siblings at index (null = last)
+    sibs = sibs.filter(function (x) { return x !== item; });
+    if (index == null || index > sibs.length) index = sibs.length;
+    sibs.splice(index, 0, item);
+    sibs.forEach(function (x, i) { x.order = i; });
+  }
+  function cgAdd(name, parent) {
+    var g = { id: uid("cg_"), name: name, parent: parent || "", order: cgKids(parent).length };
+    coEnsure().groups.push(g); saveStore(); return g;
+  }
+  function cprAdd(name, group) {
+    var p = { id: uid("cpr_"), name: name, group: group || "", order: cprIn(group).length, desc: "", created: Date.now() };
+    coEnsure().products.push(p); saveStore(); return p;
+  }
+  function cgMoveTo(id, parent, index) {         // false = refused (into itself or its own groups)
+    var g = cgById(id); parent = parent || "";
+    if (!g || parent === id || (parent && cgInside(parent, id))) return false;
+    g.parent = parent;
+    coPlace(cgKids(parent), g, index);
+  }
+  function cprMoveTo(id, group, index) {
+    var p = cprById(id); if (!p) return false;
+    p.group = group || "";
+    coPlace(cprIn(p.group), p, index);
+  }
+  function coObj(ref) { return ref.lvl === "cg" ? cgById(ref.id) : cprById(ref.id); }
+  function coWhere(ref) {
+    var o = coObj(ref), at = ref.lvl === "cg" ? cgParent(o) : cprGroup(o);
+    return ["Products"].concat(cgPath(at).map(function (g) { return cgById(g).name; })).join(" › ");
+  }
+  function coOpen(ref) { if (ref.lvl === "cg") openProductGroup(ref.id); else openProduct(ref.id); }
+  function coRename(ref) {
+    askName(ref.lvl === "cg" ? "Rename group" : "Rename product", "", coObj(ref).name, function (n) {
+      coObj(ref).name = n; saveStore(); applyView(); if (awCur) awCur.redraw();
+      libToast("Renamed to “" + n + "”");
+    });
+  }
+  // Move to…: the top of Products, or any group that is not where it is now, not itself and not inside it
+  function coMoveTo(ref) {
+    var o = coObj(ref), at = ref.lvl === "cg" ? cgParent(o) : cprGroup(o), name = o.name, all = [];
+    (function walk(pid) { cgKids(pid).forEach(function (g) { all.push(g); walk(g.id); }); })("");
+    var opts = (at ? [{ id: "__top", name: "⤒ Products (top level)" }] : []).concat(all.filter(function (g) {
+      return g.id !== at && !(ref.lvl === "cg" && (g.id === o.id || cgInside(g.id, o.id)));
+    }).map(function (g) { return { id: g.id, name: new Array(cgPath(g.id).length).join("   ") + "🗂 " + g.name }; }));
+    pickOrNew("Move “" + name + "” to", ref.lvl === "cg" ? "Everything inside it comes with it." : "Which group?", opts, "New group name…", function (gid, nn) {
+      libMoved("Moved “" + name + "”", function () {
+        if (!gid) gid = cgAdd(nn, "").id;
+        if (gid === "__top") gid = "";
+        return ref.lvl === "cg" ? cgMoveTo(o.id, gid, null) : cprMoveTo(o.id, gid, null);
+      });
+    });
+  }
+  // deleting a product, or a group: what is inside goes up a level, or is deleted with it (the owner chooses)
+  function coDelete(ref) {
+    var o = coObj(ref); if (!o) return;
+    var back = ref.lvl === "cg" ? cgParent(o) : cprGroup(o), c = coEnsure();
+    if (ref.lvl === "cpr") {
+      if (!confirmDelete(o.name)) return;
+      libMoved("Deleted “" + o.name + "”", function () {
+        if (coathProduct === o.id) { coathProduct = null; coathGroup = back; }
+        c.products = c.products.filter(function (x) { return x !== o; });
+      });
+      return;
+    }
+    var deep = cgDeep(o.id);
+    function drop(all) {
+      libMoved("Deleted the group “" + o.name + "”", function () {
+        var openAt = coathProduct ? cprGroup(cprById(coathProduct)) : coathGroup, inside = openAt === o.id || cgInside(openAt, o.id);
+        if (all) {
+          var gone = {}; gone[o.id] = 1;
+          deep.groups.forEach(function (g) { gone[g.id] = 1; });
+          deep.products.forEach(function (p) { gone[p.id] = 1; });
+          c.groups = c.groups.filter(function (g) { return !gone[g.id]; });
+          c.products = c.products.filter(function (p) { return !gone[p.id]; });
+          if (inside) { coathProduct = null; coathGroup = back; }
+        } else {                                 // its groups and products go after what is already there
+          cgKids(o.id).forEach(function (g) { g.parent = back; g.order = 1e6 + (g.order || 0); });
+          cprIn(o.id).forEach(function (p) { p.group = back; p.order = 1e6 + (p.order || 0); });
+          c.groups = c.groups.filter(function (g) { return g !== o; });
+          cgKids(back).forEach(function (g, i) { g.order = i; });
+          cprIn(back).forEach(function (p, i) { p.order = i; });
+          if (coathGroup === o.id) coathGroup = back;
+        }
+      });
+    }
+    if (!deep.groups.length && !deep.products.length) { if (confirmDelete(o.name)) drop(false); return; }
+    var box = ovOpen("Delete the group “" + o.name + "”");
+    box.body.innerHTML = '<p class="lw-hint"></p><div class="co-del"></div>';
+    box.body.firstChild.textContent = "It holds " + coCountText(deep.groups.length, deep.products.length) + ". What happens to them?";
+    var row = box.body.querySelector(".co-del");
+    row.appendChild(actBtn("⤴ Move them to " + (back ? "“" + cgById(back).name + "”" : "the top of Products"), "", function () { box.close(true); drop(false); }, "btn-primary"));
+    row.appendChild(actBtn("🗑 Delete them too", "", function () {
+      if (!confirmDelete(o.name + " + " + coCountText(deep.groups.length, deep.products.length))) return;
+      box.close(true); drop(true);
+    }, "btn-danger"));
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+  }
+  function coMenu(anchor, ref) {
+    libMenu(anchor, [
+      { label: "Open", run: function () { coOpen(ref); } },
+      { label: "✎ Rename", run: function () { coRename(ref); } },
+      { label: "↪ Move to…", run: function () { coMoveTo(ref); } },
+      { label: "⚙ Properties…", run: function () { assetWindow(ref); } },
+      { sep: true },
+      { label: ref.lvl === "cg" ? "Delete group…" : "Delete product…", danger: true, run: function () { coDelete(ref); } }
+    ]);
+  }
+  function coDots(ref) { return actBtn("⋯", "options", function (e) { coMenu(e.currentTarget, ref); }, "lib-dots fp-dots"); }
+  // somewhere things can be dropped into: a group ("" = the top of Products); productsOnly for a group's whole tile
+  function coDropInto(el, gid, productsOnly) {
+    dndInto(el, { accepts: productsOnly ? ["cproduct"] : ["cgroup", "cproduct"],
+      canDrop: function (drag) {
+        if (drag.type === "cproduct") return cprGroup(cprById(drag.id)) !== gid;
+        return drag.id !== gid && !(gid && cgInside(gid, drag.id)) && cgParent(cgById(drag.id)) !== gid;
+      },
+      onDrop: function (drag) {
+        var nm = coObj({ lvl: drag.type === "cproduct" ? "cpr" : "cg", id: drag.id }).name;
+        libMoved("Moved “" + nm + "” to " + (gid ? "“" + cgById(gid).name + "”" : "Products"), function () {
+          return drag.type === "cproduct" ? cprMoveTo(drag.id, gid, null) : cgMoveTo(drag.id, gid, null);
+        });
+      } });
+  }
+  // Products › group › … : each name opens it and takes drops
+  function coCrumbs(host, gid, withLast) {
+    var ids = [""].concat(cgPath(gid));
+    if (!withLast) ids.pop();
+    if (!ids.length) return;
+    var nav = document.createElement("nav");
+    nav.className = "fp-path";
+    ids.forEach(function (id, i) {
+      if (i) nav.insertAdjacentHTML("beforeend", '<span class="fp-sep">›</span>');
+      var b = actBtn(id ? cgById(id).name : "📦 Products", "open — or drop something here to move it here", function () { openProductGroup(id); }, "fp-crumb");
+      coDropInto(b, id);
+      nav.appendChild(b);
+    });
+    host.appendChild(nav);
+  }
+  function coTile(ref, title, line, open) {
+    var b = actBtn("", "", open, "sum-card fp-tile co-tile");
+    b.innerHTML = '<b></b><small></small>';
+    b.querySelector("b").textContent = title;
+    b.querySelector("small").textContent = line;
+    b.addEventListener("contextmenu", function (e) { e.preventDefault(); assetWindow(ref); });
+    var cell = fpCell(b, coDots(ref));
+    cell.setAttribute("data-id", ref.id);
+    return cell;
+  }
+  function coDescLine(p) {
+    var t = String(p.desc || "").replace(/\$[^$]*\$/g, "…").replace(/[*#`]/g, "").replace(/^\s*-\s+/gm, "").trim().split("\n")[0];
+    return t ? (t.length > 90 ? t.slice(0, 88) + "…" : t) : "No description yet";
+  }
+  // the Products page: a group (or the top) with its groups and products
+  function coRenderProducts(host) {
+    coEnsure();
+    var p = cprById(coathProduct);
+    if (p) { coRenderProduct(host, p); return; }
+    coathProduct = null;
+    var gid = cgById(coathGroup) ? coathGroup : "", g = cgById(gid);
+    coathGroup = gid;
+    coCrumbs(host, gid, false);
+    var acts = coHead(host, g ? "🗂 " + g.name : "📦 Products", g ? function () { coRename({ lvl: "cg", id: gid }); } : null);
+    acts.appendChild(actBtn("＋ Group", g ? "a new group inside this one" : "a new group", function () {
+      askName("New group", g ? "Inside “" + g.name + "”." : "At the top of Products.", "", function (n) { cgAdd(n, gid); applyView(); libToast("Created the group “" + n + "”"); });
+    }));
+    acts.appendChild(actBtn("＋ Product", "a new product here", function () {
+      askName("New product", g ? "In “" + g.name + "”." : "At the top of Products.", "", function (n) { var np = cprAdd(n, gid); openProduct(np.id); libToast("Created “" + n + "”"); });
+    }, "btn-primary"));
+    if (g) { var dots = actBtn("⋯", "group options", function () { coMenu(dots, { lvl: "cg", id: gid }); }, "btn-quiet lib-dots"); acts.appendChild(dots); }
+    var kids = cgKids(gid), prods = cprIn(gid);
+    if (!kids.length && !prods.length) {
+      host.insertAdjacentHTML("beforeend", '<div class="side-empty sums-empty co-empty"><b>' + (g ? "This group is empty." : "No products yet.") + '</b>Tap “＋ Product” to add one, or “＋ Group” to file products in groups.</div>');
+      return;
+    }
+    if (kids.length) {
+      host.insertAdjacentHTML("beforeend", '<h3 class="fp-h">Groups <span class="side-count">' + kids.length + '</span></h3>');
+      var gg = document.createElement("div");
+      gg.className = "sums-grid fp-grid co-grid";
+      kids.forEach(function (k) {
+        var cell = coTile({ lvl: "cg", id: k.id }, "🗂 " + k.name, coCountText(cgKids(k.id).length, cprIn(k.id).length), function () { openProductGroup(k.id); });
+        coDropInto(cell.querySelector("b"), k.id);        // on its name: anything goes inside
+        coDropInto(cell, k.id, true);                     // anywhere on it: a product goes inside (a group reorders)
+        gg.appendChild(cell);
+      });
+      dndList(gg, { type: "cgroup", item: ".fp-cell", axis: "grid", onDrop: function (drag, index) {
+        libMoved("Moved “" + cgById(drag.id).name + "”", function () { return cgMoveTo(drag.id, gid, index); });
+      } });
+      host.appendChild(gg);
+    }
+    if (prods.length) {
+      host.insertAdjacentHTML("beforeend", '<h3 class="fp-h">Products <span class="side-count">' + prods.length + '</span></h3>');
+      var pg = document.createElement("div");
+      pg.className = "sums-grid fp-grid co-grid";
+      prods.forEach(function (x) { pg.appendChild(coTile({ lvl: "cpr", id: x.id }, "📦 " + x.name, coDescLine(x), function () { openProduct(x.id); })); });
+      dndList(pg, { type: "cproduct", item: ".fp-cell", axis: "grid", onDrop: function (drag, index) {
+        libMoved("Moved “" + cprById(drag.id).name + "”", function () { return cprMoveTo(drag.id, gid, index); });
+      } });
+      host.appendChild(pg);
+    }
+    host.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Hold a tile to drag it. Drop it on a group to put it inside' + (gid ? ', or on a name in the path above to move it up' : '') + '. ⋯ on a tile: rename, move, properties, delete.</p>');
+  }
+  // a product's page: sketches, description, identities, product planning
+  function coRenderProduct(host, p) {
+    var gid = cprGroup(p), ref = { lvl: "cpr", id: p.id };
+    coathGroup = gid;
+    coCrumbs(host, gid, true);
+    var acts = coHead(host, "📦 " + p.name, function () { coRename(ref); });
+    acts.appendChild(actBtn("⚙ Properties", "its name, where it is filed, and the rest", function () { assetWindow(ref); }));
+    var dots = actBtn("⋯", "product options", function () { coMenu(dots, ref); }, "btn-quiet lib-dots");
+    acts.appendChild(dots);
+    function sec(title) {
+      var s = document.createElement("section");
+      s.className = "co-sec";
+      s.innerHTML = '<div class="sums-head"><h3></h3></div>';
+      s.querySelector("h3").textContent = title;
+      host.appendChild(s);
+      return s;
+    }
+    sec("✏️ Sketches").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No sketches yet.</b>The sketch maker comes in a later build.</div>');
+    var de = sec("📝 Description"), dh = de.querySelector(".sums-head");
+    if (coathDescEdit) {
+      var t = null;
+      dh.appendChild(actBtn("✓ Done", "finish writing", function () { clearTimeout(t); saveStore(); coathDescEdit = false; renderCoathPage(); }, "btn-primary"));
+      de.appendChild(textEditorEl(p.desc || "", function (v) { p.desc = v; clearTimeout(t); t = setTimeout(saveStore, 400); }));
+    } else {
+      dh.appendChild(actBtn("✎ Edit", "write the description", function () { coathDescEdit = true; renderCoathPage(); }));
+      if (String(p.desc || "").trim()) {
+        var v = document.createElement("div");
+        v.className = "co-desc";
+        v.appendChild(partTextEl(p.desc));
+        de.appendChild(v);
+        texify(v);
+      } else de.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No description yet.</b>Tap “✎ Edit” to write one.</div>');
+    }
+    sec("🏷 Identities").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No identities yet.</b>Target customers, sectors and the rest come in the next build.</div>');
+    sec("📅 Product planning").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No development stages yet.</b>Its plans, with their tasks and progress rings, come in a later build.</div>');
+  }
+
+  function selectTop(id, coathId, coathOpts) {
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
     miningScreen = id === "eti"; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;           // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
     if (id === "coath") {                        // opens on the folder last opened (store.ui.coathPage, synced like ui.group)
       coathPage = coathFolder(coathId || store.ui.coathPage).id;
+      coathGroup = (coathOpts && coathOpts.group) || ""; coathProduct = (coathOpts && coathOpts.product) || null; coathDescEdit = false;
       if (store.ui.coathPage !== coathPage) { store.ui.coathPage = coathPage; saveStore(); }
     }
     renderSubjectList();
@@ -12274,7 +12583,7 @@ function __detabaseMain() {
 
   // ---- undo: what a move changed, put back ----
   // Every move touches only the library's shape, so a copy of those parts of the store is the undo.
-  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "order", "subjects", "builtinGroup", "groupParent", "summaries"];
+  var UNDO_KEYS = ["place", "tabs", "cards", "elements", "methodFolders", "order", "subjects", "builtinGroup", "groupParent", "summaries", "coath"];
   function shapeSnap() {
     var s = {};
     UNDO_KEYS.forEach(function (k) { s[k] = store[k] === undefined ? undefined : JSON.stringify(store[k]); });
@@ -12311,6 +12620,7 @@ function __detabaseMain() {
     if (scopeValid(scopeSum) && $("scopePane") && !$("scopePane").hidden) renderScopePane();
     if (sheetsLib && $("sheetsPane") && !$("sheetsPane").hidden) renderSheetsLib();
     if (boardOpen && bd && bd.ctx) bdRedraw();
+    if (activeTop === "coath" && !$("coathPane").hidden) applyView();   // Coath moves and undos (subtitle and address follow too)
     if (awCur) awCur.redraw();
   }
   // a method's parts: their order is the vine's order
@@ -16834,8 +17144,13 @@ function __detabaseMain() {
   //   Changes apply as they are made; Cancel puts back the copy of the store taken when it opened, Save keeps
   //   them and offers Undo (the same copy). Changing the kind is a conversion with a preview and a backup.
   // ============================================================
+  //   Coath Inc. (B163): cg (a product group) · cpr (a product) — a second family: the window only offers the
+  //   kinds of the family the asset belongs to (awFam), so nothing converts between the library and Coath.
   var AW_KINDS = [{ id: "s", name: "Subject" }, { id: "t", name: "Concept" }, { id: "c", name: "Card" }, { id: "p", name: "Method" },
-    { id: "mf", name: "Method folder" }, { id: "sm", name: "Study sheet" }, { id: "sg", name: "Strategy" }];
+    { id: "mf", name: "Method folder" }, { id: "sm", name: "Study sheet" }, { id: "sg", name: "Strategy" },
+    { id: "cg", name: "Product group", fam: "coath" }, { id: "cpr", name: "Product", fam: "coath" }];
+  function awFam(lvl) { var k = byId(AW_KINDS, lvl); return (k && k.fam) || "lib"; }
+  function awIsCoath(ref) { return ref.lvl === "cg" || ref.lvl === "cpr"; }
   var awCur = null;                                      // the open window: redrawn after anything changes the library
   function awSnap() { return JSON.stringify(mainSnapshot()); }
   function awRestore(snap) {
@@ -16845,12 +17160,14 @@ function __detabaseMain() {
     saveStore(); libAfterMove(); applyView();
   }
   function assetExists(ref) {
+    if (awIsCoath(ref)) return !!coObj(ref);
     if (ref.lvl === "mf") return !!mfById(ref.id);
     if (ref.lvl === "sm") return !!summaryById(ref.id);
     if (ref.lvl === "sg") return !!stratById(ref.id);
     return refExists(ref);
   }
   function assetName(ref) {
+    if (awIsCoath(ref)) return coObj(ref).name;
     if (ref.lvl === "mf") return mfById(ref.id).name;
     if (ref.lvl === "sm") return summaryById(ref.id).name;
     if (ref.lvl === "sg") return stratById(ref.id).name;
@@ -16862,6 +17179,7 @@ function __detabaseMain() {
     if (ref.lvl === "st") { var sp = psPartById(ref.id); if (sp) psSaveBody(sp.page); }
   }
   function assetSetName(ref, n) {
+    if (awIsCoath(ref)) { coObj(ref).name = n; saveStore(); applyView(); return; }
     if (ref.lvl === "mf") mfById(ref.id).name = n;
     else if (ref.lvl === "sm") summaryById(ref.id).name = n;
     else if (ref.lvl === "sg") stratById(ref.id).name = n;
@@ -16870,6 +17188,7 @@ function __detabaseMain() {
   }
   // where it sits, in words
   function assetWhere(ref) {
+    if (awIsCoath(ref)) return coWhere(ref);
     if (ref.lvl === "s") return groupName(ref.id.slice(0, 2) === "f:" ? effGroupOfBuiltin(ref.id.slice(2)) : effGroupOfSubject(byId(store.subjects, ref.id.slice(2)) || {}));
     if (ref.lvl === "p") { var pg = psPageById(ref.id), f = methodFolderOf(pg); return subjectName(pg.subject) + (f ? " › 📁 " + f.name : ""); }
     if (ref.lvl === "mf") return subjectName(mfById(ref.id).subject);
@@ -16878,6 +17197,7 @@ function __detabaseMain() {
     return refPath(ref);
   }
   function assetMove(ref, anchor) {
+    if (awIsCoath(ref)) { coMoveTo(ref); return; }
     var name = assetName(ref);
     if (ref.lvl === "s") pickOrNew("Move “" + name + "” to", "Which folder?", allGroupIds().map(function (g) { return { id: g, name: new Array(groupPath(g).length).join("   ") + groupIcon(g) + " " + groupName(g) }; }), "New folder name…", function (gid, nn) {
       if (!gid) gid = addGroup(nn, null);
@@ -16894,11 +17214,13 @@ function __detabaseMain() {
     else if (ref.lvl === "sg") stratGroupMenu(anchor, stratById(ref.id));
   }
   function assetOpen(ref) {
+    if (awIsCoath(ref)) { coOpen(ref); return; }
     if (ref.lvl === "c") { cardEditing = ref.id; edOpen = {}; edGone = {}; edHist = { undo: [], redo: [] }; openCardPage(ref.id); }
     else if (ref.lvl === "mf") { var f = mfById(ref.id); spSetView(f.subject, "methods"); openSubjectRef(f.subject); }
     else openAnyRef(ref);
   }
   function assetDelete(ref) {
+    if (awIsCoath(ref)) { coDelete(ref); return; }
     if (ref.lvl === "mf") { mfDelete(mfById(ref.id)); return; }
     if (ref.lvl === "sg") { stratDelete(stratById(ref.id)); return; }
     if (ref.lvl === "sm") {
@@ -16934,7 +17256,7 @@ function __detabaseMain() {
   function kindChoices(ref) {
     var custom = !isBuiltinRef(ref), out = {};
     function deny(id, why) { out[id] = { why: why }; }
-    AW_KINDS.forEach(function (k) { if (k.id !== ref.lvl) deny(k.id, "can't be made from a " + byId(AW_KINDS, ref.lvl).name.toLowerCase()); });
+    AW_KINDS.forEach(function (k) { if (k.id !== ref.lvl && awFam(k.id) === awFam(ref.lvl)) deny(k.id, "can't be made from a " + byId(AW_KINDS, ref.lvl).name.toLowerCase()); });
     if (ref.lvl === "c") {
       out.t = { ok: 1 };
       if (custom) out.p = { ok: 1 }; else deny("p", "a built-in card: edit it first (✎ Edit), then it can become a method");
@@ -17078,7 +17400,7 @@ function __detabaseMain() {
       var ks = awSec(body, "Kind"), row = document.createElement("div");
       row.className = "aw-kinds";
       var choices = create ? null : kindChoices(ref);
-      AW_KINDS.forEach(function (k) {
+      AW_KINDS.filter(function (k) { return awFam(k.id) === awFam(create ? d.kind : ref.lvl); }).forEach(function (k) {
         var cur = create ? d.kind === k.id : ref.lvl === k.id, ch = choices && choices[k.id];
         var b = actBtn(k.name, ch && ch.why ? ch.why : cur ? "" : create ? "make a " + k.name.toLowerCase() : "turn it into a " + k.name.toLowerCase(), function () {
           if (create) { d.kind = k.id; d.at = d.at && awAtFits(d.at, k.id) ? d.at : null; draw(); return; }
@@ -19560,8 +19882,11 @@ function __detabaseMain() {
     } else { openSub(dk, did); if (!activeSub) selectTop("eti"); }
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
-  } else if (/^coath:/.test(initial)) {
-    openCoath(decodeURIComponent(initial.slice(6)));
+  } else if (/^coath:/.test(initial)) {             // #coath:<folder> · #coath:products:<group id> · #coath:product:<product id>
+    var cparts = decodeURIComponent(initial.slice(6)).split(":");
+    if (cparts[0] === "product") openProduct(cparts[1]);
+    else if (cparts[0] === "products" && cparts[1]) openProductGroup(cparts[1]);
+    else openCoath(cparts[0]);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
     selectTop(initial);
   } else if (store.folders.some(function (f) { return f.id === initial; })) {
