@@ -1800,6 +1800,23 @@
   .co-task input { width: 20px; height: 20px; flex: 0 0 auto; }
   .co-task.done span { text-decoration: line-through; color: var(--text-muted); }
   .co-addtask { margin-top: 4px; }
+  /* the Planning page */
+  .co-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 14px; }
+  .co-fchip { min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); font-size: .84rem; font-weight: 600; cursor: pointer; opacity: .75; }
+  .co-fchip.on { opacity: 1; box-shadow: 0 0 0 2px currentColor inset; }
+  .co-fprod { min-height: 36px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); padding: 4px 8px; max-width: 220px; }
+  .co-views { display: inline-flex; margin-left: auto; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; }
+  .co-views button { border: 0; background: transparent; color: var(--text-secondary); font-size: .82rem; font-weight: 650; padding: 6px 14px; min-height: 36px; cursor: pointer; }
+  .co-views button + button { border-left: 1px solid var(--border-strong); }
+  .co-views button.active { background: var(--accent); color: #fff; }
+  .co-plan-body { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .co-plan-body { grid-template-columns: minmax(0, 1fr); } }
+  .co-plan-side .fp-h { margin-top: 0; }
+  .co-calnav { margin-bottom: 8px; }
+  .co-week, .co-month { min-height: 420px; max-height: 70vh; }
+  .co-libq { min-height: 36px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); padding: 4px 10px; min-width: 0; flex: 1; max-width: 280px; }
+  .co-libsec { margin-top: 12px; }
+  .co-libgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
   /* the sketch maker */
   .sk-grid .sk-tile { padding: 8px; gap: 6px; }
   .sk-thumb { display: flex; align-items: center; justify-content: center; height: 120px; background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
@@ -2837,7 +2854,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B167</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B168</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5790,7 +5807,7 @@ function __detabaseMain() {
   var COATH_FOLDERS = [
     { id: "products",    name: "Products",    icon: "📦", sub: "every product, filed in groups", render: coRenderProducts },
     { id: "planning",    name: "Planning",    icon: "📅", sub: "the business plans",
-      soon: "The business plans on the calendar, a Gantt chart and a flow chart, the plans being worked on now, and the plan library.", render: coRenderFolder },
+      render: coRenderPlanning },
     { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    soon: "", render: coRenderFolder },
     { id: "marketing",   name: "Marketing",   icon: "📣", sub: "customers and campaigns", soon: "", render: coRenderFolder },
     { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  soon: "", render: coRenderFolder }
@@ -6504,6 +6521,151 @@ function __detabaseMain() {
     others.forEach(function (g) { var c = document.createElement("div"); c.className = "co-other"; coPlanBody(c, g); c.querySelector(".co-stage-t small").insertAdjacentHTML("beforebegin", bizChipHtml(g)); ol.appendChild(c); });
     o.appendChild(ol);
     animateRings(ol);
+  }
+
+  // ---- the Planning page (B168): the business plans — the planner's own calendar, tree, rings and cards,
+  // filtered; nothing here is a copy. Filter in store.ui.coPlan = { cats: [category ids] ([] = all), product, view, q }.
+  function coPlanUi() {
+    var u = store.ui.coPlan = store.ui.coPlan || {};
+    if (!Array.isArray(u.cats)) u.cats = [];
+    if (["calendar", "gantt", "tree"].indexOf(u.view) < 0) u.view = "calendar";
+    return u;
+  }
+  function coPlanShown(g) {
+    var u = coPlanUi();
+    return goalBiz(g) && (!u.cats.length || u.cats.indexOf(bizCat(g).id) >= 0) && (!u.product || g.product === u.product);
+  }
+  function coPlanActive(g) {                     // started (or no start date) and not complete
+    var today = toISODate(new Date());
+    return coPlanShown(g) && !goalIsComplete(g) && (!g.start || g.start <= today);
+  }
+  function coAllProducts() {                     // every product, in the order of the Products tree
+    var out = [];
+    (function walk(gid) { cprIn(gid).forEach(function (p) { out.push(p); }); cgKids(gid).forEach(function (g) { walk(g.id); }); })("");
+    return out;
+  }
+  function coNewPlan() {
+    var u = coPlanUi();
+    askName("New business plan", "It also shows in the planner.", "", function (n) {
+      function make(cat) {
+        var g = bizNewPlan({ title: n, category: cat, product: u.product || undefined });
+        saveStore(); renderCoathPage(); openPlannerEditor("goal", g.id);
+      }
+      if (u.cats.length === 1) make(u.cats[0]);
+      else coPickFolder("Which category?", "Products, Management, Marketing or Maintenance.", make, bizCats());
+    });
+  }
+  function coRenderPlanning(host) {
+    var x = cidById(coathIdent);
+    if (x && citOwner(citById(x.type)) === "planning") { coRenderIdent(host, x); return; }
+    coathIdent = null;
+    var u = coPlanUi();
+    var acts = coHead(host, "📅 Planning");
+    acts.appendChild(actBtn("＋ New plan", "a new business plan", coNewPlan, "btn-primary"));
+    // filters: categories (any combination), product, view
+    var bar = document.createElement("div");
+    bar.className = "co-filters";
+    bizCats().forEach(function (c) {
+      var b = actBtn(c.icon + " " + c.name, "show or hide this category", function () {
+        var i = u.cats.indexOf(c.id); if (i >= 0) u.cats.splice(i, 1); else u.cats.push(c.id);
+        saveStore(); renderCoathPage();
+      }, "co-fchip biz-" + c.id + (u.cats.indexOf(c.id) >= 0 ? " on" : ""));
+      bar.appendChild(b);
+    });
+    var sel = document.createElement("select");
+    sel.className = "co-fprod";
+    sel.innerHTML = '<option value="">All products</option>' + coAllProducts().map(function (p) { return '<option value="' + escapeHtml(p.id) + '"' + (u.product === p.id ? " selected" : "") + '>📦 ' + escapeHtml(p.name) + '</option>'; }).join("");
+    if (u.product && !cprById(u.product)) u.product = "";
+    sel.addEventListener("change", function () { u.product = sel.value; saveStore(); renderCoathPage(); });
+    bar.appendChild(sel);
+    var views = document.createElement("span");
+    views.className = "co-views";
+    [["calendar", "Calendar"], ["gantt", "Gantt"], ["tree", "Tree"]].forEach(function (v) {
+      var b = actBtn(v[1], "", function () { u.view = v[0]; saveStore(); renderCoathPage(); }, u.view === v[0] ? "active" : "");
+      views.appendChild(b);
+    });
+    bar.appendChild(views);
+    host.appendChild(bar);
+    var body = document.createElement("div");
+    body.className = "co-plan-body";
+    body.innerHTML = '<div class="co-plan-main"></div><aside class="co-plan-side"><h3 class="fp-h">Active plans</h3><div class="pl-goal-list co-active"></div></aside>';
+    host.appendChild(body);
+    var main = body.querySelector(".co-plan-main");
+    coCal = null;
+    if (u.view === "calendar") coDrawCalendar(main);
+    else if (u.view === "tree") coDrawTree(main);
+    else main.innerHTML = '<div class="side-empty co-later"><b>Gantt view</b>Comes in the next build.</div>';
+    var act = bizPlans().filter(coPlanActive).sort(function (a, b) { return String(a.deadline || "~").localeCompare(String(b.deadline || "~")); });
+    var side = body.querySelector(".co-active");
+    side.innerHTML = act.length ? act.map(function (g) { return goalCardHtml(g); }).join("") : '<div class="pl-empty-hint">Nothing running right now.</div>';
+    wireGoalCards(side);
+    coPlanLibrary(host);
+    coRenderIdTypes(host, "planning");
+  }
+  // the planner's calendar, drawn here with its own elements and the filter (only the plans' dated tasks)
+  function coDrawCalendar(main) {
+    main.innerHTML = '<div class="pl-nav co-calnav"><button type="button" class="tool-btn">‹</button><button type="button" class="tool-btn">Today</button><button type="button" class="tool-btn">›</button>' +
+      '<b class="pl-week-label"></b><span class="pl-calmode"><button type="button" data-cm="day">Day</button><button type="button" data-cm="week">Week</button><button type="button" data-cm="month">Month</button></span></div>' +
+      '<div class="pl-week-scroll co-week"><div class="pl-week-head"></div><div class="pl-week-grid"></div></div><div class="pl-month co-month" hidden></div>' +
+      '<p class="muted co-tip">Only business plans’ tasks that have a date show here. Drag a task to move it; tap it to edit. Undated tasks are to-dos: see the plans.</p>';
+    var nb = main.querySelectorAll(".co-calnav > .tool-btn");
+    nb[0].addEventListener("click", function () { calStep(-1); });
+    nb[1].addEventListener("click", calToday);
+    nb[2].addEventListener("click", function () { calStep(1); });
+    Array.prototype.slice.call(main.querySelectorAll(".pl-calmode button")).forEach(function (b) { b.addEventListener("click", function () { setCalMode(b.getAttribute("data-cm")); }); });
+    coCal = { el: { head: main.querySelector(".pl-week-head"), grid: main.querySelector(".pl-week-grid"), month: main.querySelector(".co-month"),
+      scroll: main.querySelector(".co-week"), label: main.querySelector(".pl-week-label") },
+      show: function (kind, it) { return kind === "session" && coPlanShown(goalById(it.goalId)); } };
+    renderCalendar(coCal);
+  }
+  // the planner's goal tree, business plans only
+  function coDrawTree(main) {
+    var keep = bizPlans().filter(coPlanShown);
+    if (!keep.length) { main.innerHTML = '<div class="side-empty"><b>No plans to show.</b>Add one with “＋ New plan”, or change the filters.</div>'; return; }
+    main.innerHTML = '<div class="gp-tree co-tree"><div class="gp-tree-inner"></div></div><p class="muted co-tip">← do first · unlocks →. Tap a plan to open it.</p>';
+    layoutGoalTree(main.querySelector(".gp-tree"), main.querySelector(".gp-tree-inner"), coPlanShown);
+    wireGoalTree(main);
+  }
+  // the plan library: four sections (the categories), Products grouped by product; search by name
+  function coPlanLibrary(host) {
+    var u = coPlanUi(), s = coSec(host, "📚 Plan library");
+    var q = document.createElement("input");
+    q.type = "search"; q.className = "co-libq"; q.placeholder = "Search plans by name…"; q.value = u.q || "";
+    s.querySelector(".sums-head").appendChild(q);
+    var box = document.createElement("div");
+    s.appendChild(box);
+    function draw() {
+      var needle = String(u.q || "").trim().toLowerCase(), any = false;
+      box.innerHTML = "";
+      bizCats().forEach(function (c) {
+        if (u.cats.length && u.cats.indexOf(c.id) < 0) return;
+        var list = bizPlans().filter(function (g) { return bizCat(g).id === c.id && (!u.product || g.product === u.product) && (!needle || String(g.title).toLowerCase().indexOf(needle) >= 0); });
+        if (!list.length) return;
+        any = true;
+        var sec = document.createElement("div");
+        sec.className = "co-libsec";
+        sec.innerHTML = '<h4 class="fp-h">' + c.icon + ' ' + escapeHtml(c.name) + ' <span class="side-count">' + list.length + '</span></h4>';
+        var groups = [];
+        if (c.id === "products") {
+          coAllProducts().forEach(function (p) { var l = list.filter(function (g) { return g.product === p.id; }); if (l.length) groups.push({ name: "📦 " + p.name, list: coStages(p.id).filter(function (g) { return l.indexOf(g) >= 0; }) }); });
+          var none = list.filter(function (g) { return !cprById(g.product); });
+          if (none.length) groups.push({ name: "No product", list: none });
+        } else groups.push({ name: "", list: list });
+        groups.forEach(function (gr) {
+          if (gr.name) { var h = document.createElement("div"); h.className = "lw-group"; h.textContent = gr.name; sec.appendChild(h); }
+          var l = document.createElement("div");
+          l.className = "co-libgrid";
+          l.innerHTML = gr.list.map(function (g) { return goalCardHtml(g); }).join("");
+          sec.appendChild(l);
+        });
+        box.appendChild(sec);
+      });
+      if (!any) box.innerHTML = '<div class="side-empty"><b>' + (needle ? "No plan matches." : "No business plans yet.") + '</b>' + (needle ? "Try another name." : "Add one with “＋ New plan”, or from a product’s page.") + '</div>';
+      wireGoalCards(box);
+    }
+    q.addEventListener("input", function () { u.q = q.value; draw(); });
+    q.addEventListener("change", saveStore);
+    draw();
   }
 
   // =========================================================
@@ -7479,8 +7641,15 @@ function __detabaseMain() {
   }
   var PL_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var PL_DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  function updateCalLabel() {
-    var lbl = $("plWeekLabel");
+  // THE CALENDAR is drawn into a target: the planner's own (PL_MAIN), or Coath's Planning page (coCal, B168),
+  // which brings its own elements and a filter show(kind, item). Both share the date, the week and the mode.
+  var PL_MAIN = { ids: { head: "plWeekHead", grid: "plWeekGrid", month: "plMonthGrid", scroll: "plWeekScroll", label: "plWeekLabel" }, show: null };
+  var coCal = null;
+  function plCals() { return [PL_MAIN].concat(coCal && coCal.el.grid.isConnected && !$("coathPane").hidden ? [coCal] : []); }
+  function calEl(cal, k) { return cal.el ? cal.el[k] : $(cal.ids[k]); }
+  function calShows(cal, kind, it) { return !cal.show || cal.show(kind, it); }
+  function updateCalLabel(cal) {
+    var lbl = calEl(cal || PL_MAIN, "label");
     if (plCalMode === "day") {
       var d = fromISODate(plSelectedDate);
       lbl.textContent = PL_DOW[d.getDay()] + " " + (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
@@ -7492,19 +7661,20 @@ function __detabaseMain() {
       lbl.textContent = (a.getMonth() + 1) + "/" + a.getDate() + " – " + (b.getMonth() + 1) + "/" + b.getDate();
     }
   }
-  function renderCalendar() {
+  function renderCalendar(cal) {
+    if (!cal) { plCals().forEach(function (c) { renderCalendar(c); }); return; }   // every calendar on screen
     Array.prototype.slice.call(document.querySelectorAll(".pl-calmode button")).forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-cm") === plCalMode);
     });
-    var scroll = $("plWeekScroll"), month = $("plMonthGrid");
+    var scroll = calEl(cal, "scroll"), month = calEl(cal, "month");
     if (plCalMode === "month") {
       scroll.hidden = true; month.hidden = false;
-      renderMonthGrid();
+      renderMonthGrid(cal);
     } else {
       month.hidden = true; scroll.hidden = false;
-      renderTimeGrid();
+      renderTimeGrid(cal);
     }
-    updateCalLabel();
+    updateCalLabel(cal);
   }
   function setPlView(v, opts) {
     opts = opts || {};
@@ -7837,14 +8007,17 @@ function __detabaseMain() {
       layoutGoalTree($("gpTree"), $("gpTreeInner"));
     }
 
-    Array.prototype.slice.call(page.querySelectorAll(".gt-node")).forEach(function (n) {
+    wireGoalTree(page);
+  }
+  function wireGoalTree(scope) {                 // a drawn tree: tap a goal = its editor, ★ = working on now, rings fill
+    Array.prototype.slice.call(scope.querySelectorAll(".gt-node")).forEach(function (n) {
       n.addEventListener("click", function (e) {
         if (e.target.closest(".orb-star")) return;
         openPlannerEditor("goal", n.getAttribute("data-id"));
       });
     });
-    wireGoalStars(page);
-    animateRings(page);
+    wireGoalStars(scope);
+    animateRings(scope);
   }
 
   function ltStatsBox(g) {
@@ -7857,8 +8030,9 @@ function __detabaseMain() {
   }
 
   // progression-ring tree: long-term goals on top, short goals in rows by required total level
-  function layoutGoalTree(scroll, inner) {
-    var all = store.planner.goals.filter(function (g) { return goalMode(g) !== "skill"; });
+  // keep(g): which goals to draw (Coath's Planning page keeps business plans only)
+  function layoutGoalTree(scroll, inner, keep) {
+    var all = store.planner.goals.filter(function (g) { return goalMode(g) !== "skill" && (!keep || keep(g)); });
     var longs = all.filter(function (g) { return goalMode(g) === "long"; });
     var shorts = all.filter(function (g) { return goalMode(g) === "short"; });
     var byId = {}; all.forEach(function (g) { byId[g.id] = g; });
@@ -7965,8 +8139,9 @@ function __detabaseMain() {
   }
 
   // month grid (day cells with event/session chips)
-  function renderMonthGrid() {
-    var box = $("plMonthGrid");
+  function renderMonthGrid(cal) {
+    cal = cal || PL_MAIN;
+    var box = calEl(cal, "month");
     var anchor = fromISODate(plSelectedDate);
     var first = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
     var gridStart = addDays(first, -first.getDay());
@@ -7979,8 +8154,8 @@ function __detabaseMain() {
     for (var i = 0; i < weeks * 7; i++) {
       var d = addDays(gridStart, i), iso = toISODate(d);
       var items = [];
-      store.planner.events.filter(function (e) { return e.date === iso; }).forEach(function (e) { items.push({ kind: "event", t: e.time, item: e }); });
-      store.planner.sessions.filter(function (s) { return s.date === iso; }).forEach(function (s) { items.push({ kind: "session", t: s.start, item: s }); });
+      store.planner.events.filter(function (e) { return e.date === iso && calShows(cal, "event", e); }).forEach(function (e) { items.push({ kind: "event", t: e.time, item: e }); });
+      store.planner.sessions.filter(function (s) { return s.date === iso && calShows(cal, "session", s); }).forEach(function (s) { items.push({ kind: "session", t: s.start, item: s }); });
       items.sort(function (a, b) { return timeToMin(a.t) - timeToMin(b.t); });
       var shown = items.slice(0, 3).map(function (x) {
         if (x.kind === "event") return '<div class="pl-mitem event">' + escapeHtml(x.t + " " + (x.item.title || "Event")) + '</div>';
@@ -8010,8 +8185,9 @@ function __detabaseMain() {
     saveStore();
   }
 
-  function renderTimeGrid() {
-    var head = $("plWeekHead"), grid = $("plWeekGrid");
+  function renderTimeGrid(cal) {
+    cal = cal || PL_MAIN;
+    var head = calEl(cal, "head"), grid = calEl(cal, "grid");
     var isDay = plCalMode === "day";
     var days = calDays();
     head.classList.toggle("is-day", isDay);
@@ -8050,8 +8226,8 @@ function __detabaseMain() {
     Array.prototype.slice.call(grid.querySelectorAll(".pl-day-col")).forEach(function (col) {
       var date = col.getAttribute("data-date");
       var entries = [];
-      store.planner.events.filter(function (e) { return e.date === date; }).forEach(function (e) { entries.push({ kind: "event", item: e }); });
-      store.planner.sessions.filter(function (s) { return s.date === date; }).forEach(function (s) { entries.push({ kind: "session", item: s }); });
+      store.planner.events.filter(function (e) { return e.date === date && calShows(cal, "event", e); }).forEach(function (e) { entries.push({ kind: "event", item: e }); });
+      store.planner.sessions.filter(function (s) { return s.date === date && calShows(cal, "session", s); }).forEach(function (s) { entries.push({ kind: "session", item: s }); });
       entries.forEach(function (entry) {
         var kind = entry.kind, it = entry.item;
         var startMin = timeToMin(kind === "event" ? it.time : it.start);
@@ -8080,21 +8256,21 @@ function __detabaseMain() {
           if (bg) { el.style.setProperty("--pl-block-accent", bg); el.classList.add("tinted"); }
         }
         col.appendChild(el);
-        wirePlannerBlock(el, it, kind);
+        wirePlannerBlock(el, it, kind, cal);
       });
     });
 
     if (scrollWrap) scrollWrap.scrollTop = prevScrollTop > 0 ? prevScrollTop : Math.max(0, (dayStartMin() / 60 * PL_PXH) - 22);
   }
 
-  function wirePlannerBlock(el, item, kind) {
+  function wirePlannerBlock(el, item, kind, cal) {
     el.addEventListener("pointerdown", function (e) {
       if (e.target.closest(".pl-block-resize")) return;
       e.preventDefault();
       var moved = false;
       var sx = e.clientX, sy = e.clientY;
       var startTop = parseFloat(el.style.top) || 0;
-      var cols = Array.prototype.slice.call($("plWeekGrid").querySelectorAll(".pl-day-col"));
+      var cols = Array.prototype.slice.call(calEl(cal || PL_MAIN, "grid").querySelectorAll(".pl-day-col"));
       function mv(ev) {
         var dx = ev.clientX - sx, dy = ev.clientY - sy;
         if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
@@ -8666,6 +8842,7 @@ function __detabaseMain() {
         saveStore();
         renderGoalList();
         if (plView === "goals") renderGoalsPage();
+        if (!$("coathPane").hidden) renderCoathPage();
       });
     });
   }
@@ -8717,11 +8894,14 @@ function __detabaseMain() {
 
     box.innerHTML = html;
     applySavedOrder(box, "> .pl-goal-group", function (el) { return el.getAttribute("data-id"); }, store.order.plGoals);
-    Array.prototype.slice.call(box.querySelectorAll(".plg-row, .plg-lt-chip")).forEach(function (el) {
+    wireGoalCards(box);
+  }
+  function wireGoalCards(scope) {                // goal cards (goalCardHtml): tap = its editor, ★, rings fill
+    Array.prototype.slice.call(scope.querySelectorAll(".plg-row, .plg-lt-chip")).forEach(function (el) {
       el.addEventListener("click", function (e) { e.stopPropagation(); openPlannerEditor("goal", el.getAttribute("data-id")); });
     });
-    wireGoalStars(box);
-    animateRings(box);
+    wireGoalStars(scope);
+    animateRings(scope);
   }
 
   // long-term goal editor: list of linked short-term goals + the "link" dropdown
@@ -8817,7 +8997,7 @@ function __detabaseMain() {
   }
   function openDayEditor(dateStr) {
     plSelectedDate = dateStr;
-    if (plCalMode !== "month") renderTimeGrid();
+    if (plCalMode !== "month") plCals().forEach(function (c) { renderTimeGrid(c); });
     openPlannerEditor("day", dateStr);
   }
   function plColorPicker(selected) {
@@ -9562,17 +9742,11 @@ function __detabaseMain() {
   }
   $("plPrev").addEventListener("click", function () { calStep(-1); });
   $("plNext").addEventListener("click", function () { calStep(1); });
-  $("plToday").addEventListener("click", function () {
-    plWeekStart = startOfWeek(new Date());
-    plSelectedDate = toISODate(new Date());
-    renderCalendar();
-  });
+  function calToday() { plWeekStart = startOfWeek(new Date()); plSelectedDate = toISODate(new Date()); renderCalendar(); }
+  function setCalMode(m) { plCalMode = m; persistCalMode(); renderCalendar(); }
+  $("plToday").addEventListener("click", calToday);
   Array.prototype.slice.call(document.querySelectorAll(".pl-calmode button")).forEach(function (b) {
-    b.addEventListener("click", function () {
-      plCalMode = b.getAttribute("data-cm");
-      persistCalMode();
-      renderCalendar();
-    });
+    b.addEventListener("click", function () { setCalMode(b.getAttribute("data-cm")); });
   });
   if ($("plAllGoals")) $("plAllGoals").addEventListener("click", function () { setPlView("goals"); });
   window.addEventListener("resize", function () { if (plView === "goals" && !$("topfolder-planner").hidden) renderGoalsPage(); });
