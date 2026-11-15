@@ -1766,6 +1766,42 @@
   .co-idgo b { overflow-wrap: anywhere; }
   .co-idgo small { color: var(--text-muted); font-size: .78rem; }
   .co-crumbtxt { color: var(--text-secondary); font-size: .88rem; }
+  /* the sketch maker */
+  .sk-grid .sk-tile { padding: 8px; gap: 6px; }
+  .sk-thumb { display: flex; align-items: center; justify-content: center; height: 120px; background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+  .sk-thumb svg { width: 100%; height: 100%; }
+  .sk-thumb i { color: #94a3b8; font-size: .82rem; }
+  .sk-pic .sk-lbl, .sk-svg .sk-lbl { fill: #334155; stroke: #fff; paint-order: stroke; text-anchor: middle; font-family: inherit; }
+  body.sk-open { overflow: hidden; }
+  .sk-pane { position: fixed; inset: 0; z-index: 5000; display: flex; flex-direction: column; background: var(--bg); }
+  .sk-top, .sk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--surface-1); }
+  .sk-bar { border-bottom: 0; border-top: 1px solid var(--border); padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  .sk-top button, .sk-bar button { min-height: var(--tap); min-width: var(--tap); }
+  .sk-name { margin: 0 6px; font-size: 1.05rem; cursor: pointer; flex: 1; min-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sk-name:hover { color: var(--accent); }
+  .sk-tools { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sk-tog.on { background: color-mix(in srgb, var(--accent) 16%, var(--surface-1)); border-color: var(--accent); color: var(--accent); }
+  .sk-main { position: relative; flex: 1; min-height: 0; background: #fff; }
+  .sk-svg { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; display: block; }
+  .sk-hint { position: absolute; left: 10px; right: 10px; bottom: 8px; pointer-events: none; font-size: .8rem; color: #475569; text-align: center; }
+  .sk-hit { fill: none; stroke: transparent; pointer-events: stroke; cursor: move; }
+  .sk-hit.sk-hitall, .sk-hitf { fill: transparent; stroke: none; pointer-events: all; cursor: move; }
+  .sk-hit.sk-hitall { stroke: transparent; }
+  .sk-selbox { fill: none; stroke: #2563eb; stroke-dasharray: 4 4; pointer-events: none; }
+  .sk-edge { fill: none; stroke: #f59e0b; stroke-opacity: .55; stroke-linecap: round; pointer-events: none; }
+  .sk-h { fill: #fff; stroke: #2563eb; stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .sk-hsq { fill: #2563eb; }
+  .sk-hdia { fill: #fde68a; stroke: #d97706; }
+  .sk-hdim { fill: #bbf7d0; stroke: #16a34a; }
+  .sk-hhit { fill: transparent; pointer-events: all; cursor: grab; }
+  .sk-what { font-size: .82rem; color: var(--text-muted); padding: 0 4px; }
+  .sk-sw { display: inline-flex; gap: 4px; }
+  .sk-sw .sk-col { min-width: 30px !important; min-height: 30px !important; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--border); padding: 0; }
+  .sk-sw .sk-col.on { border-color: var(--text-primary); box-shadow: 0 0 0 2px var(--bg) inset; }
+  .sk-pal { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-bottom: 8px; }
+  .sk-palb { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; color: #334155; font-size: .76rem; cursor: pointer; min-height: var(--tap); }
+  .sk-palb svg { width: 64px; height: 48px; }
+  .sk-palb:hover { border-color: var(--accent); }
 
   .empty-note {
     margin-top: 40px; padding: 40px 24px;
@@ -2767,7 +2803,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B164</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B165</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4978,6 +5014,7 @@ function __detabaseMain() {
       if (viewingProblem && activeProblem === id && !inkDrawing) renderCanvas();
     } else {
       try { refreshLibDoc(id); } catch (e) {}   // a library element / problem page shown in ETI
+      if (sk && sk.id === id && !sk.g) { sk.shapes = JSON.parse(JSON.stringify(fresh.items || [])); skRender(); }   // the open sketch, changed on another device
     }
   };
 
@@ -6046,7 +6083,7 @@ function __detabaseMain() {
     var dots = actBtn("⋯", "product options", function () { coMenu(dots, ref); }, "btn-quiet lib-dots");
     acts.appendChild(dots);
     function sec(title) { return coSec(host, title); }
-    sec("✏️ Sketches").insertAdjacentHTML("beforeend", '<div class="side-empty co-later"><b>No sketches yet.</b>The sketch maker comes in a later build.</div>');
+    skSection(host, p);
     coDescSec(host, p);
     var ie = sec("🏷 Identities");
     ie.querySelector(".sums-head").appendChild(actBtn("＋ Attach", "attach a target customer, a sector…", function () { coAttach(p); }));
@@ -6256,6 +6293,719 @@ function __detabaseMain() {
     users.forEach(function (p) { g.appendChild(coTile({ lvl: "cpr", id: p.id }, "📦 " + p.name, coWhere({ lvl: "cpr", id: p.id }), function () { openProduct(p.id); })); });
     us.appendChild(g);
   }
+
+  // =========================================================
+  // THE SKETCH MAKER — shapes only (no freehand), for Coath products. A sketch is DATA:
+  //   meta in store.coath.sketches: [{ id: "sk_…", product, name, order, created, ref?: {len, val, unit}, labels, grid, snap }]
+  //   body = a canvas doc (same id; DBX + cloud, like every board): items = the shapes.
+  //   A shape: { id, t: registry id, k: "poly" | "ell" | "solid", color, sw, fill, dash? }
+  //     poly:  pts [[x,y]…], bends [k per edge: sagitta / chord, signed; 0 = straight], closed
+  //     ell:   cx, cy, rx, ry, rot (deg), a0/a1 (radians; only for a part of an ellipse)
+  //     solid: x, y (the base centre on screen), w, d, h, r — drawn isometric, hidden edges dashed
+  //   Thumbnails are drawn from the data (skMarkup), never stored as pictures.
+  // =========================================================
+  var SK_C = Math.cos(Math.PI / 6), SK_S = 0.5, SK_ISO = Math.sqrt(2) * SK_C;   // iso axes; a horizontal circle's half-width
+  var SK_COLORS = ["#1e293b", "#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed"];
+  function skRect(cx, cy, w, h) { return [[cx - w / 2, cy - h / 2], [cx + w / 2, cy - h / 2], [cx + w / 2, cy + h / 2], [cx - w / 2, cy + h / 2]]; }
+  function skPoly(t, pts, closed, bends) { return { t: t, k: "poly", pts: pts, closed: closed, bends: bends || pts.map(function () { return 0; }) }; }
+  function skRRect(cx, cy, w, h, r) {
+    var x0 = cx - w / 2, x1 = cx + w / 2, y0 = cy - h / 2, y1 = cy + h / 2;
+    var pts = [[x0 + r, y0], [x1 - r, y0], [x1, y0 + r], [x1, y1 - r], [x1 - r, y1], [x0 + r, y1], [x0, y1 - r], [x0, y0 + r]];
+    var s = skPoly("rrect", pts, true);
+    s.bends = pts.map(function (q, i) { return i % 2 ? 0.2071 : 0; });   // a quarter circle: sagitta / chord = (1 − cos45°) / √2
+    skBendsOut(s);
+    return s;
+  }
+  function skNgon(cx, cy, n, R) {
+    var pts = [];
+    for (var i = 0; i < n; i++) { var a = -Math.PI / 2 + i * 2 * Math.PI / n; pts.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]); }
+    return skPoly("ngon", pts, true);
+  }
+  // the registry: every shape the maker can add. make(cx, cy) → a new shape; tap: drawn by tapping its points
+  var SK_SHAPES = [
+    { id: "line",    fam: "2D", name: "Line",              make: function (x, y) { return skPoly("line", [[x - 80, y], [x + 80, y]], false); } },
+    { id: "pline",   fam: "2D", name: "Multi-segment line", tap: "open" },
+    { id: "arc",     fam: "2D", name: "Arc",               make: function (x, y) { var s = skPoly("arc", [[x - 80, y + 20], [x + 80, y + 20]], false); s.bends = [0.35]; skBendsOut(s, [x, y + 200]); return s; } },
+    { id: "rect",    fam: "2D", name: "Rectangle",         make: function (x, y) { return skPoly("rect", skRect(x, y, 160, 100), true); } },
+    { id: "square",  fam: "2D", name: "Square",            make: function (x, y) { return skPoly("square", skRect(x, y, 120, 120), true); } },
+    { id: "rrect",   fam: "2D", name: "Rounded rectangle", make: function (x, y) { return skRRect(x, y, 160, 100, 22); } },
+    { id: "circle",  fam: "2D", name: "Circle",            make: function (x, y) { return { t: "circle", k: "ell", cx: x, cy: y, rx: 60, ry: 60, rot: 0 }; } },
+    { id: "ellipse", fam: "2D", name: "Ellipse",           make: function (x, y) { return { t: "ellipse", k: "ell", cx: x, cy: y, rx: 85, ry: 50, rot: 0 }; } },
+    { id: "tri",     fam: "2D", name: "Triangle",          make: function (x, y) { return skPoly("tri", [[x - 75, y + 50], [x + 85, y + 50], [x - 15, y - 60]], true); } },
+    { id: "rtri",    fam: "2D", name: "Right triangle",    make: function (x, y) { return skPoly("rtri", [[x - 75, y - 60], [x - 75, y + 50], [x + 85, y + 50]], true); } },
+    { id: "itri",    fam: "2D", name: "Isosceles triangle", make: function (x, y) { return skPoly("itri", [[x, y - 65], [x + 70, y + 50], [x - 70, y + 50]], true); } },
+    { id: "ngon",    fam: "2D", name: "Regular polygon",   ask: true, make: function (x, y, n) { return skNgon(x, y, n || 6, 70); } },
+    { id: "para",    fam: "2D", name: "Parallelogram",     make: function (x, y) { return skPoly("para", [[x - 85, y + 45], [x + 40, y + 45], [x + 85, y - 45], [x - 40, y - 45]], true); } },
+    { id: "trap",    fam: "2D", name: "Trapezoid",         make: function (x, y) { return skPoly("trap", [[x - 85, y + 45], [x + 85, y + 45], [x + 45, y - 45], [x - 45, y - 45]], true); } },
+    { id: "fpoly",   fam: "2D", name: "Free polygon",      tap: "closed" },
+    { id: "cube",     fam: "3D", name: "Cube",     make: function (x, y) { return { t: "cube", k: "solid", x: x, y: y + 50, w: 90, d: 90, h: 90 }; } },
+    { id: "box",      fam: "3D", name: "Box",      make: function (x, y) { return { t: "box", k: "solid", x: x, y: y + 40, w: 120, d: 70, h: 70 }; } },
+    { id: "cylinder", fam: "3D", name: "Cylinder", make: function (x, y) { return { t: "cylinder", k: "solid", x: x, y: y + 50, r: 45, h: 100 }; } },
+    { id: "cone",     fam: "3D", name: "Cone",     make: function (x, y) { return { t: "cone", k: "solid", x: x, y: y + 50, r: 50, h: 110 }; } },
+    { id: "sphere",   fam: "3D", name: "Sphere",   make: function (x, y) { return { t: "sphere", k: "solid", x: x, y: y, r: 55 }; } },
+    { id: "pyramid",  fam: "3D", name: "Pyramid",  make: function (x, y) { return { t: "pyramid", k: "solid", x: x, y: y + 45, w: 100, d: 100, h: 100 }; } },
+    { id: "prism",    fam: "3D", name: "Prism",    make: function (x, y) { return { t: "prism", k: "solid", x: x, y: y + 40, w: 90, d: 120, h: 75 }; } }
+  ];
+  function skType(t) { return SK_SHAPES.filter(function (x) { return x.id === t; })[0] || null; }
+  function skTypeName(s) { var x = skType(s.t); return x ? x.name : s.k === "ell" ? "Ellipse" : "Shape"; }
+
+  // ---- geometry ----
+  function skEdge(s, i) { var n = s.pts.length; return [s.pts[i], s.pts[(i + 1) % n], (s.bends && s.bends[i]) || 0]; }
+  function skEdgeCount(s) { return s.closed ? s.pts.length : s.pts.length - 1; }
+  // a bent edge is a circular arc: its apex sits k × chord off the chord's middle
+  function skArc(a, b, k) {
+    var dx = b[0] - a[0], dy = b[1] - a[1], c = Math.hypot(dx, dy) || 1e-9, h = k * c;
+    var n = [-dy / c, dx / c], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], apex = [m[0] + n[0] * h, m[1] + n[1] * h];
+    if (!k) return { apex: apex, len: c, c: c };
+    var r = (c * c / 4 + h * h) / (2 * Math.abs(h)), sg = h > 0 ? 1 : -1;
+    var ctr = [apex[0] - n[0] * sg * r, apex[1] - n[1] * sg * r];
+    var A0 = Math.atan2(a[1] - ctr[1], a[0] - ctr[0]), A1 = Math.atan2(b[1] - ctr[1], b[0] - ctr[0]), Am = Math.atan2(apex[1] - ctr[1], apex[0] - ctr[0]);
+    var TAU = 2 * Math.PI, norm = function (x) { return ((x % TAU) + TAU) % TAU; };
+    var d1 = norm(A1 - A0), sweep = norm(Am - A0) < d1 ? d1 : d1 - TAU;
+    return { apex: apex, r: r, ctr: ctr, A0: A0, sweep: sweep, len: r * Math.abs(sweep), c: c,
+      large: Math.abs(h) > c / 2 ? 1 : 0, sf: (dx * (apex[1] - a[1]) - dy * (apex[0] - a[0])) < 0 ? 1 : 0 };
+  }
+  function skArcPts(a, b, k, n) {
+    var g = skArc(a, b, k), out = [];
+    if (!k) return [a, b];
+    for (var i = 0; i <= n; i++) { var t = g.A0 + g.sweep * i / n; out.push([g.ctr[0] + g.r * Math.cos(t), g.ctr[1] + g.r * Math.sin(t)]); }
+    return out;
+  }
+  // bend every bent edge away from the inside (or from `away`) — used when a shape is made
+  function skBendsOut(s, away) {
+    var c = away || skCentroid(s.pts);
+    for (var i = 0; i < skEdgeCount(s); i++) {
+      var e = skEdge(s, i); if (!e[2]) continue;
+      var g = skArc(e[0], e[1], Math.abs(e[2])), m = [(e[0][0] + e[1][0]) / 2, (e[0][1] + e[1][1]) / 2];
+      var out = (g.apex[0] - m[0]) * (m[0] - c[0]) + (g.apex[1] - m[1]) * (m[1] - c[1]) > 0;
+      s.bends[i] = out ? Math.abs(e[2]) : -Math.abs(e[2]);
+    }
+  }
+  function skCentroid(pts) { var x = 0, y = 0; pts.forEach(function (q) { x += q[0]; y += q[1]; }); return [x / pts.length, y / pts.length]; }
+  function skPolyD(s) {
+    var f = function (n) { return (+n).toFixed(1); }, d = "M" + f(s.pts[0][0]) + " " + f(s.pts[0][1]);
+    for (var i = 0; i < skEdgeCount(s); i++) {
+      var e = skEdge(s, i);
+      if (!e[2]) { d += " L" + f(e[1][0]) + " " + f(e[1][1]); continue; }
+      var g = skArc(e[0], e[1], e[2]);
+      d += " A" + f(g.r) + " " + f(g.r) + " 0 " + g.large + " " + g.sf + " " + f(e[1][0]) + " " + f(e[1][1]);
+    }
+    return d + (s.closed ? " Z" : "");
+  }
+  function skEllPt(s, t) {                         // a point of an ellipse at parameter t
+    var ro = (s.rot || 0) * Math.PI / 180, x = s.rx * Math.cos(t), y = s.ry * Math.sin(t);
+    return [s.cx + x * Math.cos(ro) - y * Math.sin(ro), s.cy + x * Math.sin(ro) + y * Math.cos(ro)];
+  }
+  function skEllD(s) {
+    var f = function (n) { return (+n).toFixed(1); }, p0 = skEllPt(s, s.a0), p1 = skEllPt(s, s.a1), span = s.a1 - s.a0;
+    return "M" + f(p0[0]) + " " + f(p0[1]) + " A" + f(s.rx) + " " + f(s.ry) + " " + f(s.rot || 0) + " " + (Math.abs(span) > Math.PI ? 1 : 0) + " " + (span > 0 ? 1 : 0) + " " + f(p1[0]) + " " + f(p1[1]);
+  }
+  function skIsPart(s) { return s.k === "ell" && s.a0 != null && s.a1 != null; }
+  // ---- solids: isometric (x right-down, y left-down, z up); the viewer looks from +x +y +z ----
+  function skIso(s, x, y, z) { return [s.x + (x - y) * SK_C, s.y + (x + y) * SK_S - z]; }
+  function skPolyhedron(s) {                      // vertices (3D) and faces (vertex index lists)
+    var w = s.w / 2, d = s.d / 2, h = s.h;
+    if (s.t === "pyramid") return { v: [[-w, -d, 0], [w, -d, 0], [w, d, 0], [-w, d, 0], [0, 0, h]], f: [[0, 1, 2, 3], [0, 1, 4], [1, 2, 4], [2, 3, 4], [3, 0, 4]] };
+    if (s.t === "prism") return { v: [[-w, -d, 0], [w, -d, 0], [0, -d, h], [-w, d, 0], [w, d, 0], [0, d, h]], f: [[0, 1, 2], [3, 4, 5], [0, 1, 4, 3], [1, 2, 5, 4], [2, 0, 3, 5]] };
+    return { v: [[-w, -d, 0], [w, -d, 0], [w, d, 0], [-w, d, 0], [-w, -d, h], [w, -d, h], [w, d, h], [-w, d, h]],
+      f: [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]] };
+  }
+  // what a solid draws: segments, ellipse parts, its dimension handles and labels
+  function skSolidGeo(s) {
+    var segs = [], ells = [], hs = [], P = function (x, y, z) { return skIso(s, x, y, z); };
+    if (s.t === "cube" || s.t === "box" || s.t === "pyramid" || s.t === "prism") {
+      if (s.t === "cube") { s.d = s.h = s.w; }
+      if (s.t === "pyramid") s.d = s.w;
+      var ph = skPolyhedron(s), cen = [0, 0, 0], edges = {};
+      ph.v.forEach(function (q) { cen[0] += q[0] / ph.v.length; cen[1] += q[1] / ph.v.length; cen[2] += q[2] / ph.v.length; });
+      ph.f.forEach(function (f) {
+        var a = ph.v[f[0]], b = ph.v[f[1]], c = ph.v[f[2]], u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], v = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+        var n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]], fc = [0, 0, 0];
+        f.forEach(function (i) { fc[0] += ph.v[i][0]; fc[1] += ph.v[i][1]; fc[2] += ph.v[i][2]; });
+        fc = fc.map(function (x) { return x / f.length; });
+        if (n[0] * (fc[0] - cen[0]) + n[1] * (fc[1] - cen[1]) + n[2] * (fc[2] - cen[2]) < 0) n = n.map(function (x) { return -x; });
+        var front = n[0] + n[1] + n[2] > 1e-9;
+        f.forEach(function (i, j) {
+          var k2 = f[(j + 1) % f.length], key = Math.min(i, k2) + "-" + Math.max(i, k2);
+          edges[key] = edges[key] || { a: i, b: k2, seen: false };
+          if (front) edges[key].seen = true;
+        });
+      });
+      Object.keys(edges).forEach(function (k) {
+        var e = edges[k], a = ph.v[e.a], b = ph.v[e.b];
+        segs.push({ a: P(a[0], a[1], a[2]), b: P(b[0], b[1], b[2]), hidden: !e.seen });
+      });
+      hs.push({ dim: "w", pos: P(s.w / 2, 0, 0), axis: [SK_C, SK_S], f: 2 });
+      if (s.t === "box" || s.t === "prism") hs.push({ dim: "d", pos: P(0, s.d / 2, 0), axis: [-SK_C, SK_S], f: 2 });
+      if (s.t !== "cube") hs.push({ dim: "h", pos: s.t === "pyramid" ? P(0, 0, s.h) : s.t === "prism" ? P(0, s.d / 2, s.h) : P(0, 0, s.h), axis: [0, -1], f: 1 });
+    } else {
+      var a = s.r * SK_ISO, b = s.r * Math.SQRT1_2, base = [s.x, s.y];
+      if (s.t === "sphere") {
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: a });
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: b, a0: 0, a1: Math.PI });
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: b, a0: Math.PI, a1: 2 * Math.PI, hidden: true });
+        hs.push({ dim: "r", pos: [s.x + a, s.y], axis: [1, 0], f: 1 / SK_ISO });
+      } else if (s.t === "cylinder") {
+        ells.push({ cx: s.x, cy: s.y - s.h, rx: a, ry: b });
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: b, a0: 0, a1: Math.PI });
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: b, a0: Math.PI, a1: 2 * Math.PI, hidden: true });
+        segs.push({ a: [s.x - a, s.y], b: [s.x - a, s.y - s.h] }, { a: [s.x + a, s.y], b: [s.x + a, s.y - s.h] });
+        hs.push({ dim: "r", pos: [s.x + a, s.y], axis: [1, 0], f: 1 / SK_ISO }, { dim: "h", pos: [s.x, s.y - s.h], axis: [0, -1], f: 1 });
+      } else {                                     // cone: the base's visible part runs between the two tangent points
+        var H = s.h, u1 = H > b ? -Math.asin(b / H) : 0, u2 = Math.PI - u1, ap = [s.x, s.y - H];
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: b, a0: u1, a1: u2 });
+        ells.push({ cx: s.x, cy: s.y, rx: a, ry: b, a0: u2, a1: u1 + 2 * Math.PI, hidden: true });
+        [u1, u2].forEach(function (u) { segs.push({ a: ap, b: [s.x + a * Math.cos(u), s.y + b * Math.sin(u)] }); });
+        hs.push({ dim: "r", pos: [s.x + a, s.y], axis: [1, 0], f: 1 / SK_ISO }, { dim: "h", pos: ap, axis: [0, -1], f: 1 });
+      }
+      void base;
+    }
+    return { segs: segs, ells: ells, hs: hs };
+  }
+  function skSolidDims(s) {
+    if (s.t === "cube") return [["w", "side", s.w]];
+    if (s.t === "sphere") return [["r", "⌀", 2 * s.r]];
+    if (s.t === "cylinder" || s.t === "cone") return [["r", "⌀", 2 * s.r], ["h", "h", s.h]];
+    if (s.t === "pyramid") return [["w", "base", s.w], ["h", "h", s.h]];
+    return [["w", "w", s.w], ["d", "d", s.d], ["h", "h", s.h]];
+  }
+  // the points that bound a shape (arcs sampled)
+  function skPts(s) {
+    if (s.k === "poly") {
+      var out = [];
+      for (var i = 0; i < skEdgeCount(s); i++) { var e = skEdge(s, i); out = out.concat(skArcPts(e[0], e[1], e[2], 12)); }
+      return out.length ? out : s.pts.slice();
+    }
+    if (s.k === "ell") { var o2 = [], a0 = skIsPart(s) ? s.a0 : 0, a1 = skIsPart(s) ? s.a1 : 2 * Math.PI; for (var j = 0; j <= 24; j++) o2.push(skEllPt(s, a0 + (a1 - a0) * j / 24)); return o2; }
+    var g = skSolidGeo(s), o3 = [];
+    g.segs.forEach(function (x) { o3.push(x.a, x.b); });
+    g.ells.forEach(function (x) { for (var k = 0; k < 24; k++) { var t = k * Math.PI / 12; o3.push([x.cx + x.rx * Math.cos(t), x.cy + x.ry * Math.sin(t)]); } });
+    return o3;
+  }
+  function skHull(P) {                            // convex hull (monotone chain) — a solid's outline, for taps
+    var p = P.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }), lo = [], hi = [];
+    function cr(o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); }
+    p.forEach(function (q) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); });
+    p.slice().reverse().forEach(function (q) { while (hi.length >= 2 && cr(hi[hi.length - 2], hi[hi.length - 1], q) <= 0) hi.pop(); hi.push(q); });
+    return lo.slice(0, -1).concat(hi.slice(0, -1));
+  }
+  function skBox(list) {
+    var b = [1e9, 1e9, -1e9, -1e9];
+    list.forEach(function (s) { skPts(s).forEach(function (q) { b[0] = Math.min(b[0], q[0]); b[1] = Math.min(b[1], q[1]); b[2] = Math.max(b[2], q[0]); b[3] = Math.max(b[3], q[1]); }); });
+    return b[0] > b[2] ? [0, 0, 400, 300] : b;
+  }
+  // ---- measurements: one reference (a length set on a line) gives the scale ----
+  function skFmt(v, unit) { var a = Math.abs(v); return (a >= 100 ? v.toFixed(0) : a >= 10 ? v.toFixed(1) : v.toFixed(2)).replace(/\.?0+$/, "") + (unit ? " " + unit : ""); }
+  function skReal(meta, len) { return meta && meta.ref && meta.ref.len > 0 ? skFmt(len * meta.ref.val / meta.ref.len, meta.ref.unit) : ""; }
+  function skEsc(t) { return escapeHtml(String(t)); }
+  // the SVG body of a list of shapes; o = { scale (px per unit, for label sizes), meta (labels + reference), sel }
+  function skBody(shapes, o) {
+    o = o || {};
+    var z = o.scale || 1, out = "", lbl = !o.hitOnly && o.meta && o.meta.labels !== false && o.meta.ref && o.meta.ref.len > 0, f = function (n) { return (+n).toFixed(1); };
+    function st(s, dash) {
+      return ' stroke="' + skEsc(s.color || SK_COLORS[0]) + '" stroke-width="' + (s.sw || 2.5) + '" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"' +
+        (dash || s.dash ? ' stroke-dasharray="6 5"' : "");
+    }
+    function fill(s) { return s.fill ? ' fill="' + skEsc(s.color || SK_COLORS[0]) + '" fill-opacity=".14"' : ' fill="none"'; }
+    function label(x, y, t) {
+      out += '<text class="sk-lbl" x="' + f(x) + '" y="' + f(y) + '" font-size="' + f(12 / z) + '" stroke-width="' + f(3 / z) + '">' + skEsc(t) + '</text>';
+    }
+    shapes.forEach(function (s) {
+      var sid = ' data-sid="' + skEsc(s.id) + '"';
+      if (s.k === "poly") {
+        if (!o.hitOnly) out += '<path d="' + skPolyD(s) + '"' + (s.closed ? fill(s) : ' fill="none"') + st(s) + '/>';
+        if (o.hit) {
+          if (s.closed) out += '<path class="sk-hitf" d="' + skPolyD(s) + '"' + sid + '/>';
+          for (var i = 0; i < skEdgeCount(s); i++) { var e = skEdge(s, i); out += '<path class="sk-hit" d="M' + skArcPts(e[0], e[1], e[2], 10).map(function (q) { return f(q[0]) + " " + f(q[1]); }).join(" L") + '"' + sid + ' data-edge="' + i + '" stroke-width="' + f(22 / z) + '"/>'; }
+        }
+        if (lbl) for (var j = 0; j < skEdgeCount(s); j++) {
+          var e2 = skEdge(s, j), g = skArc(e2[0], e2[1], e2[2]), dx = e2[1][0] - e2[0][0], dy = e2[1][1] - e2[0][1], c = Math.hypot(dx, dy) || 1;
+          var side = s.closed ? (function () { var ce = skCentroid(s.pts), m = g.apex; return ((m[0] - ce[0]) * (-dy) + (m[1] - ce[1]) * dx) >= 0 ? 1 : -1; })() : 1;
+          if (g.len * z < 26) continue;
+          label(g.apex[0] - dy / c * 13 / z * side, g.apex[1] + dx / c * 13 / z * side + 4 / z, skReal(o.meta, g.len));
+        }
+      } else if (s.k === "ell") {
+        if (o.hitOnly) ;
+        else if (skIsPart(s)) out += '<path d="' + skEllD(s) + '" fill="none"' + st(s) + '/>';
+        else out += '<ellipse cx="' + f(s.cx) + '" cy="' + f(s.cy) + '" rx="' + f(s.rx) + '" ry="' + f(s.ry) + '" transform="rotate(' + f(s.rot || 0) + ' ' + f(s.cx) + ' ' + f(s.cy) + ')"' + fill(s) + st(s) + '/>';
+        if (o.hit) out += '<path class="sk-hit' + (skIsPart(s) ? "" : " sk-hitall") + '" d="M' + skPts(s).map(function (q) { return f(q[0]) + " " + f(q[1]); }).join(" L") + '"' + sid + ' stroke-width="' + f(22 / z) + '"/>';
+        if (lbl && !skIsPart(s)) {
+          if (Math.abs(s.rx - s.ry) < 0.5) label(s.cx, s.cy + 4 / z, "⌀ " + skReal(o.meta, 2 * s.rx));
+          else { label(s.cx, s.cy - 6 / z, skReal(o.meta, 2 * s.rx) + " ×"); label(s.cx, s.cy + 10 / z, skReal(o.meta, 2 * s.ry)); }
+        }
+      } else {
+        var sg = skSolidGeo(s);
+        if (!o.hitOnly) sg.segs.forEach(function (x) { out += '<line x1="' + f(x.a[0]) + '" y1="' + f(x.a[1]) + '" x2="' + f(x.b[0]) + '" y2="' + f(x.b[1]) + '"' + st(s, x.hidden) + '/>'; });
+        if (!o.hitOnly) sg.ells.forEach(function (x) {
+          var e3 = { cx: x.cx, cy: x.cy, rx: x.rx, ry: x.ry, rot: 0, a0: x.a0, a1: x.a1 };
+          if (x.a0 == null) out += '<ellipse cx="' + f(x.cx) + '" cy="' + f(x.cy) + '" rx="' + f(x.rx) + '" ry="' + f(x.ry) + '" fill="none"' + st(s) + '/>';
+          else out += '<path d="' + skEllD(e3) + '" fill="none"' + st(s, x.hidden) + '/>';
+        });
+        if (o.hit) out += '<path class="sk-hitf" d="M' + skHull(skPts(s)).map(function (q) { return f(q[0]) + " " + f(q[1]); }).join(" L") + 'Z"' + sid + '/>';
+        if (lbl) skSolidDims(s).forEach(function (dm) {
+          var hh = sg.hs.filter(function (x) { return x.dim === dm[0]; })[0]; if (!hh) return;
+          var off = dm[0] === "h" ? [16 / z, -6 / z] : dm[0] === "d" ? [-14 / z, 18 / z] : [14 / z, 18 / z];
+          label(hh.pos[0] + off[0], hh.pos[1] + off[1], dm[1] + " " + skReal(o.meta, dm[2]));
+        });
+      }
+    });
+    return out;
+  }
+  // a whole sketch as a stand-alone picture (thumbnails, the palette's icons)
+  function skMarkup(shapes, meta, pad) {
+    var b = skBox(shapes), p = pad == null ? 14 : pad, w = Math.max(40, b[2] - b[0] + 2 * p), h = Math.max(40, b[3] - b[1] + 2 * p);
+    var cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2;
+    return '<svg class="sk-pic" viewBox="' + (cx - w / 2).toFixed(1) + ' ' + (cy - h / 2).toFixed(1) + ' ' + w.toFixed(1) + ' ' + h.toFixed(1) + '" preserveAspectRatio="xMidYMid meet">' +
+      (shapes.length ? skBody(shapes, { scale: 160 / Math.max(w, h), meta: meta }) : '') + '</svg>';
+  }
+
+  // ---- sketches of a product ----
+  function skMetaAll() { var c = coEnsure(); if (!Array.isArray(c.sketches)) c.sketches = []; return c.sketches; }
+  function skById(id) { return id ? byId(skMetaAll(), id) : null; }
+  function skOf(pid) { return skMetaAll().filter(function (m) { return m.product === pid; }).sort(coByOrder); }
+  function skShapes(id) { return loadCanvas(id).items || []; }
+  function skAdd(p, name) {
+    var m = { id: uid("sk_"), product: p.id, name: name, order: skOf(p.id).length, created: Date.now(), labels: true, grid: true, snap: false };
+    skMetaAll().push(m);
+    var c = loadCanvas(m.id); c.items = []; saveCanvas(m.id); saveStore();
+    return m;
+  }
+  function skDuplicate(m) {
+    var n = { id: uid("sk_"), product: m.product, name: m.name + " (copy)", order: skOf(m.product).length, created: Date.now(), labels: m.labels, grid: m.grid, snap: m.snap };
+    if (m.ref) n.ref = { len: m.ref.len, val: m.ref.val, unit: m.ref.unit };
+    skMetaAll().push(n);
+    var c = loadCanvas(n.id); c.items = JSON.parse(JSON.stringify(skShapes(m.id))); saveCanvas(n.id); saveStore();
+    return n;
+  }
+  // a sketch whose product is gone (deleted, and the Undo window has passed) loses its body too
+  var skSweepT = null;
+  function skSweepLater() {
+    clearTimeout(skSweepT);
+    skSweepT = setTimeout(function () {
+      var c = coEnsure(), gone = skMetaAll().filter(function (m) { return !cprById(m.product); });
+      if (!gone.length) return;
+      gone.forEach(function (m) { killCanvas(m.id); });
+      c.sketches = skMetaAll().filter(function (m) { return gone.indexOf(m) < 0; });
+      saveStore();
+    }, 9000);
+  }
+  function skDelete(m) {
+    if (!confirmDelete(m.name)) return;
+    libMoved("Deleted the sketch “" + m.name + "”", function () { var c = coEnsure(); c.sketches = skMetaAll().filter(function (x) { return x !== m; }); });
+    setTimeout(function () { if (!skById(m.id)) killCanvas(m.id); }, 9000);   // after the Undo window
+  }
+  function skMenu(anchor, m) {
+    libMenu(anchor, [
+      { label: "Open", run: function () { openSketch(m.id); } },
+      { label: "✎ Rename", run: function () { askName("Rename sketch", "", m.name, function (n) { m.name = n; saveStore(); applyView(); }); } },
+      { label: "⧉ Duplicate", run: function () { skDuplicate(m); applyView(); libToast("Duplicated “" + m.name + "”"); } },
+      { sep: true },
+      { label: "Delete sketch…", danger: true, run: function () { skDelete(m); } }
+    ]);
+  }
+  // the product page's Sketches section: thumbnails, tap to open
+  function skSection(host, p) {
+    var s = coSec(host, "✏️ Sketches");
+    s.querySelector(".sums-head").appendChild(actBtn("＋ Sketch", "a new sketch of this product", function () {
+      askName("New sketch", "E.g. “Front view”.", "Sketch " + (skOf(p.id).length + 1), function (n) { openSketch(skAdd(p, n).id); });
+    }));
+    var list = skOf(p.id);
+    if (!list.length) { s.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No sketches yet.</b>Tap “＋ Sketch” to draw the product with shapes.</div>'); return; }
+    var g = document.createElement("div");
+    g.className = "sums-grid fp-grid sk-grid";
+    list.forEach(function (m) {
+      var b = actBtn("", "open the sketch", function () { openSketch(m.id); }, "sum-card fp-tile sk-tile");
+      var sh = skShapes(m.id);
+      b.innerHTML = '<span class="sk-thumb">' + (sh.length ? skMarkup(sh, null) : '<i>empty</i>') + '</span><b></b>';   // no length labels at this size
+      b.querySelector("b").textContent = m.name;
+      var cell = fpCell(b, actBtn("⋯", "options", function (e) { skMenu(e.currentTarget, m); }, "lib-dots fp-dots"));
+      cell.setAttribute("data-id", m.id);
+      g.appendChild(cell);
+    });
+    dndList(g, { type: "csketch", item: ".fp-cell", axis: "grid", onDrop: function (drag, index) {
+      libMoved("Moved “" + skById(drag.id).name + "”", function () { coPlace(skOf(p.id), skById(drag.id), index); });
+    } });
+    s.appendChild(g);
+  }
+
+  // ---- the editor ----
+  var sk = null;                                   // the open editor: { id, meta, shapes, view, sel, edge, undo, redo, … }
+  function openSketch(id) {
+    var m = skById(id); if (!m) return;
+    if (sk) skClose(true);
+    if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(id);
+    var pane = document.createElement("div");
+    pane.id = "skPane"; pane.className = "sk-pane";
+    pane.innerHTML = '<div class="sk-top"></div><div class="sk-main"><svg class="sk-svg"></svg><div class="sk-hint"></div></div><div class="sk-bar"></div>';
+    document.body.appendChild(pane);
+    document.body.classList.add("sk-open");
+    sk = { id: id, meta: m, shapes: JSON.parse(JSON.stringify(skShapes(id))), view: { x: 0, y: 0, s: 1 }, sel: null, edge: -1,
+      undo: [], redo: [], pane: pane, svg: pane.querySelector(".sk-svg"), ptrs: {}, g: null, tap: null, keep: false };
+    sk.shapes.forEach(function (s) { if (!s.id) s.id = uid("sh_"); });
+    history.replaceState(null, "", "#coath:sketch:" + id);
+    skWire();
+    skTop();
+    skFit(); skRender();
+  }
+  function skClose(quiet) {
+    if (!sk) return;
+    skCommitSave();
+    document.removeEventListener("keydown", skKey);
+    sk.pane.remove();
+    document.body.classList.remove("sk-open");
+    sk = null;
+    if (!quiet) applyView();
+  }
+  function skCommitSave() {
+    var c = loadCanvas(sk.id);
+    c.items = JSON.parse(JSON.stringify(sk.shapes));
+    saveCanvas(sk.id);
+    saveStore();
+  }
+  function skSnap() { return JSON.stringify({ shapes: sk.shapes, ref: sk.meta.ref || null }); }
+  function skPush(before) {                        // record an undo step (before = the state before the change)
+    if (before === skSnap()) return;
+    sk.undo.push(before); if (sk.undo.length > 120) sk.undo.shift();
+    sk.redo = [];
+    skCommitSave();
+  }
+  function skChange(fn) { var b = skSnap(); fn(); skPush(b); skRender(); }
+  function skRestore(str) {
+    var o = JSON.parse(str);
+    sk.shapes = o.shapes; if (o.ref) sk.meta.ref = o.ref; else delete sk.meta.ref;
+    if (!skSel()) { sk.sel = null; sk.edge = -1; }
+    skCommitSave(); skRender();
+  }
+  function skUndo() { if (!sk.undo.length) return; sk.redo.push(skSnap()); skRestore(sk.undo.pop()); }
+  function skRedo() { if (!sk.redo.length) return; sk.undo.push(skSnap()); skRestore(sk.redo.pop()); }
+  function skSel() { return sk && sk.sel ? sk.shapes.filter(function (s) { return s.id === sk.sel; })[0] || null : null; }
+  function skToWorld(cx, cy) { var r = sk.svg.getBoundingClientRect(); return [(cx - r.left) / sk.view.s + sk.view.x, (cy - r.top) / sk.view.s + sk.view.y]; }
+  function skGrid() { return 20; }
+  function skSnapPt(q) { if (!sk.meta.snap) return q; var g = skGrid(); return [Math.round(q[0] / g) * g, Math.round(q[1] / g) * g]; }
+  function skFit() {
+    var r = sk.svg.getBoundingClientRect(), W = r.width || 600, H = r.height || 400;
+    if (!sk.shapes.length) { sk.view = { x: -W / 2, y: -H / 2, s: 1 }; return; }
+    var b = skBox(sk.shapes), s = Math.min(3, Math.max(0.2, Math.min((W - 80) / Math.max(40, b[2] - b[0]), (H - 80) / Math.max(40, b[3] - b[1]))));
+    sk.view = { s: s, x: (b[0] + b[2]) / 2 - W / 2 / s, y: (b[1] + b[3]) / 2 - H / 2 / s };
+  }
+  function skZoom(f, cx, cy) {
+    var r = sk.svg.getBoundingClientRect();
+    if (cx == null) { cx = r.left + r.width / 2; cy = r.top + r.height / 2; }
+    var w = skToWorld(cx, cy), s = Math.min(6, Math.max(0.15, sk.view.s * f));
+    sk.view = { s: s, x: w[0] - (cx - r.left) / s, y: w[1] - (cy - r.top) / s };
+    skRender();
+  }
+  function skTop() {
+    var top = sk.pane.querySelector(".sk-top"), m = sk.meta;
+    top.innerHTML = "";
+    top.appendChild(actBtn("✓ Done", "save and close", function () { skClose(); }, "btn-primary"));
+    var h = document.createElement("h2"); h.className = "sk-name"; h.textContent = m.name; h.title = "tap to rename";
+    h.addEventListener("click", function () { askName("Rename sketch", "", m.name, function (n) { m.name = n; saveStore(); h.textContent = n; }); });
+    top.appendChild(h);
+    var g = document.createElement("span"); g.className = "sk-tools";
+    g.appendChild(actBtn("↶", "undo", skUndo, "sk-undo"));
+    g.appendChild(actBtn("↷", "redo", skRedo, "sk-redo"));
+    g.appendChild(actBtn("−", "zoom out", function () { skZoom(1 / 1.25); }));
+    g.appendChild(actBtn("⤢", "fit everything in view", function () { skFit(); skRender(); }));
+    g.appendChild(actBtn("＋", "zoom in", function () { skZoom(1.25); }));
+    [["grid", "▦ Grid", "show the grid"], ["snap", "🧲 Snap", "snap points to the grid"], ["labels", "📏 Lengths", "show the real lengths"]].forEach(function (x) {
+      var b = actBtn(x[1], x[2], function () {
+        if (x[0] === "labels" && !(m.ref && m.ref.len > 0)) { libToast("Set a length first: select a shape, tap the ◆ on one edge, then “📏 Set length”."); return; }
+        m[x[0]] = m[x[0]] === false ? true : !m[x[0]]; saveStore(); skTop(); skRender();
+      }, "sk-tog");
+      b.classList.toggle("on", x[0] === "labels" ? !!(m.ref && m.ref.len > 0) && m.labels !== false : !!m[x[0]]);
+      g.appendChild(b);
+    });
+    top.appendChild(g);
+  }
+  function skBar() {
+    var bar = sk.pane.querySelector(".sk-bar"), s = skSel(), hint = sk.pane.querySelector(".sk-hint");
+    bar.innerHTML = "";
+    if (sk.tap) {
+      hint.textContent = "Tap to place each point" + (sk.tap.closed ? " — tap the first point again, or ✓, to close it." : ", then ✓.");
+      bar.appendChild(actBtn("✓ Finish", "finish the shape", skTapDone, "btn-primary"));
+      bar.appendChild(actBtn("↶ Last point", "remove the last point", function () { sk.tap.pts.pop(); skRender(); }));
+      bar.appendChild(actBtn("✕ Cancel", "", function () { sk.tap = null; skRender(); }));
+      return;
+    }
+    bar.appendChild(actBtn("＋ Shape", "add a shape", skPalette, "btn-primary"));
+    if (!s) { hint.textContent = sk.shapes.length ? "Tap a shape to select it. Drag the paper to move around; pinch or − ＋ to zoom." : "Tap “＋ Shape” to start."; return; }
+    hint.textContent = s.k === "solid" ? "Drag it to move. The round handles change its size." :
+      s.k === "poly" ? "Drag it to move. ● corners reshape; ◆ drag = bend that edge, tap = pick it, tap twice = straighten; ■ resizes; the top circle rotates." :
+      "Drag it to move. ■ resizes, ⟳ rotates.";
+    var name = document.createElement("span"); name.className = "sk-what"; name.textContent = skTypeName(s); bar.appendChild(name);
+    bar.appendChild(actBtn("⧉", "duplicate", function () {
+      skChange(function () { var c = JSON.parse(JSON.stringify(s)); c.id = uid("sh_"); skMove(c, 24, 24); sk.shapes.push(c); sk.sel = c.id; sk.edge = -1; });
+    }));
+    bar.appendChild(actBtn("⤒", "bring to front", function () { skChange(function () { sk.shapes = sk.shapes.filter(function (x) { return x !== s; }).concat([s]); }); }));
+    bar.appendChild(actBtn("⤓", "send to back", function () { skChange(function () { sk.shapes = [s].concat(sk.shapes.filter(function (x) { return x !== s; })); }); }));
+    var sw = document.createElement("span"); sw.className = "sk-sw";
+    SK_COLORS.forEach(function (c) {
+      var b = actBtn("", "colour", function () { skChange(function () { s.color = c; }); }, "sk-col" + ((s.color || SK_COLORS[0]) === c ? " on" : ""));
+      b.style.background = c; sw.appendChild(b);
+    });
+    bar.appendChild(sw);
+    bar.appendChild(actBtn("━ " + (s.sw || 2.5), "line thickness", function () {
+      var L = [1.5, 2.5, 4, 6], i = L.indexOf(s.sw || 2.5); skChange(function () { s.sw = L[(i + 1) % L.length]; });
+    }));
+    if (s.k !== "solid" && (s.k !== "poly" || s.closed) && !skIsPart(s)) bar.appendChild(actBtn("◧ Fill", "fill on / off", function () { skChange(function () { s.fill = !s.fill; }); }, "sk-tog" + (s.fill ? " on" : "")));
+    bar.appendChild(actBtn("┅", "dashed line on / off", function () { skChange(function () { s.dash = !s.dash; }); }, "sk-tog" + (s.dash ? " on" : "")));
+    if (s.k !== "solid") bar.appendChild(actBtn("🔒 Proportions", "keep proportions while resizing", function () { sk.keep = !sk.keep; skBar(); }, "sk-tog" + (sk.keep || skForceKeep(s) ? " on" : "")));
+    if (s.k === "poly") {
+      bar.appendChild(actBtn("📏 Set length", "this line's real length sets the scale for every length", skSetLength));
+      if ((s.bends || []).some(function (k) { return k; })) bar.appendChild(actBtn("⌁ Straighten", "straighten every edge", function () { skChange(function () { s.bends = s.bends.map(function () { return 0; }); }); }));
+    }
+    if (s.k === "solid") bar.appendChild(actBtn("⬚ Make editable", "turn it into separate lines you can reshape", function () { skExplode(s); }));
+    bar.appendChild(actBtn("🗑", "delete", function () { skChange(function () { sk.shapes = sk.shapes.filter(function (x) { return x !== s; }); sk.sel = null; sk.edge = -1; }); }, "btn-danger"));
+  }
+  function skForceKeep(s) { return s.t === "circle" || s.t === "square" || s.t === "ngon"; }
+  function skPalette() {
+    var box = ovOpen("Add a shape"), body = box.body;
+    ["2D", "3D"].forEach(function (fam) {
+      var h = document.createElement("div"); h.className = "lw-group"; h.textContent = fam === "2D" ? "Flat shapes" : "3D shapes (isometric)";
+      body.appendChild(h);
+      var g = document.createElement("div"); g.className = "sk-pal";
+      SK_SHAPES.filter(function (x) { return x.fam === fam; }).forEach(function (x) {
+        var demo = x.make ? x.make(0, 0) : skPoly(x.id, x.tap === "closed" ? [[-60, 30], [-10, -50], [70, -20], [40, 50]] : [[-70, 30], [-20, -30], [30, 20], [70, -40]], x.tap === "closed");
+        demo.sw = 2;
+        var b = actBtn("", x.name, function () { box.close(true); skAddShape(x); }, "sk-palb");
+        b.innerHTML = skMarkup([demo], null, 10) + '<span></span>';
+        b.querySelector("span").textContent = x.name;
+        g.appendChild(b);
+      });
+      body.appendChild(g);
+    });
+    box.buttons([{ label: "Cancel", run: function () { box.close(); } }]);
+  }
+  function skCenter() { var r = sk.svg.getBoundingClientRect(); return skSnapPt(skToWorld(r.left + r.width / 2, r.top + r.height / 2)); }
+  function skAddShape(x) {
+    if (x.tap) { sk.tap = { type: x.id, closed: x.tap === "closed", pts: [] }; sk.sel = null; skRender(); return; }
+    function add(n) {
+      var c = skCenter();
+      skChange(function () {
+        var s = x.make(c[0], c[1], n); s.id = uid("sh_"); s.color = SK_COLORS[0]; s.sw = 2.5;
+        sk.shapes.push(s); sk.sel = s.id; sk.edge = -1;
+      });
+    }
+    if (!x.ask) { add(); return; }
+    askName("Regular polygon", "How many sides? (3 to 20)", "6", function (v) { var n = Math.round(parseFloat(v)); add(n >= 3 && n <= 20 ? n : 6); });
+  }
+  function skTapDone() {
+    var t = sk.tap; sk.tap = null;
+    if (t.pts.length < (t.closed ? 3 : 2)) { libToast(t.closed ? "A polygon needs at least 3 points." : "A line needs at least 2 points."); skRender(); return; }
+    skChange(function () { var s = skPoly(t.type, t.pts, t.closed); s.id = uid("sh_"); s.color = SK_COLORS[0]; s.sw = 2.5; sk.shapes.push(s); sk.sel = s.id; sk.edge = -1; });
+  }
+  // ⬚ Make editable: a solid becomes its lines and ellipse parts (hidden ones stay dashed)
+  function skExplode(s) {
+    skChange(function () {
+      var g = skSolidGeo(s), out = [], base = { color: s.color, sw: s.sw };
+      g.segs.forEach(function (x) { var p = skPoly("line", [x.a.slice(), x.b.slice()], false); p.id = uid("sh_"); p.color = base.color; p.sw = base.sw; if (x.hidden) p.dash = true; out.push(p); });
+      g.ells.forEach(function (x) {
+        var e = { t: "ellipse", k: "ell", cx: x.cx, cy: x.cy, rx: x.rx, ry: x.ry, rot: 0, id: uid("sh_"), color: base.color, sw: base.sw };
+        if (x.a0 != null) { e.a0 = x.a0; e.a1 = x.a1; }
+        if (x.hidden) e.dash = true;
+        out.push(e);
+      });
+      var i = sk.shapes.indexOf(s);
+      sk.shapes.splice.apply(sk.shapes, [i, 1].concat(out));
+      sk.sel = null; sk.edge = -1;
+    });
+    libToast("Now separate lines and curves — each can be reshaped.");
+  }
+  function skSetLength() {
+    var s = skSel(); if (!s || s.k !== "poly") return;
+    var i = skEdgeCount(s) === 1 ? 0 : sk.edge;
+    if (i < 0) { libToast("Tap the ◆ on one of its edges first (the edge turns orange), then “📏 Set length”."); return; }
+    var e = skEdge(s, i), len = skArc(e[0], e[1], e[2]).len, ref = sk.meta.ref;
+    askName("Set length", "This line's real length, e.g. “12 cm”. All other lengths follow from it." + (ref ? " (Replaces the current reference.)" : ""), "", function (v) {
+      var mm = String(v).trim().replace(",", ".").match(/^(\d*\.?\d+)\s*(.*)$/);
+      if (!mm || !(+mm[1] > 0)) { libToast("Type a number, e.g. 12 cm"); return; }
+      skChange(function () { sk.meta.ref = { len: +len.toFixed(3), val: +mm[1], unit: (mm[2] || (ref && ref.unit) || "").trim().slice(0, 12) }; sk.meta.labels = true; });
+      skTop();
+      libToast("Scale set: this line = " + skFmt(+mm[1], sk.meta.ref.unit));
+    });
+  }
+  // moving / resizing / rotating a shape (from a copy taken when the gesture began)
+  function skMove(s, dx, dy) {
+    if (s.k === "poly") s.pts = s.pts.map(function (q) { return [q[0] + dx, q[1] + dy]; });
+    else if (s.k === "ell") { s.cx += dx; s.cy += dy; }
+    else { s.x += dx; s.y += dy; }
+  }
+  function skScale(s, o, sx, sy) {
+    if (s.k === "poly") s.pts = s.pts.map(function (q) { return [o[0] + (q[0] - o[0]) * sx, o[1] + (q[1] - o[1]) * sy]; });
+    else if (s.k === "ell") { s.cx = o[0] + (s.cx - o[0]) * sx; s.cy = o[1] + (s.cy - o[1]) * sy; s.rx *= Math.abs(sx); s.ry *= Math.abs(sy); }
+  }
+  function skRotate(s, c, a) {
+    var co = Math.cos(a), si = Math.sin(a);
+    if (s.k === "poly") s.pts = s.pts.map(function (q) { var x = q[0] - c[0], y = q[1] - c[1]; return [c[0] + x * co - y * si, c[1] + x * si + y * co]; });
+    else if (s.k === "ell") {
+      var x = s.cx - c[0], y = s.cy - c[1]; s.cx = c[0] + x * co - y * si; s.cy = c[1] + x * si + y * co;
+      s.rot = ((s.rot || 0) + a * 180 / Math.PI) % 360;
+    }
+  }
+  function skRender() {
+    if (!sk) return;
+    var r = sk.svg.getBoundingClientRect(), v = sk.view, W = r.width / v.s, H = r.height / v.s, s = skSel(), z = v.s, f = function (n) { return (+n).toFixed(1); };
+    sk.svg.setAttribute("viewBox", f(v.x) + " " + f(v.y) + " " + f(W) + " " + f(H));
+    var out = '<defs><pattern id="skGridP" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e2e8f0" stroke-width="' + f(1 / z) + '"/></pattern></defs>' +
+      '<rect class="sk-paper" x="' + f(v.x) + '" y="' + f(v.y) + '" width="' + f(W) + '" height="' + f(H) + '" fill="' + (sk.meta.grid ? "url(#skGridP)" : "none") + '"/>';
+    out += skBody(sk.shapes, { scale: z, meta: sk.meta, hit: !sk.tap });
+    if (s && !sk.tap) out += skBody([s], { scale: z, hit: true, hitOnly: true });   // the selected shape's edges answer first
+    if (sk.tap && sk.tap.pts.length) {
+      out += '<path d="M' + sk.tap.pts.map(function (q) { return f(q[0]) + " " + f(q[1]); }).join(" L") + '" fill="none" stroke="#2563eb" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-dasharray="4 4"/>';
+      sk.tap.pts.forEach(function (q, i) { out += '<circle cx="' + f(q[0]) + '" cy="' + f(q[1]) + '" r="' + f((i ? 5 : 8) / z) + '" fill="#2563eb"/>'; });
+    }
+    if (s) out += skHandles(s, z);
+    sk.svg.innerHTML = out;
+    var u = sk.pane.querySelector(".sk-undo"), rd = sk.pane.querySelector(".sk-redo");
+    if (u) u.disabled = !sk.undo.length;
+    if (rd) rd.disabled = !sk.redo.length;
+    skBar();
+  }
+  function skHandles(s, z) {
+    var out = "", f = function (n) { return (+n).toFixed(1); }, R = 9 / z, HR = 17 / z;
+    function hnd(id, x, y, shape) {
+      var vis = shape === "sq" ? '<rect class="sk-h sk-hsq" x="' + f(x - R * 0.8) + '" y="' + f(y - R * 0.8) + '" width="' + f(R * 1.6) + '" height="' + f(R * 1.6) + '"/>'
+        : shape === "dia" ? '<path class="sk-h sk-hdia" d="M' + f(x) + ' ' + f(y - R) + ' L' + f(x + R) + ' ' + f(y) + ' L' + f(x) + ' ' + f(y + R) + ' L' + f(x - R) + ' ' + f(y) + 'Z"/>'
+        : '<circle class="sk-h' + (shape === "dim" ? " sk-hdim" : "") + '" cx="' + f(x) + '" cy="' + f(y) + '" r="' + f(R) + '"/>';
+      out += vis + '<circle class="sk-hhit" data-h="' + id + '" cx="' + f(x) + '" cy="' + f(y) + '" r="' + f(HR) + '"/>';
+    }
+    var b = skBox([s]), pad = 22 / z;              // corner squares clear of the corner points
+    out += '<rect class="sk-selbox" x="' + f(b[0] - pad) + '" y="' + f(b[1] - pad) + '" width="' + f(b[2] - b[0] + 2 * pad) + '" height="' + f(b[3] - b[1] + 2 * pad) + '" stroke-width="' + f(1 / z) + '"/>';
+    if (s.k === "poly" && sk.edge >= 0 && sk.edge < skEdgeCount(s)) {
+      var e = skEdge(s, sk.edge);
+      out += '<path class="sk-edge" d="M' + skArcPts(e[0], e[1], e[2], 16).map(function (q) { return f(q[0]) + " " + f(q[1]); }).join(" L") + '" stroke-width="' + f(7 / z) + '"/>';
+    }
+    if (s.k === "solid") { skSolidGeo(s).hs.forEach(function (h) { hnd("dim:" + h.dim, h.pos[0], h.pos[1], "dim"); }); return out; }
+    [[b[0] - pad, b[1] - pad, 0], [b[2] + pad, b[1] - pad, 1], [b[2] + pad, b[3] + pad, 2], [b[0] - pad, b[3] + pad, 3]].forEach(function (c) { hnd("c:" + c[2], c[0], c[1], "sq"); });
+    out += '<line class="sk-selbox" x1="' + f((b[0] + b[2]) / 2) + '" y1="' + f(b[1] - pad) + '" x2="' + f((b[0] + b[2]) / 2) + '" y2="' + f(b[1] - pad - 26 / z) + '" stroke-width="' + f(1 / z) + '"/>';
+    hnd("rot", (b[0] + b[2]) / 2, b[1] - pad - 30 / z, "rot");
+    if (s.k === "poly") {
+      for (var i = 0; i < skEdgeCount(s); i++) { var g = skArc(skEdge(s, i)[0], skEdge(s, i)[1], skEdge(s, i)[2]); hnd("m:" + i, g.apex[0], g.apex[1], "dia"); }
+      s.pts.forEach(function (q, i2) { hnd("v:" + i2, q[0], q[1], "v"); });
+    }
+    return out;
+  }
+  // ---- gestures: one finger = select / drag / pan; two fingers = pinch zoom; wheel = zoom ----
+  function skWire() {
+    var svg = sk.svg, lastTap = { h: null, t: 0 };
+    svg.addEventListener("pointerdown", function (e) {
+      if (!sk) return;
+      svg.setPointerCapture && svg.setPointerCapture(e.pointerId);
+      sk.ptrs[e.pointerId] = [e.clientX, e.clientY];
+      var ids = Object.keys(sk.ptrs);
+      if (ids.length === 2) {                      // pinch: whatever one finger was doing is put back
+        if (sk.g && sk.g.before && sk.g.moved) { skRestore(sk.g.before); }
+        var a = sk.ptrs[ids[0]], b = sk.ptrs[ids[1]];
+        sk.g = { type: "pinch", d0: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, s0: sk.view.s, w: skToWorld((a[0] + b[0]) / 2, (a[1] + b[1]) / 2) };
+        return;
+      }
+      if (ids.length > 2) return;
+      var w = skToWorld(e.clientX, e.clientY), t = e.target, hid = t.getAttribute && t.getAttribute("data-h"), sid = t.getAttribute && t.getAttribute("data-sid");
+      var s = skSel();
+      sk.g = { type: "pan", sx: e.clientX, sy: e.clientY, v0: { x: sk.view.x, y: sk.view.y, s: sk.view.s }, w0: w, moved: false };
+      if (sk.tap) { sk.g.type = "tap"; return; }
+      if (hid && s) {
+        var now = Date.now();
+        if (/^m:/.test(hid) && lastTap.h === hid && now - lastTap.t < 400) {   // ◆ tapped twice: straighten that edge
+          var ei = +hid.slice(2); skChange(function () { s.bends[ei] = 0; }); lastTap = { h: null, t: 0 }; sk.g = null; return;
+        }
+        lastTap = { h: hid, t: now };
+        sk.g = { type: "h", h: hid, w0: w, orig: JSON.parse(JSON.stringify(s)), before: skSnap(), moved: false, box: skBox([s]) };
+        return;
+      }
+      if (sid) {
+        var hit = sk.shapes.filter(function (x) { return x.id === sid; })[0];
+        var edge = t.getAttribute("data-edge");
+        if (sk.sel === sid && edge != null) sk.edge = +edge;
+        else if (sk.sel !== sid) sk.edge = edge != null && skEdgeCount(hit) === 1 ? 0 : -1;
+        sk.sel = sid;
+        sk.g = { type: "move", w0: w, orig: JSON.parse(JSON.stringify(hit)), before: skSnap(), moved: false };
+        skRender();
+      }
+    });
+    svg.addEventListener("pointermove", function (e) {
+      if (!sk || !sk.ptrs[e.pointerId]) return;
+      sk.ptrs[e.pointerId] = [e.clientX, e.clientY];
+      var g = sk.g; if (!g) return;
+      if (g.type === "pinch") {
+        var ids = Object.keys(sk.ptrs); if (ids.length < 2) return;
+        var a = sk.ptrs[ids[0]], b = sk.ptrs[ids[1]], r = svg.getBoundingClientRect(), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+        var s2 = Math.min(6, Math.max(0.15, g.s0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / g.d0));
+        sk.view = { s: s2, x: g.w[0] - (mx - r.left) / s2, y: g.w[1] - (my - r.top) / s2 };
+        skRender(); return;
+      }
+      var w = skToWorld(e.clientX, e.clientY);
+      if (g.type === "pan" || g.type === "tap") {
+        if (Math.hypot(e.clientX - g.sx, e.clientY - g.sy) > 6) g.moved = true;
+        if (g.moved) { sk.view = { s: g.v0.s, x: g.v0.x - (e.clientX - g.sx) / g.v0.s, y: g.v0.y - (e.clientY - g.sy) / g.v0.s }; skRender(); }
+        return;
+      }
+      var s = skSel(); if (!s) return;
+      var dx = w[0] - g.w0[0], dy = w[1] - g.w0[1];
+      if (!g.moved && Math.hypot(dx, dy) * sk.view.s < 4) return;
+      g.moved = true;
+      var o = JSON.parse(JSON.stringify(g.orig));
+      if (g.type === "move") {
+        if (sk.meta.snap) { dx = Math.round(dx / skGrid()) * skGrid(); dy = Math.round(dy / skGrid()) * skGrid(); }
+        skMove(o, dx, dy);
+      } else if (/^v:/.test(g.h)) o.pts[+g.h.slice(2)] = skSnapPt(w);
+      else if (/^m:/.test(g.h)) {
+        var i = +g.h.slice(2), e2 = skEdge(o, i), ex = e2[1][0] - e2[0][0], ey = e2[1][1] - e2[0][1], c = Math.hypot(ex, ey) || 1;
+        var m = [(e2[0][0] + e2[1][0]) / 2, (e2[0][1] + e2[1][1]) / 2], h = ((w[0] - m[0]) * (-ey / c) + (w[1] - m[1]) * (ex / c));
+        o.bends[i] = Math.abs(h) < 4 / sk.view.s ? 0 : Math.max(-3, Math.min(3, h / c));
+      } else if (/^c:/.test(g.h)) {
+        var bx = g.box, ci = +g.h.slice(2), corner = [[bx[0], bx[1]], [bx[2], bx[1]], [bx[2], bx[3]], [bx[0], bx[3]]], op = corner[(ci + 2) % 4], cc = corner[ci];
+        var p = skSnapPt(w), sx = (p[0] - op[0]) / ((cc[0] - op[0]) || 1), sy = (p[1] - op[1]) / ((cc[1] - op[1]) || 1);
+        sx = Math.max(0.05, sx); sy = Math.max(0.05, sy);
+        if (sk.keep || skForceKeep(o)) sx = sy = Math.max(sx, sy);
+        skScale(o, op, sx, sy);
+      } else if (g.h === "rot") {
+        var bc = [(g.box[0] + g.box[2]) / 2, (g.box[1] + g.box[3]) / 2], an = Math.atan2(w[1] - bc[1], w[0] - bc[0]) - Math.atan2(g.w0[1] - bc[1], g.w0[0] - bc[0]);
+        if (sk.meta.snap) an = Math.round(an / (Math.PI / 12)) * Math.PI / 12;
+        skRotate(o, bc, an);
+      } else if (/^dim:/.test(g.h)) {
+        var dim = g.h.slice(4), hh = skSolidGeo(g.orig).hs.filter(function (x) { return x.dim === dim; })[0];
+        var tt = dx * hh.axis[0] + dy * hh.axis[1], val = Math.max(10, g.orig[dim] + tt * hh.f);
+        if (sk.meta.snap) val = Math.max(10, Math.round(val / 10) * 10);
+        o[dim] = val;
+        if (o.t === "cube") { o.d = o.h = o.w; }
+      }
+      var idx = sk.shapes.indexOf(s); o.id = s.id; sk.shapes[idx] = o;
+      skRender();
+    });
+    function up(e) {
+      if (!sk || !sk.ptrs[e.pointerId]) return;
+      delete sk.ptrs[e.pointerId];
+      var g = sk.g;
+      if (!g) return;
+      if (g.type === "pinch") { if (!Object.keys(sk.ptrs).length) sk.g = null; return; }
+      sk.g = null;
+      if (g.type === "tap" && !g.moved) {
+        var p = skSnapPt(skToWorld(e.clientX, e.clientY)), t = sk.tap, f0 = t.pts[0];
+        if (t.closed && t.pts.length >= 3 && Math.hypot(p[0] - f0[0], p[1] - f0[1]) * sk.view.s < 18) { skTapDone(); return; }
+        t.pts.push(p); skRender(); return;
+      }
+      if (g.type === "pan" && !g.moved) { sk.sel = null; sk.edge = -1; skRender(); return; }
+      if (g.type === "h" && !g.moved && /^m:/.test(g.h)) { sk.edge = +g.h.slice(2); skRender(); return; }   // ◆ tapped once: pick that edge
+      if (g.before && g.moved) skPush(g.before);
+      skRender();
+    }
+    svg.addEventListener("pointerup", up);
+    svg.addEventListener("pointercancel", up);
+    svg.addEventListener("wheel", function (e) { e.preventDefault(); skZoom(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY); }, { passive: false });
+    document.addEventListener("keydown", skKey);
+  }
+  function skKey(e) {
+    if (!sk || document.querySelector(".lw-overlay")) return;
+    var tg = e.target && e.target.tagName;
+    if (tg === "INPUT" || tg === "TEXTAREA") return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); if (e.shiftKey) skRedo(); else skUndo(); }
+    else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") { e.preventDefault(); skRedo(); }
+    else if ((e.key === "Delete" || e.key === "Backspace") && skSel()) { e.preventDefault(); var s = skSel(); skChange(function () { sk.shapes = sk.shapes.filter(function (x) { return x !== s; }); sk.sel = null; sk.edge = -1; }); }
+    else if (e.key === "Escape") { if (sk.tap) { sk.tap = null; skRender(); } else if (sk.sel) { sk.sel = null; skRender(); } }
+  }
+  window.addEventListener("resize", function () { if (sk) skRender(); });
 
   function selectTop(id, coathId, coathOpts) {
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
@@ -12843,6 +13593,7 @@ function __detabaseMain() {
     if (sheetsLib && $("sheetsPane") && !$("sheetsPane").hidden) renderSheetsLib();
     if (boardOpen && bd && bd.ctx) bdRedraw();
     if (activeTop === "coath" && !$("coathPane").hidden) applyView();   // Coath moves and undos (subtitle and address follow too)
+    if (activeTop === "coath") skSweepLater();                          // a deleted product's sketches go once Undo is no longer possible
     if (awCur) awCur.redraw();
   }
   // a method's parts: their order is the vine's order
@@ -20108,6 +20859,7 @@ function __detabaseMain() {
     var cparts = decodeURIComponent(initial.slice(6)).split(":");
     if (cparts[0] === "product") openProduct(cparts[1]);
     else if (cparts[0] === "identity") openIdent(cparts[1]);
+    else if (cparts[0] === "sketch") { var skm = skById(cparts[1]); if (skm) { openProduct(skm.product); openSketch(skm.id); } else openCoath("products"); }
     else if (cparts[0] === "products" && cparts[1]) openProductGroup(cparts[1]);
     else openCoath(cparts[0]);
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
