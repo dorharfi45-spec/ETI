@@ -1737,7 +1737,13 @@
   body.top-notebook #subjectsLabel,
   body.top-notebook #customSubjectList,
   body.top-notebook #addSubjectRow,
-  body.top-notebook #addGroupRow { display: none; }
+  body.top-notebook #addGroupRow,
+  body.is-coath #subjectsLabel,
+  body.is-coath #addSubjectRow,
+  body.is-coath #addGroupRow { display: none; }
+  /* Coath Inc. */
+  .co-soon { margin-top: 18px; }
+  .co-soon .co-what { display: block; margin-top: 10px; font-size: .9rem; color: var(--text-secondary); }
 
   .empty-note {
     margin-top: 40px; padding: 40px 24px;
@@ -2439,6 +2445,8 @@
   </nav>
   <!-- flat subject list, used only for non-ETI custom folders -->
   <nav class="folderbar" id="customSubjectList"></nav>
+  <!-- Coath Inc.: its five main folders (COATH INC. section) -->
+  <nav class="folderbar" id="coathNav" hidden></nav>
   <div class="add-row" id="addSubjectRow">
     <button class="add-btn" data-add="subject">+ Subject</button>
     <form class="add-form" hidden>
@@ -2726,6 +2734,7 @@
 
 <div id="subPage" hidden></div>
 <div id="folderPage" class="folder-page" hidden></div>
+<div id="coathPane" class="folder-page" hidden></div>
 <div id="scopePane" hidden></div>
 <div id="sheetsPane" class="folder-page" hidden></div>
 <aside id="bldPanel" hidden></aside>
@@ -2736,7 +2745,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B161</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B162</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5525,6 +5534,10 @@ function __detabaseMain() {
     var onFolder = !onProblem && !onSum && !onScope && !onOwn && !onMining && !onPs && !onSub && activeTop === "eti" && !activeSubject && !!folderPage && groupExists(folderPage);
     var builtin = !onProblem && !onSum && !onScope && !onOwn && !onPs && !onMining && !onSub && !onFolder && activeTop === "eti" && !activeSubject && groupHasBuiltins(activeGroup);
     var showingPlanner = !onProblem && activeTop === "planner" && !activeSubject;
+    var onCoath = !onProblem && activeTop === "coath" && !activeSubject;
+    document.body.classList.toggle("is-coath", activeTop === "coath");
+    $("coathNav").hidden = activeTop !== "coath";
+    $("coathPane").hidden = !onCoath;
     document.body.classList.toggle("top-eti", activeTop === "eti");
     document.body.classList.toggle("top-notebook", activeTop === "notebook");
     document.body.classList.toggle("viewing-problem", onProblem);
@@ -5555,7 +5568,7 @@ function __detabaseMain() {
     $("miningPane").hidden = !onMining;
     if ($("etiMiningBtn")) $("etiMiningBtn").classList.toggle("on", onMining || onPs);   // a method lives in Methods & concepts
     $("topfolder-planner").hidden = !showingPlanner;
-    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onScope || onOwn || onSum || onMining || showingPlanner || onNbBank || !(!activeSubject && !builtin);
+    $("emptyPane").hidden = onProblem || onPs || onSub || onFolder || onScope || onOwn || onSum || onMining || showingPlanner || onCoath || onNbBank || !(!activeSubject && !builtin);
     $("problemPane").hidden = !onProblem;
     if ($("nbBank")) {
       $("nbBank").hidden = !onNbBank;
@@ -5645,6 +5658,12 @@ function __detabaseMain() {
       $("pageSubtitle").innerHTML = fm.sub;
       history.replaceState(null, "", "#" + lastEtiFolder);
       renderSubjectPage();
+    } else if (onCoath) {
+      var cf = coathFolder(coathPage);
+      $("pageTitle").textContent = "Coath Inc.";
+      $("pageSubtitle").innerHTML = escapeHtml(cf.name) + " — " + escapeHtml(cf.sub);
+      history.replaceState(null, "", "#coath:" + cf.id);
+      renderCoathNav(); renderCoathPage();
     } else if (showingPlanner) {
       $("pageTitle").textContent = "Planner";
       $("pageSubtitle").innerHTML = 'Events, sessions and goals — <b>everything here is editable and moveable</b>.';
@@ -5664,10 +5683,58 @@ function __detabaseMain() {
     pageTo(0, true);
   }
 
-  function selectTop(id) {
+  // =========================================================
+  // COATH INC. — the business folder: five main folders, each a page of its own
+  // =========================================================
+  // One registry. A folder whose page is not built yet shows a placeholder; giving its entry a
+  // render(host) later makes it a real page — no saved data depends on which pages exist.
+  var COATH_FOLDERS = [
+    { id: "products",    name: "Products",    icon: "📦", sub: "every product, filed in groups",
+      soon: "Groups of products, and a page for each product: sketches, description, identities and its development plans." },
+    { id: "planning",    name: "Planning",    icon: "📅", sub: "the business plans",
+      soon: "The business plans on the calendar, a Gantt chart and a flow chart, the plans being worked on now, and the plan library." },
+    { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    soon: "" },
+    { id: "marketing",   name: "Marketing",   icon: "📣", sub: "customers and campaigns", soon: "" },
+    { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  soon: "" }
+  ];
+  var coathPage = null;                          // the open Coath folder's id
+  function coathFolder(id) { return COATH_FOLDERS.filter(function (f) { return f.id === id; })[0] || COATH_FOLDERS[0]; }
+  function openCoath(id) { selectTop("coath", id); }
+  function renderCoathNav() {
+    var nav = $("coathNav");
+    if (!nav.children.length) COATH_FOLDERS.forEach(function (f) {
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("data-coath", f.id);
+      b.innerHTML = '<span class="ficon">' + f.icon + '</span>' + escapeHtml(f.name);
+      b.addEventListener("click", function () { openCoath(f.id); });
+      nav.appendChild(b);
+    });
+    Array.prototype.slice.call(nav.children).forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-coath") === coathPage); });
+  }
+  function renderCoathPage() {
+    var host = $("coathPane"), f = coathFolder(coathPage);
+    host.innerHTML = "";
+    var head = document.createElement("div");
+    head.className = "cp-head";
+    head.innerHTML = '<h2></h2><span class="cd-acts"></span>';
+    head.querySelector("h2").textContent = f.icon + " " + f.name;
+    host.appendChild(head);
+    if (f.render) { f.render(host); return; }
+    var note = document.createElement("div");
+    note.className = "empty-note co-soon";
+    note.innerHTML = '<span class="big">' + f.icon + '</span><b>Coming soon</b>' + (f.soon ? '<span class="co-what"></span>' : '');
+    if (f.soon) note.querySelector(".co-what").textContent = f.soon;
+    host.appendChild(note);
+  }
+
+  function selectTop(id, coathId) {
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
     miningScreen = id === "eti"; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;           // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
+    if (id === "coath") {                        // opens on the folder last opened (store.ui.coathPage, synced like ui.group)
+      coathPage = coathFolder(coathId || store.ui.coathPage).id;
+      if (store.ui.coathPage !== coathPage) { store.ui.coathPage = coathPage; saveStore(); }
+    }
     renderSubjectList();
     applyView();
   }
@@ -19493,6 +19560,8 @@ function __detabaseMain() {
     } else { openSub(dk, did); if (!activeSub) selectTop("eti"); }
   } else if (store.subjects.some(function (s) { return s.id === initial; })) {
     selectSubject(initial);
+  } else if (/^coath:/.test(initial)) {
+    openCoath(decodeURIComponent(initial.slice(6)));
   } else if (BUILTIN_TOP[initial] && initial !== "eti") {
     selectTop(initial);
   } else if (store.folders.some(function (f) { return f.id === initial; })) {
