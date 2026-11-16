@@ -2898,7 +2898,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B171</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B172</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -6205,8 +6205,8 @@ function __detabaseMain() {
     var dots = actBtn("⋯", "product options", function () { coMenu(dots, ref); }, "btn-quiet lib-dots");
     acts.appendChild(dots);
     function sec(title) { return coSec(host, title); }
+    coDescSec(host, p);                          // B172: the description comes first, right under the name
     skSection(host, p);
-    coDescSec(host, p);
     var ie = sec("🏷 Identities");
     ie.querySelector(".sums-head").appendChild(actBtn("＋ Attach", "attach a target customer, a sector…", function () { coAttach(p); }));
     var mine = cprIdents(p);
@@ -6449,8 +6449,8 @@ function __detabaseMain() {
     return last ? toISODate(addDays(fromISODate(last), 1)) : toISODate(new Date());
   }
   function coAddStage(p) {
-    askName("New stage", "A plan in Products for “" + p.name + "”; it comes after the last stage.", "", function (n) {
-      libMoved("Added the stage “" + n + "”", function () {
+    askName("New development plan", "A business plan in Products for “" + p.name + "”; it comes after the last one.", "", function (n) {
+      libMoved("Added the plan “" + n + "”", function () {
         var list = coStages(p.id);
         list.push(bizNewPlan({ title: n, product: p.id, start: coLastEnd(list) }));
         coChainStages(list);
@@ -6458,7 +6458,7 @@ function __detabaseMain() {
     });
   }
   function coStdStages(p) {
-    libMoved("Added the standard stages", function () {
+    libMoved("Added the standard plans", function () {
       var list = [], d = toISODate(new Date());
       CO_STD_STAGES.forEach(function (n) {
         var g = bizNewPlan({ title: n, product: p.id, start: d });
@@ -6524,9 +6524,9 @@ function __detabaseMain() {
   }
   function coPlanSection(host, p) {
     var s = coSec(host, "📅 Product planning"), head = s.querySelector(".sums-head"), list = coStages(p.id);
-    if (!list.length) head.appendChild(actBtn("Use the standard stages", CO_STD_STAGES.join(" → "), function () { coStdStages(p); }));
-    head.appendChild(actBtn("＋ Add stage", "a new development stage (a business plan in Products)", function () { coAddStage(p); }, "btn-primary"));
-    if (!list.length) s.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No development stages yet.</b>Each stage is a business plan with its own tasks and ring. “Use the standard stages” adds ' + escapeHtml(CO_STD_STAGES.join(" → ")) + '.</div>');
+    if (!list.length) head.appendChild(actBtn("Use the standard plans", CO_STD_STAGES.join(" → "), function () { coStdStages(p); }));
+    head.appendChild(actBtn("＋ Add plan", "a new development plan (a business plan in Products)", function () { coAddStage(p); }, "btn-primary"));
+    if (!list.length) s.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No development plans yet.</b>Each one is a business plan with its own tasks and ring. “Use the standard plans” adds ' + escapeHtml(CO_STD_STAGES.join(" → ")) + '.</div>');
     else {
       var tl = document.createElement("div");
       tl.className = "co-timeline";
@@ -6547,7 +6547,7 @@ function __detabaseMain() {
         }, ["planner"]);
       } });
       s.appendChild(tl);
-      s.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Hold a stage to drag it: the order is the order they come in (each comes after the one above). Tap a name to open the plan.</p>');
+      s.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Hold a plan to drag it: the order is the order they come in (each comes after the one above). Tap a name to open the plan.</p>');
       animateRings(tl);
     }
     // the product's plans in the other categories
