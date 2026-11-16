@@ -1828,6 +1828,15 @@
   .co-ring.big .plg-pct { font-size: .8rem; }
   .co-planm { display: flex; flex-direction: column; gap: 4px; }
   .co-planm small { color: var(--text-muted); }
+  /* side panels: a goal's tasks (B175) */
+  .plg-exp { display: inline-block; margin-top: 4px; border: 0; background: none; padding: 2px 0; font-size: .74rem; font-weight: 650; color: var(--accent); cursor: pointer; min-height: 28px; }
+  .plg-tree { margin: 2px 0 6px 12px; }
+  .plg-tree .co-stree { margin-top: 2px; }
+  .co-st-panel .co-task.undated { cursor: grab; }
+  .co-st-panel .co-task.undated .co-tt::before { content: "⠿ "; color: var(--text-muted); }
+  .co-st-panel .co-pst.shut { padding-bottom: 4px; }
+  .co-actwrap { display: flex; flex-direction: column; }
+  .pl-day-col.dnd-hot, .pl-mcell.dnd-hot { background: color-mix(in srgb, var(--accent) 12%, transparent); outline: 2px dashed var(--accent); outline-offset: -2px; }
   .co-desc-ta { width: 100%; box-sizing: border-box; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-1); color: var(--text-primary); padding: 10px 12px; font: inherit; resize: vertical; min-height: 70px; }
   .co-link { border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); border-radius: 999px; padding: 1px 9px; font-size: .74rem; font-weight: 600; cursor: pointer; min-height: 24px; }
   .co-link:hover { color: var(--accent); border-color: var(--accent); }
@@ -2929,7 +2938,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B174</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B175</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3070,7 +3079,7 @@
     <aside class="pl-goals">
       <button id="plAllGoals" type="button" class="pl-goalpage-btn">Goals overview →</button>
       <div class="pl-side-head" style="flex-wrap:wrap;gap:5px;"><span class="sidebar-label" style="padding:0">Working on now</span><span style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;"><button id="plNewGoal" type="button" class="tool-btn small">+ Goal</button><button id="plNewLongGoal" type="button" class="tool-btn small" title="a goal made of other goals">+ Long</button></span></div>
-      <div id="plGoalList" class="pl-goal-list"></div>
+      <div id="plGoalList" class="pl-goal-list" data-unsched></div>
     </aside>
   </div>
 </div>
@@ -6541,6 +6550,10 @@ function __detabaseMain() {
   //   "page"  — the plan page: stages and their tasks can be dragged, renamed, marked done; "Add a task…" per stage
   //   "panel" — the Planning side panel (B175): done stages folded and dimmed; undated tasks can be dragged onto the calendar
   var coStOpen = {};                             // stage id → opened / closed by hand (this session)
+  function coRefresh() {                         // redraw whichever page shows plans: Coath, the planner
+    if (!$("coathPane").hidden) renderCoathPage();
+    if (!$("topfolder-planner").hidden) renderPlanner();
+  }
   function coTaskRow(s, o) {
     var row = document.createElement("div");
     row.className = "co-task" + (s.done ? " done" : "") + (s.date ? "" : " undated");
@@ -6549,7 +6562,7 @@ function __detabaseMain() {
     row.querySelector(".co-tt").textContent = sessionListLabel(s);
     if (s.date) row.querySelector(".co-tdate").textContent = coFmtDate(s.date) + (s.start ? " " + s.start : "");
     var cb = row.querySelector("input");
-    cb.addEventListener("change", function () { s.done = cb.checked; saveStore(); renderCoathPage(); });
+    cb.addEventListener("change", function () { s.done = cb.checked; saveStore(); coRefresh(); });
     row.querySelector(".co-tt").addEventListener("click", function () { cb.click(); });
     if (o.mode === "page") row.appendChild(actBtn("✎", "edit the task (date, time, notes)", function () { openPlannerEditor("session", s.id); }, "co-tedit no-drag"));
     return row;
@@ -6562,7 +6575,7 @@ function __detabaseMain() {
     inp.placeholder = label || "Add a task…";
     function go() {
       var t = inp.value.trim(); if (!t) { inp.focus(); return; }
-      plNewTask(g, t, stageId); saveStore(); renderCoathPage();
+      plNewTask(g, t, stageId); saveStore(); coRefresh();
     }
     add.querySelector("button").addEventListener("click", go);
     inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); go(); } });
@@ -6586,7 +6599,8 @@ function __detabaseMain() {
           l2.forEach(function (x, i) { x.torder = i; });
         }, ["planner"]);
       } });
-      if (o.mode === "panel" && o.onTasks) o.onTasks(l);
+      // the side panels: an undated task lifts out (long press / drag) to be dropped on a calendar day or time (B175)
+      else if (o.mode === "panel") dndList(l, { type: "ptask", item: ".co-task.undated", accepts: [], onDrop: function () {} });
       return l;
     }
     inf.stages.forEach(function (x) {
@@ -6598,7 +6612,7 @@ function __detabaseMain() {
         '<span class="co-badge b-' + x.status + '">' + PL_STATUS[x.status] + '</span><small class="co-pstc"></small></div>';
       el.querySelector(".co-pstname").textContent = st.name;
       el.querySelector(".co-pstc").textContent = x.tasks.filter(function (t) { return t.done; }).length + "/" + x.tasks.length;
-      el.querySelector(".co-pstname").addEventListener("click", function () { coStOpen[st.id] = !open; renderCoathPage(); });
+      el.querySelector(".co-pstname").addEventListener("click", function () { coStOpen[st.id] = !open; coRefresh(); });
       if (page) {
         var d = actBtn("⋯", "stage options", function () { coStageMenu(d, g, st); }, "lib-dots");
         el.querySelector(".co-psth").appendChild(d);
@@ -6829,7 +6843,7 @@ function __detabaseMain() {
     host.appendChild(bar);
     var body = document.createElement("div");
     body.className = "co-plan-body" + (u.view === "calendar" ? "" : " wide");   // a chart gets the full width; Active plans go below
-    body.innerHTML = '<div class="co-plan-main"></div><aside class="co-plan-side"><h3 class="fp-h">Active plans</h3><div class="pl-goal-list co-active"></div></aside>';
+    body.innerHTML = '<div class="co-plan-main"></div><aside class="co-plan-side"><h3 class="fp-h">Active plans</h3><div class="pl-goal-list co-active" data-unsched></div></aside>';
     host.appendChild(body);
     var main = body.querySelector(".co-plan-main");
     coCal = null;
@@ -6838,8 +6852,9 @@ function __detabaseMain() {
     else coDrawGantt(main);
     var act = bizPlans().filter(coPlanActive).sort(function (a, b) { return String(a.deadline || "~").localeCompare(String(b.deadline || "~")); });
     var side = body.querySelector(".co-active");
-    side.innerHTML = act.length ? act.map(function (g) { return goalCardHtml(g); }).join("") : '<div class="pl-empty-hint">Nothing running right now.</div>';
+    side.innerHTML = act.length ? act.map(function (g) { return '<div class="co-actwrap">' + goalCardHtml(g) + '</div>'; }).join("") : '<div class="pl-empty-hint">Nothing running right now.</div>';
     wireGoalCards(side, openPlan);
+    wireTaskExpand(side);
     coPlanLibrary(host);
     coRenderIdTypes(host, "planning");
   }
@@ -8618,6 +8633,7 @@ function __detabaseMain() {
     html += '</div>';
     box.innerHTML = html;
     Array.prototype.slice.call(box.querySelectorAll(".pl-mcell")).forEach(function (cell) {
+      dndInto(cell, { accepts: ["ptask"], onDrop: function (drag) { plScheduleTask(drag.id, cell.getAttribute("data-date"), null); } });   // B175: a to-do dropped on a day
       cell.addEventListener("click", function () {
         plSelectedDate = cell.getAttribute("data-date");
         plWeekStart = startOfWeek(fromISODate(plSelectedDate));
@@ -8707,8 +8723,32 @@ function __detabaseMain() {
     });
 
     if (scrollWrap) scrollWrap.scrollTop = prevScrollTop > 0 ? prevScrollTop : Math.max(0, (dayStartMin() / 60 * PL_PXH) - 22);
+    wireCalendarDrops(cal);
   }
 
+  // DRAG TO SCHEDULE (B175): a task lifted from a side panel (drag type "ptask") dropped on a day column (at the
+  // time under the finger, 15-minute steps) or a month day (after that day's last session); a session dragged
+  // off the calendar onto a side panel ([data-unsched]) becomes a to-do again. Undo for each.
+  function plSessionById(id) { return store.planner.sessions.filter(function (x) { return x.id === id; })[0] || null; }
+  function plScheduleTask(id, date, min) {
+    var s = plSessionById(id); if (!s) return;
+    if (min == null) min = Math.min(PL_DAY_END - 15, stackCursorMin(date));
+    var d = fromISODate(date);
+    libMoved("Scheduled “" + sessionListLabel(s) + "” — " + PL_DOW[d.getDay()] + " " + (d.getMonth() + 1) + "/" + d.getDate() + " " + minToTime(min), function () {
+      s.date = date; s.start = minToTime(min); s.auto = false;
+    }, ["planner"]);
+  }
+  function plUnscheduleTask(s) {
+    libMoved("“" + sessionListLabel(s) + "” is a to-do again", function () { s.date = null; s.start = null; }, ["planner"]);
+  }
+  function wireCalendarDrops(cal) {
+    Array.prototype.slice.call(calEl(cal, "grid").querySelectorAll(".pl-day-col")).forEach(function (col) {
+      dndInto(col, { accepts: ["ptask"], onDrop: function (drag) {
+        var r = col.getBoundingClientRect(), min = PL_DAY_START + Math.round(((drag.y - r.top) / PL_PXH * 60) / 15) * 15;
+        plScheduleTask(drag.id, col.getAttribute("data-date"), Math.max(PL_DAY_START, Math.min(PL_DAY_END - 15, min)));
+      } });
+    });
+  }
   function wirePlannerBlock(el, item, kind, cal) {
     el.addEventListener("pointerdown", function (e) {
       if (e.target.closest(".pl-block-resize")) return;
@@ -8721,6 +8761,7 @@ function __detabaseMain() {
         var dx = ev.clientX - sx, dy = ev.clientY - sy;
         if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
         if (!moved) return;
+        el.style.pointerEvents = "none";            // so what is under the finger can be found on release
         var top = Math.max(0, startTop + dy);
         el.style.top = top + "px";
         var target = null;
@@ -8730,10 +8771,13 @@ function __detabaseMain() {
         }
         if (target && target !== el.parentElement) target.appendChild(el);
       }
-      function up() {
+      function up(ev) {
         document.removeEventListener("pointermove", mv, true);
         document.removeEventListener("pointerup", up, true);
         if (!moved) { openPlannerEditor(kind, item.id); return; }
+        var under = ev && document.elementFromPoint(ev.clientX, ev.clientY);
+        el.style.pointerEvents = "";
+        if (kind === "session" && under && under.closest && under.closest("[data-unsched]")) { plUnscheduleTask(item); return; }   // dropped on a side panel
         var finalCol = el.parentElement;
         var newDate = finalCol.getAttribute("data-date");
         var top = parseFloat(el.style.top) || 0;
@@ -9373,6 +9417,24 @@ function __detabaseMain() {
     box.innerHTML = html;
     applySavedOrder(box, "> .pl-goal-group", function (el) { return el.getAttribute("data-id"); }, store.order.plGoals);
     wireGoalCards(box);
+    wireTaskExpand(box);
+  }
+  // goal cards in a side panel open up (B175): a short goal's stages (business plans) and tasks, the panel
+  // way — undated tasks lift out onto the calendar. Opened goals are remembered for the session.
+  var plTaskOpen = {};
+  function wireTaskExpand(scope) {
+    Array.prototype.slice.call(scope.querySelectorAll(".plg-row[data-id]")).forEach(function (row) {
+      var g = goalById(row.getAttribute("data-id")); if (!g || goalMode(g) !== "short") return;
+      var open = !!plTaskOpen[g.id], todo = goalSessions(g.id).filter(function (s) { return !s.done && !s.date; }).length;
+      var b = actBtn((open ? "▾ " : "▸ ") + (plStages(g).length ? "Stages and tasks" : "Tasks") + (todo ? " · " + todo + " to schedule" : ""), "show its tasks; drag an unscheduled one onto the calendar",
+        function (e) { e.stopPropagation(); plTaskOpen[g.id] = !open; coRefresh(); }, "plg-exp");
+      row.querySelector(".plg-body").appendChild(b);
+      if (!open) return;
+      var t = document.createElement("div");
+      t.className = "plg-tree";
+      coStageTree(t, g, { mode: "panel" });
+      row.after(t);
+    });
   }
   function wireGoalCards(scope, open) {          // goal cards (goalCardHtml): tap = open(id) (default: its editor), ★, rings fill
     Array.prototype.slice.call(scope.querySelectorAll(".plg-row, .plg-lt-chip")).forEach(function (el) {
@@ -14558,6 +14620,7 @@ function __detabaseMain() {
     if (boardOpen && bd && bd.ctx) bdRedraw();
     if (activeTop === "coath" && !$("coathPane").hidden) applyView();   // Coath moves and undos (subtitle and address follow too)
     if (activeTop === "coath") skSweepLater();                          // a deleted product's sketches go once Undo is no longer possible
+    if (!$("topfolder-planner").hidden) renderPlanner();               // a planner change (scheduling a task) and its Undo
     if (awCur) awCur.redraw();
   }
   // a method's parts: their order is the vine's order
