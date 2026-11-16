@@ -2311,7 +2311,7 @@
   .pl-check-item.checked span { text-decoration: line-through; color: var(--text-muted); }
   .pl-check-item button { flex-shrink: 0; padding: 1px 7px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); }
   .pl-add-check { display: flex; gap: 6px; margin-bottom: 14px; }
-  .pl-add-check input { flex: 1; }
+  .pl-add-check input { flex: 1; min-width: 0; min-height: 36px; padding: 4px 10px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface-1); color: var(--text-primary); font: inherit; }   /* B178: themed (was white in dark mode) */
   .pl-ed-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
   .pl-ed-actions button { font-size: .82rem; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border-strong); background: transparent; color: var(--text-secondary); }
   .pl-ed-actions button.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
@@ -2951,7 +2951,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B177</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B178</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
