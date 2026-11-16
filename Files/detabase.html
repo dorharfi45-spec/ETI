@@ -1799,6 +1799,36 @@
   .co-task.done span { text-decoration: line-through; color: var(--text-muted); }
   .co-addtask { margin-top: 4px; }
   .co-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  /* stages inside a plan (B174) */
+  .co-stree { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .co-pst { border: 1px solid var(--border); border-radius: 10px; padding: 4px 8px 6px; background: var(--bg); }
+  .co-psth { display: flex; align-items: center; gap: 8px; min-height: 36px; }
+  .co-pstn { flex: 0 0 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: .74rem; font-weight: 800; background: var(--surface-2); color: var(--text-secondary); }
+  .co-st-page .co-pstn { cursor: grab; }
+  .co-pstname { flex: 1; min-width: 0; border: 0; background: none; padding: 0; text-align: left; font: inherit; font-weight: 700; font-size: .88rem; color: var(--text-primary); cursor: pointer; min-height: 32px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .co-pstc { font-size: .72rem; color: var(--text-muted); }
+  .co-badge { flex: 0 0 auto; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid; }
+  .b-done { color: #15803d; border-color: #86efac; background: #f0fdf4; }
+  .b-progress { color: #b45309; border-color: #fcd34d; background: #fffbeb; }
+  .b-next { color: #1d4ed8; border-color: #93c5fd; background: #eff6ff; }
+  .b-later { color: var(--text-muted); border-color: var(--border-strong); background: transparent; }
+  @media (prefers-color-scheme: dark) { .co-badge { background: transparent !important; } .b-done { color: #86efac; } .b-progress { color: #fcd34d; } .b-next { color: #93c5fd; } }
+  .co-pst.s-done { opacity: .62; }
+  .co-pst.s-progress { border-color: #fcd34d; }
+  .co-pst.s-next { border-color: #93c5fd; }
+  .co-pst.shut .co-pstname::after { content: " ▸"; color: var(--text-muted); font-weight: 400; }
+  .co-pst.s-loose { border-style: dashed; }
+  .co-st-page .co-tasks { min-height: 34px; margin-top: 2px; }
+  .co-st-page .co-tasks:empty::before { content: "No tasks yet — add one below, or drag one here."; display: block; padding: 8px 4px; font-size: .78rem; color: var(--text-muted); }
+  .co-task .co-tt { flex: 1; min-width: 0; cursor: pointer; }
+  .co-tdate { font-size: .72rem; color: var(--text-muted); white-space: nowrap; }
+  .co-tedit { border: 0; background: none; color: var(--text-muted); min-width: 32px; min-height: 32px; cursor: pointer; }
+  .co-planmeta { display: flex; align-items: center; gap: 14px; margin: 4px 0 6px; }
+  .co-ring.big { width: 64px; height: 64px; }
+  .co-ring.big .plg-pct { font-size: .8rem; }
+  .co-planm { display: flex; flex-direction: column; gap: 4px; }
+  .co-planm small { color: var(--text-muted); }
+  .co-desc-ta { width: 100%; box-sizing: border-box; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-1); color: var(--text-primary); padding: 10px 12px; font: inherit; resize: vertical; min-height: 70px; }
   .co-link { border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); border-radius: 999px; padding: 1px 9px; font-size: .74rem; font-weight: 600; cursor: pointer; min-height: 24px; }
   .co-link:hover { color: var(--accent); border-color: var(--accent); }
   /* the Planning page */
@@ -2899,7 +2929,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B173</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B174</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5819,12 +5849,13 @@ function __detabaseMain() {
       $("pageTitle").textContent = "Coath Inc.";
       renderCoathNav(); renderCoathPage();           // first: drawing the page clears whatever no longer exists
       var onProd = cf.id === "products", cpx = onProd && cprById(coathProduct), cgx = onProd && cgById(cpx ? cprGroup(cpx) : coathGroup);
-      var cix = !onProd && cidById(coathIdent);
-      $("pageSubtitle").innerHTML = cpx ? 'A product in <b>' + escapeHtml(cgx ? cgx.name : "Products") + '</b>'
+      var cix = !onProd && cidById(coathIdent), cpl = coathPlan && goalById(coathPlan);
+      if (cpl) cpx = cgx = cix = null;
+      $("pageSubtitle").innerHTML = cpl ? 'A plan in <b>' + escapeHtml(cf.name) + '</b>' : cpx ? 'A product in <b>' + escapeHtml(cgx ? cgx.name : "Products") + '</b>'
         : cgx ? 'A group in <b>' + escapeHtml(cgParent(cgx) ? cgById(cgParent(cgx)).name : "Products") + '</b>'
         : cix ? 'One of the <b>' + escapeHtml(citById(cix.type).name) + '</b> — ' + escapeHtml(cf.name)
         : escapeHtml(cf.name) + " — " + escapeHtml(cf.sub);
-      history.replaceState(null, "", "#coath:" + (cpx ? "product:" + cpx.id : cgx ? "products:" + cgx.id : cix ? "identity:" + cix.id : cf.id));
+      history.replaceState(null, "", "#coath:" + (cpl ? "plan:" + cpl.id : cpx ? "product:" + cpx.id : cgx ? "products:" + cgx.id : cix ? "identity:" + cix.id : cf.id));
     } else if (showingPlanner) {
       $("pageTitle").textContent = "Planner";
       $("pageSubtitle").innerHTML = 'Events, sessions and goals — <b>everything here is editable and moveable</b>.';
@@ -5861,6 +5892,7 @@ function __detabaseMain() {
   var coathGroup = "";                           // Products: the open group ("" = the top of Products)
   var coathProduct = null;                       // Products: the open product's id
   var coathIdent = null;                         // an identity's page (shown in the folder that owns its type)
+  var coathPlan = null;                          // a business plan's page (B174; shown in its category's folder)
   var coathDescEdit = false;                     // the open product's (or identity's) description is being edited
   function coathFolder(id) { return COATH_FOLDERS.filter(function (f) { return f.id === id; })[0] || COATH_FOLDERS[0]; }
   function openCoath(id) { selectTop("coath", id); }
@@ -5889,6 +5921,9 @@ function __detabaseMain() {
   function renderCoathPage() {
     var host = $("coathPane"), f = coathFolder(coathPage);
     host.innerHTML = "";
+    var pg = goalById(coathPlan);
+    if (goalBiz(pg)) { coRenderPlan(host, pg); return; }   // a plan's page sits in its category's folder
+    coathPlan = null;
     f.render(host);
   }
   // Management, Marketing, Maintenance: the folder's Plans (B173), then the identity types it owns
@@ -6413,11 +6448,11 @@ function __detabaseMain() {
   }
 
   // ---- Product planning (B167): the product's development stages = its business plans in Products,
-  // in order (goal.stage); each one "comes after" the one before it (reqGoals). The same goals as the planner. ----
+  // in order (goal.porder; called goal.stage until B174); each one "comes after" the one before it (reqGoals). The same goals as the planner. ----
   var CO_STD_STAGES = ["Idea", "Research", "Design and sketches", "Prototype", "Testing", "Production", "Launch"];
   function coStages(pid) {
     return bizPlansOf(pid).filter(function (g) { return bizCat(g).id === "products"; }).sort(function (a, b) {
-      var sa = a.stage == null ? 1e6 : a.stage, sb = b.stage == null ? 1e6 : b.stage;
+      var sa = a.porder == null ? 1e6 : a.porder, sb = b.porder == null ? 1e6 : b.porder;
       return sa - sb || String(a.start || "").localeCompare(String(b.start || "")) || String(a.title).localeCompare(String(b.title));
     });
   }
@@ -6426,7 +6461,7 @@ function __detabaseMain() {
   function coChainStages(list) {
     var ids = list.map(function (g) { return g.id; });
     list.forEach(function (g, i) {
-      g.stage = i;
+      g.porder = i;
       g.reqGoals = (g.reqGoals || []).filter(function (r) { return ids.indexOf(r) < 0; });
       if (i) g.reqGoals.push(list[i - 1].id);
     });
@@ -6436,7 +6471,7 @@ function __detabaseMain() {
     var start = o.start || toISODate(new Date());
     var g = { id: uid("pl_"), title: o.title, mode: "short", long: false, business: true, category: o.category || "products", start: start,
       deadline: o.deadline || toISODate(addDays(fromISODate(start), 13)), targetCount: 0, parentIds: [], reqSkills: [], reqGoals: [], components: [],
-      reqTotalLevel: 0, current: false, color: PL_COLORS[store.planner.goals.length % PL_COLORS.length] };
+      reqTotalLevel: 0, current: false, pstages: [], color: PL_COLORS[store.planner.goals.length % PL_COLORS.length] };
     if (o.product) g.product = o.product;
     store.planner.goals.push(g);
     return g;
@@ -6475,7 +6510,8 @@ function __detabaseMain() {
   }
   function coPlanMenu(anchor, g) {
     libMenu(anchor, [
-      { label: "Open the plan…", run: function () { openPlannerEditor("goal", g.id); } },
+      { label: "Open the plan", run: function () { openPlan(g.id); } },
+      { label: "⚙ Settings…", run: function () { openPlannerEditor("goal", g.id); } },
       { label: "✎ Rename", run: function () { askName("Rename plan", "", g.title, function (n) { g.title = n; saveStore(); renderCoathPage(); }); } },
       { sep: true },
       { label: "Delete plan…", danger: true, run: function () { coDropPlan(g); } }
@@ -6489,7 +6525,7 @@ function __detabaseMain() {
     top.className = "co-stage-top" + (done ? " done" : locked ? " locked" : "");
     top.innerHTML = '<div class="plg-ring co-ring">' + orbSvg(pr.pct) + '<span class="plg-pct">' + pr.pct + '%</span></div><div class="co-stage-t"><button type="button" class="co-stage-name"></button><small></small></div>';
     top.querySelector(".co-stage-name").textContent = g.title + (done ? " ✓" : locked ? " 🔒" : "");
-    top.querySelector(".co-stage-name").addEventListener("click", function () { openPlannerEditor("goal", g.id); });
+    top.querySelector(".co-stage-name").addEventListener("click", function () { openPlan(g.id); });
     var after = (g.reqGoals || []).map(goalById).filter(Boolean).map(function (x) { return x.title; });
     top.querySelector("small").textContent = coFmtDate(g.start) + " → " + coFmtDate(g.deadline) + " · " + pr.done + " / " + pr.total + " tasks" + (after.length ? " · after " + after.join(", ") : "");
     var dots = actBtn("⋯", "plan options", function () { coPlanMenu(dots, g); }, "lib-dots");
@@ -6498,28 +6534,153 @@ function __detabaseMain() {
     var ch = coPlanChips(g, chips);
     if (ch) top.querySelector(".co-stage-t small").before(ch);
     if (String(g.desc || "").trim()) { var dsc = document.createElement("p"); dsc.className = "co-stage-desc"; dsc.textContent = g.desc; card.appendChild(dsc); }
-    var tl = document.createElement("div");
-    tl.className = "co-tasks";
-    goalSessions(g.id).slice().sort(function (a, b) { return (a.done ? 1 : 0) - (b.done ? 1 : 0) || (a.date || "~").localeCompare(b.date || "~"); }).forEach(function (s) {
-      var row = document.createElement("label");
-      row.className = "co-task" + (s.done ? " done" : "");
-      row.innerHTML = '<input type="checkbox"' + (s.done ? " checked" : "") + '><span></span>';
-      row.querySelector("span").textContent = sessionListLabel(s) + (s.date ? " · " + coFmtDate(s.date) : "");
-      row.querySelector("input").addEventListener("change", function () { s.done = this.checked; saveStore(); renderCoathPage(); });
-      tl.appendChild(row);
-    });
+    coStageTree(card, g, { mode: "card" });
+  }
+  // A PLAN'S STAGES AND TASKS (B174) — one component wherever they appear. o.mode:
+  //   "card"  — a plan card: ranked stages with number + status badge, done stages folded, tasks checkable, one "Add a task…"
+  //   "page"  — the plan page: stages and their tasks can be dragged, renamed, marked done; "Add a task…" per stage
+  //   "panel" — the Planning side panel (B175): done stages folded and dimmed; undated tasks can be dragged onto the calendar
+  var coStOpen = {};                             // stage id → opened / closed by hand (this session)
+  function coTaskRow(s, o) {
+    var row = document.createElement("div");
+    row.className = "co-task" + (s.done ? " done" : "") + (s.date ? "" : " undated");
+    row.setAttribute("data-id", s.id);
+    row.innerHTML = '<input type="checkbox"' + (s.done ? " checked" : "") + '><span class="co-tt"></span>' + (s.date ? '<small class="co-tdate"></small>' : "");
+    row.querySelector(".co-tt").textContent = sessionListLabel(s);
+    if (s.date) row.querySelector(".co-tdate").textContent = coFmtDate(s.date) + (s.start ? " " + s.start : "");
+    var cb = row.querySelector("input");
+    cb.addEventListener("change", function () { s.done = cb.checked; saveStore(); renderCoathPage(); });
+    row.querySelector(".co-tt").addEventListener("click", function () { cb.click(); });
+    if (o.mode === "page") row.appendChild(actBtn("✎", "edit the task (date, time, notes)", function () { openPlannerEditor("session", s.id); }, "co-tedit no-drag"));
+    return row;
+  }
+  function coAddTaskBox(g, stageId, label) {
     var add = document.createElement("div");
     add.className = "pl-add-check co-addtask";
-    add.innerHTML = '<input type="text" maxlength="80" placeholder="Add a task…"><button type="button">Add</button>';
-    function addTask() {
-      var t = add.querySelector("input").value.trim(); if (!t) { add.querySelector("input").focus(); return; }
-      store.planner.sessions.push({ id: uid("ps_"), date: null, start: null, duration: 60, title: t, checklist: [], notes: "", goalId: g.id, templateId: null, done: false });
-      saveStore(); renderCoathPage();
+    add.innerHTML = '<input type="text" maxlength="80"><button type="button">Add</button>';
+    var inp = add.querySelector("input");
+    inp.placeholder = label || "Add a task…";
+    function go() {
+      var t = inp.value.trim(); if (!t) { inp.focus(); return; }
+      plNewTask(g, t, stageId); saveStore(); renderCoathPage();
     }
-    add.querySelector("button").addEventListener("click", addTask);
-    add.querySelector("input").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addTask(); } });
-    tl.appendChild(add);
-    card.appendChild(tl);
+    add.querySelector("button").addEventListener("click", go);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); go(); } });
+    return add;
+  }
+  function coStageTree(box, g, o) {
+    var inf = plStageInfo(g), wrap = document.createElement("div"), page = o.mode === "page";
+    wrap.className = "co-stree co-st-" + o.mode;
+    function taskList(tasks, stageId) {
+      var l = document.createElement("div");
+      l.className = "co-tasks";
+      l.setAttribute("data-stage", stageId || "");
+      tasks.forEach(function (s) { l.appendChild(coTaskRow(s, o)); });
+      if (page) dndList(l, { type: "ptask", item: ".co-task", onDrop: function (drag, index, target) {   // move a task (also to another stage)
+        var s = store.planner.sessions.filter(function (x) { return x.id === drag.id; })[0]; if (!s) return;
+        var to = target.getAttribute("data-stage") || null;
+        libMoved("Moved “" + sessionListLabel(s) + "”", function () {
+          var l2 = goalSessions(g.id).filter(function (x) { return (x.stageId || null) === to && x !== s; }).sort(plTaskOrder);
+          l2.splice(Math.min(index, l2.length), 0, s);
+          if (to) s.stageId = to; else delete s.stageId;
+          l2.forEach(function (x, i) { x.torder = i; });
+        }, ["planner"]);
+      } });
+      if (o.mode === "panel" && o.onTasks) o.onTasks(l);
+      return l;
+    }
+    inf.stages.forEach(function (x) {
+      var st = x.st, open = coStOpen[st.id] != null ? coStOpen[st.id] : (o.mode === "page" || x.status === "progress" || x.status === "next" || (o.mode === "card" && x.status === "later"));
+      var el = document.createElement("div");
+      el.className = "co-pst s-" + x.status + (open ? "" : " shut");
+      el.setAttribute("data-id", st.id);
+      el.innerHTML = '<div class="co-psth"><span class="co-pstn">' + x.n + '</span><button type="button" class="co-pstname no-drag"></button>' +
+        '<span class="co-badge b-' + x.status + '">' + PL_STATUS[x.status] + '</span><small class="co-pstc"></small></div>';
+      el.querySelector(".co-pstname").textContent = st.name;
+      el.querySelector(".co-pstc").textContent = x.tasks.filter(function (t) { return t.done; }).length + "/" + x.tasks.length;
+      el.querySelector(".co-pstname").addEventListener("click", function () { coStOpen[st.id] = !open; renderCoathPage(); });
+      if (page) {
+        var d = actBtn("⋯", "stage options", function () { coStageMenu(d, g, st); }, "lib-dots");
+        el.querySelector(".co-psth").appendChild(d);
+      }
+      if (open) {
+        el.appendChild(taskList(x.tasks, st.id));
+        if (page) el.appendChild(coAddTaskBox(g, st.id, "Add a task to “" + st.name + "”…"));
+      }
+      wrap.appendChild(el);
+    });
+    if (inf.loose.length || !inf.stages.length) {
+      var lo = document.createElement("div");
+      lo.className = "co-pst s-loose";
+      if (inf.stages.length) lo.innerHTML = '<div class="co-psth"><span class="co-pstn">·</span><b class="co-pstname">Tasks with no stage</b></div>';
+      lo.appendChild(taskList(inf.loose, null));
+      wrap.appendChild(lo);
+    }
+    if (page) dndList(wrap, { type: "pstage", item: ".co-pst:not(.s-loose)", handle: ".co-psth", onDrop: function (drag, index) {
+      libMoved("Moved the stage", function () {
+        var l = plStages(g).filter(function (x) { return x.id !== drag.id; }), st = plStages(g).filter(function (x) { return x.id === drag.id; })[0];
+        l.splice(Math.min(index, l.length), 0, st);
+        g.pstages = l;
+      }, ["planner"]);
+    } });
+    if (o.mode === "card") wrap.appendChild(coAddTaskBox(g));
+    box.appendChild(wrap);
+  }
+  function coStageMenu(anchor, g, st) {
+    libMenu(anchor, [
+      { label: "✎ Rename", run: function () { askName("Rename stage", "", st.name, function (n) { st.name = n; saveStore(); renderCoathPage(); }); } },
+      { label: st.done ? "↺ Not done (follow its tasks)" : "✓ Mark done", run: function () {
+        libMoved(st.done ? "“" + st.name + "” follows its tasks again" : "Marked “" + st.name + "” done", function () { if (st.done) delete st.done; else st.done = true; }, ["planner"]);
+      } },
+      { sep: true },
+      { label: "Delete stage…", danger: true, run: function () {
+        if (!confirmDelete(st.name)) return;
+        libMoved("Deleted the stage “" + st.name + "” (its tasks stay)", function () {
+          g.pstages = plStages(g).filter(function (x) { return x !== st; });
+          goalSessions(g.id).forEach(function (s) { if (s.stageId === st.id) delete s.stageId; });
+        }, ["planner"]);
+      } }
+    ]);
+  }
+  // ---- a plan's page (B174): what every Coath list opens; the planner's editor stays for dates and settings ----
+  function openPlan(id) {
+    var g = goalById(id);
+    if (!goalBiz(g)) { if (g) openPlannerEditor("goal", id); return; }
+    selectTop("coath", bizCat(g).id, { plan: id });
+  }
+  function coRenderPlan(host, g) {
+    var c = bizCat(g), f = coathFolder(c.id), pr = goalProgress(g);
+    var nav = document.createElement("nav");
+    nav.className = "fp-path";
+    nav.appendChild(actBtn(f.icon + " " + f.name, "back to " + f.name, function () { openCoath(f.id); }, "fp-crumb"));
+    if (cprById(g.product)) { nav.insertAdjacentHTML("beforeend", '<span class="fp-sep">›</span>'); nav.appendChild(actBtn("📦 " + cprById(g.product).name, "the product", function () { openProduct(g.product); }, "fp-crumb")); }
+    host.appendChild(nav);
+    var acts = coHead(host, "📋 " + g.title, function () { askName("Rename plan", "", g.title, function (n) { g.title = n; saveStore(); applyView(); }); });
+    acts.appendChild(actBtn("⚙ Settings", "dates, category, product, colour — the planner's editor", function () { openPlannerEditor("goal", g.id); }));
+    var dots = actBtn("⋯", "plan options", function () { coPlanMenu(dots, g); }, "btn-quiet lib-dots");
+    acts.appendChild(dots);
+    var meta = document.createElement("div");
+    meta.className = "co-planmeta";
+    meta.innerHTML = '<div class="plg-ring co-ring big">' + orbSvg(pr.pct) + '<span class="plg-pct">' + pr.pct + '%</span></div><div class="co-planm"><span class="co-chips"></span><small></small></div>';
+    meta.style.setProperty("--goal-color", g.color || "var(--accent)");
+    meta.querySelector(".co-chips").innerHTML = bizChipHtml(g);
+    var after = (g.reqGoals || []).map(goalById).filter(Boolean).map(function (x) { return x.title; });
+    meta.querySelector("small").textContent = coFmtDate(g.start) + " → " + coFmtDate(g.deadline) + " · " + pr.done + " / " + pr.total + " tasks done" + (after.length ? " · comes after " + after.join(", ") : "");
+    host.appendChild(meta);
+    animateRings(meta);
+    var de = coSec(host, "📝 Description"), ta = document.createElement("textarea"), tm = null;
+    ta.className = "co-desc-ta"; ta.value = g.desc || ""; ta.placeholder = "What this plan is for…"; ta.rows = 3;
+    ta.addEventListener("input", function () { if (ta.value.trim()) g.desc = ta.value; else delete g.desc; clearTimeout(tm); tm = setTimeout(saveStore, 400); });
+    ta.addEventListener("blur", saveStore);
+    de.appendChild(ta);
+    var ss = coSec(host, "🪜 Stages");
+    ss.querySelector(".sums-head").appendChild(actBtn("＋ Stage", "a new stage, last in the order", function () {
+      askName("New stage", "Stages are done in order: drag them to rank them.", "Stage " + (plStages(g).length + 1), function (n) {
+        libMoved("Added the stage “" + n + "”", function () { g.pstages = plStages(g).concat([{ id: uid("pst_"), name: n }]); }, ["planner"]);
+      });
+    }, "btn-primary"));
+    coStageTree(ss, g, { mode: "page" });
+    ss.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Hold a stage’s number to drag it into the order it needs to be done; hold a task to move it, also to another stage. Status: Done = all its tasks done (or marked done in ⋯) · In progress = some done, or one dated today or earlier · Next = the first of the rest.</p>');
   }
   // THE PLAN LIST (B173) — one component for every list of business plans in Coath: Product planning, the
   // Other plans of a product, a folder's Plans, a project. Each plan: ring, name, dates, chips, description,
@@ -6629,7 +6790,7 @@ function __detabaseMain() {
     askName("New business plan", "It also shows in the planner.", "", function (n) {
       function make(cat) {
         var g = bizNewPlan({ title: n, category: cat, product: u.product || undefined });
-        saveStore(); renderCoathPage(); openPlannerEditor("goal", g.id);
+        saveStore(); openPlan(g.id);
       }
       if (u.cats.length === 1) make(u.cats[0]);
       else coPickFolder("Which category?", "Products, Management, Marketing or Maintenance.", make, bizCats());
@@ -6678,7 +6839,7 @@ function __detabaseMain() {
     var act = bizPlans().filter(coPlanActive).sort(function (a, b) { return String(a.deadline || "~").localeCompare(String(b.deadline || "~")); });
     var side = body.querySelector(".co-active");
     side.innerHTML = act.length ? act.map(function (g) { return goalCardHtml(g); }).join("") : '<div class="pl-empty-hint">Nothing running right now.</div>';
-    wireGoalCards(side);
+    wireGoalCards(side, openPlan);
     coPlanLibrary(host);
     coRenderIdTypes(host, "planning");
   }
@@ -6714,7 +6875,7 @@ function __detabaseMain() {
     main.insertAdjacentHTML("beforeend", '<div class="gp-tree co-tree"><div class="gp-tree-inner"></div></div><p class="muted co-tip">' +
       (lr ? "Each plan sits right of the plans it comes after. Plans with no link stand apart on the right. Tap a plan to open it." : "← do first · unlocks →. Tap a plan to open it.") + '</p>');
     (lr ? layoutGoalFlow : layoutGoalTree)(main.querySelector(".gp-tree"), main.querySelector(".gp-tree-inner"), coPlanShown);
-    wireGoalTree(main);
+    wireGoalTree(main, openPlan);
   }
   // the plan library: four sections (the categories), Products grouped by product; search by name
   function coPlanLibrary(host) {
@@ -6751,7 +6912,7 @@ function __detabaseMain() {
         box.appendChild(sec);
       });
       if (!any) box.innerHTML = '<div class="side-empty"><b>' + (needle ? "No plan matches." : "No business plans yet.") + '</b>' + (needle ? "Try another name." : "Add one with “＋ New plan”, or from a product’s page.") + '</div>';
-      wireGoalCards(box);
+      wireGoalCards(box, openPlan);
     }
     q.addEventListener("input", function () { u.q = q.value; draw(); });
     q.addEventListener("change", saveStore);
@@ -6797,7 +6958,7 @@ function __detabaseMain() {
     }
     groups.forEach(function (gr) {
       gr.list.sort(function (a, b) {
-        var sa = a.stage == null ? 1e6 : a.stage, sb = b.stage == null ? 1e6 : b.stage;
+        var sa = a.porder == null ? 1e6 : a.porder, sb = b.porder == null ? 1e6 : b.porder;
         return (a.product === b.product ? sa - sb : 0) || coSpan(a)[0] - coSpan(b)[0] || String(a.title).localeCompare(String(b.title));
       });
     });
@@ -6835,7 +6996,7 @@ function __detabaseMain() {
         return;
       }
       var g = r.g, s = coSpan(g), pr = goalProgress(g), done = goalIsComplete(g);
-      var lab = actBtn("", "open the plan", function () { openPlannerEditor("goal", g.id); }, "co-glabel");
+      var lab = actBtn("", "open the plan", function () { openPlan(g.id); }, "co-glabel");
       lab.style.top = y + "px"; lab.style.height = RH + "px";
       lab.innerHTML = '<b></b><small></small>';
       lab.querySelector("b").textContent = g.title;
@@ -6885,7 +7046,7 @@ function __detabaseMain() {
       }
       function up() {
         bar.removeEventListener("pointermove", mv); bar.removeEventListener("pointerup", up); bar.removeEventListener("pointercancel", up);
-        if (!moved) { openPlannerEditor("goal", g.id); return; }
+        if (!moved) { openPlan(g.id); return; }
         if (!dd) { renderCoathPage(); return; }
         var a = span[0] + (mode === "r" ? 0 : dd), b = span[1] + (mode === "l" ? 0 : dd);
         libMoved((mode === "m" ? "Moved “" : "Changed the dates of “") + g.title + "”", function () { g.start = coNDay(a); g.deadline = coNDay(b); }, ["planner"]);
@@ -7614,7 +7775,7 @@ function __detabaseMain() {
     if (id === "notebook") { openNotebook(); return; }
     if (id === "coath") {                        // opens on the folder last opened (store.ui.coathPage, synced like ui.group)
       coathPage = coathFolder(coathId || store.ui.coathPage).id;
-      coathGroup = (coathOpts && coathOpts.group) || ""; coathProduct = (coathOpts && coathOpts.product) || null; coathIdent = (coathOpts && coathOpts.ident) || null; coathDescEdit = false;
+      coathGroup = (coathOpts && coathOpts.group) || ""; coathProduct = (coathOpts && coathOpts.product) || null; coathIdent = (coathOpts && coathOpts.ident) || null; coathPlan = (coathOpts && coathOpts.plan) || null; coathDescEdit = false;
       if (store.ui.coathPage !== coathPage) { store.ui.coathPage = coathPage; saveStore(); }
     }
     renderSubjectList();
@@ -8236,11 +8397,11 @@ function __detabaseMain() {
 
     wireGoalTree(page);
   }
-  function wireGoalTree(scope) {                 // a drawn tree: tap a goal = its editor, ★ = working on now, rings fill
+  function wireGoalTree(scope, open) {           // a drawn tree: tap a goal = open(id) (default: its editor), ★ = working on now, rings fill
     Array.prototype.slice.call(scope.querySelectorAll(".gt-node")).forEach(function (n) {
       n.addEventListener("click", function (e) {
         if (e.target.closest(".orb-star")) return;
-        openPlannerEditor("goal", n.getAttribute("data-id"));
+        (open || function (id) { openPlannerEditor("goal", id); })(n.getAttribute("data-id"));
       });
     });
     wireGoalStars(scope);
@@ -8999,6 +9160,38 @@ function __detabaseMain() {
     if (goalBiz(g)) return "Tasks (" + ss.filter(function (s) { return s.done; }).length + " / " + ss.length + " done)";
     return "Sessions in this goal (" + ss.length + " / " + ((g && g.targetCount) || 0) + ")";
   }
+  // ---- stages inside a plan (B174): goal.pstages = [{ id: "pst_…", name, done?: true (marked done by hand) }]
+  // in rank order; a task (session) belongs to one through s.stageId, s.torder = its place there.
+  // Status, worked out: done (marked, or all its tasks done) / progress (some done, or one dated today or
+  // earlier) / next (the first, in rank, that is neither) / later (the rest).
+  var PL_STATUS = { done: "Done", progress: "In progress", next: "Next", later: "Later" };
+  function plStages(g) { return g && Array.isArray(g.pstages) ? g.pstages : []; }
+  function plTaskOrder(a, b) {
+    return (a.torder == null ? 1e6 : a.torder) - (b.torder == null ? 1e6 : b.torder) || (a.date || "~").localeCompare(b.date || "~") || String(a.id).localeCompare(String(b.id));
+  }
+  function plStageInfo(g) {
+    var today = toISODate(new Date()), all = goalSessions(g.id), ids = {}, nextGiven = false;
+    var stages = plStages(g).map(function (st, i) {
+      ids[st.id] = 1;
+      var tasks = all.filter(function (t) { return t.stageId === st.id; }).sort(plTaskOrder);
+      var done = !!st.done || (tasks.length > 0 && tasks.every(function (t) { return t.done; }));
+      var prog = !done && tasks.some(function (t) { return t.done || (t.date && t.date <= today); });
+      return { st: st, n: i + 1, tasks: tasks, status: done ? "done" : prog ? "progress" : "" };
+    });
+    stages.forEach(function (o) { if (!o.status) { o.status = nextGiven ? "later" : "next"; nextGiven = true; } });
+    return { stages: stages, loose: all.filter(function (t) { return !ids[t.stageId]; }).sort(plTaskOrder) };
+  }
+  function plStageForNew(g) {                    // where a new task goes: the stage being worked on (or next), else the last
+    var inf = plStageInfo(g), o = inf.stages.filter(function (x) { return x.status === "progress" || x.status === "next"; })[0] || inf.stages[inf.stages.length - 1];
+    return o ? o.st.id : null;
+  }
+  function plNewTask(g, title, stageId) {
+    var t = { id: uid("ps_"), date: null, start: null, duration: 60, title: title, checklist: [], notes: "", goalId: g.id, templateId: null, done: false };
+    var sid = stageId === undefined ? plStageForNew(g) : stageId;
+    if (sid) { t.stageId = sid; t.torder = goalSessions(g.id).filter(function (x) { return x.stageId === sid; }).length; }
+    store.planner.sessions.push(t);
+    return t;
+  }
   function bizPlans() { return store.planner.goals.filter(goalBiz); }
   function bizPlansOf(pid) { return bizPlans().filter(function (g) { return g.product === pid; }); }
   // sessions changed — refresh the sidebar card, but NEVER touch the goal's target count.
@@ -9181,9 +9374,9 @@ function __detabaseMain() {
     applySavedOrder(box, "> .pl-goal-group", function (el) { return el.getAttribute("data-id"); }, store.order.plGoals);
     wireGoalCards(box);
   }
-  function wireGoalCards(scope) {                // goal cards (goalCardHtml): tap = its editor, ★, rings fill
+  function wireGoalCards(scope, open) {          // goal cards (goalCardHtml): tap = open(id) (default: its editor), ★, rings fill
     Array.prototype.slice.call(scope.querySelectorAll(".plg-row, .plg-lt-chip")).forEach(function (el) {
-      el.addEventListener("click", function (e) { e.stopPropagation(); openPlannerEditor("goal", el.getAttribute("data-id")); });
+      el.addEventListener("click", function (e) { e.stopPropagation(); (open || function (id) { openPlannerEditor("goal", id); })(el.getAttribute("data-id")); });
     });
     wireGoalStars(scope);
     animateRings(scope);
@@ -9708,7 +9901,7 @@ function __detabaseMain() {
           var t = $("edTaskNew").value.trim(); if (!t) { $("edTaskNew").focus(); return; }
           var gid = plEd.id;
           if (!gid) { libToast("Save the plan first, then add its tasks."); return; }
-          store.planner.sessions.push({ id: uid("ps_"), date: null, start: null, duration: 60, title: t, checklist: [], notes: "", goalId: gid, templateId: null, done: false });
+          plNewTask(goalById(gid), t);   // into the stage being worked on
           $("edTaskNew").value = "";
           plGoalSessionsOpen = true; if ($("edGoalSessions")) $("edGoalSessions").hidden = false;
           saveStore(); refreshGoalEditorSessions(); renderGoalList(); renderCalendar();
@@ -11887,6 +12080,26 @@ function __detabaseMain() {
     try { window.DBX.put("__pre_s12", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
     ((store.planner && store.planner.goals) || []).forEach(function (g) { if (typeof g.business !== "boolean") g.business = false; });
     store.schema = 12;
+    try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
+  // B174: stages live inside plans. A product's order of plans moves from goal.stage to goal.porder (so "stage"
+  // means one thing); every business plan with tasks gets a first stage holding them, in their current order.
+  (function migratePlanStages() {
+    if (store.schema >= 13) return;
+    try { window.DBX.put("__pre_s13", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+    var pl = store.planner || {}, sess = pl.sessions || [];
+    (pl.goals || []).forEach(function (g) {
+      if (g.stage != null && g.porder == null) g.porder = g.stage;
+      delete g.stage;
+      if (g.business !== true || Array.isArray(g.pstages)) return;
+      var ts = sess.filter(function (s) { return s.goalId === g.id; });
+      g.pstages = [];
+      if (!ts.length) return;
+      var st = { id: uid("pst_"), name: "Stage 1" };
+      g.pstages.push(st);
+      ts.forEach(function (s, i) { s.stageId = st.id; s.torder = i; });
+    });
+    store.schema = 13;
     try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
@@ -21610,6 +21823,7 @@ function __detabaseMain() {
     var cparts = decodeURIComponent(initial.slice(6)).split(":");
     if (cparts[0] === "product") openProduct(cparts[1]);
     else if (cparts[0] === "identity") openIdent(cparts[1]);
+    else if (cparts[0] === "plan") openPlan(cparts[1]);
     else if (cparts[0] === "sketch") { var skm = skById(cparts[1]); if (skm) { openProduct(skm.product); openSketch(skm.id); } else openCoath("products"); }
     else if (cparts[0] === "products" && cparts[1]) openProductGroup(cparts[1]);
     else openCoath(cparts[0]);
