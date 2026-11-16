@@ -1742,8 +1742,6 @@
   body.is-coath #addSubjectRow,
   body.is-coath #addGroupRow { display: none; }
   /* Coath Inc. */
-  .co-soon { margin-top: 18px; }
-  .co-soon .co-what { display: block; margin-top: 10px; font-size: .9rem; color: var(--text-secondary); }
   #coathPane .cp-head h2.co-ren { cursor: pointer; }
   #coathPane .cp-head h2.co-ren:hover { color: var(--accent); }
   .co-empty { margin-top: 14px; }
@@ -1800,6 +1798,9 @@
   .co-task input { width: 20px; height: 20px; flex: 0 0 auto; }
   .co-task.done span { text-decoration: line-through; color: var(--text-muted); }
   .co-addtask { margin-top: 4px; }
+  .co-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .co-link { border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); border-radius: 999px; padding: 1px 9px; font-size: .74rem; font-weight: 600; cursor: pointer; min-height: 24px; }
+  .co-link:hover { color: var(--accent); border-color: var(--accent); }
   /* the Planning page */
   .co-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 14px; }
   .co-fchip { min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text-secondary); font-size: .84rem; font-weight: 600; cursor: pointer; opacity: .75; }
@@ -2898,7 +2899,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B172</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B173</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5852,9 +5853,9 @@ function __detabaseMain() {
     { id: "products",    name: "Products",    icon: "📦", sub: "every product, filed in groups", render: coRenderProducts },
     { id: "planning",    name: "Planning",    icon: "📅", sub: "the business plans",
       render: coRenderPlanning },
-    { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    soon: "", render: coRenderFolder },
-    { id: "marketing",   name: "Marketing",   icon: "📣", sub: "customers and campaigns", soon: "", render: coRenderFolder },
-    { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  soon: "", render: coRenderFolder }
+    { id: "management",  name: "Management",  icon: "🏢", sub: "running the business",    render: coRenderFolder },
+    { id: "marketing",   name: "Marketing",   icon: "📣", sub: "customers and campaigns", render: coRenderFolder },
+    { id: "maintenance", name: "Maintenance", icon: "🔧", sub: "keeping things running",  render: coRenderFolder }
   ];
   var coathPage = null;                          // the open Coath folder's id
   var coathGroup = "";                           // Products: the open group ("" = the top of Products)
@@ -5890,17 +5891,13 @@ function __detabaseMain() {
     host.innerHTML = "";
     f.render(host);
   }
-  // a folder whose own page is not built yet: "Coming soon", then the identity types it owns
+  // Management, Marketing, Maintenance: the folder's Plans (B173), then the identity types it owns
   function coRenderFolder(host) {
     var f = coathFolder(coathPage), x = cidById(coathIdent);
     if (x && citOwner(citById(x.type)) === f.id) { coRenderIdent(host, x); return; }
     coathIdent = null;
     coHead(host, f.icon + " " + f.name);
-    var note = document.createElement("div");
-    note.className = "empty-note co-soon";
-    note.innerHTML = '<span class="big">' + f.icon + '</span><b>Coming soon</b>' + (f.soon ? '<span class="co-what"></span>' : '');
-    if (f.soon) note.querySelector(".co-what").textContent = f.soon;
-    host.appendChild(note);
+    coFolderPlanSection(host, f.id);
     coRenderIdTypes(host, f.id);
   }
   // a page's heading; returns the span its action buttons go in
@@ -6486,7 +6483,7 @@ function __detabaseMain() {
   }
   function coFmtDate(s) { if (!s) return "?"; var d = fromISODate(s); return d.getDate() + " " + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""); }
   // a plan's ring (the planner's ring), its tasks checkable here, and a quick "add a task"
-  function coPlanBody(card, g) {
+  function coPlanBody(card, g, chips) {
     var pr = goalProgress(g), rq = goalReqStatus(g), done = goalIsComplete(g), locked = !done && rq.any && !rq.allMet;
     var top = document.createElement("div");
     top.className = "co-stage-top" + (done ? " done" : locked ? " locked" : "");
@@ -6498,6 +6495,8 @@ function __detabaseMain() {
     var dots = actBtn("⋯", "plan options", function () { coPlanMenu(dots, g); }, "lib-dots");
     top.appendChild(dots);
     card.appendChild(top);
+    var ch = coPlanChips(g, chips);
+    if (ch) top.querySelector(".co-stage-t small").before(ch);
     if (String(g.desc || "").trim()) { var dsc = document.createElement("p"); dsc.className = "co-stage-desc"; dsc.textContent = g.desc; card.appendChild(dsc); }
     var tl = document.createElement("div");
     tl.className = "co-tasks";
@@ -6522,36 +6521,54 @@ function __detabaseMain() {
     tl.appendChild(add);
     card.appendChild(tl);
   }
+  // THE PLAN LIST (B173) — one component for every list of business plans in Coath: Product planning, the
+  // Other plans of a product, a folder's Plans, a project. Each plan: ring, name, dates, chips, description,
+  // checkable tasks, add a task. o = { reorder(newList) — dragging on, saves the order (one Undo);
+  //   chips: ["cat", "product"] — which links to show; empty: html when there are none; tip: text under it }
+  function coPlanList(s, list, o) {
+    o = o || {};
+    if (!list.length) { s.insertAdjacentHTML("beforeend", '<div class="side-empty">' + (o.empty || "<b>No plans yet.</b>") + '</div>'); return; }
+    var tl = document.createElement("div");
+    tl.className = "co-timeline";
+    list.forEach(function (g) {
+      var st = document.createElement("div");
+      st.className = "co-stage";
+      st.setAttribute("data-id", g.id);
+      st.style.setProperty("--goal-color", g.color || "var(--accent)");
+      st.innerHTML = '<div class="co-stage-rail"><span></span></div><div class="co-stage-card"></div>';
+      coPlanBody(st.querySelector(".co-stage-card"), g, o.chips);
+      tl.appendChild(st);
+    });
+    if (o.reorder) dndList(tl, { type: "cplan", item: ".co-stage", onDrop: function (drag, index) {
+      libMoved("Moved “" + goalById(drag.id).title + "”", function () {
+        var g = goalById(drag.id), l = list.filter(function (x) { return x !== g; });
+        l.splice(Math.min(index, l.length), 0, g);
+        o.reorder(l);
+      }, ["planner"]);
+    } });
+    s.appendChild(tl);
+    if (o.tip) s.insertAdjacentHTML("beforeend", '<p class="muted co-tip">' + o.tip + '</p>');
+    animateRings(tl);
+  }
+  // the links a plan card shows: its category, its product (each a button that opens it)
+  function coPlanChips(g, which) {
+    var box = document.createElement("span");
+    box.className = "co-chips";
+    (which || []).forEach(function (k) {
+      if (k === "cat") box.insertAdjacentHTML("beforeend", bizChipHtml(g));
+      if (k === "product" && cprById(g.product)) box.appendChild(actBtn("📦 " + cprById(g.product).name, "open the product", function () { openProduct(g.product); }, "co-link"));
+    });
+    return box.children.length ? box : null;
+  }
   function coPlanSection(host, p) {
     var s = coSec(host, "📅 Product planning"), head = s.querySelector(".sums-head"), list = coStages(p.id);
     if (!list.length) head.appendChild(actBtn("Use the standard plans", CO_STD_STAGES.join(" → "), function () { coStdStages(p); }));
     head.appendChild(actBtn("＋ Add plan", "a new development plan (a business plan in Products)", function () { coAddStage(p); }, "btn-primary"));
-    if (!list.length) s.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>No development plans yet.</b>Each one is a business plan with its own tasks and ring. “Use the standard plans” adds ' + escapeHtml(CO_STD_STAGES.join(" → ")) + '.</div>');
-    else {
-      var tl = document.createElement("div");
-      tl.className = "co-timeline";
-      list.forEach(function (g) {
-        var st = document.createElement("div");
-        st.className = "co-stage";
-        st.setAttribute("data-id", g.id);
-        st.style.setProperty("--goal-color", g.color || "var(--accent)");
-        st.innerHTML = '<div class="co-stage-rail"><span></span></div><div class="co-stage-card"></div>';
-        coPlanBody(st.querySelector(".co-stage-card"), g);
-        tl.appendChild(st);
-      });
-      dndList(tl, { type: "cstage", item: ".co-stage", onDrop: function (drag, index) {
-        libMoved("Moved “" + goalById(drag.id).title + "”", function () {
-          var l = coStages(p.id), g = goalById(drag.id);
-          l = l.filter(function (x) { return x !== g; }); l.splice(Math.min(index, l.length), 0, g);
-          coChainStages(l);
-        }, ["planner"]);
-      } });
-      s.appendChild(tl);
-      s.insertAdjacentHTML("beforeend", '<p class="muted co-tip">Hold a plan to drag it: the order is the order they come in (each comes after the one above). Tap a name to open the plan.</p>');
-      animateRings(tl);
-    }
+    coPlanList(s, list, { reorder: coChainStages,
+      empty: '<b>No development plans yet.</b>Each one is a business plan with its own tasks and ring. “Use the standard plans” adds ' + escapeHtml(CO_STD_STAGES.join(" → ")) + '.',
+      tip: "Hold a plan to drag it: the order is the order they come in (each comes after the one above). Tap a name to open the plan." });
     // the product's plans in the other categories
-    var others = coOtherPlans(p.id), o = coSec(host, "📎 Other plans for this product");
+    var o = coSec(host, "📎 Other plans for this product");
     o.querySelector(".sums-head").appendChild(actBtn("＋ Plan", "a plan in Management, Marketing or Maintenance for this product", function () {
       askName("New plan for “" + p.name + "”", "E.g. “Launch campaign”.", "", function (n) {
         coPickFolder("Which category?", "The plan shows under that category in Planning.", function (cat) {
@@ -6559,12 +6576,30 @@ function __detabaseMain() {
         }, bizCats().filter(function (c) { return c.id !== "products"; }));
       });
     }));
-    if (!others.length) { o.insertAdjacentHTML("beforeend", '<div class="side-empty"><b>None yet.</b>Marketing, management or maintenance plans that belong to this product show here.</div>'); return; }
-    var ol = document.createElement("div");
-    ol.className = "co-others";
-    others.forEach(function (g) { var c = document.createElement("div"); c.className = "co-other"; coPlanBody(c, g); c.querySelector(".co-stage-t small").insertAdjacentHTML("beforebegin", bizChipHtml(g)); ol.appendChild(c); });
-    o.appendChild(ol);
-    animateRings(ol);
+    coPlanList(o, coOtherPlans(p.id), { chips: ["cat"], empty: "<b>None yet.</b>Marketing, management or maintenance plans that belong to this product show here." });
+  }
+  // a folder's Plans (Marketing, Management, Maintenance): every business plan in that category, in the owner's
+  // priority order (goal.prio) — an order only, it makes no "comes after" links
+  function coFolderPlans(cat) {
+    return bizPlans().filter(function (g) { return bizCat(g).id === cat; }).sort(function (a, b) {
+      var pa = a.prio == null ? 1e6 : a.prio, pb = b.prio == null ? 1e6 : b.prio;
+      return pa - pb || String(a.start || "").localeCompare(String(b.start || "")) || String(a.title).localeCompare(String(b.title));
+    });
+  }
+  function coFolderPlanSection(host, cat) {
+    var c = coathFolder(cat), s = coSec(host, "📅 Plans");
+    s.querySelector(".sums-head").appendChild(actBtn("＋ Add plan", "a new business plan in " + c.name, function () {
+      askName("New " + c.name.toLowerCase() + " plan", "A business plan in " + c.name + "; it also shows in the planner.", "", function (n) {
+        libMoved("Added the plan “" + n + "”", function () {
+          var l = coFolderPlans(cat); l.forEach(function (x, i) { x.prio = i; });   // number the ones there, then it goes last
+          bizNewPlan({ title: n, category: cat }).prio = l.length;
+        }, ["planner"]);
+      });
+    }, "btn-primary"));
+    coPlanList(s, coFolderPlans(cat), { chips: ["product"],
+      reorder: function (l) { l.forEach(function (g, i) { g.prio = i; }); },
+      empty: "<b>No " + escapeHtml(c.name.toLowerCase()) + " plans yet.</b>Tap “＋ Add plan”. Plans made elsewhere in this category show here too.",
+      tip: "Hold a plan to drag it into your order of priority (it doesn't link them). Tap a name to open the plan." });
   }
 
   // ---- the Planning page (B168): the business plans — the planner's own calendar, tree, rings and cards,
