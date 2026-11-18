@@ -1288,6 +1288,8 @@
   .ct-mk-what { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
   .ct-mk-what i { width: 11px; height: 11px; border-radius: 50%; border: 2.5px solid #db2777; }
   .ct-mk-strat { box-shadow: inset 0 -3px 0 var(--ct); }
+  .ct-pick-n { font-weight: 700; color: #16a34a; }
+  .ct-mkbar .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .ct-mkbar:not([hidden]) ~ .ct-prev.side { top: 110px; }
   .ct-legend { position: absolute; left: 10px; bottom: 34px; display: flex; flex-wrap: wrap; gap: 4px 10px; max-width: calc(100% - 80px); padding: 4px 8px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--surface-1) 88%, transparent); font-size: .72rem; color: var(--text-secondary); pointer-events: none; }
   .ct-legend[hidden] { display: none; }
@@ -3040,7 +3042,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B185</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B186</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -18623,7 +18625,7 @@ function __detabaseMain() {
   function ctMarksBar(T) {
     var E = T.els; if (!E) return;
     var bar = E.box.querySelector(".ct-mkbar"), s = T.mkState, n = Object.keys(T.mk || {}).length;
-    bar.innerHTML = ""; bar.hidden = !n && !(T.mkUndo || []).length && !Object.keys(T.pick || {}).length;
+    bar.innerHTML = "";
     if (n) {
       var what = s && s.strats ? s.strats.length + (s.strats.length === 1 ? " strategy holds" : " strategies hold") + " “" + s.name + "”"
         : n - 1 + " connected to “" + (s ? s.name : "") + "”" + (s && s.steps > 1 ? " (" + s.steps + " steps)" : "");
@@ -18640,6 +18642,7 @@ function __detabaseMain() {
       b.style.setProperty("--ct", sg.color);
       bar.appendChild(b);
     });
+    bar.hidden = !bar.firstChild;
   }
   // the hold / right-click menu of a point
   function ctPointMenu(T, ref, x, y) {
@@ -18657,6 +18660,34 @@ function __detabaseMain() {
     if (ref.lvl !== "st") items.push({ label: "Properties…", run: function () { assetWindow(ref); } });
     libMenu(a, items);
     setTimeout(function () { a.remove(); }, 0);
+  }
+  // ---- picking on the tree (B186): in the Clipboard each tap ticks a point (✓) and previews it; a second tap
+  // unticks it. T.pick = {key: 1}. The marks bar: the count, "＋ Add to Clipboard" (all of them, one group),
+  // "Select all marked" (the search results and the pink marks), "Clear selection".
+  function ctChoose(T, key, quiet) {
+    if (T.opts.mode !== "add") { ctSelect(T, key, quiet); return; }
+    if (T.pick[key]) { delete T.pick[key]; ctSelect(T, null); }
+    else { T.pick[key] = 1; ctSelect(T, key, quiet); }
+    ctMarksBar(T);
+  }
+  function ctPickAllMarked(T) {
+    Object.keys(T.hits || {}).concat(Object.keys(T.mk || {})).forEach(function (k) { if (ctPoint(T, k)) T.pick[k] = 1; });
+    ctPaint(T); ctMarksBar(T);
+  }
+  function ctPickClear(T) { T.pick = {}; ctPaint(T); ctMarksBar(T); }
+  // the picking part of the marks bar
+  function ctPickBar(T, bar, name) {
+    var n = Object.keys(T.pick).length, marked = Object.keys(T.hits || {}).concat(Object.keys(T.mk || {})).filter(function (k) { return !T.pick[k]; }).length;
+    if (n) {
+      bar.insertAdjacentHTML("beforeend", '<span class="ct-pick-n">✓ ' + n + ' selected</span>');
+      bar.appendChild(actBtn("＋ Add to Clipboard", "all of them, as one group", function () {
+        var refs = Object.keys(T.pick).map(ctRefOf);
+        T.opts.onAdd(refs, refs.length > 1 ? name() : null);
+        ctPickClear(T);
+      }, "btn-primary"));
+    }
+    if (marked) bar.appendChild(actBtn("Select all marked", "tick every search result and pink mark", function () { ctPickAllMarked(T); }));
+    if (n) bar.appendChild(actBtn("Clear selection", "", function () { ctPickClear(T); }));
   }
   // ---- choosing a point: zoom to it, show its connections and a preview ----
   function ctSelect(T, key, quiet) {
@@ -18721,15 +18752,15 @@ function __detabaseMain() {
     if (h.method) {
       var pg = psPageById(h.method), sn = pg && T.els.model.nodes["s|" + pg.subject];
       if (sn && CT_MR * T.view.k < 7) { T.focus = sn.key; T.auto = { box: ctBoxOf([sn]), maxK: 3.4 }; ctFly(T, ctFitTo(T, ctBoxOf([sn]), 3.4)); return; }
-      if (choose) ctSelect(T, "p|" + h.method); else selectPsPage(h.method);
+      if (choose) ctChoose(T, "p|" + h.method); else selectPsPage(h.method);
       return;
     }
     var n = h;
     if (n.leaf && n.r * T.view.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
-    if (n.leaf || n.empty) { if (choose) ctSelect(T, n.key); else openRef(n.ref); return; }
+    if (n.leaf || n.empty) { if (choose) ctChoose(T, n.key); else openRef(n.ref); return; }
     var to = ctFitTo(T, ctBoxOf([n]), 3.4);   // never so close that a concept fills the screen
     // a second tap on the ring already filling the view chooses (or opens) it
-    if (T.focus === n.key && Math.abs(T.view.k - to.k) / to.k < 0.2 && Math.hypot(T.view.cx - to.cx, T.view.cy - to.cy) * T.view.k < 40) { if (choose) ctSelect(T, n.key, true); else openRef(n.ref); return; }
+    if (T.focus === n.key && Math.abs(T.view.k - to.k) / to.k < 0.2 && Math.hypot(T.view.cx - to.cx, T.view.cy - to.cy) * T.view.k < 40) { if (choose) ctChoose(T, n.key, true); else openRef(n.ref); return; }
     T.focus = n.key; T.auto = { box: ctBoxOf([n]), maxK: 3.4 };
     ctFly(T, to);
   }
@@ -21915,7 +21946,9 @@ function __detabaseMain() {
     var q2 = bd.q.trim().toLowerCase();
     bd.ss = bd.ss || { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
     bd.ss.q = q2;
-    bd.tree = bd.tree || ctTree({ mode: "add", onAdd: function (refs) { bdAdd(refs); },
+    bd.tree = bd.tree || ctTree({ mode: "add", onAdd: function (refs, group) { bdAdd(refs, null, group ? { group: group, toast: true } : null); },
+      // a group from the tree is named after the search, or the point the marks started from (B186)
+      extraBar: function (bar) { ctPickBar(bd.tree, bar, function () { return bd.q.trim() || (bd.tree.mkState && bd.tree.mkState.name) || "From the tree"; }); },
       onPick: function (key) { Array.prototype.forEach.call(side.querySelectorAll(".bd-list .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); if (key && r.getAttribute("data-tk") === key && (bdSplit() || bd.libView === "list")) r.scrollIntoView({ block: "nearest" }); }); } });
     if (q2) {
       searchView(list, bd.ss, {
