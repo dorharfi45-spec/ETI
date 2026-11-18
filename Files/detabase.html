@@ -995,8 +995,13 @@
   .bd-frame { position: absolute; border: 2px solid var(--border-strong); border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 5%, transparent); }
   .bd-ftitle { padding: 6px 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .bd-block { position: absolute; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-1); box-shadow: 0 1px 4px rgba(0,0,0,.14); }
-  .bd-bhead { flex-shrink: 0; padding: 6px 10px; font-size: .82rem; font-weight: 700; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bd-bbody { flex: 1; min-height: 0; overflow: hidden; padding: 6px 8px; pointer-events: none; }
+  .bd-bhead { position: relative; flex-shrink: 0; box-sizing: border-box; height: 32px; display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: .82rem; font-weight: 700; border-bottom: 1px solid var(--border); }
+  .bd-btitle { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bd-bbody { position: relative; flex: 1; min-height: 0; overflow: hidden; pointer-events: none; }
+  .bd-bscale { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .bd-bpage { box-sizing: border-box; padding: 6px 10px; }
+  .bd-block.focus { outline: 3px solid var(--accent); box-shadow: 0 4px 18px color-mix(in srgb, var(--accent) 35%, transparent); }
+  .bd-block.focus .bd-bbody { cursor: grab; }
   .bd-bbody .asset-body { max-width: 100%; }
   .bd-bbody .asset-card > h4, .bd-bbody .asset-card > div > .card > h4:first-child, .bd-bbody .asset-card > div > details > summary, .bd-bbody .asset-body > h3:first-child, .bd-bbody .asset-body > h4:first-child { display: none; }
   .bd-block.sel, .bd-frame.sel { outline: 3px solid var(--accent); }
@@ -2951,7 +2956,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B178</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B179</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -12417,6 +12422,20 @@ function __detabaseMain() {
     try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
 
+  // B179: board and strategy blocks show their whole item, scaled (bdSize). Blocks saved before have no `s`
+  // and are fitted once, into the box they had, the first time they are drawn (that needs the page laid
+  // out, so it can't happen here; a block synced from an older device is fitted the same way). Here: the
+  // backup of every board-shaped canvas doc before any of them changes.
+  (function migrateBoardFit() {
+    if (store.schema >= 14) return;
+    var docs = {};
+    ["bd_main"].concat((store.strats || []).map(function (s) { return s.id; })).forEach(function (id) {
+      var d = window.DBX.get(id); if (d && d.ps && d.ps.blocks) docs[id] = JSON.parse(JSON.stringify(d.ps));
+    });
+    try { window.DBX.put("__pre_s14", { docs: docs, ts: Date.now() }); } catch (e) {}
+    store.schema = 14;
+    try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
+  })();
   function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function btnLabel(b) {   // "2.2 Unit circle"
     if (!b) return "";
@@ -20781,18 +20800,67 @@ function __detabaseMain() {
   function nodeOf(ps, id) { return byId(ps.blocks, id) || byId(ps.groups, id); }
   function membersOf(ps, gid) { return ps.blocks.filter(function (b) { return b.g === gid; }); }
   // ---- drawing, shared by the board and a strategy's page ----
-  //   ctx = { stage, world, get ps, ro, view: { x, y, k }, cache: {}, sel: {}, onTap(node), onLine(link, el) }
-  function bdContent(ctx, ref, w) {
-    var k = refKey(ref) + "|" + w;
+  //   ctx = { stage, world, get ps, ro, view: { x, y, k }, cache: {}, sel: {}, iv: {}, nat: {}, focus, onTap(node), onLine(link, el) }
+  // A block shows its whole item, laid out at the reading width BD_RW and scaled to the block's width, so
+  // its height always follows its width (h = head + natural height × w / BD_RW). A block saved before B179
+  // (no `s`) is fitted once into the box it had; a new block into BD_RW × BD_NEW_H.
+  // The focused block (board only: tap it) zooms and pans inside: ctx.iv[blockId] = {k, x, y} (k ≥ 1, x/y in
+  // the block body's px); per device, never saved.
+  var BD_RW = 380, BD_NEW_H = 560, BD_IK = 8;
+  function bdContent(ctx, b) {
+    var k = b.id + "|" + refKey(b.ref);
     if (ctx.cache[k]) return ctx.cache[k];
-    var box = document.createElement("div");
-    box.className = "bd-bbody";
-    if (refExists(ref)) { box.appendChild(assetBody(ref, Math.max(120, w - 20))); try { texify(box); } catch (e) {} }
-    else box.innerHTML = '<p class="muted">(deleted from the library)</p>';
-    return ctx.cache[k] = box;
+    var page = document.createElement("div");
+    page.className = "bd-bpage";
+    page.style.width = BD_RW + "px";
+    if (refExists(b.ref)) { page.appendChild(assetBody(b.ref, BD_RW - 20)); try { texify(page); } catch (e) {} }
+    else page.innerHTML = '<p class="muted">(deleted from the library)</p>';
+    Array.prototype.forEach.call(page.querySelectorAll("img"), function (im) {
+      if (!im.complete) im.addEventListener("load", function () { bdResized(ctx); }, { once: true });
+    });
+    return ctx.cache[k] = page;
   }
   function bdApplyView(ctx) { var v = ctx.view; ctx.world.style.transform = "translate(" + v.x + "px," + v.y + "px) scale(" + v.k + ")"; }
   function bdPlace(el, n) { el.style.left = n.x + "px"; el.style.top = n.y + "px"; el.style.width = n.w + "px"; el.style.height = n.h + "px"; }
+  function bdBlockEl(ctx, id) { return ctx.world.querySelector('.bd-block[data-node="' + id + '"]'); }
+  // a block's height from its width (and, once, its width from the box it had)
+  function bdSize(ctx, b, d) {
+    var head = d.firstChild.offsetHeight, nh = d.querySelector(".bd-bpage").offsetHeight;
+    if (!nh) return;                                    // not laid out (hidden page): measured next time
+    ctx.nat[b.id] = { nh: nh, head: head };
+    if (!b.s) {
+      var s = Math.min((b.w || BD_RW) / BD_RW, ((b.h || BD_NEW_H) - head) / nh);
+      b.w = Math.round(BD_RW * Math.max(0.2, Math.min(2, s)));
+      b.s = 1;
+      ctx.fitted = true;
+    }
+    b.h = bdHeightFor(ctx, b, b.w);
+  }
+  function bdHeightFor(ctx, b, w) { var n = ctx.nat[b.id]; return n ? Math.round(n.head + n.nh * w / BD_RW) : b.h; }
+  function bdIv(ctx, b) { return ctx.iv[b.id] || { k: 1, x: 0, y: 0 }; }
+  function bdInner(ctx, b, d) {
+    d = d || bdBlockEl(ctx, b.id); if (!d) return;
+    var iv = bdIv(ctx, b), sc = d.querySelector(".bd-bscale");
+    sc.style.transform = "translate(" + iv.x + "px," + iv.y + "px) scale(" + (b.w / BD_RW * iv.k) + ")";
+  }
+  // keep the zoomed page covering the block's body
+  function bdIClamp(ctx, b, iv) {
+    var n = ctx.nat[b.id], bw = b.w, bh = n ? b.h - n.head : b.h;
+    iv.k = Math.max(1, Math.min(BD_IK, iv.k));
+    iv.x = Math.min(0, Math.max(bw - bw * iv.k, iv.x));
+    iv.y = Math.min(0, Math.max(bh - bh * iv.k, iv.y));
+    if (iv.k === 1) { iv.x = 0; iv.y = 0; }
+  }
+  // zoom inside a block about a point of its body (body px)
+  function bdIZoom(ctx, b, px, py, k2) {
+    var iv = ctx.iv[b.id] = bdIv(ctx, b);
+    k2 = Math.max(1, Math.min(BD_IK, k2));
+    iv.x = px - (px - iv.x) * k2 / iv.k; iv.y = py - (py - iv.y) * k2 / iv.k; iv.k = k2;
+    bdIClamp(ctx, b, iv); bdInner(ctx, b);
+  }
+  function bdIFit(ctx, b) { delete ctx.iv[b.id]; bdInner(ctx, b); }
+  // the ＋ − Fit buttons zoom about the middle of what shows
+  function bdIStep(ctx, b, f) { var n = ctx.nat[b.id], bh = n ? b.h - n.head : b.h; bdIZoom(ctx, b, b.w / 2, bh / 2, bdIv(ctx, b).k * f); }
   function bdLines(ctx) {
     var ps = ctx.ps(), svg = ctx.world.querySelector(".bd-lines");
     svg.innerHTML = "";
@@ -20820,16 +20888,20 @@ function __detabaseMain() {
       bdPlace(f, g);
       w.appendChild(f);
     });
+    ctx.fitted = false;
     ps.blocks.forEach(function (b) {
-      var d = document.createElement("div");
-      d.className = "bd-block" + (ctx.sel[b.id] ? " sel" : "") + (ctx.linking === b.id ? " linking" : "");
+      var d = document.createElement("div"), foc = ctx.focus === b.id;
+      d.className = "bd-block" + (ctx.sel[b.id] ? " sel" : "") + (ctx.linking === b.id ? " linking" : "") + (foc ? " focus" : "");
       d.setAttribute("data-node", b.id);
-      d.innerHTML = '<div class="bd-bhead"></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
-      d.firstChild.textContent = refExists(b.ref) ? refLabel(b.ref) : "(deleted)";
-      d.insertBefore(bdContent(ctx, b.ref, b.w), d.children[1] || null);
+      d.innerHTML = '<div class="bd-bhead"><span class="bd-btitle"></span></div><div class="bd-bbody"><div class="bd-bscale"></div></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
+      d.querySelector(".bd-btitle").textContent = refExists(b.ref) ? refLabel(b.ref) : "(deleted)";
+      d.querySelector(".bd-bscale").appendChild(bdContent(ctx, b));
+      if (!b.s) d.style.width = (b.w || BD_RW) + "px";
       w.appendChild(d);
-      if (!b.h) { d.style.width = b.w + "px"; b.h = Math.min(520, Math.max(90, d.firstChild.offsetHeight + d.children[1].scrollHeight + 8)); }
+      bdSize(ctx, b, d);
       bdPlace(d, b);
+      var iv = ctx.iv[b.id]; if (iv) bdIClamp(ctx, b, iv);
+      bdInner(ctx, b, d);
     });
     bdLines(ctx);
     bdApplyView(ctx);
@@ -20838,30 +20910,75 @@ function __detabaseMain() {
   function bdRelayout(ctx) {
     var ps = ctx.ps();
     Array.prototype.forEach.call(ctx.world.querySelectorAll("[data-node]"), function (el) {
-      var n = nodeOf(ps, el.getAttribute("data-node")); if (n) bdPlace(el, n);
+      var id = el.getAttribute("data-node"), n = nodeOf(ps, id); if (!n) return;
+      bdPlace(el, n);
+      if (el.classList.contains("bd-block")) bdInner(ctx, n, el);
     });
     bdLines(ctx);
   }
-  // pan, pinch, wheel; on the board also move and resize. One gesture engine for both pages.
+  // a picture inside a block finished loading: heights again
+  function bdResized(ctx) {
+    clearTimeout(ctx.rsT);
+    ctx.rsT = setTimeout(function () {
+      var ps = ctx.ps();
+      ps.blocks.forEach(function (b) { var d = bdBlockEl(ctx, b.id); if (d) bdSize(ctx, b, d); });
+      bdRelayout(ctx);
+    }, 60);
+  }
+  // pan, pinch, wheel; on the board also move and resize, and inside the focused block zoom and pan.
+  // One gesture engine for both pages. A new first finger (isPrimary) clears whatever a lost gesture left
+  // behind, so the board never stays stuck in a pinch or a move.
   function bdGestures(ctx) {
-    var st = ctx.stage, ptrs = {}, op = null, pinch = null;
-    function pos(e) { var r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    var st = ctx.stage, ptrs = {}, op = null, pinch = null, lastTap = null;
+    function pos(e) { var r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, cx: e.clientX, cy: e.clientY }; }
+    function reset() { if (op && op.timer) clearTimeout(op.timer); ptrs = {}; op = null; pinch = null; }
     function zoomAt(px, py, k2) {
       var v = ctx.view; k2 = Math.max(0.12, Math.min(3, k2));
       v.x = px - (px - v.x) * k2 / v.k; v.y = py - (py - v.y) * k2 / v.k; v.k = k2;
       bdApplyView(ctx);
     }
-    st.addEventListener("wheel", function (e) { e.preventDefault(); var p = pos(e); zoomAt(p.x, p.y, ctx.view.k * (e.deltaY < 0 ? 1.1 : 0.9)); }, { passive: false });
+    // the focused block's body under a screen point, and that point in the body's own px
+    function bodyAt(cx, cy, b) {
+      b = b || (ctx.focus && nodeOf(ctx.ps(), ctx.focus));
+      var d = b && bdBlockEl(ctx, b.id); if (!d) return null;
+      var r = d.querySelector(".bd-bbody").getBoundingClientRect();
+      if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return null;
+      return { b: b, x: (cx - r.left) / ctx.view.k, y: (cy - r.top) / ctx.view.k };
+    }
+    function bodyXY(b, cx, cy) {
+      var d = bdBlockEl(ctx, b.id); if (!d) return { x: 0, y: 0 };
+      var r = d.querySelector(".bd-bbody").getBoundingClientRect();
+      return { x: (cx - r.left) / ctx.view.k, y: (cy - r.top) / ctx.view.k };
+    }
+    st.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      var h = bodyAt(e.clientX, e.clientY);
+      if (h) {
+        var iv = ctx.iv[h.b.id] = bdIv(ctx, h.b);
+        if (e.ctrlKey || e.metaKey) bdIZoom(ctx, h.b, h.x, h.y, iv.k * (e.deltaY < 0 ? 1.1 : 1 / 1.1));
+        else { iv.x -= e.deltaX / ctx.view.k; iv.y -= e.deltaY / ctx.view.k; bdIClamp(ctx, h.b, iv); bdInner(ctx, h.b); }
+        return;
+      }
+      var p = pos(e); zoomAt(p.x, p.y, ctx.view.k * (e.deltaY < 0 ? 1.1 : 0.9));
+    }, { passive: false });
     st.addEventListener("pointerdown", function (e) {
       if (e.pointerType === "mouse" && e.button !== 0) return;
+      if (e.target.closest && e.target.closest("button")) return;      // the focused block's ＋ − Fit
+      if (e.isPrimary && Object.keys(ptrs).length) reset();
+      if (Object.keys(ptrs).length >= 2) return;                       // a third finger changes nothing
       ptrs[e.pointerId] = pos(e);
       try { st.setPointerCapture(e.pointerId); } catch (x) {}
       var ids = Object.keys(ptrs);
       if (ids.length === 2) {
         if (op && op.timer) clearTimeout(op.timer);
+        var a = ptrs[ids[0]], b = ptrs[ids[1]], dd = Math.hypot(a.x - b.x, a.y - b.y);
+        // two fingers on the focused block's body: zoom inside it; anywhere else: the board
+        if (op && op.kind === "ipan" && bodyAt(b.cx, b.cy, op.node)) pinch = { inner: op.node, d: dd, k: bdIv(ctx, op.node).k };
+        else {
+          if (op && op.moved && op.before) ctx.afterEdit(op);              // a move already made is kept
+          pinch = { d: dd, k: ctx.view.k };
+        }
         op = null;
-        var a = ptrs[ids[0]], b = ptrs[ids[1]];
-        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), k: ctx.view.k };
         return;
       }
       var t = e.target, p = pos(e), hit = t.closest ? t.closest("[data-link]") : null;
@@ -20871,6 +20988,8 @@ function __detabaseMain() {
         if (!ctx.ro) op.timer = setTimeout(function () { if (op && op.kind === "line") { var o = op; op = null; ctx.onLine(o.link, o.el); } }, 500);
         return;
       }
+      var inb = bodyAt(e.clientX, e.clientY);
+      if (inb) { var iv0 = bdIv(ctx, inb.b); op = { kind: "ipan", node: inb.b, p: p, ix: iv0.x, iy: iv0.y }; return; }
       var el = t.closest ? t.closest("[data-node]") : null, node = el ? nodeOf(ctx.ps(), el.getAttribute("data-node")) : null;
       if (node && !ctx.ro && t.classList.contains("bd-rs")) op = { kind: "resize", node: node, p: p, w: node.w, h: node.h, before: ctx.snap() };
       else if (node) op = { kind: "move", node: node, p: p, last: p, before: ctx.ro ? null : ctx.snap() };
@@ -20881,8 +21000,9 @@ function __detabaseMain() {
       ptrs[e.pointerId] = pos(e);
       var ids = Object.keys(ptrs);
       if (pinch && ids.length >= 2) {
-        var a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y);
-        zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, pinch.k * d / (pinch.d || 1));
+        var a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y), f = d / (pinch.d || 1);
+        if (pinch.inner) { var m = bodyXY(pinch.inner, (a.cx + b.cx) / 2, (a.cy + b.cy) / 2); bdIZoom(ctx, pinch.inner, m.x, m.y, pinch.k * f); }
+        else zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, pinch.k * f);
         return;
       }
       if (!op) return;
@@ -20891,46 +21011,60 @@ function __detabaseMain() {
       op.moved = true;
       if (op.timer) { clearTimeout(op.timer); op.timer = null; }
       var ps = ctx.ps(), k = ctx.view.k;
-      if (op.kind === "pan" || (op.kind === "move" && ctx.ro)) { if (op.kind === "move") { op.kind = "pan"; op.vx = ctx.view.x; op.vy = ctx.view.y; } ctx.view.x = op.vx + dx; ctx.view.y = op.vy + dy; bdApplyView(ctx); }
+      if (op.kind === "ipan") {
+        var iv = ctx.iv[op.node.id] = bdIv(ctx, op.node);
+        iv.x = op.ix + dx / k; iv.y = op.iy + dy / k;
+        bdIClamp(ctx, op.node, iv); bdInner(ctx, op.node);
+      } else if (op.kind === "pan" || (op.kind === "move" && ctx.ro)) { if (op.kind === "move") { op.kind = "pan"; op.vx = ctx.view.x; op.vy = ctx.view.y; } ctx.view.x = op.vx + dx; ctx.view.y = op.vy + dy; bdApplyView(ctx); }
       else if (op.kind === "move") {
         var mx = (p.x - op.last.x) / k, my = (p.y - op.last.y) / k; op.last = p;
         op.node.x += mx; op.node.y += my;
         if (ps.groups.indexOf(op.node) >= 0) membersOf(ps, op.node.id).forEach(function (m) { m.x += mx; m.y += my; });
         bdRelayout(ctx);
       } else if (op.kind === "resize") {
-        var nw = Math.max(120, op.w + dx / k), nh = Math.max(70, op.h + dy / k), isG = ps.groups.indexOf(op.node) >= 0;
+        var isG = ps.groups.indexOf(op.node) >= 0;
         if (isG) {                                       // a group resizes as one: its blocks scale inside it
-          var sx = nw / op.node.w, sy = nh / op.node.h;
-          membersOf(ps, op.node.id).forEach(function (m) { m.x = op.node.x + (m.x - op.node.x) * sx; m.y = op.node.y + (m.y - op.node.y) * sy; m.w *= sx; m.h *= sy; });
+          var nw = Math.max(120, op.w + dx / k), nh = Math.max(70, op.h + dy / k), sx = nw / op.node.w, sy = nh / op.node.h;
+          membersOf(ps, op.node.id).forEach(function (m) { m.x = op.node.x + (m.x - op.node.x) * sx; m.y = op.node.y + (m.y - op.node.y) * sy; m.w *= sx; m.h = bdHeightFor(ctx, m, m.w); });
+          op.node.w = nw; op.node.h = nh;
+        } else {                                         // a block keeps its shape: the bigger of the two pulls wins
+          var n = ctx.nat[op.node.id], byW = op.w + dx / k, byH = n ? (op.h + dy / k - n.head) / n.nh * BD_RW : byW;
+          op.node.w = Math.max(90, Math.round(Math.abs(dx) >= Math.abs(dy) ? byW : byH));
+          op.node.h = bdHeightFor(ctx, op.node, op.node.w);
+          if (ctx.iv[op.node.id]) bdIClamp(ctx, op.node, ctx.iv[op.node.id]);
         }
-        op.node.w = nw; op.node.h = nh;
         bdRelayout(ctx);
       }
     });
     function end(e) {
       if (!ptrs[e.pointerId]) return;
       delete ptrs[e.pointerId];
-      if (pinch) { if (Object.keys(ptrs).length < 2) pinch = null; return; }
+      if (pinch) { if (Object.keys(ptrs).length < 2) { pinch = null; op = null; } return; }
       var o = op; op = null; if (!o) return;
       if (o.timer) clearTimeout(o.timer);
-      if (e.type === "pointercancel") return;
+      if (e.type !== "pointerup") { if (o.moved && o.before) ctx.afterEdit(o); return; }   // cancelled: keep what moved
       if (!o.moved) {
-        if (o.kind === "line") ctx.onLine(o.link, o.el);
-        else ctx.onTap(o.node || null);
+        if (o.kind === "line") { ctx.onLine(o.link, o.el); return; }
+        var now = Date.now(), n = o.node || null;
+        // a second tap on the focused block: back to the whole item
+        if (n && lastTap && lastTap.id === n.id && now - lastTap.t < 350 && ctx.focus === n.id) { lastTap = null; bdIFit(ctx, n); return; }
+        lastTap = n ? { id: n.id, t: now } : null;
+        ctx.onTap(n);
       } else if (o.before) ctx.afterEdit(o);
     }
     st.addEventListener("pointerup", end);
     st.addEventListener("pointercancel", end);
+    st.addEventListener("lostpointercapture", end);
   }
 
   // ---- the board's page ----
   function renderBoard() {
     var host = $("boardPane"); if (!host) return;
-    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700 };
+    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, iv: {}, focus: null, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700 };
     bdIdx = null;
     host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel"></div><div class="bd-main"><div class="bd-side"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
     var ctx = bd.ctx = {
-      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ps: bdData, ro: false, view: bd.view, cache: bd.cache, sel: bd.sel,
+      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ps: bdData, ro: false, view: bd.view, cache: bd.cache, sel: bd.sel, iv: bd.iv, nat: {}, focus: bd.focus,
       linking: null,
       snap: function () { return JSON.stringify(bdData()); },
       onTap: bdTap, onLine: bdLineMenu, afterEdit: bdAfterEdit
@@ -20945,7 +21079,10 @@ function __detabaseMain() {
   function bdRefOf(k) { var i = k.indexOf("|"); return { lvl: k.slice(0, i), id: k.slice(i + 1) }; }
   function bdRedraw() {
     var c = bd.ctx; c.linking = bd.linking;
+    if (bd.focus && (!bd.sel[bd.focus] || bd.multi || !byId(bdData().blocks, bd.focus))) bd.focus = null;
+    c.focus = bd.focus;
     bdDraw(c);
+    if (c.fitted) bdSave();                             // blocks fitted for the first time (new, or saved before B179)
     var hint = $("boardPane").querySelector(".bd-hint"), ps = bdData();
     if (hint) hint.hidden = !!(ps.blocks.length || ps.groups.length);
     bdBarSel();
@@ -20995,14 +21132,14 @@ function __detabaseMain() {
     var rowY = y0, rowH = 0;
     made.forEach(function (b, i) {
       if (i && i % 3 === 0) { rowY += rowH + 14; rowH = 0; }
-      b.x = (i % 3) * 354; b.y = rowY; rowH = Math.max(rowH, b.h || 0);
+      b.x = (i % 3) * (BD_RW + 14); b.y = rowY; rowH = Math.max(rowH, b.h || 0);
     });
     bd.view.x = 40; bd.view.y = 20 - y0 * bd.view.k;
     bdSave(); bdRedraw();
     libToast("Added " + made.length + (made.length === 1 ? " item" : " items") + " to the Clipboard");
   }
   function bdNewBlock(ps, ref, x, y, g) {
-    var b = { id: uid("b_"), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: 340 };
+    var b = { id: uid("b_"), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: BD_RW, h: BD_NEW_H };   // fitted into that box when first drawn (bdSize)
     if (g) b.g = g;
     ps.blocks.push(b);
     return b;
@@ -21022,7 +21159,7 @@ function __detabaseMain() {
       var m = membersOf(ps, g.id), cols = Math.min(3, Math.ceil(Math.sqrt(m.length))), rowY = y + 40, rowH = 0;
       m.forEach(function (b, i) {
         if (i && i % cols === 0) { rowY += rowH + 14; rowH = 0; }
-        b.x = x + 16 + (i % cols) * 354; b.y = rowY; rowH = Math.max(rowH, b.h);
+        b.x = x + 16 + (i % cols) * (BD_RW + 14); b.y = rowY; rowH = Math.max(rowH, b.h);
       });
       bdFit(ps, g);
       bdSave(); bdRedraw();
@@ -21035,8 +21172,12 @@ function __detabaseMain() {
       else bdRedraw();
       return;
     }
+    if (!bd.multi && node && bd.focus === node.id) return;   // a tap inside the block being read
+    var was = !!(node && bd.sel[node.id]);
     if (!bd.multi) Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; });
-    if (node) { if (bd.sel[node.id]) delete bd.sel[node.id]; else bd.sel[node.id] = 1; }
+    if (node) { if (was && bd.multi) delete bd.sel[node.id]; else bd.sel[node.id] = 1; }
+    // one tap on a block selects it and focuses it: pinch / ＋ − / drag then work inside it
+    bd.focus = !bd.multi && node && bd.sel[node.id] && byId(bdData().blocks, node.id) ? node.id : null;
     bdRedraw();
   }
   function bdDeleteSel() {
@@ -21109,6 +21250,11 @@ function __detabaseMain() {
     var one = ids.length === 1 ? nodeOf(ps, ids[0]) : null, isG = !!one && ps.groups.indexOf(one) >= 0;
     if (one) el.appendChild(actBtn("🔗 Connect", "join it to another block or group with a line", function () { bd.linking = one.id; Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; }); bdRedraw(); }));
     if (one && !isG && refExists(one.ref)) el.appendChild(actBtn("↗ Open", "open it in the library", function () { openRef(one.ref); }));
+    if (one && bd.focus === one.id) {                  // reading inside the focused block (pinch, ctrl/⌘+wheel and drag work too)
+      el.appendChild(actBtn("−", "zoom out inside the block", function () { bdIStep(bd.ctx, one, 1 / 1.5); }));
+      el.appendChild(actBtn("＋", "zoom in inside the block", function () { bdIStep(bd.ctx, one, 1.5); }));
+      el.appendChild(actBtn("⤢ Fit", "the whole item again (or double-tap it)", function () { bdIFit(bd.ctx, one); }));
+    }
     if (ids.length > 1 && ids.every(function (id) { return byId(ps.blocks, id); })) el.appendChild(actBtn("▣ Group", "put them in one frame", bdGroupSel));
     if (isG) {
       el.appendChild(actBtn("✎ Rename", "", function () { askName("Rename group", "", one.name, function (n) { bdChange(function () { one.name = n; }); }); }));
@@ -21316,7 +21462,7 @@ function __detabaseMain() {
     bar.appendChild(dots);
     var doc = loadCanvas(s.id);
     var ctx = {
-      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ro: true, view: { x: 40, y: 20, k: 1 }, cache: {}, sel: {},
+      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ro: true, view: { x: 40, y: 20, k: 1 }, cache: {}, sel: {}, iv: {}, nat: {},
       ps: function () { var p = doc.ps || emptyBoard(); return p; },
       snap: function () { return null; }, afterEdit: function () {},
       onTap: function (n) { if (n && n.ref && refExists(n.ref)) openRef(n.ref); }, onLine: function () {}
@@ -21325,6 +21471,7 @@ function __detabaseMain() {
     var p = ctx.ps(), all = p.blocks.concat(p.groups);
     if (all.length) {                                   // the whole branch in view
       bdDraw(ctx);
+      if (ctx.fitted) saveCanvas(s.id);              // blocks saved before B179, fitted once
       var x0 = Math.min.apply(null, all.map(function (n) { return n.x; })), y0 = Math.min.apply(null, all.map(function (n) { return n.y; }));
       var x1 = Math.max.apply(null, all.map(function (n) { return n.x + n.w; })), y1 = Math.max.apply(null, all.map(function (n) { return n.y + (n.h || 0); }));
       var k = Math.min(1, ctx.stage.clientWidth / (x1 - x0 + 60), ctx.stage.clientHeight / (y1 - y0 + 60));
