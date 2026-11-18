@@ -934,7 +934,10 @@
   .bd-list .sr-row { margin: 0; }
   .bd-list .sr-main { padding: 4px 4px; }
   .bd-list .sr-name { font-size: .84rem; }
-  .bd-list .sr-chiplab { min-width: 0; width: 100%; }
+  .bd-list .sr-chiplab { min-width: 0; }
+  .bd-list .sr-chiprow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .sr-chiprow .em-kind, .sr-chiplab { flex-shrink: 0; }
+  @media (max-width: 760px) { .sr-chiprow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } }
   .nc-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
   .nc-what b { display: block; overflow-wrap: anywhere; }
   .nc-what small { display: block; font-size: .74rem; color: var(--text-muted); }
@@ -1319,7 +1322,7 @@
   .ct-pv-go { flex: 1; min-width: 0; min-height: 40px; display: flex; flex-direction: column; justify-content: center; padding: 2px 8px; border: 1px solid var(--border); border-radius: var(--r-sm); background: none; color: var(--text-primary); font: inherit; font-size: .82rem; text-align: left; cursor: pointer; }
   .ct-pv-go span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ct-pv-go small { font-size: .7rem; color: var(--text-muted); }
-  .sr-num { flex-shrink: 0; align-self: center; min-width: 30px; height: 30px; padding: 0 6px; border: 1.5px solid #f59e0b; border-radius: 999px; background: color-mix(in srgb, #f59e0b 14%, transparent); color: #b45309; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
+  .sr-num { flex-shrink: 0; align-self: center; min-width: 38px; height: 38px; padding: 0 6px; border: 1.5px solid #f59e0b; border-radius: 999px; background: color-mix(in srgb, #f59e0b 14%, transparent); color: #b45309; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
   .sr-row.sel { box-shadow: inset 3px 0 0 var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); border-radius: var(--r-sm); }
   /* the Clipboard's library panel: List | Tree (B183) */
   .bd-libtabs { display: flex; gap: 6px; }
@@ -1330,6 +1333,7 @@
   .bd-tree[hidden], .bd-panes > .bd-list[hidden] { display: none; }
   .bd-side.treeview { width: min(620px, 64vw); }
   .bd-side.split { width: min(900px, 58vw); }
+  @media (max-width: 700px) { .bd-side.treeview { width: 100%; } }
   .bd-side.split .bd-panes > .bd-list { flex: 0 0 300px; }
   .bd-tree .ct-views { right: 60px; }
   .bd-tree .ct-hint { display: none; }
@@ -3042,7 +3046,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B186</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B187</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
