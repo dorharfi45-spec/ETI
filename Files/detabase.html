@@ -935,6 +935,11 @@
   .bd-list .sr-main { padding: 4px 4px; }
   .bd-list .sr-name { font-size: .84rem; }
   .bd-list .sr-chiplab { min-width: 0; width: 100%; }
+  .nc-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .nc-what b { display: block; overflow-wrap: anywhere; }
+  .nc-what small { display: block; font-size: .74rem; color: var(--text-muted); }
+  .nc-acts { display: flex; gap: 6px; }
+  @media (max-width: 700px) { .nc-row { grid-template-columns: 1fr; } }
   .aw-kw { width: 100%; min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg); color: var(--text-primary); font: inherit; box-sizing: border-box; }
   .em-hit-main b { font-weight: 650; }
   .course-sw { align-self: flex-start; min-height: 40px; margin: 6px 0; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-secondary); font: inherit; font-size: .84rem; font-weight: 600; cursor: pointer; }
@@ -2978,7 +2983,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B181</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B182</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -10863,12 +10868,13 @@ function __detabaseMain() {
     var t = cleanText(node);
     return t.length > 48 ? t.slice(0, 46) + "…" : t;
   }
-  // a built-in card's key: data-key when set (the old key, kept when a title is renamed, so saved links stay attached), else the title's slug
+  // B182: every built-in card and tool carries a fixed data-id (its id, frozen as it was), so a title can be renamed
+  // and a card moved without its id changing. Only a block authored without one falls back to "<pane>:<title slug>"
+  // (new built-in content must be given a data-id: content-standards.md).
   // elKey: a value that already is a key (lowercase slug, at most 40 characters) is used as is, anything else is slugged
   function elKey(s) { s = String(s || ""); return /^[a-z0-9-]{1,40}$/.test(s) ? s : elSlug(s); }
-  function biKeyOf(node) { return elKey(node.getAttribute("data-key") || builtinElTitle(node)); }
-  // a card moved to another concept in the HTML keeps its whole old id through data-id="<old tab>:<key>" (B160),
-  // so everything saved about it (tags, links, sheets, Clipboard items) stays attached
+  function biKeyOf(node) { return elKey(builtinElTitle(node)); }
+  // (B160: a card moved to another concept keeps its whole old id the same way.)
   function tagBuiltinElements() {
     document.querySelectorAll("#topfolder-eti section.pane:not(.ue-pane)").forEach(function (pane) {
       var target = pane.id.replace("pane-", ""), used = {}, runKey = null;
@@ -12833,7 +12839,15 @@ function __detabaseMain() {
     try {
       if (!localStorage.getItem("detabase.v1.pre-biseed")) localStorage.setItem("detabase.v1.pre-biseed", mainRead() || "");
     } catch (e) {}
-    function ref(r) { return r[0] === "c" ? { lvl: "c", id: r[1] + ":" + elKey(r[2]) } : { lvl: r[0], id: r[1] }; }
+    // a card: ["c", "<its id>"] (B182), or the older ["c", pane, title]
+    function ref(r) { return r[0] === "c" ? { lvl: "c", id: r.length === 2 ? r[1] : r[1] + ":" + elKey(r[2]) } : { lvl: r[0], id: r[1] }; }
+    // B182: the methods about to be rewritten, as they are now (their page and body), in case the owner had changed one
+    var redo = methods.filter(function (m) { var pg = psPageById(m.id); return pg && !pg.over; });
+    if (redo.length) try {
+      var bk = { ts: Date.now(), pages: {}, docs: {} };
+      redo.forEach(function (m) { bk.pages[m.id] = JSON.parse(JSON.stringify(psPageById(m.id))); var d = window.DBX.get(m.id); if (d) bk.docs[m.id] = JSON.parse(JSON.stringify(d.ps || null)); });
+      window.DBX.put("__pre_biseed_methods", bk);
+    } catch (e) {}
     methods.forEach(function (m) {
       var pg = psPageById(m.id);
       if (!pg && seed.m[m.id] != null) { seed.m[m.id] = m.v; return; }   // deleted by the owner
@@ -12843,6 +12857,7 @@ function __detabaseMain() {
         store.ps.pages.push(pg);
       }
       pg.subject = m.subject; pg.name = m.name; pg.kind = m.kind; pg.description = m.description || ""; pg.builtin = 1;
+      if (m.kw && m.kw.length) pg.kw = m.kw; else delete pg.kw;   // starting keywords (B182), see kwBuiltin
       var body = psBody(m.id);
       body.parts = m.parts.map(function (p) {
         var o = { id: p.id, cat: p.cat, name: p.name || "", clip: null, text: p.text, assets: (p.uses || []).map(ref) };
@@ -18016,6 +18031,51 @@ function __detabaseMain() {
     row.appendChild(acts);
     return row;
   }
+  // ---- naming check (B182): the owner's own assets whose name is generic or used twice ----
+  // Rule (content-standards.md): "Topic: what this is", never a bare "Example" / "Notes", never two of the same.
+  // Each finding gets a suggested name (where it sits + its name) to accept, edit or skip. Skips are
+  // remembered in store.ui.nameSkip = {refKey: 1}. Accepting renames with assetSetName; Undo puts the old name back.
+  var NAME_GENERIC = /^(untitled|new (subject|concept|card|method|sheet|part|element)|subject|concept|card|method|part|element|example|examples|exercise|exercises|question|problem|notes?|summary|definition|definitions|formula|formulas|theorem|properties|rules?|idea|steps?|stage|check|conclude|solve|answer|result|draft|test|\d+|(step|stage|part|example|card) ?\d+)$/i;
+  function namingFindings() {
+    var all = assetIndex(["s", "t", "c", "p", "st", "sm", "sg"]), count = {}, skip = (store.ui.nameSkip = store.ui.nameSkip || {}), out = [];
+    all.forEach(function (en) { var k = en.name.trim().toLowerCase(); count[k] = (count[k] || 0) + 1; });
+    all.forEach(function (en) {
+      var r = en.ref, mine = r.lvl === "st" ? !/^st_bi_/.test(r.id) : r.lvl === "p" ? !(psPageById(r.id) || {}).builtin : r.lvl === "sm" || r.lvl === "sg" || !!mgmtObj(r);
+      if (!mine || skip[refKey(r)]) return;
+      var nm = en.name.trim(), part = r.lvl === "st" ? psPartById(r.id) : null, unnamed = part && !(part.part.name || "").trim();
+      var why = unnamed ? "has no name of its own" : NAME_GENERIC.test(nm) || nm.length < 3 ? "is too general" : count[nm.toLowerCase()] > 1 ? "is used " + count[nm.toLowerCase()] + " times" : "";
+      if (!why) return;
+      var topic = en.crumbs.length ? en.crumbs[en.crumbs.length - 1].replace(/^📁 /, "").replace(/^[A-Z]?\d+(\.\d+)*\s+/, "") : "";   // no "2.1 " numbering
+      var sug = topic && nm.toLowerCase().indexOf(topic.toLowerCase()) !== 0 ? topic + ": " + (unnamed ? nm : nm.charAt(0).toLowerCase() + nm.slice(1)) : nm + " (" + (en.crumbs[0] || "mine") + ")";
+      out.push({ en: en, why: why, sug: sug });
+    });
+    return out;
+  }
+  function openNamingCheck() {
+    var box = ovOpen("Naming check", { wide: true });
+    function draw() {
+      var list = namingFindings();
+      box.body.innerHTML = '<p class="lw-hint">Names that say only what kind of thing it is, or that two things share, are hard to find. Each one here has a suggestion: “Topic: what this is”.</p>';
+      if (!list.length) box.body.insertAdjacentHTML("beforeend", '<p class="muted">Every name of yours is specific. ✓</p>');
+      list.forEach(function (f) {
+        var row = document.createElement("div"); row.className = "nc-row";
+        row.innerHTML = '<div class="nc-what"><b></b><small></small></div><input type="text" maxlength="80" class="aw-kw"><div class="nc-acts"></div>';
+        row.querySelector("b").textContent = f.en.name;
+        row.querySelector("small").textContent = SRCH_KIND[f.en.ref.lvl] + " · " + (f.en.crumbs.join(" › ") || "—") + " · " + f.why;
+        var inp = row.querySelector("input"); inp.value = f.sug;
+        var acts = row.querySelector(".nc-acts");
+        acts.appendChild(actBtn("✓ Rename", "use the name in the box", function () {
+          var v = inp.value.trim(), ref = f.en.ref, old = assetName(ref); if (!v) { inp.focus(); return; }
+          assetSetName(ref, v); draw();
+          libToast("Renamed to “" + v + "”", { label: "Undo", run: function () { assetSetName(ref, old); draw(); } });
+        }, "btn-primary"));
+        acts.appendChild(actBtn("Skip", "keep this name; don't ask again", function () { store.ui.nameSkip[refKey(f.en.ref)] = 1; saveStore(); draw(); }));
+        box.body.appendChild(row);
+      });
+    }
+    draw();
+    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
+  }
   // ---- the main page's search: the shared search view (SEARCH); tap opens, ⋯ / hold = the asset window ----
   var mainSS = { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
   function openAnyRef(ref) {
@@ -18602,6 +18662,7 @@ function __detabaseMain() {
       '<div class="em-res"></div><div class="em-tree"></div>';
     host.querySelector(".em-libbar").appendChild(actBtn("📚 Study sheets and strategies", "every study sheet, and make new ones", openSheetsLib, "btn-primary"));
     host.querySelector(".em-libbar").appendChild(actBtn("🧷 Clipboard", "a big board to lay out and connect library items", openBoard, "btn-primary"));
+    host.querySelector(".em-libbar").appendChild(actBtn("🏷 Naming check", "your own names that are too general or used twice, with suggestions", openNamingCheck));
     var input = host.querySelector(".em-search");
     input.value = mainQ;
     var st;
