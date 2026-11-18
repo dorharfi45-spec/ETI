@@ -1277,6 +1277,20 @@
   .ct-leaf.m-hit { fill: color-mix(in srgb, #f59e0b 30%, var(--bg)); }
   .ct-leaf.m-conn, .ct-ring.m-conn, .ct-method.m-conn { stroke: #0891b2; stroke-width: 3.2; stroke-dasharray: none; }
   .ct-leaf.m-sel, .ct-ring.m-sel, .ct-method.m-sel { stroke: var(--accent); stroke-width: 5; stroke-dasharray: none; }
+  .ct-leaf.m-board, .ct-ring.m-board, .ct-method.m-board { stroke: #16a34a; stroke-width: 3.6; stroke-dasharray: none; }
+  .ct-leaf.m-board { fill: color-mix(in srgb, #16a34a 30%, var(--bg)); }
+  .ct-leaf.m-mk, .ct-ring.m-mk, .ct-method.m-mk { stroke: #db2777; stroke-width: 3.6; stroke-dasharray: none; }
+  .ct-leaf.m-mk { fill: color-mix(in srgb, #db2777 28%, var(--bg)); }
+  .ct-svg path.m-hot.ct-link, .ct-svg path.m-hot.ct-arrow { opacity: 1; }
+  .ct-legend { position: absolute; left: 10px; bottom: 34px; display: flex; flex-wrap: wrap; gap: 4px 10px; max-width: calc(100% - 80px); padding: 4px 8px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--surface-1) 88%, transparent); font-size: .72rem; color: var(--text-secondary); pointer-events: none; }
+  .ct-legend[hidden] { display: none; }
+  .ct-lg { display: inline-flex; align-items: center; gap: 5px; }
+  .ct-lg i { width: 11px; height: 11px; border-radius: 50%; border: 2.5px solid var(--c); background: color-mix(in srgb, var(--c) 25%, transparent); }
+  .ct-lg.m-hit { --c: #f59e0b; } .ct-lg.m-sel { --c: var(--accent); } .ct-lg.m-conn { --c: #0891b2; } .ct-lg.m-board { --c: #16a34a; } .ct-lg.m-mk { --c: #db2777; } .ct-lg.m-pick { --c: #16a34a; }
+  .bd-treebar { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bd-treebar[hidden] { display: none; }
+  .bd-tree .ct-legend { bottom: 10px; }
+  .ct-prev ~ .ct-legend, .ct-legend:has(~ .ct-prev) { display: none; }
   .ct-num { font-size: calc(11px * var(--ctu, 1)); font-weight: 800; fill: #b45309; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3px * var(--ctu, 1)); pointer-events: none; }
   .ct-num.sel { fill: var(--accent); font-size: calc(13px * var(--ctu, 1)); }
   .ct-check { font-size: calc(13px * var(--ctu, 1)); font-weight: 900; fill: #16a34a; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3px * var(--ctu, 1)); pointer-events: none; }
@@ -3019,7 +3033,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B183</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B184</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -18539,6 +18553,18 @@ function __detabaseMain() {
       g.appendChild(t);
     });
     ctLabels(T, E);
+    ctLegend(T, layers);
+  }
+  // the colours in use, explained (B184): only the layers that are on
+  var CT_LEGEND = [["hit", "Search result (numbered)"], ["sel", "Chosen"], ["conn", "Connected to it"], ["board", "On the Clipboard"], ["mk", "Marked connected"], ["pick", "✓ To add"]];
+  function ctLegend(T, layers) {
+    var E = T.els, lg = E.box.querySelector(".ct-legend"); if (!lg) return;
+    lg.innerHTML = "";
+    CT_LEGEND.forEach(function (l) {
+      if (!Object.keys(layers[l[0]] || {}).length) return;
+      lg.insertAdjacentHTML("beforeend", '<span class="ct-lg m-' + l[0] + '"><i></i>' + escapeHtml(l[1]) + '</span>');
+    });
+    lg.hidden = !lg.firstChild;
   }
   // ---- choosing a point: zoom to it, show its connections and a preview ----
   function ctSelect(T, key, quiet) {
@@ -18553,7 +18579,7 @@ function __detabaseMain() {
   }
   function ctBackToAll(T) {
     ctSelect(T, null);
-    var keys = Object.keys(T.hits || {});
+    var keys = Object.keys(T.hits || {}); if (!keys.length) keys = Object.keys(T.mk || {}).concat(Object.keys(T.board || {}));   // the results; else what is marked
     if (keys.length) ctFlyBox(T, ctBoxOfKeys(T, keys), 3); else ctFlyBox(T, T.els.allBox);
   }
   function ctActBtn(T, ref) {
@@ -18718,7 +18744,7 @@ function __detabaseMain() {
       '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g><g class="ct-nums"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in" :
+      '<div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in" :
         "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for its properties")) + '</div>';
     var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
     var gRings = world.querySelector(".ct-rings"), gLinks = world.querySelector(".ct-links"), gLeaves = world.querySelector(".ct-leaves"),
@@ -21490,7 +21516,8 @@ function __detabaseMain() {
     if (c.fitted) bdSave();                             // blocks fitted for the first time (new, or saved before B179)
     var hint = $("boardPane").querySelector(".bd-hint"), ps = bdData();
     if (hint) hint.hidden = !!(ps.blocks.length || ps.groups.length);
-    bdBarSel();
+    bdBar(); bdBarSel();
+    if (bdTreeShown()) bdTreeBoard(false);           // the selection, marked on the tree (B184)
   }
   function bdSave() { saveCanvas(BOARD_ID); }
   // every change goes through here (or bdAfterEdit, for a drag), so every change can be undone
@@ -21664,7 +21691,8 @@ function __detabaseMain() {
     bar.innerHTML = "";
     bar.appendChild(actBtn("‹ ETI", "back to ETI's main page", openMiningScreen, "ps-back"));
     bar.insertAdjacentHTML("beforeend", '<b class="bd-name">Clipboard</b>');
-    bar.appendChild(actBtn(bd.side ? "◧ Hide library" : "◧ Library", "the library panel", function () { bd.side = !bd.side; bdBar(); bdSide(); }));
+    var nsel = Object.keys(bd.sel).length;
+    bar.appendChild(actBtn(nsel && !(bd.side && bdTreeShown() && !bd.showAll) ? "◎ Show in the tree (" + nsel + ")" : bd.side ? "◧ Hide library" : "◧ Library", nsel ? "open the tree with the selected blocks marked" : "the library panel", bdLibButton));
     var u = actBtn("↶", "undo", function () { bdUndoRedo(bd.undo, bd.redo); }), r = actBtn("↷", "redo", function () { bdUndoRedo(bd.redo, bd.undo); });
     u.disabled = !bd.undo.length; r.disabled = !bd.redo.length;
     bar.appendChild(u); bar.appendChild(r);
@@ -21733,6 +21761,32 @@ function __detabaseMain() {
   // the library panel (B183): search, then List and Tree — a switch on an iPad-sized screen, side by side on a
   // wide one (≥ 1400 px). The Tree is the main page's tree (ctTree, mode "add"): the list's results are
   // numbered on it; tapping a point zooms to it with its connections and a preview with "＋ Add to board".
+  // the board on the tree (B184): the selected blocks (or, with "Everything on the board", all of them) are
+  // marked in the board colour. A group made from a concept / subject counts as that ring; a group of loose
+  // blocks as its blocks.
+  function bdBoardKeys(all) {
+    var ps = bdData(), keys = {};
+    function add(r) { var k = r && refExists(r) && ctKeyOf(r); if (k) keys[k] = 1; }
+    ps.groups.forEach(function (g) { if ((all || bd.sel[g.id]) && g.ref) add(g.ref); });
+    ps.blocks.forEach(function (b) { if (all || bd.sel[b.id] || (b.g && bd.sel[b.g])) add(b.ref); });
+    return keys;
+  }
+  function bdTreeBoard(fly) {
+    var T = bd && bd.tree; if (!T) return;
+    var k = bdBoardKeys(!!bd.showAll);
+    T.board = Object.keys(k).length ? k : null;
+    if (!T.els || !T.box || !T.box.isConnected) return;
+    ctPaint(T);
+    if (fly && T.board) { var b = ctBoxOfKeys(T, Object.keys(T.board)); if (b) ctFlyBox(T, b, 3); }
+  }
+  function bdTreeShown() { return !!(bd && bd.side && (bdSplit() || bd.libView === "tree")); }
+  // the Library button: with blocks selected it opens the tree with them marked; otherwise it shows / hides the panel
+  function bdLibButton() {
+    if (Object.keys(bd.sel).length && !(bd.side && bdTreeShown() && !bd.showAll)) {
+      bd.side = true; bd.libView = "tree"; bd.showAll = false; bd.flyBoard = true;
+    } else bd.side = !bd.side;
+    bdBar(); bdSide();
+  }
   var BD_SPLIT = 1400;
   function bdSplit() { return window.innerWidth >= BD_SPLIT; }
   function bdSide() {
@@ -21741,7 +21795,7 @@ function __detabaseMain() {
     if (!bd.side) return;
     bd.libView = bd.libView || "list";
     if (!side.firstChild) {
-      side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-libtabs"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
+      side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-libtabs"></div><div class="bd-treebar"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
       var q = side.firstChild, qt = null;
       q.value = bd.q;
       q.addEventListener("input", function () { clearTimeout(qt); qt = setTimeout(function () { bd.q = q.value; bdSide(); }, 160); });
@@ -21753,6 +21807,9 @@ function __detabaseMain() {
     [["list", "☰ List"], ["tree", "◎ Tree"]].forEach(function (v) {
       tabs.appendChild(actBtn(v[1], "", function () { bd.libView = v[0]; bdSide(); }, "em-kind" + (bd.libView === v[0] ? " on" : "")));
     });
+    var tbar = side.querySelector(".bd-treebar");
+    tbar.innerHTML = ""; tbar.hidden = !showTree;
+    tbar.appendChild(actBtn((bd.showAll ? "☑" : "☐") + " Everything on the board", "mark every block on the Clipboard in the tree", function () { bd.showAll = !bd.showAll; bd.flyBoard = bd.showAll; bdBar(); bdSide(); }, "em-kind" + (bd.showAll ? " on" : "")));
     var list = side.querySelector(".bd-list"), treeBox = side.querySelector(".bd-tree");
     list.hidden = !showList; treeBox.hidden = !showTree;
     list.innerHTML = "";
@@ -21789,7 +21846,9 @@ function __detabaseMain() {
     }
     if (showTree) {
       ctSetHits(bd.tree, q2 ? bd.ss.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([q2, bd.ss.kind, bd.ss.grp, bd.ss.subj, bd.ss.course, bd.ss.tag]));
+      var bk = bdBoardKeys(!!bd.showAll); bd.tree.board = Object.keys(bk).length ? bk : null;
       ctRender(bd.tree, treeBox);
+      if (bd.flyBoard) { bd.flyBoard = false; setTimeout(function () { bdTreeBoard(true); }, 30); }
     }
   }
 
