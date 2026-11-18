@@ -2956,7 +2956,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B179</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B180</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -15013,7 +15013,7 @@ function __detabaseMain() {
     }
     draw();
     box.buttons([
-      { label: "🧷 Add to Clipboard", run: function () { closeConcepts(); bdAddRefs([{ lvl: ref.lvl, id: ref.id }]); } },
+      { label: "🧷 Add to Clipboard", run: function () { closeConcepts(); bdAdd([{ lvl: ref.lvl, id: ref.id }], null, { toast: true }); } },
       // a part's popup can take you to its method — unless that method is already what is on screen
       t.part && !(activePsPage === t.pg.id && !miningScreen) ? { label: "Open the method", run: function () { closeConcepts(); selectPsPage(t.pg.id); } } : null,
       { label: "Done", primary: true, right: true, run: function () { closeConcepts(); } }
@@ -17808,7 +17808,7 @@ function __detabaseMain() {
     acts.className = "vine-acts";
     var add = document.createElement("button");
     add.type = "button"; add.title = "add this method to the Clipboard"; add.textContent = "＋";
-    add.addEventListener("click", function () { bdAddRefs([{ lvl: "p", id: pg.id }]); });
+    add.addEventListener("click", function () { bdAdd([{ lvl: "p", id: pg.id }], null, { toast: true }); });
     var info = document.createElement("button");
     info.type = "button"; info.title = "connected concepts"; info.textContent = "🔗";
     info.addEventListener("click", function () { openConceptsPopup({ lvl: "p", id: pg.id }); });
@@ -21072,7 +21072,7 @@ function __detabaseMain() {
     bdGestures(ctx);
     dndInto(ctx.stage, { accepts: ["bdasset"], onDrop: function (drag) {
       var r = ctx.stage.getBoundingClientRect(), v = ctx.view;
-      bdDrop(bdRefOf(drag.id), (drag.x - r.left - v.x) / v.k, (drag.y - r.top - v.y) / v.k);
+      bdAdd([bdRefOf(drag.id)], { x: (drag.x - r.left - v.x) / v.k, y: (drag.y - r.top - v.y) / v.k });
     } });
     bdBar(); bdSide(); bdRedraw();
   }
@@ -21117,53 +21117,89 @@ function __detabaseMain() {
     if (onlyGrow && g.w) { x0 = Math.min(x0, g.x); y0 = Math.min(y0, g.y); x1 = Math.max(x1, g.x + g.w); y1 = Math.max(y1, g.y + g.h); }
     g.x = x0; g.y = y0; g.w = x1 - x0; g.h = y1 - y0;
   }
-  // from a sheet, the search, a concept's popup: blocks in rows below what is there, and the board opens on them
-  function bdAddRefs(refs) {
-    openBoard();
-    var ps = bdData(), y0 = ps.blocks.concat(ps.groups).reduce(function (m, n) { return Math.max(m, n.y + (n.h || 0)); }, 0) + (ps.blocks.length ? 40 : 0), seen = {}, made = [];
-    bdChange(function (p) {
-      refs.forEach(function (r) {
-        if (r.lvl === "st") r = refParent(r);
-        if (!r || seen[refKey(r)]) return;
-        seen[refKey(r)] = 1;
-        made.push(bdNewBlock(p, r, 0, y0));
-      });
-    });
-    var rowY = y0, rowH = 0;
-    made.forEach(function (b, i) {
-      if (i && i % 3 === 0) { rowY += rowH + 14; rowH = 0; }
-      b.x = (i % 3) * (BD_RW + 14); b.y = rowY; rowH = Math.max(rowH, b.h || 0);
-    });
-    bd.view.x = 40; bd.view.y = 20 - y0 * bd.view.k;
-    bdSave(); bdRedraw();
-    libToast("Added " + made.length + (made.length === 1 ? " item" : " items") + " to the Clipboard");
-  }
+  // ---- putting things on the board: the one way (B180) ----
+  // bdAdd(refs, at, opts) is the only function that adds blocks. refs: what to add (a method part comes as its
+  // method, repeats once); one concept or subject comes as a group of its children; several refs are laid
+  // out as a grid, inside one group when opts.group names it. Then the whole set goes to the free spot
+  // nearest `at` (a world point: the drop point; none → the middle of the screen), BD_GAP away from
+  // everything, searching outward ring by ring, and the view moves there if it is off screen.
+  // One bdChange, so one Undo takes the whole placement back. opts.toast: say so, with Undo.
+  var BD_GAP = 24;
   function bdNewBlock(ps, ref, x, y, g) {
     var b = { id: uid("b_"), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: BD_RW, h: BD_NEW_H };   // fitted into that box when first drawn (bdSize)
     if (g) b.g = g;
     ps.blocks.push(b);
     return b;
   }
-  // a part of a method lands as its method; a concept or subject as a group of its children
-  function bdDrop(ref, x, y) {
-    if (ref.lvl === "st") ref = refParent(ref);
-    var kids = ref.lvl === "t" || ref.lvl === "s" ? libKids(ref) : [];
-    bdChange(function (ps) {
-      if (!kids.length) { bdNewBlock(ps, ref, x, y); return; }
-      var g = { id: uid("g_"), name: refLabel(ref), ref: { lvl: ref.lvl, id: ref.id }, x: x, y: y, w: 0, h: 0 };
-      ps.groups.push(g);
-      kids.forEach(function (c) { bdNewBlock(ps, c, x, y, g.id); });
-    });
-    var ps = bdData(), g = ps.groups[ps.groups.length - 1];
-    if (kids.length) {                                  // heights are known now that they were drawn: lay them out in rows
-      var m = membersOf(ps, g.id), cols = Math.min(3, Math.ceil(Math.sqrt(m.length))), rowY = y + 40, rowH = 0;
-      m.forEach(function (b, i) {
-        if (i && i % cols === 0) { rowY += rowH + 14; rowH = 0; }
-        b.x = x + 16 + (i % cols) * (BD_RW + 14); b.y = rowY; rowH = Math.max(rowH, b.h);
-      });
-      bdFit(ps, g);
-      bdSave(); bdRedraw();
+  function bdScreenCentre() { var c = bd.ctx, v = c.view; return { x: (c.stage.clientWidth / 2 - v.x) / v.k, y: (c.stage.clientHeight / 2 - v.y) / v.k }; }
+  function bdOverlap(a, b, m) { return a.x < b.x + b.w + m && b.x < a.x + a.w + m && a.y < b.y + b.h + m && b.y < a.y + a.h + m; }
+  // the free spot nearest `want` (a top-left) for a box w × h
+  function bdFreeSpot(obs, want, w, h) {
+    var step = 30;
+    for (var i = 0; i < 120; i++) {
+      var cand = [];
+      for (var dx = -i; dx <= i; dx++) for (var dy = -i; dy <= i; dy++) if (Math.max(Math.abs(dx), Math.abs(dy)) === i) cand.push({ x: want.x + dx * step, y: want.y + dy * step, d: dx * dx + dy * dy });
+      cand.sort(function (a, b) { return a.d - b.d; });
+      for (var j = 0; j < cand.length; j++) {
+        var r = { x: cand[j].x, y: cand[j].y, w: w, h: h };
+        if (!obs.some(function (o) { return bdOverlap(r, o, BD_GAP); })) return r;
+      }
     }
+    return { x: want.x, y: want.y, w: w, h: h };
+  }
+  function bdBoxOf(nodes) {
+    var x0 = Math.min.apply(null, nodes.map(function (n) { return n.x; })), y0 = Math.min.apply(null, nodes.map(function (n) { return n.y; }));
+    var x1 = Math.max.apply(null, nodes.map(function (n) { return n.x + n.w; })), y1 = Math.max.apply(null, nodes.map(function (n) { return n.y + (n.h || 0); }));
+    return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+  }
+  // bring a world box into view (same zoom unless it doesn't fit)
+  function bdShow(r) {
+    var c = bd.ctx, v = c.view, sw = c.stage.clientWidth, sh = c.stage.clientHeight;
+    if (!sw || !sh) return;
+    var sx = r.x * v.k + v.x, sy = r.y * v.k + v.y;
+    if (sx >= 0 && sy >= 0 && sx + r.w * v.k <= sw && sy + r.h * v.k <= sh) return;
+    v.k = Math.max(0.12, Math.min(v.k, (sw - 40) / r.w, (sh - 40) / r.h));
+    v.x = sw / 2 - (r.x + r.w / 2) * v.k; v.y = sh / 2 - (r.y + r.h / 2) * v.k;
+    bdApplyView(c);
+  }
+  function bdAdd(refs, at, opts) {
+    opts = opts || {};
+    if (!boardOpen || !bd || !bd.ctx) openBoard();
+    var seen = {}, list = [];
+    refs.forEach(function (r) {
+      if (r && r.lvl === "st") r = refParent(r);
+      if (!r || seen[refKey(r)]) return;
+      seen[refKey(r)] = 1; list.push({ lvl: r.lvl, id: r.id });
+    });
+    if (!list.length) return null;
+    var one = list.length === 1 ? list[0] : null, kids = one && (one.lvl === "t" || one.lvl === "s") ? libKids(one) : [];
+    var bl = [], g = null;
+    bdChange(function (ps) {
+      var name = kids.length ? refLabel(one) : opts.group;
+      if (name) {
+        g = { id: uid("g_"), name: name, x: 0, y: 0, w: 0, h: 0 };
+        if (kids.length) g.ref = one;
+        ps.groups.push(g);
+      }
+      (kids.length ? kids : list).forEach(function (r) { bl.push(bdNewBlock(ps, r, -1e5, -1e5, g && g.id)); });
+    });
+    // drawn now, so every block knows its size: a grid, then room for all of it
+    var ps = bdData(), cols = Math.min(4, Math.ceil(Math.sqrt(bl.length))), colW = Math.max.apply(null, bl.map(function (b) { return b.w; })), rowY = 0, rowH = 0;
+    bl.forEach(function (b, i) {
+      if (i && i % cols === 0) { rowY += rowH + BD_GAP; rowH = 0; }
+      b.x = (i % cols) * (colW + BD_GAP) + (g ? 16 : 0); b.y = rowY + (g ? 40 : 0); rowH = Math.max(rowH, b.h);
+    });
+    if (g) bdFit(ps, g);
+    var box = g ? { x: g.x, y: g.y, w: g.w, h: g.h } : bdBoxOf(bl), p = at || bdScreenCentre();
+    var want = at ? { x: p.x - Math.min(box.w / 2, 60), y: p.y - 16 } : { x: p.x - box.w / 2, y: p.y - box.h / 2 };
+    var mine = {}; bl.forEach(function (b) { mine[b.id] = 1; }); if (g) mine[g.id] = 1;
+    var spot = bdFreeSpot(ps.blocks.concat(ps.groups).filter(function (n) { return !mine[n.id]; }), want, box.w, box.h);
+    var dx = spot.x - box.x, dy = spot.y - box.y;
+    bl.forEach(function (b) { b.x += dx; b.y += dy; });
+    if (g) { g.x += dx; g.y += dy; }
+    bdSave(); bdRedraw(); bdShow(spot);
+    if (opts.toast) libToast("Added " + bl.length + (bl.length === 1 ? " item" : " items") + " to the Clipboard", { label: "Undo", run: function () { bdUndoRedo(bd.undo, bd.redo); } });
+    return { blocks: bl, group: g };
   }
   function bdTap(node) {
     if (bd.linking) {
@@ -21303,10 +21339,7 @@ function __detabaseMain() {
     r.style.paddingLeft = (4 + depth * 14) + "px";
     r.innerHTML = '<span class="ps-grip" title="drag onto the board">⠿</span>';
     if (kids) r.appendChild(actBtn(bd.open[refKey(ref)] ? "▾" : "▸", "open", function () { bd.open[refKey(ref)] = !bd.open[refKey(ref)]; bdSide(); }, "bd-caret"));
-    var b = actBtn("", "add to the board", function () {
-      var v = bd.ctx.view, s = bd.ctx.stage;
-      bdDrop(ref, (s.clientWidth / 2 - 170 - v.x) / v.k, (s.clientHeight / 3 - v.y) / v.k);
-    }, "bd-rname");
+    var b = actBtn("", "add to the board", function () { bdAdd([ref]); }, "bd-rname");
     b.innerHTML = '<span></span><small></small>';
     b.firstChild.textContent = name; b.lastChild.textContent = kind;
     r.appendChild(b);
@@ -22244,7 +22277,7 @@ function __detabaseMain() {
     var sm = summaryById(activeSummary); if (!sm) return;
     var spec = sheetSumSpec(sm), refs = sheetLayout(sm, sm.items.filter(sheetPasses(lsumState(spec).off, false))).map(function (x) { return { lvl: x.ref.lvl, id: x.ref.id }; });
     if (!refs.length) { libToast("Nothing to add — this sheet shows nothing with its filters."); return; }
-    bdAddRefs(refs);                              // as the sheet shows them (with its filters)
+    bdAdd(refs, null, { toast: true });           // as the sheet shows them (with its filters)
   });
   if ($("psTitle")) $("psTitle").addEventListener("click", function () { if (activePsPage) openConceptsPopup({ lvl: "p", id: activePsPage }); });
   if ($("psAddPart")) $("psAddPart").addEventListener("click", function () { var pg = psPageById(activePsPage); if (pg) psAddPart(pg); });
