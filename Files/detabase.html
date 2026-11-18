@@ -1282,6 +1282,13 @@
   .ct-leaf.m-mk, .ct-ring.m-mk, .ct-method.m-mk { stroke: #db2777; stroke-width: 3.6; stroke-dasharray: none; }
   .ct-leaf.m-mk { fill: color-mix(in srgb, #db2777 28%, var(--bg)); }
   .ct-svg path.m-hot.ct-link, .ct-svg path.m-hot.ct-arrow { opacity: 1; }
+  .ct-mkbar { position: absolute; left: 10px; top: 56px; right: 64px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid color-mix(in srgb, #db2777 50%, var(--border)); border-radius: var(--r-md); background: var(--surface-1); box-shadow: var(--shadow); font-size: .8rem; }
+  .ct-mkbar[hidden] { display: none; }
+  .ct-mkbar button { min-height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
+  .ct-mk-what { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+  .ct-mk-what i { width: 11px; height: 11px; border-radius: 50%; border: 2.5px solid #db2777; }
+  .ct-mk-strat { box-shadow: inset 0 -3px 0 var(--ct); }
+  .ct-mkbar:not([hidden]) ~ .ct-prev.side { top: 110px; }
   .ct-legend { position: absolute; left: 10px; bottom: 34px; display: flex; flex-wrap: wrap; gap: 4px 10px; max-width: calc(100% - 80px); padding: 4px 8px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--surface-1) 88%, transparent); font-size: .72rem; color: var(--text-secondary); pointer-events: none; }
   .ct-legend[hidden] { display: none; }
   .ct-lg { display: inline-flex; align-items: center; gap: 5px; }
@@ -3033,7 +3040,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B184</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B185</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -18531,7 +18538,8 @@ function __detabaseMain() {
     });
     Array.prototype.forEach.call(E.svg.querySelectorAll("[data-ka]"), function (el) {
       var a = el.getAttribute("data-ka"), b = el.getAttribute("data-kb");
-      el.classList.toggle("m-hot", !!(T.sel && (a === T.sel || b === T.sel) && (layers.conn[a] || layers.conn[b])) || !!(layers.mk[a] && layers.mk[b]));
+      var sg = el.getAttribute("data-sg"), sgOn = !!(sg && T.mkState && T.mkState.strats && T.mkState.strats.indexOf(sg) >= 0);
+      el.classList.toggle("m-hot", sgOn || !!(T.sel && (a === T.sel || b === T.sel) && (layers.conn[a] || layers.conn[b])) || !!(layers.mk[a] && layers.mk[b] && !(sg && T.mkState && T.mkState.strats)));
       el.classList.toggle("m-dim", on && !(any[a] && any[b]));
     });
     E.labels.forEach(function (L) { L.el.__hit = !!any[L.key]; L.el.classList.toggle("m-dim", on && !any[L.key] && !inside[L.key]); });
@@ -18565,6 +18573,90 @@ function __detabaseMain() {
       lg.insertAdjacentHTML("beforeend", '<span class="ct-lg m-' + l[0] + '"><i></i>' + escapeHtml(l[1]) + '</span>');
     });
     lg.hidden = !lg.firstChild;
+  }
+  // ---- "Mark connected…" (B185): hold (or right-click) a point → mark what it connects to ----
+  // kinds: m methods (method ↔ method), c concepts and cards (method ↔ concept / card), b builds on, o part of,
+  // or all of them; "+1 step" reaches one link further each time. Strategies: the strategies that hold it,
+  // their vines lit and listed. Marks are pink (T.mk), their links lit; Undo steps back, "Clear marks" ends.
+  var CT_MK = [["m", "Method connections"], ["c", "Concept connections"], ["b", "Builds on"], ["o", "Part of"]];
+  function ctExpand(seed, kinds, steps) {
+    var set = {}, front = seed.slice();
+    seed.forEach(function (k) { set[k] = 1; });
+    for (var i = 0; i < steps && front.length; i++) {
+      var next = [];
+      front.forEach(function (k) {
+        ctLinksOf(ctRefOf(k), kinds).forEach(function (x) { var kk = ctKeyOf(x.ref); if (kk && !set[kk]) { set[kk] = 1; next.push(kk); } });
+      });
+      front = next;
+    }
+    return set;
+  }
+  function ctMkSave(T) { (T.mkUndo = T.mkUndo || []).push(JSON.stringify({ mk: T.mk, s: T.mkState || null })); }
+  function ctMkUndo(T) {
+    var o = (T.mkUndo || []).pop(); if (!o) return;
+    o = JSON.parse(o); T.mk = o.mk; T.mkState = o.s;
+    ctPaint(T); ctMarksBar(T);
+  }
+  function ctMarkFrom(T, key, kinds) {
+    ctMkSave(T);
+    if (kinds === "s") {
+      var ref = ctRefOf(key), ss = stratsAll().filter(function (s) { return s.nodes.some(function (n) { return (n.ref ? [n.ref] : n.refs || []).some(function (r) { return ctKeyOf(r) === key; }); }); });
+      T.mk = {}; T.mk[key] = 1;
+      ss.forEach(function (s) { s.nodes.forEach(function (n) { (n.ref ? [n.ref] : n.refs || []).forEach(function (r) { var k = ctKeyOf(r); if (k) T.mk[k] = 1; }); }); });
+      T.mkState = { seed: [key], strats: ss.map(function (s) { return s.id; }), name: refLabel(ref) };
+    } else {
+      T.mkState = { seed: [key], kinds: kinds, steps: 1, name: refLabel(ctRefOf(key)) };
+      T.mk = ctExpand([key], kinds, 1);
+    }
+    ctPaint(T); ctMarksBar(T);
+    var b = ctBoxOfKeys(T, Object.keys(T.mk)); if (b) ctFlyBox(T, b, 3);
+  }
+  function ctMkStep(T) {
+    var s = T.mkState; if (!s || !s.kinds) return;
+    ctMkSave(T);
+    s.steps++; T.mk = ctExpand(s.seed, s.kinds, s.steps);
+    ctPaint(T); ctMarksBar(T);
+    var b = ctBoxOfKeys(T, Object.keys(T.mk)); if (b) ctFlyBox(T, b, 3);
+  }
+  function ctMkClear(T) { ctMkSave(T); T.mk = null; T.mkState = null; ctPaint(T); ctMarksBar(T); }
+  // what the marks are, and what can be done with them
+  function ctMarksBar(T) {
+    var E = T.els; if (!E) return;
+    var bar = E.box.querySelector(".ct-mkbar"), s = T.mkState, n = Object.keys(T.mk || {}).length;
+    bar.innerHTML = ""; bar.hidden = !n && !(T.mkUndo || []).length && !Object.keys(T.pick || {}).length;
+    if (n) {
+      var what = s && s.strats ? s.strats.length + (s.strats.length === 1 ? " strategy holds" : " strategies hold") + " “" + s.name + "”"
+        : n - 1 + " connected to “" + (s ? s.name : "") + "”" + (s && s.steps > 1 ? " (" + s.steps + " steps)" : "");
+      bar.insertAdjacentHTML("beforeend", '<span class="ct-mk-what"><i></i></span>');
+      bar.querySelector(".ct-mk-what").appendChild(document.createTextNode(what));
+      if (s && s.kinds) bar.appendChild(actBtn("+1 step", "mark one link further", function () { ctMkStep(T); }));
+    }
+    if (T.opts.extraBar) T.opts.extraBar(bar);
+    if ((T.mkUndo || []).length) bar.appendChild(actBtn("↶ Undo", "the marks as they were", function () { ctMkUndo(T); }));
+    if (n) bar.appendChild(actBtn("✕ Clear marks", "", function () { ctMkClear(T); }));
+    if (s && s.strats) s.strats.forEach(function (id) {
+      var sg = stratById(id); if (!sg) return;
+      var b = actBtn(sg.name, T.opts.mode === "add" ? "a strategy" : "open the strategy", function () { if (T.opts.mode !== "add") openStrat(id); }, "ct-mk-strat");
+      b.style.setProperty("--ct", sg.color);
+      bar.appendChild(b);
+    });
+  }
+  // the hold / right-click menu of a point
+  function ctPointMenu(T, ref, x, y) {
+    var key = ctKeyOf(ref); if (!key) return;
+    var a = document.createElement("div");
+    a.style.cssText = "position:fixed;left:" + x + "px;top:" + y + "px;width:1px;height:1px;";
+    document.body.appendChild(a);
+    var items = [{ head: refLabel(ref) }];
+    CT_MK.forEach(function (k) { var o = {}; o[k[0]] = 1; items.push({ label: "Mark connected: " + k[1].toLowerCase(), run: function () { ctMarkFrom(T, key, o); } }); });
+    items.push({ label: "Mark connected: all", run: function () { ctMarkFrom(T, key, { m: 1, c: 1, b: 1, o: 1 }); } });
+    items.push({ label: "Mark connected: strategies", run: function () { ctMarkFrom(T, key, "s"); } });
+    items.push({ sep: 1 });
+    if (T.opts.mode === "add") items.push({ label: "＋ Add to board", run: function () { T.opts.onAdd([ref]); } });
+    else items.push({ label: "Open", run: function () { openAnyRef(ref); } });
+    if (ref.lvl !== "st") items.push({ label: "Properties…", run: function () { assetWindow(ref); } });
+    libMenu(a, items);
+    setTimeout(function () { a.remove(); }, 0);
   }
   // ---- choosing a point: zoom to it, show its connections and a preview ----
   function ctSelect(T, key, quiet) {
@@ -18661,7 +18753,7 @@ function __detabaseMain() {
           if (pan !== p0 || p0.moved >= 8) return;
           p0.held = true;
           var ref = h.method ? { lvl: "p", id: h.method } : h.ref;
-          if (T.opts.onHold) T.opts.onHold(ref, e.clientX, e.clientY); else if (!h.method) assetWindow(ref);   // hold: its menu (or properties)
+          ctPointMenu(T, ref, e.clientX, e.clientY);   // hold: its menu (Mark connected…, B185)
         }, 550);
       } else {
         var k = ids(), a = P[k[0]], b = P[k[1]];
@@ -18705,6 +18797,12 @@ function __detabaseMain() {
     svg.addEventListener("pointerup", end);
     svg.addEventListener("pointercancel", end);
     svg.addEventListener("lostpointercapture", end);
+    // right-click (desktop): the same menu as a hold
+    svg.addEventListener("contextmenu", function (e) {
+      var h = ctHitAt(T, e.clientX, e.clientY); if (!h || h.strat) return;
+      e.preventDefault();
+      ctPointMenu(T, h.method ? { lvl: "p", id: h.method } : h.ref, e.clientX, e.clientY);
+    });
     // desktop: a pinch on the trackpad (or ctrl + wheel) zooms; a plain wheel still scrolls the page
     svg.addEventListener("wheel", function (e) {
       if (!(e.ctrlKey || e.metaKey) || !T.view) return;
@@ -18744,8 +18842,8 @@ function __detabaseMain() {
       '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g><g class="ct-nums"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in" :
-        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for its properties")) + '</div>';
+      '<div class="ct-mkbar" hidden></div><div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in · hold one to mark what it connects to" :
+        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold one to mark what it connects to")) + '</div>';
     var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
     var gRings = world.querySelector(".ct-rings"), gLinks = world.querySelector(".ct-links"), gLeaves = world.querySelector(".ct-leaves"),
         gMethods = world.querySelector(".ct-methods"), gLbls = world.querySelector(".ct-lbls");
@@ -18820,6 +18918,7 @@ function __detabaseMain() {
     if (T.sel && !ctPoint(T, T.sel)) { T.sel = null; T.conn = {}; }
     ctPaint(T);
     ctPreview(T);
+    ctMarksBar(T);
     // where to look: the whole tree the first time; the search's results when they change; and back to
     // where you were once the search is cleared
     var hitKeys = Object.keys(T.hits || {}), want = null;
