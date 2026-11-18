@@ -1267,13 +1267,49 @@
   .ct-lbl.lvl-c { font-size: calc(11px * var(--ctu, 1)); }
   .ct-lbl.leaf { font-size: calc(10.5px * var(--ctu, 1)); fill: var(--text-primary); }
 
-  /* the search: what it leaves out steps back */
-  .ct-svg .dim { opacity: .25; }
-  .ct-svg .off { opacity: .07; }
-  .ct-lbl.leaf.dim { display: none; }
-  .ct-mlbl.off { display: none; }
-  .ct-ring.hit { stroke: var(--accent); stroke-width: 2.6; }
-  .ct-leaf.hit { stroke: var(--accent); stroke-width: 3; fill: color-mix(in srgb, var(--accent) 36%, var(--bg)); }
+  /* marks on the tree (B183): search results (numbered), the point being previewed, its connections; the rest steps back */
+  .ct-svg .m-dim { opacity: .18; }
+  .ct-lbl.leaf.m-dim, .ct-mlbl.m-dim { display: none; }
+  .ct-svg path.m-dim, .ct-svg line.m-dim { opacity: .06; }
+  .ct-svg path.m-hot, .ct-svg line.m-hot { opacity: 1; stroke-width: 3.4; }
+  .ct-ring.m-in { opacity: .8; }
+  .ct-leaf.m-hit, .ct-ring.m-hit, .ct-method.m-hit { stroke: #f59e0b; stroke-width: 3.4; stroke-dasharray: none; }
+  .ct-leaf.m-hit { fill: color-mix(in srgb, #f59e0b 30%, var(--bg)); }
+  .ct-leaf.m-conn, .ct-ring.m-conn, .ct-method.m-conn { stroke: #0891b2; stroke-width: 3.2; stroke-dasharray: none; }
+  .ct-leaf.m-sel, .ct-ring.m-sel, .ct-method.m-sel { stroke: var(--accent); stroke-width: 5; stroke-dasharray: none; }
+  .ct-num { font-size: calc(11px * var(--ctu, 1)); font-weight: 800; fill: #b45309; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3px * var(--ctu, 1)); pointer-events: none; }
+  .ct-num.sel { fill: var(--accent); font-size: calc(13px * var(--ctu, 1)); }
+  .ct-check { font-size: calc(13px * var(--ctu, 1)); font-weight: 900; fill: #16a34a; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3px * var(--ctu, 1)); pointer-events: none; }
+  .ct-prev { position: absolute; left: 8px; right: 64px; bottom: 8px; max-height: 45%; display: flex; flex-direction: column; gap: 6px; padding: 10px; overflow-y: auto; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-1); box-shadow: var(--shadow); }
+  .ct-prev.side { top: 58px; right: auto; width: min(340px, 45%); max-height: none; }
+  .ct-pv-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .ct-pv-what { flex: 1 1 160px; min-width: 0; }
+  .ct-pv-what b { display: block; overflow-wrap: anywhere; }
+  .ct-pv-what small { display: block; font-size: .74rem; color: var(--text-muted); }
+  .ct-pv-top button, .ct-pv-add { min-height: 38px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); font: inherit; font-size: .84rem; cursor: pointer; }
+  .ct-pv-top .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ct-pv-body { max-height: 140px; overflow: hidden; border-radius: var(--r-sm); background: var(--bg); font-size: .8rem; -webkit-mask-image: linear-gradient(#000 75%, transparent); mask-image: linear-gradient(#000 75%, transparent); }
+  .ct-pv-body:empty { display: none; }
+  .ct-pv-asset { zoom: .8; padding: 4px 8px; }
+  .ct-pv-h { margin: 2px 0 0; font-size: .74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; }
+  .ct-pv-row { display: flex; gap: 6px; align-items: stretch; }
+  .ct-pv-go { flex: 1; min-width: 0; min-height: 40px; display: flex; flex-direction: column; justify-content: center; padding: 2px 8px; border: 1px solid var(--border); border-radius: var(--r-sm); background: none; color: var(--text-primary); font: inherit; font-size: .82rem; text-align: left; cursor: pointer; }
+  .ct-pv-go span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ct-pv-go small { font-size: .7rem; color: var(--text-muted); }
+  .sr-num { flex-shrink: 0; align-self: center; min-width: 30px; height: 30px; padding: 0 6px; border: 1.5px solid #f59e0b; border-radius: 999px; background: color-mix(in srgb, #f59e0b 14%, transparent); color: #b45309; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
+  .sr-row.sel { box-shadow: inset 3px 0 0 var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); border-radius: var(--r-sm); }
+  /* the Clipboard's library panel: List | Tree (B183) */
+  .bd-libtabs { display: flex; gap: 6px; }
+  .bd-libtabs[hidden] { display: none; }
+  .bd-panes { flex: 1; min-height: 0; display: flex; gap: 8px; }
+  .bd-panes > .bd-list { flex: 1; }
+  .bd-tree { position: relative; flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; background: var(--bg); }
+  .bd-tree[hidden], .bd-panes > .bd-list[hidden] { display: none; }
+  .bd-side.treeview { width: min(620px, 64vw); }
+  .bd-side.split { width: min(900px, 58vw); }
+  .bd-side.split .bd-panes > .bd-list { flex: 0 0 300px; }
+  .bd-tree .ct-views { right: 60px; }
+  .bd-tree .ct-hint { display: none; }
   .ct-ctrl { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
   .ct-ctrl button { width: var(--tap); height: var(--tap); border-radius: var(--r-md); border: 1px solid var(--border);
     background: var(--bg); color: var(--text-secondary); font-size: 1.15rem; box-shadow: var(--shadow); cursor: pointer; }
@@ -2983,7 +3019,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B182</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B183</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -17602,6 +17638,7 @@ function __detabaseMain() {
   function searchView(host, st, opts) {
     host.innerHTML = "";
     var q = (st.q || "").trim();
+    st.shown = [];
     if (!q) return;
     st.closed = st.closed || {};
     var hits = searchAssets(q, assetIndex(opts.lvls)), hiddenN = 0;
@@ -17650,6 +17687,10 @@ function __detabaseMain() {
       if (!by[k]) { by[k] = []; order.push(k); }
       by[k].push(h);
     });
+    // shown = the results in the order the list shows them; with opts.numbers each gets its tree point's
+    // number (B183: the same numbers the tree marks them with, ctSetHits)
+    var shown = [], num = {}, nn = 0;
+    order.forEach(function (k) { by[k].forEach(function (h) { shown.push(h.en); var tk = ctKeyOf(h.en.ref); if (tk && !num[tk]) num[tk] = ++nn; }); });
     order.forEach(function (k) {
       var sec = document.createElement("div"); sec.className = "sr-sec";
       var closed = !!st.closed[k], head = actBtn("", closed ? "show" : "fold", function () { st.closed[k] = !st.closed[k]; opts.redraw(); }, "sr-head");
@@ -17658,6 +17699,9 @@ function __detabaseMain() {
       sec.appendChild(head);
       if (!closed) by[k].forEach(function (h) {
         var row = document.createElement("div"); row.className = "sr-row";
+        var tk = ctKeyOf(h.en.ref);
+        if (tk) row.setAttribute("data-tk", tk);
+        if (opts.numbers && tk) row.appendChild(actBtn(String(num[tk]), "show it on the tree", function () { opts.numbers(tk); }, "sr-num"));
         var main = document.createElement("div"); main.className = "sr-main";
         main.innerHTML = '<span class="sr-name">' + srchMark(h.en.name, q) + '</span><small class="sr-where"></small>' + (h.why.length ? '<small class="sr-why">' + srchMark(h.why.join(" · "), q) + '</small>' : "");
         main.querySelector(".sr-where").textContent = [SRCH_KIND[h.en.ref.lvl]].concat(h.en.crumbs.length ? [h.en.crumbs.join(" › ")] : []).concat(h.en.course ? [h.en.course] : []).join(" · ");
@@ -17668,6 +17712,7 @@ function __detabaseMain() {
       host.appendChild(sec);
     });
     if (list.length > limit) host.insertAdjacentHTML("beforeend", '<p class="muted">' + (list.length - limit) + ' more — add a word or a filter.</p>');
+    st.shown = shown;
     if (hiddenN) {
       var p = document.createElement("p"); p.className = "muted cs-hint";
       p.textContent = hiddenN + (hiddenN === 1 ? " more result is" : " more results are") + " hidden by “" + courseSwName(courseSw()) + "”. ";
@@ -17963,24 +18008,6 @@ function __detabaseMain() {
   // needs rather than by what it is called.
   // ============================================================
   var mainQ = "";
-  function entryRef(e) {   // a search-index entry → a library ref
-    if (!e || !e.id) return null;
-    return e.id.indexOf("pane:") === 0 ? { lvl: "t", id: "b:" + e.id.slice(5) } : { lvl: "c", id: e.id };
-  }
-  // the methods the words typed find: the tree steps back from the rest
-  function mainVines() {
-    libEnsure();
-    var pages = store.ps.pages.slice();
-    var q = mainQ.trim().toLowerCase();
-    if (q) {
-      var toks = q.split(/\s+/).filter(Boolean);
-      pages = pages.filter(function (pg) {
-        var hay = [pg.name, pg.description || "", subjectName(pg.subject || ""), (pg.tags || []).join(" "), vineOf(pg.id).map(refName).join(" ")].join(" ").toLowerCase();
-        return toks.every(function (t) { return hay.indexOf(t) >= 0; });
-      });
-    }
-    return pages;
-  }
   // one vine: the page, then its concepts in order
   function vineRowEl(pg) {
     var row = document.createElement("div");
@@ -18077,7 +18104,7 @@ function __detabaseMain() {
     box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
   }
   // ---- the main page's search: the shared search view (SEARCH); tap opens, ⋯ / hold = the asset window ----
-  var mainSS = { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
+  var mainSS = { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} }, mainTree = null;
   function openAnyRef(ref) {
     if (ref.lvl === "sm") { var sm = summaryById(ref.id); if (sm && sm.draft) bldStart(sm); else openSummary(ref.id); }
     else if (ref.lvl === "sg") openStrat(ref.id);
@@ -18089,6 +18116,7 @@ function __detabaseMain() {
     mainSS.q = mainQ;
     searchView(box, mainSS, {
       redraw: renderEtiMain,
+      numbers: function (tk) { if (!mainTree) return; ctSelect(mainTree, tk); var tb = document.querySelector("#etiMain .em-tree"); if (tb) tb.scrollIntoView({ block: "nearest", behavior: "smooth" }); },
       row: function (en, row, main) {
         main.classList.add("em-hit-main"); main.setAttribute("role", "button"); main.tabIndex = 0;
         main.addEventListener("click", function () { openAnyRef(en.ref); });
@@ -18110,10 +18138,6 @@ function __detabaseMain() {
   // only the methods that use it. The search above drives the tree too: whatever the filters leave
   // out steps back, and the view flies to what is left.
   // ============================================================
-  var ctView = null, ctSig = null, ctPreView = null, ctFocus = null, ctEls = null, ctAnim = null;
-  // what the view was fitted to, while it is still fitted to it: the box keeps it fitted when the
-  // page changes size, until a hand moves the view
-  var ctAuto = null;
   var CT_LEAF = 11;
   var CT_GAP = { c: 3, t: 6, s: 10, root: 34 };    // between the circles a ring holds
   var CT_PAD = { c: 5, t: 10, s: 18, root: 0 };    // inside a ring, around what it holds
@@ -18247,8 +18271,8 @@ function __detabaseMain() {
     });
     out.forEach(function (v) {
       v.lines = [];
-      methodCards(v.pg.id).forEach(function (x) { var t = model.nodes[refKey(x.ref)]; if (t) v.lines.push({ also: false, to: ctFacing(t, v) }); });
-      (v.pg.alsoSubjects || []).forEach(function (k) { var t = model.nodes["s|" + k]; if (t) v.lines.push({ also: true, to: ctFacing(t, v) }); });
+      methodCards(v.pg.id).forEach(function (x) { var t = model.nodes[refKey(x.ref)]; if (t) v.lines.push({ also: false, to: ctFacing(t, v), key: t.key }); });
+      (v.pg.alsoSubjects || []).forEach(function (k) { var t = model.nodes["s|" + k]; if (t) v.lines.push({ also: true, to: ctFacing(t, v), key: t.key }); });
     });
     var links = [], seen = {};
     out.forEach(function (v) {
@@ -18272,11 +18296,11 @@ function __detabaseMain() {
   // the tree points of a strategy's node: its ring or circle, or a method's square; a custom group: each member
   function ctNodePoints(model, methods, node) {
     return (node.ref ? [node.ref] : node.refs || []).map(function (r) {
-      if (r.lvl === "p") { var v = methods.byPg[r.id]; return v ? { x: v.x, y: v.y, r: CT_MR } : null; }
+      if (r.lvl === "p") { var v = methods.byPg[r.id]; return v ? { x: v.x, y: v.y, r: CT_MR, key: "p|" + r.id } : null; }
       return model.nodes[refKey(r)] || null;
     }).filter(Boolean);
   }
-  function ctViewsEl(box, pages) {
+  function ctViewsEl(T) {
     var d = document.createElement("div");
     d.className = "ct-views";
     function toggle(on, label, color, run) {
@@ -18288,12 +18312,12 @@ function __detabaseMain() {
       toggle(ctOn(l.id), l.name, l.color, function () {
         var o = store.ui.treeOff = store.ui.treeOff || {};
         if (o[l.id]) delete o[l.id]; else o[l.id] = 1;
-        saveStore(); ctRender(box, pages);
+        saveStore(); T.redraw();
       });
     });
     if (ctOn("st")) stratsAll().forEach(function (s) {
       var o = store.ui.treeStratOff = store.ui.treeStratOff || {};
-      toggle(!o[s.id], s.name, s.color, function () { if (o[s.id]) delete o[s.id]; else o[s.id] = 1; saveStore(); ctRender(box, pages); });
+      toggle(!o[s.id], s.name, s.color, function () { if (o[s.id]) delete o[s.id]; else o[s.id] = 1; saveStore(); T.redraw(); });
     });
     return d;
   }
@@ -18335,32 +18359,69 @@ function __detabaseMain() {
     var qx = (a[0] + b[0]) / 2 - dy / len * off, qy = (a[1] + b[1]) / 2 + dx / len * off;
     return "M" + ctF(a[0]) + " " + ctF(a[1]) + "Q" + ctF(qx) + " " + ctF(qy) + " " + ctF(b[0]) + " " + ctF(b[1]);
   }
-  // what the search leaves standing; null when nothing is being searched
-  function ctMark(model, pages) {
-    if (!mainQ.trim()) return null;
-    var hit = {}, lit = {}, vis = {};
-    pages.forEach(function (pg) {
-      vis[pg.id] = 1;
-      vineOf(pg.id).forEach(function (r) { lit[refKey(r)] = 1; });
-      (pg.cardIds || []).forEach(function (id) { lit["c|" + id] = 1; });
+  // ---- one tree = one instance (B183) ----
+  // T = ctTree(opts): the ETI main page has one (mode "open"), the Clipboard's library panel another (mode
+  // "add"). Each keeps its own view, search marks and selection; ctRender(T, box) draws it into a box.
+  //   opts: { mode: "open" | "add", onAdd(refs), onPick(key) (the list follows the tree), hint }
+  //   T.hits = {key: number} the search results, numbered as the list shows them; T.sel = the point whose
+  //   preview is open; T.conn = its direct connections. T.board / T.mk / T.pick: more mark layers (stages 6–8).
+  // A key is a ref key; a method is "p|<id>" (its square).
+  var ctN = 0;
+  function ctTree(opts) {
+    var T = { opts: opts || {}, uid: "ct" + (++ctN), view: null, sig: null, preView: null, focus: null, els: null, anim: null, auto: null,
+      hits: null, hitSig: "", sel: null, conn: {}, board: null, mk: null, pick: {} };
+    T.redraw = function () { if (T.box) ctRender(T, T.box); };
+    return T;
+  }
+  // the search's results → numbered marks (in the order the list shows them)
+  function ctSetHits(T, refs, sig) {
+    var hits = null;
+    if (refs && refs.length) {
+      hits = {};
+      var n = 0;
+      refs.forEach(function (r) {
+        var k = ctKeyOf(r); if (!k || hits[k]) return;
+        hits[k] = ++n;
+      });
+    }
+    T.hits = hits; T.hitSig = sig || "";
+    if (!hits) { T.sel = null; T.conn = {}; }
+  }
+  // the tree point that shows an asset (a part: its method; a sheet or a strategy: none)
+  function ctKeyOf(r) {
+    if (r.lvl === "st") { var px = psPartById(r.id); return px ? "p|" + px.page.id : null; }
+    if (r.lvl === "sm" || r.lvl === "sg") return null;
+    return refKey(r);
+  }
+  function ctRefOf(key) { var i = key.indexOf("|"); return { lvl: key.slice(0, i), id: key.slice(i + 1) }; }
+  // an asset's direct connections, by kind: "m" method ↔ method, "c" method ↔ concept or card, "b" builds on
+  // (both ways), "o" part of (its parent and its children)
+  function ctLinksOf(ref, kinds) {
+    kinds = kinds || { m: 1, c: 1, b: 1 };
+    var out = [], seen = {};
+    function add(r, why) { var k = refKey(r); if (seen[k] || k === refKey(ref) || !refExists(r)) return; seen[k] = 1; out.push({ ref: { lvl: r.lvl, id: r.id }, why: why }); }
+    if (ref.lvl === "p") {
+      var pg = psPageById(ref.id); if (!pg) return out;
+      if (kinds.c) methodCards(pg.id).forEach(function (x) { add(x.ref, "uses"); });
+      if (kinds.m) {
+        methodUses(pg).forEach(function (o) { add({ lvl: "p", id: o.id }, "uses method"); });
+        store.ps.pages.forEach(function (o) { if ((o.methodIds || []).indexOf(pg.id) >= 0) add({ lvl: "p", id: o.id }, "used by method"); });
+      }
+      if (kinds.o && pg.subject) add({ lvl: "s", id: pg.subject }, "in");
+      return out;
+    }
+    if (kinds.c) store.ps.pages.forEach(function (pg) {
+      if (methodCards(pg.id).some(function (x) { return refKey(x.ref) === refKey(ref); })) add({ lvl: "p", id: pg.id }, "used by");
     });
-    var toks = mainQ.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    // the words, matched against a circle's name and the rings around it; the outermost match is
-    // the one marked, and everything inside it comes along
-    if (toks.length) (function walk(n, path) {
-      var here = n.ref.lvl === "root" ? "" : (path + " " + n.name).toLowerCase();
-      if (here && toks.every(function (t) { return here.indexOf(t) >= 0; })) { hit[n.key] = 1; return; }
-      n.kids.forEach(function (c) { walk(c, here); });
-    })(model.root, "");
-    (function mark(n, inside) {
-      n.hit = !!hit[n.key];
-      n.lit = inside || n.hit || !!lit[n.key];
-      var any = n.lit;
-      n.kids.forEach(function (c) { if (mark(c, inside || n.hit)) any = true; });
-      n.any = any;
-      return any;
-    })(model.root, false);
-    return { vis: vis };
+    if (kinds.b && ref.lvl === "t") {
+      conceptBuildsOn(ref.id).forEach(function (x) { add({ lvl: "t", id: x }, "builds on"); });
+      Object.keys(conceptLinkMap()).forEach(function (id) { if (conceptBuildsOn(id).indexOf(ref.id) >= 0) add({ lvl: "t", id: id }, "built on by"); });
+    }
+    if (kinds.o) {
+      var par = refParent(ref); if (par) add(par, "in");
+      if (ref.lvl !== "c" || byId(store.cards, ref.id)) libKids(ref).forEach(function (k) { add(k, "holds"); });
+    }
+    return out;
   }
   function ctBoxOf(list) {
     var b = [1e9, 1e9, -1e9, -1e9];
@@ -18368,49 +18429,61 @@ function __detabaseMain() {
     return b[0] < b[2] ? b : null;
   }
   function ctUnion(a, b) { return !a ? b : !b ? a : [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }
+  // a key's point on the tree: {x, y, r}
+  function ctPoint(T, key) {
+    var E = T.els; if (!E) return null;
+    if (key.slice(0, 2) === "p|") { var v = E.methods.byPg[key.slice(2)]; return v ? { x: v.x, y: v.y, r: CT_MR + 4 } : null; }
+    return E.model.nodes[key] || null;
+  }
+  function ctBoxOfKeys(T, keys) { return ctBoxOf(keys.map(function (k) { return ctPoint(T, k); }).filter(Boolean)); }
   // ---- the view: centre + zoom, kept across re-renders so typing never throws it away ----
-  function ctSize() { var s = ctEls && ctEls.svg; return s ? [s.clientWidth, s.clientHeight] : [0, 0]; }
-  function ctAllK() {
-    var sz = ctSize(), b = ctEls.allBox;
+  function ctSize(T) { var s = T.els && T.els.svg; return s ? [s.clientWidth, s.clientHeight] : [0, 0]; }
+  function ctAllK(T) {
+    var sz = ctSize(T), b = T.els.allBox;
     return Math.min(sz[0] / (b[2] - b[0]), sz[1] / (b[3] - b[1])) * 0.92;
   }
-  function ctClampK(k) { return Math.max(ctAllK() * 0.5, Math.min(8, k)); }
-  function ctFitTo(b, maxK) {
-    var sz = ctSize(), w = Math.max(1, b[2] - b[0]), h = Math.max(1, b[3] - b[1]);
-    var k = Math.min(sz[0] / w, sz[1] / h) * 0.86;
-    return { cx: (b[0] + b[2]) / 2, cy: (b[1] + b[3]) / 2, k: ctClampK(Math.min(maxK || 8, k)) };
+  function ctClampK(T, k) { return Math.max(ctAllK(T) * 0.5, Math.min(8, k)); }
+  // the box in view; while the preview is open, in the part of the tree it leaves free (beside it on a
+  // wide tree, above it on a narrow one)
+  function ctFitTo(T, b, maxK) {
+    var sz = ctSize(T), w = Math.max(1, b[2] - b[0]), h = Math.max(1, b[3] - b[1]), il = 0, ib = 0;
+    if (T.sel && sz[0]) { if (ctPvSide(T)) il = Math.min(360, sz[0] * 0.45); else ib = sz[1] * 0.45; }
+    var k = ctClampK(T, Math.min(maxK || 8, Math.min((sz[0] - il) / w, (sz[1] - ib) / h) * 0.86));
+    return { cx: (b[0] + b[2]) / 2 - il / 2 / k, cy: (b[1] + b[3]) / 2 + ib / 2 / k, k: k };
   }
-  function ctApply() {
-    var E = ctEls; if (!E || !ctView) return;
-    var sz = ctSize();
-    E.world.setAttribute("transform", "translate(" + ctF(sz[0] / 2 - ctView.cx * ctView.k) + " " + ctF(sz[1] / 2 - ctView.cy * ctView.k) + ") scale(" + ctView.k.toFixed(5) + ")");
-    E.svg.style.setProperty("--ctu", (1 / ctView.k).toFixed(5));
-    if (!E.lblQueued) { E.lblQueued = true; requestAnimationFrame(function () { E.lblQueued = false; ctLabels(E); }); }
+  function ctPvSide(T) { return ctSize(T)[0] >= 640; }
+  function ctApply(T) {
+    var E = T.els; if (!E || !T.view) return;
+    var sz = ctSize(T), v = T.view;
+    E.world.setAttribute("transform", "translate(" + ctF(sz[0] / 2 - v.cx * v.k) + " " + ctF(sz[1] / 2 - v.cy * v.k) + ") scale(" + v.k.toFixed(5) + ")");
+    E.svg.style.setProperty("--ctu", (1 / v.k).toFixed(5));
+    if (!E.lblQueued) { E.lblQueued = true; requestAnimationFrame(function () { E.lblQueued = false; ctLabels(T, E); }); }
   }
-  function ctStop() { if (ctAnim) { cancelAnimationFrame(ctAnim); ctAnim = null; } }
-  function ctFly(to) {
-    ctStop();
-    var from = ctView, t0 = null;
-    if (!from) { ctView = to; ctApply(); return; }
+  function ctStop(T) { if (T.anim) { cancelAnimationFrame(T.anim); T.anim = null; } }
+  function ctFly(T, to) {
+    ctStop(T);
+    var from = T.view, t0 = null;
+    if (!from) { T.view = to; ctApply(T); return; }
     function step(now) {
       if (t0 === null) t0 = now;
       var t = Math.min(1, (now - t0) / 380), e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
       // zoom eases in log space, so a big zoom does not lurch at the start
-      ctView = { cx: from.cx + (to.cx - from.cx) * e, cy: from.cy + (to.cy - from.cy) * e,
+      T.view = { cx: from.cx + (to.cx - from.cx) * e, cy: from.cy + (to.cy - from.cy) * e,
                  k: Math.exp(Math.log(from.k) + (Math.log(to.k) - Math.log(from.k)) * e) };
-      ctApply();
-      ctAnim = t < 1 ? requestAnimationFrame(step) : null;
+      ctApply(T);
+      T.anim = t < 1 ? requestAnimationFrame(step) : null;
     }
-    ctAnim = requestAnimationFrame(step);
+    T.anim = requestAnimationFrame(step);
   }
+  function ctFlyBox(T, b, maxK) { if (!b) return; T.focus = null; T.auto = { box: b, maxK: maxK }; ctFly(T, ctFitTo(T, b, maxK)); }
   // names come and go with the zoom: a name shows once its circle is big enough on screen to own it
-  function ctLabels(E) {
-    if (!E || !ctView || E !== ctEls) return;
-    var k = ctView.k;
+  function ctLabels(T, E) {
+    if (!E || !T.view || E !== T.els) return;
+    var k = T.view.k;
     E.labels.forEach(function (L) {
-      var sr = L.r * k, show, room;
-      if (L.lvl === "p") { show = sr >= 7 || (L.hit && sr >= 3); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
-      else if (L.leaf) { show = sr >= 14 || (L.hit && sr >= 4); room = L.hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
+      var sr = L.r * k, show, room, hit = !!L.el.__hit;
+      if (L.lvl === "p") { show = sr >= 7 || (hit && sr >= 3); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
+      else if (L.leaf) { show = sr >= 14 || (hit && sr >= 4); room = hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
       else { show = sr >= (L.lvl === "s" ? 34 : 46); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
       if (show) {
         var max = Math.max(3, Math.floor(room / (L.lvl === "s" ? 8.4 : 6.6)));
@@ -18420,58 +18493,153 @@ function __detabaseMain() {
       L.el.style.display = show ? "" : "none";
     });
   }
-  function ctHitAt(x, y) {
+  // ---- marks: every layer painted as classes, without redrawing the tree ----
+  //   hit (a search result, with its number), sel (the point being previewed), conn (its connections),
+  //   board (on the Clipboard), mk (marked by "Mark connected"), pick (chosen to add). With any of them on,
+  //   everything else steps back.
+  function ctPaint(T) {
+    var E = T.els; if (!E) return;
+    var layers = { hit: T.hits || {}, sel: T.sel ? (function () { var o = {}; o[T.sel] = 1; return o; })() : {}, conn: T.conn || {}, board: T.board || {}, mk: T.mk || {}, pick: T.pick || {} };
+    var any = {}, on = false;
+    Object.keys(layers).forEach(function (l) { Object.keys(layers[l]).forEach(function (k) { any[k] = 1; on = true; }); });
+    // a ring stays bright while something marked is inside it
+    var inside = {};
+    Object.keys(any).forEach(function (k) {
+      var p = k.slice(0, 2) === "p|" ? (function () { var pg = psPageById(k.slice(2)); return pg && E.model.nodes["s|" + pg.subject]; })() : E.model.nodes[k];
+      for (; p; p = p.parent) inside[p.key] = 1;
+    });
+    E.svg.classList.toggle("marking", on);
+    Array.prototype.forEach.call(E.svg.querySelectorAll("[data-k], [data-v]"), function (el) {
+      var k = el.hasAttribute("data-k") ? el.getAttribute("data-k") : "p|" + el.getAttribute("data-v");
+      Object.keys(layers).forEach(function (l) { el.classList.toggle("m-" + l, !!layers[l][k]); });
+      el.classList.toggle("m-in", on && !any[k] && !!inside[k]);
+      el.classList.toggle("m-dim", on && !any[k] && !inside[k]);
+    });
+    Array.prototype.forEach.call(E.svg.querySelectorAll("[data-ka]"), function (el) {
+      var a = el.getAttribute("data-ka"), b = el.getAttribute("data-kb");
+      el.classList.toggle("m-hot", !!(T.sel && (a === T.sel || b === T.sel) && (layers.conn[a] || layers.conn[b])) || !!(layers.mk[a] && layers.mk[b]));
+      el.classList.toggle("m-dim", on && !(any[a] && any[b]));
+    });
+    E.labels.forEach(function (L) { L.el.__hit = !!any[L.key]; L.el.classList.toggle("m-dim", on && !any[L.key] && !inside[L.key]); });
+    // numbers beside the search results
+    var g = E.nums; g.innerHTML = "";
+    Object.keys(layers.hit).forEach(function (k) {
+      var p = ctPoint(T, k); if (!p) return;
+      var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      t.setAttribute("x", ctF(p.x + p.r * 0.75)); t.setAttribute("y", ctF(p.y - p.r * 0.75));
+      t.setAttribute("class", "ct-num" + (T.sel === k ? " sel" : ""));
+      t.textContent = layers.hit[k];
+      g.appendChild(t);
+    });
+    Object.keys(layers.pick).forEach(function (k) {
+      var p = ctPoint(T, k); if (!p) return;
+      var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      t.setAttribute("x", ctF(p.x - p.r * 0.75)); t.setAttribute("y", ctF(p.y - p.r * 0.75));
+      t.setAttribute("class", "ct-check"); t.textContent = "✓";
+      g.appendChild(t);
+    });
+    ctLabels(T, E);
+  }
+  // ---- choosing a point: zoom to it, show its connections and a preview ----
+  function ctSelect(T, key, quiet) {
+    if (!key) { T.sel = null; T.conn = {}; ctPaint(T); ctPreview(T); if (T.opts.onPick) T.opts.onPick(null); return; }
+    T.sel = key; T.conn = {};
+    var ref = ctRefOf(key);
+    ctLinksOf(ref).forEach(function (x) { var k = ctKeyOf(x.ref); if (k) T.conn[k] = 1; });
+    ctPaint(T);
+    if (!quiet) ctFlyBox(T, ctBoxOfKeys(T, [key].concat(Object.keys(T.conn))), 3);
+    ctPreview(T);
+    if (T.opts.onPick) T.opts.onPick(key);
+  }
+  function ctBackToAll(T) {
+    ctSelect(T, null);
+    var keys = Object.keys(T.hits || {});
+    if (keys.length) ctFlyBox(T, ctBoxOfKeys(T, keys), 3); else ctFlyBox(T, T.els.allBox);
+  }
+  function ctActBtn(T, ref) {
+    return T.opts.mode === "add" ? actBtn("＋", "add to the Clipboard", function () { T.opts.onAdd([ref]); }, "ct-pv-add")
+      : actBtn("Open", "open it", function () { openAnyRef(ref); }, "ct-pv-add");
+  }
+  function ctPreview(T) {
+    var E = T.els; if (!E) return;
+    var pv = E.box.querySelector(".ct-prev");
+    if (!T.sel) { if (pv) pv.remove(); return; }
+    if (!pv) { pv = document.createElement("div"); pv.className = "ct-prev"; E.box.appendChild(pv); }
+    pv.classList.toggle("side", ctPvSide(T));
+    var ref = ctRefOf(T.sel);
+    pv.innerHTML = '<div class="ct-pv-top"><div class="ct-pv-what"><b></b><small></small></div></div><div class="ct-pv-body"></div><div class="ct-pv-conn"></div>';
+    pv.querySelector("b").textContent = (T.hits && T.hits[T.sel] ? T.hits[T.sel] + ". " : "") + refLabel(ref);
+    pv.querySelector("small").textContent = [SRCH_KIND[ref.lvl] || ""].concat(assetCrumbs(ref).length ? [assetCrumbs(ref).join(" › ")] : []).join(" · ");
+    var top = pv.querySelector(".ct-pv-top");
+    top.appendChild(T.opts.mode === "add" ? actBtn("＋ Add to board", "put it on the Clipboard", function () { T.opts.onAdd([ref]); }, "btn-primary") : actBtn("Open", "open it", function () { openAnyRef(ref); }, "btn-primary"));
+    top.appendChild(actBtn(T.hits ? "↩ Back to all results" : "✕ Close", "", function () { ctBackToAll(T); }));
+    var body = pv.querySelector(".ct-pv-body");
+    if (ref.lvl === "c" || ref.lvl === "p") { var a = assetBody(ref, 300); a.classList.add("ct-pv-asset"); body.appendChild(a); try { texify(body); } catch (e) {} }
+    var links = ctLinksOf(ref), cl = pv.querySelector(".ct-pv-conn");
+    cl.insertAdjacentHTML("beforeend", '<p class="ct-pv-h">' + (links.length ? "Connected (" + links.length + ")" : "No connections yet") + '</p>');
+    links.forEach(function (x) {
+      var row = document.createElement("div"); row.className = "ct-pv-row";
+      var go = actBtn("", "show it on the tree", function () { var k = ctKeyOf(x.ref); if (k) ctSelect(T, k); }, "ct-pv-go");
+      go.innerHTML = '<span></span><small></small>';
+      go.firstChild.textContent = refLabel(x.ref); go.lastChild.textContent = x.why + " · " + (SRCH_KIND[x.ref.lvl] || "");
+      row.appendChild(go); row.appendChild(ctActBtn(T, x.ref));
+      cl.appendChild(row);
+    });
+  }
+  function ctHitAt(T, x, y) {
     var t = document.elementFromPoint(x, y);
     t = t && t.closest && t.closest("[data-k], [data-v], [data-strat]");
-    if (!t || !ctEls || !ctEls.svg.contains(t)) return null;
+    if (!t || !T.els || !T.els.svg.contains(t)) return null;
     if (t.hasAttribute("data-strat")) return { strat: t.getAttribute("data-strat") };
     if (t.hasAttribute("data-v")) return { method: t.getAttribute("data-v") };
-    return ctEls.model.nodes[t.getAttribute("data-k")] || null;
+    return T.els.model.nodes[t.getAttribute("data-k")] || null;
   }
-  function ctTap(x, y) {
-    var h = ctHitAt(x, y);
+  // a tap: tiny → zoom in first; a ring → zoom (again: choose it); a circle or a square → choose it (the
+  // main page with no search opens it at once, as before)
+  function ctTap(T, x, y) {
+    var h = ctHitAt(T, x, y), choose = T.opts.mode === "add" || !!T.hits;
     if (!h) return;
-    if (h.strat) { openStrat(h.strat); return; }
+    if (h.strat) { if (T.opts.mode !== "add") openStrat(h.strat); return; }
     if (h.method) {
-      // a square too small to aim at: zoom into its subject first
-      var pg = psPageById(h.method), sn = pg && ctEls.model.nodes["s|" + pg.subject];
-      if (sn && CT_MR * ctView.k < 7) { ctFocus = sn.key; ctAuto = { box: ctBoxOf([sn]), maxK: 3.4 }; ctFly(ctFitTo(ctBoxOf([sn]), 3.4)); return; }
-      selectPsPage(h.method);
+      var pg = psPageById(h.method), sn = pg && T.els.model.nodes["s|" + pg.subject];
+      if (sn && CT_MR * T.view.k < 7) { T.focus = sn.key; T.auto = { box: ctBoxOf([sn]), maxK: 3.4 }; ctFly(T, ctFitTo(T, ctBoxOf([sn]), 3.4)); return; }
+      if (choose) ctSelect(T, "p|" + h.method); else selectPsPage(h.method);
       return;
     }
     var n = h;
-    // a circle too small to aim at is a ring tap: zoom in first
-    if (n.leaf && n.r * ctView.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
-    if (n.leaf || n.empty) { openRef(n.ref); return; }
-    var to = ctFitTo(ctBoxOf([n]), 3.4);   // never so close that a concept fills the screen
-    // a second tap on the ring already filling the view opens it
-    if (ctFocus === n.key && Math.abs(ctView.k - to.k) / to.k < 0.2 && Math.hypot(ctView.cx - to.cx, ctView.cy - to.cy) * ctView.k < 40) { openRef(n.ref); return; }
-    ctFocus = n.key; ctAuto = { box: ctBoxOf([n]), maxK: 3.4 };
-    ctFly(to);
+    if (n.leaf && n.r * T.view.k < 9 && n.parent && n.parent.ref.lvl !== "root") n = n.parent;
+    if (n.leaf || n.empty) { if (choose) ctSelect(T, n.key); else openRef(n.ref); return; }
+    var to = ctFitTo(T, ctBoxOf([n]), 3.4);   // never so close that a concept fills the screen
+    // a second tap on the ring already filling the view chooses (or opens) it
+    if (T.focus === n.key && Math.abs(T.view.k - to.k) / to.k < 0.2 && Math.hypot(T.view.cx - to.cx, T.view.cy - to.cy) * T.view.k < 40) { if (choose) ctSelect(T, n.key, true); else openRef(n.ref); return; }
+    T.focus = n.key; T.auto = { box: ctBoxOf([n]), maxK: 3.4 };
+    ctFly(T, to);
   }
-  function ctWire(E) {
+  function ctWire(T, E) {
     var svg = E.svg, P = {}, pinch = null, pan = null, holdT = null;
     function local(e) { var r = svg.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
     function ids() { return Object.keys(P); }
-    function startPan(id) { pan = { id: String(id), xy: P[id], cx: ctView.cx, cy: ctView.cy, moved: 0, t: Date.now(), held: false }; }
+    function startPan(id) { pan = { id: String(id), xy: P[id], cx: T.view.cx, cy: T.view.cy, moved: 0, t: Date.now(), held: false }; }
     svg.addEventListener("pointerdown", function (e) {
-      if (e.button > 0 || !ctView) return;
+      if (e.button > 0 || !T.view) return;
       e.preventDefault();
+      if (e.isPrimary && ids().length) { P = {}; pinch = null; pan = null; }   // left over from a lost gesture
       try { svg.setPointerCapture(e.pointerId); } catch (_) {}
-      ctStop();
+      ctStop(T);
       P[e.pointerId] = local(e);
       clearTimeout(holdT);
       if (ids().length === 1) {
         startPan(e.pointerId);
-        var h = ctHitAt(e.clientX, e.clientY), p0 = pan;
-        if (h && !h.method && h.leaf) holdT = setTimeout(function () {
+        var h = ctHitAt(T, e.clientX, e.clientY), p0 = pan;
+        if (h && (h.leaf || h.method || h.ref)) holdT = setTimeout(function () {
           if (pan !== p0 || p0.moved >= 8) return;
           p0.held = true;
-          assetWindow(h.ref);                    // hold a circle: its properties
+          var ref = h.method ? { lvl: "p", id: h.method } : h.ref;
+          if (T.opts.onHold) T.opts.onHold(ref, e.clientX, e.clientY); else if (!h.method) assetWindow(ref);   // hold: its menu (or properties)
         }, 550);
       } else {
         var k = ids(), a = P[k[0]], b = P[k[1]];
-        pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, mid: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], v: { cx: ctView.cx, cy: ctView.cy, k: ctView.k } };
+        pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, mid: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], v: { cx: T.view.cx, cy: T.view.cy, k: T.view.k } };
         pan = null;
       }
     });
@@ -18479,23 +18647,23 @@ function __detabaseMain() {
       if (!P[e.pointerId]) return;
       e.preventDefault();
       P[e.pointerId] = local(e);
-      var k = ids(), sz = ctSize();
+      var k = ids(), sz = ctSize(T);
       if (pinch && k.length >= 2) {
         var a = P[k[0]], b = P[k[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-        var nk = ctClampK(pinch.v.k * d / pinch.d);
+        var nk = ctClampK(T, pinch.v.k * d / pinch.d);
         // the spot that was under the fingers stays under them
         var wx = pinch.v.cx + (pinch.mid[0] - sz[0] / 2) / pinch.v.k, wy = pinch.v.cy + (pinch.mid[1] - sz[1] / 2) / pinch.v.k;
-        ctView = { cx: wx - (mid[0] - sz[0] / 2) / nk, cy: wy - (mid[1] - sz[1] / 2) / nk, k: nk };
-        ctFocus = null; ctAuto = null;
-        ctApply();
+        T.view = { cx: wx - (mid[0] - sz[0] / 2) / nk, cy: wy - (mid[1] - sz[1] / 2) / nk, k: nk };
+        T.focus = null; T.auto = null;
+        ctApply(T);
       } else if (pan && pan.id === String(e.pointerId)) {
         var dx = P[e.pointerId][0] - pan.xy[0], dy = P[e.pointerId][1] - pan.xy[1];
         pan.moved = Math.max(pan.moved, Math.hypot(dx, dy));
         if (pan.moved < 6) return;
         clearTimeout(holdT);
-        ctView = { cx: pan.cx - dx / ctView.k, cy: pan.cy - dy / ctView.k, k: ctView.k };
-        ctFocus = null; ctAuto = null;
-        ctApply();
+        T.view = { cx: pan.cx - dx / T.view.k, cy: pan.cy - dy / T.view.k, k: T.view.k };
+        T.focus = null; T.auto = null;
+        ctApply(T);
       }
     });
     function end(e) {
@@ -18506,21 +18674,21 @@ function __detabaseMain() {
       if (k.length === 1) { startPan(k[0]); pan.moved = 99; return; }   // a pinch that lifts one finger carries on as a pan
       clearTimeout(holdT);
       var p = pan; pan = null;
-      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < 8 && !p.held && Date.now() - p.t < 700) ctTap(e.clientX, e.clientY);
+      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < 8 && !p.held && Date.now() - p.t < 700) ctTap(T, e.clientX, e.clientY);
     }
     svg.addEventListener("pointerup", end);
     svg.addEventListener("pointercancel", end);
     svg.addEventListener("lostpointercapture", end);
     // desktop: a pinch on the trackpad (or ctrl + wheel) zooms; a plain wheel still scrolls the page
     svg.addEventListener("wheel", function (e) {
-      if (!(e.ctrlKey || e.metaKey) || !ctView) return;
+      if (!(e.ctrlKey || e.metaKey) || !T.view) return;
       e.preventDefault();
-      var xy = local(e), sz = ctSize(), nk = ctClampK(ctView.k * Math.exp(-e.deltaY * 0.01));
-      var wx = ctView.cx + (xy[0] - sz[0] / 2) / ctView.k, wy = ctView.cy + (xy[1] - sz[1] / 2) / ctView.k;
-      ctStop();
-      ctView = { cx: wx - (xy[0] - sz[0] / 2) / nk, cy: wy - (xy[1] - sz[1] / 2) / nk, k: nk };
-      ctFocus = null; ctAuto = null;
-      ctApply();
+      var xy = local(e), sz = ctSize(T), nk = ctClampK(T, T.view.k * Math.exp(-e.deltaY * 0.01));
+      var wx = T.view.cx + (xy[0] - sz[0] / 2) / T.view.k, wy = T.view.cy + (xy[1] - sz[1] / 2) / T.view.k;
+      ctStop(T);
+      T.view = { cx: wx - (xy[0] - sz[0] / 2) / nk, cy: wy - (xy[1] - sz[1] / 2) / nk, k: nk };
+      T.focus = null; T.auto = null;
+      ctApply(T);
     }, { passive: false });
     // desktop: a method under the mouse stands out, with its lines
     function hot(id, on) {
@@ -18529,28 +18697,29 @@ function __detabaseMain() {
     svg.addEventListener("mouseover", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), true); });
     svg.addEventListener("mouseout", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), false); });
     E.box.querySelector(".ct-ctrl").addEventListener("click", function (e) {
-      var b = e.target.closest("button[data-z]"); if (!b || !ctView) return;
+      var b = e.target.closest("button[data-z]"); if (!b || !T.view) return;
       var z = b.getAttribute("data-z");
-      ctFocus = null;
-      if (z === "all") { ctAuto = { box: null }; ctFly(ctFitTo(E.allBox)); return; }
-      ctAuto = null;
-      ctFly({ cx: ctView.cx, cy: ctView.cy, k: ctClampK(ctView.k * (z === "in" ? 1.6 : 1 / 1.6)) });
+      T.focus = null;
+      if (z === "all") { T.auto = { box: null }; ctFly(T, ctFitTo(T, E.allBox)); return; }
+      T.auto = null;
+      ctFly(T, { cx: T.view.cx, cy: T.view.cy, k: ctClampK(T, T.view.k * (z === "in" ? 1.6 : 1 / 1.6)) });
     });
   }
-  function ctRender(box, pages) {
-    if (ctEls && ctEls.ro) ctEls.ro.disconnect();
+  function ctRender(T, box) {
+    if (T.els && T.els.ro) T.els.ro.disconnect();
+    T.box = box;
     var model = ctBuild();
     var dark = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
     var methods = ctMethods(model, dark);
-    var marks = ctMark(model, pages);
-    var NS = "http://www.w3.org/2000/svg";
+    var NS = "http://www.w3.org/2000/svg", U = T.uid;
     box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><defs>' + ['cc', 'mm'].map(function (id) {
-        return '<marker id="ctArrow' + id + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="' + byId(CT_LAYERS, id).color + '"/></marker>';
+        return '<marker id="' + U + 'Arrow' + id + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="' + byId(CT_LAYERS, id).color + '"/></marker>';
       }).join('') + '</defs><g class="ct-world"><g class="ct-rings"></g><g class="ct-links"></g>' +
-      '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g></g></svg>' +
+      '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g><g class="ct-nums"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-hint">Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for its properties</div>';
+      '<div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in" :
+        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold a circle for its properties")) + '</div>';
     var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
     var gRings = world.querySelector(".ct-rings"), gLinks = world.querySelector(".ct-links"), gLeaves = world.querySelector(".ct-leaves"),
         gMethods = world.querySelector(".ct-methods"), gLbls = world.querySelector(".ct-lbls");
@@ -18560,21 +18729,19 @@ function __detabaseMain() {
       parent.appendChild(n);
       return n;
     }
-    var labels = [], focusBox = null;
+    var labels = [];
     (function walk(n) {
       if (n.ref.lvl !== "root") {
         var cls = n.leaf ? "ct-leaf" : "ct-ring lvl-" + n.ref.lvl + (n.empty ? " empty" : "");
         if (n.uses) cls += " used";
-        if (marks) cls += n.hit ? " hit" : (n.leaf ? n.lit : n.any) ? "" : " dim";
         var c = el("circle", { cx: ctF(n.x), cy: ctF(n.y), r: ctF(n.r), "class": cls, "data-k": n.key }, n.leaf ? gLeaves : gRings);
         el("title", {}, c).textContent = n.name;
         // a ring that is the only one in its parent shares its top edge, so its name goes under the parent's
         var only = 0;
         for (var p = n; p.parent && p.parent.ref.lvl !== "root" && p.parent.kids.length === 1; p = p.parent) only++;
         var t = el("text", { x: ctF(n.x), y: ctF(n.leaf ? n.y + n.r : n.y - n.r), dy: n.leaf ? "1em" : (1.25 + only * 1.4) + "em",
-          "class": "ct-lbl " + (n.leaf ? "leaf" : "lvl-" + n.ref.lvl) + (marks && !(n.leaf ? n.lit : n.any) ? " dim" : "") }, gLbls);
-        labels.push({ el: t, r: n.r, leaf: !!n.leaf, lvl: n.ref.lvl, full: n.name, hit: !!(marks && n.hit) });
-        if (marks && (n.hit || (n.leaf && n.lit))) focusBox = ctUnion(focusBox, ctBoxOf([n]));
+          "class": "ct-lbl " + (n.leaf ? "leaf" : "lvl-" + n.ref.lvl) }, gLbls);
+        labels.push({ el: t, key: n.key, r: n.r, leaf: !!n.leaf, lvl: n.ref.lvl, full: n.name });
       }
       n.kids.forEach(walk);
     })(model.root);
@@ -18584,13 +18751,13 @@ function __detabaseMain() {
       conceptBuildsOn(id).forEach(function (x) {
         var a = model.nodes["t|" + x]; if (!a) return;
         var e = ctEdge(a, b);
-        el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow" + (marks && !(a.any && b.any) ? " off" : ""), stroke: byId(CT_LAYERS, "cc").color, "marker-end": "url(#ctArrowcc)" }, gLinks);
+        el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow", stroke: byId(CT_LAYERS, "cc").color, "marker-end": "url(#" + U + "Arrowcc)", "data-ka": a.key, "data-kb": b.key, "data-ly": "b" }, gLinks);
       });
     });
     // "uses": an arrow from the method used to the one using it
     if (ctOn("mm")) methods.links.forEach(function (l) {
-      var off = marks && !(marks.vis[l.a.pg.id] && marks.vis[l.b.pg.id]), e = ctEdge({ x: l.b.x, y: l.b.y, r: CT_MR }, { x: l.a.x, y: l.a.y, r: CT_MR });
-      el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow" + (off ? " off" : ""), stroke: byId(CT_LAYERS, "mm").color, "marker-end": "url(#ctArrowmm)", "data-vv": l.a.pg.id + " " + l.b.pg.id }, gLinks);
+      var e = ctEdge({ x: l.b.x, y: l.b.y, r: CT_MR }, { x: l.a.x, y: l.a.y, r: CT_MR });
+      el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow", stroke: byId(CT_LAYERS, "mm").color, "marker-end": "url(#" + U + "Arrowmm)", "data-vv": l.a.pg.id + " " + l.b.pg.id, "data-ka": "p|" + l.a.pg.id, "data-kb": "p|" + l.b.pg.id, "data-ly": "m" }, gLinks);
     });
     // strategies: each one's lines in its color; tapping a vine opens the strategy
     if (ctOn("st")) stratsAll().forEach(function (s) {
@@ -18599,58 +18766,59 @@ function __detabaseMain() {
         ctNodePoints(model, methods, s.nodes[ed.a]).forEach(function (a) {
           ctNodePoints(model, methods, s.nodes[ed.b]).forEach(function (b) {
             var e = ctEdge(a, b), d = ctCurve(e[0], e[1]);
-            el("path", { d: d, "class": "ct-vine" + (marks ? " dim" : ""), stroke: s.color }, gLinks);
+            el("path", { d: d, "class": "ct-vine", stroke: s.color, "data-ka": a.key, "data-kb": b.key, "data-sg": s.id, "data-ly": "s" }, gLinks);
             el("path", { d: d, "class": "ct-vhit", "data-strat": s.id }, gLinks);
           });
         });
       });
     });
     methods.nodes.forEach(function (v) {
-      var off = marks && !marks.vis[v.pg.id];
+      var vk = "p|" + v.pg.id;
       if (ctOn("cm")) {
         v.lines.forEach(function (L) {
-          el("path", { d: ctCurve([v.x, v.y], L.to), "class": "ct-link" + (L.also ? " also" : "") + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+          el("path", { d: ctCurve([v.x, v.y], L.to), "class": "ct-link" + (L.also ? " also" : ""), stroke: v.color, "data-vv": v.pg.id, "data-ka": vk, "data-kb": L.key, "data-ly": "c" }, gLinks);
         });
-        el("line", { x1: ctF(v.x), y1: ctF(v.y), x2: ctF(v.rim[0]), y2: ctF(v.rim[1]), "class": "ct-stem" + (off ? " off" : ""), stroke: v.color, "data-vv": v.pg.id }, gLinks);
+        el("line", { x1: ctF(v.x), y1: ctF(v.y), x2: ctF(v.rim[0]), y2: ctF(v.rim[1]), "class": "ct-stem", stroke: v.color, "data-vv": v.pg.id, "data-ka": vk, "data-kb": "s|" + v.pg.subject, "data-ly": "o" }, gLinks);
       }
-      el("rect", { x: ctF(v.x - CT_MR - 9), y: ctF(v.y - CT_MR - 9), width: 2 * CT_MR + 18, height: 2 * CT_MR + 18, "class": "ct-mhit" + (off ? " off" : ""), "data-v": v.pg.id }, gMethods);   // a finger-sized target
+      el("rect", { x: ctF(v.x - CT_MR - 9), y: ctF(v.y - CT_MR - 9), width: 2 * CT_MR + 18, height: 2 * CT_MR + 18, "class": "ct-mhit", "data-v": v.pg.id }, gMethods);   // a finger-sized target
       var sq = el("rect", { x: ctF(v.x - CT_MR), y: ctF(v.y - CT_MR), width: 2 * CT_MR, height: 2 * CT_MR, rx: 3, fill: v.color,
-        "class": "ct-method" + (v.pg.kind ? "" : " nokind") + (off ? " off" : ""), "data-v": v.pg.id, "data-vv": v.pg.id }, gMethods);
+        "class": "ct-method" + (v.pg.kind ? "" : " nokind"), "data-v": v.pg.id, "data-vv": v.pg.id }, gMethods);
       el("title", {}, sq).textContent = v.pg.name + (v.pg.kind ? "" : " — needs a kind");
-      var lb = el("text", { x: ctF(v.x), y: ctF(v.y + CT_MR), dy: "1em", fill: v.color, "class": "ct-lbl ct-mlbl" + (off ? " off" : ""), "data-vv": v.pg.id }, gLbls);
-      labels.push({ el: lb, r: CT_MR, leaf: false, lvl: "p", full: v.pg.name, hit: !!(marks && !off) });
-      if (marks && !off) focusBox = ctUnion(focusBox, [v.x - 30, v.y - 30, v.x + 30, v.y + 30]);
+      var lb = el("text", { x: ctF(v.x), y: ctF(v.y + CT_MR), dy: "1em", fill: v.color, "class": "ct-lbl ct-mlbl", "data-vv": v.pg.id }, gLbls);
+      labels.push({ el: lb, key: vk, r: CT_MR, leaf: false, lvl: "p", full: v.pg.name });
     });
-    box.appendChild(ctViewsEl(box, pages));
-    var E = ctEls = { box: box, svg: svg, world: world, labels: labels, model: model,
+    box.appendChild(ctViewsEl(T));
+    var E = T.els = { box: box, svg: svg, world: world, labels: labels, model: model, methods: methods, nums: world.querySelector(".ct-nums"),
       allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
-    ctWire(E);
-    // where to look: the whole tree the first time; what the search left, when it changes; and back
-    // to where you were, once the search is cleared
-    var sig = JSON.stringify([mainQ.trim().toLowerCase()]);
-    var want = null;
-    if (sig !== ctSig) {
-      if (marks) { if (!ctPreView && ctSig !== null && ctView) ctPreView = ctAuto ? { auto: ctAuto } : { view: ctView }; want = focusBox ? { box: focusBox, maxK: 3 } : null; }
-      else { want = ctPreView ? (ctPreView.auto || ctPreView) : { box: null }; ctPreView = null; }
-      ctFocus = null;
+    ctWire(T, E);
+    if (T.sel && !ctPoint(T, T.sel)) { T.sel = null; T.conn = {}; }
+    ctPaint(T);
+    ctPreview(T);
+    // where to look: the whole tree the first time; the search's results when they change; and back to
+    // where you were once the search is cleared
+    var hitKeys = Object.keys(T.hits || {}), want = null;
+    if (T.hitSig !== T.sig) {
+      if (hitKeys.length) { if (!T.preView && T.sig !== null && T.view) T.preView = T.auto ? { auto: T.auto } : { view: T.view }; var fb = ctBoxOfKeys(T, hitKeys); want = fb ? { box: fb, maxK: 3 } : null; }
+      else { want = T.preView ? (T.preView.auto || T.preView) : { box: null }; T.preView = null; }
+      T.focus = null;
     }
-    if (!ctView) want = { box: null };
-    ctSig = sig;
+    if (!T.view) want = { box: null };
+    T.sig = T.hitSig;
     function look() {
-      if (!ctSize()[0] || !ctSize()[1]) return false;   // not on screen yet
+      if (!ctSize(T)[0] || !ctSize(T)[1]) return false;   // not on screen yet
       if (want) {
-        var to = want.view || ctFitTo(want.box || E.allBox, want.maxK);
-        ctAuto = want.view ? null : want;
+        var to = want.view || ctFitTo(T, want.box || E.allBox, want.maxK);
+        T.auto = want.view ? null : want;
         want = null;
-        if (ctView) ctFly(to); else { ctView = to; ctApply(); }
-      } else if (ctAuto && !ctAnim) {
-        ctView = ctFitTo(ctAuto.box || E.allBox, ctAuto.maxK);
-        ctApply();
-      } else ctApply();
+        if (T.view) ctFly(T, to); else { T.view = to; ctApply(T); }
+      } else if (T.auto && !T.anim) {
+        T.view = ctFitTo(T, T.auto.box || E.allBox, T.auto.maxK);
+        ctApply(T);
+      } else ctApply(T);
       return true;
     }
     look();
-    if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === ctEls) look(); }); E.ro.observe(svg); }
+    if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === T.els) look(); }); E.ro.observe(svg); }
   }
   function renderEtiMain() {
     var host = $("etiMain"); if (!host) return;
@@ -18671,9 +18839,15 @@ function __detabaseMain() {
       st = setTimeout(function () { mainQ = input.value; renderEtiMain(); }, 160);
     });
     host.querySelector(".em-clear").addEventListener("click", function () { mainQ = ""; renderEtiMain(); });
-    var pages = mainVines();
-    ctRender(host.querySelector(".em-tree"), pages);
-    host.querySelector(".em-res").appendChild(mainResultsEl());
+    // the list and the tree mark each other (B183): the tree numbers the results as the list does; a
+    // number in the list chooses its point on the tree, a point chosen on the tree lights its rows
+    mainTree = mainTree || ctTree({ mode: "open", onPick: function (key) {
+      Array.prototype.forEach.call(document.querySelectorAll("#etiMain .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); });
+    } });
+    var res = mainResultsEl();
+    ctSetHits(mainTree, mainQ.trim() ? mainSS.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([mainQ.trim().toLowerCase(), mainSS.kind, mainSS.grp, mainSS.subj, mainSS.course, mainSS.tag]));
+    ctRender(mainTree, host.querySelector(".em-tree"));
+    host.querySelector(".em-res").appendChild(res);
     if (mainQ && document.activeElement !== input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
   }
   // ============================================================
@@ -21556,24 +21730,41 @@ function __detabaseMain() {
   function bdListDnd(list) {
     dndList(list, { type: "bdasset", accepts: ["bd-nothing"], item: ".bd-row", grip: ".ps-grip", handle: ".bd-rname", id: function (el) { return el.getAttribute("data-k"); } });
   }
+  // the library panel (B183): search, then List and Tree — a switch on an iPad-sized screen, side by side on a
+  // wide one (≥ 1400 px). The Tree is the main page's tree (ctTree, mode "add"): the list's results are
+  // numbered on it; tapping a point zooms to it with its connections and a preview with "＋ Add to board".
+  var BD_SPLIT = 1400;
+  function bdSplit() { return window.innerWidth >= BD_SPLIT; }
   function bdSide() {
     var side = $("boardPane").querySelector(".bd-side");
     side.hidden = !bd.side;
     if (!bd.side) return;
+    bd.libView = bd.libView || "list";
     if (!side.firstChild) {
-      side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-list"></div>';
-      var q = side.firstChild;
+      side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-libtabs"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
+      var q = side.firstChild, qt = null;
       q.value = bd.q;
-      q.addEventListener("input", function () { bd.q = q.value; bdSide(); });
+      q.addEventListener("input", function () { clearTimeout(qt); qt = setTimeout(function () { bd.q = q.value; bdSide(); }, 160); });
     }
-    var list = side.querySelector(".bd-list");
+    var split = bdSplit(), showTree = split || bd.libView === "tree", showList = split || bd.libView === "list";
+    side.classList.toggle("split", split); side.classList.toggle("treeview", !split && bd.libView === "tree");
+    var tabs = side.querySelector(".bd-libtabs");
+    tabs.innerHTML = ""; tabs.hidden = split;
+    [["list", "☰ List"], ["tree", "◎ Tree"]].forEach(function (v) {
+      tabs.appendChild(actBtn(v[1], "", function () { bd.libView = v[0]; bdSide(); }, "em-kind" + (bd.libView === v[0] ? " on" : "")));
+    });
+    var list = side.querySelector(".bd-list"), treeBox = side.querySelector(".bd-tree");
+    list.hidden = !showList; treeBox.hidden = !showTree;
     list.innerHTML = "";
     var q2 = bd.q.trim().toLowerCase();
+    bd.ss = bd.ss || { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
+    bd.ss.q = q2;
+    bd.tree = bd.tree || ctTree({ mode: "add", onAdd: function (refs) { bdAdd(refs); },
+      onPick: function (key) { Array.prototype.forEach.call(side.querySelectorAll(".bd-list .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); if (key && r.getAttribute("data-tk") === key && (bdSplit() || bd.libView === "list")) r.scrollIntoView({ block: "nearest" }); }); } });
     if (q2) {
-      bd.ss = bd.ss || { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
-      bd.ss.q = q2;
       searchView(list, bd.ss, {
         lvls: ["s", "t", "c", "p", "st"], limit: 80, redraw: bdSide,
+        numbers: function (tk) { if (!bdSplit()) { bd.libView = "tree"; bdSide(); } ctSelect(bd.tree, tk); },
         row: function (en, row, main) {
           row.classList.add("bd-row"); row.setAttribute("data-k", refKey(en.ref));
           row.insertAdjacentHTML("afterbegin", '<span class="ps-grip" title="drag onto the board">⠿</span>');
@@ -21582,19 +21773,24 @@ function __detabaseMain() {
         }
       });
       Array.prototype.forEach.call(list.querySelectorAll(".sr-sec"), bdListDnd);
-      return;
-    } else allSubjectKeys().filter(function (k) { return courseSubjectOn(k); }).forEach(function (k) {
-      var sr = { lvl: "s", id: k }, tabs = libKids(sr).filter(function (t) { return courseTabOn(t); }), ms = psPagesOf(k).filter(function (pg) { return courseIs({ lvl: "p", id: pg.id }); });
-      list.appendChild(bdRow(sr, subjectName(k), "subject", 0, true));
-      if (!bd.open[refKey(sr)]) return;
-      tabs.forEach(function (t) {
-        var cs = libKids(t);
-        list.appendChild(bdRow(t, tabLabel(t.id), "concept", 1, cs.length > 0));
-        if (bd.open[refKey(t)]) cs.filter(function (c) { return courseIs(c); }).forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
+    } else {
+      allSubjectKeys().filter(function (k) { return courseSubjectOn(k); }).forEach(function (k) {
+        var sr = { lvl: "s", id: k }, tabs2 = libKids(sr).filter(function (t) { return courseTabOn(t); }), ms = psPagesOf(k).filter(function (pg) { return courseIs({ lvl: "p", id: pg.id }); });
+        list.appendChild(bdRow(sr, subjectName(k), "subject", 0, true));
+        if (!bd.open[refKey(sr)]) return;
+        tabs2.forEach(function (t) {
+          var cs = libKids(t);
+          list.appendChild(bdRow(t, tabLabel(t.id), "concept", 1, cs.length > 0));
+          if (bd.open[refKey(t)]) cs.filter(function (c) { return courseIs(c); }).forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
+        });
+        ms.forEach(function (pg) { list.appendChild(bdRow({ lvl: "p", id: pg.id }, pg.name, "method", 1, false)); });
       });
-      ms.forEach(function (pg) { list.appendChild(bdRow({ lvl: "p", id: pg.id }, pg.name, "method", 1, false)); });
-    });
-    bdListDnd(list);
+      bdListDnd(list);
+    }
+    if (showTree) {
+      ctSetHits(bd.tree, q2 ? bd.ss.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([q2, bd.ss.kind, bd.ss.grp, bd.ss.subj, bd.ss.course, bd.ss.tag]));
+      ctRender(bd.tree, treeBox);
+    }
   }
 
   // ---- strategies ----
