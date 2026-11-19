@@ -3802,7 +3802,163 @@
   "Find the intervals of increase and decrease, the local extrema, and the limits at the ends.": "מוצאים את תחומי העלייה והירידה, את נקודות הקיצון המקומי ואת הגבולות בקצוות.",
   "On each monotonic interval, `f(x) = k` has one solution if `k` is between the end values, none otherwise. Add them up for each range of `k`.": "בכל קטע מונוטוני, ל־`f(x) = k` יש פתרון אחד אם `k` בין ערכי הקצה, ואחרת אין. מחברים לכל טווח של `k`.",
   "`x³ − 3x = k`. Maximum `(−1, 2)`, minimum `(1, −2)`, limits `−∞` and `+∞`.\n`k > 2` or `k < −2`: `1` root\n`k = ±2`: `2` roots\n`−2 < k < 2`: `3` roots": "`x³ − 3x = k`. מקסימום `(−1, 2)`, מינימום `(1, −2)`, גבולות `−∞` ו־`+∞`.\n`k > 2` או `k < −2`: `1` שורש\n`k = ±2`: `2` שורשים\n`−2 < k < 2`: `3` שורשים",
-  "`x⁴ − 4x³ + k = 0`, so `f(x) = x⁴ − 4x³ = −k`.\n`f` decreases until `x = 3`, then increases. Minimum `−27`, limits `+∞`.\n`k > 27`: no roots · `k = 27`: `1` root · `k < 27`: `2` roots": "`x⁴ − 4x³ + k = 0`, ולכן `f(x) = x⁴ − 4x³ = −k`.\n`f` יורדת עד `x = 3`, ואז עולה. מינימום `−27`, גבולות `+∞`.\n`k > 27`: אין שורשים · `k = 27`: `1` שורש · `k < 27`: `2` שורשים"
+  "`x⁴ − 4x³ + k = 0`, so `f(x) = x⁴ − 4x³ = −k`.\n`f` decreases until `x = 3`, then increases. Minimum `−27`, limits `+∞`.\n`k > 27`: no roots · `k = 27`: `1` root · `k < 27`: `2` roots": "`x⁴ − 4x³ + k = 0`, ולכן `f(x) = x⁴ − 4x³ = −k`.\n`f` יורדת עד `x = 3`, ואז עולה. מינימום `−27`, גבולות `+∞`.\n`k > 27`: אין שורשים · `k = 27`: `1` שורש · `k < 27`: `2` שורשים",
+  "Find the volume of a solid made by turning a region around an axis, choosing disks, washers or shells.": "למצוא את הנפח של גוף שנוצר מסיבוב תחום סביב ציר, בבחירה בין דיסקות, דיסקיות או קליפות.",
+  "Draw the region, find where its curves meet (the bounds), and mark the axis it turns around.": "משרטטים את התחום, מוצאים איפה העקומות שלו נפגשות (הגבולות), ומסמנים את הציר שסביבו הוא מסתובב.",
+  "Slices perpendicular to the axis → disks or washers. Strips parallel to the axis → shells. Pick the one where the formulas are easier.": "פרוסות מאונכות לציר ← דיסקות או דיסקיות. רצועות מקבילות לציר ← קליפות. בוחרים את מה שהנוסחאות שלו קלות יותר.",
+  "Disks/washers: outer radius `R` and inner radius `r`, measured from the axis. Shells: distance to the axis and the strip's height.": "דיסקות/דיסקיות: רדיוס חיצוני `R` ורדיוס פנימי `r`, נמדדים מהציר. קליפות: המרחק לציר וגובה הרצועה.",
+  "`V = ∫ π(R² − r²)` or `V = ∫ 2π (distance)(height)`, over the bounds.": "`V = ∫ π(R² − r²)` או `V = ∫ 2π (distance)(height)`, בין הגבולות.",
+  "Region between `y = x` and `y = x²`, around the x-axis\n1. They meet at `x = 0` and `x = 1`; `x ≥ x²` there.\n3. `R = x`, `r = x²`\n4. `V = ∫_(0)^(1) π(x² − x⁴) dx = π(1/3 − 1/5) = (2π)/15`": "התחום בין `y = x` ל־`y = x²`, סביב ציר x\n1. הן נפגשות ב־`x = 0` וב־`x = 1`; `x ≥ x²` שם.\n3. `R = x`, `r = x²`\n4. `V = ∫_(0)^(1) π(x² − x⁴) dx = π(1/3 − 1/5) = (2π)/15`",
+  "Same region, around the y-axis\n2. Strips parallel to the y-axis: shells.\n3. Distance `x`, height `x − x²`\n4. `V = ∫_(0)^(1) 2πx(x − x²) dx = 2π(1/3 − 1/4) = π/6`": "אותו תחום, סביב ציר y\n2. רצועות מקבילות לציר y: קליפות.\n3. מרחק `x`, גובה `x − x²`\n4. `V = ∫_(0)^(1) 2πx(x − x²) dx = 2π(1/3 − 1/4) = π/6`",
+  "Find the work done by a varying force: springs, lifting cables, pumping liquid out of a tank.": "למצוא את העבודה של כוח משתנה: קפיצים, הרמת כבלים, שאיבת נוזל ממכל.",
+  "Put an axis along the motion and mark where everything starts and ends.": "שמים ציר לאורך התנועה ומסמנים איפה כל דבר מתחיל ונגמר.",
+  "Spring: force `kx` over `dx`. Tank: a layer of thickness `dy` at height `y` weighs `ρ · (layer area) · dy` and rises a distance `(top − y)`.": "קפיץ: כוח `kx` לאורך `dx`. מכל: שכבה בעובי `dy` בגובה `y` שוקלת `ρ · (layer area) · dy` ועולה מרחק `(top − y)`.",
+  "Add the pieces over the whole range of `x` (or `y`).": "מחברים את החלקים לאורך כל הטווח של `x` (או `y`).",
+  "A force of `30 N` stretches a spring `0.15 m`. Work to stretch it from `0` to `0.4 m`?\n1. `30 = k · 0.15` → `k = 200 N/m`\n3. `W = ∫_(0)^(0.4) 200x dx = 100 · 0.16 = 16 J`": "כוח של `30 N` מותח קפיץ ב־`0.15 m`. מה העבודה כדי למתוח אותו מ־`0` עד `0.4 m`?\n1. `30 = k · 0.15` ← `k = 200 N/m`\n3. `W = ∫_(0)^(0.4) 200x dx = 100 · 0.16 = 16 J`",
+  "A cylindrical tank, radius `1 m`, height `3 m`, full of water, pumped out over the top (`ρ = 9810 N/m³`)\n1. `y` = height above the bottom, `0 ≤ y ≤ 3`\n2. A layer weighs `9810 · π · 1² · dy` and rises `3 − y`\n3. `W = ∫_(0)^(3) 9810π(3 − y) dy = 9810π · 4.5 ≈ 138,700 J`": "מכל גלילי, רדיוס `1 m`, גובה `3 m`, מלא מים, נשאב מעל השפה (`ρ = 9810 N/m³`)\n1. `y` = הגובה מעל התחתית, `0 ≤ y ≤ 3`\n2. שכבה שוקלת `9810 · π · 1² · dy` ועולה `3 − y`\n3. `W = ∫_(0)^(3) 9810π(3 − y) dy = 9810π · 4.5 ≈ 138,700 J`",
+  "Solve dy/dx = g(x)h(y), with or without an initial condition.": "לפתור dy/dx = g(x)h(y), עם או בלי תנאי התחלה.",
+  "Write `y'` as `dy/dx` and bring all `y` (with `dy`) to the left, all `x` (with `dx`) to the right.": "כותבים `y'` בצורה `dy/dx` ומעבירים את כל ה־`y` (עם `dy`) שמאלה, ואת כל ה־`x` (עם `dx`) ימינה.",
+  "Add one constant `C` on the right.": "מוסיפים קבוע אחד `C` באגף הימני.",
+  "If you can. With `ln|y| = …`, take `e` of both sides: `y = Ae^(…)`, where `A` can be any number.": "אם אפשר. עם `ln|y| = …`, לוקחים `e` של שני האגפים: `y = Ae^(…)`, כש־`A` יכול להיות כל מספר.",
+  "Plug it in to find the constant. Check for lost constant solutions (`h(y) = 0`).": "מציבים כדי למצוא את הקבוע. בודקים אם אבדו פתרונות קבועים (`h(y) = 0`).",
+  "`y' = (x)/(y)`, `y(0) = 3`\n1. `y dy = x dx`\n2. `(y²)/2 = (x²)/2 + C`\n4. `9/2 = C` → `y² − x² = 9`, and `y > 0`: `y = √(x² + 9)`": "`y' = (x)/(y)`, `y(0) = 3`\n1. `y dy = x dx`\n2. `(y²)/2 = (x²)/2 + C`\n4. `9/2 = C` ← `y² − x² = 9`, ו־`y > 0`: `y = √(x² + 9)`",
+  "Solve y′ + p(x)y = q(x) with an integrating factor.": "לפתור y′ + p(x)y = q(x) בעזרת גורם אינטגרציה.",
+  "Divide so that `y'` stands alone: `y' + p(x) y = q(x)`.": "מחלקים כך ש־`y'` יעמוד לבד: `y' + p(x) y = q(x)`.",
+  "`μ = e^(∫ p dx)` (no constant needed here).": "`μ = e^(∫ p dx)` (כאן לא צריך קבוע).",
+  "`(μy)' = μq`, so `μy = ∫ μq dx + C`.": "`(μy)' = μq`, ולכן `μy = ∫ μq dx + C`.",
+  "`y = (1/μ)(∫ μq dx + C)`, then use the initial condition.": "`y = (1/μ)(∫ μq dx + C)`, ואז משתמשים בתנאי ההתחלה.",
+  "Integrate sinᵐx cosⁿx by saving one factor or lowering the powers.": "לבצע אינטגרציה ל־sinᵐx cosⁿx בשמירת גורם אחד או בהורדת החזקות.",
+  "Is one of them odd? Then save one factor. Both even? Then lower the powers.": "האם אחת מהן אי־זוגית? אז שומרים גורם אחד. שתיהן זוגיות? אז מורידים את החזקות.",
+  "Odd power of `cos`: keep one `cos x`, write the rest with `cos²x = 1 − sin²x`, set `u = sin x`. (Odd `sin`: the mirror image, `u = cos x`, `du = −sin x dx`.)": "חזקה אי־זוגית של `cos`: משאירים `cos x` אחד, כותבים את השאר בעזרת `cos²x = 1 − sin²x`, ומציבים `u = sin x`. (`sin` אי־זוגית: תמונת הראי, `u = cos x`, `du = −sin x dx`.)",
+  "`sin²x = (1 − cos 2x)/2`, `cos²x = (1 + cos 2x)/2`, `sin x cos x = (sin 2x)/2`. Repeat if powers are still even.": "`sin²x = (1 − cos 2x)/2`, `cos²x = (1 + cos 2x)/2`, `sin x cos x = (sin 2x)/2`. חוזרים אם החזקות עדיין זוגיות.",
+  "Remove a root like √(9 − x²), √(x² + 4) or √(x² − 1) by substituting a trig function.": "להעלים שורש כמו √(9 − x²), √(x² + 4) או √(x² − 1) בהצבה של פונקציה טריגונומטרית.",
+  "`√(a² − x²)` → `x = a sin θ`; `√(a² + x²)` → `x = a tan θ`; `√(x² − a²)` → `x = a sec θ`. If there's `x² + bx + c`, complete the square first.": "`√(a² − x²)` ← `x = a sin θ`; `√(a² + x²)` ← `x = a tan θ`; `√(x² − a²)` ← `x = a sec θ`. אם יש `x² + bx + c`, קודם משלימים לריבוע.",
+  "Replace `x`, `dx` and the root. The root becomes `a cos θ`, `a sec θ` or `a tan θ`.": "מחליפים את `x`, `dx` ואת השורש. השורש הופך ל־`a cos θ`, `a sec θ` או `a tan θ`.",
+  "Usually a trig integral (Integrals › 10).": "בדרך כלל אינטגרל טריגונומטרי (אינטגרלים › 10).",
+  "Draw the right triangle of the substitution, and read the trig functions of `θ` in terms of `x`. For a definite integral you can change the bounds to `θ` instead.": "משרטטים את המשולש ישר־הזווית של ההצבה, וקוראים את הפונקציות הטריגונומטריות של `θ` לפי `x`. באינטגרל מסוים אפשר במקום זה להחליף את הגבולות ל־`θ`.",
+  "`∫_(−r)^(r) √(r² − x²) dx` (half a circle)\n1. `x = r sin θ`, from `θ = −π/2` to `π/2`\n2. `√(r² − x²) = r cos θ`, `dx = r cos θ dθ`\n3. `r² ∫ cos²θ dθ = r² [θ/2 + (sin 2θ)/4]` from `−π/2` to `π/2` `= (πr²)/2`\nHalf the area of a circle ✓": "`∫_(−r)^(r) √(r² − x²) dx` (חצי עיגול)\n1. `x = r sin θ`, מ־`θ = −π/2` עד `π/2`\n2. `√(r² − x²) = r cos θ`, `dx = r cos θ dθ`\n3. `r² ∫ cos²θ dθ = r² [θ/2 + (sin 2θ)/4]` מ־`−π/2` עד `π/2` `= (πr²)/2`\nחצי משטח העיגול ✓",
+  "Integrate a fraction of polynomials by splitting it into simple fractions.": "לבצע אינטגרציה לשבר של פולינומים בפירוק לשברים פשוטים.",
+  "If deg(top) ≥ deg(bottom), do long division: a polynomial plus a proper fraction.": "אם מעלת המונה ≥ מעלת המכנה, מבצעים חילוק ארוך: פולינום ועוד שבר אמיתי.",
+  "Into linear factors and irreducible quadratics (negative discriminant).": "לגורמים ליניאריים ולגורמים ריבועיים אי־פריקים (דיסקרימיננטה שלילית).",
+  "One fraction per factor (with every power for repeated factors), with unknown constants on top.": "שבר אחד לכל גורם (עם כל חזקה עבור גורמים חוזרים), עם קבועים לא ידועים במונה.",
+  "Multiply both sides by the bottom. Plug in the roots, then compare coefficients for whatever is left.": "כופלים את שני האגפים במכנה. מציבים את השורשים, ואז משווים מקדמים עבור מה שנשאר.",
+  "`A/(x − r)` → `A ln|x − r|`; `A/((x − r)ᵏ)` → a power; `(Ax + B)/(x² + px + q)` → an `ln` part plus an `arctan` part.": "`A/(x − r)` ← `A ln|x − r|`; `A/((x − r)ᵏ)` ← חזקה; `(Ax + B)/(x² + px + q)` ← חלק `ln` ועוד חלק `arctan`.",
+  "`∫ (x + 3)/(x(x − 1)²) dx`\n3. `A/(x) + B/(x − 1) + C/((x − 1)²)`\n4. `x + 3 = A(x − 1)² + Bx(x − 1) + Cx`. `x = 0`: `A = 3`. `x = 1`: `C = 4`. Coefficient of `x²`: `0 = A + B`, so `B = −3`.\n5. `3 ln|x| − 3 ln|x − 1| − 4/(x − 1) + C`": "`∫ (x + 3)/(x(x − 1)²) dx`\n3. `A/(x) + B/(x − 1) + C/((x − 1)²)`\n4. `x + 3 = A(x − 1)² + Bx(x − 1) + Cx`. `x = 0`: `A = 3`. `x = 1`: `C = 4`. המקדם של `x²`: `0 = A + B`, ולכן `B = −3`.\n5. `3 ln|x| − 3 ln|x − 1| − 4/(x − 1) + C`",
+  "Estimate a definite integral with the trapezoid rule or Simpson's rule, and choose n for a given accuracy.": "להעריך אינטגרל מסוים בכלל הטרפז או בכלל סימפסון, ולבחור n לדיוק נתון.",
+  "For a given accuracy, find the smallest `n` that makes the error bound small enough (Simpson needs `n` even).": "לדיוק נתון, מוצאים את ה־`n` הקטן ביותר שמקטין את חסם השגיאה מספיק (סימפסון דורש `n` זוגי).",
+  "`Δx = (b − a)/n`, the points `xᵢ = a + iΔx`, and the values `f(xᵢ)`.": "`Δx = (b − a)/n`, הנקודות `xᵢ = a + iΔx`, והערכים `f(xᵢ)`.",
+  "Trapezoid weights `1, 2, 2, …, 2, 1`, times `(Δx)/2`. Simpson weights `1, 4, 2, 4, …, 4, 1`, times `(Δx)/3`.": "משקלות טרפז `1, 2, 2, …, 2, 1`, כפול `(Δx)/2`. משקלות סימפסון `1, 4, 2, 4, …, 4, 1`, כפול `(Δx)/3`.",
+  "`∫_(0)^(1) e^(−x²) dx`, `n = 4`\n2. `Δx = 0.25`; values `1, 0.9394, 0.7788, 0.5698, 0.3679`\n3. `(0.25/3)(1 + 4(0.9394) + 2(0.7788) + 4(0.5698) + 0.3679) ≈ 0.7469`\n(True value `0.74682`.)": "`∫_(0)^(1) e^(−x²) dx`, `n = 4`\n2. `Δx = 0.25`; ערכים `1, 0.9394, 0.7788, 0.5698, 0.3679`\n3. `(0.25/3)(1 + 4(0.9394) + 2(0.7788) + 4(0.5698) + 0.3679) ≈ 0.7469`\n(הערך האמיתי `0.74682`.)",
+  "Trapezoid for `∫_(1)^(2) 1/(x) dx` with error `< 0.001`\n1. `f''(x) = 2/(x³) ≤ 2` on `[1, 2]`, so the error is `≤ 2/(12n²)`. Need `1/(6n²) < 0.001` → `n² > 166.7` → `n = 13`.": "טרפז עבור `∫_(1)^(2) 1/(x) dx` עם שגיאה `< 0.001`\n1. `f''(x) = 2/(x³) ≤ 2` ב־`[1, 2]`, ולכן השגיאה היא `≤ 2/(12n²)`. צריך `1/(6n²) < 0.001` ← `n² > 166.7` ← `n = 13`.",
+  "Three moves that turn a fraction into one whose numerator is the derivative of its denominator, or into simple pieces.": "שלושה מהלכים שהופכים שבר לשבר שהמונה שלו הוא נגזרת המכנה, או לחלקים פשוטים.",
+  "Differentiate the denominator and compare it with the numerator. The same → `∫ f'(x)/(f(x)) dx = ln|f(x)| + C` right away. Almost the same → one of the moves below.": "גוזרים את המכנה ומשווים למונה. אותו דבר ← `∫ f'(x)/(f(x)) dx = ln|f(x)| + C` מיד. כמעט אותו דבר ← אחד המהלכים למטה.",
+  "The numerator is the derivative **up to a constant**. Multiply inside by the missing constant and outside by its inverse. Together that is multiplying by `1`, so nothing changes.": "המונה הוא הנגזרת **עד כדי קבוע**. כופלים בפנים בקבוע החסר ובחוץ בהופכי שלו. ביחד זה כפל ב־`1`, ולכן שום דבר לא משתנה.",
+  "`∫ x/(x² + 1) dx`\nThe denominator's derivative is `2x`; the numerator has only `x`. Multiply inside by `2` and outside by `1/2`:\n`= (1/2)·∫ 2x/(x² + 1) dx`\nNow the numerator is the derivative of the denominator:\n`= (1/2)·ln(x² + 1) + C`\nNo `|·|` needed, because `x² + 1 > 0`.": "`∫ x/(x² + 1) dx`\nנגזרת המכנה היא `2x`; במונה יש רק `x`. כופלים בפנים ב־`2` ובחוץ ב־`1/2`:\n`= (1/2)·∫ 2x/(x² + 1) dx`\nעכשיו המונה הוא הנגזרת של המכנה:\n`= (1/2)·ln(x² + 1) + C`\nלא צריך `|·|`, כי `x² + 1 > 0`.",
+  "`∫ tan x dx = ∫ sin x/cos x dx`\nThe derivative of `cos x` is `−sin x`. Multiply inside and outside by `−1`:\n`= −∫ (−sin x)/cos x dx = −ln|cos x| + C`": "`∫ tan x dx = ∫ sin x/cos x dx`\nהנגזרת של `cos x` היא `−sin x`. כופלים בפנים ובחוץ ב־`−1`:\n`= −∫ (−sin x)/cos x dx = −ln|cos x| + C`",
+  "The numerator looks like the denominator but isn't. Add and subtract the same number so the denominator appears in the numerator, then split the fraction.": "המונה נראה כמו המכנה אבל הוא לא. מוסיפים ומחסירים אותו מספר כך שהמכנה יופיע במונה, ואז מפצלים את השבר.",
+  "`∫ x/(x + 1) dx`\nWrite `x` as `x + 1 − 1`: we added `1` and took it away again.\n`= ∫ (x + 1 − 1)/(x + 1) dx = ∫ (1 − 1/(x + 1)) dx`\nEach piece is a basic integral:\n`= x − ln|x + 1| + C`": "`∫ x/(x + 1) dx`\nכותבים את `x` כ־`x + 1 − 1`: הוספנו `1` והורדנו אותו שוב.\n`= ∫ (x + 1 − 1)/(x + 1) dx = ∫ (1 − 1/(x + 1)) dx`\nכל חלק הוא אינטגרל בסיסי:\n`= x − ln|x + 1| + C`",
+  "Split the numerator over the denominator, term by term.\nIf the numerator's degree is at least the denominator's, divide the polynomials first (long division): what's left over has a smaller numerator.": "מפצלים את המונה על פני המכנה, איבר־איבר.\nאם מעלת המונה לפחות כמו מעלת המכנה, קודם מחלקים פולינומים (חילוק ארוך): השארית היא בעלת מונה קטן יותר.",
+  "`∫ (x² + 3)/(x) dx = ∫ (x + 3/x) dx`\nEach term of the numerator is divided by `x` separately.\n`= x²/2 + 3·ln|x| + C`": "`∫ (x² + 3)/(x) dx = ∫ (x + 3/x) dx`\nכל איבר במונה מחולק ב־`x` בנפרד.\n`= x²/2 + 3·ln|x| + C`",
+  "`∫ (x² + 1)/(x + 1) dx`\nThe numerator has degree `2`, the denominator `1`, so divide: `x² + 1 = (x + 1)(x − 1) + 2`.\n`= ∫ (x − 1 + 2/(x + 1)) dx`\n`= x²/2 − x + 2·ln|x + 1| + C`": "`∫ (x² + 1)/(x + 1) dx`\nמעלת המונה `2`, של המכנה `1`, ולכן מחלקים: `x² + 1 = (x + 1)(x − 1) + 2`.\n`= ∫ (x − 1 + 2/(x + 1)) dx`\n`= x²/2 − x + 2·ln|x + 1| + C`",
+  "Replace an inside function by a new variable t, so the integral becomes a basic one.": "להחליף פונקציה פנימית במשתנה חדש t, כך שהאינטגרל הופך לבסיסי.",
+  "`t` = the inside of the composite function, the part whose derivative also appears in the integral.": "`t` = הביטוי הפנימי של הפונקציה המורכבת, החלק שגם הנגזרת שלו מופיעה באינטגרל.",
+  "Differentiate: `dt = t'(x) dx`. Solve for `dx`, or for the piece of the integrand that matches `t'(x) dx`.": "גוזרים: `dt = t'(x) dx`. מחלצים את `dx`, או את החלק בפונקציה שמתאים ל־`t'(x) dx`.",
+  "Write the whole integral in `t`. **No `x` may remain.** If an `x` is left over, express it through `t` (from `t = …`), or choose a different `t`.": "כותבים את כל האינטגרל לפי `t`. **לא נשאר אף `x`.** אם נשאר `x`, מבטאים אותו בעזרת `t` (מתוך `t = …`), או בוחרים `t` אחר.",
+  "It should now be a basic integral.": "עכשיו זה אמור להיות אינטגרל בסיסי.",
+  "Indefinite integral: put `t = …` back, so the answer is in `x`.\nDefinite integral, choose **one**:\n- change the bounds to `t`-values (`t(a)` and `t(b)`) and finish in `t`, or\n- go back to `x` first and plug in the original bounds.\nNever mix the two: `x`-bounds in a `t`-answer give a wrong number.": "אינטגרל לא מסוים: מחזירים את `t = …`, כך שהתשובה לפי `x`.\nאינטגרל מסוים, בוחרים **אחד**:\n- מחליפים את הגבולות לערכי `t` (`t(a)` ו־`t(b)`) ומסיימים לפי `t`, או\n- קודם חוזרים ל־`x` ומציבים את הגבולות המקוריים.\nלעולם לא מערבבים: גבולות של `x` בתשובה לפי `t` נותנים מספר שגוי.",
+  "`∫ 2x·(x² + 1)⁵ dx`\n1. The inside is `x² + 1`, and its derivative `2x` is there: `t = x² + 1`.\n2. `dt = 2x dx`.\n3. `2x dx` becomes `dt`, `(x² + 1)⁵` becomes `t⁵`: `∫ t⁵ dt`.\n4. `= t⁶/6 + C`\n5. `= ((x² + 1)⁶)/6 + C`": "`∫ 2x·(x² + 1)⁵ dx`\n1. הפנימית היא `x² + 1`, והנגזרת שלה `2x` נמצאת שם: `t = x² + 1`.\n2. `dt = 2x dx`.\n3. `2x dx` הופך ל־`dt`, `(x² + 1)⁵` הופך ל־`t⁵`: `∫ t⁵ dt`.\n4. `= t⁶/6 + C`\n5. `= ((x² + 1)⁶)/6 + C`",
+  "`∫ x·sin(x²) dx`\n1. `t = x²`.\n2. `dt = 2x dx`, so `x dx = dt/2`.\n3. `∫ sin t · (1/2) dt = (1/2)·∫ sin t dt`\n4. `= −(1/2)·cos t + C`\n5. `= −(1/2)·cos(x²) + C`": "`∫ x·sin(x²) dx`\n1. `t = x²`.\n2. `dt = 2x dx`, ולכן `x dx = dt/2`.\n3. `∫ sin t · (1/2) dt = (1/2)·∫ sin t dt`\n4. `= −(1/2)·cos t + C`\n5. `= −(1/2)·cos(x²) + C`",
+  "`∫ ln x/(x) dx`\n1. `t = ln x`.\n2. `dt = (1/x) dx`: exactly the `dx/x` in the integral.\n3. `∫ t dt`\n4. `= t²/2 + C`\n5. `= ((ln x)²)/2 + C`": "`∫ ln x/(x) dx`\n1. `t = ln x`.\n2. `dt = (1/x) dx`: בדיוק ה־`dx/x` שבאינטגרל.\n3. `∫ t dt`\n4. `= t²/2 + C`\n5. `= ((ln x)²)/2 + C`",
+  "`∫ x·√(x + 1) dx`\n1. `t = x + 1`, `dt = dx`.\n3. The `√(x + 1)` becomes `√t`, but an `x` is left. From `t = x + 1`: `x = t − 1`.\n`∫ (t − 1)·√t dt = ∫ (t^(3/2) − t^(1/2)) dt`\n4. `= (2/5)·t^(5/2) − (2/3)·t^(3/2) + C`\n5. `= (2/5)·(x + 1)^(5/2) − (2/3)·(x + 1)^(3/2) + C`": "`∫ x·√(x + 1) dx`\n1. `t = x + 1`, `dt = dx`.\n3. ה־`√(x + 1)` הופך ל־`√t`, אבל נשאר `x`. מתוך `t = x + 1`: `x = t − 1`.\n`∫ (t − 1)·√t dt = ∫ (t^(3/2) − t^(1/2)) dt`\n4. `= (2/5)·t^(5/2) − (2/3)·t^(3/2) + C`\n5. `= (2/5)·(x + 1)^(5/2) − (2/3)·(x + 1)^(3/2) + C`",
+  "`∫_(0)^(1) 2x·e^(x²) dx`\n1–2. `t = x²`, `dt = 2x dx`.\nNew bounds: `x = 0` → `t = 0`, and `x = 1` → `t = 1`.\n3. `∫_(0)^(1) eᵗ dt`\n4. `= [eᵗ]_(0)^(1) = e − 1`\nWe stayed in `t` to the end, so no going back.": "`∫_(0)^(1) 2x·e^(x²) dx`\n1–2. `t = x²`, `dt = 2x dx`.\nגבולות חדשים: `x = 0` ← `t = 0`, ו־`x = 1` ← `t = 1`.\n3. `∫_(0)^(1) eᵗ dt`\n4. `= [eᵗ]_(0)^(1) = e − 1`\nנשארנו ב־`t` עד הסוף, ולכן אין חזרה.",
+  "`∫_(0)^(π/2) cos x·sin³x dx`\n1–2. `t = sin x`, `dt = cos x dx`.\n3–4. `∫ t³ dt = t⁴/4`\n5. Back to `x`: `(sin⁴x)/4`. Now the original bounds:\n`[(sin⁴x)/4]_(0)^(π/2) = 1/4 − 0 = 1/4`": "`∫_(0)^(π/2) cos x·sin³x dx`\n1–2. `t = sin x`, `dt = cos x dx`.\n3–4. `∫ t³ dt = t⁴/4`\n5. חזרה ל־`x`: `(sin⁴x)/4`. עכשיו הגבולות המקוריים:\n`[(sin⁴x)/4]_(0)^(π/2) = 1/4 − 0 = 1/4`",
+  "For a product: differentiate one factor, integrate the other, and get an easier integral.": "למכפלה: גוזרים גורם אחד, מבצעים אינטגרציה לשני, ומקבלים אינטגרל קל יותר.",
+  "`u` = the factor that gets **simpler** when you differentiate it (a polynomial, `ln x`).\n`v'` = the factor you can **integrate** (`eˣ`, `sin x`, `cos x`, or `1`).\nTip: `ln x` is almost always `u`. A polynomial is `u` unless the other factor is `ln x`.": "`u` = הגורם שנעשה **פשוט יותר** בגזירה (פולינום, `ln x`).\n`v'` = הגורם שאפשר **לבצע לו אינטגרציה** (`eˣ`, `sin x`, `cos x`, או `1`).\nטיפ: `ln x` הוא כמעט תמיד `u`. פולינום הוא `u` אלא אם הגורם השני הוא `ln x`.",
+  "Differentiate `u`, integrate `v'`. No `+ C` needed for `v`.": "גוזרים את `u`, מבצעים אינטגרציה ל־`v'`. לא צריך `+ C` עבור `v`.",
+  "`∫ u·v' dx = u·v − ∫ u'·v dx`\nDefinite: `[u·v]_(a)^(b) − ∫_(a)^(b) u'·v dx`": "`∫ u·v' dx = u·v − ∫ u'·v dx`\nמסוים: `[u·v]_(a)^(b) − ∫_(a)^(b) u'·v dx`",
+  "It should be easier than the first. If it is harder, swap your choice of `u` and `v'`. If it still has a product, apply parts again.": "הוא אמור להיות קל יותר מהראשון. אם הוא קשה יותר, מחליפים את הבחירה של `u` ו־`v'`. אם עדיין יש בו מכפלה, מפעילים שוב אינטגרציה בחלקים.",
+  "`∫ x·eˣ dx`\n1. `u = x` (becomes `1`), `v' = eˣ`.\n2. `u' = 1`, `v = eˣ`.\n3. `= x·eˣ − ∫ 1·eˣ dx`\n4. `= x·eˣ − eˣ + C`\nCheck: `(x·eˣ − eˣ)' = eˣ + x·eˣ − eˣ = x·eˣ`": "`∫ x·eˣ dx`\n1. `u = x` (הופך ל־`1`), `v' = eˣ`.\n2. `u' = 1`, `v = eˣ`.\n3. `= x·eˣ − ∫ 1·eˣ dx`\n4. `= x·eˣ − eˣ + C`\nבדיקה: `(x·eˣ − eˣ)' = eˣ + x·eˣ − eˣ = x·eˣ`",
+  "`∫ ln x dx`: there is no product, so make one: `ln x = ln x · 1`.\n1. `u = ln x`, `v' = 1`.\n2. `u' = 1/x`, `v = x`.\n3. `= x·ln x − ∫ x·(1/x) dx = x·ln x − ∫ 1 dx`\n4. `= x·ln x − x + C`": "`∫ ln x dx`: אין מכפלה, ולכן יוצרים אחת: `ln x = ln x · 1`.\n1. `u = ln x`, `v' = 1`.\n2. `u' = 1/x`, `v = x`.\n3. `= x·ln x − ∫ x·(1/x) dx = x·ln x − ∫ 1 dx`\n4. `= x·ln x − x + C`",
+  "`∫ x²·eˣ dx`\n1–3. `u = x²`, `v' = eˣ`: `= x²·eˣ − ∫ 2x·eˣ dx`\n4. The new integral still has a product, with a smaller power. Parts again, `u = 2x`, `v' = eˣ`:\n`∫ 2x·eˣ dx = 2x·eˣ − ∫ 2·eˣ dx = 2x·eˣ − 2eˣ`\nTogether: `= x²·eˣ − 2x·eˣ + 2eˣ + C = eˣ·(x² − 2x + 2) + C`": "`∫ x²·eˣ dx`\n1–3. `u = x²`, `v' = eˣ`: `= x²·eˣ − ∫ 2x·eˣ dx`\n4. באינטגרל החדש עדיין יש מכפלה, עם חזקה קטנה יותר. שוב בחלקים, `u = 2x`, `v' = eˣ`:\n`∫ 2x·eˣ dx = 2x·eˣ − ∫ 2·eˣ dx = 2x·eˣ − 2eˣ`\nביחד: `= x²·eˣ − 2x·eˣ + 2eˣ + C = eˣ·(x² − 2x + 2) + C`",
+  "`∫_(0)^(π) x·sin x dx`\n1–2. `u = x`, `v' = sin x`: `u' = 1`, `v = −cos x`.\n3. `= [−x·cos x]_(0)^(π) + ∫_(0)^(π) cos x dx`\n`[−x·cos x]_(0)^(π) = −π·cos π − 0 = π`\n4. `∫_(0)^(π) cos x dx = [sin x]_(0)^(π) = 0`\nSo the integral is `π`.": "`∫_(0)^(π) x·sin x dx`\n1–2. `u = x`, `v' = sin x`: `u' = 1`, `v = −cos x`.\n3. `= [−x·cos x]_(0)^(π) + ∫_(0)^(π) cos x dx`\n`[−x·cos x]_(0)^(π) = −π·cos π − 0 = π`\n4. `∫_(0)^(π) cos x dx = [sin x]_(0)^(π) = 0`\nלכן האינטגרל הוא `π`.",
+  "`I = ∫ eˣ·sin x dx`\nParts with `u = sin x`, `v' = eˣ`: `I = eˣ·sin x − ∫ eˣ·cos x dx`\nParts again with `u = cos x`, `v' = eˣ`: `∫ eˣ·cos x dx = eˣ·cos x + I`\nSo `I = eˣ·sin x − eˣ·cos x − I`. The same `I` is on both sides: solve for it like an equation.\n`2I = eˣ·(sin x − cos x)`, so `I = (eˣ·(sin x − cos x))/2 + C`": "`I = ∫ eˣ·sin x dx`\nבחלקים עם `u = sin x`, `v' = eˣ`: `I = eˣ·sin x − ∫ eˣ·cos x dx`\nשוב בחלקים עם `u = cos x`, `v' = eˣ`: `∫ eˣ·cos x dx = eˣ·cos x + I`\nלכן `I = eˣ·sin x − eˣ·cos x − I`. אותו `I` נמצא בשני האגפים: פותרים אותו כמו משוואה.\n`2I = eˣ·(sin x − cos x)`, ולכן `I = (eˣ·(sin x − cos x))/2 + C`",
+  "How to recognise which technique an integral needs, and when it needs both.": "איך מזהים איזו שיטה אינטגרל צריך, ומתי הוא צריך את שתיהן.",
+  "Look for an inside function whose derivative also multiplies, maybe up to a constant: `cos x·e^(sin x)`, `x·sin(x²)`, `ln x/x`. → **Substitution**.": "מחפשים פונקציה פנימית שגם הנגזרת שלה מוכפלת, אולי עד כדי קבוע: `cos x·e^(sin x)`, `x·sin(x²)`, `ln x/x`. ← **הצבה**.",
+  "A polynomial times `eˣ`, `sin`, `cos`, or anything times `ln x`, and no inside-plus-derivative pair. Differentiating one factor makes it simpler. → **Parts**.": "פולינום כפול `eˣ`, `sin`, `cos`, או כל דבר כפול `ln x`, ואין זוג של פנימית ונגזרתה. גזירה של גורם אחד מפשטת אותו. ← **בחלקים**.",
+  "An inside function, but its derivative is not all there, and what's left is a product. → **Substitution first**, then parts on the result.": "יש פונקציה פנימית, אבל הנגזרת שלה לא כולה שם, ומה שנשאר הוא מכפלה. ← **קודם הצבה**, ואז בחלקים על התוצאה.",
+  "Rewrite with algebra first: expand, split a fraction, or use the f′/f moves.": "קודם כותבים מחדש באלגברה: פותחים סוגריים, מפצלים שבר, או משתמשים במהלכי f′/f.",
+  "`∫ cos x·e^(sin x) dx`\nThe inside is `sin x`, and its derivative `cos x` is there. `t = sin x`, `dt = cos x dx`:\n`∫ eᵗ dt = eᵗ + C = e^(sin x) + C`": "`∫ cos x·e^(sin x) dx`\nהפנימית היא `sin x`, והנגזרת שלה `cos x` נמצאת שם. `t = sin x`, `dt = cos x dx`:\n`∫ eᵗ dt = eᵗ + C = e^(sin x) + C`",
+  "`∫ x·e^(2x) dx`\nNo inside function with its derivative. A product: `x` becomes `1` when differentiated.\n`u = x`, `v' = e^(2x)`: `u' = 1`, `v = (1/2)·e^(2x)`\n`= (x/2)·e^(2x) − (1/2)·∫ e^(2x) dx = (x/2)·e^(2x) − (1/4)·e^(2x) + C`": "`∫ x·e^(2x) dx`\nאין פונקציה פנימית עם הנגזרת שלה. מכפלה: `x` הופך ל־`1` בגזירה.\n`u = x`, `v' = e^(2x)`: `u' = 1`, `v = (1/2)·e^(2x)`\n`= (x/2)·e^(2x) − (1/2)·∫ e^(2x) dx = (x/2)·e^(2x) − (1/4)·e^(2x) + C`",
+  "`∫ x·sin(x²) dx`: the inside `x²` has derivative `2x`, and `x` is there. **Substitution** (see its method).\n`∫ x·sin x dx`: no inside function. **Parts**: `u = x`, `v' = sin x`: `= −x·cos x + sin x + C`": "`∫ x·sin(x²) dx`: לפנימית `x²` יש נגזרת `2x`, ו־`x` נמצא שם. **הצבה** (ראו את השיטה שלה).\n`∫ x·sin x dx`: אין פונקציה פנימית. **בחלקים**: `u = x`, `v' = sin x`: `= −x·cos x + sin x + C`",
+  "`∫ x³·e^(x²) dx`\nThe inside is `x²`; its derivative `2x` is there, with an extra `x²` left over.\nSubstitution `t = x²`, `dt = 2x dx`: `x³ dx = x²·x dx = t·(dt/2)`\n`= (1/2)·∫ t·eᵗ dt`\nNow a product: parts with `u = t`, `v' = eᵗ`:\n`∫ t·eᵗ dt = t·eᵗ − eᵗ`\n`= (1/2)·(t·eᵗ − eᵗ) + C = (1/2)·e^(x²)·(x² − 1) + C`": "`∫ x³·e^(x²) dx`\nהפנימית היא `x²`; הנגזרת שלה `2x` נמצאת שם, ונשאר `x²` נוסף.\nהצבה `t = x²`, `dt = 2x dx`: `x³ dx = x²·x dx = t·(dt/2)`\n`= (1/2)·∫ t·eᵗ dt`\nעכשיו מכפלה: בחלקים עם `u = t`, `v' = eᵗ`:\n`∫ t·eᵗ dt = t·eᵗ − eᵗ`\n`= (1/2)·(t·eᵗ − eᵗ) + C = (1/2)·e^(x²)·(x² − 1) + C`",
+  "`∫ sin(√x) dx`\nThe inside `√x` has no derivative next to it, so substitute and see: `t = √x`, so `x = t²` and `dx = 2t dt`.\n`= ∫ 2t·sin t dt`\nA product: parts with `u = 2t`, `v' = sin t`: `u' = 2`, `v = −cos t`\n`= −2t·cos t + ∫ 2·cos t dt = −2t·cos t + 2·sin t + C`\n`= −2√x·cos(√x) + 2·sin(√x) + C`": "`∫ sin(√x) dx`\nלפנימית `√x` אין נגזרת לידה, ולכן מציבים ורואים: `t = √x`, ולכן `x = t²` ו־`dx = 2t dt`.\n`= ∫ 2t·sin t dt`\nמכפלה: בחלקים עם `u = 2t`, `v' = sin t`: `u' = 2`, `v = −cos t`\n`= −2t·cos t + ∫ 2·cos t dt = −2t·cos t + 2·sin t + C`\n`= −2√x·cos(√x) + 2·sin(√x) + C`",
+  "Find an antiderivative, then apply Newton–Leibniz.": "למצוא פונקציה קדומה, ואז להפעיל את ניוטון–לייבניץ.",
+  "Integrate as if there were no bounds. No `+ C` needed: it cancels.": "מבצעים אינטגרציה כאילו אין גבולות. לא צריך `+ C`: הוא מצטמצם.",
+  "`F(b) − F(a)`. Put each value in brackets: most mistakes are a lost minus sign.": "`F(b) − F(a)`. שמים כל ערך בסוגריים: רוב הטעויות הן סימן מינוס שאבד.",
+  "`∫_(1)^(2) (3x² − 2x) dx`\n1. Antiderivative: `x³ − x²`\n2. `[x³ − x²]_(1)^(2)`\n3. `= (8 − 4) − (1 − 1) = 4`": "`∫_(1)^(2) (3x² − 2x) dx`\n1. פונקציה קדומה: `x³ − x²`\n2. `[x³ − x²]_(1)^(2)`\n3. `= (8 − 4) − (1 − 1) = 4`",
+  "`∫_(0)^(π) sin x dx`\n1. Antiderivative: `−cos x`\n2. `[−cos x]_(0)^(π)`\n3. `= (−cos π) − (−cos 0) = 1 + 1 = 2`": "`∫_(0)^(π) sin x dx`\n1. פונקציה קדומה: `−cos x`\n2. `[−cos x]_(0)^(π)`\n3. `= (−cos π) − (−cos 0) = 1 + 1 = 2`",
+  "The value counts parts below the axis as negative; the area counts everything as positive.": "הערך סופר חלקים מתחת לציר בשלילה; השטח סופר הכול בחיוב.",
+  "Integrate over the whole interval in one go. Parts below the axis count negative on their own: don't flip anything.": "מבצעים אינטגרציה על כל הקטע בבת אחת. חלקים מתחת לציר נספרים בשלילה מעצמם: לא הופכים שום דבר.",
+  "Solve `f(x) = 0` inside `[a, b]`. These are where the graph crosses the axis.": "פותרים `f(x) = 0` בתוך `[a, b]`. אלה המקומות שבהם הגרף חוצה את הציר.",
+  "Cut the integral at each root, so each piece is all above or all below the axis.": "חותכים את האינטגרל בכל שורש, כך שכל חלק כולו מעל הציר או כולו מתחתיו.",
+  "Take the absolute value of each piece's result, then add them all.": "לוקחים ערך מוחלט של התוצאה של כל חלק, ואז מחברים את כולם.",
+  "`f(x) = x² − 1` on `[0, 2]`.\n**Value:** `∫_(0)^(2) (x² − 1) dx = [x³/3 − x]_(0)^(2) = 8/3 − 2 = 2/3`\n**Area:** root at `x = 1`.\n`∫_(0)^(1) (x² − 1) dx = 1/3 − 1 = −2/3`, below the axis, so it counts `2/3`.\n`∫_(1)^(2) (x² − 1) dx = (8/3 − 2) − (1/3 − 1) = 4/3`\nArea `= 2/3 + 4/3 = 2`. The value `2/3` is smaller, because the piece below the axis was subtracted.": "`f(x) = x² − 1` ב־`[0, 2]`.\n**ערך:** `∫_(0)^(2) (x² − 1) dx = [x³/3 − x]_(0)^(2) = 8/3 − 2 = 2/3`\n**שטח:** שורש ב־`x = 1`.\n`∫_(0)^(1) (x² − 1) dx = 1/3 − 1 = −2/3`, מתחת לציר, ולכן הוא נספר `2/3`.\n`∫_(1)^(2) (x² − 1) dx = (8/3 − 2) − (1/3 − 1) = 4/3`\nשטח `= 2/3 + 4/3 = 2`. הערך `2/3` קטן יותר, כי החלק שמתחת לציר הופחת.",
+  "`sin x` on `[0, 2π]`, root at `π`.\nValue: `[−cos x]_(0)^(2π) = −1 + 1 = 0`\nArea: `∫_(0)^(π) sin x dx = 2` and `∫_(π)^(2π) sin x dx = −2` → `2 + 2 = 4`": "`sin x` ב־`[0, 2π]`, שורש ב־`π`.\nערך: `[−cos x]_(0)^(2π) = −1 + 1 = 0`\nשטח: `∫_(0)^(π) sin x dx = 2` ו־`∫_(π)^(2π) sin x dx = −2` ← `2 + 2 = 4`",
+  "Find where the curves meet, see which one is on top, and integrate top minus bottom.": "למצוא איפה העקומות נפגשות, לראות איזו מהן למעלה, ולבצע אינטגרציה לעליונה פחות התחתונה.",
+  "Solve `f(x) = g(x)`. The solutions are the crossing points (and, if no interval is given, the ends of the region).": "פותרים `f(x) = g(x)`. הפתרונות הם נקודות החיתוך (ואם לא נתון קטע, גם קצות התחום).",
+  "Between two neighbouring crossing points, plug one test point into both. The bigger value is on top. A quick sketch helps.": "בין שתי נקודות חיתוך שכנות, מציבים נקודת בדיקה אחת בשתיהן. הערך הגדול יותר למעלה. שרטוט מהיר עוזר.",
+  "On each piece: `∫ (top − bottom) dx`. Every piece comes out positive.": "בכל חלק: `∫ (top − bottom) dx`. כל חלק יוצא חיובי.",
+  "The area is the sum of the pieces.": "השטח הוא סכום החלקים.",
+  "`y = x` and `y = x³` on `[−1, 1]`.\n1. `x³ = x` → `x(x − 1)(x + 1) = 0` → `x = −1, 0, 1`.\n2. At `x = 1/2`: `1/2 > 1/8`, so `x` is on top on `(0, 1)`. At `x = −1/2`: `−1/8 > −1/2`, so `x³` is on top on `(−1, 0)`.\n3. `∫_(0)^(1) (x − x³) dx = 1/2 − 1/4 = 1/4`\n`∫_(−1)^(0) (x³ − x) dx = [x⁴/4 − x²/2]_(−1)^(0) = 0 − (1/4 − 1/2) = 1/4`\n4. Area `= 1/4 + 1/4 = 1/2`": "`y = x` ו־`y = x³` ב־`[−1, 1]`.\n1. `x³ = x` ← `x(x − 1)(x + 1) = 0` ← `x = −1, 0, 1`.\n2. ב־`x = 1/2`: `1/2 > 1/8`, ולכן `x` למעלה ב־`(0, 1)`. ב־`x = −1/2`: `−1/8 > −1/2`, ולכן `x³` למעלה ב־`(−1, 0)`.\n3. `∫_(0)^(1) (x − x³) dx = 1/2 − 1/4 = 1/4`\n`∫_(−1)^(0) (x³ − x) dx = [x⁴/4 − x²/2]_(−1)^(0) = 0 − (1/4 − 1/2) = 1/4`\n4. שטח `= 1/4 + 1/4 = 1/2`",
+  "The region between `y = x²` and `y = 2x`.\n1. `x² = 2x` → `x = 0`, `x = 2`.\n2. At `x = 1`: `2 > 1`, so `2x` is on top.\n3. `∫_(0)^(2) (2x − x²) dx = [x² − x³/3]_(0)^(2) = 4 − 8/3 = 4/3`": "התחום בין `y = x²` ל־`y = 2x`.\n1. `x² = 2x` ← `x = 0`, `x = 2`.\n2. ב־`x = 1`: `2 > 1`, ולכן `2x` למעלה.\n3. `∫_(0)^(2) (2x − x²) dx = [x² − x³/3]_(0)^(2) = 4 − 8/3 = 4/3`",
+  "Turn |f(x)| into a piecewise function and integrate each piece.": "להפוך את |f(x)| לפונקציה בקטעים ולבצע אינטגרציה לכל חלק.",
+  "Remove the `|·|` with the method **Absolute value → piecewise** (Functions).": "מסירים את `|·|` בשיטה **ערך מוחלט ← פונקציה בקטעים** (פונקציות).",
+  "Cut the integral at every breakpoint that lies inside `[a, b]`.": "חותכים את האינטגרל בכל נקודת שבירה שנמצאת בתוך `[a, b]`.",
+  "On each piece use that piece's rule, then add.": "בכל חלק משתמשים בכלל של החלק, ואז מחברים.",
+  "`∫_(0)^(3) |x − 1| dx`\n1.\n|x − 1| = { 1 − x ; x < 1\n{ x − 1 ; x ≥ 1\n2. Breakpoint `1` is inside `[0, 3]`.\n3. `∫_(0)^(1) (1 − x) dx = [x − x²/2]_(0)^(1) = 1/2`\n`∫_(1)^(3) (x − 1) dx = [x²/2 − x]_(1)^(3) = 3/2 − (−1/2) = 2`\nTotal: `1/2 + 2 = 5/2`": "`∫_(0)^(3) |x − 1| dx`\n1.\n|x − 1| = { 1 − x ; x < 1\n{ x − 1 ; x ≥ 1\n2. נקודת השבירה `1` נמצאת בתוך `[0, 3]`.\n3. `∫_(0)^(1) (1 − x) dx = [x − x²/2]_(0)^(1) = 1/2`\n`∫_(1)^(3) (x − 1) dx = [x²/2 − x]_(1)^(3) = 3/2 − (−1/2) = 2`\nסה״כ: `1/2 + 2 = 5/2`",
+  "`∫_(−2)^(2) |x² − 1| dx`\nThe function is even, so `= 2∫_(0)^(2) |x² − 1| dx` (symmetry).\n|x² − 1| = { 1 − x² ; 0 ≤ x < 1\n{ x² − 1 ; x ≥ 1\n`∫_(0)^(1) (1 − x²) dx = 2/3` and `∫_(1)^(2) (x² − 1) dx = (8/3 − 2) − (1/3 − 1) = 4/3`\nTotal: `2·(2/3 + 4/3) = 4`": "`∫_(−2)^(2) |x² − 1| dx`\nהפונקציה זוגית, ולכן `= 2∫_(0)^(2) |x² − 1| dx` (סימטריה).\n|x² − 1| = { 1 − x² ; 0 ≤ x < 1\n{ x² − 1 ; x ≥ 1\n`∫_(0)^(1) (1 − x²) dx = 2/3` ו־`∫_(1)^(2) (x² − 1) dx = (8/3 − 2) − (1/3 − 1) = 4/3`\nסה״כ: `2·(2/3 + 4/3) = 4`",
+  "On an interval [−a, a], an even function doubles its half and an odd function cancels.": "בקטע [−a, a], פונקציה זוגית מכפילה את החצי שלה ופונקציה אי־זוגית מתבטלת.",
+  "The bounds must be `−a` and `a`. If not, no shortcut.": "הגבולות חייבים להיות `−a` ו־`a`. אם לא, אין קיצור דרך.",
+  "Calculate `f(−x)`.\n`f(−x) = f(x)` → even. `f(−x) = −f(x)` → odd. Neither → split `f` into an even part and an odd part, or integrate normally.\nHandy: even × even = even, odd × odd = even, even × odd = odd.": "מחשבים `f(−x)`.\n`f(−x) = f(x)` ← זוגית. `f(−x) = −f(x)` ← אי־זוגית. אף אחת ← מפצלים את `f` לחלק זוגי ולחלק אי־זוגי, או מבצעים אינטגרציה רגילה.\nשימושי: זוגית × זוגית = זוגית, אי־זוגית × אי־זוגית = זוגית, זוגית × אי־זוגית = אי־זוגית.",
+  "Even: `∫_(−a)^(a) f(x) dx = 2∫_(0)^(a) f(x) dx`\nOdd: the value is `0`, but the area is `2∫_(0)^(a) |f(x)| dx`": "זוגית: `∫_(−a)^(a) f(x) dx = 2∫_(0)^(a) f(x) dx`\nאי־זוגית: הערך הוא `0`, אבל השטח הוא `2∫_(0)^(a) |f(x)| dx`",
+  "`∫_(−2)^(2) (x⁴ + x²) dx`\n`(−x)⁴ + (−x)² = x⁴ + x²`: even.\n`= 2∫_(0)^(2) (x⁴ + x²) dx = 2·(32/5 + 8/3) = 2·136/15 = 272/15`": "`∫_(−2)^(2) (x⁴ + x²) dx`\n`(−x)⁴ + (−x)² = x⁴ + x²`: זוגית.\n`= 2∫_(0)^(2) (x⁴ + x²) dx = 2·(32/5 + 8/3) = 2·136/15 = 272/15`",
+  "`∫_(−π)^(π) x²·sin x dx`\n`x²` is even, `sin x` is odd, so the product is odd. The value is `0`, with no calculation.": "`∫_(−π)^(π) x²·sin x dx`\n`x²` זוגית, `sin x` אי־זוגית, ולכן המכפלה אי־זוגית. הערך הוא `0`, בלי חישוב.",
+  "The area between `y = x³` and the x-axis on `[−2, 2]`.\nThe value would be `0`, but the area counts both halves:\n`= 2∫_(0)^(2) x³ dx = 2·[x⁴/4]_(0)^(2) = 2·4 = 8`": "השטח בין `y = x³` לציר x ב־`[−2, 2]`.\nהערך היה `0`, אבל השטח סופר את שני החצאים:\n`= 2∫_(0)^(2) x³ dx = 2·[x⁴/4]_(0)^(2) = 2·4 = 8`",
+  "Integrate each piece with its own constant, then use the given point and continuity.": "לבצע אינטגרציה לכל חלק עם קבוע משלו, ואז להשתמש בנקודה הנתונה וברציפות.",
+  "Each piece gets its own constant: `C₁`, `C₂`, …": "כל חלק מקבל קבוע משלו: `C₁`, `C₂`, …",
+  "Plug the point into the piece it belongs to. That gives that piece's constant.": "מציבים את הנקודה בחלק שאליו היא שייכת. זה נותן את הקבוע של החלק הזה.",
+  "An antiderivative is differentiable, so it must be continuous: at every breakpoint, the two pieces give the same value. Each breakpoint gives one equation for the next constant.": "פונקציה קדומה היא גזירה, ולכן היא חייבת להיות רציפה: בכל נקודת שבירה, שני החלקים נותנים אותו ערך. כל נקודת שבירה נותנת משוואה אחת לקבוע הבא.",
+  "Write `F` with its constants, and differentiate each piece to check you get `f` back.": "כותבים את `F` עם הקבועים שלה, וגוזרים כל חלק כדי לבדוק שחוזרים ל־`f`.",
+  "Find `F` with `F' = f` and `F(2) = 5`:\nf(x) = { 2x ; x < 1\n{ 2 ; x ≥ 1\n1.\nF(x) = { x² + C₁ ; x < 1\n{ 2x + C₂ ; x ≥ 1\n2. `x = 2` is in the second piece: `4 + C₂ = 5`, so `C₂ = 1`.\n3. At `x = 1` the pieces must agree: `1 + C₁ = 2·1 + 1 = 3`, so `C₁ = 2`.\n4.\nF(x) = { x² + 2 ; x < 1\n{ 2x + 1 ; x ≥ 1": "מצאו `F` עם `F' = f` ו־`F(2) = 5`:\nf(x) = { 2x ; x < 1\n{ 2 ; x ≥ 1\n1.\nF(x) = { x² + C₁ ; x < 1\n{ 2x + C₂ ; x ≥ 1\n2. `x = 2` בחלק השני: `4 + C₂ = 5`, ולכן `C₂ = 1`.\n3. ב־`x = 1` החלקים חייבים להסכים: `1 + C₁ = 2·1 + 1 = 3`, ולכן `C₁ = 2`.\n4.\nF(x) = { x² + 2 ; x < 1\n{ 2x + 1 ; x ≥ 1",
+  "Find `F` with `F'(x) = |x|` and `F(1) = 0`.\n1.\nF(x) = { x²/2 + C₁ ; x ≥ 0\n{ −x²/2 + C₂ ; x < 0\n2. `F(1) = 1/2 + C₁ = 0`, so `C₁ = −1/2`.\n3. At `x = 0`: `C₁ = C₂`, so `C₂ = −1/2`.\n4. `F(x) = (x·|x|)/2 − 1/2`": "מצאו `F` עם `F'(x) = |x|` ו־`F(1) = 0`.\n1.\nF(x) = { x²/2 + C₁ ; x ≥ 0\n{ −x²/2 + C₂ ; x < 0\n2. `F(1) = 1/2 + C₁ = 0`, ולכן `C₁ = −1/2`.\n3. ב־`x = 0`: `C₁ = C₂`, ולכן `C₂ = −1/2`.\n4. `F(x) = (x·|x|)/2 − 1/2`",
+  "Squeeze it between two constant functions: the minimum and the maximum on the interval.": "ללחוץ אותו בין שתי פונקציות קבועות: המינימום והמקסימום בקטע.",
+  "No technique gives an antiderivative: `e^(x²)`, `e^(−x²)`, `sin x/x`, `√(1 + x³)` and many others have none you can write with the usual functions. Or the question asks for an estimate.": "אף שיטה לא נותנת פונקציה קדומה: ל־`e^(x²)`, `e^(−x²)`, `sin x/x`, `√(1 + x³)` ולהרבה אחרות אין כזו שאפשר לכתוב בפונקציות הרגילות. או שהשאלה מבקשת הערכה.",
+  "Find `f'` and its sign on `[a, b]`. Always one sign → `f` is monotone there.": "מוצאים את `f'` ואת הסימן שלה ב־`[a, b]`. תמיד סימן אחד ← `f` מונוטונית שם.",
+  "Monotone: they are at the ends, `f(a)` and `f(b)`.\nNot monotone: also check the critical points inside, and compare all the values.": "מונוטונית: הם בקצוות, `f(a)` ו־`f(b)`.\nלא מונוטונית: בודקים גם את הנקודות הקריטיות בפנים, ומשווים את כל הערכים.",
+  "`∫_(0)^(1) e^(x²) dx`\n2. `f'(x) = 2x·e^(x²) ≥ 0` on `[0, 1]`: increasing.\n3. `m = f(0) = 1`, `M = f(1) = e`.\n4. `1·1 ≤ ∫_(0)^(1) e^(x²) dx ≤ e·1`, so `1 ≤ ∫_(0)^(1) e^(x²) dx ≤ e`": "`∫_(0)^(1) e^(x²) dx`\n2. `f'(x) = 2x·e^(x²) ≥ 0` ב־`[0, 1]`: עולה.\n3. `m = f(0) = 1`, `M = f(1) = e`.\n4. `1·1 ≤ ∫_(0)^(1) e^(x²) dx ≤ e·1`, ולכן `1 ≤ ∫_(0)^(1) e^(x²) dx ≤ e`",
+  "`∫_(0)^(3) e^(2x − x²) dx`\n2. `f'(x) = (2 − 2x)·e^(2x − x²)`: positive for `x < 1`, negative for `x > 1`. Not monotone.\n3. Candidates: `f(0) = 1`, `f(1) = e`, `f(3) = e⁻³`. So `M = e` (inside!) and `m = e⁻³`.\n4. `3e⁻³ ≤ ∫_(0)^(3) e^(2x − x²) dx ≤ 3e`\nUsing only the ends would have given `M = 1`: wrong.": "`∫_(0)^(3) e^(2x − x²) dx`\n2. `f'(x) = (2 − 2x)·e^(2x − x²)`: חיובית עבור `x < 1`, שלילית עבור `x > 1`. לא מונוטונית.\n3. מועמדות: `f(0) = 1`, `f(1) = e`, `f(3) = e⁻³`. לכן `M = e` (בפנים!) ו־`m = e⁻³`.\n4. `3e⁻³ ≤ ∫_(0)^(3) e^(2x − x²) dx ≤ 3e`\nשימוש רק בקצוות היה נותן `M = 1`: טעות.",
+  "`∫_(1)^(2) 1/(√(1 + x⁴)) dx`\n`1 + x⁴ > x⁴`, so `√(1 + x⁴) > x²` and `1/√(1 + x⁴) < 1/x²`.\n`∫_(1)^(2) 1/(x²) dx = [−1/x]_(1)^(2) = 1/2`, so the integral is less than `1/2`.": "`∫_(1)^(2) 1/(√(1 + x⁴)) dx`\n`1 + x⁴ > x⁴`, ולכן `√(1 + x⁴) > x²` ו־`1/√(1 + x⁴) < 1/x²`.\n`∫_(1)^(2) 1/(x²) dx = [−1/x]_(1)^(2) = 1/2`, ולכן האינטגרל קטן מ־`1/2`.",
+  "Stop at a finite r, integrate, then let r go to infinity (or to the bad point).": "לעצור ב־r סופי, לבצע אינטגרציה, ואז לתת ל־r לשאוף לאינסוף (או לנקודה הבעייתית).",
+  "`∞` → `r`, or the point where `f` blows up → `r`.": "`∞` ← `r`, או הנקודה שבה `f` מתפוצצת ← `r`.",
+  "Calculate the ordinary integral up to `r` with Newton–Leibniz. The answer depends on `r`.": "מחשבים את האינטגרל הרגיל עד `r` בעזרת ניוטון–לייבניץ. התשובה תלויה ב־`r`.",
+  "`r → ∞` (or `r →` the bad point, from inside the interval).": "`r → ∞` (או `r →` הנקודה הבעייתית, מתוך הקטע).",
+  "A finite number → **converges**, and that number is the value. `±∞` or no limit → **diverges**.": "מספר סופי ← **מתכנס**, והמספר הזה הוא הערך. `±∞` או שאין גבול ← **מתבדר**.",
+  "`∫_(1)^(∞) 1/(x²) dx`\n1–2. `∫_(1)^(r) 1/(x²) dx = [−1/x]_(1)^(r) = 1 − 1/r`\n3. As `r → ∞`, `1/r → 0`, so the limit is `1`.\n4. Converges, value `1`.": "`∫_(1)^(∞) 1/(x²) dx`\n1–2. `∫_(1)^(r) 1/(x²) dx = [−1/x]_(1)^(r) = 1 − 1/r`\n3. כש־`r → ∞`, `1/r → 0`, ולכן הגבול הוא `1`.\n4. מתכנס, ערך `1`.",
+  "`∫_(1)^(∞) 1/(x) dx`\n1–2. `∫_(1)^(r) 1/(x) dx = ln r − ln 1 = ln r`\n3. `ln r → ∞`\n4. Diverges.": "`∫_(1)^(∞) 1/(x) dx`\n1–2. `∫_(1)^(r) 1/(x) dx = ln r − ln 1 = ln r`\n3. `ln r → ∞`\n4. מתבדר.",
+  "`∫_(0)^(∞) e^(−x) dx`\n`∫_(0)^(r) e^(−x) dx = [−e^(−x)]_(0)^(r) = 1 − e^(−r) → 1`. Converges, value `1`.": "`∫_(0)^(∞) e^(−x) dx`\n`∫_(0)^(r) e^(−x) dx = [−e^(−x)]_(0)^(r) = 1 − e^(−r) → 1`. מתכנס, ערך `1`.",
+  "`∫_(0)^(∞) cos x dx`\n`∫_(0)^(r) cos x dx = sin r`, which keeps swinging between `−1` and `1` and has no limit. Diverges.": "`∫_(0)^(∞) cos x dx`\n`∫_(0)^(r) cos x dx = sin r`, שממשיך לנוע בין `−1` ל־`1` ואין לו גבול. מתבדר.",
+  "`∫_(0)^(1) 1/(√x) dx`: `1/√x` blows up at `0`.\n1–2. `∫_(r)^(1) x^(−1/2) dx = [2√x]_(r)^(1) = 2 − 2√r`\n3. As `r → 0⁺`, `2√r → 0`.\n4. Converges, value `2`.": "`∫_(0)^(1) 1/(√x) dx`: `1/√x` מתפוצצת ב־`0`.\n1–2. `∫_(r)^(1) x^(−1/2) dx = [2√x]_(r)^(1) = 2 − 2√r`\n3. כש־`r → 0⁺`, `2√r → 0`.\n4. מתכנס, ערך `2`.",
+  "`∫_(−∞)^(∞) x·e^(−x²) dx`: split at `0`.\n`∫_(0)^(r) x·e^(−x²) dx = (1/2)·(1 − e^(−r²)) → 1/2`, and the left half gives `−1/2`.\nBoth converge, so the integral converges, value `0`.\nCareful: you may only use the odd-function shortcut after both halves converge. `∫_(−∞)^(∞) x dx` diverges, even though `x` is odd.": "`∫_(−∞)^(∞) x·e^(−x²) dx`: מפצלים ב־`0`.\n`∫_(0)^(r) x·e^(−x²) dx = (1/2)·(1 − e^(−r²)) → 1/2`, והחצי השמאלי נותן `−1/2`.\nשניהם מתכנסים, ולכן האינטגרל מתכנס, ערך `0`.\nזהירות: מותר להשתמש בקיצור של פונקציה אי־זוגית רק אחרי ששני החצאים מתכנסים. `∫_(−∞)^(∞) x dx` מתבדר, אף ש־`x` אי־זוגית.",
+  "Compare with a simpler 1/xᵖ function to decide convergence without integrating.": "להשוות לפונקציה פשוטה יותר 1/xᵖ כדי להכריע על התכנסות בלי לבצע אינטגרציה.",
+  "For large `x`, keep only the biggest power on top and on the bottom. The result looks like `1/(x^(p))`: guess **converges** if `p > 1`, **diverges** if `p ≤ 1`.": "עבור `x` גדול, משאירים רק את החזקה הגבוהה במונה ובמכנה. התוצאה נראית כמו `1/(x^(p))`: מנחשים **מתכנס** אם `p > 1`, **מתבדר** אם `p ≤ 1`.",
+  "To prove it **converges**: find a **bigger** function `g ≥ f` whose integral converges. Make the denominator smaller, or the numerator bigger.\nTo prove it **diverges**: find a **smaller** function `0 ≤ g ≤ f` whose integral diverges. Make the denominator bigger, or the numerator smaller.": "כדי להוכיח ש**מתכנס**: מוצאים פונקציה **גדולה** יותר `g ≥ f` שהאינטגרל שלה מתכנס. מקטינים את המכנה, או מגדילים את המונה.\nכדי להוכיח ש**מתבדר**: מוצאים פונקציה **קטנה** יותר `0 ≤ g ≤ f` שהאינטגרל שלה מתבדר. מגדילים את המכנה, או מקטינים את המונה.",
+  "Show it holds for every `x` in the interval, and that `f ≥ 0` there.": "מראים שזה מתקיים לכל `x` בקטע, ושם `f ≥ 0`.",
+  "Apply the p-integral to `g`, then the comparison test.\nBigger than a convergent, or smaller than a divergent → no conclusion. Change the comparison function, or turn it the other way.": "מפעילים את אינטגרל ה־p על `g`, ואז את מבחן ההשוואה.\nגדול ממתכנס, או קטן ממתבדר ← אין מסקנה. מחליפים את פונקציית ההשוואה, או הופכים את הכיוון.",
+  "`∫_(1)^(∞) 1/(x² + x) dx`\n1. Like `1/x²`: guess converges.\n2–3. `x² + x > x²` for `x ≥ 1`, so `1/(x² + x) < 1/x²`. The denominator got smaller, the fraction bigger: the right direction.\n4. `∫_(1)^(∞) 1/(x²) dx` converges (`p = 2 > 1`), so ours converges.": "`∫_(1)^(∞) 1/(x² + x) dx`\n1. כמו `1/x²`: מנחשים מתכנס.\n2–3. `x² + x > x²` עבור `x ≥ 1`, ולכן `1/(x² + x) < 1/x²`. המכנה קטן, השבר גדל: הכיוון הנכון.\n4. `∫_(1)^(∞) 1/(x²) dx` מתכנס (`p = 2 > 1`), ולכן שלנו מתכנס.",
+  "`∫_(1)^(∞) 1/(x + √x) dx`\n1. Like `1/x`: guess diverges.\n2–3. For `x ≥ 1`, `√x ≤ x`, so `x + √x ≤ 2x` and `1/(x + √x) ≥ 1/(2x)`. A smaller function: the right direction.\n4. `∫_(1)^(∞) 1/(2x) dx` diverges (`p = 1`), so ours diverges.": "`∫_(1)^(∞) 1/(x + √x) dx`\n1. כמו `1/x`: מנחשים מתבדר.\n2–3. עבור `x ≥ 1`, `√x ≤ x`, ולכן `x + √x ≤ 2x` ו־`1/(x + √x) ≥ 1/(2x)`. פונקציה קטנה יותר: הכיוון הנכון.\n4. `∫_(1)^(∞) 1/(2x) dx` מתבדר (`p = 1`), ולכן שלנו מתבדר.",
+  "`∫_(2)^(∞) 1/(x² − x) dx`, guess converges.\n**First try:** `x² − x < x²`, so `1/(x² − x) > 1/x²`. Bigger than a convergent integral: **no conclusion**.\n**Second try:** for `x ≥ 2`, `x ≤ x²/2`, so `x² − x ≥ x²/2` and `1/(x² − x) ≤ 2/x²`.\n`∫_(2)^(∞) 2/(x²) dx` converges, so ours converges.": "`∫_(2)^(∞) 1/(x² − x) dx`, מנחשים מתכנס.\n**ניסיון ראשון:** `x² − x < x²`, ולכן `1/(x² − x) > 1/x²`. גדול מאינטגרל מתכנס: **אין מסקנה**.\n**ניסיון שני:** עבור `x ≥ 2`, `x ≤ x²/2`, ולכן `x² − x ≥ x²/2` ו־`1/(x² − x) ≤ 2/x²`.\n`∫_(2)^(∞) 2/(x²) dx` מתכנס, ולכן שלנו מתכנס.",
+  "`∫_(1)^(∞) (2 + sin x)/(x) dx`\n`2 + sin x ≥ 1`, so the function is positive and `(2 + sin x)/x ≥ 1/x`.\n`∫_(1)^(∞) 1/(x) dx` diverges, so ours diverges.": "`∫_(1)^(∞) (2 + sin x)/(x) dx`\n`2 + sin x ≥ 1`, ולכן הפונקציה חיובית ו־`(2 + sin x)/x ≥ 1/x`.\n`∫_(1)^(∞) 1/(x) dx` מתבדר, ולכן שלנו מתבדר.",
+  "`∫_(0)^(1) 1/(√x + x²) dx`: blows up at `0`.\nNear `0` the biggest term is `√x`. `√x + x² ≥ √x`, so `1/(√x + x²) ≤ 1/√x`.\n`∫_(0)^(1) 1/(x^(1/2)) dx` converges (`p = 1/2 < 1`), so ours converges.": "`∫_(0)^(1) 1/(√x + x²) dx`: מתפוצצת ב־`0`.\nליד `0` האיבר הגדול הוא `√x`. `√x + x² ≥ √x`, ולכן `1/(√x + x²) ≤ 1/√x`.\n`∫_(0)^(1) 1/(x^(1/2)) dx` מתכנס (`p = 1/2 < 1`), ולכן שלנו מתכנס."
  },
  "re": [
   [
@@ -5027,6 +5183,523 @@
     "<b>במילים:</b> מהירות היא כמה מהר המקום משתנה (עם כיוון), תאוצה היא כמה מהר המהירות משתנה. שיפוע בגרף המקום הוא מהירות.",
     "<b>דוגמה:</b> ⟦0⟧. ⟦1⟧, ⟦2⟧. הגוף נע קדימה עד ⟦3⟧, אחורה עד ⟦4⟧, ואז שוב קדימה. ב־⟦5⟧: ⟦6⟧, ⟦7⟧. ב־⟦8⟧: ⟦9⟧, ⟦10⟧: מאט.",
     "<b>הדרך ההפוכה</b> (מתאוצה למהירות למקום) היא אינטגרציה: אינטגרלים › 17."
+   ]
+  },
+  "in1:integrals-and-antiderivatives": {
+   "b": [
+    null,
+    "⟦0⟧ היא <b>פונקציה קדומה</b> של ⟦1⟧ כאשר ⟦2⟧. אז",
+    null,
+    "אינטגרציה היא גזירה בכיוון ההפוך: ⟦0⟧",
+    "<b>במילים:</b> גזירה שואלת \"כמה מהר הפונקציה הזו משתנה?\". אינטגרציה שואלת את ההפך: \"איזו פונקציה משתנה כך?\". אם יודעים את המהירות בכל רגע, האינטגרל מחזיר את המקום.",
+    "<b>למה ה־⟦0⟧:</b> לקבוע יש נגזרת ⟦1⟧, ולכן ל־⟦2⟧, ⟦3⟧ ו־⟦4⟧ יש אותה נגזרת ⟦5⟧. הנגזרת לא מבדילה ביניהן, ולכן האינטגרל נותן את כל המשפחה: ⟦6⟧, כש־⟦7⟧ מספר כלשהו.",
+    "<b>בודקים כל תשובה</b> בגזירה: חייבים לקבל בחזרה את הפונקציה שבתוך האינטגרל.",
+    "כל פונקציה קדומה היא אותה עקומה מוזזת למעלה או למטה. הזזת עקומה למעלה לא משנה את השיפוע שלה, ולכן לכולן אותה נגזרת."
+   ],
+   "s": [
+    null,
+    null,
+    null,
+    "אותו שיפוע בכל x"
+   ]
+  },
+  "in1:the-integral-sign-and-its-bounds": {
+   "b": [
+    null,
+    "<b>אינטגרל לא מסוים:</b> ⟦0⟧. בלי גבולות. התשובה היא משפחה של פונקציות.",
+    "<b>אינטגרל מסוים:</b> ⟦0⟧. התשובה היא מספר אחד.",
+    "<b>קריאת הסימן:</b> ⟦0⟧ הוא S מתוחה, מלשון \"סכום\". ⟦1⟧ היא <b>הפונקציה שבתוך האינטגרל</b>. ⟦2⟧ הוא <b>הגבול התחתון</b> ו־⟦3⟧ <b>הגבול העליון</b>: איפה הסכום מתחיל ונגמר על ציר x. ⟦4⟧ אומר ש־⟦5⟧ הוא המשתנה.",
+    "<b>מה המספר אומר:</b> האינטגרל המסוים הוא <b>השטח המסומן</b> בין הגרף לציר x מ־⟦0⟧ עד ⟦1⟧. שטח מעל הציר נספר בפלוס, שטח מתחתיו במינוס (אינטגרלים › 7).",
+    "שני הסוגים קשורים במשפט ניוטון–לייבניץ (אינטגרלים › 2): מוצאים את ⟦0⟧ מהאינטגרל הלא מסוים, ואז ⟦1⟧."
+   ]
+  },
+  "in1:what-dx-means": {
+   "b": [
+    null,
+    "⟦0⟧ מציין את המשתנה שלפיו מבצעים אינטגרציה, ומייצג רוחב דק מאוד לאורך ציר x.",
+    "<b>התמונה:</b> חותכים את השטח שמתחת לגרף לפרוסות אנכיות דקות מאוד. פרוסה אחת ב־⟦0⟧ היא כמעט מלבן: גובה ⟦1⟧, רוחב ⟦2⟧, שטח ⟦3⟧. האינטגרל מחבר את כל הפרוסות האלה מ־⟦4⟧ עד ⟦5⟧. לכן ⟦6⟧ ו־⟦7⟧ נכתבים זה ליד זה, כמו כפל.",
+    "<b>איזה משתנה:</b> ב־⟦0⟧ המשתנה הוא ⟦1⟧, ולכן ⟦2⟧ נחשב קבוע. אם מחליפים את האות שאחרי ⟦3⟧, משנים את השאלה.",
+    "כמה דק זה \"דק מאוד\"? סכומי דרבו ורימן (בכרטיס הבא) עושים את זה מדויק: הפרוסות נעשות דקות יותר ויותר, והאינטגרל הוא מה שהסכום שואף אליו."
+   ]
+  },
+  "in1:darboux-and-riemann-sums": {
+   "b": [
+    null,
+    "מחלקים את ⟦0⟧ ל־⟦1⟧ רצועות ברוחב ⟦2⟧, עם נקודות ⟦3⟧.",
+    "<b>סכום תחתון</b> ⟦0⟧: המלבן של כל רצועה גבוה כמו הערך <b>הנמוך</b> ביותר של ⟦1⟧ בה.",
+    "<b>סכום עליון</b> ⟦0⟧: כל מלבן גבוה כמו הערך <b>הגבוה</b> ביותר של ⟦1⟧ בו.",
+    "<b>סכום רימן:</b> נקודה כלשהי ⟦0⟧ בכל רצועה: ⟦1⟧. הוא תמיד נמצא בין ⟦2⟧ ל־⟦3⟧.",
+    "⟦0⟧ <b>אינטגרבילית</b> ב־⟦1⟧ כאשר ⟦2⟧ ו־⟦3⟧ מתקרבים זה לזה ככל שהרצועות נעשות דקות יותר. אז ⟦4⟧",
+    "<b>משפט:</b> כל פונקציה רציפה ב־⟦0⟧ אינטגרבילית בו.",
+    "<b>במילים:</b> אי אפשר למדוד שטח מעוקל ישירות, אבל אפשר למדוד מלבנים. הסכום התחתון קטן מדי, העליון גדול מדי, והשטח האמיתי לחוץ ביניהם. כשהרצועות דקות יותר, שתי ההערכות מתכנסות לאותו מספר: המספר הזה הוא האינטגרל.",
+    "עבור ⟦0⟧ ב־⟦1⟧: המלבנים הירוקים הם הסכום התחתון, המלבנים המתוארים הם הסכום העליון. עם 4, 8, 16 רצועות הפער ביניהם קטן לכיוון השטח המדויק ⟦2⟧."
+   ]
+  },
+  "in2:fundamental-theorem-of-calculus": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה ב־⟦1⟧ ו־⟦2⟧ &nbsp;⇒&nbsp; ⟦3⟧ לכל ⟦4⟧",
+    "פונקציית השטח היא פונקציה קדומה של הפונקציה שמתחתיה. זה המשפט שקושר בין אינטגרלים לנגזרות.",
+    "<b>מהי ⟦0⟧:</b> השטח מתחת ל־⟦1⟧ מההתחלה הקבועה ⟦2⟧ עד קצה נע ⟦3⟧. מזיזים את ⟦4⟧ והשטח משתנה, ולכן ⟦5⟧ היא פונקציה של ⟦6⟧. האות בפנים היא ⟦7⟧ רק כי ⟦8⟧ כבר תפוס על ידי הקצה.",
+    "<b>למה זה נכון:</b> מזיזים את הקצה מ־⟦0⟧ ל־⟦1⟧. השטח גדל ברצועה דקה ברוחב ⟦2⟧ ובגובה בערך ⟦3⟧, ולכן ⟦4⟧. מחלקים ב־⟦5⟧: ⟦6⟧. כש־⟦7⟧ הרצועה הופכת למלבן מדויק, והאגף השמאלי הוא הנגזרת ⟦8⟧ (נגזרות › 1). <b>השטח גדל בקצב ⟦9⟧.</b>",
+    "השטח המוצלל הוא ⟦0⟧. הרצועה הדקה המתוארת היא מה שהמעבר ל־⟦1⟧ מוסיף: בערך ⟦2⟧.",
+    "<b>דוגמה:</b> ל־⟦0⟧ יש ⟦1⟧, בלי לחשב את האינטגרל בכלל. עם פונקציה פנימית, מוסיפים את כלל השרשרת: ⟦2⟧."
+   ],
+   "s": [
+    null,
+    null,
+    null,
+    null,
+    "גובה f(x)"
+   ]
+  },
+  "in2:newton-leibniz-theorem": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה ב־⟦1⟧ ו־⟦2⟧ פונקציה קדומה כלשהי של ⟦3⟧ &nbsp;⇒&nbsp; ⟦4⟧",
+    "בכתיבה: ⟦0⟧",
+    "<b>מאיפה זה בא:</b> לפי המשפט היסודי, פונקציית השטח ⟦0⟧ היא פונקציה קדומה של ⟦1⟧. כל פונקציה קדומה אחרת שונה ממנה בקבוע: ⟦2⟧ (נגזרות › 7, מונוטוניות). לכן ⟦3⟧, שזה כל השטח.",
+    "<b>במילים:</b> השינוי בפונקציה בין שתי נקודות שווה לשטח מתחת לנגזרת שלה בקטע הזה: ⟦0⟧. אם ⟦1⟧ היא מהירות, השטח מתחתיה הוא הדרך שעברו.",
+    "<b>שטח מסומן:</b> התוצאה היא שטח <b>מסומן</b>. היא שווה לשטח הגאומטרי רק איפה שהפונקציה שבתוך האינטגרל ⟦0⟧.",
+    "<b>כאן ה־⟦0⟧ לא משנה:</b> ⟦1⟧, ולכן כל פונקציה קדומה נותנת אותה תשובה.",
+    "משמאל: השטח מתחת ל־⟦0⟧ מ־⟦1⟧ עד ⟦2⟧ הוא ⟦3⟧. מימין: ⟦4⟧ עולה מ־⟦5⟧ ל־⟦6⟧, גם כן ב־⟦7⟧.",
+    "<b>דוגמה, צעד אחר צעד:</b> ⟦0⟧. פונקציה קדומה היא ⟦1⟧. אז ⟦2⟧."
+   ],
+   "s": [
+    "שטח = 4"
+   ]
+  },
+  "in3:sums-and-constants": {
+   "b": [
+    null,
+    null,
+    "⟦0⟧ &nbsp;(⟦1⟧ קבוע)",
+    "אותו דבר עם גבולות: ⟦0⟧",
+    "<b>למה:</b> לנגזרת יש אותם כללים: ⟦0⟧ ו־⟦1⟧. מפעילים אותם בכיוון ההפוך ומקבלים את אלה.",
+    "<b>שימוש:</b> מפצלים פונקציה ארוכה לחלקים פשוטים ומבצעים אינטגרציה לכל אחד: ⟦0⟧ ⟦1⟧ ⟦2⟧",
+    "<b>אין כלל כזה למכפלות או למנות:</b> ⟦0⟧ <b>אינו</b> ⟦1⟧. מכפלות דורשות הצבה או אינטגרציה בחלקים (אינטגרלים › 5, 6)."
+   ]
+  },
+  "in3:properties-of-the-definite-integral": {
+   "b": [
+    null,
+    "<b>אותם גבולות:</b> ⟦0⟧",
+    "<b>החלפת הגבולות</b> הופכת את הסימן: ⟦0⟧",
+    "<b>פיצול הקטע:</b> ⟦0⟧",
+    "<b>במילים:</b> בלי רוחב, אין שטח. הליכה בקטע בכיוון ההפוך סופרת כל פרוסה בסימן הפוך. ושטח אפשר לחתוך לשני חלקים בכל נקודה ⟦0⟧ ולחבר אותם בחזרה.",
+    "הפיצול הוא מה שמאפשר לבצע אינטגרציה לפונקציה בקטעים או לערך מוחלט: חותכים בכל נקודת שבירה (אינטגרלים › 7).",
+    "<b>דוגמה:</b> אם ⟦0⟧ ו־⟦1⟧, אז ⟦2⟧ ו־⟦3⟧."
+   ]
+  },
+  "in4:polynomials-and-roots": {
+   "b": [
+    null,
+    "<b>כלל החזקה:</b> ⟦0⟧ &nbsp;(⟦1⟧)",
+    "<b>המקרה החסר:</b> ⟦0⟧",
+    "<b>קבועים:</b> ⟦0⟧",
+    "<b>שורשים הם חזקות:</b> ⟦0⟧, ⟦1⟧, ⟦2⟧",
+    "<b>למה:</b> גזירה מורידה את החזקה באחד וכופלת בה. אינטגרציה עושה את ההפך: <b>מעלים את החזקה באחד, ואז מחלקים בחזקה החדשה.</b> בדיקה: ⟦0⟧.",
+    "<b>למה ⟦0⟧:</b> עבור ⟦1⟧ הכלל היה מחלק ב־⟦2⟧. המקרה הזה הוא ⟦3⟧. הערך המוחלט נמצא שם כדי שזה יעבוד גם עבור ⟦4⟧, שם ⟦5⟧ לא מוגדר אבל ⟦6⟧ עדיין מתקיים.",
+    "<b>דוגמאות:</b> ⟦0⟧ &nbsp;·&nbsp; ⟦1⟧"
+   ]
+  },
+  "in4:a-linear-function-to-a-power": {
+   "b": [
+    null,
+    "⟦0⟧ &nbsp;(⟦1⟧, ⟦2⟧)",
+    null,
+    "<b>למה ה־⟦0⟧ הנוסף:</b> גזירה של ⟦1⟧ נותנת ⟦2⟧. נגזרת הביטוי הפנימי ⟦3⟧ מופיעה (כלל השרשרת, נגזרות › 2), ולכן מחלקים בה מראש.",
+    "<b>דוגמה:</b> ⟦0⟧",
+    "זה עובד רק כשהביטוי הפנימי ליניארי. עבור ⟦0⟧ נגזרת הפנימית ⟦1⟧ אינה קבוע: פותחים סוגריים, או משתמשים בהצבה אם ⟦2⟧ גם שם (אינטגרלים › 5)."
+   ]
+  },
+  "in4:integrals-that-give-ln": {
+   "b": [
+    null,
+    null,
+    "<b>למה:</b> לפי כלל השרשרת, ⟦0⟧ (נגזרות › 2).",
+    "<b>איך מזהים:</b> המונה הוא הנגזרת של המכנה, אולי עד כדי קבוע.",
+    "<b>דוגמאות:</b> ⟦0⟧ (לא צריך ⟦1⟧: ⟦2⟧) &nbsp;·&nbsp; ⟦3⟧",
+    "המונה כמעט נכון? קודם מתקנים אותו: השיטה \"הבאת מנה לצורה f′/f\".",
+    "<b>לא ln:</b> קבוע חלקי ריבוע ועוד מספר נותן arctan: ⟦0⟧ (פונקציות › 6)."
+   ]
+  },
+  "in4:sine-and-cosine": {
+   "b": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "<b>למה:</b> ⟦0⟧, ולכן ⟦1⟧, ו־⟦2⟧ (נגזרות › 2). שימו לב לסימן המינוס: הוא שייך לאינטגרל של <b>sin</b>.",
+    "<b>דוגמה:</b> ⟦0⟧. בדיקה: ⟦1⟧",
+    "כשהביטוי הפנימי אינו ליניארי, כמו ⟦0⟧, הכללים האלה לא עובדים. הצבה כן עובדת, כשגם נגזרת הפנימית נמצאת שם: ⟦1⟧ (אינטגרלים › 5)."
+   ]
+  },
+  "in4:exponential-functions": {
+   "b": [
+    null,
+    null,
+    "⟦0⟧ &nbsp;(⟦1⟧)",
+    "<b>למה:</b> ⟦0⟧ היא הנגזרת של עצמה (נגזרות › 2). עם פנימית ליניארית, כלל השרשרת מוציא ⟦1⟧, ולכן מחלקים בו.",
+    "<b>דוגמה:</b> ⟦0⟧"
+   ]
+  },
+  "in5:what-the-substitution-does": {
+   "b": [
+    null,
+    "⟦0⟧, עם ⟦1⟧ ו־⟦2⟧",
+    "עם גבולות: ⟦0⟧",
+    "<b>מאיפה זה בא:</b> זה כלל השרשרת בכיוון ההפוך. אם ⟦0⟧, כלל השרשרת נותן ⟦1⟧. לכן האינטגרל של האגף הימני הוא ⟦2⟧, שזה בדיוק ⟦3⟧.",
+    "<b>מה פירוש ⟦0⟧:</b> פרוסה דקה ברוחב ⟦1⟧ על ציר x הופכת לפרוסה ברוחב ⟦2⟧ על ציר t. איפה ש־⟦3⟧ משתנה מהר, הפרוסות נמתחות, והפונקציה שבתוך האינטגרל משתנה בהתאם, כך שהשטח נשאר אותו שטח.",
+    "<b>איך מזהים:</b> פונקציה בתוך פונקציה אחרת (הפנימית היא ⟦0⟧), ונגזרת הפנימית ⟦1⟧ גם מוכפלת, אולי עד כדי קבוע.",
+    "⟦0⟧ עם ⟦1⟧ הופך ל־⟦2⟧. הגרפים נראים שונים, אבל השטחים שווים: ⟦3⟧.",
+    "<b>דוגמה, צעד אחר צעד:</b> ⟦0⟧. הפנימית היא ⟦1⟧, ולכן ⟦2⟧ ו־⟦3⟧, כלומר ⟦4⟧. האינטגרל הופך ל־⟦5⟧. השלבים המלאים: השיטה \"אינטגרציה בשיטת ההצבה\"."
+   ],
+   "s": [
+    null,
+    null,
+    null,
+    "שטח ≈ 1.72",
+    null,
+    null,
+    null,
+    "שטח ≈ 1.72"
+   ]
+  },
+  "in6:integration-by-parts-formula": {
+   "b": [
+    null,
+    null,
+    "עם גבולות: ⟦0⟧",
+    "<b>מאיפה זה בא,</b> צעד אחר צעד:",
+    "כלל המכפלה (נגזרות › 2): ⟦0⟧",
+    "מבצעים אינטגרציה לשני האגפים: ⟦0⟧. האגף השמאלי הוא פונקציה קדומה של הנגזרת שלו.",
+    "מעבירים אינטגרל אחד לצד השני: ⟦0⟧",
+    "<b>מה זה נותן:</b> זה מחליף אינטגרל אחד באחר. זה עוזר כשהחדש, ⟦0⟧, קל יותר: בוחרים ב־⟦1⟧ את הגורם שנעשה פשוט יותר בגזירה.",
+    "המלבן הגדול פחות הקטן הוא ⟦0⟧. העקומה מחלקת את התחום בצורת L לשטח שמתחתיה, ⟦1⟧, ולשטח שלצידה, ⟦2⟧. לכן ⟦3⟧.",
+    "<b>דוגמה, צעד אחר צעד:</b> ⟦0⟧. בוחרים ⟦1⟧ (הוא נעשה פשוט יותר בגזירה: ⟦2⟧) ו־⟦3⟧, ולכן ⟦4⟧. אז ⟦5⟧. השלבים המלאים: השיטה \"אינטגרציה בחלקים\"."
+   ]
+  },
+  "in7:integral-value-and-area": {
+   "b": [
+    null,
+    "<b>ערך</b> האינטגרל: ⟦0⟧. חלקים מתחת לציר x נספרים <b>בשלילה</b>.",
+    "<b>שטח</b> בין הגרף לציר x: ⟦0⟧. הכול נספר בחיוב.",
+    "<b>במילים:</b> האינטגרל מחבר גובה כפול רוחב, וגובה מתחת לציר הוא מספר שלילי. לכן חלק מתחת לציר מופחת. השטח הוא גודל גאומטרי, אף פעם לא שלילי: הופכים את סימן החלקים השליליים לפני החיבור.",
+    "<b>מתי הם שווים:</b> רק כאשר ⟦0⟧ בכל הקטע.",
+    "עבור ⟦0⟧ ב־⟦1⟧ שתי הגבנונות מתבטלות באינטגרל אבל מתחברות בשטח. אפשר לנסות פונקציות אחרות בהכנה לחדו״א › אינטגרלים.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧. הערך הוא ⟦2⟧. השטח הוא המשולש שמתחת לציר (⟦3⟧) ועוד זה שמעליו (⟦4⟧): ⟦5⟧."
+   ],
+   "s": [
+    null,
+    null,
+    null,
+    null,
+    "ערך: 2 + (−2) = 0 · שטח: 2 + 2 = 4"
+   ]
+  },
+  "in7:area-between-two-curves": {
+   "b": [
+    null,
+    "כאשר ⟦0⟧ ב־⟦1⟧: &nbsp;⟦2⟧",
+    "<b>במילים:</b> כל פרוסה דקה הולכת עכשיו מהעקומה התחתונה עד העליונה, ולכן הגובה שלה הוא <b>עליונה − תחתונה</b>. זה עובד בכל מקום, גם מתחת לציר x, כי ההפרש הוא עדיין גובה הפרוסה.",
+    "<b>כשהעקומות נחתכות</b> בתוך הקטע, העליונה מתחלפת. מפצלים בנקודות החיתוך ומשתמשים בעליונה − תחתונה בכל חלק.",
+    "⟦0⟧ ו־⟦1⟧ נחתכות ב־⟦2⟧, ⟦3⟧ ו־⟦4⟧. ב־⟦5⟧ הישר למעלה, ב־⟦6⟧ הפולינום ממעלה שלישית.",
+    "<b>דוגמה:</b> בין ⟦0⟧ ל־⟦1⟧ ב־⟦2⟧, הישר למעלה: ⟦3⟧."
+   ],
+   "s": [
+    null,
+    null,
+    "x למעלה",
+    "x³ למעלה"
+   ]
+  },
+  "in7:even-and-odd-functions-on-a-symmetric-in": {
+   "b": [
+    null,
+    "<b>זוגית</b> (⟦0⟧, תמונת ראי ביחס לציר y): ⟦1⟧",
+    "<b>אי־זוגית</b> (⟦0⟧, סימטרית ביחס לראשית): ⟦1⟧, אבל השטח הוא ⟦2⟧",
+    "<b>דוגמאות:</b> ⟦0⟧, ⟦1⟧, ⟦2⟧ זוגיות. ⟦3⟧, ⟦4⟧, ⟦5⟧ אי־זוגיות.",
+    "<b>למה:</b> לגרף זוגי יש שני חצאים שווים, ולכן מחשבים אחד ומכפילים. החצי השמאלי של גרף אי־זוגי הוא החצי הימני הפוך מתחת לציר, ולכן הערכים המסומנים שלהם מתבטלים. השטחים לא מתבטלים: לשני החצאים אותו גודל."
+   ],
+   "s": [
+    "זוגית: חצאים שווים",
+    "אי־זוגית: מתבטלים"
+   ]
+  },
+  "in8:comparison-of-integrals": {
+   "b": [
+    null,
+    "⟦0⟧ לכל ⟦1⟧ (⟦2⟧) &nbsp;⇒&nbsp; ⟦3⟧",
+    "<b>במילים:</b> אם גרף אחד אף פעם לא מעל השני, השטח מתחתיו לא יכול להיות גדול יותר. כל פרוסה דקה של ⟦0⟧ לא גבוהה מהפרוסה המתאימה של ⟦1⟧.",
+    "<b>שימוש:</b> להעריך אינטגרל שאי אפשר לחשב: שמים אותו בין שתי פונקציות פשוטות שאת האינטגרלים שלהן אפשר לחשב.",
+    "<b>דוגמה:</b> ב־⟦0⟧, ⟦1⟧ (העלאה בריבוע של מספר בין ⟦2⟧ ל־⟦3⟧ מקטינה אותו). לכן ⟦4⟧: ואכן ⟦5⟧."
+   ]
+  },
+  "in8:bounds-from-the-minimum-and-maximum": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה ב־⟦1⟧, עם מינימום ⟦2⟧ ומקסימום ⟦3⟧ שם &nbsp;⇒&nbsp; ⟦4⟧",
+    "<b>למה:</b> משווים את ⟦0⟧ לשתי הפונקציות הקבועות ⟦1⟧. האינטגרל של קבוע הוא מלבן: גובה כפול רוחב.",
+    "<b>מציאת ⟦0⟧ ו־⟦1⟧:</b> בודקים את שני הקצוות <b>וגם</b> את הנקודות הקריטיות בפנים (נגזרות › 6). רק כש־⟦2⟧ מונוטונית בקטע הם פשוט ⟦3⟧ ו־⟦4⟧.",
+    "האינטגרל הוא השטח מתחת לעקומה. הוא גדול מהמלבן הנמוך (בירוק) וקטן מהגבוה (בכחול). כאן המקסימום בתוך הקטע, לא בקצה.",
+    "<b>דוגמה:</b> ל־⟦0⟧ אין פונקציה קדומה פשוטה. ב־⟦1⟧, ⟦2⟧ יורדת מ־⟦3⟧ ל־⟦4⟧, ולכן האינטגרל בין ⟦5⟧ ל־⟦6⟧. השלבים: השיטה \"הערכת אינטגרל שאי אפשר לחשב\"."
+   ]
+  },
+  "in9:what-an-improper-integral-is": {
+   "b": [
+    null,
+    null,
+    null,
+    "<b>שני הגבולות אינסופיים:</b> מפצלים בנקודה כלשהי ⟦0⟧: ⟦1⟧. שני החלקים חייבים להתכנס.",
+    "הוא <b>מתכנס</b> אם הגבול הוא מספר סופי, ו<b>מתבדר</b> אחרת (אינסופי, או שאין גבול).",
+    "<b>במילים:</b> אי אפשר להציב ⟦0⟧, ולכן עוצרים בקצה סופי ⟦1⟧, מחשבים כרגיל, ואז נותנים ל־⟦2⟧ לרוץ לאינסוף (גבולות באינסוף: גבולות › 1). שטח שנמשך לנצח עדיין יכול להסתכם במספר סופי, אם הגרף יורד לכיוון ⟦3⟧ מהר מספיק.",
+    "⟦0⟧: השטח האינסופי מתחת ל־⟦1⟧ מ־⟦2⟧ והלאה הוא בדיוק ⟦3⟧.",
+    "<b>דוגמה מתבדרת:</b> ⟦0⟧. גם הגרף של ⟦1⟧ יורד לכיוון ⟦2⟧, אבל לאט מדי: השטח ממשיך לגדול."
+   ],
+   "s": [
+    null,
+    "שטח = 1"
+   ]
+  },
+  "in9:improper-integrals-of-unbounded-function": {
+   "b": [
+    null,
+    "אם ⟦0⟧ מתפוצצת בקצה ⟦1⟧ (רציפה ב־⟦2⟧):",
+    null,
+    "אותו דבר בקצה ⟦0⟧ עם ⟦1⟧. התפוצצות בתוך הקטע: מפצלים שם.",
+    "<b>במילים:</b> הגבול סופי, אבל הגרף נורה לאינסוף בו, ולכן אי אפשר להציב אותו. עוצרים קצת לפניו ב־⟦0⟧, מחשבים, ונותנים ל־⟦1⟧ להחליק לנקודה הבעייתית. מתכנס או מתבדר בדיוק כמו קודם.",
+    "⟦0⟧: לגרף אין פסגה ליד ⟦1⟧, ובכל זאת השטח הוא ⟦2⟧.",
+    "<b>דוגמה מתבדרת:</b> ⟦0⟧ כש־⟦1⟧. ליד ⟦2⟧, ⟦3⟧ נורה למעלה בתלילות גדולה מדי מכדי שהשטח יהיה סופי."
+   ],
+   "s": [
+    null,
+    null,
+    "שטח = 2"
+   ]
+  },
+  "in9:harmonic-integral-p-integral": {
+   "b": [
+    null,
+    "⟦0⟧ מתכנס כאשר ⟦1⟧ ומתבדר כאשר ⟦2⟧",
+    "ליד ⟦0⟧, להפך: ⟦1⟧ מתכנס כאשר ⟦2⟧ ומתבדר כאשר ⟦3⟧",
+    "<b>למה, עבור ⟦0⟧:</b> ⟦1⟧. אם ⟦2⟧ החזקה ⟦3⟧ שלילית, ולכן ⟦4⟧ והגבול הוא ⟦5⟧. אם ⟦6⟧ הוא גדל לאינסוף.",
+    "<b>המקרה ההרמוני ⟦0⟧</b> מתבדר: ⟦1⟧. הוא הגבול: ⟦2⟧ יורדת, אבל קצת לאט מדי.",
+    "<b>למה זה חשוב:</b> אלה פונקציות הייחוס של מבחן ההשוואה (בכרטיס הבא).",
+    "⟦0⟧ (בכחול) ו־⟦1⟧ (בירוק) נראות דומות, אבל השטח מתחת ל־⟦2⟧ אינסופי והשטח מתחת ל־⟦3⟧ הוא ⟦4⟧."
+   ],
+   "s": [
+    "1/x: שטח ∞",
+    "1/x²: שטח 1"
+   ]
+  },
+  "in9:comparison-test-for-improper-integrals": {
+   "b": [
+    null,
+    "⟦0⟧ לכל ⟦1⟧:",
+    "⟦0⟧ מתכנס &nbsp;⇒&nbsp; ⟦1⟧ מתכנס",
+    "⟦0⟧ מתבדר &nbsp;⇒&nbsp; ⟦1⟧ מתבדר",
+    "<b>במילים:</b> מתחת לשטח סופי, גם שטח קטן יותר הוא סופי. מעל שטח אינסופי, גם שטח גדול יותר הוא אינסופי.",
+    "<b>מה לא אומר כלום:</b> הגדול מתבדר, או הקטן מתכנס. משהו מתחת לשטח אינסופי יכול להיות סופי או אינסופי, וגם משהו מעל שטח סופי. אם הגעתם לשם, משווים לפונקציה אחרת, בכיוון השני.",
+    "<b>שני התנאים חשובים:</b> ⟦0⟧ (בלי חלקים שליליים) ואי־השוויון בכל ⟦1⟧, או לפחות מנקודה מסוימת והלאה.",
+    "אותו דבר עובד לפונקציות לא חסומות ליד נקודה בעייתית, עם ⟦0⟧ כפונקציית ייחוס.",
+    "<b>דוגמה:</b> האם ⟦0⟧ מתכנס? עבור ⟦1⟧, ⟦2⟧, ו־⟦3⟧ מתכנס (⟦4⟧). הקטן נמצא מתחת לשטח סופי, ולכן גם הוא מתכנס."
+   ]
+  },
+  "in10:powers-of-sin-and-cos": {
+   "b": [
+    null,
+    null,
+    "<b>חזקה אחת אי־זוגית</b> (נגיד ⟦0⟧): שומרים ⟦1⟧ אחד, הופכים את השאר ל־⟦2⟧ בעזרת ⟦3⟧, ומציבים ⟦4⟧. (⟦5⟧ אי־זוגית: אותו דבר עם תפקידים מוחלפים, ⟦6⟧.)",
+    "<b>שתי החזקות זוגיות:</b> מורידים אותן בעזרת ⟦0⟧ ו־⟦1⟧.",
+    "<b>למה שמירת גורם אחד עובדת:</b> ה־⟦0⟧ השמור הוא בדיוק ⟦1⟧ כאשר ⟦2⟧, וכל השאר הופך לפולינום ב־⟦3⟧.",
+    "<b>דוגמה (אי־זוגית):</b> ⟦0⟧; עם ⟦1⟧, ⟦2⟧: ⟦3⟧.",
+    "<b>דוגמה (זוגית):</b> ⟦0⟧.",
+    "<b>מכפלות כמו ⟦0⟧</b> הופכות לסכומים: ⟦1⟧, וכל חלק קל."
+   ]
+  },
+  "in10:powers-of-tan-and-sec": {
+   "b": [
+    null,
+    null,
+    null,
+    "<b>חזקה זוגית של sec:</b> שומרים ⟦0⟧, הופכים את השאר ל־⟦1⟧ בעזרת ⟦2⟧, ומציבים ⟦3⟧.",
+    "<b>חזקה אי־זוגית של tan:</b> שומרים ⟦0⟧, הופכים את השאר ל־⟦1⟧, ומציבים ⟦2⟧.",
+    "<b>למה ⟦0⟧ הוא לוגריתם:</b> ⟦1⟧, והמונה הוא מינוס הנגזרת של המכנה: התבנית ⟦2⟧ (אינטגרלים › 4).",
+    "<b>דוגמה:</b> ⟦0⟧.",
+    "<b>דוגמה:</b> ⟦0⟧, ⟦1⟧: ⟦2⟧."
+   ]
+  },
+  "in11:trig-substitution": {
+   "b": [
+    null,
+    "באינטגרל יש",
+    "מציבים",
+    "כי",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "<b>הרעיון:</b> שורש של \"ריבוע ועוד או פחות ריבוע\" הוא שארית של פיתגורס. כשבוחרים את ⟦0⟧ כפונקציה טריגונומטרית של זווית, הביטוי שבפנים הופך לריבוע שלם, והשורש נעלם.",
+    "<b>חזרה ל־⟦0⟧:</b> משרטטים את המשולש ישר־הזווית שמתאים להצבה (למעלה, עבור ⟦1⟧) וקוראים ממנו כל פונקציה טריגונומטרית של ⟦2⟧.",
+    "<b>דוגמה:</b> ⟦0⟧, ⟦1⟧, ⟦2⟧: ⟦3⟧. מהמשולש, ⟦4⟧, ולכן התשובה היא ⟦5⟧."
+   ]
+  },
+  "in12:partial-fractions": {
+   "b": [
+    null,
+    "כדי לבצע אינטגרציה לשבר של פולינומים ⟦0⟧:",
+    "אם מעלת המונה ≥ מעלת המכנה, קודם מחלקים (חילוק ארוך).",
+    "מפרקים את המכנה לגורמים ליניאריים ⟦0⟧ ולגורמים ריבועיים בלי שורשים ממשיים.",
+    "כל גורם מקבל שבר פשוט משלו: ⟦0⟧ ← ⟦1⟧; ⟦2⟧ ← ⟦3⟧; ⟦4⟧ ← ⟦5⟧.",
+    "מוצאים את הקבועים, ואז מבצעים אינטגרציה לכל חלק: הם נותנים ⟦0⟧, חזקות, או ⟦1⟧.",
+    "<b>הרעיון:</b> זה חיבור שברים בכיוון ההפוך. ⟦0⟧ נותן ⟦1⟧; שברים חלקיים מפרקים את השבר היחיד לחלקים שקל לבצע להם אינטגרציה.",
+    "<b>דוגמה:</b> ⟦0⟧. כופלים: ⟦1⟧. מציבים ⟦2⟧: ⟦3⟧, ⟦4⟧. מציבים ⟦5⟧: ⟦6⟧, ⟦7⟧. לכן האינטגרל הוא ⟦8⟧.",
+    "<b>טריק מהיר:</b> הצבת כל שורש של גורם ליניארי מאפסת את כל האיברים האחרים, כמו בדוגמה. השלבים: השיטה \"אינטגרציה בעזרת שברים חלקיים\"."
+   ]
+  },
+  "in13:substitutions-that-remove-roots": {
+   "b": [
+    null,
+    "שורש של ביטוי ליניארי, ⟦0⟧: מציבים ⟦1⟧, ולכן ⟦2⟧. האינטגרל הופך לשבר של פולינומים.",
+    "כמה שורשים של ⟦0⟧ (⟦1⟧ ו־⟦2⟧): מציבים ⟦3⟧ (6 = המכפלה המשותפת הקטנה של סדרי השורשים).",
+    "שבר של ⟦0⟧ ו־⟦1⟧: ⟦2⟧ הופך אותו לשבר של פולינומים, עם ⟦3⟧, ⟦4⟧, ⟦5⟧.",
+    "<b>דוגמה:</b> ⟦0⟧: ⟦1⟧, ⟦2⟧, ⟦3⟧. זה הופך ל־⟦4⟧.",
+    "<b>מתי לנסות:</b> אחרי שהשיטות הבסיסיות נכשלו. המטרה תמיד להגיע למשהו מוכר: פולינום, שבר של פולינומים, או אינטגרל סטנדרטי."
+   ]
+  },
+  "in14:the-trapezoid-rule-and-simpson-s-rule": {
+   "b": [
+    null,
+    "מחלקים את ⟦0⟧ ל־⟦1⟧ צעדים שווים ברוחב ⟦2⟧, עם נקודות ⟦3⟧ וערכים ⟦4⟧.",
+    "טרפז: ⟦0⟧",
+    "סימפסון (⟦0⟧ זוגי): ⟦1⟧",
+    "<b>הרעיון:</b> כשאין פונקציה קדומה להשתמש בה, מחברים צורות פשוטות. כלל הטרפז מחבר נקודות שכנות במיתרים ישרים; כלל סימפסון מעביר פרבולה דרך כל שלוש נקודות, והיא עוקבת אחרי העקומה הרבה יותר מקרוב.",
+    "<b>דוגמה:</b> ⟦0⟧. עם ⟦1⟧, ⟦2⟧, ערכים ⟦3⟧: טרפז ⟦4⟧; סימפסון ⟦5⟧. סימפסון הרבה יותר קרוב.",
+    "<b>חסמי שגיאה:</b> טרפז ⟦0⟧ עם ⟦1⟧; סימפסון ⟦2⟧ עם ⟦3⟧. הכפלת ⟦4⟧ מקטינה את שגיאת הטרפז פי 4 בערך ואת של סימפסון פי 16 בערך."
+   ]
+  },
+  "in15:volumes-by-slicing-disks-and-washers": {
+   "b": [
+    null,
+    "חתכים בשטח ⟦0⟧: ⟦1⟧",
+    "דיסקות (סיבוב ⟦0⟧ סביב ציר x): ⟦1⟧",
+    "דיסקיות (התחום בין ⟦0⟧): ⟦1⟧",
+    "<b>הרעיון:</b> חותכים את הגוף לפרוסות דקות ברוחב ⟦0⟧. כל פרוסה היא כמעט דיסקה שטוחה בנפח ⟦1⟧, והאינטגרל מחבר אותן, בדיוק כמו ששטח מחבר מלבנים דקים.",
+    "<b>דוגמה:</b> מסובבים ⟦0⟧, ⟦1⟧, סביב ציר x: ⟦2⟧.",
+    "<b>דיסקית:</b> כשהתחום לא נוגע בציר, לכל פרוסה יש חור: רדיוס חיצוני ⟦0⟧, רדיוס פנימי ⟦1⟧. מחסירים את הריבועים, לא את הרדיוסים: ⟦2⟧, לא ⟦3⟧.",
+    "<b>סביב ציר y:</b> משתמשים ב־⟦0⟧ כמשתנה: ⟦1⟧."
+   ],
+   "s": [
+    "רדיוס f(x)",
+    null,
+    "דיסקה דקה, ברוחב dx"
+   ]
+  },
+  "in15:volumes-by-cylindrical-shells": {
+   "b": [
+    null,
+    "סיבוב התחום שמתחת ל־⟦0⟧, ⟦1⟧, סביב <b>ציר y</b>:",
+    null,
+    "<b>הרעיון:</b> רצועה אנכית דקה במרחק ⟦0⟧ מהציר יוצרת צינור דק (קליפה). כשפורשים אותה, היא כמעט יריעה שטוחה: אורך ⟦1⟧ (ההיקף), גובה ⟦2⟧, עובי ⟦3⟧.",
+    "<b>מתי משתמשים:</b> כשחיתוך בכיוון השני היה דורש את ⟦0⟧ כפונקציה של ⟦1⟧ וזה קשה. דוגמה: ⟦2⟧ ב־⟦3⟧ סביב ציר y: ⟦4⟧.",
+    "<b>דיסקות או קליפות?</b> דיסקות: פרוסות מאונכות לציר הסיבוב. קליפות: רצועות מקבילות לו. השלבים: השיטה \"בניית נפח של גוף סיבוב\"."
+   ]
+  },
+  "in16:arc-length": {
+   "b": [
+    null,
+    "האורך של ⟦0⟧ מ־⟦1⟧ עד ⟦2⟧ (כש־⟦3⟧ רציפה):",
+    null,
+    "<b>מאיפה זה בא:</b> חלק זעיר של העקומה כמעט ישר: לפי פיתגורס האורך שלו הוא ⟦0⟧. מוציאים ⟦1⟧: ⟦2⟧. מחברים את כל החלקים.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧: ⟦2⟧, ולכן ⟦3⟧.",
+    "<b>אזהרה:</b> השורש בדרך כלל הופך את האינטגרל לבלתי אפשרי לחישוב מדויק. דוגמאות בספרים נבחרות כך ש־⟦0⟧ יהיה ריבוע שלם; אחרת משתמשים באינטגרציה נומרית (אינטגרלים › 14)."
+   ]
+  },
+  "in16:surface-area-of-revolution": {
+   "b": [
+    null,
+    "סיבוב ⟦0⟧, ⟦1⟧, סביב ציר x:",
+    null,
+    "<b>הרעיון:</b> כל חלק זעיר של העקומה, באורך ⟦0⟧, יוצר רצועה דקה: היקף ⟦1⟧ כפול רוחב ⟦2⟧.",
+    "<b>דוגמה, כדור:</b> ⟦0⟧ ב־⟦1⟧. אז ⟦2⟧, ולכן ⟦3⟧ ✓."
+   ]
+  },
+  "in17:motion-from-velocity-to-position": {
+   "b": [
+    null,
+    "⟦0⟧ &nbsp;·&nbsp; ⟦1⟧ (כל אחד עם קבוע שנקבע מערכי ההתחלה)",
+    "העתק: ⟦0⟧ &nbsp;·&nbsp; הדרך שעברו: ⟦1⟧",
+    "<b>העתק או דרך?</b> העתק הוא איפה שהגעת ביחס לאיפה שהתחלת: 5 קדימה ו־3 אחורה זה ⟦0⟧. דרך סופרת כל צעד: ⟦1⟧. זה אותו הבדל כמו \"ערך האינטגרל מול שטח\" (אינטגרלים › 7).",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧. העתק: ⟦2⟧. דרך: ⟦3⟧.",
+    "<b>נפילה חופשית:</b> ⟦0⟧ נותן ⟦1⟧ ו־⟦2⟧. (נגזרות › 13 הולך בכיוון השני.)"
+   ]
+  },
+  "in17:work": {
+   "b": [
+    null,
+    "כוח ⟦0⟧ שמזיז גוף לאורך ישר מ־⟦1⟧ עד ⟦2⟧ מבצע עבודה ⟦3⟧. (כוח קבוע: ⟦4⟧.)",
+    "<b>למה אינטגרל:</b> לאורך צעד זעיר ⟦0⟧ הכוח כמעט קבוע, ולכן העבודה שם היא ⟦1⟧. מחברים את הצעדים.",
+    "<b>דוגמה, קפיץ</b> (חוק הוק ⟦0⟧): קפיץ עם ⟦1⟧, נמתח מאורכו הטבעי ב־⟦2⟧ עד ⟦3⟧: ⟦4⟧.",
+    "<b>שאיבת נוזל:</b> חותכים את הנוזל לשכבות אופקיות דקות; המשקל של כל שכבה כפול המרחק שהיא מורמת נותן את העבודה שלה; מבצעים אינטגרציה לאורך העומק. השלבים: השיטה \"פתרון בעיית עבודה\"."
+   ]
+  },
+  "in17:fluid-pressure-and-force": {
+   "b": [
+    null,
+    "הלחץ בעומק ⟦0⟧: ⟦1⟧ (⟦2⟧ = המשקל הסגולי של הנוזל)",
+    "הכוח על לוח אנכי שהרוחב שלו בעומק ⟦0⟧ הוא ⟦1⟧: ⟦2⟧",
+    "<b>הרעיון:</b> הלחץ גדל עם העומק, ולכן אי אפשר פשוט לכפול. לרצועה אופקית דקה בעומק ⟦0⟧ יש כמעט לחץ אחד: כוח ⟦1⟧. מחברים את הרצועות.",
+    "<b>דוגמה:</b> שער מלבני ברוחב ⟦0⟧, מעומק ⟦1⟧ עד ⟦2⟧, במים (⟦3⟧): ⟦4⟧."
+   ]
+  },
+  "in18:what-a-differential-equation-is": {
+   "b": [
+    null,
+    "משוואה עם <b>פונקציה</b> לא ידועה והנגזרות שלה, כמו ⟦0⟧. <b>פתרון</b> הוא פונקציה שמקיימת אותה. ה<b>סדר</b> הוא הנגזרת הגבוהה ביותר.",
+    "ל<b>פתרון הכללי</b> יש קבוע שרירותי; <b>תנאי התחלה</b> כמו ⟦0⟧ קובע אותו (<b>בעיית ערך התחלה</b>).",
+    "<b>דוגמה:</b> ⟦0⟧. ננסה ⟦1⟧: ⟦2⟧ ✓. עם ⟦3⟧: ⟦4⟧, ולכן ⟦5⟧.",
+    "<b>למה הן חשובות:</b> הטבע בדרך כלל אומר כמה מהר משהו משתנה, לא מה הוא. \"אוכלוסייה גדלה ביחס לגודלה\" זה ⟦0⟧; פתרון המשוואה אומר מה גודל האוכלוסייה בכל זמן.",
+    "<b>הסוג הפשוט ביותר,</b> ⟦0⟧, הוא פשוט אינטגרציה: ⟦1⟧."
+   ]
+  },
+  "in18:separable-equations": {
+   "b": [
+    null,
+    "משוואה שאפשר לכתוב כ־⟦0⟧ היא <b>פרידה</b>. מעבירים כל מה שעם ⟦1⟧ לאגף אחד וכל מה שעם ⟦2⟧ לאגף השני, ואז מבצעים אינטגרציה לשני האגפים:",
+    null,
+    "<b>דוגמה:</b> ⟦0⟧. מפרידים: ⟦1⟧. אינטגרציה: ⟦2⟧, ולכן ⟦3⟧. צריך רק קבוע אחד (שמים את שני הקבועים באגף אחד).",
+    "<b>לא לאבד פתרונות:</b> חילוק ב־⟦0⟧ מניח ש־⟦1⟧. פתרונות קבועים עם ⟦2⟧ (כאן ⟦3⟧) צריך לבדוק בנפרד."
+   ]
+  },
+  "in18:first-order-linear-equations": {
+   "b": [
+    null,
+    "⟦0⟧. כופלים ב<b>גורם האינטגרציה</b> ⟦1⟧; האגף השמאלי הופך ל־⟦2⟧, ולכן",
+    "⟦0⟧, &nbsp;כלומר &nbsp;⟦1⟧",
+    "<b>למה זה עובד:</b> לפי כלל המכפלה, ⟦0⟧, ו־⟦1⟧ לפי ההגדרה שלו. לכן ⟦2⟧, ואת זה אפשר לבצע אינטגרציה ישירות.",
+    "<b>דוגמה:</b> ⟦0⟧. ⟦1⟧; ⟦2⟧, ולכן ⟦3⟧ ו־⟦4⟧. כל פתרון מתייצב ב־⟦5⟧."
+   ]
+  },
+  "in18:growth-decay-and-cooling": {
+   "b": [
+    null,
+    "גדילה או דעיכה: ⟦0⟧ ← ⟦1⟧ (⟦2⟧ גדל, ⟦3⟧ דועך)",
+    "זמן מחצית חיים: ⟦0⟧ &nbsp;·&nbsp; זמן הכפלה: ⟦1⟧",
+    "חוק הקירור של ניוטון: ⟦0⟧ ← ⟦1⟧",
+    "<b>במילים:</b> כשקצב השינוי פרופורציונלי לכמות, מקבלים גדילה או דעיכה מעריכית. קירור הוא אותו רעיון שמופעל על ה<b>הפרש</b> מטמפרטורת החדר: ככל שהפער גדול יותר, הוא נסגר מהר יותר.",
+    "<b>דוגמה:</b> קפה ב־⟦0⟧ בחדר של ⟦1⟧ הוא ⟦2⟧ אחרי ⟦3⟧ דקות. ⟦4⟧ ← ⟦5⟧. אחרי ⟦6⟧ דקות: ⟦7⟧.",
+    "<b>דוגמה:</b> לחומר יש זמן מחצית חיים של ⟦0⟧ שנים: ⟦1⟧. אחרי ⟦2⟧ שנים נשאר ⟦3⟧."
+   ],
+   "s": [
+    "T₀ (חם)",
+    "טמפרטורת החדר Tₛ"
    ]
   }
  }
