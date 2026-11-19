@@ -3053,7 +3053,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B190</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B191</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -23175,11 +23175,11 @@ function heNode(n) {
     return;
   }
   if (n.nodeType !== 1 || n.matches(HE_SKIP)) return;
-  ["title", "placeholder", "aria-label"].forEach(function (a) { var v = n.getAttribute(a); if (v && /[A-Za-z]/.test(v)) { var t = L(v); if (t !== v) n.setAttribute(a, t); } });
+  ["title", "placeholder", "aria-label", "data-label"].forEach(function (a) { var v = n.getAttribute(a); if (v && /[A-Za-z]/.test(v)) { var t = L(v); if (t !== v) n.setAttribute(a, t); } });
   if (n.closest(HE_SKIP)) return;
   var w = document.createTreeWalker(n, 5, null), x;   // elements and text
   while ((x = w.nextNode())) {
-    if (x.nodeType === 1) { if (x.matches(HE_SKIP)) continue; ["title", "placeholder", "aria-label"].forEach(function (a) { var v = x.getAttribute(a); if (v && /[A-Za-z]/.test(v)) { var t = L(v); if (t !== v) x.setAttribute(a, t); } }); }
+    if (x.nodeType === 1) { if (x.matches(HE_SKIP)) continue; ["title", "placeholder", "aria-label", "data-label"].forEach(function (a) { var v = x.getAttribute(a); if (v && /[A-Za-z]/.test(v)) { var t = L(v); if (t !== v) x.setAttribute(a, t); } }); }
     else heNode(x);
   }
 }
@@ -23192,7 +23192,7 @@ function heObserve() {
       else if (m.type === "attributes") heNode(m.target);
       else m.addedNodes.forEach(heNode);
     });
-  }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["title", "placeholder", "aria-label"] });
+  }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["title", "placeholder", "aria-label", "data-label"] });
 }
 // the library's own HTML: each card's blocks (the <code> math kept as it is), illustration labels, and the
 // card's English title kept in data-en (search still finds it)
