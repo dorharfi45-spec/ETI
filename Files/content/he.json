@@ -1,0 +1,14 @@
+{
+  "ui": {
+    "Base": "בסיס", "Calculus": "חשבון אינפיניטסימלי", "Statistics": "סטטיסטיקה", "Physics": "פיזיקה",
+    "Trig base": "טריגונומטריה – בסיס", "Algebra base": "אלגברה – בסיס", "Geometry base": "גאומטריה – בסיס", "Powers & Logs": "חזקות ולוגריתמים",
+    "Precalc": "הכנה לחדו״א", "Linear algebra base": "וקטורים – בסיס", "Functions": "פונקציות", "Limits and continuity": "גבולות ורציפות",
+    "Derivatives": "נגזרות", "Integrals": "אינטגרלים", "Series": "סדרות וטורים", "Descriptive statistics": "סטטיסטיקה תיאורית",
+    "Probability": "הסתברות", "Combinatorics": "קומבינטוריקה", "Random variables": "משתנים מקריים", "Mechanics": "מכניקה",
+    "Thermodynamics": "תרמודינמיקה", "Waves": "גלים", "Optics": "אופטיקה", "Electricity and magnetism": "חשמל ומגנטיות", "Modern physics": "פיזיקה מודרנית"
+  },
+  "names": {},
+  "text": {},
+  "re": [],
+  "cards": {}
+}

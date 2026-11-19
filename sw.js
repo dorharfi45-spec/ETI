@@ -3,11 +3,11 @@
 //   Pages and lessons: the network first (so a new build arrives at once), the kept copy when offline.
 //   Libraries (Files/vendor/): the kept copy first; they change only with a new CACHE name.
 // Firebase and other sites are never touched. Raise CACHE when the vendor files change.
-var CACHE = "detabase-v1";
+var CACHE = "detabase-v2";
 var FONTS = ["AMS-Regular", "Caligraphic-Bold", "Caligraphic-Regular", "Fraktur-Bold", "Fraktur-Regular", "Main-Bold", "Main-BoldItalic",
   "Main-Italic", "Main-Regular", "Math-BoldItalic", "Math-Italic", "SansSerif-Bold", "SansSerif-Italic", "SansSerif-Regular", "Script-Regular",
   "Size1-Regular", "Size2-Regular", "Size3-Regular", "Size4-Regular", "Typewriter-Regular"];
-var CORE = ["./", "index.html", "Files/detabase.html", "Files/content/eti.html", "Files/manifest.webmanifest", "Files/icon.svg", "Files/icon-192.png",
+var CORE = ["./", "index.html", "Files/detabase.html", "Files/content/eti.html", "Files/content/he.json", "Files/manifest.webmanifest", "Files/icon.svg", "Files/icon-192.png",
   "Files/vendor/mathlive.js", "Files/vendor/mathlive.css", "Files/vendor/jsxgraph.js", "Files/vendor/jsxgraph.css",
   "Files/vendor/pdf.min.js", "Files/vendor/pdf.worker.min.js"].concat(FONTS.map(function (f) { return "Files/vendor/fonts/KaTeX_" + f + ".woff2"; }));
 
