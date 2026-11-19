@@ -3053,7 +3053,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B199</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B200</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -23206,8 +23206,16 @@ function heBlocksOf(card) {
 function heApplyLibrary() {
   var cards = HE.cards || {};
   // every built-in card and concept keeps its English name (search finds it in both languages)
-  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti section.pane"), function (p) { var h = p.querySelector(":scope > h2"); if (h) { var c = h.cloneNode(true); c.querySelectorAll(".num").forEach(function (x) { x.remove(); }); p.setAttribute("data-en", c.textContent.replace(/s+/g, " ").trim()); } });
-  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti [data-id]"), function (card) { var h = card.querySelector(":scope > h4, .tool-title"); if (h) card.setAttribute("data-en", h.textContent.replace(/s+/g, " ").trim()); });
+  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti section.pane"), function (p) { var h = p.querySelector(":scope > h2"); if (h) { var c = h.cloneNode(true); c.querySelectorAll(".num").forEach(function (x) { x.remove(); }); p.setAttribute("data-en", c.textContent.replace(/\s+/g, " ").trim()); } });
+  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti [data-id]"), function (card) { var h = card.querySelector(":scope > h4, .tool-title"); if (h) card.setAttribute("data-en", h.textContent.replace(/\s+/g, " ").trim()); });
+  // tables kept as JSON (data-table, drawn later): each cell's English text is a key of HE.text
+  var tx = HE.text || {};
+  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti [data-table]"), function (t) {
+    var j; try { j = JSON.parse(t.getAttribute("data-table")); } catch (e) { return; }
+    var n = 0;
+    (j.rows || []).forEach(function (r) { (r.c || []).forEach(function (s, i) { if (typeof s === "string" && tx[s]) { r.c[i] = tx[s]; n++; } }); });
+    if (n) t.setAttribute("data-table", JSON.stringify(j));
+  });
   Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti [data-id]"), function (card) {
     var tr = cards[card.getAttribute("data-id")]; if (!tr) return;
     if (tr.b) heBlocksOf(card).forEach(function (el, i) {
