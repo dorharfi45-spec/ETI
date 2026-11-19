@@ -3053,7 +3053,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B188</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B189</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -17611,6 +17611,7 @@ function __detabaseMain() {
     var out = [];
     if (name && L(name) !== name) out.push(name);
     if (ref.lvl === "c" && BI.cards[ref.id]) { var en = BI.cards[ref.id].nodes[0].getAttribute("data-en"); if (en) out.push(en); }
+    if (ref.lvl === "t" && ref.id.slice(0, 2) === "b:") { var pn = document.getElementById("pane-" + ref.id.slice(2)), pe = pn && pn.getAttribute("data-en"); if (pe) out.push(pe); }
     var alt = (store.altNames || {})[refKey(ref)]; if (alt) out.push(alt);
     return out;
   }
@@ -23148,10 +23149,16 @@ function L(s) {
   if (!k || !/[A-Za-z]/.test(k)) return t;
   var h = HE_D.get(k);
   if (h == null) for (var i = 0; i < HE_RE.length; i++) if (HE_RE[i][0].test(k)) { h = k.replace(HE_RE[i][0], HE_RE[i][1]); break; }
-  if (h == null && /( › | · |: )/.test(k)) {
-    var parts = k.split(/( › | · |: )/), any = false;
-    parts = parts.map(function (p, j) { if (j % 2) return p; var q = HE_D.get(p.trim()); if (q != null) { any = true; return p.replace(p.trim(), q); } return p; });
-    if (any) h = parts.join("");
+  // piece by piece: first between " › ", " · " and ": " (a name may itself hold " — "), then inside a piece between " — "
+  if (h == null && /( › | · |: | — )/.test(k)) {
+    var any = false;
+    var seg = function (p, re) {
+      var s = p.trim(), q = HE_D.get(s);
+      if (q != null) { any = true; return p.replace(s, q); }
+      return re ? p.split(re).map(function (x, j) { return j % 2 ? x : seg(x, null); }).join("") : p;
+    };
+    var out = k.split(/( › | · |: )/).map(function (p, j) { return j % 2 ? p : seg(p, /( — )/); }).join("");
+    if (any) h = out;
   }
   return h == null ? t : t.replace(k, h);
 }
@@ -23194,10 +23201,11 @@ function heBlocksOf(card) {
 }
 function heApplyLibrary() {
   var cards = HE.cards || {};
+  // every built-in card and concept keeps its English name (search finds it in both languages)
+  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti section.pane"), function (p) { var h = p.querySelector(":scope > h2"); if (h) { var c = h.cloneNode(true); c.querySelectorAll(".num").forEach(function (x) { x.remove(); }); p.setAttribute("data-en", c.textContent.replace(/s+/g, " ").trim()); } });
+  Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti [data-id]"), function (card) { var h = card.querySelector(":scope > h4, .tool-title"); if (h) card.setAttribute("data-en", h.textContent.replace(/s+/g, " ").trim()); });
   Array.prototype.forEach.call(document.querySelectorAll("#topfolder-eti [data-id]"), function (card) {
     var tr = cards[card.getAttribute("data-id")]; if (!tr) return;
-    var h4 = card.querySelector(":scope > h4, .tool-title");
-    if (h4) card.setAttribute("data-en", h4.textContent.replace(/\s+/g, " ").trim());
     if (tr.b) heBlocksOf(card).forEach(function (el, i) {
       var h = tr.b[i]; if (!h) return;
       var codes = Array.prototype.map.call(el.querySelectorAll("code"), function (c) { return c.outerHTML; });
