@@ -3636,7 +3636,173 @@
   "Find `a`, `b` with `g(a)·g(b) < 0` — try easy points: `0`, `±1`, `π/2`, the interval's ends.": "מוצאים `a`, `b` עם `g(a)·g(b) < 0` — מנסים נקודות קלות: `0`, `±1`, `π/2`, קצות הקטע.",
   "By the IVT, `∃c ∈ (a, b) : g(c) = 0`, i.e. `f(c) = h(c)`. ∎": "לפי משפט ערך הביניים, `∃c ∈ (a, b) : g(c) = 0`, כלומר `f(c) = h(c)`. ∎",
   "`x³ + x − 1 = 0` has a root in `(0, 1)`.\n1. `g(x) = x³ + x − 1`\n2. a polynomial → continuous on `[0, 1]`\n3. `g(0) = −1 < 0`, `g(1) = 1 > 0`\n4. `∃c ∈ (0, 1) : g(c) = 0`. ∎": "ל־`x³ + x − 1 = 0` יש שורש ב־`(0, 1)`.\n1. `g(x) = x³ + x − 1`\n2. פולינום ← רציף ב־`[0, 1]`\n3. `g(0) = −1 < 0`, `g(1) = 1 > 0`\n4. `∃c ∈ (0, 1) : g(c) = 0`. ∎",
-  "`cos x = x` has a solution.\n1. `g(x) = cos x − x`\n2. difference of continuous functions → continuous on `[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎": "ל־`cos x = x` יש פתרון.\n1. `g(x) = cos x − x`\n2. הפרש של פונקציות רציפות ← רציף ב־`[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎"
+  "`cos x = x` has a solution.\n1. `g(x) = cos x − x`\n2. difference of continuous functions → continuous on `[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎": "ל־`cos x = x` יש פתרון.\n1. `g(x) = cos x − x`\n2. הפרש של פונקציות רציפות ← רציף ב־`[0, π/2]`\n3. `g(0) = 1 > 0`, `g(π/2) = −π/2 < 0`\n4. `∃c ∈ (0, π/2) : cos c = c`. ∎",
+  "Find y′ (and a tangent line) when x and y are linked by an equation instead of y = f(x).": "למצוא את y′ (ומשיק) כש־x ו־y קשורים במשוואה במקום y = f(x).",
+  "Differentiate every term with respect to `x`. Each time you differentiate something with `y`, multiply by `y'` (chain rule). A product like `xy` needs the product rule: `(xy)' = y + x y'`.": "גוזרים כל איבר לפי `x`. בכל פעם שגוזרים משהו עם `y`, כופלים ב־`y'` (כלל השרשרת). מכפלה כמו `xy` דורשת את כלל המכפלה: `(xy)' = y + x y'`.",
+  "Move every term with `y'` to one side and everything else to the other.": "מעבירים כל איבר עם `y'` לאגף אחד ואת כל השאר לאגף השני.",
+  "Take `y'` out as a common factor and divide.": "מוציאים את `y'` כגורם משותף ומחלקים.",
+  "For a slope at a point, put in both coordinates (check that the point is on the curve). Tangent line: `y − y₀ = y'(x − x₀)`.": "לשיפוע בנקודה, מציבים את שתי הקואורדינטות (בודקים שהנקודה על העקומה). הישר המשיק: `y − y₀ = y'(x − x₀)`.",
+  "`x² + xy + y² = 7` at `(1, 2)`\n0. Check: `1 + 2 + 4 = 7` ✓\n1. `2x + (y + x y') + 2y y' = 0`\n2. `x y' + 2y y' = −2x − y`\n3. `y' = (−2x − y)/(x + 2y)`\n4. At `(1, 2)`: `y' = (−4)/(5)`. Tangent: `y − 2 = −(4/5)(x − 1)`": "`x² + xy + y² = 7` ב־`(1, 2)`\n0. בדיקה: `1 + 2 + 4 = 7` ✓\n1. `2x + (y + x y') + 2y y' = 0`\n2. `x y' + 2y y' = −2x − y`\n3. `y' = (−2x − y)/(x + 2y)`\n4. ב־`(1, 2)`: `y' = (−4)/(5)`. משיק: `y − 2 = −(4/5)(x − 1)`",
+  "Estimate a value like √(9.2) or (2.01)⁵, or the error caused by a measuring error, with the tangent line.": "להעריך ערך כמו √(9.2) או (2.01)⁵, או את השגיאה שנגרמת משגיאת מדידה, בעזרת הישר המשיק.",
+  "Pick the function, a nearby point `a` where everything is easy to calculate, and the small step `h` (the number you want is `f(a + h)`).": "בוחרים את הפונקציה, נקודה קרובה `a` שבה הכול קל לחישוב, ואת הצעד הקטן `h` (המספר שרוצים הוא `f(a + h)`).",
+  "Work out both exactly at the easy point.": "מחשבים את שניהם בדיוק בנקודה הקלה.",
+  "`f(a + h) ≈ f(a) + f'(a) · h`. For an error estimate, `dy = f'(x) dx` with `dx` = the measuring error.": "`f(a + h) ≈ f(a) + f'(a) · h`. להערכת שגיאה, `dy = f'(x) dx` עם `dx` = שגיאת המדידה.",
+  "`√(9.2)`\n1. `f(x) = √x`, `a = 9`, `h = 0.2`\n2. `f(9) = 3`, `f'(9) = 1/(2 · 3) = 1/6`\n3. `√(9.2) ≈ 3 + 0.2/6 ≈ 3.0333` (true: `3.0332`)": "`√(9.2)`\n1. `f(x) = √x`, `a = 9`, `h = 0.2`\n2. `f(9) = 3`, `f'(9) = 1/(2 · 3) = 1/6`\n3. `√(9.2) ≈ 3 + 0.2/6 ≈ 3.0333` (אמיתי: `3.0332`)",
+  "The radius of a ball is `5 cm`, measured with an error of up to `0.02 cm`. How big is the possible error in the volume?\n1. `V = (4/3)πr³`, `r = 5`, `dr = 0.02`\n2. `V' = 4πr² = 100π`\n3. `dV = 100π · 0.02 = 2π ≈ 6.3 cm³`": "הרדיוס של כדור הוא `5 cm`, ונמדד בשגיאה של עד `0.02 cm`. כמה גדולה השגיאה האפשרית בנפח?\n1. `V = (4/3)πr³`, `r = 5`, `dr = 0.02`\n2. `V' = 4πr² = 100π`\n3. `dV = 100π · 0.02 = 2π ≈ 6.3 cm³`",
+  "Find how fast one quantity changes when you know how fast a linked quantity changes.": "למצוא כמה מהר גודל אחד משתנה כשיודעים כמה מהר משתנה גודל שקשור אליו.",
+  "Draw the situation at a general moment. Name every changing quantity with a letter (functions of `t`); write in only the numbers that never change.": "משרטטים את המצב ברגע כללי. נותנים אות לכל גודל משתנה (פונקציות של `t`); כותבים רק את המספרים שאף פעם לא משתנים.",
+  "As rates: given `dx/dt = …`, asked `dy/dt` when `x = …`": "כקצבים: נתון `dx/dt = …`, נשאל `dy/dt` כאשר `x = …`",
+  "Pythagoras, similar triangles, an area or volume formula. If there's an extra variable, remove it with another relation.": "פיתגורס, משולשים דומים, נוסחת שטח או נפח. אם יש משתנה נוסף, מעלימים אותו בעזרת קשר נוסף.",
+  "Every changing letter gets its rate by the chain rule. Only now plug in the numbers of the moment you're asked about, and solve for the unknown rate.": "כל אות משתנה מקבלת את הקצב שלה לפי כלל השרשרת. רק עכשיו מציבים את המספרים של הרגע שעליו שואלים, ומחלצים את הקצב הלא ידוע.",
+  "A circle's radius grows at `2 cm/s`. How fast does its area grow when `r = 10 cm`?\n2. `dr/dt = 2`; asked `dA/dt` at `r = 10`\n3. `A = πr²`\n4. `dA/dt = 2πr · dr/dt = 2π · 10 · 2 = 40π ≈ 126 cm²/s`": "הרדיוס של מעגל גדל ב־`2 cm/s`. כמה מהר השטח שלו גדל כאשר `r = 10 cm`?\n2. `dr/dt = 2`; נשאל `dA/dt` ב־`r = 10`\n3. `A = πr²`\n4. `dA/dt = 2πr · dr/dt = 2π · 10 · 2 = 40π ≈ 126 cm²/s`",
+  "Water pours into a cone (point down, height `12`, top radius `4`) at `3 m³/min`. How fast does the water rise when it's `6 m` deep?\n2. `dV/dt = 3`; asked `dh/dt` at `h = 6`\n3. `V = (1/3)πr²h`. Similar triangles: `r/(h) = 4/12`, so `r = h/3` and `V = (π h³)/27`\n4. `dV/dt = (π h²)/9 · dh/dt` → `3 = (36π)/9 · dh/dt` → `dh/dt = 3/(4π) ≈ 0.24 m/min`": "מים נשפכים לחרוט (חודו למטה, גובה `12`, רדיוס עליון `4`) בקצב `3 m³/min`. כמה מהר עולה המים כשהעומק `6 m`?\n2. `dV/dt = 3`; נשאל `dh/dt` ב־`h = 6`\n3. `V = (1/3)πr²h`. משולשים דומים: `r/(h) = 4/12`, ולכן `r = h/3` ו־`V = (π h³)/27`\n4. `dV/dt = (π h²)/9 · dh/dt` ← `3 = (36π)/9 · dh/dt` ← `dh/dt = 3/(4π) ≈ 0.24 m/min`",
+  "Find the largest or smallest value of a quantity in a word problem (area, volume, cost, distance).": "למצוא את הערך הגדול או הקטן ביותר של גודל בבעיה מילולית (שטח, נפח, עלות, מרחק).",
+  "Draw it and give a letter to every quantity that can change.": "משרטטים ונותנים אות לכל גודל שיכול להשתנות.",
+  "A formula for what should be largest or smallest, in your letters.": "נוסחה למה שצריך להיות הכי גדול או הכי קטן, באותיות שלך.",
+  "Use the condition in the question (fixed perimeter, fixed volume, …) to replace all letters but one.": "משתמשים בתנאי שבשאלה (היקף קבוע, נפח קבוע, …) כדי להחליף את כל האותיות חוץ מאחת.",
+  "Which values make sense? (Lengths `> 0`, nothing bigger than the material.)": "אילו ערכים הגיוניים? (אורכים `> 0`, שום דבר גדול מהחומר.)",
+  "Critical points inside, plus the ends (or the limits at open ends). Compare, or use \"one critical point on an interval\".": "נקודות קריטיות בפנים, ועוד הקצוות (או הגבולות בקצוות פתוחים). משווים, או משתמשים ב\"נקודה קריטית אחת בקטע\".",
+  "Give what was asked: the dimensions, the value, or both, with units.": "עונים על מה שנשאל: המידות, הערך, או שניהם, עם יחידות.",
+  "`600 m` of fence for a rectangle along a straight river (no fence on the river side). Largest area?\n1. `x` = the two sides at right angles to the river, `y` = the side along it.\n2. `A = xy`\n3. `2x + y = 600` → `y = 600 − 2x`, `A(x) = 600x − 2x²`\n4. `0 < x < 300`\n5. `A'(x) = 600 − 4x = 0` → `x = 150`; `A'' = −4 < 0`: maximum. Near the ends `A → 0`.\n6. `150 m × 300 m`, area `45,000 m²`": "`600 m` של גדר למלבן לאורך נהר ישר (בלי גדר בצד הנהר). מה השטח הגדול ביותר?\n1. `x` = שתי הצלעות שמאונכות לנהר, `y` = הצלע שלאורכו.\n2. `A = xy`\n3. `2x + y = 600` ← `y = 600 − 2x`, `A(x) = 600x − 2x²`\n4. `0 < x < 300`\n5. `A'(x) = 600 − 4x = 0` ← `x = 150`; `A'' = −4 < 0`: מקסימום. ליד הקצוות `A → 0`.\n6. `150 m × 300 m`, שטח `45,000 m²`",
+  "A closed can must hold `V = 1000 cm³`. Which radius uses the least metal?\n2. Surface `S = 2πr² + 2πrh`\n3. `πr²h = 1000` → `h = 1000/(πr²)`, so `S(r) = 2πr² + 2000/(r)`\n4. `r > 0`\n5. `S'(r) = 4πr − 2000/(r²) = 0` → `r³ = 500/π` → `r ≈ 5.42 cm`. `S → ∞` at both ends, so this is the minimum.\n6. `r ≈ 5.42 cm`, `h = 1000/(πr²) ≈ 10.84 cm`: the height equals the diameter.": "פחית סגורה צריכה להכיל `V = 1000 cm³`. איזה רדיוס משתמש בהכי מעט מתכת?\n2. שטח פנים `S = 2πr² + 2πrh`\n3. `πr²h = 1000` ← `h = 1000/(πr²)`, ולכן `S(r) = 2πr² + 2000/(r)`\n4. `r > 0`\n5. `S'(r) = 4πr − 2000/(r²) = 0` ← `r³ = 500/π` ← `r ≈ 5.42 cm`. `S → ∞` בשני הקצוות, ולכן זה המינימום.\n6. `r ≈ 5.42 cm`, `h = 1000/(πr²) ≈ 10.84 cm`: הגובה שווה לקוטר.",
+  "Find a solution of f(x) = 0 to several decimal places.": "למצוא פתרון של f(x) = 0 בדיוק של כמה ספרות אחרי הנקודה.",
+  "Move everything to one side, e.g. `cos x = x` becomes `f(x) = cos x − x`.": "מעבירים הכול לאגף אחד, למשל `cos x = x` הופך ל־`f(x) = cos x − x`.",
+  "Find an interval where `f` changes sign (a root is there), and start near it.": "מוצאים קטע שבו `f` מחליפה סימן (יש שם שורש), ומתחילים קרוב אליו.",
+  "`x_(n+1) = x_(n) − (f(x_(n)))/(f'(x_(n)))`. Stop when two guesses in a row agree to the decimals you need.": "`x_(n+1) = x_(n) − (f(x_(n)))/(f'(x_(n)))`. עוצרים כששני ניחושים רצופים מסכימים בספרות הדרושות.",
+  "1. `f(x) = cos x − x`, `f'(x) = −sin x − 1`\n2. `f(0) = 1 > 0`, `f(1) ≈ −0.46 < 0`: a root in `(0, 1)`. Start `x₁ = 1`.\n3. `x₂ = 1 − (−0.4597)/(−1.8415) ≈ 0.7504`\n`x₃ ≈ 0.7391`, `x₄ ≈ 0.7391`\nRoot `≈ 0.7391`": "1. `f(x) = cos x − x`, `f'(x) = −sin x − 1`\n2. `f(0) = 1 > 0`, `f(1) ≈ −0.46 < 0`: שורש ב־`(0, 1)`. התחלה `x₁ = 1`.\n3. `x₂ = 1 − (−0.4597)/(−1.8415) ≈ 0.7504`\n`x₃ ≈ 0.7391`, `x₄ ≈ 0.7391`\nשורש `≈ 0.7391`",
+  "`∛10`: solve `x³ − 10 = 0`, `f'(x) = 3x²`\n2. `2³ = 8 < 10 < 27`: start `x₁ = 2`\n3. `x₂ = 2 − (−2)/(12) ≈ 2.1667`, `x₃ ≈ 2.1545`, `x₄ ≈ 2.1544`\n`∛10 ≈ 2.1544`": "`∛10`: פותרים `x³ − 10 = 0`, `f'(x) = 3x²`\n2. `2³ = 8 < 10 < 27`: התחלה `x₁ = 2`\n3. `x₂ = 2 − (−2)/(12) ≈ 2.1667`, `x₃ ≈ 2.1545`, `x₄ ≈ 2.1544`\n`∛10 ≈ 2.1544`",
+  "Go through the rules in order and decide, with an example for each rule.": "לעבור על הכללים לפי הסדר ולהכריע, עם דוגמה לכל כלל.",
+  "`a` outside the domain, or `f` not continuous at `a` → **not differentiable**. Stop.": "`a` מחוץ לתחום ההגדרה, או ש־`f` לא רציפה ב־`a` ← **לא גזירה**. עוצרים.",
+  "Near `a`, `f` is built from functions differentiable at `a` (no denominator `0`, no root of `0`, no `|·|` of `0`, no breakpoint) → **differentiable**. Stop.": "ליד `a`, `f` בנויה מפונקציות גזירות ב־`a` (בלי מכנה `0`, בלי שורש של `0`, בלי `|·|` של `0`, בלי נקודת שבירה) ← **גזירה**. עוצרים.",
+  "Compare the one-sided derivatives. Different → corner, **not differentiable**. Use the method for a breakpoint.": "משווים את הנגזרות החד־צדדיות. שונות ← פינה, **לא גזירה**. משתמשים בשיטה לנקודת שבירה.",
+  "A denominator `0` or an undefined value in `f'` is a warning, not a verdict. `f` is continuous at `a`, so take `lim_(x→a) f'(x)`:\n- finite `L` → differentiable, `f'(a) = L`\n- `±∞` → **not differentiable**\n- no limit → next stage": "מכנה `0` או ערך לא מוגדר ב־`f'` הם אזהרה, לא פסק דין. `f` רציפה ב־`a`, ולכן לוקחים `lim_(x→a) f'(x)`:\n- `L` סופי ← גזירה, `f'(a) = L`\n- `±∞` ← **לא גזירה**\n- אין גבול ← לשלב הבא",
+  "Calculate `lim_(x→a) (f(x) − f(a))/(x − a)`. It always decides.": "מחשבים את `lim_(x→a) (f(x) − f(a))/(x − a)`. זה תמיד מכריע.",
+  "f(x) = { x + 1 ; x ≥ 0\n{ x ; x < 0\nAt `0`: left limit `0`, `f(0) = 1`. Not continuous, so not differentiable.": "f(x) = { x + 1 ; x ≥ 0\n{ x ; x < 0\nב־`0`: גבול משמאל `0`, `f(0) = 1`. לא רציפה, ולכן לא גזירה.",
+  "`f(x) = x²·sin x + eˣ` is built from functions differentiable everywhere, so it is differentiable everywhere.": "`f(x) = x²·sin x + eˣ` בנויה מפונקציות גזירות בכל מקום, ולכן היא גזירה בכל מקום.",
+  "`f(x) = |x − 1|` at `1`.\nRight: `f = x − 1`, slope `1`. Left: `f = 1 − x`, slope `−1`. Different, so not differentiable.": "`f(x) = |x − 1|` ב־`1`.\nמימין: `f = x − 1`, שיפוע `1`. משמאל: `f = 1 − x`, שיפוע `−1`. שונים, ולכן לא גזירה.",
+  "`f(x) = ∛x` at `0`. Continuous.\n`f'(x) = 1/(3∛(x²)) → +∞`, so not differentiable.": "`f(x) = ∛x` ב־`0`. רציפה.\n`f'(x) = 1/(3∛(x²)) → +∞`, ולכן לא גזירה.",
+  "`f(x) = ∛(x²)` at `0`. Continuous.\n`f'(x) = 2/(3∛x)` → `+∞` from the right, `−∞` from the left. Not differentiable.": "`f(x) = ∛(x²)` ב־`0`. רציפה.\n`f'(x) = 2/(3∛x)` ← `+∞` מימין, `−∞` משמאל. לא גזירה.",
+  "`f(x) = √(x⁴)` at `0`.\nThe chain rule gives `4x³/(2√(x⁴))`, undefined at `0`. But `√(x⁴) = x²`, and `lim_(x→0) f'(x) = 0`, so `f'(0) = 0`. Differentiable.": "`f(x) = √(x⁴)` ב־`0`.\nכלל השרשרת נותן `4x³/(2√(x⁴))`, שלא מוגדר ב־`0`. אבל `√(x⁴) = x²`, ו־`lim_(x→0) f'(x) = 0`, ולכן `f'(0) = 0`. גזירה.",
+  "`f(x) = x·sin(1/x)`, `f(0) = 0`.\nQuotient: `(f(x) − 0)/(x − 0) = sin(1/x)`, no limit. Not differentiable.\n\n`f(x) = x²·sin(1/x)`, `f(0) = 0`.\nQuotient: `x·sin(1/x) → 0` (zero times bounded), so `f'(0) = 0`, although `f'(x) = 2x·sin(1/x) − cos(1/x)` has no limit at `0`.": "`f(x) = x·sin(1/x)`, `f(0) = 0`.\nהמנה: `(f(x) − 0)/(x − 0) = sin(1/x)`, אין גבול. לא גזירה.\n\n`f(x) = x²·sin(1/x)`, `f(0) = 0`.\nהמנה: `x·sin(1/x) → 0` (אפס כפול חסומה), ולכן `f'(0) = 0`, אף שלפונקציה `f'(x) = 2x·sin(1/x) − cos(1/x)` אין גבול ב־`0`.",
+  "When the arithmetic can't be used: differentiate each piece and compare the limits where the pieces connect.": "כשאי אפשר להשתמש באריתמטיקה: גוזרים כל חלק ומשווים את הגבולות במקום שבו החלקים מתחברים.",
+  "Check `f` is continuous at the breakpoint `a`: both one-sided limits equal `f(a)`. If not → **not differentiable**, even if the slopes match.": "בודקים ש־`f` רציפה בנקודת השבירה `a`: שני הגבולות החד־צדדיים שווים ל־`f(a)`. אם לא ← **לא גזירה**, גם אם השיפועים מתאימים.",
+  "Find `f'` on each open side of `a`, with the usual formulas. Not at `a` itself.": "מוצאים את `f'` בכל צד פתוח של `a`, בנוסחאות הרגילות. לא ב־`a` עצמה.",
+  "Calculate `lim_(x→a⁻) f'(x)` and `lim_(x→a⁺) f'(x)`.": "מחשבים `lim_(x→a⁻) f'(x)` ו־`lim_(x→a⁺) f'(x)`.",
+  "Equal and finite → **differentiable**, `f'(a)` = that limit.\nDifferent → corner, **not differentiable**.\nInfinite → **not differentiable**.\nNo limit → use the definition.": "שווים וסופיים ← **גזירה**, `f'(a)` = הגבול הזה.\nשונים ← פינה, **לא גזירה**.\nאינסופי ← **לא גזירה**.\nאין גבול ← לפי ההגדרה.",
+  "f(x) = { x² ; x ≤ 1\n{ 2x − 1 ; x > 1\nContinuous: `1` from both sides. Left: `2x → 2`. Right: `2`. So `f'(1) = 2`.": "f(x) = { x² ; x ≤ 1\n{ 2x − 1 ; x > 1\nרציפה: `1` משני הצדדים. משמאל: `2x → 2`. מימין: `2`. לכן `f'(1) = 2`.",
+  "f(x) = { x² ; x ≤ 1\n{ 3x − 2 ; x > 1\nContinuous: `1` from both sides. Left: `2`. Right: `3`. Not differentiable at `1`.": "f(x) = { x² ; x ≤ 1\n{ 3x − 2 ; x > 1\nרציפה: `1` משני הצדדים. משמאל: `2`. מימין: `3`. לא גזירה ב־`1`.",
+  "f(x) = { x² ; x ≤ 1\n{ x² + 1 ; x > 1\nSlopes: `2` and `2`. But left limit `1`, right limit `2`: not continuous, so not differentiable.": "f(x) = { x² ; x ≤ 1\n{ x² + 1 ; x > 1\nשיפועים: `2` ו־`2`. אבל גבול משמאל `1`, גבול מימין `2`: לא רציפה, ולכן לא גזירה.",
+  "f(x) = { x² + a ; x ≤ 1\n{ b·x ; x > 1\nContinuity: `1 + a = b`. Slopes: `2 = b`. So `b = 2`, `a = 1`.": "f(x) = { x² + a ; x ≤ 1\n{ b·x ; x > 1\nרציפות: `1 + a = b`. שיפועים: `2 = b`. לכן `b = 2`, `a = 1`.",
+  "`f(x) = x·|x|` at `0`. The arithmetic can't be used, because `|x|` is not differentiable at `0`.\nf(x) = { x² ; x ≥ 0\n{ −x² ; x < 0\nContinuous. Right: `2x → 0`. Left: `−2x → 0`. So `f'(0) = 0`.": "`f(x) = x·|x|` ב־`0`. אי אפשר להשתמש באריתמטיקה, כי `|x|` לא גזירה ב־`0`.\nf(x) = { x² ; x ≥ 0\n{ −x² ; x < 0\nרציפה. מימין: `2x → 0`. משמאל: `−2x → 0`. לכן `f'(0) = 0`.",
+  "Name part of the function as its own function, so the long part cancels and never has to be differentiated.": "לתת לחלק מהפונקציה שם של פונקציה משלו, כך שהחלק הארוך מצטמצם ואף פעם לא צריך לגזור אותו.",
+  "Write `f(x) = u(x)·v(x)` with `u` the short factor and `v` the long one. Or `f(x) = h(g(x))` with `g` the long inner function.": "כותבים `f(x) = u(x)·v(x)` כאשר `u` הגורם הקצר ו־`v` הארוך. או `f(x) = h(g(x))` כאשר `g` הפונקציה הפנימית הארוכה.",
+  "Product: `f'(a) = u'(a)·v(a) + u(a)·v'(a)`\nChain: `f'(a) = h'(g(a))·g'(a)`": "מכפלה: `f'(a) = u'(a)·v(a) + u(a)·v'(a)`\nשרשרת: `f'(a) = h'(g(a))·g'(a)`",
+  "`u(a) = 0` → `f'(a) = u'(a)·v(a)`: only the value of `v` is needed.\n`u(a) = 0` and `u'(a) = 0` → `f'(a) = 0`, whatever `v` is.\n`h'(g(a)) = 0` → `f'(a) = 0`, whatever `g'` is.": "`u(a) = 0` ← `f'(a) = u'(a)·v(a)`: צריך רק את הערך של `v`.\n`u(a) = 0` ו־`u'(a) = 0` ← `f'(a) = 0`, לא משנה מה `v`.\n`h'(g(a)) = 0` ← `f'(a) = 0`, לא משנה מה `g'`.",
+  "The product rule can't be used. With `u(a) = 0`, use the definition:\n`f'(a) = lim_(x→a) u(x)/(x − a) · v(x) = u'(a)·v(a)`\nThis only needs `v` continuous at `a`.": "אי אפשר להשתמש בכלל המכפלה. עם `u(a) = 0`, משתמשים בהגדרה:\n`f'(a) = lim_(x→a) u(x)/(x − a) · v(x) = u'(a)·v(a)`\nזה דורש רק ש־`v` תהיה רציפה ב־`a`.",
+  "`f(x) = sin²x·(eˣ + x⁷ + ln(x + 2))⁵` at `0`.\n`u = sin²x`: `u(0) = 0`, `u'(x) = 2·sin x·cos x`, so `u'(0) = 0`.\nTherefore `f'(0) = 0`, whatever the long term is.\nNote: `sin x` alone has `u(0) = 0` but `u'(0) = 1`, so with `sin x` the long term's value is still needed.": "`f(x) = sin²x·(eˣ + x⁷ + ln(x + 2))⁵` ב־`0`.\n`u = sin²x`: `u(0) = 0`, `u'(x) = 2·sin x·cos x`, ולכן `u'(0) = 0`.\nלכן `f'(0) = 0`, לא משנה מה האיבר הארוך.\nשימו לב: ל־`sin x` לבד יש `u(0) = 0` אבל `u'(0) = 1`, ולכן עם `sin x` עדיין צריך את ערך האיבר הארוך.",
+  "`f(x) = (x − 1)·(x⁹ + 3x⁵ − x + 1)` at `1`.\n`u = x − 1`: `u(1) = 0`, `u' = 1`.\n`f'(1) = 1·v(1) = 1 + 3 − 1 + 1 = 4`": "`f(x) = (x − 1)·(x⁹ + 3x⁵ − x + 1)` ב־`1`.\n`u = x − 1`: `u(1) = 0`, `u' = 1`.\n`f'(1) = 1·v(1) = 1 + 3 − 1 + 1 = 4`",
+  "`f(x) = x(x − 1)(x − 2)…(x − 10)` at `0`.\n`u = x`, `v = (x − 1)…(x − 10)`.\n`f'(0) = 1·v(0) = (−1)(−2)…(−10) = 10!`": "`f(x) = x(x − 1)(x − 2)…(x − 10)` ב־`0`.\n`u = x`, `v = (x − 1)…(x − 10)`.\n`f'(0) = 1·v(0) = (−1)(−2)…(−10) = 10!`",
+  "`f(x) = (x⁵ + 3x³ + x − 5)⁶` at `1`.\n`g = x⁵ + 3x³ + x − 5`, `h = t⁶`, and `g(1) = 0`.\n`f'(1) = 6·g(1)⁵·g'(1) = 0`": "`f(x) = (x⁵ + 3x³ + x − 5)⁶` ב־`1`.\n`g = x⁵ + 3x³ + x − 5`, `h = t⁶`, ו־`g(1) = 0`.\n`f'(1) = 6·g(1)⁵·g'(1) = 0`",
+  "`f(x) = sin x·|x|` at `0`. `|x|` is not differentiable at `0`, so use the definition:\n`f(x)/x = (sin x)/x·|x| → 1·0 = 0`, so `f'(0) = 0`.": "`f(x) = sin x·|x|` ב־`0`. `|x|` לא גזירה ב־`0`, ולכן לפי ההגדרה:\n`f(x)/x = (sin x)/x·|x| → 1·0 = 0`, ולכן `f'(0) = 0`.",
+  "Compare the two sides at the start of the interval, then compare their derivatives.": "להשוות את שני האגפים בתחילת הקטע, ואז להשוות את הנגזרות שלהם.",
+  "To prove `f(x) > g(x)` on `x > a`, define `h(x) = f(x) − g(x)` and prove `h > 0`. `h` must be continuous at the start `a`.": "כדי להוכיח `f(x) > g(x)` ב־`x > a`, מגדירים `h(x) = f(x) − g(x)` ומוכיחים `h > 0`. `h` צריכה להיות רציפה בהתחלה `a`.",
+  "Calculate `h(a)`. You need `h(a) ≥ 0`.": "מחשבים `h(a)`. צריך `h(a) ≥ 0`.",
+  "Show `h'(x) > 0` for `x > a`. `h' = 0` at single points is allowed.\nCan't see the sign of `h'`? Repeat the method on `h'`: check `h'(a)`, then the sign of `h''`.": "מראים `h'(x) > 0` עבור `x > a`. `h' = 0` בנקודות בודדות מותר.\nלא רואים את הסימן של `h'`? חוזרים על השיטה עבור `h'`: בודקים `h'(a)`, ואז את הסימן של `h''`.",
+  "`h` is strictly increasing, so `h(x) > h(a) ≥ 0` for `x > a`.\nThe opposite case: if `h(a) ≤ 0` and `h' < 0`, then `h < 0`.": "`h` עולה ממש, ולכן `h(x) > h(a) ≥ 0` עבור `x > a`.\nהמקרה ההפוך: אם `h(a) ≤ 0` ו־`h' < 0`, אז `h < 0`.",
+  "`eˣ > 1 + x` for `x > 0`.\n`h = eˣ − 1 − x`, `h(0) = 0`.\n`h' = eˣ − 1 > 0` for `x > 0`. So `h > 0`.": "`eˣ > 1 + x` עבור `x > 0`.\n`h = eˣ − 1 − x`, `h(0) = 0`.\n`h' = eˣ − 1 > 0` עבור `x > 0`. לכן `h > 0`.",
+  "`sin x < x` for `x > 0`.\n`h = x − sin x`, `h(0) = 0`.\n`h' = 1 − cos x ≥ 0`, zero only at single points. So `h` is strictly increasing and `h > 0`.": "`sin x < x` עבור `x > 0`.\n`h = x − sin x`, `h(0) = 0`.\n`h' = 1 − cos x ≥ 0`, אפס רק בנקודות בודדות. לכן `h` עולה ממש ו־`h > 0`.",
+  "`ln(1 + x) < x` for `x > 0`.\n`h = x − ln(1 + x)`, `h(0) = 0`.\n`h' = 1 − 1/(1 + x) = x/(1 + x) > 0`. So `h > 0`.": "`ln(1 + x) < x` עבור `x > 0`.\n`h = x − ln(1 + x)`, `h(0) = 0`.\n`h' = 1 − 1/(1 + x) = x/(1 + x) > 0`. לכן `h > 0`.",
+  "`cos x > 1 − x²/2` for `x > 0`.\n`h = cos x − 1 + x²/2`, `h(0) = 0`.\n`h' = x − sin x`, `h'(0) = 0`.\n`h'' = 1 − cos x ≥ 0`, so `h' > 0` for `x > 0`, so `h > 0`.": "`cos x > 1 − x²/2` עבור `x > 0`.\n`h = cos x − 1 + x²/2`, `h(0) = 0`.\n`h' = x − sin x`, `h'(0) = 0`.\n`h'' = 1 − cos x ≥ 0`, ולכן `h' > 0` עבור `x > 0`, ולכן `h > 0`.",
+  "Find the critical points, then use the sign of the derivative on each side to decide maximum or minimum.": "למצוא את הנקודות הקריטיות, ואז להשתמש בסימן הנגזרת בכל צד כדי להכריע מקסימום או מינימום.",
+  "Write the domain of `f`.": "כותבים את תחום ההגדרה של `f`.",
+  "Find `f'` and factor it as far as you can.": "מוצאים את `f'` ומפרקים אותה לגורמים כמה שאפשר.",
+  "Solve `f'(x) = 0`. Add the points of the domain where `f'` is undefined, including breakpoints.": "פותרים `f'(x) = 0`. מוסיפים את נקודות התחום שבהן `f'` לא מוגדרת, כולל נקודות שבירה.",
+  "Mark the critical points and domain gaps on a number line. Plug one value from each interval into `f'` and write `+` or `−`.": "מסמנים את הנקודות הקריטיות ואת החורים בתחום על ציר המספרים. מציבים ערך אחד מכל קטע ב־`f'` וכותבים `+` או `−`.",
+  "`+` to `−`: maximum. `−` to `+`: minimum. Same sign: no extremum. Calculate `f` at each extremum to get the point.": "מ־`+` ל־`−`: מקסימום. מ־`−` ל־`+`: מינימום. אותו סימן: אין קיצון. מחשבים את `f` בכל קיצון כדי לקבל את הנקודה.",
+  "`f(x) = x³ − 3x`, `f' = 3(x − 1)(x + 1)`.\nCritical: `x = ±1`.\nSigns: `x < −1`: `+` · `−1 < x < 1`: `−` · `x > 1`: `+`\nMaximum `(−1, 2)`, minimum `(1, −2)`.": "`f(x) = x³ − 3x`, `f' = 3(x − 1)(x + 1)`.\nקריטיות: `x = ±1`.\nסימנים: `x < −1`: `+` · `−1 < x < 1`: `−` · `x > 1`: `+`\nמקסימום `(−1, 2)`, מינימום `(1, −2)`.",
+  "`f(x) = x⁴ − 4x³`, `f' = 4x²(x − 3)`.\nCritical: `x = 0`, `x = 3`.\nSigns: `x < 0`: `−` · `0 < x < 3`: `−` · `x > 3`: `+`\n`x = 0`: no sign change, no extremum. Minimum `(3, −27)`.": "`f(x) = x⁴ − 4x³`, `f' = 4x²(x − 3)`.\nקריטיות: `x = 0`, `x = 3`.\nסימנים: `x < 0`: `−` · `0 < x < 3`: `−` · `x > 3`: `+`\n`x = 0`: אין החלפת סימן, אין קיצון. מינימום `(3, −27)`.",
+  "`f(x) = ∛(x²)`, `f' = 2/(3∛x)`.\n`f'` is never `0` and is undefined at `0`, which is in the domain.\nSigns: `x < 0`: `−` · `x > 0`: `+`\nMinimum `(0, 0)`.": "`f(x) = ∛(x²)`, `f' = 2/(3∛x)`.\n`f'` אף פעם לא `0` ואינה מוגדרת ב־`0`, שנמצא בתחום ההגדרה.\nסימנים: `x < 0`: `−` · `x > 0`: `+`\nמינימום `(0, 0)`.",
+  "`f(x) = |x² − 1|`.\nf'(x) = { 2x ; |x| > 1\n{ −2x ; |x| < 1\nCritical: `x = 0` (`f' = 0`), `x = ±1` (undefined).\nSigns: `−`, `+`, `−`, `+`\nMinimum at `(−1, 0)` and `(1, 0)`, maximum `(0, 1)`.": "`f(x) = |x² − 1|`.\nf'(x) = { 2x ; |x| > 1\n{ −2x ; |x| < 1\nקריטיות: `x = 0` (`f' = 0`), `x = ±1` (לא מוגדרת).\nסימנים: `−`, `+`, `−`, `+`\nמינימום ב־`(−1, 0)` וב־`(1, 0)`, מקסימום `(0, 1)`.",
+  "Compare the critical points and the two ends.": "להשוות את הנקודות הקריטיות ואת שני הקצוות.",
+  "Check `f` is continuous on the closed interval `[a, b]`. By the extreme value theorem, both absolute extrema exist.": "בודקים ש־`f` רציפה בקטע הסגור `[a, b]`. לפי משפט ויירשטראס, שני הקיצונים המוחלטים קיימים.",
+  "Critical points inside `(a, b)`, plus `a` and `b`. No sign table needed.": "נקודות קריטיות בתוך `(a, b)`, ועוד `a` ו־`b`. אין צורך בטבלת סימנים.",
+  "Calculate `f` at every candidate. The largest value is the absolute maximum, the smallest is the absolute minimum.": "מחשבים את `f` בכל מועמדת. הערך הגדול ביותר הוא המקסימום המוחלט, הקטן ביותר הוא המינימום המוחלט.",
+  "`f(x) = x³ − 3x` on `[0, 3]`.\nCritical inside: `x = 1`.\n`f(0) = 0`, `f(1) = −2`, `f(3) = 18`\nAbsolute maximum `18` at `x = 3`, absolute minimum `−2` at `x = 1`.": "`f(x) = x³ − 3x` ב־`[0, 3]`.\nקריטית בפנים: `x = 1`.\n`f(0) = 0`, `f(1) = −2`, `f(3) = 18`\nמקסימום מוחלט `18` ב־`x = 3`, מינימום מוחלט `−2` ב־`x = 1`.",
+  "`f(x) = x·e⁻ˣ` on `[0, 2]`.\n`f' = (1 − x)·e⁻ˣ`, critical: `x = 1`.\n`f(0) = 0`, `f(1) = 1/e`, `f(2) = 2/e²`\nAbsolute maximum `1/e` at `x = 1`, absolute minimum `0` at `x = 0`.": "`f(x) = x·e⁻ˣ` ב־`[0, 2]`.\n`f' = (1 − x)·e⁻ˣ`, קריטית: `x = 1`.\n`f(0) = 0`, `f(1) = 1/e`, `f(2) = 2/e²`\nמקסימום מוחלט `1/e` ב־`x = 1`, מינימום מוחלט `0` ב־`x = 0`.",
+  "The extreme value theorem doesn't apply, so use the limits at the ends of the domain.": "משפט ויירשטראס לא חל, ולכן משתמשים בגבולות בקצות תחום ההגדרה.",
+  "Calculate the limit of `f` at both ends of the domain.": "מחשבים את הגבול של `f` בשני קצות תחום ההגדרה.",
+  "Both `+∞`: absolute minimum, no absolute maximum.\nBoth `−∞`: absolute maximum, no absolute minimum.\n`+∞` and `−∞`: neither.\nFinite limit: compare it with the values you find.": "שניהם `+∞`: מינימום מוחלט, אין מקסימום מוחלט.\nשניהם `−∞`: מקסימום מוחלט, אין מינימום מוחלט.\n`+∞` ו־`−∞`: אף אחד.\nגבול סופי: משווים אותו לערכים שמוצאים.",
+  "Find the critical points and calculate `f` at each.": "מוצאים את הנקודות הקריטיות ומחשבים את `f` בכל אחת.",
+  "The extremum that exists is at the critical point with the smallest (or largest) value.": "הקיצון שקיים נמצא בנקודה הקריטית עם הערך הקטן ביותר (או הגדול ביותר).",
+  "`f(x) = x⁴ − 2x²`. Both limits `+∞`, so there is an absolute minimum and no absolute maximum.\n`f' = 4x(x − 1)(x + 1)`, critical: `0`, `±1`.\n`f(0) = 0`, `f(±1) = −1`\nAbsolute minimum `−1`, reached at two points.": "`f(x) = x⁴ − 2x²`. שני הגבולות `+∞`, ולכן יש מינימום מוחלט ואין מקסימום מוחלט.\n`f' = 4x(x − 1)(x + 1)`, קריטיות: `0`, `±1`.\n`f(0) = 0`, `f(±1) = −1`\nמינימום מוחלט `−1`, שמתקבל בשתי נקודות.",
+  "`f(x) = x + 1/x` on `(0, ∞)`. Both limits `+∞`.\n`f' = 1 − 1/x²`, critical: `x = 1`, `f(1) = 2`.\nAbsolute minimum `2`. This proves `x + 1/x ≥ 2` for `x > 0`.": "`f(x) = x + 1/x` ב־`(0, ∞)`. שני הגבולות `+∞`.\n`f' = 1 − 1/x²`, קריטיות: `x = 1`, `f(1) = 2`.\nמינימום מוחלט `2`. זה מוכיח `x + 1/x ≥ 2` עבור `x > 0`.",
+  "`f(x) = x³ − 3x` on `ℝ`. Limits `−∞` and `+∞`, so neither exists. The local extrema at `±1` are only local.": "`f(x) = x³ − 3x` ב־`ℝ`. גבולות `−∞` ו־`+∞`, ולכן אף אחד לא קיים. הקיצונים המקומיים ב־`±1` הם מקומיים בלבד.",
+  "`f(x) = x·e⁻ˣ` on `ℝ`. `lim_(x→−∞) f = −∞`, so no absolute minimum.\n`lim_(x→∞) f = 0` and `f(1) = 1/e > 0`, so there is an absolute maximum. Only critical point: `x = 1`. Maximum `1/e`.": "`f(x) = x·e⁻ˣ` ב־`ℝ`. `lim_(x→−∞) f = −∞`, ולכן אין מינימום מוחלט.\n`lim_(x→∞) f = 0` ו־`f(1) = 1/e > 0`, ולכן יש מקסימום מוחלט. נקודה קריטית יחידה: `x = 1`. מקסימום `1/e`.",
+  "Prove `x⁴ − 2x² + 2 > 0` for all `x`.\nThe left side is `f + 2` with `f` from the first example. Its absolute minimum is `−1 + 2 = 1 > 0`.": "הוכיחו `x⁴ − 2x² + 2 > 0` לכל `x`.\nהאגף השמאלי הוא `f + 2` עם `f` מהדוגמה הראשונה. המינימום המוחלט שלו הוא `−1 + 2 = 1 > 0`.",
+  "Use the sign of the second derivative.": "להשתמש בסימן של הנגזרת השנייה.",
+  "Write the domain, then find `f'` and `f''`.": "כותבים את תחום ההגדרה, ואז מוצאים `f'` ו־`f''`.",
+  "Solve `f''(x) = 0`, and add the points of the domain where `f''` is undefined.": "פותרים `f''(x) = 0`, ומוסיפים את נקודות התחום שבהן `f''` לא מוגדרת.",
+  "Mark the candidates and domain gaps. Plug one value from each interval into `f''`. `+` convex, `−` concave.": "מסמנים את המועמדות ואת החורים בתחום. מציבים ערך אחד מכל קטע ב־`f''`. `+` קמורה, `−` קעורה.",
+  "A candidate is an inflection point only if the sign changes and the point is in the domain.": "מועמדת היא נקודת פיתול רק אם הסימן מתחלף והנקודה בתחום ההגדרה.",
+  "`f(x) = x³ − 3x²`, `f'' = 6x − 6`.\nConcave for `x < 1`, convex for `x > 1`. Inflection point `(1, −2)`.": "`f(x) = x³ − 3x²`, `f'' = 6x − 6`.\nקעורה עבור `x < 1`, קמורה עבור `x > 1`. נקודת פיתול `(1, −2)`.",
+  "`f(x) = x⁴`, `f'' = 12x²`. Zero at `0`, but `+` on both sides. Convex everywhere, no inflection point.": "`f(x) = x⁴`, `f'' = 12x²`. מתאפסת ב־`0`, אבל `+` בשני הצדדים. קמורה בכל מקום, אין נקודת פיתול.",
+  "`f(x) = x·eˣ`, `f' = (x + 1)·eˣ`, `f'' = (x + 2)·eˣ`.\nConcave for `x < −2`, convex for `x > −2`. Inflection at `x = −2`.": "`f(x) = x·eˣ`, `f' = (x + 1)·eˣ`, `f'' = (x + 2)·eˣ`.\nקעורה עבור `x < −2`, קמורה עבור `x > −2`. נקודת פיתול ב־`x = −2`.",
+  "`f(x) = 1/x`, `f'' = 2/x³`. Concave for `x < 0`, convex for `x > 0`. `0` is not in the domain, so no inflection point.": "`f(x) = 1/x`, `f'' = 2/x³`. קעורה עבור `x < 0`, קמורה עבור `x > 0`. `0` לא בתחום ההגדרה, ולכן אין נקודת פיתול.",
+  "A quick alternative to the sign table.": "חלופה מהירה לטבלת הסימנים.",
+  "Solve `f'(x) = 0`.": "פותרים `f'(x) = 0`.",
+  "`f''(a) > 0`: minimum. `f''(a) < 0`: maximum.": "`f''(a) > 0`: מינימום. `f''(a) < 0`: מקסימום.",
+  "No conclusion. Go back to the sign table of `f'`.": "אין מסקנה. חוזרים לטבלת הסימנים של `f'`.",
+  "`f(x) = x³ − 3x`, `f'' = 6x`.\n`f''(1) = 6 > 0`: minimum. `f''(−1) = −6 < 0`: maximum.": "`f(x) = x³ − 3x`, `f'' = 6x`.\n`f''(1) = 6 > 0`: מינימום. `f''(−1) = −6 < 0`: מקסימום.",
+  "`f(x) = x⁴`: `f'(0) = 0`, `f''(0) = 0`. The sign table of `f' = 4x³` gives `−` then `+`: minimum.": "`f(x) = x⁴`: `f'(0) = 0`, `f''(0) = 0`. טבלת הסימנים של `f' = 4x³` נותנת `−` ואז `+`: מינימום.",
+  "When one side is a line: it is a tangent or a chord of the other side.": "כשאגף אחד הוא ישר: הוא משיק או מיתר של האגף השני.",
+  "One side is a curve `f`, the other is a line. Find where the line touches the curve (tangent) or where it meets it (chord).": "אגף אחד הוא עקומה `f`, השני הוא ישר. מוצאים איפה הישר נוגע בעקומה (משיק) או איפה הוא פוגש אותה (מיתר).",
+  "Show `f'' > 0` or `f'' < 0` on the interval.": "מראים `f'' > 0` או `f'' < 0` בקטע.",
+  "Convex: above its tangents, below its chords.\nConcave: below its tangents, above its chords.": "קמורה: מעל המשיקים שלה, מתחת למיתרים שלה.\nקעורה: מתחת למשיקים שלה, מעל המיתרים שלה.",
+  "`eˣ ≥ 1 + x` for all `x`.\n`f = eˣ`, `f'' > 0`, convex. The tangent at `0` is `y = 1 + x`. So `f` is above it.": "`eˣ ≥ 1 + x` לכל `x`.\n`f = eˣ`, `f'' > 0`, קמורה. המשיק ב־`0` הוא `y = 1 + x`. לכן `f` מעליו.",
+  "`ln x ≤ x − 1` for `x > 0`.\n`f = ln x`, `f'' = −1/x² < 0`, concave. The tangent at `1` is `y = x − 1`. So `f` is below it.": "`ln x ≤ x − 1` עבור `x > 0`.\n`f = ln x`, `f'' = −1/x² < 0`, קעורה. המשיק ב־`1` הוא `y = x − 1`. לכן `f` מתחתיו.",
+  "`sin x ≥ 2x/π` on `[0, π/2]`.\n`f = sin x`, `f'' = −sin x ≤ 0`, concave. The line joins `(0, 0)` and `(π/2, 1)`: it is a chord. So `f` is above it.": "`sin x ≥ 2x/π` ב־`[0, π/2]`.\n`f = sin x`, `f'' = −sin x ≤ 0`, קעורה. הישר מחבר את `(0, 0)` ו־`(π/2, 1)`: הוא מיתר. לכן `f` מעליו.",
+  "Put everything together: domain, limits, extrema, convexity, graph.": "לחבר הכול יחד: תחום הגדרה, גבולות, נקודות קיצון, קמירות, גרף.",
+  "Domain, intersections with the axes, and whether `f` is even or odd.": "תחום הגדרה, נקודות חיתוך עם הצירים, והאם `f` זוגית או אי־זוגית.",
+  "Limits at the ends of the domain and at domain gaps. They give the asymptotes.": "גבולות בקצות תחום ההגדרה ובחורים שבו. הם נותנים את האסימפטוטות.",
+  "Sign table of `f'`: rising, falling, local extrema.": "טבלת הסימנים של `f'`: עלייה, ירידה, נקודות קיצון מקומי.",
+  "Sign table of `f''`: convex, concave, inflection points.": "טבלת הסימנים של `f''`: קמירות, קעירות, נקודות פיתול.",
+  "Mark the points, draw the asymptotes, join them following the tables.": "מסמנים את הנקודות, משרטטים את האסימפטוטות, ומחברים לפי הטבלאות.",
+  "`f(x) = x/(x² + 1)`\nDomain `ℝ`, odd, root at `0`, limits `0` at `±∞`.\n`f' = (1 − x²)/(x² + 1)²`: minimum `(−1, −1/2)`, maximum `(1, 1/2)`.\n`f'' = 2x(x² − 3)/(x² + 1)³`: inflection at `0`, `±√3`.\nConcave for `x < −√3`, convex on `(−√3, 0)`, concave on `(0, √3)`, convex for `x > √3`.": "`f(x) = x/(x² + 1)`\nתחום הגדרה `ℝ`, אי־זוגית, שורש ב־`0`, גבולות `0` ב־`±∞`.\n`f' = (1 − x²)/(x² + 1)²`: מינימום `(−1, −1/2)`, מקסימום `(1, 1/2)`.\n`f'' = 2x(x² − 3)/(x² + 1)³`: נקודות פיתול ב־`0`, `±√3`.\nקעורה עבור `x < −√3`, קמורה ב־`(−√3, 0)`, קעורה ב־`(0, √3)`, קמורה עבור `x > √3`.",
+  "Check all three conditions, then find the point, or show why it doesn't exist.": "לבדוק את שלושת התנאים, ואז למצוא את הנקודה, או להראות למה היא לא קיימת.",
+  "1. Continuous on `[a, b]`, ends included.\n2. Differentiable on `(a, b)`.\n3. `f(a) = f(b)`.": "1. רציפה ב־`[a, b]`, כולל הקצוות.\n2. גזירה ב־`(a, b)`.\n3. `f(a) = f(b)`.",
+  "Rolle gives `c`. To find it, solve `f'(c) = 0` inside `(a, b)`.": "רול נותן `c`. כדי למצוא אותה, פותרים `f'(c) = 0` בתוך `(a, b)`.",
+  "Rolle says nothing. Check `f'` directly: there may or may not be such a point.": "רול לא אומר כלום. בודקים את `f'` ישירות: נקודה כזו יכולה להיות קיימת או לא.",
+  "`f(x) = x² − 2x` on `[0, 2]`. Polynomial, `f(0) = f(2) = 0`.\n`f' = 2x − 2 = 0` → `c = 1`.": "`f(x) = x² − 2x` ב־`[0, 2]`. פולינום, `f(0) = f(2) = 0`.\n`f' = 2x − 2 = 0` ← `c = 1`.",
+  "`f(x) = |x − 1|` on `[0, 2]`. `f(0) = f(2) = 1`, but no derivative at `1`.\n`f' = ±1`: no such `c`.": "`f(x) = |x − 1|` ב־`[0, 2]`. `f(0) = f(2) = 1`, אבל אין נגזרת ב־`1`.\n`f' = ±1`: אין `c` כזה.",
+  "`f(x) = x²` on `[−1, 2]`. `f(−1) = 1`, `f(2) = 4`, so the theorem doesn't apply.\nStill `f'(0) = 0`: the theorem doesn't promise it, but it doesn't forbid it.": "`f(x) = x²` ב־`[−1, 2]`. `f(−1) = 1`, `f(2) = 4`, ולכן המשפט לא חל.\nובכל זאת `f'(0) = 0`: המשפט לא מבטיח את זה, אבל גם לא אוסר.",
+  "Build a helper function whose derivative is the expression, then apply Rolle's theorem.": "לבנות פונקציית עזר שהנגזרת שלה היא הביטוי, ואז להפעיל את משפט רול.",
+  "Move everything to one side: the claim is `∃c :` expression `= 0`.": "מעבירים הכול לאגף אחד: הטענה היא `∃c :` ביטוי `= 0`.",
+  "Choose `g` whose derivative is that expression, up to a nonzero factor:\n`f'(c) + f(c) = 0` ← `g = eˣ·f`\n`c·f'(c) + f(c) = 0` ← `g = x·f`\n`f'(c) = k` ← `g = f − k·x`": "בוחרים `g` שהנגזרת שלה היא הביטוי, עד כדי גורם שונה מאפס:\n`f'(c) + f(c) = 0` ← `g = eˣ·f`\n`c·f'(c) + f(c) = 0` ← `g = x·f`\n`f'(c) = k` ← `g = f − k·x`",
+  "Check the three conditions for `g`, then `g'(c) = 0` gives the claim.": "בודקים את שלושת התנאים עבור `g`, ואז `g'(c) = 0` נותן את הטענה.",
+  "`f` continuous on `[0, 1]`, differentiable on `(0, 1)`, `f(0) = f(1) = 0`. Prove `∃c : f'(c) + f(c) = 0`.\n`g = eˣ·f`, `g(0) = g(1) = 0`.\nRolle: `g'(c) = eᶜ·(f'(c) + f(c)) = 0`. Since `eᶜ ≠ 0`, done.": "`f` רציפה ב־`[0, 1]`, גזירה ב־`(0, 1)`, `f(0) = f(1) = 0`. הוכיחו `∃c : f'(c) + f(c) = 0`.\n`g = eˣ·f`, `g(0) = g(1) = 0`.\nרול: `g'(c) = eᶜ·(f'(c) + f(c)) = 0`. מכיוון ש־`eᶜ ≠ 0`, סיימנו.",
+  "`f` as above with `f(1) = 0`. Prove `∃c : c·f'(c) + f(c) = 0`.\n`g = x·f`, `g(0) = 0`, `g(1) = 0`. Rolle: `g'(c) = f(c) + c·f'(c) = 0`.": "`f` כמו למעלה עם `f(1) = 0`. הוכיחו `∃c : c·f'(c) + f(c) = 0`.\n`g = x·f`, `g(0) = 0`, `g(1) = 0`. רול: `g'(c) = f(c) + c·f'(c) = 0`.",
+  "`f` twice differentiable, `f(a) = f(b) = f(d)` with `a < b < d`. Prove `∃c : f''(c) = 0`.\nRolle on `[a, b]` and `[b, d]`: `f'(c₁) = f'(c₂) = 0`.\nRolle on `f'` on `[c₁, c₂]`: `f''(c) = 0`.": "`f` גזירה פעמיים, `f(a) = f(b) = f(d)` עם `a < b < d`. הוכיחו `∃c : f''(c) = 0`.\nרול על `[a, b]` ו־`[b, d]`: `f'(c₁) = f'(c₂) = 0`.\nרול על `f'` ב־`[c₁, c₂]`: `f''(c) = 0`.",
+  "Existence from the intermediate value theorem, uniqueness from the derivative.": "קיום ממשפט ערך הביניים, יחידות מהנגזרת.",
+  "Define `h(x) = 0` by moving everything to one side.": "מגדירים `h(x) = 0` בהעברת הכול לאגף אחד.",
+  "Find `a`, `b` with `h(a)·h(b) < 0`, or use the limits at the ends. By the IVT there is a root.": "מוצאים `a`, `b` עם `h(a)·h(b) < 0`, או משתמשים בגבולות בקצוות. לפי משפט ערך הביניים יש שורש.",
+  "Show `h' > 0` everywhere, or `h' < 0` everywhere. `h` is strictly monotonic, so it can't hit `0` twice.\nBy contradiction: two roots would give a root of `h'` by Rolle.": "מראים `h' > 0` בכל מקום, או `h' < 0` בכל מקום. `h` מונוטונית ממש, ולכן היא לא יכולה לפגוע ב־`0` פעמיים.\nבדרך השלילה: שני שורשים היו נותנים שורש של `h'` לפי רול.",
+  "`x³ + x − 1 = 0`.\n`h(0) = −1`, `h(1) = 1`: a root exists.\n`h' = 3x² + 1 > 0`: exactly one.": "`x³ + x − 1 = 0`.\n`h(0) = −1`, `h(1) = 1`: קיים שורש.\n`h' = 3x² + 1 > 0`: בדיוק אחד.",
+  "`eˣ + x = 0`.\n`h(−1) = 1/e − 1 < 0`, `h(0) = 1 > 0`.\n`h' = eˣ + 1 > 0`: exactly one.": "`eˣ + x = 0`.\n`h(−1) = 1/e − 1 < 0`, `h(0) = 1 > 0`.\n`h' = eˣ + 1 > 0`: בדיוק אחד.",
+  "`cos x = 2x`. `h = cos x − 2x`.\n`h(0) = 1 > 0`, `h(1) = cos 1 − 2 < 0`.\n`h' = −sin x − 2 < 0`: exactly one.": "`cos x = 2x`. `h = cos x − 2x`.\n`h(0) = 1 > 0`, `h(1) = cos 1 − 2 < 0`.\n`h' = −sin x − 2 < 0`: בדיוק אחד.",
+  "Rolle bounds the number of roots from above, the IVT from below.": "רול חוסם את מספר השורשים מלמעלה, משפט ערך הביניים מלמטה.",
+  "Differentiate and count the roots of `f'`, say `k`. Still hard? Differentiate again: each derivative raises the bound by one.": "גוזרים וסופרים את השורשים של `f'`, נגיד `k`. עדיין קשה? גוזרים שוב: כל נגזרת מעלה את החסם באחד.",
+  "`f` has at most `k + 1` roots.": "ל־`f` יש לכל היותר `k + 1` שורשים.",
+  "Find points with opposite signs. Each sign change gives a root by the IVT.": "מוצאים נקודות עם סימנים הפוכים. כל החלפת סימן נותנת שורש לפי משפט ערך הביניים.",
+  "If both bounds match, that is the exact number of roots.": "אם שני החסמים מתאימים, זה המספר המדויק של השורשים.",
+  "`f(x) = x⁵ − 5x + 1`.\n`f' = 5x⁴ − 5`, roots `±1`, so at most `3`.\n`f(−2) = −21`, `f(0) = 1`, `f(1) = −3`, `f(2) = 23`: three sign changes.\nExactly `3` roots.": "`f(x) = x⁵ − 5x + 1`.\n`f' = 5x⁴ − 5`, שורשים `±1`, ולכן לכל היותר `3`.\n`f(−2) = −21`, `f(0) = 1`, `f(1) = −3`, `f(2) = 23`: שלוש החלפות סימן.\nבדיוק `3` שורשים.",
+  "`f(x) = eˣ − ax² − bx − c` has at most `3` roots, for any `a`, `b`, `c`.\n`f''' = eˣ` has no roots, so `f''` has at most `1`, `f'` at most `2`, `f` at most `3`.": "ל־`f(x) = eˣ − ax² − bx − c` יש לכל היותר `3` שורשים, לכל `a`, `b`, `c`.\nל־`f''' = eˣ` אין שורשים, ולכן ל־`f''` יש לכל היותר `1`, ל־`f'` לכל היותר `2`, ל־`f` לכל היותר `3`.",
+  "`P` of degree `n` has `n` different real roots. Then `P'` has `n − 1` different real roots.\nRolle gives one between each neighbouring pair, and `P'` has degree `n − 1`, so there are no others.": "ל־`P` ממעלה `n` יש `n` שורשים ממשיים שונים. אז ל־`P'` יש `n − 1` שורשים ממשיים שונים.\nרול נותן אחד בין כל זוג שכנים, ול־`P'` מעלה `n − 1`, ולכן אין אחרים.",
+  "Separate the parameter, then read the number of solutions from the shape of the function.": "להפריד את הפרמטר, ואז לקרוא את מספר הפתרונות מהצורה של הפונקציה.",
+  "Write the equation as `f(x) = k`, with the parameter alone on one side.": "כותבים את המשוואה בצורה `f(x) = k`, כשהפרמטר לבד באגף אחד.",
+  "Find the intervals of increase and decrease, the local extrema, and the limits at the ends.": "מוצאים את תחומי העלייה והירידה, את נקודות הקיצון המקומי ואת הגבולות בקצוות.",
+  "On each monotonic interval, `f(x) = k` has one solution if `k` is between the end values, none otherwise. Add them up for each range of `k`.": "בכל קטע מונוטוני, ל־`f(x) = k` יש פתרון אחד אם `k` בין ערכי הקצה, ואחרת אין. מחברים לכל טווח של `k`.",
+  "`x³ − 3x = k`. Maximum `(−1, 2)`, minimum `(1, −2)`, limits `−∞` and `+∞`.\n`k > 2` or `k < −2`: `1` root\n`k = ±2`: `2` roots\n`−2 < k < 2`: `3` roots": "`x³ − 3x = k`. מקסימום `(−1, 2)`, מינימום `(1, −2)`, גבולות `−∞` ו־`+∞`.\n`k > 2` או `k < −2`: `1` שורש\n`k = ±2`: `2` שורשים\n`−2 < k < 2`: `3` שורשים",
+  "`x⁴ − 4x³ + k = 0`, so `f(x) = x⁴ − 4x³ = −k`.\n`f` decreases until `x = 3`, then increases. Minimum `−27`, limits `+∞`.\n`k > 27`: no roots · `k = 27`: `1` root · `k < 27`: `2` roots": "`x⁴ − 4x³ + k = 0`, ולכן `f(x) = x⁴ − 4x³ = −k`.\n`f` יורדת עד `x = 3`, ואז עולה. מינימום `−27`, גבולות `+∞`.\n`k > 27`: אין שורשים · `k = 27`: `1` שורש · `k < 27`: `2` שורשים"
  },
  "re": [
   [
@@ -4357,6 +4523,510 @@
     "⟦0⟧ רציפה ב־⟦1⟧ ו־⟦2⟧ &nbsp;⇒&nbsp; ⟦3⟧",
     "אומר ששורש <b>קיים</b> — לא איפה, ולא כמה. רציפות בכל ⟦0⟧ היא חובה: ⟦1⟧ ב־⟦2⟧ מחליפה סימן בלי שורש.",
     "<b>דוגמה:</b> האם ל־⟦0⟧ יש פתרון? ⟦1⟧ ו־⟦2⟧, ופולינום הוא רציף. לכן יש שורש בין ⟦3⟧ ל־⟦4⟧. השלבים: השיטה \"הוכחה שלמשוואה יש שורש (משפט ערך הביניים)\"."
+   ]
+  },
+  "dv1:derivative-at-a-point": {
+   "b": [
+    null,
+    null,
+    "אותו גבול, בכתיבה עם ⟦0⟧:",
+    null,
+    "אם הגבול הזה קיים ו<b>סופי</b>, ⟦0⟧ <b>גזירה</b> ב־⟦1⟧ והגבול הוא הנגזרת. <b>פונקציית הנגזרת</b> ⟦2⟧ נותנת את המספר הזה בכל ⟦3⟧ שבו הוא קיים. סימונים נוספים: ⟦4⟧, ⟦5⟧.",
+    "המנה היא השיפוע של ה<b>מיתר</b> (בירוק) דרך שתי נקודות על הגרף. כש־⟦0⟧, הנקודה השנייה מחליקה לראשונה, והמיתר הופך ל<b>משיק</b> (מקווקו). אפשר לנסות בהכנה לחדו״א › נגזרות › ממיתר למשיק.",
+    "<b>במילים פשוטות:</b> הנגזרת היא השיפוע של הגרף בנקודה אחת: כמה הוא תלול בדיוק שם, והאם הוא עולה או יורד. מקבלים אותה כשלוקחים את השיפוע בין שתי נקודות קרובות מאוד ומקרבים אותן עד שהן מתאחדות.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧: ⟦2⟧. לכן ⟦3⟧: ב־⟦4⟧ הפרבולה עולה 6 יחידות על כל יחידה ימינה."
+   ],
+   "s": [
+    null,
+    null,
+    null,
+    "מיתר",
+    "משיק"
+   ]
+  },
+  "dv1:what-the-derivative-tells-you": {
+   "b": [
+    null,
+    "<b>שיפוע:</b> ⟦0⟧ הוא השיפוע של המשיק לגרף ב־⟦1⟧.",
+    "<b>ישר משיק:</b> ⟦0⟧",
+    "<b>קצב שינוי:</b> כמה מהר ⟦0⟧ משתנה ב־⟦1⟧. ליד ⟦2⟧: ⟦3⟧",
+    "<b>כיוון:</b> ⟦0⟧ בקטע ← עולה; ⟦1⟧ ← יורדת; ⟦2⟧ ← משיק אופקי (נגזרות › 7).",
+    "<b>מההגדרה:</b> עבור ⟦0⟧, ⟦1⟧. לכן ⟦2⟧: השיפוע בכל נקודה של הפרבולה.",
+    "<b>דוגמה לישר משיק:</b> עבור ⟦0⟧ ב־⟦1⟧: ⟦2⟧, ⟦3⟧, ולכן המשיק הוא ⟦4⟧, כלומר ⟦5⟧.",
+    "<b>דוגמה לקצב שינוי:</b> אם ⟦0⟧ הוא מרחק (במטרים) אחרי ⟦1⟧ שניות, ⟦2⟧ היא המהירות באותו רגע, במטרים לשנייה."
+   ]
+  },
+  "dv2:powers-polynomials-and-roots": {
+   "b": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "כל חזקה ממשית, ⟦0⟧: ⟦1⟧. שורש או שבר הם חזקה: ⟦2⟧, ולכן ⟦3⟧",
+    "פולינום, איבר־איבר: ⟦0⟧",
+    "השיפוע גדל עם ⟦0⟧: הנגזרת של ⟦1⟧ היא הישר ⟦2⟧. גזירה מורידה חזקה באחד.",
+    "<b>למה, מההגדרה</b>",
+    "<b>חזקות:</b> לפי נוסחת הבינום ⟦0⟧, ולכן",
+    null,
+    "<b>שורש</b> (כפל בצמוד, גבולות › 3):",
+    "עם ⟦0⟧: ⟦1⟧",
+    "כש־⟦0⟧, ⟦1⟧, ולכן הגבול הוא ⟦2⟧.",
+    "<b>סכום וקבוע:</b> מפצלים את המנה ומשתמשים באריתמטיקה של גבולות.",
+    "<b>חזקה ממשית:</b> ⟦0⟧, ולכן לפי כלל השרשרת ⟦1⟧.",
+    "<b>במילים פשוטות:</b> מורידים את המעריך לפנים ומקטינים אותו באחד. שורשים ושברים קודם כותבים כחזקות: ⟦0⟧, ⟦1⟧."
+   ],
+   "s": [
+    "שיפוע 2",
+    "שיפוע 4"
+   ]
+  },
+  "dv2:product-and-quotient": {
+   "b": [
+    null,
+    "<b>מכפלה:</b> ⟦0⟧",
+    "<b>מנה:</b> ⟦0⟧ &nbsp;(⟦1⟧)",
+    "<b>ההופכי:</b> ⟦0⟧",
+    "דוגמה: ⟦0⟧",
+    "חשבו על ⟦0⟧ כשטח. כששתי הצלעות גדלות, השטח מקבל שתי רצועות, ⟦1⟧ ו־⟦2⟧. הפינה הקטנה ⟦3⟧ נעלמת בגבול. אלה שני האיברים של כלל המכפלה.",
+    "<b>למה, מההגדרה</b>",
+    "<b>מכפלה:</b> מוסיפים ומחסירים ⟦0⟧ במונה:",
+    null,
+    null,
+    "מחלקים ב־⟦0⟧ ונותנים ל־⟦1⟧. מכיוון ש־⟦2⟧ גזירה היא רציפה, ולכן ⟦3⟧, והתוצאה היא ⟦4⟧.",
+    "<b>ההופכי:</b> ⟦0⟧ ⟦1⟧ ⟦2⟧",
+    "<b>מנה:</b> ⟦0⟧, ולכן ⟦1⟧",
+    "<b>דוגמה למנה, צעד אחר צעד:</b> ⟦0⟧: מונה ⟦1⟧, ⟦2⟧; מכנה ⟦3⟧, ⟦4⟧. לכן ⟦5⟧.",
+    "<b>בכלל המנה הסדר חשוב:</b> נגזרת המונה · המכנה <b>פחות</b> המונה · נגזרת המכנה. החלפה ביניהם הופכת את סימן התשובה."
+   ]
+  },
+  "dv2:composite-functions-chain-rule": {
+   "b": [
+    null,
+    null,
+    "נגזרת הפונקציה החיצונית, בנקודת הפונקציה הפנימית, כפול נגזרת הפונקציה הפנימית.",
+    null,
+    null,
+    null,
+    "שינוי קטן ב־⟦0⟧ מוכפל ב־⟦1⟧ במעבר דרך ⟦2⟧, והתוצאה מוכפלת ב־⟦3⟧ במעבר דרך ⟦4⟧. קצבים מוכפלים.",
+    "<b>למה, מההגדרה</b>",
+    "נכתוב ⟦0⟧ ו־⟦1⟧. כופלים ב־1, כל עוד ⟦2⟧:",
+    null,
+    "⟦0⟧ כי ⟦1⟧ רציפה. המנה הראשונה ← ⟦2⟧, השנייה ← ⟦3⟧.",
+    "המקרה ⟦0⟧ ליד ⟦1⟧ דורש נימוק נוסף קטן בהוכחה מלאה; הנוסחה נשארת אותה נוסחה.",
+    "<b>איך משתמשים:</b> מוצאים את השכבות (חיצונית ופנימית, כמו קילוף בצל). גוזרים את החיצונית, משאירים את הפנימית כמו שהיא, ואז כופלים בנגזרת הפנימית. עם עוד שכבות, ממשיכים לכפול: ⟦0⟧."
+   ]
+  },
+  "dv2:trigonometric-functions": {
+   "b": [
+    null,
+    null,
+    null,
+    null,
+    "עם פונקציה פנימית ⟦0⟧: ⟦1⟧ &nbsp;·&nbsp; ⟦2⟧ &nbsp;·&nbsp; ⟦3⟧",
+    "העקומה הירוקה היא השיפוע של הכחולה. בפסגה של ⟦0⟧ המשיק אופקי, ושם ⟦1⟧.",
+    "<b>למה, מההגדרה</b>",
+    "שני גבולות יסוד: ⟦0⟧ ו־⟦1⟧",
+    "<b>סינוס:</b> משתמשים ב־⟦0⟧ (טריגונומטריה – בסיס › זהויות):",
+    null,
+    "<b>קוסינוס:</b> משתמשים ב־⟦0⟧:",
+    null,
+    "<b>טנגנס:</b> כלל המנה על ⟦0⟧ נותן ⟦1⟧",
+    "<b>דוגמה:</b> ⟦0⟧. בנוסחאות האלה הזווית חייבת להיות ברדיאנים.",
+    "<b>טריגונומטריות הפוכות:</b> ⟦0⟧. עוד בפונקציות › 6 (ו־arcsin, arccos בפונקציות › 7)."
+   ]
+  },
+  "dv2:exponential-and-logarithmic-functions": {
+   "b": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "עם פונקציה פנימית ⟦0⟧: ⟦1⟧ &nbsp;·&nbsp; ⟦2⟧ &nbsp;·&nbsp; ⟦3⟧",
+    "⟦0⟧ ו־⟦1⟧ הן שיקוף זו של זו ביחס ל־⟦2⟧. ל־⟦3⟧ יש שיפוע ⟦4⟧ ב־⟦5⟧, ול־⟦6⟧ יש שיפוע ⟦7⟧ ב־⟦8⟧.",
+    "<b>למה, מההגדרה</b>",
+    "<b>eˣ:</b> ⟦0⟧, כי ⟦1⟧. זה מה שעושה את ⟦2⟧ מיוחד: למשיק ב־⟦3⟧ יש שיפוע ⟦4⟧ (הכנה לחדו״א › חדו״א מעריכי ולוגריתמי).",
+    "<b>aˣ:</b> ⟦0⟧, ולכן כלל השרשרת נותן ⟦1⟧.",
+    "<b>ln x:</b> ⟦0⟧. עם ⟦1⟧ זה ⟦2⟧, כי ⟦3⟧.",
+    "<b>log_a x:</b> ⟦0⟧, קבוע כפול ⟦1⟧.",
+    "<b>ln f:</b> כלל השרשרת עם חיצונית ⟦0⟧ ופנימית ⟦1⟧.",
+    "<b>דוגמאות:</b> ⟦0⟧. ⟦1⟧. ⟦2⟧."
+   ]
+  },
+  "dv3:differentiable-at-a-point": {
+   "b": [
+    null,
+    "⟦0⟧ גזירה ב־⟦1⟧ &nbsp;⇔&nbsp; ⟦2⟧ קיים וסופי.",
+    "<b>נגזרות חד־צדדיות:</b>",
+    null,
+    null,
+    "⟦0⟧ גזירה ב־⟦1⟧ &nbsp;⇔&nbsp; ⟦2⟧, ושתיהן סופיות",
+    "גזירה ב־⟦0⟧: בכל נקודה. ב־⟦1⟧: וגם חד־צדדית בקצוות.",
+    "<b>במילים פשוטות:</b> \"גזירה ב־⟦0⟧\" פירושו שלגרף יש שם משיק אחד ברור, לא אנכי: בלי פינה, בלי קפיצה, בלי קוץ אנכי.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧. מימין הגרף הוא ⟦2⟧, שיפוע ⟦3⟧; משמאל הוא ⟦4⟧, שיפוע ⟦5⟧. הנגזרות החד־צדדיות שונות, ולכן ⟦6⟧ אינה גזירה ב־⟦7⟧."
+   ]
+  },
+  "dv3:differentiable-implies-continuous": {
+   "b": [
+    null,
+    "⟦0⟧ גזירה ב־⟦1⟧ &nbsp;⇒&nbsp; ⟦2⟧ רציפה ב־⟦3⟧",
+    "הכיוון ההפוך לא נכון: ⟦0⟧ רציפה ב־⟦1⟧ ולא גזירה שם.",
+    "<b>הוכחה:</b> ⟦0⟧, ולכן ⟦1⟧.",
+    "משתמשים בזה הפוך: לא רציפה ב־⟦0⟧ ⇒ לא גזירה ב־⟦1⟧. בלי חישוב.",
+    "<b>במילים פשוטות:</b> כדי שיהיה משיק בנקודה, הגרף חייב לפחות להיות שם רצוף. אבל רצוף לא מספיק: פינה היא רצופה ועדיין אין לה משיק יחיד."
+   ]
+  },
+  "dv3:where-a-function-is-not-differentiable": {
+   "b": [
+    null,
+    "ארבע דרכים שבהן גבול המנה יכול להיכשל:",
+    "<b>לא רציפה:</b> קפיצה או חור. דוגמה: ⟦0⟧ קופצת ב־⟦1⟧.",
+    "<b>פינה:</b> ⟦0⟧. דוגמה: ⟦1⟧ ב־⟦2⟧.",
+    "<b>משיק אנכי או חוד:</b> המנה ← ⟦0⟧. דוגמאות: ⟦1⟧ ו־⟦2⟧ ב־⟦3⟧.",
+    "<b>תנודות:</b> למנה אין גבול. דוגמה: ⟦0⟧ ב־⟦1⟧, עם ⟦2⟧.",
+    "וכמובן גם: נקודה מחוץ לתחום ההגדרה."
+   ],
+   "s": [
+    "קפיצה",
+    "פינה",
+    "משיק אנכי",
+    "תנודות"
+   ]
+  },
+  "dv3:limit-of-the-derivative": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה ב־⟦1⟧, גזירה עבור ⟦2⟧ ליד ⟦3⟧, ו־⟦4⟧:",
+    "⟦0⟧ סופי &nbsp;⇒&nbsp; ⟦1⟧ גזירה ב־⟦2⟧ ו־⟦3⟧",
+    "⟦0⟧ &nbsp;⇒&nbsp; ⟦1⟧ לא גזירה ב־⟦2⟧",
+    "גם חד־צדדית: ⟦0⟧ ו־⟦1⟧",
+    "<b>מסקנה:</b> אם ⟦0⟧ קיים ו־⟦1⟧ קיים, אז הם שווים, ולכן ⟦2⟧ רציפה ב־⟦3⟧. לפונקציית נגזרת לא יכולים להיות חור או קפיצה.",
+    "למה: לפי משפט הערך הממוצע (נגזרות › 7), ⟦0⟧ עבור ⟦1⟧ כלשהו בין ⟦2⟧ ל־⟦3⟧. כש־⟦4⟧, ⟦5⟧, ולכן למנה יש אותו גבול כמו ל־⟦6⟧.",
+    "<b>רציפות של ⟦0⟧ ב־⟦1⟧ היא דרישה.</b> אם ⟦2⟧ לא קיים, המשפט לא אומר כלום: עוברים להגדרה. דוגמה: ⟦3⟧, ⟦4⟧, מתקיים ⟦5⟧, ובכל זאת ⟦6⟧ לא קיים.",
+    "<b>דוגמה:</b> ⟦0⟧ עבור ⟦1⟧, ⟦2⟧ עבור ⟦3⟧. היא רציפה ב־⟦4⟧ (שני החלקים נותנים ⟦5⟧). ⟦6⟧ משמאל ו־⟦7⟧ מימין. שניהם ⟦8⟧, ולכן ⟦9⟧."
+   ]
+  },
+  "dv3:when-the-derivative-formula-is-undefined": {
+   "b": [
+    null,
+    "אם בנוסחה של ⟦0⟧ יש מכנה שהוא ⟦1⟧ ב־⟦2⟧, או שהיא לא מוגדרת ב־⟦3⟧ בכל דרך אחרת, זה <b>סימן אזהרה</b>. זה עדיין לא פסק דין: הנוסחה נכונה רק איפה שהכללים הותרו.",
+    "<b>בדרך כלל לא גזירה:</b> ⟦0⟧, ⟦1⟧ ← ⟦2⟧ ב־⟦3⟧. לא גזירה.",
+    "<b>אבל לא תמיד:</b> ⟦0⟧, ⟦1⟧ לא מוגדרת ב־⟦2⟧, ובכל זאת ⟦3⟧ גזירה שם.",
+    "מכריעים בעזרת גבול הנגזרת (אם ⟦0⟧ רציפה ב־⟦1⟧), או לפי ההגדרה.",
+    "השיטה: האם פונקציה גזירה בנקודה?"
+   ]
+  },
+  "dv4:arithmetic-of-differentiable-functions": {
+   "b": [
+    null,
+    "⟦0⟧ גזירות ב־⟦1⟧ &nbsp;⇒&nbsp; אלה גזירות ב־⟦2⟧:",
+    "⟦0⟧, עם ⟦1⟧",
+    "⟦0⟧, עם ⟦1⟧",
+    "⟦0⟧, עם ⟦1⟧",
+    "⟦0⟧, אם ⟦1⟧, עם ⟦2⟧",
+    "<b>הרכבה:</b> ⟦0⟧ גזירה ב־⟦1⟧ ו־⟦2⟧ גזירה ב־⟦3⟧ &nbsp;⇒&nbsp; ⟦4⟧ גזירה ב־⟦5⟧, עם ⟦6⟧",
+    "גזירות בכל תחום ההגדרה שלהן: פולינומים, ⟦0⟧, ⟦1⟧, ⟦2⟧, ⟦3⟧, ⟦4⟧, ⟦5⟧. שורשים: ב־⟦6⟧, לא ב־⟦7⟧. ⟦8⟧: בכל מקום חוץ מ־⟦9⟧."
+   ]
+  },
+  "dv4:when-you-can-t-use-the-arithmetic": {
+   "b": [
+    null,
+    "המשפט עובד רק בכיוון אחד: כל החלקים גזירים ⇒ התוצאה גזירה. אם חלק אחד <b>אינו</b> גזיר ב־⟦0⟧, המשפט לא אומר <b>כלום</b>. עוברים להגדרה.",
+    "<b>סכום:</b> ⟦0⟧ גזירה, ⟦1⟧ לא ⇒ ⟦2⟧ לא. אילו הייתה, ⟦3⟧ הייתה גזירה.",
+    "<b>שתיהן לא גזירות, והסכום כן:</b> ⟦0⟧",
+    "<b>המכפלה גזירה:</b> ⟦0⟧ ב־⟦1⟧, ו־⟦2⟧",
+    "<b>המכפלה לא:</b> ⟦0⟧ ב־⟦1⟧",
+    "<b>הרכבה:</b> ⟦0⟧ גזירה ב־⟦1⟧, ⟦2⟧ ו־⟦3⟧ לא.",
+    "הגורם ⟦0⟧ משטח את הפינה: ל־⟦1⟧ יש שיפוע משיק ⟦2⟧ משני הצדדים של ⟦3⟧."
+   ],
+   "s": [
+    "|x|: פינה",
+    "x·|x|: חלקה"
+   ]
+  },
+  "dv5:local-extremum-point": {
+   "b": [
+    null,
+    "<b>מקסימום מקומי</b> ב־⟦0⟧: ⟦1⟧",
+    "<b>מינימום מקומי</b> ב־⟦0⟧: ⟦1⟧",
+    "\"מקומי\" פירושו בהשוואה רק לנקודות קרובות. מקסימום מקומי יכול להיות נמוך ממינימום מקומי במקום אחר.",
+    "<b>במילים פשוטות:</b> מקסימום מקומי הוא ראש גבעה: הנקודה הגבוהה ביותר בסביבתה, לא בהכרח הגבוהה ביותר בכל הגרף. מינימום מקומי הוא תחתית עמק.",
+    "<b>דוגמה:</b> ל־⟦0⟧ יש מקסימום מקומי ב־⟦1⟧ (⟦2⟧) ומינימום מקומי ב־⟦3⟧ (⟦4⟧), אף שהגרף עולה גבוה יותר ויורד נמוך יותר רחוק יותר."
+   ]
+  },
+  "dv5:fermat-s-theorem": {
+   "b": [
+    null,
+    "ל־⟦0⟧ יש קיצון מקומי בנקודה פנימית ⟦1⟧ ו־⟦2⟧ גזירה ב־⟦3⟧ &nbsp;⇒&nbsp; ⟦4⟧",
+    "הכיוון ההפוך לא נכון: ל־⟦0⟧ יש ⟦1⟧ ואין קיצון ב־⟦2⟧.",
+    "<b>הוכחה (מקסימום):</b> ליד ⟦0⟧, ⟦1⟧. לכן המנה ⟦2⟧ היא ⟦3⟧ משמאל ו־⟦4⟧ מימין. שני הגבולות החד־צדדיים שווים ל־⟦5⟧, ולכן ⟦6⟧.",
+    "<b>במילים פשוטות:</b> בראש גבעה חלקה או בתחתית עמק חלק, המשיק אופקי.",
+    "<b>איך משתמשים:</b> כדי למצוא נקודות קיצון, פותרים ⟦0⟧. המשפט מבטיח שכל קיצון \"חלק\" נמצא בין הפתרונות, אף שחלק מהפתרונות עשויים לא להיות קיצון (כמו ⟦1⟧ ב־⟦2⟧)."
+   ]
+  },
+  "dv5:critical-points-and-the-first-derivative": {
+   "b": [
+    null,
+    "<b>נקודה קריטית</b> היא נקודה פנימית בתחום ההגדרה שבה ⟦0⟧ או ש־⟦1⟧ לא קיימת. כל קיצון מקומי נמצא בנקודה קריטית, אבל לא כל נקודה קריטית היא קיצון.",
+    "<b>מבחן הנגזרת הראשונה</b> (⟦0⟧ רציפה ב־⟦1⟧):",
+    "⟦0⟧ מחליפה סימן מ־⟦1⟧ ל־⟦2⟧ ב־⟦3⟧ ⇒ מקסימום מקומי",
+    "⟦0⟧ מחליפה סימן מ־⟦1⟧ ל־⟦2⟧ ב־⟦3⟧ ⇒ מינימום מקומי",
+    "אין החלפת סימן ⇒ אין קיצון",
+    "המבחן עובד כי הסימן של ⟦0⟧ אומר איפה ⟦1⟧ עולה ואיפה היא יורדת (נגזרות › 7, מונוטוניות).",
+    "<b>דוגמה:</b> ⟦0⟧, ⟦1⟧. נקודות קריטיות: ⟦2⟧. סימני ⟦3⟧: ⟦4⟧ לפני ⟦5⟧, ⟦6⟧ ביניהן, ⟦7⟧ אחרי. לכן ⟦8⟧ מקסימום ו־⟦9⟧ מינימום. השלבים המלאים: השיטה \"מציאת נקודות קיצון מקומי\".",
+    "<b>לא לשכוח נקודות שבהן ⟦0⟧ לא קיימת:</b> ל־⟦1⟧ יש מינימום ב־⟦2⟧, שם ⟦3⟧ לא קיימת."
+   ],
+   "s": [
+    "מקסימום, f' = 0",
+    "מינימום, f' = 0",
+    "f' = 0, אין קיצון",
+    "מינימום, אין f'"
+   ]
+  },
+  "dv6:absolute-extremum-point": {
+   "b": [
+    null,
+    "<b>מקסימום מוחלט</b> של ⟦0⟧ ב־⟦1⟧ ב־⟦2⟧: ⟦3⟧",
+    "<b>מינימום מוחלט</b> של ⟦0⟧ ב־⟦1⟧ ב־⟦2⟧: ⟦3⟧",
+    "<b>הערך יחיד</b> בתחום נתון: ערך גדול ביותר אחד, ערך קטן ביותר אחד.",
+    "<b>הנקודה לא חייבת להיות יחידה:</b> ⟦0⟧ מגיעה למקסימום שלה ⟦1⟧ באינסוף נקודות.",
+    "<b>הוא עשוי לא להתקיים.</b>",
+    "<b>איפה לחפש:</b> נקודה קריטית בתוך תחום ההגדרה, או קצה של תחום ההגדרה.",
+    "<b>מקומי לעומת מוחלט:</b> מקומי = הגבוה ביותר בסביבה; מוחלט = הגבוה ביותר בכל תחום ההגדרה. קיצון מוחלט בתוך התחום הוא גם קיצון מקומי."
+   ],
+   "s": [
+    null,
+    null,
+    "מקסימום מוחלט, בקצה",
+    "מינימום מוחלט, f' = 0"
+   ]
+  },
+  "dv6:extreme-value-theorem": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה בקטע סגור ⟦1⟧ &nbsp;⇒&nbsp; ⟦2⟧ ⟦3⟧",
+    "פונקציה רציפה בקטע סגור מקבלת מינימום מוחלט ומקסימום מוחלט.",
+    "<b>שני התנאים נחוצים. פונקציות בלי קיצון מוחלט:</b>",
+    "קטע פתוח: ל־⟦0⟧ ב־⟦1⟧ אין אף אחד.",
+    "פתוח בקצה אחד: ל־⟦0⟧ ב־⟦1⟧ אין מקסימום.",
+    "תחום לא חסום: ל־⟦0⟧ ב־⟦1⟧ אין אף אחד.",
+    "לא רציפה: ל־⟦0⟧ ב־⟦1⟧, ⟦2⟧, אין מקסימום.",
+    "<b>במילים פשוטות:</b> לגרף שאפשר לשרטט בלי להרים את העט, מקצה אחד של קטע סגור עד הקצה השני, חייבות להיות נקודה הכי גבוהה ונקודה הכי נמוכה.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧. נקודה קריטית ⟦2⟧: ⟦3⟧. קצוות: ⟦4⟧, ⟦5⟧. מינימום מוחלט ⟦6⟧ ב־⟦7⟧, מקסימום מוחלט ⟦8⟧ ב־⟦9⟧. השלבים: השיטה \"קיצון מוחלט בקטע סגור\"."
+   ],
+   "s": [
+    "(0, 1): הקצוות לא מושגים",
+    "1/x ב־(0, 1]: אין פסגה"
+   ]
+  },
+  "dv6:functions-that-go-to-infinity-at-both-en": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה ב־⟦1⟧ (⟦2⟧, ⟦3⟧ יכולים להיות ⟦4⟧):",
+    "⟦0⟧ &nbsp;⇒&nbsp; מינימום מוחלט, אין מקסימום מוחלט",
+    "⟦0⟧ &nbsp;⇒&nbsp; מקסימום מוחלט, אין מינימום מוחלט",
+    "<b>למה:</b> לוקחים נקודה כלשהי ⟦0⟧. ליד הקצוות ⟦1⟧, ולכן מחוץ לקטע סגור כלשהו ⟦2⟧ שמכיל את ⟦3⟧ הפונקציה מעל ⟦4⟧. ב־⟦5⟧ משפט ויירשטראס נותן מינימום, והוא המינימום בכל מקום.",
+    "<b>אותו רעיון עם גבול סופי:</b> אם שני הגבולות בקצוות סופיים ויש ⟦0⟧ שנמצא מתחת לשניהם, יש מינימום מוחלט (מעל שניהם: מקסימום מוחלט).",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧ שואפת ל־⟦2⟧ בשני הקצוות, ולכן יש לה מינימום מוחלט. ⟦3⟧ ב־⟦4⟧: המינימום הוא ⟦5⟧."
+   ],
+   "s": [
+    "מינימום מוחלט"
+   ]
+  },
+  "dv7:rolle-s-theorem": {
+   "b": [
+    null,
+    "אם:",
+    "⟦0⟧ רציפה ב־⟦1⟧",
+    "⟦0⟧ גזירה ב־⟦1⟧",
+    null,
+    "אז ⟦0⟧",
+    "גרף שיוצא מגובה מסוים וחוזר אליו חייב להסתובב איפשהו, ובנקודת הסיבוב המשיק אופקי.",
+    "<b>הוכחה:</b> לפי משפט ויירשטראס, ⟦0⟧ מקבלת מקסימום ומינימום ב־⟦1⟧. אם שניהם בקצוות, ⟦2⟧ קבועה וכל ⟦3⟧ מתאים. אחרת אחד מהם בנקודה פנימית ⟦4⟧, ומשפט פרמה נותן ⟦5⟧.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧: רציפה, גזירה, ⟦2⟧. לכן יש ⟦3⟧ עם ⟦4⟧: ⟦5⟧, ⟦6⟧."
+   ]
+  },
+  "dv7:when-a-condition-of-rolle-s-theorem-fail": {
+   "b": [
+    null,
+    "אם מוותרים על תנאי אחד, המסקנה יכולה להיכשל:",
+    "<b>לא רציפה בקצה:</b> ⟦0⟧ ב־⟦1⟧, ⟦2⟧. אז ⟦3⟧, אבל ⟦4⟧ בכל נקודה פנימית.",
+    "<b>לא גזירה בפנים:</b> ⟦0⟧ ב־⟦1⟧. אז ⟦2⟧, אבל ⟦3⟧.",
+    "<b>ערכי קצה שונים:</b> ⟦0⟧ ב־⟦1⟧. אז ⟦2⟧ בכל מקום.",
+    "התנאים מספיקים, לא הכרחיים: כשאחד לא מתקיים, נקודה עם ⟦0⟧ עדיין יכולה להיות קיימת. המשפט פשוט לא מבטיח אותה."
+   ],
+   "s": [
+    "לא רציפה",
+    "פינה"
+   ]
+  },
+  "dv7:mean-value-theorem": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה ב־⟦1⟧ וגזירה ב־⟦2⟧ &nbsp;⇒&nbsp; ⟦3⟧",
+    "איפשהו המשיק מקביל למיתר: הקצב הרגעי שווה לקצב הממוצע. משפט רול הוא המקרה ⟦0⟧.",
+    "<b>הוכחה:</b> מפעילים את משפט רול על ⟦0⟧, שמקיימת ⟦1⟧.",
+    "<b>במילים פשוטות:</b> אם מכונית נסעה 100 ק״מ בשעה אחת, ברגע כלשהו מד המהירות שלה הראה בדיוק 100 קמ״ש. המהירות הממוצעת מושגת לפחות פעם אחת.",
+    "<b>דוגמה:</b> ⟦0⟧ ב־⟦1⟧: השיפוע של המיתר הוא ⟦2⟧. ⟦3⟧ ב־⟦4⟧, שנמצא בתוך ⟦5⟧ ✓."
+   ]
+  },
+  "dv7:monotonicity": {
+   "b": [
+    null,
+    "⟦0⟧ רציפה בקטע ⟦1⟧ וגזירה בתוכו:",
+    "⟦0⟧ בתוך ⟦1⟧ ⇒ ⟦2⟧ עולה ממש ב־⟦3⟧",
+    "⟦0⟧ בתוך ⟦1⟧ ⇒ ⟦2⟧ יורדת ממש ב־⟦3⟧",
+    "⟦0⟧ בתוך ⟦1⟧ ⇒ ⟦2⟧ קבועה ב־⟦3⟧",
+    "⟦0⟧ בתוך ⟦1⟧ ⇒ ⟦2⟧ ב־⟦3⟧",
+    "השוואה: ⟦0⟧ ו־⟦1⟧ עבור ⟦2⟧ ⇒ ⟦3⟧ עבור ⟦4⟧",
+    "<b>למה:</b> עבור ⟦0⟧ משפט הערך הממוצע נותן ⟦1⟧. הסימן של ⟦2⟧ מכריע.",
+    "<b>חייב להיות קטע.</b> ל־⟦0⟧ יש ⟦1⟧ בתחום ההגדרה שלה, אבל היא לא יורדת שם. הכיוון ההפוך חלש יותר: ⟦2⟧ עולה ממש עם ⟦3⟧. ⟦4⟧ ששווה ל־⟦5⟧ רק בנקודות בודדות לא מקלקל עלייה ממש.",
+    "<b>דוגמה:</b> ⟦0⟧: ⟦1⟧, שלילית עבור ⟦2⟧ וחיובית עבור ⟦3⟧. לכן ⟦4⟧ יורדת ב־⟦5⟧ ועולה ב־⟦6⟧."
+   ]
+  },
+  "dv7:roots-of-f-and-roots-of-f": {
+   "b": [
+    null,
+    "בין שני שורשים של ⟦0⟧ יש שורש של ⟦1⟧ (רול).",
+    "ל־⟦0⟧ יש ⟦1⟧ שורשים ⇒ ל־⟦2⟧ יש לפחות ⟦3⟧ שורשים",
+    "ל־⟦0⟧ יש ⟦1⟧ שורשים ⇒ ל־⟦2⟧ יש לכל היותר ⟦3⟧ שורשים",
+    "ל־⟦0⟧ אין שורשים ⇒ ל־⟦1⟧ יש לכל היותר שורש אחד",
+    "לפולינום ממעלה ⟦0⟧ יש לכל היותר ⟦1⟧ שורשים ממשיים; אם ⟦2⟧ אי־זוגי, לפחות אחד.",
+    "אלה ספירות של <b>לכל היותר</b>. כדי להראות ששורש באמת קיים, משתמשים במשפט ערך הביניים (גבולות › 8). כל זה מניח ש־⟦0⟧ גזירה בכל הקטע.",
+    "<b>דוגמה:</b> כמה שורשים יש ל־⟦0⟧? הנגזרת שלה ⟦1⟧ אף פעם לא ⟦2⟧, ולכן לכל היותר שורש אחד. והיא מחליפה סימן ב־⟦3⟧, ולכן בדיוק אחד. השלבים: השיטה \"הוכחה שלמשוואה יש שורש אחד בדיוק\"."
+   ]
+  },
+  "dv8:convex-and-concave": {
+   "b": [
+    null,
+    "ה<b>נגזרת השנייה</b> היא הנגזרת של הנגזרת: ⟦0⟧.",
+    "⟦0⟧ גזירה בקטע ⟦1⟧:",
+    "<b>קמורה</b> ב־⟦0⟧: ⟦1⟧ עולה. הגרף מתעקם כלפי מעלה, נמצא מעל המשיקים שלו ומתחת למיתרים שלו.",
+    "<b>קעורה</b> ב־⟦0⟧: ⟦1⟧ יורדת. הגרף מתעקם כלפי מטה, נמצא מתחת למשיקים שלו ומעל המיתרים שלו.",
+    "<b>מבחן:</b> ⟦0⟧ ב־⟦1⟧ ⇒ קמורה &nbsp;·&nbsp; ⟦2⟧ ב־⟦3⟧ ⇒ קעורה",
+    "בקטע קמור השיפוע הולך וגדל; בקטע קעור הוא הולך וקטן. לכן הסימן של ⟦0⟧, קצב השינוי של השיפוע, מכריע.",
+    "<b>במילים פשוטות:</b> קמורה בצורת כוס (אוגרת מים, ∪), קעורה בצורת כובע (שופכת אותם, ∩). ⟦0⟧ קמורה בכל מקום, ⟦1⟧ קעורה בכל מקום.",
+    "<b>דוגמה:</b> ⟦0⟧: ⟦1⟧. קעורה עבור ⟦2⟧, קמורה עבור ⟦3⟧."
+   ],
+   "s": [
+    "קמורה, f'' > 0",
+    "קעורה, f'' < 0"
+   ]
+  },
+  "dv8:inflection-point": {
+   "b": [
+    null,
+    "⟦0⟧ היא <b>נקודת פיתול</b> של ⟦1⟧ אם ⟦2⟧ רציפה ב־⟦3⟧, יש לה שם משיק, והיא עוברת מקמורה לקעורה (או להפך) ב־⟦4⟧.",
+    "מועמדות: ⟦0⟧ או ש־⟦1⟧ לא מוגדרת, כש־⟦2⟧ בתחום ההגדרה.",
+    "⟦0⟧ <b>לא מספיק</b>: ל־⟦1⟧ יש ⟦2⟧ והיא קמורה בשני הצדדים. הסימן של ⟦3⟧ חייב להתחלף.",
+    "⟦0⟧ עשויה להיות לא מוגדרת בנקודת פיתול: ⟦1⟧ ב־⟦2⟧, עם משיק אנכי.",
+    "החלפת סימן בנקודה מחוץ לתחום ההגדרה אינה נקודת פיתול: ⟦0⟧ ב־⟦1⟧.",
+    "בנקודת פיתול הגרף חוצה את המשיק של עצמו.",
+    "<b>דוגמה:</b> ⟦0⟧: ⟦1⟧ מחליפה סימן ב־⟦2⟧, ולכן ⟦3⟧ היא נקודת פיתול: הגרף עובר שם מכובע לכוס. השלבים: השיטה \"מציאת תחומי קמירות ונקודות פיתול\"."
+   ],
+   "s": [
+    "קעורה",
+    "קמורה",
+    "נקודת פיתול"
+   ]
+  },
+  "dv8:second-derivative-test": {
+   "b": [
+    null,
+    "⟦0⟧ ו־⟦1⟧ קיימת:",
+    "⟦0⟧ ⇒ מינימום מקומי",
+    "⟦0⟧ ⇒ מקסימום מקומי",
+    "⟦0⟧ ⇒ אין מסקנה: ⟦1⟧ (מינימום), ⟦2⟧ (מקסימום), ⟦3⟧ (אף אחד)",
+    "משיק אופקי בקטע קמור יכול להיות רק תחתית, ובקטע קעור רק פסגה.",
+    "<b>דוגמה:</b> ⟦0⟧: ⟦1⟧. ב־⟦2⟧, ⟦3⟧: מינימום. ב־⟦4⟧, ⟦5⟧: מקסימום."
+   ]
+  },
+  "dv8:inequalities-from-convexity": {
+   "b": [
+    null,
+    "<b>קמורה</b> ב־⟦0⟧, ⟦1⟧: ⟦2⟧ לכל ⟦3⟧",
+    "<b>קעורה</b> ב־⟦0⟧, ⟦1⟧: ⟦2⟧ לכל ⟦3⟧",
+    "<b>קמורה</b> ב־⟦0⟧: מתחת למיתר בין ⟦1⟧ ל־⟦2⟧. <b>קעורה:</b> מעליו.",
+    "האגף הימני הוא הישר המשיק ב־⟦0⟧. אם אגף אחד של אי־שוויון הוא ישר, לעיתים קרובות הוא משיק או מיתר של האגף השני.",
+    "<b>דוגמה:</b> ⟦0⟧ קמורה (⟦1⟧), והמשיק שלה ב־⟦2⟧ הוא ⟦3⟧. לכן ⟦4⟧ לכל ⟦5⟧. השלבים: השיטה \"הוכחת אי־שוויון בעזרת קמירות\"."
+   ]
+  },
+  "dv9:implicit-differentiation": {
+   "b": [
+    null,
+    "כש־⟦0⟧ קשור ל־⟦1⟧ במשוואה (כמו ⟦2⟧) במקום בנוסחה ⟦3⟧: גוזרים את <b>שני האגפים</b> לפי ⟦4⟧, ומתייחסים ל־⟦5⟧ כפונקציה של ⟦6⟧, ואז מחלצים את ⟦7⟧.",
+    "בכל פעם שגוזרים את ⟦0⟧, כלל השרשרת מוסיף גורם ⟦1⟧: ⟦2⟧, ⟦3⟧, ⟦4⟧.",
+    "<b>למה זה נחוץ:</b> מעגל אינו גרף של פונקציה אחת (הוא נכשל במבחן הישר האנכי), אבל ליד כל נקודה הוא כן: החצי העליון הוא ⟦0⟧. גזירה סתומה נותנת את השיפוע בלי לפצל לחצאים.",
+    "<b>דוגמה:</b> ⟦0⟧. גוזרים: ⟦1⟧, ולכן ⟦2⟧. ב־⟦3⟧: ⟦4⟧. (בדיקה: לרדיוס יש שיפוע ⟦5⟧, והמשיק מאונך אליו.)",
+    "<b>זהירות:</b> התשובה מכילה בדרך כלל גם ⟦0⟧ וגם ⟦1⟧. כדי לקבל מספר, מציבים נקודה שנמצאת על העקומה."
+   ],
+   "s": [
+    null,
+    "שיפוע −3/4"
+   ]
+  },
+  "dv9:differentials-and-linear-approximation": {
+   "b": [
+    null,
+    "⟦0⟧: השינוי האמיתי ב־⟦1⟧.",
+    "ה<b>דיפרנציאל</b> ⟦0⟧: השינוי לאורך הישר המשיק (⟦1⟧).",
+    "עבור ⟦0⟧ קטן: ⟦1⟧, ולכן ⟦2⟧ (<b>קירוב לינארי</b>).",
+    "<b>במילים:</b> קרוב לנקודה, עקומה חלקה נראית כמו המשיק שלה. לכן כדי להעריך ערך ליד נקודה ידועה, הולכים לאורך המשיק במקום לאורך העקומה. ככל שהצעד קטן יותר, הפער בין ⟦0⟧ ל־⟦1⟧ קטן יותר.",
+    "<b>דוגמה:</b> ⟦0⟧. משתמשים ב־⟦1⟧, ⟦2⟧, ⟦3⟧: ⟦4⟧, ⟦5⟧. לכן ⟦6⟧. (מחשבון: ⟦7⟧.)",
+    "<b>הערכת שגיאה:</b> צלע של קובייה שנמדדה כ־⟦0⟧ עם שגיאה אפשרית של ⟦1⟧: ⟦2⟧, ⟦3⟧ היא השגיאה האפשרית בנפח."
+   ]
+  },
+  "dv10:related-rates": {
+   "b": [
+    null,
+    "כששני גדלים קשורים במשוואה ושניהם משתנים עם הזמן ⟦0⟧, גוזרים את המשוואה לפי ⟦1⟧. התוצאה קושרת את הקצבים שלהם (⟦2⟧, ⟦3⟧), כך שאם יודעים קצב אחד, מקבלים את השני.",
+    "<b>למה זה עובד:</b> גם ⟦0⟧ וגם ⟦1⟧ הם פונקציות של הזמן, ולכן כלל השרשרת נותן ⟦2⟧. המשוואה שמתקיימת בכל רגע מתקיימת גם לקצבים.",
+    "<b>דוגמה:</b> סולם של ⟦0⟧ מחליק; הבסיס שלו מתרחק מהקיר ב־⟦1⟧. באיזו מהירות הראש שלו מחליק למטה כשהבסיס במרחק ⟦2⟧ מהקיר? ⟦3⟧ ← ⟦4⟧. ב־⟦5⟧, ⟦6⟧: ⟦7⟧, ולכן ⟦8⟧: הראש מחליק למטה ב־⟦9⟧.",
+    "<b>הטעות הנפוצה:</b> להציב את המספרים (כמו ⟦0⟧) <b>לפני</b> הגזירה. אז ⟦1⟧ נראה קבוע והקצב שלו נעלם. קודם גוזרים, אחר כך מציבים. השלבים: השיטה \"פתרון בעיית קצבי שינוי קשורים\"."
+   ]
+  },
+  "dv11:optimization-problems": {
+   "b": [
+    null,
+    "בעיה מילולית ששואלת על הערך הגדול או הקטן ביותר (שטח, נפח, עלות, מרחק): כותבים את הגודל כפונקציה של משתנה <b>אחד</b>, מוצאים את הקטע המותר, ומוצאים בו את המקסימום או המינימום המוחלט (נגזרות › 6).",
+    "<b>דוגמה:</b> חותכים ריבועים שווים בצלע ⟦0⟧ מפינות של גיליון ⟦1⟧ ומקפלים לקופסה פתוחה. ⟦2⟧ עבור ⟦3⟧. ⟦4⟧ ב־⟦5⟧ (ו־⟦6⟧, מחוץ לקטע). ⟦7⟧; ליד הקצוות ⟦8⟧. הקופסה הגדולה ביותר: ⟦9⟧, נפח ⟦10⟧.",
+    "<b>נקודה קריטית אחת מספיקה</b> בקטע: אם לפונקציה רציפה יש שם נקודה קריטית אחת בלבד והיא מקסימום מקומי, היא המקסימום המוחלט (וכך גם למינימום).",
+    "<b>החלק הקשה הוא הבנייה:</b> משרטטים, נותנים שמות למשתנים, ומשתמשים בתנאי הנתון (\"האילוץ\") כדי להעלים את כל המשתנים חוץ מאחד. השלבים: השיטה \"פתרון בעיית אופטימיזציה\"."
+   ],
+   "s": [
+    null,
+    null,
+    "בסיס",
+    null,
+    null,
+    "מקפלים את הצדדים למעלה:"
+   ]
+  },
+  "dv12:newton-s-method": {
+   "b": [
+    null,
+    "כדי לקרב שורש של ⟦0⟧: מתחילים מניחוש ⟦1⟧ וחוזרים על",
+    null,
+    "<b>הרעיון:</b> בניחוש שלך מחליפים את העקומה במשיק שלה, ולוקחים את הנקודה שבה המשיק חוצה את ציר x כניחוש הבא. ליד שורש המשיק צמוד לעקומה, ולכן הניחושים מתקרבים מהר מאוד: מספר הספרות הנכונות בערך מוכפל בכל צעד.",
+    "<b>דוגמה, ⟦0⟧:</b> ⟦1⟧, ⟦2⟧, ולכן ⟦3⟧. מ־⟦4⟧: ⟦5⟧, ⟦6⟧, ⟦7⟧ (הערך האמיתי ⟦8⟧).",
+    "<b>מתי זה נכשל:</b> אם ⟦0⟧ (משיק אופקי אף פעם לא פוגש את הציר), או שההתחלה רחוקה מדי מהשורש, הניחושים יכולים לברוח. מתחילים קרוב: קודם מוצאים קטע עם החלפת סימן בעזרת משפט ערך הביניים (גבולות › 8)."
+   ],
+   "s": [
+    null,
+    null,
+    "השורש √2"
+   ]
+  },
+  "dv13:position-velocity-and-acceleration": {
+   "b": [
+    null,
+    "<b>מקום</b> ⟦0⟧ על ישר; <b>מהירות</b> ⟦1⟧; <b>תאוצה</b> ⟦2⟧.",
+    "<b>גודל המהירות</b> = ⟦0⟧. ⟦1⟧: נע בכיוון החיובי; ⟦2⟧: בכיוון השלילי; ⟦3⟧: עומד (אולי מסתובב).",
+    "<b>מאיץ</b> כאשר ל־⟦0⟧ ול־⟦1⟧ יש אותו סימן; <b>מאט</b> כשהסימנים שלהם הפוכים.",
+    "<b>במילים:</b> מהירות היא כמה מהר המקום משתנה (עם כיוון), תאוצה היא כמה מהר המהירות משתנה. שיפוע בגרף המקום הוא מהירות.",
+    "<b>דוגמה:</b> ⟦0⟧. ⟦1⟧, ⟦2⟧. הגוף נע קדימה עד ⟦3⟧, אחורה עד ⟦4⟧, ואז שוב קדימה. ב־⟦5⟧: ⟦6⟧, ⟦7⟧. ב־⟦8⟧: ⟦9⟧, ⟦10⟧: מאט.",
+    "<b>הדרך ההפוכה</b> (מתאוצה למהירות למקום) היא אינטגרציה: אינטגרלים › 17."
    ]
   }
  }
