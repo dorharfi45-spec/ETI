@@ -3053,7 +3053,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B212</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B213</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -4396,7 +4396,7 @@ function __detabaseMain() {
     function show() {
       var it = items[cur];
       nameEl.textContent = it.label;
-      rulesEl.innerHTML = it.rules.map(function (r) { return "<li>" + r + "</li>"; }).join("");
+      rulesEl.innerHTML = it.rules.map(function (r) { return "<li>" + LH(r) + "</li>"; }).join("");
       onPick(cur, it);
     }
     show();
@@ -23166,6 +23166,8 @@ function L(s) {
   }
   return h == null ? t : t.replace(k, h);
 }
+// a whole HTML string (a tool's rule line, with its <b>/<code> kept), looked up exactly in HE.text
+function LH(h) { if (LANG !== "he" || !h) return h; var t = HE_D.get(h); return t == null ? h : t; }
 var HE_SKIP = "code, textarea, script, style, [contenteditable], .no-tr, .ML__latex, math-field";
 function heNode(n) {
   if (n.nodeType === 3) {
