@@ -3053,7 +3053,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B189</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B190</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -17623,7 +17623,7 @@ function __detabaseMain() {
       var subj = assetSubject(ref), lib = { s: 1, t: 1, c: 1, e: 1, p: 1, st: 1 }[ref.lvl];
       out.push({
         ref: ref, name: L(name || "(untitled)"), crumbs: assetCrumbs(ref).map(function (c) { return L(c); }), subj: subj, grp: subj ? keyGroup(subj) || "base" : "",
-        tags: (tags || []).map(function (t) { return String(t).trim(); }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }), kw: srchOtherNames(ref, name).concat(kwOf(ref)), text: (L(text || "") + " " + (text || "")).toLowerCase(), course: assetCourseName(ref),
+        tags: (tags || []).map(function (t) { return String(t).trim(); }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }), alt: srchOtherNames(ref, name).map(function (x) { return x.toLowerCase(); }), kw: kwOf(ref), text: (L(text || "") + " " + (text || "")).toLowerCase(), course: assetCourseName(ref),
         on: !lib || courseRefOn(ref.lvl === "st" ? { lvl: "p", id: psPartById(ref.id).page.id } : ref)
       });
     }
@@ -17658,6 +17658,7 @@ function __detabaseMain() {
         if (words.indexOf(t) >= 0) { score += 6; inName++; continue; }
         if (words.some(function (w) { return w.indexOf(t) === 0; })) { score += 5; inName++; continue; }
         if (name.indexOf(t) >= 0) { score += 4; inName++; continue; }
+        if (en.alt.some(function (a) { return a.indexOf(t) >= 0; })) { score += 4; inName++; continue; }   // its name in the other language (B190)
         if ((hit = kws.filter(function (k) { return k.indexOf(t) >= 0; })[0]) != null) { score += 3; why.push("keyword “" + en.kw[kws.indexOf(hit)] + "”"); continue; }
         if ((hit = tags.filter(function (k) { return k.indexOf(t) >= 0; })[0]) != null) { score += 3; why.push("tag “" + en.tags[tags.indexOf(hit)] + "”"); continue; }
         if (loc.indexOf(t) >= 0) { score += 2; why.push("in " + en.crumbs.join(" › ")); continue; }
@@ -23149,11 +23150,14 @@ function L(s) {
   if (!k || !/[A-Za-z]/.test(k)) return t;
   var h = HE_D.get(k);
   if (h == null) for (var i = 0; i < HE_RE.length; i++) if (HE_RE[i][0].test(k)) { h = k.replace(HE_RE[i][0], HE_RE[i][1]); break; }
+  // a known label followed by a count ("Cards 58", "All 182")
+  if (h == null) { var mm = /^(.*\S) (\d+)$/.exec(k); if (mm && HE_D.has(mm[1])) h = HE_D.get(mm[1]) + " " + mm[2]; }
   // piece by piece: first between " › ", " · " and ": " (a name may itself hold " — "), then inside a piece between " — "
   if (h == null && /( › | · |: | — )/.test(k)) {
     var any = false;
     var seg = function (p, re) {
       var s = p.trim(), q = HE_D.get(s);
+      if (q == null) for (var r = 0; r < HE_RE.length; r++) if (HE_RE[r][0].test(s)) { q = s.replace(HE_RE[r][0], HE_RE[r][1]); break; }
       if (q != null) { any = true; return p.replace(s, q); }
       return re ? p.split(re).map(function (x, j) { return j % 2 ? x : seg(x, null); }).join("") : p;
     };
