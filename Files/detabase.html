@@ -1037,7 +1037,7 @@
   .bd-stage { position: relative; flex: 1; min-width: 0; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; background-color: var(--bg); background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 26px 26px; }
   .bd-world { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
   .bd-hint { position: absolute; left: 0; right: 0; top: 40%; text-align: center; pointer-events: none; }
-  .bd-lines { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
+  .bd-lines { position: absolute; left: 0; top: 0; width: 1px; max-width: none; height: 1px; overflow: visible; pointer-events: none; }   /* max-width: the world is 0 wide, and an svg 0 wide draws nothing */
   .bd-line { stroke-width: 3; }
   .bd-hit { stroke: transparent; stroke-width: 26; pointer-events: stroke; cursor: pointer; }
   .bd-frame { position: absolute; border: 2px solid var(--border-strong); border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 5%, transparent); }
@@ -1055,6 +1055,14 @@
   .bd-bbody .asset-card > h4, .bd-bbody .asset-card > div > .card > h4:first-child, .bd-bbody .asset-card > div > details > summary, .bd-bbody .asset-body > h3:first-child, .bd-bbody .asset-body > h4:first-child { display: none; }
   .bd-block.sel, .bd-frame.sel { outline: 3px solid var(--accent); }
   .bd-block.linking { outline: 3px dashed var(--accent); }
+  /* off screen, a measured block skips its drawing (B219): its size is set on it */
+  .bd-block.ready { content-visibility: auto; }
+  /* the answer to a finger, before any work */
+  .bd-block[data-press], .bd-frame[data-press] { outline: 3px solid color-mix(in srgb, var(--accent) 65%, transparent); }
+  .ct-svg [data-k][data-press], .ct-svg .ct-method[data-press] { stroke: var(--accent); stroke-width: 4; opacity: 1; }
+  button:not(:disabled):active, [role="button"]:active { opacity: .6; }
+  button, [role="button"], .sr-row, .bd-row { touch-action: manipulation; }
+  .bd-row .ps-grip { touch-action: none; }
   .bd-rs { position: absolute; right: 0; bottom: 0; width: 30px; height: 30px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 60%, var(--text-muted) 60%); }
   #sheetsPane .subj-sums { margin-top: 18px; }
   #bldPanel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 60; width: 300px; max-width: 86vw; display: flex; flex-direction: column; gap: 10px; padding: 14px; overflow-y: auto; background: var(--surface-1); border-left: 1px solid var(--border-strong); box-shadow: -4px 0 18px rgba(0,0,0,.18); }
@@ -3071,7 +3079,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B218</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B219</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3333,14 +3341,16 @@ window.DBX = (function () {
       cur.onerror = function () { rej(cur.error); };
     });
   }
+  // resolves true once the doc is on the disk, false if it couldn't be written
   function idbPut(id, doc) {
-    if (!db) return Promise.resolve();
+    if (!db) return Promise.resolve(false);
     return new Promise(function (res) {
       try {
         var t = db.transaction("docs", "readwrite");
         t.objectStore("docs").put(doc, id);
-        t.oncomplete = res; t.onerror = t.onabort = function () { window.__idbErr = t.error || true; if (window.console) console.error("idb put", t.error); res(); };
-      } catch (e) { if (window.console) console.error("idb put", e); res(); }
+        t.oncomplete = function () { res(true); };
+        t.onerror = t.onabort = function () { window.__idbErr = t.error || true; if (window.console) console.error("idb put", t.error); res(false); };
+      } catch (e) { if (window.console) console.error("idb put", e); res(false); }
     });
   }
   function idbDel(id) {
@@ -3372,32 +3382,69 @@ window.DBX = (function () {
     if (window.console) console.error("IndexedDB unavailable — falling back to localStorage", e);
     db = null; mem = lsDocs();
   });
+  // ---- saving the main store never blocks a tap (B219) ----
+  // mainLater(make, done) writes make() after a short pause, once no finger is down, MAIN_MAX at the latest.
+  // It is written at once when the page is hidden or closed, before anything reads it (mainGet), and always
+  // when there is no room for the localStorage copy (the IndexedDB write alone can't finish on the way out).
+  // mainSet (a migration, a restore, a cloud copy) is the newer word: what waited is dropped.
+  var MAIN_WAIT = 300, MAIN_MAX = 1500, pend = null, pendT = null, fingers = 0;
+  document.addEventListener("pointerdown", function (e) { if (e.isPrimary) fingers = 1; }, { capture: true, passive: true });
+  ["pointerup", "pointercancel"].forEach(function (ev) { document.addEventListener(ev, function (e) { if (e.isPrimary) fingers = 0; }, { capture: true, passive: true }); });
+  function mainDue() {
+    if (!pend) return;
+    if (fingers && Date.now() - pend.first < MAIN_MAX) { pendT = setTimeout(mainDue, 150); return; }
+    mainFlush();
+  }
+  function mainLater(make, done) {
+    var now = Date.now();
+    pend = { make: make, done: done, first: pend ? pend.first : now };
+    clearTimeout(pendT);
+    if (window.__lsFull || now - pend.first >= MAIN_MAX) { mainFlush(); return; }
+    pendT = setTimeout(mainDue, MAIN_WAIT);
+  }
+  function mainFlush() {
+    if (!pend) return;
+    var p = pend, str;
+    pend = null; clearTimeout(pendT);
+    try { str = p.make(); } catch (e) { if (window.console) console.error("save", e); return; }
+    if (typeof mem.__main === "string" && sameBody(str, mem.__main)) return;    // nothing changed
+    mainPut(str).then(function () { if (p.done) p.done(); });
+  }
+  function sameBody(a, b) {
+    var cut = /"savedAt":\d+/;
+    return a.replace(cut, "") === b.replace(cut, "");
+  }
+  function mainPut(str) {
+    mem.__main = str;
+    var p = db ? idbPut("__main", str) : Promise.resolve(false);
+    try { localStorage.setItem("detabase.v1", str); window.__lsFull = false; }
+    catch (e) { window.__lsFull = true; try { localStorage.removeItem("detabase.v1"); } catch (e2) {} }
+    return p;
+  }
+  function mainStored() {
+    var a = typeof mem.__main === "string" ? mem.__main : null, b = null;
+    try { b = localStorage.getItem("detabase.v1"); } catch (e) {}
+    if (!a || !b) return a || b;
+    return savedAt(b) > savedAt(a) ? b : a;
+  }
   return {
     ready: ready,
     get: function (id) { return mem[id] || null; },
     put: function (id, doc) {
       mem[id] = doc;
       if (db) return idbPut(id, doc);
-      try { localStorage.setItem(PFX + id, JSON.stringify(doc)); } catch (e) {}
-      return Promise.resolve();
+      var ok = true;
+      try { localStorage.setItem(PFX + id, JSON.stringify(doc)); } catch (e) { ok = false; }
+      return Promise.resolve(ok);
     },
     del: function (id) { delete mem[id]; idbDel(id); try { localStorage.removeItem(PFX + id); } catch (e) {} },
     // The main store (B114): IndexedDB key "__main" (a string), plus a copy in localStorage while it fits there
     // (iOS gives localStorage about 5 MB). Reading takes the newer of the two by store.savedAt; a copy that
     // could not be written is removed, so a stale one never wins.
-    mainGet: function () {
-      var a = typeof mem.__main === "string" ? mem.__main : null, b = null;
-      try { b = localStorage.getItem("detabase.v1"); } catch (e) {}
-      if (!a || !b) return a || b;
-      return savedAt(b) > savedAt(a) ? b : a;
-    },
-    mainSet: function (str) {
-      mem.__main = str;
-      var p = db ? idbPut("__main", str) : Promise.resolve();
-      try { localStorage.setItem("detabase.v1", str); window.__lsFull = false; }
-      catch (e) { window.__lsFull = true; try { localStorage.removeItem("detabase.v1"); } catch (e2) {} }
-      return p;
-    },
+    mainGet: function () { mainFlush(); return mainStored(); },
+    mainSet: function (str) { pend = null; clearTimeout(pendT); return mainPut(str); },
+    mainLater: mainLater,
+    mainFlush: mainFlush,
     ids: function () { return Object.keys(mem).filter(function (k) { return k.indexOf("__") !== 0; }); },
     compact: compact
   };
@@ -5272,6 +5319,7 @@ function __detabaseMain() {
   function killCanvas(id) {
     store.deadCanvases = store.deadCanvases || [];
     if (store.deadCanvases.indexOf(id) < 0) store.deadCanvases.push(id);
+    canvasPushDrop(id);
     delete canvasCache[id];
     window.DBX.del(id);
     libDocTouched(id);
@@ -5284,11 +5332,24 @@ function __detabaseMain() {
     libDocTouched(id);
     putCanvasLocal(id, c);
     if (typeof syncFileAutoSave === "function") syncFileAutoSave();
+    if (typeof window.cloudNotifyCanvasChange === "function") window.cloudNotifyCanvasChange(id);
+    canvasPushDrop(id);
+    canvasSaveTimers[id] = setTimeout(function () { canvasPushNow(id); }, 1200);
+  }
+  function canvasPushDrop(id) {
     if (canvasSaveTimers[id]) clearTimeout(canvasSaveTimers[id]);
-    canvasSaveTimers[id] = setTimeout(function () {
-      canvasSaveTimers[id] = null;
-      if (typeof window.cloudSaveCanvas === "function") window.cloudSaveCanvas(id, { items: c.items, ink: c.ink, ps: c.ps, ts: c.ts });
-    }, 1200);
+    delete canvasSaveTimers[id];
+  }
+  function canvasPushNow(id) {
+    canvasPushDrop(id);
+    var c = canvasCache[id] || window.DBX.get(id); if (!c) return;
+    if (typeof window.cloudSaveCanvas === "function") window.cloudSaveCanvas(id, { items: c.items, ink: c.ink, ps: c.ps, ts: c.ts });
+  }
+  // what this device had before a cloud copy replaced it (B219): in every Backup file, never synced, never restored by itself
+  function cloudKeptCopies() {
+    var out = { store: ((window.DBX.get("__pre_cloud") || {}).copies || []), docs: {} };
+    ((window.DBX.get("__pre_cloud_docs") || {}).ids || []).forEach(function (id) { var d = window.DBX.get("__pre_cloud_doc_" + id); if (d) out.docs[id] = d; });
+    return out;
   }
   function allCanvasesObj() {
     var out = {};
@@ -5324,6 +5385,7 @@ function __detabaseMain() {
   }
   setInterval(function () { for (var k in cloudPending) { flushCloudPending(); return; } }, 800);
   window.onCloudCanvas = function (id) {
+    canvasPushDrop(id);                              // what waited to be sent is older than what just came
     libDocTouched(id);
     if (activeProblem === id && boardBusy()) { cloudPending[id] = 1; return; }
     var navKeep = canvasCache[id] && canvasCache[id].nav;
@@ -5364,15 +5426,22 @@ function __detabaseMain() {
   function saveStore() {
     srchWarm(1200);
     store.savedAt = Date.now();
-    try {
-      mainWrite(JSON.stringify(mainSnapshot())).then(function () {
-        if (window.__idbErr && window.__lsFull && !saveStore.warned) { saveStore.warned = 1; alert("Saving failed: this device is out of room for Detabase. Make a Backup now (top bar), then free some space."); }
-      });
-    } catch (e) {}
+    window.DBX.mainLater(function () { return JSON.stringify(mainSnapshot()); }, function () {
+      if (window.__idbErr && window.__lsFull && !saveStore.warned) { saveStore.warned = 1; alert("Saving failed: this device is out of room for Detabase. Make a Backup now (top bar), then free some space."); }
+    });
     if (activeProblem && canvasCache[activeProblem]) saveCanvas(activeProblem);
     if (typeof syncFileAutoSave === "function") syncFileAutoSave();
     if (typeof window.cloudNotifyLocalChange === "function") window.cloudNotifyLocalChange();
   }
+  // the page is hidden or closed: whatever waits is saved and sent now (B219)
+  function saveNow() {
+    window.DBX.mainFlush();
+    Object.keys(canvasSaveTimers).forEach(canvasPushNow);
+    if (typeof window.cloudFlush === "function") window.cloudFlush();
+  }
+  window.addEventListener("pagehide", saveNow);
+  document.addEventListener("visibilitychange", function () { if (document.hidden) saveNow(); });
+  document.addEventListener("freeze", saveNow);
   function uid(pfx) { return pfx + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); }
 
   // ---- schema 2: move each problem's board (bench) into its own canvas doc ----
@@ -10732,7 +10801,7 @@ function __detabaseMain() {
     if (scrollWrap) scrollWrap.scrollTop = Math.max(0, (dayStartMin() / 60 * PL_PXH) - 22);
   });
   $("plExport").addEventListener("click", function () {
-    var payload = JSON.stringify({ _detabase: LS_KEY, exportedAt: new Date().toISOString(), store: mainSnapshot(), canvases: allCanvasesObj() }, null, 2);
+    var payload = JSON.stringify({ _detabase: LS_KEY, exportedAt: new Date().toISOString(), store: mainSnapshot(), canvases: allCanvasesObj(), beforeCloud: cloudKeptCopies() }, null, 2);
     var blob = new Blob([payload], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -14898,6 +14967,21 @@ function __detabaseMain() {
   // touch started on makes iPadOS drop the touch), and the change happens on release.
   // ============================================================
   var DND_HOLD = 450, DND_SLOP = 8, DND_EDGE = 64;
+  // ---- taps and holds, for every gesture engine (B219) ----
+  // A finger isn't still: up to TAP_SLOP px (a mouse: 6) is a tap. A hold that comes due while the app was busy
+  // waits a moment first, so a lift already made gets to end it: a tap is never turned into a hold by waiting.
+  var TAP_SLOP = 12, HOLD_GRACE = 100, DND_TAP = 700;
+  function tapSlop(e) { return e.pointerType === "mouse" ? 6 : TAP_SLOP; }
+  function holdTimer(fn, ms) {
+    var h = {}, from = performance.now();
+    h.t = setTimeout(function () {
+      h.t = setTimeout(function () { h.t = null; fn(); }, performance.now() - from > ms + 50 ? HOLD_GRACE : 0);
+    }, ms);
+    return h;
+  }
+  function holdStop(h) { if (h && h.t) { clearTimeout(h.t); h.t = null; } }
+  // iPad Safari only shows :active when the page listens for touches
+  document.addEventListener("touchstart", function () {}, { passive: true });
   var dndPend = null, dndCur = null;
   function dndList(container, opts) {
     if (!container) return;
@@ -14932,17 +15016,17 @@ function __detabaseMain() {
   document.addEventListener("pointerdown", function (e) {
     if (dndCur || dndPend || (e.pointerType === "mouse" && e.button !== 0)) return;
     var f = dndFind(e.target); if (!f) return;
-    dndPend = { f: f, id: e.pointerId, x: e.clientX, y: e.clientY, type: e.pointerType };
+    dndPend = { f: f, id: e.pointerId, x: e.clientX, y: e.clientY, type: e.pointerType, at: e.timeStamp, on: e.target, slop: e.pointerType === "mouse" ? DND_SLOP : TAP_SLOP };
     if (f.now) { e.preventDefault(); dndStart(e.clientX, e.clientY); return; }
-    dndPend.t = setTimeout(function () { if (dndPend) dndStart(dndPend.x, dndPend.y); }, DND_HOLD);
+    dndPend.t = holdTimer(function () { if (dndPend) dndStart(dndPend.x, dndPend.y); }, DND_HOLD);
   });
-  function dndPendEnd() { if (dndPend) { clearTimeout(dndPend.t); dndPend = null; } }
+  function dndPendEnd() { if (dndPend) { holdStop(dndPend.t); dndPend = null; } }
   document.addEventListener("pointermove", function (e) {
-    if (dndCur) { if (e.pointerId === dndCur.pid) { e.preventDefault(); dndMove(e.clientX, e.clientY); } return; }
-    if (dndPend && e.pointerId === dndPend.id && Math.hypot(e.clientX - dndPend.x, e.clientY - dndPend.y) > DND_SLOP) dndPendEnd();   // a scroll, not a hold
+    if (dndCur) { if (e.pointerId === dndCur.pid) { e.preventDefault(); if (Math.hypot(e.clientX - dndCur.x0, e.clientY - dndCur.y0) > dndCur.slop) dndCur.far = true; dndMove(e.clientX, e.clientY); } return; }
+    if (dndPend && e.pointerId === dndPend.id && Math.hypot(e.clientX - dndPend.x, e.clientY - dndPend.y) > dndPend.slop) dndPendEnd();   // a scroll, not a hold
   }, { passive: false });
   document.addEventListener("pointerup", function (e) {
-    if (dndCur && e.pointerId === dndCur.pid) { dndEnd(true); return; }
+    if (dndCur && e.pointerId === dndCur.pid) { dndEnd(true, e.timeStamp); return; }
     if (dndPend && e.pointerId === dndPend.id) dndPendEnd();
   });
   document.addEventListener("pointercancel", function (e) {
@@ -14954,9 +15038,11 @@ function __detabaseMain() {
   document.addEventListener("touchmove", function (e) {
     if (!dndCur) return;
     e.preventDefault();
-    var t = e.touches[0]; if (t) dndMove(t.clientX, t.clientY);
+    var t = e.touches[0];
+    if (t && Math.hypot(t.clientX - dndCur.x0, t.clientY - dndCur.y0) > dndCur.slop) dndCur.far = true;
+    if (t) dndMove(t.clientX, t.clientY);
   }, { passive: false });
-  document.addEventListener("touchend", function (e) { if (dndCur && dndCur.ptype === "touch" && !e.touches.length) dndEnd(true); });
+  document.addEventListener("touchend", function (e) { if (dndCur && dndCur.ptype === "touch" && !e.touches.length) dndEnd(true, e.timeStamp); });
   document.addEventListener("touchcancel", function () { if (dndCur && dndCur.ptype === "touch") dndEnd(false); });
   document.addEventListener("contextmenu", function (e) { if (dndPend || dndCur) e.preventDefault(); }, true);
   document.addEventListener("keydown", function (e) { if (dndCur && e.key === "Escape") { e.preventDefault(); dndEnd(false); } });
@@ -14981,7 +15067,8 @@ function __detabaseMain() {
     ph.style.height = Math.max(36, Math.min(r.height, 72)) + "px";
     if (o.axis === "x") { ph.style.width = Math.max(40, Math.min(r.width, 160)) + "px"; ph.style.height = r.height + "px"; }
     dndCur = { drag: drag, pid: p.id, ptype: p.type, x: x, y: y, dx: Math.min(x - r.left, gw - 20), dy: Math.min(y - r.top, 40),
-               ghost: wrap, ph: ph, target: null, index: -1, hot: null, origin: dndItemsOf(list, null).indexOf(el) };
+               ghost: wrap, ph: ph, target: null, index: -1, hot: null, origin: dndItemsOf(list, null).indexOf(el),
+               x0: x, y0: y, at: p.at, on: p.f.now ? null : p.on, slop: p.slop, far: false };
     if (o.fold) list.classList.add(o.fold);
     document.body.classList.add("dnd-active");
     try { window.getSelection().removeAllRanges(); } catch (_) {}
@@ -15048,7 +15135,7 @@ function __detabaseMain() {
     window.addEventListener("click", eat, true);
     setTimeout(function () { window.removeEventListener("click", eat, true); }, 400);
   }
-  function dndEnd(drop) {
+  function dndEnd(drop, at) {
     var c = dndCur; if (!c) return;
     dndCur = null;
     clearInterval(c.scrollT);
@@ -15060,6 +15147,11 @@ function __detabaseMain() {
     c.drag.el.style.display = "";
     c.drag.el.classList.remove("dnd-src");
     document.body.classList.remove("dnd-active");
+    if (drop && !c.far && c.on && c.on.isConnected && at - c.at < DND_TAP) {     // lifted, but never dragged: a slow tap is still a tap
+      c.on.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window, clientX: c.x, clientY: c.y }));
+      dndEatClick(c.x, c.y);                             // and the release adds no second click
+      return;
+    }
     dndEatClick(c.x, c.y);
     if (!drop || !c.target) return;
     try {
@@ -19144,23 +19236,26 @@ function __detabaseMain() {
     ctFly(T, to);
   }
   function ctWire(T, E) {
-    var svg = E.svg, P = {}, pinch = null, pan = null, holdT = null, box = null;
+    var svg = E.svg, P = {}, pinch = null, pan = null, holdT = null, box = null, slop = TAP_SLOP, pressed = null;
+    function press(el) { if (pressed) pressed.removeAttribute("data-press"); pressed = el || null; if (pressed) pressed.setAttribute("data-press", "1"); }
     function local(e) { var r = ids().length && box ? box : (box = svg.getBoundingClientRect()); return [e.clientX - r.left, e.clientY - r.top]; }
     function ids() { return Object.keys(P); }
     function startPan(id, at) { pan = { id: String(id), xy: P[id], cx: T.view.cx, cy: T.view.cy, moved: 0, t: at, held: false }; }
     svg.addEventListener("pointerdown", function (e) {
       if (e.button > 0 || !T.view) return;
+      slop = tapSlop(e);
       e.preventDefault();
       if (e.isPrimary && ids().length) { P = {}; pinch = null; pan = null; }   // left over from a lost gesture
       try { svg.setPointerCapture(e.pointerId); } catch (_) {}
       ctStop(T);
       P[e.pointerId] = local(e);
-      clearTimeout(holdT);
+      holdStop(holdT);
       if (ids().length === 1) {
         startPan(e.pointerId, e.timeStamp);
         var h = ctHitAt(T, e.clientX, e.clientY), p0 = pan;
-        if (h && (h.leaf || h.method || h.ref)) holdT = setTimeout(function () {
-          if (pan !== p0 || p0.moved >= 8) return;
+        if (h && !h.strat) press(((E.byKey[h.method ? "p|" + h.method : h.key]) || [])[0]);
+        if (h && (h.leaf || h.method || h.ref)) holdT = holdTimer(function () {
+          if (pan !== p0 || p0.moved >= slop) return;
           p0.held = true;
           var ref = h.method ? { lvl: "p", id: h.method } : h.ref;
           ctPointMenu(T, ref, e.clientX, e.clientY);   // hold: its menu (Mark connected…, B185)
@@ -19188,8 +19283,9 @@ function __detabaseMain() {
       } else if (pan && pan.id === String(e.pointerId)) {
         var dx = P[e.pointerId][0] - pan.xy[0], dy = P[e.pointerId][1] - pan.xy[1];
         pan.moved = Math.max(pan.moved, Math.hypot(dx, dy));
-        if (pan.moved < 6) return;
-        clearTimeout(holdT);
+        if (pan.moved < slop) return;
+        press(null);
+        holdStop(holdT);
         T.view = { cx: pan.cx - dx / T.view.k, cy: pan.cy - dy / T.view.k, k: T.view.k };
         T.focus = null; T.auto = null;
         ctApplySoon(T);
@@ -19201,9 +19297,10 @@ function __detabaseMain() {
       var k = ids();
       if (k.length < 2) pinch = null;
       if (k.length === 1) { startPan(k[0], e.timeStamp); pan.moved = 99; return; }   // a pinch that lifts one finger carries on as a pan
-      clearTimeout(holdT);
+      holdStop(holdT);
       var p = pan; pan = null;
-      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < 8 && !p.held && e.timeStamp - p.t < 700) ctTap(T, e.clientX, e.clientY);
+      press(null);
+      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < slop && !p.held && e.timeStamp - p.t < 700) ctTap(T, e.clientX, e.clientY);
     }
     svg.addEventListener("pointerup", end);
     svg.addEventListener("pointercancel", end);
@@ -20535,13 +20632,16 @@ function __detabaseMain() {
   }
   // a long press (or a right click) on something opens its window
   function assetHoldToOpen(el, ref) {
-    var t = null;
+    var t = null, at = null;
     el.addEventListener("contextmenu", function (e) { e.preventDefault(); assetWindow(ref); });
     el.addEventListener("pointerdown", function (e) {
+      el.__held = false;
       if (e.pointerType === "mouse") return;
-      t = setTimeout(function () { t = null; el.__held = true; assetWindow(ref); }, 550);
+      at = { x: e.clientX, y: e.clientY, slop: tapSlop(e) };
+      t = holdTimer(function () { el.__held = true; assetWindow(ref); }, 550);
     });
-    ["pointerup", "pointercancel", "pointermove"].forEach(function (ev) { el.addEventListener(ev, function (e) { if (t && (ev !== "pointermove" || Math.abs(e.movementY) + Math.abs(e.movementX) > 4)) { clearTimeout(t); t = null; } }); });
+    el.addEventListener("pointermove", function (e) { if (at && Math.hypot(e.clientX - at.x, e.clientY - at.y) >= at.slop) { holdStop(t); at = null; } }, { passive: true });
+    ["pointerup", "pointercancel"].forEach(function (ev) { el.addEventListener(ev, function () { holdStop(t); at = null; }); });
     el.addEventListener("click", function (e) { if (el.__held) { el.__held = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
   }
   function awSec(body, title) {
@@ -21854,29 +21954,49 @@ function __detabaseMain() {
   // The focused block (board only: tap it) zooms and pans inside: ctx.iv[blockId] = {k, x, y} (k ≥ 1, x/y in
   // the block body's px); per device, never saved.
   var BD_RW = 380, BD_NEW_H = 560, BD_IK = 8;
-  function bdContent(ctx, b) {
-    var k = b.id + "|" + refKey(b.ref);
-    if (ctx.cache[k]) return ctx.cache[k];
+  // ---- drawing (B219): only what changed ----
+  // ctx.els: each block's and frame's elements, kept from one draw to the next. A block's content is made
+  // again only when what it shows changed (bdStamp), and is measured once, then again only when its own
+  // size changes (a picture or a font arrived: ctx.watch). Sizes are all read before anything is written.
+  function bdDocTs(id) { var d = canvasCache[id] || window.DBX.get(id); return d ? d.ts || 0 : 0; }
+  function bdStamp(ref) {
+    if (!refExists(ref)) return "gone";
+    function card(id) { return [cardLabel(id), cardElsByPart(id).map(function (e) { return [e.id, e.name, e.part, bdDocTs(e.id)]; }), (store.biOver || {})[id] || 0]; }
+    var s;
+    if (ref.lvl === "c") s = card(ref.id);
+    else if (ref.lvl === "t") s = [tabLabel(ref.id), libKids(ref).map(function (c) { return [c.id, card(c.id)]; })];
+    else if (ref.lvl === "s") s = [subjectName(ref.id), libKids(ref).map(function (t) { return tabLabel(t.id); })];
+    else if (ref.lvl === "p") s = [refName(ref), bdDocTs(ref.id), store.partCats];
+    else if (ref.lvl === "st") { var px = psPartById(ref.id); s = [refName(ref), px ? bdDocTs(px.page.id) : 0]; }
+    else s = [refName(ref), bdDocTs(ref.id)];
+    return JSON.stringify(s);
+  }
+  function bdContent(ctx, b, stamp) {
+    var k = b.id + "|" + refKey(b.ref), kept = ctx.cache[k];
+    if (kept && kept.stamp === stamp) return kept.page;
     var page = document.createElement("div");
     page.className = "bd-bpage";
     page.style.width = BD_RW + "px";
-    if (refExists(b.ref)) { page.appendChild(assetBody(b.ref, BD_RW - 20)); }
+    if (stamp !== "gone") page.appendChild(assetBody(b.ref, BD_RW - 20));
     else page.innerHTML = '<p class="muted">(deleted from the library)</p>';
-    Array.prototype.forEach.call(page.querySelectorAll("img"), function (im) {
-      if (!im.complete) im.addEventListener("load", function () { bdResized(ctx); }, { once: true });
-    });
-    return ctx.cache[k] = page;
+    page.__id = b.id;
+    ctx.cache[k] = { stamp: stamp, page: page };
+    return page;
   }
   function bdApplyView(ctx) { var v = ctx.view; ctx.world.style.transform = "translate(" + v.x + "px," + v.y + "px) scale(" + v.k + ")"; }
-  function bdPlace(el, n) { el.style.left = n.x + "px"; el.style.top = n.y + "px"; el.style.width = n.w + "px"; el.style.height = n.h + "px"; }
-  function bdBlockEl(ctx, id) { return ctx.world.querySelector('.bd-block[data-node="' + id + '"]'); }
+  function bdPlace(r, n) {
+    var p = r.at || (r.at = {}), s = r.el.style;
+    if (p.x !== n.x) { p.x = n.x; s.left = n.x + "px"; }
+    if (p.y !== n.y) { p.y = n.y; s.top = n.y + "px"; }
+    if (p.w !== n.w) { p.w = n.w; s.width = n.w + "px"; }
+    if (p.h !== n.h) { p.h = n.h; s.height = n.h + "px"; }
+  }
+  function bdBlockEl(ctx, id) { var r = ctx.els && ctx.els.get(id); return r ? r.el : null; }
   // a block's height from its width (and, once, its width from the box it had)
-  function bdSize(ctx, b, d) {
-    var head = d.firstChild.offsetHeight, nh = d.querySelector(".bd-bpage").offsetHeight;
-    if (!nh) return;                                    // not laid out (hidden page): measured next time
-    ctx.nat[b.id] = { nh: nh, head: head };
+  function bdSize(ctx, b) {
+    var n = ctx.nat[b.id]; if (!n) return;
     if (!b.s) {
-      var s = Math.min((b.w || BD_RW) / BD_RW, ((b.h || BD_NEW_H) - head) / nh);
+      var s = Math.min((b.w || BD_RW) / BD_RW, ((b.h || BD_NEW_H) - n.head) / n.nh);
       b.w = Math.round(BD_RW * Math.max(0.2, Math.min(2, s)));
       b.s = 1;
       ctx.fitted = true;
@@ -21885,10 +22005,10 @@ function __detabaseMain() {
   }
   function bdHeightFor(ctx, b, w) { var n = ctx.nat[b.id]; return n ? Math.round(n.head + n.nh * w / BD_RW) : b.h; }
   function bdIv(ctx, b) { return ctx.iv[b.id] || { k: 1, x: 0, y: 0 }; }
-  function bdInner(ctx, b, d) {
-    d = d || bdBlockEl(ctx, b.id); if (!d) return;
-    var iv = bdIv(ctx, b), sc = d.querySelector(".bd-bscale");
-    sc.style.transform = "translate(" + iv.x + "px," + iv.y + "px) scale(" + (b.w / BD_RW * iv.k) + ")";
+  function bdInner(ctx, b) {
+    var r = ctx.els && ctx.els.get(b.id); if (!r || !r.scale) return;
+    var iv = bdIv(ctx, b), t = "translate(" + iv.x + "px," + iv.y + "px) scale(" + (b.w / BD_RW * iv.k) + ")";
+    if (r.t !== t) { r.t = t; r.scale.style.transform = t; }
   }
   // keep the zoomed page covering the block's body
   function bdIClamp(ctx, b, iv) {
@@ -21908,78 +22028,194 @@ function __detabaseMain() {
   function bdIFit(ctx, b) { delete ctx.iv[b.id]; bdInner(ctx, b); }
   // the ＋ − Fit buttons zoom about the middle of what shows
   function bdIStep(ctx, b, f) { var n = ctx.nat[b.id], bh = n ? b.h - n.head : b.h; bdIZoom(ctx, b, b.w / 2, bh / 2, bdIv(ctx, b).k * f); }
-  function bdLines(ctx) {
-    var ps = ctx.ps(), svg = ctx.world.querySelector(".bd-lines");
-    svg.innerHTML = "";
+  function bdLinePts(a, b) { return [a.x + a.w / 2, a.y + (a.h || 0) / 2, b.x + b.w / 2, b.y + (b.h || 0) / 2]; }
+  // the lines, kept by id; only: {node id: 1} → just the lines at those
+  function bdLines(ctx, only) {
+    var ps = ctx.ps(), at = new Map(), live = new Set(), order = [];
+    ps.blocks.forEach(function (n) { at.set(n.id, n); });
+    ps.groups.forEach(function (n) { at.set(n.id, n); });
     ps.links.forEach(function (l) {
-      var a = nodeOf(ps, l.a), b = nodeOf(ps, l.b); if (!a || !b) return;
-      var xy = [a.x + a.w / 2, a.y + (a.h || 0) / 2, b.x + b.w / 2, b.y + (b.h || 0) / 2];
-      ["bd-line", "bd-hit"].forEach(function (cls) {
-        var ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        ln.setAttribute("x1", xy[0]); ln.setAttribute("y1", xy[1]); ln.setAttribute("x2", xy[2]); ln.setAttribute("y2", xy[3]);
-        ln.setAttribute("class", cls);
-        if (cls === "bd-line") ln.setAttribute("stroke", l.color); else ln.setAttribute("data-link", l.id);
-        svg.appendChild(ln);
+      if (only && !only[l.a] && !only[l.b]) return;
+      var a = at.get(l.a), b = at.get(l.b); if (!a || !b) return;
+      var r = ctx.lines.get(l.id);
+      if (!r) {
+        r = { ln: document.createElementNS("http://www.w3.org/2000/svg", "line"), hit: document.createElementNS("http://www.w3.org/2000/svg", "line") };
+        r.ln.setAttribute("class", "bd-line"); r.hit.setAttribute("class", "bd-hit"); r.hit.setAttribute("data-link", l.id);
+        ctx.lines.set(l.id, r);
+      }
+      var xy = bdLinePts(a, b), key = xy.join();
+      if (r.key !== key) {
+        r.key = key;
+        [r.ln, r.hit].forEach(function (ln) { ln.setAttribute("x1", xy[0]); ln.setAttribute("y1", xy[1]); ln.setAttribute("x2", xy[2]); ln.setAttribute("y2", xy[3]); });
+      }
+      if (r.color !== l.color) { r.color = l.color; r.ln.setAttribute("stroke", l.color); }
+      if (!only) { live.add(l.id); order.push(r.ln, r.hit); }
+    });
+    if (only) return;
+    ctx.lines.forEach(function (r, id) { if (!live.has(id)) ctx.lines.delete(id); });
+    kidsInOrder(ctx.svg, order);
+  }
+  // a block off screen skips layout, so its watcher can't see a font arrive: those are measured again here
+  var bdWatched = new Set();
+  function bdRemeasure(ctx) {
+    var got = [], ids = {};
+    ctx.els.forEach(function (r, id) {                   // read everything, then write
+      var n = ctx.nat[id];
+      if (!r.page || !n || n.page !== r.page) return;
+      var nh = r.page.offsetHeight;
+      if (nh && nh !== n.nh) got.push([id, nh]);
+    });
+    if (!got.length) return;
+    var ps = ctx.ps();
+    got.forEach(function (g) {
+      ctx.nat[g[0]].nh = g[1];
+      var b = byId(ps.blocks, g[0]); if (!b) return;
+      bdSize(ctx, b); ids[g[0]] = 1;
+    });
+    bdRelayout(ctx, ids);
+  }
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener("loadingdone", function () {
+    bdWatched.forEach(function (ctx) { if (!ctx.world.isConnected) bdWatched.delete(ctx); else if (ctx.els) bdRemeasure(ctx); });
+  });
+  function bdWatch(ctx) {
+    bdWatched.add(ctx);
+    if (!window.ResizeObserver) return null;
+    return new ResizeObserver(function (entries) {
+      var got = [];
+      entries.forEach(function (en) {                    // read everything, then write
+        var page = en.target, n = ctx.nat[page.__id];
+        if (!n || n.page !== page || !page.isConnected) return;
+        var nh = page.offsetHeight;
+        if (nh && nh !== n.nh) got.push([n, nh, page.__id]);
       });
+      if (!got.length) return;
+      var ps = ctx.ps(), ids = {};
+      got.forEach(function (g) {
+        g[0].nh = g[1];
+        var b = byId(ps.blocks, g[2]); if (!b) return;
+        bdSize(ctx, b); ids[b.id] = 1;
+      });
+      bdRelayout(ctx, ids);
     });
   }
-  function bdDraw(ctx) {
+  function bdDraw(ctx) { libFast(function () { bdDrawNow(ctx); }); }
+  function bdDrawNow(ctx) {
     var ps = ctx.ps(), w = ctx.world;
-    w.innerHTML = '<svg class="bd-lines"></svg>';
+    if (!ctx.els || !ctx.svg || ctx.svg.parentNode !== w) {
+      w.innerHTML = '<svg class="bd-lines"></svg>';
+      ctx.svg = w.firstChild; ctx.els = new Map(); ctx.lines = new Map();
+      if (ctx.watch) ctx.watch.disconnect();
+      ctx.watch = bdWatch(ctx);
+    }
+    var live = new Set(), order = [ctx.svg], measure = [];
     ps.groups.forEach(function (g) {
-      var f = document.createElement("div");
-      f.className = "bd-frame" + (ctx.sel[g.id] ? " sel" : "");
-      f.setAttribute("data-node", g.id);
-      f.innerHTML = '<div class="bd-ftitle"></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
-      f.firstChild.textContent = g.name;
-      bdPlace(f, g);
-      w.appendChild(f);
+      var r = ctx.els.get(g.id);
+      if (!r) {
+        var f = document.createElement("div");
+        f.className = "bd-frame";
+        f.setAttribute("data-node", g.id);
+        f.innerHTML = '<div class="bd-ftitle"></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
+        r = { el: f, title: f.firstChild };
+        ctx.els.set(g.id, r);
+      }
+      if (r.name !== g.name) { r.name = g.name; r.title.textContent = g.name; }
+      bdPlace(r, g);
+      live.add(g.id); order.push(r.el);
     });
     ctx.fitted = false;
     ps.blocks.forEach(function (b) {
-      var d = document.createElement("div"), foc = ctx.focus === b.id;
-      d.className = "bd-block" + (ctx.sel[b.id] ? " sel" : "") + (ctx.linking === b.id ? " linking" : "") + (foc ? " focus" : "");
-      d.setAttribute("data-node", b.id);
-      d.innerHTML = '<div class="bd-bhead"><span class="bd-btitle"></span><small class="bd-bcrumb"></small></div><div class="bd-bbody"><div class="bd-bscale"></div></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
-      d.querySelector(".bd-btitle").textContent = refExists(b.ref) ? refLabel(b.ref) : "(deleted)";
-      if (refExists(b.ref)) d.querySelector(".bd-bcrumb").textContent = assetCrumbs(b.ref).join(" › ");   // where it sits (B181)
-      d.querySelector(".bd-bscale").appendChild(bdContent(ctx, b));
-      if (!b.s) d.style.width = (b.w || BD_RW) + "px";
-      w.appendChild(d);
-      bdSize(ctx, b, d);
-      bdPlace(d, b);
+      var r = ctx.els.get(b.id);
+      if (!r) {
+        var d = document.createElement("div");
+        d.className = "bd-block";
+        d.setAttribute("data-node", b.id);
+        d.innerHTML = '<div class="bd-bhead"><span class="bd-btitle"></span><small class="bd-bcrumb"></small></div><div class="bd-bbody"><div class="bd-bscale"></div></div>' + (ctx.ro ? "" : '<span class="bd-rs"></span>');
+        r = { el: d, head: d.firstChild, body: d.children[1], scale: d.children[1].firstChild };
+        r.title = r.head.children[0]; r.crumb = r.head.children[1];
+        ctx.els.set(b.id, r);
+      }
+      var stamp = bdStamp(b.ref), there = stamp !== "gone";
+      var name = there ? refLabel(b.ref) : "(deleted)", where = there ? assetCrumbs(b.ref).join(" › ") : "";   // where it sits (B181)
+      if (r.name !== name) { r.name = name; r.title.textContent = name; }
+      if (r.where !== where) { r.where = where; r.crumb.textContent = where; }
+      var page = bdContent(ctx, b, stamp);
+      if (r.page !== page) {
+        if (r.page && ctx.watch) ctx.watch.unobserve(r.page);
+        r.scale.textContent = ""; r.scale.appendChild(page); r.page = page;
+        if (ctx.watch) ctx.watch.observe(page);
+      }
+      var n = ctx.nat[b.id];
+      if (!n || n.page !== page) {
+        measure.push({ b: b, r: r });
+        r.el.classList.remove("ready");                  // it can't skip drawing before it has been measured
+        if (!b.s) { r.el.style.width = (b.w || BD_RW) + "px"; r.at = null; }
+      }
+      live.add(b.id); order.push(r.el);
+    });
+    ctx.els.forEach(function (r, id) {
+      if (live.has(id)) return;
+      if (r.page && ctx.watch) ctx.watch.unobserve(r.page);
+      ctx.els.delete(id);
+    });
+    kidsInOrder(w, order);
+    measure.forEach(function (m) { m.head = m.r.head.offsetHeight; m.nh = m.r.page.offsetHeight; });
+    measure.forEach(function (m) { if (m.nh) ctx.nat[m.b.id] = { nh: m.nh, head: m.head, page: m.r.page }; });   // no height: not laid out (hidden page), measured next time
+    ps.blocks.forEach(function (b) {
+      var r = ctx.els.get(b.id), n = ctx.nat[b.id], ok = !!n && n.page === r.page;
+      if (ok) bdSize(ctx, b);
+      bdPlace(r, b);
       var iv = ctx.iv[b.id]; if (iv) bdIClamp(ctx, b, iv);
-      bdInner(ctx, b, d);
+      bdInner(ctx, b);
+      if (ok) r.el.classList.add("ready");
     });
     bdLines(ctx);
+    bdMarks(ctx);
     bdApplyView(ctx);
   }
-  // move what is on screen without rebuilding it
-  function bdRelayout(ctx) {
-    var ps = ctx.ps();
-    Array.prototype.forEach.call(ctx.world.querySelectorAll("[data-node]"), function (el) {
-      var id = el.getAttribute("data-node"), n = nodeOf(ps, id); if (!n) return;
-      bdPlace(el, n);
-      if (el.classList.contains("bd-block")) bdInner(ctx, n, el);
+  // selection, focus and linking: classes on the blocks they changed
+  function bdMarks(ctx) {
+    if (!ctx.els) return;
+    ctx.els.forEach(function (r, id) {
+      var c = (r.scale ? "bd-block" : "bd-frame") + (ctx.sel[id] ? " sel" : "") + (ctx.linking === id ? " linking" : "") + (r.scale && ctx.focus === id ? " focus" : "");
+      if (r.cls === c) return;
+      r.cls = c;
+      var ready = r.el.classList.contains("ready");
+      r.el.className = c + (ready ? " ready" : "");
     });
-    bdLines(ctx);
   }
-  // a picture inside a block finished loading: heights again
-  function bdResized(ctx) {
-    clearTimeout(ctx.rsT);
-    ctx.rsT = setTimeout(function () {
-      var ps = ctx.ps();
-      ps.blocks.forEach(function (b) { var d = bdBlockEl(ctx, b.id); if (d) bdSize(ctx, b, d); });
-      bdRelayout(ctx);
-    }, 60);
+  // move what is on screen without rebuilding it (only: {id: 1} → those and their lines)
+  function bdRelayout(ctx, only) {
+    if (!ctx.els) return;
+    var ps = ctx.ps();
+    function put(n) {
+      if (only && !only[n.id]) return;
+      var r = ctx.els.get(n.id); if (!r) return;
+      bdPlace(r, n);
+      if (r.scale) bdInner(ctx, n);
+    }
+    ps.groups.forEach(put); ps.blocks.forEach(put);
+    bdLines(ctx, only);
   }
   // pan, pinch, wheel; on the board also move and resize, and inside the focused block zoom and pan.
   // One gesture engine for both pages. A new first finger (isPrimary) clears whatever a lost gesture left
-  // behind, so the board never stays stuck in a pinch or a move.
+  // behind, so the board never stays stuck in a pinch or a move. Moves are drawn once a frame (later), and
+  // only what moves. A finger may wander TAP_SLOP and still be a tap.
   function bdGestures(ctx) {
-    var st = ctx.stage, ptrs = {}, op = null, pinch = null, lastTap = null;
-    function pos(e) { var r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, cx: e.clientX, cy: e.clientY }; }
-    function reset() { if (op && op.timer) clearTimeout(op.timer); ptrs = {}; op = null; pinch = null; }
+    var st = ctx.stage, ptrs = {}, op = null, pinch = null, lastTap = null, box = null, pending = null, queued = false, pressed = null;
+    function pos(e) { var r = box || (box = st.getBoundingClientRect()); return { x: e.clientX - r.left, y: e.clientY - r.top, cx: e.clientX, cy: e.clientY }; }
+    function flush() { var f = pending; pending = null; if (f) f(); }
+    function later(f) {
+      pending = f;
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; flush(); });
+    }
+    function press(el) {
+      if (pressed) pressed.removeAttribute("data-press");
+      pressed = el || null;
+      if (pressed) pressed.setAttribute("data-press", "1");   // the answer to the finger, before anything else
+    }
+    function reset() { flush(); if (op && op.timer) holdStop(op.timer); ptrs = {}; op = null; pinch = null; press(null); }
     function zoomAt(px, py, k2) {
       var v = ctx.view; k2 = Math.max(0.12, Math.min(3, k2));
       v.x = px - (px - v.x) * k2 / v.k; v.y = py - (py - v.y) * k2 / v.k; v.k = k2;
@@ -22007,6 +22243,7 @@ function __detabaseMain() {
         else { iv.x -= e.deltaX / ctx.view.k; iv.y -= e.deltaY / ctx.view.k; bdIClamp(ctx, h.b, iv); bdInner(ctx, h.b); }
         return;
       }
+      box = null;
       var p = pos(e); zoomAt(p.x, p.y, ctx.view.k * (e.deltaY < 0 ? 1.1 : 0.9));
     }, { passive: false });
     st.addEventListener("pointerdown", function (e) {
@@ -22014,11 +22251,14 @@ function __detabaseMain() {
       if (e.target.closest && e.target.closest("button")) return;      // the focused block's ＋ − Fit
       if (e.isPrimary && Object.keys(ptrs).length) reset();
       if (Object.keys(ptrs).length >= 2) return;                       // a third finger changes nothing
+      flush();
+      if (!Object.keys(ptrs).length) box = null;                       // the stage may have moved since the last gesture
       ptrs[e.pointerId] = pos(e);
       try { st.setPointerCapture(e.pointerId); } catch (x) {}
       var ids = Object.keys(ptrs);
       if (ids.length === 2) {
-        if (op && op.timer) clearTimeout(op.timer);
+        press(null);
+        if (op && op.timer) holdStop(op.timer);
         var a = ptrs[ids[0]], b = ptrs[ids[1]], dd = Math.hypot(a.x - b.x, a.y - b.y);
         // two fingers on the focused block's body: zoom inside it; anywhere else: the board
         if (op && op.kind === "ipan" && bodyAt(b.cx, b.cy, op.node)) pinch = { inner: op.node, d: dd, k: bdIv(ctx, op.node).k };
@@ -22029,72 +22269,90 @@ function __detabaseMain() {
         op = null;
         return;
       }
-      var t = e.target, p = pos(e), hit = t.closest ? t.closest("[data-link]") : null;
+      var t = e.target, p = pos(e), hit = t.closest ? t.closest("[data-link]") : null, slop = tapSlop(e);
       if (hit) {
         var lk = byId(ctx.ps().links, hit.getAttribute("data-link"));
-        op = { kind: "line", link: lk, el: hit, p: p };
-        if (!ctx.ro) op.timer = setTimeout(function () { if (op && op.kind === "line") { var o = op; op = null; ctx.onLine(o.link, o.el); } }, 500);
+        op = { kind: "line", link: lk, el: hit, p: p, slop: slop };
+        if (!ctx.ro) op.timer = holdTimer(function () { if (op && op.kind === "line") { var o = op; op = null; ctx.onLine(o.link, o.el); } }, 500);
         return;
       }
+      var el = t.closest ? t.closest("[data-node]") : null;
       var inb = bodyAt(e.clientX, e.clientY);
-      if (inb) { var iv0 = bdIv(ctx, inb.b); op = { kind: "ipan", node: inb.b, p: p, ix: iv0.x, iy: iv0.y }; return; }
-      var el = t.closest ? t.closest("[data-node]") : null, node = el ? nodeOf(ctx.ps(), el.getAttribute("data-node")) : null;
-      if (node && !ctx.ro && t.classList.contains("bd-rs")) op = { kind: "resize", node: node, p: p, w: node.w, h: node.h, before: ctx.snap() };
-      else if (node) op = { kind: "move", node: node, p: p, last: p, before: ctx.ro ? null : ctx.snap() };
-      else op = { kind: "pan", p: p, vx: ctx.view.x, vy: ctx.view.y };
+      if (inb) { var iv0 = bdIv(ctx, inb.b); op = { kind: "ipan", node: inb.b, p: p, ix: iv0.x, iy: iv0.y, slop: slop }; return; }
+      var node = el ? nodeOf(ctx.ps(), el.getAttribute("data-node")) : null;
+      if (node && !ctx.ro && t.classList.contains("bd-rs")) op = { kind: "resize", node: node, p: p, w: node.w, h: node.h, before: ctx.snap(), slop: 2 };
+      else if (node) op = { kind: "move", node: node, p: p, last: p, before: ctx.ro ? null : ctx.snap(), slop: slop };
+      else op = { kind: "pan", p: p, vx: ctx.view.x, vy: ctx.view.y, slop: slop };
+      if (node) press(el);
     });
     st.addEventListener("pointermove", function (e) {
       if (!ptrs[e.pointerId]) return;
+      window.SPD.frame("move");
       ptrs[e.pointerId] = pos(e);
       var ids = Object.keys(ptrs);
       if (pinch && ids.length >= 2) {
-        var a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y), f = d / (pinch.d || 1);
-        if (pinch.inner) { var m = bodyXY(pinch.inner, (a.cx + b.cx) / 2, (a.cy + b.cy) / 2); bdIZoom(ctx, pinch.inner, m.x, m.y, pinch.k * f); }
-        else zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, pinch.k * f);
+        var P = pinch, a = ptrs[ids[0]], b = ptrs[ids[1]], f = Math.hypot(a.x - b.x, a.y - b.y) / (P.d || 1);
+        later(function () {
+          if (P.inner) { var m = bodyXY(P.inner, (a.cx + b.cx) / 2, (a.cy + b.cy) / 2); bdIZoom(ctx, P.inner, m.x, m.y, P.k * f); }
+          else zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, P.k * f);
+        });
         return;
       }
       if (!op) return;
-      window.SPD.frame("move");
-      var p = pos(e), dx = p.x - op.p.x, dy = p.y - op.p.y;
-      if (!op.moved && Math.hypot(dx, dy) < 6) return;
-      op.moved = true;
-      if (op.timer) { clearTimeout(op.timer); op.timer = null; }
-      var ps = ctx.ps(), k = ctx.view.k;
-      if (op.kind === "ipan") {
-        var iv = ctx.iv[op.node.id] = bdIv(ctx, op.node);
-        iv.x = op.ix + dx / k; iv.y = op.iy + dy / k;
-        bdIClamp(ctx, op.node, iv); bdInner(ctx, op.node);
-      } else if (op.kind === "pan" || (op.kind === "move" && ctx.ro)) { if (op.kind === "move") { op.kind = "pan"; op.vx = ctx.view.x; op.vy = ctx.view.y; } ctx.view.x = op.vx + dx; ctx.view.y = op.vy + dy; bdApplyView(ctx); }
-      else if (op.kind === "move") {
-        var mx = (p.x - op.last.x) / k, my = (p.y - op.last.y) / k; op.last = p;
-        op.node.x += mx; op.node.y += my;
-        if (ps.groups.indexOf(op.node) >= 0) membersOf(ps, op.node.id).forEach(function (m) { m.x += mx; m.y += my; });
-        bdRelayout(ctx);
-      } else if (op.kind === "resize") {
-        var isG = ps.groups.indexOf(op.node) >= 0;
-        if (isG) {                                       // a group resizes as one: its blocks scale inside it
-          var nw = Math.max(120, op.w + dx / k), nh = Math.max(70, op.h + dy / k), sx = nw / op.node.w, sy = nh / op.node.h;
-          membersOf(ps, op.node.id).forEach(function (m) { m.x = op.node.x + (m.x - op.node.x) * sx; m.y = op.node.y + (m.y - op.node.y) * sy; m.w *= sx; m.h = bdHeightFor(ctx, m, m.w); });
-          op.node.w = nw; op.node.h = nh;
-        } else {                                         // a block keeps its shape: the bigger of the two pulls wins
-          var n = ctx.nat[op.node.id], byW = op.w + dx / k, byH = n ? (op.h + dy / k - n.head) / n.nh * BD_RW : byW;
-          op.node.w = Math.max(90, Math.round(Math.abs(dx) >= Math.abs(dy) ? byW : byH));
-          op.node.h = bdHeightFor(ctx, op.node, op.node.w);
-          if (ctx.iv[op.node.id]) bdIClamp(ctx, op.node, ctx.iv[op.node.id]);
-        }
-        bdRelayout(ctx);
+      var o = op, p = pos(e), dx = p.x - o.p.x, dy = p.y - o.p.y;
+      if (!o.moved && Math.hypot(dx, dy) < o.slop) return;
+      if (!o.moved) {
+        o.moved = true;
+        press(null);
+        if (o.timer) { holdStop(o.timer); o.timer = null; }
       }
+      later(function () { step(o, p); });
     });
+    function step(o, p) {
+      var ps = ctx.ps(), k = ctx.view.k, dx = p.x - o.p.x, dy = p.y - o.p.y;
+      if (o.kind === "ipan") {
+        var iv = ctx.iv[o.node.id] = bdIv(ctx, o.node);
+        iv.x = o.ix + dx / k; iv.y = o.iy + dy / k;
+        bdIClamp(ctx, o.node, iv); bdInner(ctx, o.node);
+        return;
+      }
+      if (o.kind === "move" && ctx.ro) { o.kind = "pan"; o.vx = ctx.view.x; o.vy = ctx.view.y; }
+      if (o.kind === "pan") { ctx.view.x = o.vx + dx; ctx.view.y = o.vy + dy; bdApplyView(ctx); return; }
+      if (o.kind !== "move" && o.kind !== "resize") return;
+      if (!o.ids) {                                        // what moves with it, looked up once
+        o.isG = ps.groups.indexOf(o.node) >= 0;
+        o.with = o.isG ? membersOf(ps, o.node.id) : [];
+        o.ids = {}; o.ids[o.node.id] = 1;
+        o.with.forEach(function (m) { o.ids[m.id] = 1; });
+      }
+      if (o.kind === "move") {
+        var mx = (p.x - o.last.x) / k, my = (p.y - o.last.y) / k; o.last = p;
+        o.node.x += mx; o.node.y += my;
+        o.with.forEach(function (m) { m.x += mx; m.y += my; });
+      } else if (o.isG) {                                // a group resizes as one: its blocks scale inside it
+        var nw = Math.max(120, o.w + dx / k), nh = Math.max(70, o.h + dy / k), sx = nw / o.node.w, sy = nh / o.node.h;
+        o.with.forEach(function (m) { m.x = o.node.x + (m.x - o.node.x) * sx; m.y = o.node.y + (m.y - o.node.y) * sy; m.w *= sx; m.h = bdHeightFor(ctx, m, m.w); });
+        o.node.w = nw; o.node.h = nh;
+      } else {                                           // a block keeps its shape: the bigger of the two pulls wins
+        var n = ctx.nat[o.node.id], byW = o.w + dx / k, byH = n ? (o.h + dy / k - n.head) / n.nh * BD_RW : byW;
+        o.node.w = Math.max(90, Math.round(Math.abs(dx) >= Math.abs(dy) ? byW : byH));
+        o.node.h = bdHeightFor(ctx, o.node, o.node.w);
+        if (ctx.iv[o.node.id]) bdIClamp(ctx, o.node, ctx.iv[o.node.id]);
+      }
+      bdRelayout(ctx, o.ids);
+    }
     function end(e) {
       if (!ptrs[e.pointerId]) return;
+      flush();                                           // the last move, before it is kept
       delete ptrs[e.pointerId];
+      press(null);
       if (pinch) { if (Object.keys(ptrs).length < 2) { pinch = null; op = null; } return; }
       var o = op; op = null; if (!o) return;
-      if (o.timer) clearTimeout(o.timer);
+      if (o.timer) holdStop(o.timer);
       if (e.type !== "pointerup") { if (o.moved && o.before) ctx.afterEdit(o); return; }   // cancelled: keep what moved
       if (!o.moved) {
         if (o.kind === "line") { ctx.onLine(o.link, o.el); return; }
-        var now = Date.now(), n = o.node || null;
+        var now = e.timeStamp, n = o.node || null;         // when the finger did it, however busy the app was
         // a second tap on the focused block: back to the whole item
         if (n && lastTap && lastTap.id === n.id && now - lastTap.t < 350 && ctx.focus === n.id) { lastTap = null; bdIFit(ctx, n); return; }
         lastTap = n ? { id: n.id, t: now } : null;
@@ -22107,12 +22365,14 @@ function __detabaseMain() {
   }
 
   // ---- the board's page ----
+  // made once and kept: leaving hides it, coming back updates what changed
   function renderBoard() {
     var host = $("boardPane"); if (!host) return;
-    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, iv: {}, focus: null, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700 };
-    host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel"></div><div class="bd-main"><div class="bd-side"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
+    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, iv: {}, nat: {}, focus: null, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700 };
+    if (bd.ctx && bd.ctx.world.isConnected) { bdSide(); bdRedraw(); return; }
+    host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel" hidden></div><div class="bd-main"><div class="bd-side"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
     var ctx = bd.ctx = {
-      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ps: bdData, ro: false, view: bd.view, cache: bd.cache, sel: bd.sel, iv: bd.iv, nat: {}, focus: bd.focus,
+      stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ps: bdData, ro: false, view: bd.view, cache: bd.cache, sel: bd.sel, iv: bd.iv, nat: bd.nat, focus: bd.focus,
       linking: null,
       snap: function () { return JSON.stringify(bdData()); },
       onTap: bdTap, onLine: bdLineMenu, afterEdit: bdAfterEdit
@@ -22125,16 +22385,34 @@ function __detabaseMain() {
     bdBar(); bdSide(); bdRedraw();
   }
   function bdRefOf(k) { var i = k.indexOf("|"); return { lvl: k.slice(0, i), id: k.slice(i + 1) }; }
-  function bdRedraw() {
+  function bdSelState() {
     var c = bd.ctx; c.linking = bd.linking;
     if (bd.focus && (!bd.sel[bd.focus] || bd.multi || !byId(bdData().blocks, bd.focus))) bd.focus = null;
     c.focus = bd.focus;
+  }
+  function bdBarsNow() {
+    // the two bars above the board change height: the board moves the other way by as much, so what is under
+    // the finger stays there for the next tap
+    var c = bd.ctx, was = c.stage.getBoundingClientRect().top;
+    bdBar(); bdBarSel();
+    var r = c.stage.getBoundingClientRect();
+    if (r.height && r.top !== was) { c.view.y -= r.top - was; bdApplyView(c); }
+    if (bdTreeShown()) bdTreeBoard(false);           // the selection, marked on the tree (B184)
+  }
+  // only the selection changed
+  function bdSelDraw() {
+    bdSelState();
+    bdMarks(bd.ctx);
+    bdBarsNow();
+  }
+  function bdRedraw() {
+    var c = bd.ctx;
+    bdSelState();
     bdDraw(c);
     if (c.fitted) bdSave();                             // blocks fitted for the first time (new, or saved before B179)
     var hint = $("boardPane").querySelector(".bd-hint"), ps = bdData();
     if (hint) hint.hidden = !!(ps.blocks.length || ps.groups.length);
-    bdBar(); bdBarSel();
-    if (bdTreeShown()) bdTreeBoard(false);           // the selection, marked on the tree (B184)
+    bdBarsNow();
   }
   function bdSave() { saveCanvas(BOARD_ID); }
   // every change goes through here (or bdAfterEdit, for a drag), so every change can be undone
@@ -22143,7 +22421,7 @@ function __detabaseMain() {
     fn(bdData());
     bd.undo.push(before); if (bd.undo.length > 60) bd.undo.shift();
     bd.redo = [];
-    bdSave(); bdRedraw(); bdBar();
+    bdSave(); bdRedraw();
   }
   function bdAfterEdit(o) {
     var ps = bdData();
@@ -22151,7 +22429,7 @@ function __detabaseMain() {
     if (o.kind === "resize") delete o.node.__m;
     bd.undo.push(o.before); if (bd.undo.length > 60) bd.undo.shift();
     bd.redo = [];
-    bdSave(); bdRedraw(); bdBar();
+    bdSave(); bdRedraw();
   }
   // a block dropped inside a frame joins that group (the frame grows to hold it); dropped outside, it leaves
   function bdRegroup(ps, b) {
@@ -22254,7 +22532,7 @@ function __detabaseMain() {
     if (bd.linking) {
       var from = bd.linking; bd.linking = null;
       if (node && node.id !== from) bdChange(function (ps) { ps.links.push({ id: uid("l_"), a: from, b: node.id, color: bd.color }); });
-      else bdRedraw();
+      else bdSelDraw();
       return;
     }
     if (!bd.multi && node && bd.focus === node.id) return;   // a tap inside the block being read
@@ -22263,7 +22541,7 @@ function __detabaseMain() {
     if (node) { if (was && bd.multi) delete bd.sel[node.id]; else bd.sel[node.id] = 1; }
     // one tap on a block selects it and focuses it: pinch / ＋ − / drag then work inside it
     bd.focus = !bd.multi && node && bd.sel[node.id] && byId(bdData().blocks, node.id) ? node.id : null;
-    bdRedraw();
+    bdSelDraw();
   }
   function bdDeleteSel() {
     var ids = Object.keys(bd.sel);
@@ -22301,7 +22579,7 @@ function __detabaseMain() {
     var c = loadCanvas(BOARD_ID);
     to.push(JSON.stringify(c.ps)); c.ps = JSON.parse(from.pop());
     Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; });
-    bdSave(); bdRedraw(); bdBar();
+    bdSave(); bdRedraw();
   }
   function bdBar() {
     var bar = $("boardPane").querySelector(".bd-bar");
@@ -22331,10 +22609,10 @@ function __detabaseMain() {
   function bdBarSel() {
     var el = $("boardPane").querySelector(".bd-sel"), ids = Object.keys(bd.sel), ps = bdData();
     el.innerHTML = ""; el.hidden = !ids.length && !bd.linking;
-    if (bd.linking) { el.insertAdjacentHTML("beforeend", '<span>Tap what to connect it to.</span>'); el.appendChild(actBtn("Cancel", "", function () { bd.linking = null; bdRedraw(); })); return; }
+    if (bd.linking) { el.insertAdjacentHTML("beforeend", '<span>Tap what to connect it to.</span>'); el.appendChild(actBtn("Cancel", "", function () { bd.linking = null; bdSelDraw(); })); return; }
     if (!ids.length) return;
     var one = ids.length === 1 ? nodeOf(ps, ids[0]) : null, isG = !!one && ps.groups.indexOf(one) >= 0;
-    if (one) el.appendChild(actBtn("🔗 Connect", "join it to another block or group with a line", function () { bd.linking = one.id; Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; }); bdRedraw(); }));
+    if (one) el.appendChild(actBtn("🔗 Connect", "join it to another block or group with a line", function () { bd.linking = one.id; Object.keys(bd.sel).forEach(function (k) { delete bd.sel[k]; }); bdSelDraw(); }));
     if (one && !isG && refExists(one.ref)) el.appendChild(actBtn("↗ Open", "open it in the library", function () { openRef(one.ref); }));
     if (one && bd.focus === one.id) {                  // reading inside the focused block (pinch, ctrl/⌘+wheel and drag work too)
       el.appendChild(actBtn("−", "zoom out inside the block", function () { bdIStep(bd.ctx, one, 1 / 1.5); }));
@@ -22381,7 +22659,8 @@ function __detabaseMain() {
   // the board on the tree (B184): the selected blocks (or, with "Everything on the board", all of them) are
   // marked in the board colour. A group made from a concept / subject counts as that ring; a group of loose
   // blocks as its blocks.
-  function bdBoardKeys(all) {
+  function bdBoardKeys(all) { return libFast(function () { return bdBoardKeysNow(all); }); }
+  function bdBoardKeysNow(all) {
     var ps = bdData(), keys = {};
     function add(r) { var k = r && refExists(r) && ctKeyOf(r); if (k) keys[k] = 1; }
     ps.groups.forEach(function (g) { if ((all || bd.sel[g.id]) && g.ref) add(g.ref); });
@@ -23864,6 +24143,44 @@ let applying = false;
 let snapBound = false;
 let signedInDone = false;
 
+// ---- nothing unsent is lost (B219) ----
+// What changed here and hasn't reached the cloud is marked on this device (detabase.cloudUnsent), so it is
+// still known after a close. Before a cloud copy replaces anything, this device's copy is kept in DBX
+// (local only): the store in "__pre_cloud" (the last 2 replaced, plus the last 4 that held unsent changes),
+// a doc with unsent changes in "__pre_cloud_doc_<id>" (listed in "__pre_cloud_docs"). If that copy can't be
+// written, nothing is replaced. The Backup file carries them (cloudKeptCopies).
+const UNSENT_KEY = "detabase.cloudUnsent";
+let unsent = { store: 0, docs: {} };
+try { const u = JSON.parse(localStorage.getItem(UNSENT_KEY) || "null"); if (u && typeof u === "object") unsent = { store: u.store || 0, docs: u.docs || {} }; } catch (e) {}
+let changeN = 0, replacing = false;
+function unsentSave() { try { localStorage.setItem(UNSENT_KEY, JSON.stringify(unsent)); } catch (e) {} }
+function unsentStore() { changeN++; if (!unsent.store) { unsent.store = Date.now(); unsentSave(); } }
+function sentStore() { if (unsent.store) { unsent.store = 0; unsentSave(); } }
+function unsentDoc(id) { if (!unsent.docs[id]) { unsent.docs[id] = 1; unsentSave(); } }
+function sentDoc(id) { if (unsent.docs[id]) { delete unsent.docs[id]; unsentSave(); } }
+window.cloudNotifyCanvasChange = unsentDoc;
+async function keepStore() {
+  for (;;) {
+    const str = window.DBX.mainGet();
+    if (!str) return true;                            // nothing here to lose
+    const had = (window.DBX.get("__pre_cloud") || {}).copies || [];
+    const all = had.filter((c) => c.store !== str).concat({ at: Date.now(), unsent: !!unsent.store, store: str });
+    const keep = new Set(all.filter((c) => c.unsent).slice(-4).concat(all.filter((c) => !c.unsent).slice(-2)));
+    if (!(await window.DBX.put("__pre_cloud", { copies: all.filter((c) => keep.has(c)), ts: Date.now() }))) return false;
+    if (window.DBX.mainGet() === str) return true;     // else it changed while that was written: keep that too
+  }
+}
+async function keepDoc(id) {
+  for (;;) {
+    const d = canvasLocal(id);
+    if (!d || !unsent.docs[id]) return true;
+    if (!(await window.DBX.put("__pre_cloud_doc_" + id, JSON.parse(JSON.stringify(d))))) return false;
+    const ids = ((window.DBX.get("__pre_cloud_docs") || {}).ids || []).filter((x) => x !== id).concat(id);
+    if (!(await window.DBX.put("__pre_cloud_docs", { ids, ts: Date.now() }))) return false;
+    if (canvasLocalTs(id) === (d.ts || 0)) return true;
+  }
+}
+
 // ---- per-canvas sync (heavy items + ink, one doc each) ----
 // Local copies live in IndexedDB (window.DBX). "sync/index" holds {m: {id: updatedAt}} for every
 // canvas doc, so a sign-in sweep costs ONE read plus fetches of only what actually changed — not a
@@ -23899,12 +24216,18 @@ async function decodeCanvas(id, d) {
 async function applyCanvas(id, d) {
   let body;
   try { body = await decodeCanvas(id, d); } catch (e) { noteCloudErr("board decode", e, id); return; }
-  const prev = canvasLocal(id);
+  let prev = canvasLocal(id);
   if (prev && (prev.ts || 0) >= (d.updatedAt || 0)) return;   // a newer local edit landed meanwhile
+  if (unsent.docs[id]) {
+    if (!(await keepDoc(id))) { noteCloudErr("board backup", new Error("no room to keep this device's copy, so it was not replaced"), id); setBadge("☁ update not loaded — tap", "bad"); return; }
+    prev = canvasLocal(id);
+    if (prev && (prev.ts || 0) >= (d.updatedAt || 0)) return;
+  }
   const docv = { items: body.items, ink: body.ink, ts: d.updatedAt || Date.now() };
   if (body.ps) docv.ps = body.ps;                 // a problem page's crops and stages
   if (prev && prev.nav) docv.nav = prev.nav;
   window.DBX.put(id, docv);
+  sentDoc(id);
   if (typeof window.onCloudCanvas === "function") { try { window.onCloudCanvas(id); } catch (e) {} }
 }
 window.cloudSaveCanvas = async function (id, data) {
@@ -23923,6 +24246,7 @@ window.cloudSaveCanvas = async function (id, data) {
     canvasParts[id] = n;
     for (let i = n; i < had; i++) { try { await deleteDoc(partRef(id, i)); } catch (e) {} }
     await setDoc(indexRef, { m: { [id]: ts } }, { merge: true });
+    if (canvasLocalTs(id) <= ts) sentDoc(id);
   } catch (e) { noteCloudErr("board push", e, id); }
 };
 window.cloudDeleteCanvas = async function (id) {
@@ -24073,15 +24397,17 @@ function sameStore(a, b) {
 }
 
 async function pushLocal() {
-  if (!user || pendingRemote) return;
+  if (!user || pendingRemote || replacing) return;
   const ts = Date.now();
   lastPushedTs = ts;   // before the write — the local snapshot echo fires before setDoc resolves
+  const n = changeN;
   const s = localStore();
   let size = 0;
   try { size = JSON.stringify(s).length; } catch (e) {}
   try {
     await setDoc(ref, { store: s, updatedAt: ts, updatedBy: (navigator.platform || "device") });
     try { localStorage.setItem(TS_KEY, String(ts)); } catch (e) {}
+    if (n === changeN) sentStore();
     setBadge("☁ " + shortName() + " · saved", "good");
   } catch (e) {
     // a Firestore document is capped at 1 MiB, so the size goes in the report: it is the one
@@ -24091,11 +24417,18 @@ async function pushLocal() {
   }
 }
 function schedulePush() {
+  unsentStore();
   if (!user) return;
   if (pushTimer) clearTimeout(pushTimer);
   pushTimer = setTimeout(() => { pushTimer = null; pushLocal(); }, 2000);
 }
 window.cloudNotifyLocalChange = schedulePush;
+// the page is going away: what waits is sent now
+window.cloudFlush = function () {
+  if (!pushTimer) return;
+  clearTimeout(pushTimer); pushTimer = null;
+  pushLocal();
+};
 
 // A newer store from another device means a full reload. Never do that out from under the user
 // while they're writing on a board: hold the update (and stop pushing this device's now-stale
@@ -24114,10 +24447,24 @@ window.__detabaseFlushRemote = function () {
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && pendingRemote) { const d = pendingRemote; pendingRemote = null; commitRemote(d); }
 });
-function commitRemote(d) {
-  applying = true;
+async function commitRemote(d) {
+  if (replacing) { pendingRemote = d; return; }
+  applying = replacing = true;
+  let kept = false;
+  try { kept = await keepStore(); } catch (e) { noteCloudErr("backup before update", e); }
+  if (!kept) {
+    applying = replacing = false;
+    pendingRemote = d;                                 // not loaded, and nothing older is sent over it
+    noteCloudErr("backup before update", new Error("no room to keep this device's copy, so the cloud copy was not loaded"));
+    setBadge("☁ update not loaded — tap", "bad");
+    return;
+  }
+  replacing = false;
+  if (pendingRemote) { d = pendingRemote; pendingRemote = null; }      // a newer one came meanwhile
+  if (pushTimer) { clearTimeout(pushTimer); pushTimer = null; }
   d.store.savedAt = Date.now();                        // what came from the cloud is now the newest local copy
   const wrote = window.DBX.mainSet(JSON.stringify(d.store));
+  sentStore();
   try { localStorage.setItem(TS_KEY, String(d.updatedAt || Date.now())); } catch (e) {}
   // Circuit breaker: the B16 signedInDone guard only stops onSignedIn's compare-and-confirm
   // dance from re-running MULTIPLE TIMES within one page load — it can't stop a RELOAD LOOP,
@@ -24173,6 +24520,7 @@ async function onSignedIn(u) {
       pushLocal(); // this device wins / user kept it
     } else {
       try { localStorage.setItem(TS_KEY, String(remote.updatedAt || Date.now())); } catch (e) {}
+      sentStore();
     }
   } else if (!isEmpty(local)) {
     pushLocal(); // first upload
