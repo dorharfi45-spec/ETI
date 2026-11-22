@@ -959,6 +959,10 @@
   html[dir="rtl"] .bd-stage, html[dir="rtl"] .ct-svg, html[dir="rtl"] svg { direction: ltr; }
   html[dir="rtl"] .bd-bpage, html[dir="rtl"] .bd-bhead { direction: rtl; }
   html[dir="rtl"] .bd-row .ps-grip { order: 0; }
+  /* text drawn in SVG (B215): never spaced out — Safari then places the letters one by one and turns Hebrew
+     around; its direction comes from bidiText. Drawn surfaces made of HTML: each name by its first letter. */
+  svg, svg text, svg tspan { letter-spacing: normal; word-spacing: normal; }
+  .bd-btitle, .bd-bcrumb, .bd-ftitle, .co-glabel > b, .co-gname, .gt-name, .gt-lt-box > b { unicode-bidi: plaintext; }
   .lang-sw { margin-top: 0; }
   .cs-ctl { min-height: 36px; font-size: .8rem; }
   .cs-badges { display: inline-flex; gap: 3px; flex-shrink: 0; }
@@ -1278,7 +1282,7 @@
   .ct-lbl { pointer-events: none; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3.5px * var(--ctu, 1));
     stroke-linejoin: round; text-anchor: middle; font-family: inherit; }
   .ct-lbl { fill: var(--text-secondary); }
-  .ct-lbl.lvl-s { font-size: calc(14px * var(--ctu, 1)); font-weight: 700; fill: var(--text-primary); letter-spacing: .01em; }
+  .ct-lbl.lvl-s { font-size: calc(14px * var(--ctu, 1)); font-weight: 700; fill: var(--text-primary); }
   .ct-lbl.lvl-t { font-size: calc(12px * var(--ctu, 1)); font-weight: 600; }
   .ct-lbl.lvl-c { font-size: calc(11px * var(--ctu, 1)); }
   .ct-lbl.leaf { font-size: calc(10.5px * var(--ctu, 1)); fill: var(--text-primary); }
@@ -3060,7 +3064,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B214</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B215</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -7698,7 +7702,7 @@ function __detabaseMain() {
     }
     function fill(s) { return s.fill ? ' fill="' + skEsc(s.color || SK_COLORS[0]) + '" fill-opacity=".14"' : ' fill="none"'; }
     function label(x, y, t) {
-      out += '<text class="sk-lbl" x="' + f(x) + '" y="' + f(y) + '" font-size="' + f(12 / z) + '" stroke-width="' + f(3 / z) + '">' + skEsc(t) + '</text>';
+      out += '<text class="sk-lbl" x="' + f(x) + '" y="' + f(y) + '" font-size="' + f(12 / z) + '" stroke-width="' + f(3 / z) + '">' + skEsc(bidiText(t)) + '</text>';
     }
     shapes.forEach(function (s) {
       var sid = ' data-sid="' + skEsc(s.id) + '"';
@@ -17149,7 +17153,7 @@ function __detabaseMain() {
         var tw = g.measureText(lbl).width;
         var bx = Math.min(W - tw - 8, mxp + 7), by = Math.max(12, myp - 8);
         g.fillStyle = "rgba(255,255,255,.9)"; g.fillRect(bx - 3, by - 10, tw + 6, 14);
-        g.fillStyle = axisc; g.fillText(lbl, bx, by);
+        g.fillStyle = axisc; g.fillText(bidiText(lbl), bx, by);
       });
     }
     clip._redraw = draw;
@@ -18593,7 +18597,8 @@ function __detabaseMain() {
       if (show) {
         var max = Math.max(3, Math.floor(room / (L.lvl === "s" ? 8.4 : 6.6)));
         var txt = L.full.length > max ? L.full.slice(0, max - 1) + "…" : L.full;
-        if (L.el.textContent !== txt) L.el.textContent = txt;
+        var shown = bidiText(txt);
+        if (L.el.textContent !== shown) L.el.textContent = shown;
       }
       L.el.style.display = show ? "" : "none";
     });
@@ -18973,7 +18978,7 @@ function __detabaseMain() {
         var cls = n.leaf ? "ct-leaf" : "ct-ring lvl-" + n.ref.lvl + (n.empty ? " empty" : "");
         if (n.uses) cls += " used";
         var c = el("circle", { cx: ctF(n.x), cy: ctF(n.y), r: ctF(n.r), "class": cls, "data-k": n.key }, n.leaf ? gLeaves : gRings);
-        el("title", {}, c).textContent = n.name;
+        el("title", {}, c).textContent = bidiText(n.name);
         // a ring that is the only one in its parent shares its top edge, so its name goes under the parent's
         var only = 0;
         for (var p = n; p.parent && p.parent.ref.lvl !== "root" && p.parent.kids.length === 1; p = p.parent) only++;
@@ -19021,7 +19026,7 @@ function __detabaseMain() {
       el("rect", { x: ctF(v.x - CT_MR - 9), y: ctF(v.y - CT_MR - 9), width: 2 * CT_MR + 18, height: 2 * CT_MR + 18, "class": "ct-mhit", "data-v": v.pg.id }, gMethods);   // a finger-sized target
       var sq = el("rect", { x: ctF(v.x - CT_MR), y: ctF(v.y - CT_MR), width: 2 * CT_MR, height: 2 * CT_MR, rx: 3, fill: v.color,
         "class": "ct-method" + (v.pg.kind ? "" : " nokind"), "data-v": v.pg.id, "data-vv": v.pg.id }, gMethods);
-      el("title", {}, sq).textContent = v.pg.name + (v.pg.kind ? "" : " — needs a kind");
+      el("title", {}, sq).textContent = bidiText(v.pg.name + (v.pg.kind ? "" : " — needs a kind"));
       var lb = el("text", { x: ctF(v.x), y: ctF(v.y + CT_MR), dy: "1em", fill: v.color, "class": "ct-lbl ct-mlbl", "data-vv": v.pg.id }, gLbls);
       labels.push({ el: lb, key: vk, r: CT_MR, leaf: false, lvl: "p", full: L(v.pg.name) });
     });
@@ -20726,7 +20731,7 @@ function __detabaseMain() {
   function ptNumW(s) { var m = ptFrac(s); return m ? Math.max(m[1].length, m[2].length) * 7.5 + 6 : String(s).length * 7.5; }
   function ptNum(x, y, s, cls, anchor) {
     var m = ptFrac(s), w = ptNumW(s), cx = anchor === "end" ? x - w / 2 : anchor === "start" ? x + w / 2 : x;
-    if (!m) return '<text class="' + cls + '" x="' + cx + '" y="' + (y + 4) + '" text-anchor="middle">' + escapeHtml(String(s)) + '</text>';
+    if (!m) return '<text class="' + cls + '" x="' + cx + '" y="' + (y + 4) + '" text-anchor="middle">' + escapeHtml(bidiText(s)) + '</text>';
     return '<text class="' + cls + '" x="' + cx + '" y="' + (y - 3) + '" text-anchor="middle">' + m[1] + '</text>' +
       '<line class="pt-bar ' + cls + '" x1="' + (cx - w / 2) + '" x2="' + (cx + w / 2) + '" y1="' + (y + 1) + '" y2="' + (y + 1) + '"/>' +
       '<text class="' + cls + '" x="' + cx + '" y="' + (y + 14) + '" text-anchor="middle">' + m[2] + '</text>';
@@ -20756,7 +20761,7 @@ function __detabaseMain() {
       if (!o.lvl) { out.push('<circle class="pt-root" cx="' + (o.x + PAD) + '" cy="' + y(0) + '" r="4"/>'); return; }
       var w = lw(o.n), cx = o.x + PAD, cy = y(o.lvl);
       out.push('<rect class="pt-node' + (o.kids.length ? "" : " pt-leaf") + '" x="' + (cx - w / 2) + '" y="' + (cy - 12) + '" width="' + w + '" height="24" rx="12"/>');
-      out.push('<text class="pt-lbl" x="' + cx + '" y="' + (cy + 4.5) + '" text-anchor="middle">' + escapeHtml(String(o.n.label || "")) + '</text>');
+      out.push('<text class="pt-lbl" x="' + cx + '" y="' + (cy + 4.5) + '" text-anchor="middle">' + escapeHtml(bidiText(o.n.label || "")) + '</text>');
       if (!o.kids.length && prod && o.q) out.push(ptNum(cx, cy + 34, qStr(o.q), "pt-prod"));
     }
     walk(root);
@@ -21313,11 +21318,11 @@ function __detabaseMain() {
           if (d[0]) b.create("point", [+d[1], f(+d[1])], { name: "", size: 3.5, fixed: true, strokeColor: fn.color, fillColor: d[2] ? "none" : fn.color, highlight: false });
         });
       });
-      if (fn.label) { var ft = gxCompile(gxPieces(fn)[0].expr), lx = def.x[1] - (def.x[1] - def.x[0]) * .12; if (ft) b.create("text", [lx, ft(lx) + (def.y[1] - def.y[0]) * .04, fn.label], { strokeColor: fn.color, fontSize: 13, fixed: true }); }
+      if (fn.label) { var ft = gxCompile(gxPieces(fn)[0].expr), lx = def.x[1] - (def.x[1] - def.x[0]) * .12; if (ft) b.create("text", [lx, ft(lx) + (def.y[1] - def.y[0]) * .04, bidiText(fn.label)], { strokeColor: fn.color, fontSize: 13, fixed: true }); }
     });
     var move = function (o) { if (onMove) o.on("up", onMove); };
     def.pts.forEach(function (p) {
-      var q = b.create("point", [+p.x, +p.y], { name: p.label || "", size: 3.5, color: "#dc2626", fixed: !live, label: { strokeColor: ink, fontSize: 13 } });
+      var q = b.create("point", [+p.x, +p.y], { name: bidiText(p.label || ""), size: 3.5, color: "#dc2626", fixed: !live, label: { strokeColor: ink, fontSize: 13 } });
       q.on("drag", function () { p.x = +q.X().toFixed(2); p.y = +q.Y().toFixed(2); });
       move(q);
     });
@@ -21327,15 +21332,15 @@ function __detabaseMain() {
         q.on("drag", function () { s.pts[i] = [+q.X().toFixed(2), +q.Y().toFixed(2)]; });
         move(q);
         return q;
-      }), a = { strokeColor: s.color, strokeWidth: 2, name: s.label || "", withLabel: !!s.label, fixed: true, highlight: false };
+      }), a = { strokeColor: s.color, strokeWidth: 2, name: bidiText(s.label || ""), withLabel: !!s.label, fixed: true, highlight: false };
       if (s.kind === "seg") b.create("segment", ps, a);
       else if (s.kind === "line") b.create("line", ps, a);
       else if (s.kind === "ray") b.create("line", ps, { strokeColor: s.color, strokeWidth: 2, straightFirst: false, fixed: true });
       else if (s.kind === "arrow") b.create("arrow", ps, a);
       else if (s.kind === "circle") b.create("circle", ps, a);
-      else if (s.kind === "poly") b.create("polygon", ps, { fillColor: s.color, fillOpacity: .12, borders: { strokeColor: s.color, strokeWidth: 2 }, name: s.label || "", withLabel: !!s.label, fixed: true });
-      else if (s.kind === "angle") b.create("angle", ps, { radius: 1, fillColor: s.color, strokeColor: s.color, name: s.label || "", fixed: true });
-      else if (s.kind === "text") b.create("text", [function () { return ps[0].X(); }, function () { return ps[0].Y(); }, s.label || "text"], { strokeColor: s.color === "#000" ? ink : s.color, fontSize: 14 });
+      else if (s.kind === "poly") b.create("polygon", ps, { fillColor: s.color, fillOpacity: .12, borders: { strokeColor: s.color, strokeWidth: 2 }, name: bidiText(s.label || ""), withLabel: !!s.label, fixed: true });
+      else if (s.kind === "angle") b.create("angle", ps, { radius: 1, fillColor: s.color, strokeColor: s.color, name: bidiText(s.label || ""), fixed: true });
+      else if (s.kind === "text") b.create("text", [function () { return ps[0].X(); }, function () { return ps[0].Y(); }, bidiText(s.label || "text")], { strokeColor: s.color === "#000" ? ink : s.color, fontSize: 14 });
     });
     return b;
   }
@@ -23247,6 +23252,15 @@ function heIndex() {
   HE_RE = (HE.re || []).map(function (p) { return [new RegExp(p[0]), p[1]]; });
 }
 function heHasHe(s) { return /[֐-׿]/.test(s); }
+// TEXT DRAWN OUTSIDE HTML (B215): SVG, canvas and graph labels are left-to-right surfaces, so a name that
+// starts in Hebrew is wrapped as a right-to-left run (mixed names then keep their word order; the anchor
+// stays where it was). The one function for it: every renderer of names or translated labels calls it.
+function bidiText(s) {
+  var t = s == null ? "" : String(s);
+  if (t.charAt(0) === "‫" || !/[֐-׿]/.test(t)) return t;
+  var first = /[A-Za-z֐-׿]/.exec(t)[0];
+  return /[A-Za-z]/.test(first) ? t : "‫" + t + "‬";
+}
 // one string, translated: whole, by a pattern, or piece by piece between separators
 function L(s) {
   if (!s || !HE_D.size && !HE_RE.length) return s;
@@ -23277,7 +23291,8 @@ function heNode(n) {
   if (n.nodeType === 3) {
     var v = n.nodeValue; if (!v || !/[A-Za-z]/.test(v)) return;
     var p = n.parentElement; if (!p || p.closest(HE_SKIP)) return;
-    var t = L(v); if (t !== v) n.nodeValue = t;
+    var t = L(v); if (p.namespaceURI === "http://www.w3.org/2000/svg") t = bidiText(t);   // a label drawn by a tool
+    if (t !== v) n.nodeValue = t;
     return;
   }
   if (n.nodeType !== 1 || n.matches(HE_SKIP)) return;
@@ -23329,7 +23344,7 @@ function heApplyLibrary() {
       var codes = Array.prototype.map.call(el.querySelectorAll("code"), function (c) { return c.outerHTML; });
       el.innerHTML = h.replace(/⟦(\d+)⟧/g, function (m, n) { return codes[+n] || ""; });
     });
-    if (tr.s) Array.prototype.forEach.call(card.querySelectorAll("svg text"), function (t, i) { if (tr.s[i]) t.textContent = tr.s[i]; });
+    if (tr.s) Array.prototype.forEach.call(card.querySelectorAll("svg text"), function (t, i) { if (tr.s[i]) t.textContent = bidiText(tr.s[i]); });
   });
 }
 // the app starts once the saved docs are read and the built-in lessons (content/eti.html) are in the page
