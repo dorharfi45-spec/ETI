@@ -3071,7 +3071,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B217</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B218</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5613,7 +5613,8 @@ function __detabaseMain() {
     if ((!activeSubject && key === "f:" + lastEtiFolder) || (activeSubject && key === "s:" + activeSubject)) { activeGroup = gid; store.ui.group = gid; }
   }
 
-  function renderEtiTree() {
+  function renderEtiTree() { libFast(etiTreeDraw); }
+  function etiTreeDraw() {
     var tree = $("etiTree");
     if (!tree) return;
     tree.textContent = "";
@@ -8222,7 +8223,7 @@ function __detabaseMain() {
       coathPage = coathFolder(coathId || "home").id;
       coathGroup = (coathOpts && coathOpts.group) || ""; coathProduct = (coathOpts && coathOpts.product) || null; coathIdent = (coathOpts && coathOpts.ident) || null; coathPlan = (coathOpts && coathOpts.plan) || null; coathProject = (coathOpts && coathOpts.project) || null; coathDescEdit = false;
     }
-    renderSubjectList();
+    if (id !== "eti") renderSubjectList();              // ETI's side list is drawn by applyView
     applyView();
   }
   function openNotebook() {
@@ -10961,9 +10962,13 @@ function __detabaseMain() {
   var searchIndex = [];
   function cleanText(el) {
     if (!el) return "";
-    var DROP = ".num, .tnum, .stag, .pin-btn, .del-x, .lib-dots, .used-badge", src = el;
-    if (el.querySelector(DROP)) {                       // copied only when something has to come out
+    var DROP = ".num, .tnum, .stag, .pin-btn, .del-x, .lib-dots, .used-badge", src = el, math = el.querySelector("code[data-fx]");
+    if (math || el.querySelector(DROP)) {               // copied only when something has to change
       src = el.cloneNode(true);
+      if (math) {                                       // math reads as it was written, drawn or not
+        var from = el.querySelectorAll("code");
+        src.querySelectorAll("code").forEach(function (c, i) { if (from[i] && from[i].__src != null) c.textContent = from[i].__src; });
+      }
       src.querySelectorAll(DROP).forEach(function (x) { x.remove(); });
     }
     return src.textContent.replace(/\s+/g, " ").trim();
@@ -18239,6 +18244,7 @@ function __detabaseMain() {
       d.insertAdjacentHTML("beforeend", '<h3>📚 ' + escapeHtml(subjectName(ref.id)) + '</h3><ul class="asset-tabs">' +
         tabs.map(function (t) { return '<li>' + escapeHtml(t.name) + '</li>'; }).join("") + '</ul>');
     }
+    try { texify(d); } catch (e) {}                       // a copy is measured and shown whole: its math now
     return d;
   }
   function renderAssetInto(host, clip) {
@@ -19096,7 +19102,7 @@ function __detabaseMain() {
     top.appendChild(T.opts.mode === "add" ? actBtn("＋ Add to board", "put it on the Clipboard", function () { T.opts.onAdd([ref]); }, "btn-primary") : actBtn("Open", "open it", function () { openAnyRef(ref); }, "btn-primary"));
     top.appendChild(actBtn(T.hits ? "↩ Back to all results" : "✕ Close", "", function () { ctBackToAll(T); }));
     var body = pv.querySelector(".ct-pv-body");
-    if (ref.lvl === "c" || ref.lvl === "p") { var a = assetBody(ref, 300); a.classList.add("ct-pv-asset"); body.appendChild(a); try { texify(body); } catch (e) {} }
+    if (ref.lvl === "c" || ref.lvl === "p") { var a = assetBody(ref, 300); a.classList.add("ct-pv-asset"); body.appendChild(a); }
     var links = ctLinksOf(ref), cl = pv.querySelector(".ct-pv-conn");
     cl.insertAdjacentHTML("beforeend", '<p class="ct-pv-h">' + (links.length ? "Connected (" + links.length + ")" : "No connections yet") + '</p>');
     links.forEach(function (x) {
@@ -20385,7 +20391,6 @@ function __detabaseMain() {
     lsumRender(list, sheetSumSpec(sm), bar);
     if (edit) sheetEditDnd(sm, list);
     fillAllIn(list);
-    try { texify(list); } catch (e) {}
     try { decorateCards(); } catch (e) { if (window.console) console.error("decorateCards:", e); }
     spRefreshTools(list);
   }
@@ -20413,7 +20418,7 @@ function __detabaseMain() {
   function openMiningScreen() {   // ETI's main page
     window.SPD.mark("eti");
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
-    applyView(); renderEtiTree();
+    applyView();
   }
   function renderMiningScreen() { renderEtiMain(); }
   if ($("etiMiningBtn")) $("etiMiningBtn").addEventListener("click", openMiningScreen);
@@ -21837,7 +21842,7 @@ function __detabaseMain() {
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; stratPage = null;
     boardOpen = true;
     if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(BOARD_ID);
-    applyView(); renderEtiTree();
+    applyView();
   }
   function nodeOf(ps, id) { return byId(ps.blocks, id) || byId(ps.groups, id); }
   function membersOf(ps, gid) { return ps.blocks.filter(function (b) { return b.g === gid; }); }
@@ -21855,7 +21860,7 @@ function __detabaseMain() {
     var page = document.createElement("div");
     page.className = "bd-bpage";
     page.style.width = BD_RW + "px";
-    if (refExists(b.ref)) { page.appendChild(assetBody(b.ref, BD_RW - 20)); try { texify(page); } catch (e) {} }
+    if (refExists(b.ref)) { page.appendChild(assetBody(b.ref, BD_RW - 20)); }
     else page.innerHTML = '<p class="muted">(deleted from the library)</p>';
     Array.prototype.forEach.call(page.querySelectorAll("img"), function (im) {
       if (!im.complete) im.addEventListener("load", function () { bdResized(ctx); }, { once: true });
@@ -23580,26 +23585,104 @@ function __detabaseMain() {
     })(c);
     return out;
   }
+  // ---- when math is drawn (B218) ----
+  // texify(root) draws all of root now: for copies that are measured or shown whole (assetBody does it itself).
+  // Everything else is drawn as it comes near the screen: new nodes only are looked at, formulas already on
+  // screen before the next frame, the rest by an IntersectionObserver. The hidden built-in library is never
+  // drawn where it is kept; a block keeps its drawn math when it goes back there.
   function texify(root) {
     var list = root.querySelectorAll ? root.querySelectorAll("code:not([data-fx])") : [];
-    Array.prototype.forEach.call(list, function (c) {
-      c.setAttribute("data-fx", "1");
-      c.__src = codeSource(c);
-      c.innerHTML = texHtml(plainToTex(c.__src));
-      c.__mk = c.innerHTML;
-    });
+    Array.prototype.forEach.call(list, texDraw);
   }
-  var fxPending = false;
-  new MutationObserver(function (recs) {
-    recs.forEach(function (r) {                  // a tool wrote new text into a formula: draw it again
-      var c = r.target.closest ? r.target.closest("code[data-fx]") : r.target.parentNode && r.target.parentNode.closest && r.target.parentNode.closest("code[data-fx]");
-      if (c && c.innerHTML !== c.__mk) c.removeAttribute("data-fx");
+  function texDraw(c) {
+    c.setAttribute("data-fx", "1");
+    c.__src = codeSource(c);
+    c.innerHTML = texHtml(plainToTex(c.__src));
+    c.__mk = c.innerHTML;
+  }
+  // two watchers: the window (dialogs, the phone layout), and the page's own scroll box on a wide screen — a
+  // margin round the window reaches nothing a scroll box clips, so that box has to be the root to look ahead.
+  var FX_NEAR = 1000, fxQueue = new Set(), fxPending = false, fxBoxWatch = null;
+  var fxWatch = window.IntersectionObserver ? new IntersectionObserver(fxNear, { rootMargin: FX_NEAR + "px 0px" }) : null;
+  function fxNear(entries) {
+    var list = [], above = false;
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var c = en.target;
+      fxWatch.unobserve(c);
+      if (fxBoxWatch) fxBoxWatch.unobserve(c);
+      if (!c.isConnected || c.hasAttribute("data-fx") || list.indexOf(c) >= 0) return;
+      list.push(c);
+      if (en.boundingClientRect.bottom < 0) above = true;
     });
-    if (fxPending) return;
+    if (!list.length) return;
+    // drawn above what is being read: what is being read stays where it is
+    var box = above ? pageBox() : null, held = null, was = 0;
+    if (above) {
+      var r = box ? box.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth };
+      held = document.elementFromPoint(r.left + r.width / 2, r.top + 80);
+      if (held && held.closest(".ct-svg, .bd-stage")) held = null;
+      if (held) was = held.getBoundingClientRect().top;
+    }
+    list.forEach(texDraw);
+    if (held && held.isConnected) {
+      var by = held.getBoundingClientRect().top - was;
+      if (by) { if (box) box.scrollTop += by; else window.scrollBy(0, by); }
+    }
+  }
+  function fxScan() {
+    fxPending = false;
+    var lib = $("topfolder-eti"), found = [];
+    function take(c) {
+      if (c.hasAttribute("data-fx")) return;
+      if (lib && lib.contains(c)) return;
+      found.push(c);
+    }
+    fxQueue.forEach(function (n) {
+      if (!n.isConnected) return;
+      if (n.tagName === "CODE") take(n);
+      else Array.prototype.forEach.call(n.querySelectorAll("code:not([data-fx])"), take);
+    });
+    fxQueue.clear();
+    if (!found.length) return;
+    if (!fxWatch) { found.forEach(texDraw); return; }
+    var h = window.innerHeight, now = [], later = [];      // every size read first, then every formula written
+    found.forEach(function (c) {
+      var r = c.getBoundingClientRect();
+      ((r.width || r.height) && r.bottom > -100 && r.top < h + 100 ? now : later).push(c);
+    });
+    var box = later.length ? pageBox() : null;
+    if (box && !fxBoxWatch) fxBoxWatch = new IntersectionObserver(fxNear, { root: box, rootMargin: FX_NEAR + "px 0px" });
+    later.forEach(function (c) {
+      fxWatch.observe(c);
+      if (box && box.contains(c)) fxBoxWatch.observe(c);
+    });
+    now.forEach(texDraw);
+  }
+  function fxSoon() {
+    if (fxPending || !fxQueue.size) return;
     fxPending = true;
-    requestAnimationFrame(function () { fxPending = false; texify(document.body); });
+    requestAnimationFrame(fxScan);
+  }
+  new MutationObserver(function (recs) {
+    recs.forEach(function (r) {
+      var t = r.target.nodeType === 1 ? r.target : r.target.parentElement;
+      if (!t || t.namespaceURI === "http://www.w3.org/2000/svg") return;      // no formulas in a drawing
+      var c = t.closest("code");
+      if (c) {                                   // a tool wrote new text into a formula: draw it again
+        if (c.hasAttribute("data-fx")) {
+          if (c.innerHTML === c.__mk) return;
+          c.removeAttribute("data-fx");
+        }
+        fxQueue.add(c);
+        return;
+      }
+      r.addedNodes.forEach(function (n) { if (n.nodeType === 1 && (n.tagName === "CODE" || n.firstElementChild)) fxQueue.add(n); });
+    });
+    fxSoon();
   }).observe(document.body, { childList: true, subtree: true, characterData: true });
-  texify(document.body);
+  fxQueue.add(document.body);
+  fxSoon();
 }
 // the offline helper lives next to index.html (the app's start page), so it covers both
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(function (e) { if (window.console) console.warn("offline helper:", e); });
