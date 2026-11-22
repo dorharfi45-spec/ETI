@@ -1252,6 +1252,10 @@
   /* ---- the concept tree: concepts as circles, rings around them, methods as blue vines ---- */
   .em-tree { position: relative; margin-top: 12px; height: clamp(380px, 64vh, 780px); border: 1px solid var(--border);
     border-radius: var(--r-lg); background: var(--surface-1); overflow: hidden; }
+  /* the tree's box is three rows (B225): the connection filters, the marked window, the drawing in what is left */
+  .em-tree, .bd-tree { display: flex; flex-direction: column; }
+  .ct-bars { flex: none; max-height: 45%; min-width: 0; display: flex; flex-direction: column; }
+  .ct-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
   .ct-svg { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none;
     -webkit-touch-callout: none; cursor: grab; }
   .ct-svg:active { cursor: grabbing; }
@@ -1278,8 +1282,11 @@
   .ct-vine { fill: none; stroke-width: 3; opacity: .9; pointer-events: none; }
   .ct-vhit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
   .ct-link.hot, .ct-arrow.hot, .ct-stem.hot { opacity: 1; stroke-width: 3; }
-  .ct-views { position: absolute; top: 10px; left: 10px; right: 64px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
-  .ct-vbtn { pointer-events: auto; min-height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-muted); font: inherit; font-size: .74rem; font-weight: 600; cursor: pointer; }
+  .ct-views { flex: none; display: flex; gap: 6px; padding: 5px 8px; overflow-x: auto; overscroll-behavior-x: contain; touch-action: pan-x; scrollbar-width: none; }
+  .ct-views::-webkit-scrollbar { display: none; }
+  .ct-views.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  html[dir="rtl"] .ct-views.more { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent); }
+  .ct-vbtn { flex: none; white-space: nowrap; min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-muted); font: inherit; font-size: .74rem; font-weight: 600; cursor: pointer; }
   button.ct-vbtn.on { border-color: var(--ct); background: var(--surface-1); color: var(--text-primary); box-shadow: inset 0 -3px 0 var(--ct); }
   .ct-mlbl { font-size: calc(10.5px * var(--ctu, 1)); font-weight: 700; }
   .ps-stage.flash { box-shadow: 0 0 0 3px var(--accent); }
@@ -1323,15 +1330,17 @@
   .ct-leaf.m-mk, .ct-ring.m-mk, .ct-method.m-mk { stroke: #db2777; stroke-width: 3.6; stroke-dasharray: none; }
   .ct-leaf.m-mk { fill: color-mix(in srgb, #db2777 28%, var(--bg)); }
 
-  .ct-mkbar { position: absolute; left: 10px; top: 56px; right: 64px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid color-mix(in srgb, #db2777 50%, var(--border)); border-radius: var(--r-md); background: var(--surface-1); box-shadow: var(--shadow); font-size: .8rem; }
-  .ct-mkbar[hidden] { display: none; }
-  .ct-mkbar button { min-height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
+  .ct-mkbar { min-height: 0; margin: 0 6px 6px; display: flex; flex-direction: column; border: 1px solid color-mix(in srgb, #db2777 50%, var(--border)); border-radius: var(--r-md); background: var(--surface-1); font-size: .8rem; }
+  .ct-mkbar[hidden], .ct-mk-body[hidden] { display: none; }
+  .ct-mkbar button.ct-mk-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: var(--tap); padding: 0 12px; border: 0; background: none; font-weight: 700; text-align: start; }
+  .ct-mk-head i { font-style: normal; color: var(--text-muted); }
+  .ct-mk-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 8px 8px; }
+  .ct-mkbar button { min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
   .ct-mk-what { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
   .ct-mk-what i { width: 11px; height: 11px; border-radius: 50%; border: 2.5px solid #db2777; }
   .ct-mk-strat { box-shadow: inset 0 -3px 0 var(--ct); }
   .ct-pick-n { font-weight: 700; color: #16a34a; }
   .ct-mkbar .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .ct-mkbar:not([hidden]) ~ .ct-prev.side { top: 110px; }
   .ct-legend { position: absolute; left: 10px; bottom: 34px; display: flex; flex-wrap: wrap; gap: 4px 10px; max-width: calc(100% - 80px); padding: 4px 8px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--surface-1) 88%, transparent); font-size: .72rem; color: var(--text-secondary); pointer-events: none; }
   .ct-legend[hidden] { display: none; }
   .ct-lg { display: inline-flex; align-items: center; gap: 5px; }
@@ -1345,7 +1354,7 @@
   .ct-num.sel { fill: var(--accent); font-size: calc(13px * var(--ctu, 1)); }
   .ct-check { font-size: calc(13px * var(--ctu, 1)); font-weight: 900; fill: #16a34a; paint-order: stroke; stroke: var(--bg); stroke-width: calc(3px * var(--ctu, 1)); pointer-events: none; }
   .ct-prev { position: absolute; left: 8px; right: 64px; bottom: 8px; max-height: 45%; display: flex; flex-direction: column; gap: 6px; padding: 10px; overflow-y: auto; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-1); box-shadow: var(--shadow); }
-  .ct-prev.side { top: 58px; right: auto; width: min(340px, 45%); max-height: none; }
+  .ct-prev.side { top: 8px; right: auto; width: min(340px, 45%); max-height: none; }
   .ct-pv-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .ct-pv-what { flex: 1 1 160px; min-width: 0; }
   .ct-pv-what b { display: block; overflow-wrap: anywhere; }
@@ -1394,7 +1403,6 @@
   .bd-etab b, .bd-estrip b { writing-mode: vertical-rl; font-size: .84rem; font-weight: 700; white-space: nowrap; }
   .bd-edge.m-hide[data-press] .bd-etab, .bd-edge.m-full[data-press] .bd-estrip, .bd-edge:focus-visible .bd-etab, .bd-edge:focus-visible .bd-estrip { background: color-mix(in srgb, var(--accent) 28%, var(--surface-1)); }
   @media (prefers-reduced-motion: reduce) { .bd-side.snap { transition: none; } }
-  .bd-tree .ct-views { right: 60px; }
   .bd-tree .ct-hint { display: none; }
   /* the Filters button and window (B220) */
   .bd-qrow { display: flex; gap: 6px; }
@@ -3130,7 +3138,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B224</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B225</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -19013,9 +19021,9 @@ function __detabaseMain() {
       return model.nodes[refKey(r)] || null;
     }).filter(Boolean);
   }
-  function ctViewsEl(T) {
-    var d = document.createElement("div");
-    d.className = "ct-views";
+  function ctViewsFill(T, d) {
+    var at = d.scrollLeft;
+    d.textContent = "";
     function toggle(on, label, color, run) {
       var b = actBtn(label, on ? "hide these lines" : "show these lines", run, "ct-vbtn" + (on ? " on" : ""));
       b.style.setProperty("--ct", color);
@@ -19032,8 +19040,11 @@ function __detabaseMain() {
       var o = store.ui.treeStratOff = store.ui.treeStratOff || {};
       toggle(!o[s.id], s.name, s.color, function () { if (o[s.id]) delete o[s.id]; else o[s.id] = 1; saveStore(); T.redraw(); });
     });
-    return d;
+    d.scrollLeft = at;
+    ctViewsMore(d);
   }
+  // one row that scrolls sideways: its far edge fades while there is more
+  function ctViewsMore(d) { d.classList.toggle("more", d.scrollWidth - d.clientWidth - Math.abs(d.scrollLeft) > 4); }
   function ctInside(t, ring) { for (var p = t; p; p = p.parent) if (p === ring) return true; return false; }
   // where a line meets a circle: a concept's centre, a ring's rim on the side facing p
   function ctFacing(t, p) {
@@ -19410,10 +19421,13 @@ function __detabaseMain() {
   }
   function ctMkClear(T) { ctMkSave(T); T.mk = null; T.mkState = null; ctPaint(T); ctMarksBar(T); }
   // what the marks are, and what can be done with them
+  var CT_FOLD = "detabase.marks.folded";               // the marked window folded to its slim bar: per device
+  function ctFolded() { try { return localStorage.getItem(CT_FOLD) === "1"; } catch (e) { return false; } }
   function ctMarksBar(T) {
     var E = T.els; if (!E) return;
-    var bar = E.box.querySelector(".ct-mkbar"), s = T.mkState, n = Object.keys(T.mk || {}).length;
-    bar.innerHTML = "";
+    var box = E.box.querySelector(".ct-mkbar"), s = T.mkState, n = Object.keys(T.mk || {}).length;
+    box.innerHTML = "";
+    var bar = document.createElement("div"); bar.className = "ct-mk-body";
     if (n) {
       var what = s && s.strats ? s.strats.length + (s.strats.length === 1 ? " strategy holds" : " strategies hold") + " “" + s.name + "”"
         : n - 1 + " connected to “" + (s ? s.name : "") + "”" + (s && s.steps > 1 ? " (" + s.steps + " steps)" : "");
@@ -19430,7 +19444,18 @@ function __detabaseMain() {
       b.style.setProperty("--ct", sg.color);
       bar.appendChild(b);
     });
-    bar.hidden = !bar.firstChild;
+    box.hidden = !bar.firstChild;
+    if (box.hidden) { ctSteady(T); return; }
+    var total = Object.keys(Object.assign({}, T.mk, T.pick)).length, fold = ctFolded();
+    var head = actBtn("", "fold or unfold", function () {
+      try { localStorage.setItem(CT_FOLD, ctFolded() ? "0" : "1"); } catch (e) {}
+      ctMarksBar(T);
+    }, "ct-mk-head");
+    head.setAttribute("aria-expanded", !fold);
+    head.innerHTML = "<span><span>Marked</span>" + (total ? " · " + total : "") + "</span><i>" + (fold ? "▸" : "▾") + "</i>";
+    bar.hidden = fold;
+    box.appendChild(head); box.appendChild(bar);
+    ctSteady(T);
   }
   // the hold / right-click menu of a point
   function ctPointMenu(T, ref, x, y) {
@@ -19501,7 +19526,7 @@ function __detabaseMain() {
     var E = T.els; if (!E) return;
     var pv = E.box.querySelector(".ct-prev");
     if (!T.sel) { if (pv) pv.remove(); return; }
-    if (!pv) { pv = document.createElement("div"); pv.className = "ct-prev"; E.box.appendChild(pv); }
+    if (!pv) { pv = document.createElement("div"); pv.className = "ct-prev"; E.box.querySelector(".ct-stage").appendChild(pv); }
     pv.classList.toggle("side", ctPvSide(T));
     var ref = ctRefOf(T.sel);
     pv.innerHTML = '<div class="ct-pv-top"><div class="ct-pv-what"><b></b><small></small></div></div><div class="ct-pv-body"></div><div class="ct-pv-conn"></div>';
@@ -19761,8 +19786,7 @@ function __detabaseMain() {
     ctHeadsFit(T, true);
     E.gVhit.innerHTML = Object.keys(hits).map(function (id) { return '<path class="ct-vhit" data-strat="' + escapeHtml(id) + '" d="' + hits[id].join("") + '"/>'; }).join("");
     E.gLit.innerHTML = E.gHover.innerHTML = ""; E.litH = ""; E.hot = null;
-    var views = E.box.querySelector(".ct-views"); if (views) views.remove();
-    E.box.appendChild(ctViewsEl(T));
+    ctViewsFill(T, E.box.querySelector(".ct-views"));
   }
   function ctRender(T, box, M) {
     if (T.els && T.els.ro) T.els.ro.disconnect();
@@ -19788,14 +19812,14 @@ function __detabaseMain() {
         '<rect x="' + ctF(v.x - CT_MR) + '" y="' + ctF(v.y - CT_MR) + '" width="' + 2 * CT_MR + '" height="' + 2 * CT_MR + '" rx="3" fill="' + escapeHtml(v.color) + '" class="ct-method' + (v.pg.kind ? "" : " nokind") + '" data-v="' + id + '"/>');
       labels.push({ key: "p|" + v.pg.id, r: CT_MR, leaf: false, lvl: "p", full: L(v.pg.name || ""), x: v.x, y: v.y + CT_MR, dy: "1em", cls: "ct-lbl ct-mlbl", fill: v.color });
     });
-    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings">' + rings.join("") + '</g>' +
+    box.innerHTML = '<div class="ct-bars"><div class="ct-views"></div><div class="ct-mkbar" hidden></div></div><div class="ct-stage"><svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings">' + rings.join("") + '</g>' +
       '<g class="ct-links"><g class="ct-base"></g><g class="ct-base ct-baseh"></g><g class="ct-lit"></g><g class="ct-lith"></g><g class="ct-hover"></g><g class="ct-vhits"></g></g>' +
       '<g class="ct-dots">' + Object.keys(dots).map(function (c) { return dots[c].length ? '<path class="' + c + '" d="' + dots[c].join("") + '"/>' : ""; }).join("") + '</g>' +
       '<g class="ct-leaves">' + leaves.join("") + '</g><g class="ct-methods">' + squares.join("") + '</g><g class="ct-lbls"></g><g class="ct-nums"></g></g></svg>' +
       '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
       '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-mkbar" hidden></div><div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in · hold one to mark what it connects to" :
-        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold one to mark what it connects to")) + '</div>';
+      '<div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in · hold one to mark what it connects to" :
+        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold one to mark what it connects to")) + '</div></div>';
     var svg = box.querySelector("svg"), byKey = {};
     function keep(el, key) { el.__base = el.getAttribute("class"); (byKey[key] = byKey[key] || []).push(el); }
     Array.prototype.forEach.call(svg.querySelectorAll("circle[data-k]"), function (el) { keep(el, el.getAttribute("data-k")); });
@@ -19806,7 +19830,24 @@ function __detabaseMain() {
     ctWire(T, E);
     ctDrawLines(T);
     if (T.sel && !ctPoint(T, T.sel)) { T.sel = null; T.conn = {}; }
-    if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === T.els) ctLook(T); }); E.ro.observe(svg); }
+    var views = box.querySelector(".ct-views");
+    views.addEventListener("scroll", function () { ctViewsMore(views); }, { passive: true });
+    // the rows above have their real heights: when they change, so does the drawing's box
+    if (window.ResizeObserver) {
+      E.ro = new ResizeObserver(function () { if (E !== T.els) return; ctViewsMore(views); ctSteady(T); ctLook(T); });
+      E.ro.observe(svg); E.ro.observe(views);
+    }
+  }
+  // the rows above the drawing grew or shrank: the drawing moves the other way, so what is under the finger stays there
+  function ctSteady(T) {
+    var E = T.els, st = E.svg.parentNode, h = E.svg.clientHeight, top = st.offsetTop - E.box.querySelector(".ct-bars").offsetTop;
+    if (!h) { E.geo = null; return; }
+    var was = E.geo;
+    E.geo = { top: top, h: h };
+    if (!was || was.top === top || T.anim || T.want || !T.view) return;
+    T.view = { cx: T.view.cx, cy: T.view.cy + (top - was.top + (h - was.h) / 2) / T.view.k, k: T.view.k };
+    T.auto = null;
+    E.size = null; ctApply(T);
   }
   // show a tree in its box: drawn the first time and when the library changed, otherwise only what changed
   function ctUpdate(T, box) {
