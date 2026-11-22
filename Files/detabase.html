@@ -1242,24 +1242,23 @@
     -webkit-touch-callout: none; cursor: grab; }
   .ct-svg:active { cursor: grabbing; }
   .ct-svg circle, .ct-svg path, .ct-svg line, .ct-svg rect { vector-effect: non-scaling-stroke; }
-  .ct-ring { stroke: var(--border-strong); stroke-width: 1; cursor: zoom-in; transition: opacity .2s; }
+  .ct-ring { stroke: var(--border-strong); stroke-width: 1; cursor: zoom-in; }
   .ct-ring.lvl-s { fill: color-mix(in srgb, var(--accent) 6%, var(--bg)); stroke-width: 1.6; }
   .ct-ring.lvl-t { fill: color-mix(in srgb, var(--accent) 4%, var(--surface-2)); }
   .ct-ring.lvl-c { fill: var(--bg); }
   .ct-ring.empty { stroke-dasharray: 4 3; cursor: pointer; }
   .ct-ring.used { stroke: color-mix(in srgb, var(--accent) 60%, var(--border-strong)); }
   .ct-ring:hover { stroke: var(--accent); }
-  .ct-leaf { fill: var(--bg); stroke: var(--text-muted); stroke-width: 1.3; cursor: pointer; transition: opacity .2s; }
+  .ct-leaf { fill: var(--bg); stroke: var(--text-muted); stroke-width: 1.3; cursor: pointer; }
   .ct-leaf.used { fill: color-mix(in srgb, var(--accent) 24%, var(--bg)); stroke: var(--accent); }
   .ct-leaf:hover { stroke: var(--accent); stroke-width: 2.6; }
   /* a method: a square in its subject's band — a solid stem to the subject, lines to its cards, dashed to connected subjects */
   .ct-mhit { fill: transparent; cursor: pointer; }
-  .ct-mhit.off { display: none; }
-  .ct-method { stroke: var(--bg); stroke-width: 1.5; cursor: pointer; transition: opacity .2s; }
+  .ct-method { stroke: var(--bg); stroke-width: 1.5; cursor: pointer; }
   .ct-method.nokind { stroke: var(--text-primary); stroke-dasharray: 2 2; }
   .ct-method:hover, .ct-method.hot { stroke: var(--text-primary); stroke-width: 2.6; stroke-dasharray: none; }
-  .ct-stem { stroke-width: 2.4; stroke-linecap: round; opacity: .9; pointer-events: none; }
-  .ct-link { fill: none; stroke-width: 1.6; opacity: .5; pointer-events: none; transition: opacity .2s; }
+  .ct-stem { fill: none; stroke-width: 2.4; stroke-linecap: round; opacity: .9; pointer-events: none; }
+  .ct-link { fill: none; stroke-width: 1.6; opacity: .5; pointer-events: none; }
   .ct-link.also { stroke-dasharray: 7 5; stroke-width: 1.8; opacity: .75; }
   .ct-arrow { fill: none; stroke-width: 2; opacity: .75; pointer-events: none; }
   .ct-vine { fill: none; stroke-width: 3; opacity: .9; pointer-events: none; }
@@ -1290,10 +1289,16 @@
   .ct-lbl.leaf { font-size: calc(10.5px * var(--ctu, 1)); fill: var(--text-primary); }
 
   /* marks on the tree (B183): search results (numbered), the point being previewed, its connections; the rest steps back */
-  .ct-svg .m-dim { opacity: .18; }
-  .ct-lbl.leaf.m-dim, .ct-mlbl.m-dim { display: none; }
-  .ct-svg path.m-dim, .ct-svg line.m-dim { opacity: .06; }
-  .ct-svg path.m-hot, .ct-svg line.m-hot { opacity: 1; stroke-width: 3.4; }
+  .ct-svg.marking .ct-ring:not(.m-on):not(.m-in), .ct-svg.marking .ct-leaf:not(.m-on), .ct-svg.marking .ct-method:not(.m-on), .ct-lbl.m-dim { opacity: .18; }
+  .ct-svg.marking .ct-base path { opacity: .06; }
+  /* zoomed out: the smallest circles are one path (ct-dots); a marked one still shows itself */
+  .ct-dots { display: none; pointer-events: none; }
+  .ct-svg.far .ct-dots { display: inline; }
+  .ct-svg.far .ct-leaves { visibility: hidden; }
+  .ct-svg.far .ct-leaves .ct-leaf.m-on { visibility: visible; }
+  .ct-head { opacity: .75; stroke: none; pointer-events: none; }
+  .ct-head.hot, .ct-head.m-hot { opacity: 1; }
+  .ct-svg path.m-hot { opacity: 1; stroke-width: 3.4; }
   .ct-ring.m-in { opacity: .8; }
   .ct-leaf.m-hit, .ct-ring.m-hit, .ct-method.m-hit { stroke: #f59e0b; stroke-width: 3.4; stroke-dasharray: none; }
   .ct-leaf.m-hit { fill: color-mix(in srgb, #f59e0b 30%, var(--bg)); }
@@ -1303,7 +1308,7 @@
   .ct-leaf.m-board { fill: color-mix(in srgb, #16a34a 30%, var(--bg)); }
   .ct-leaf.m-mk, .ct-ring.m-mk, .ct-method.m-mk { stroke: #db2777; stroke-width: 3.6; stroke-dasharray: none; }
   .ct-leaf.m-mk { fill: color-mix(in srgb, #db2777 28%, var(--bg)); }
-  .ct-svg path.m-hot.ct-link, .ct-svg path.m-hot.ct-arrow { opacity: 1; }
+
   .ct-mkbar { position: absolute; left: 10px; top: 56px; right: 64px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid color-mix(in srgb, #db2777 50%, var(--border)); border-radius: var(--r-md); background: var(--surface-1); box-shadow: var(--shadow); font-size: .8rem; }
   .ct-mkbar[hidden] { display: none; }
   .ct-mkbar button { min-height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
@@ -3066,7 +3071,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B216</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B217</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -18694,11 +18699,23 @@ function __detabaseMain() {
     for (var q = 0; q < pg.id.length; q++) h = (h * 31 + pg.id.charCodeAt(q)) | 0;
     return pal[Math.abs(h) % pal.length];
   }
-  // a gentle curve from a to b
-  function ctCurve(a, b) {
+  // a gentle curve from a to b: the point it bends to, and its path
+  function ctBend(a, b) {
     var dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, off = Math.min(40, len * 0.12);
-    var qx = (a[0] + b[0]) / 2 - dy / len * off, qy = (a[1] + b[1]) / 2 + dx / len * off;
-    return "M" + ctF(a[0]) + " " + ctF(a[1]) + "Q" + ctF(qx) + " " + ctF(qy) + " " + ctF(b[0]) + " " + ctF(b[1]);
+    return [(a[0] + b[0]) / 2 - dy / len * off, (a[1] + b[1]) / 2 + dx / len * off];
+  }
+  function ctCurve(a, b, q) {
+    q = q || ctBend(a, b);
+    return "M" + ctF(a[0]) + " " + ctF(a[1]) + "Q" + ctF(q[0]) + " " + ctF(q[1]) + " " + ctF(b[0]) + " " + ctF(b[1]);
+  }
+  // an arrow head where the curve bent at q arrives at b: its tip and direction (drawn 12 px long at any zoom)
+  function ctHead(b, q) {
+    var dx = b[0] - q[0], dy = b[1] - q[1], len = Math.hypot(dx, dy) || 1;
+    return [b[0], b[1], dx / len, dy / len];
+  }
+  function ctHeadPath(h, u) {
+    var ux = h[2], uy = h[3], x = h[0] + ux * 1.2 * u, y = h[1] + uy * 1.2 * u, l = 12 * u, w = 6 * u;
+    return "M" + ctF(x) + " " + ctF(y) + "L" + ctF(x - ux * l - uy * w) + " " + ctF(y - uy * l + ux * w) + "L" + ctF(x - ux * l + uy * w) + " " + ctF(y - uy * l - ux * w) + "Z";
   }
   // ---- one tree = one instance (B183) ----
   // T = ctTree(opts): the ETI main page has one (mode "open"), the Clipboard's library panel another (mode
@@ -18711,7 +18728,7 @@ function __detabaseMain() {
   function ctTree(opts) {
     var T = { opts: opts || {}, uid: "ct" + (++ctN), view: null, sig: null, preView: null, focus: null, els: null, anim: null, auto: null,
       hits: null, hitSig: "", sel: null, conn: {}, board: null, mk: null, pick: {} };
-    T.redraw = function () { if (T.box) ctRender(T, T.box); };
+    T.redraw = function () { if (T.box) ctUpdate(T, T.box); };
     return T;
   }
   // the search's results → numbered marks (in the order the list shows them)
@@ -18737,7 +18754,8 @@ function __detabaseMain() {
   function ctRefOf(key) { var i = key.indexOf("|"); return { lvl: key.slice(0, i), id: key.slice(i + 1) }; }
   // an asset's direct connections, by kind: "m" method ↔ method, "c" method ↔ concept or card, "b" builds on
   // (both ways), "o" part of (its parent and its children)
-  function ctLinksOf(ref, kinds) {
+  function ctLinksOf(ref, kinds) { return libFast(function () { return ctLinksNow(ref, kinds); }); }
+  function ctLinksNow(ref, kinds) {
     kinds = kinds || { m: 1, c: 1, b: 1 };
     var out = [], seen = {};
     function add(r, why) { var k = refKey(r); if (seen[k] || k === refKey(ref) || !refExists(r)) return; seen[k] = 1; out.push({ ref: { lvl: r.lvl, id: r.id }, why: why }); }
@@ -18778,7 +18796,14 @@ function __detabaseMain() {
   }
   function ctBoxOfKeys(T, keys) { return ctBoxOf(keys.map(function (k) { return ctPoint(T, k); }).filter(Boolean)); }
   // ---- the view: centre + zoom, kept across re-renders so typing never throws it away ----
-  function ctSize(T) { var s = T.els && T.els.svg; return s ? [s.clientWidth, s.clientHeight] : [0, 0]; }
+  // the drawing's size, kept until it changes (asking the page on every pointer move makes it lay out again)
+  function ctSize(T) {
+    var E = T.els; if (!E) return [0, 0];
+    if (E.size) return E.size;
+    var sz = [E.svg.clientWidth, E.svg.clientHeight];
+    if (sz[0] && sz[1]) E.size = sz;
+    return sz;
+  }
   function ctAllK(T) {
     var sz = ctSize(T), b = T.els.allBox;
     return Math.min(sz[0] / (b[2] - b[0]), sz[1] / (b[3] - b[1])) * 0.92;
@@ -18793,12 +18818,24 @@ function __detabaseMain() {
     return { cx: (b[0] + b[2]) / 2 - il / 2 / k, cy: (b[1] + b[3]) / 2 + ib / 2 / k, k: k };
   }
   function ctPvSide(T) { return ctSize(T)[0] >= 640; }
+  // zoom and pan are one transform on the whole drawing; names follow a frame later
   function ctApply(T) {
     var E = T.els; if (!E || !T.view) return;
-    var sz = ctSize(T), v = T.view;
+    var sz = ctSize(T), v = T.view; if (!sz[0]) return;
     E.world.setAttribute("transform", "translate(" + ctF(sz[0] / 2 - v.cx * v.k) + " " + ctF(sz[1] / 2 - v.cy * v.k) + ") scale(" + v.k.toFixed(5) + ")");
-    E.svg.style.setProperty("--ctu", (1 / v.k).toFixed(5));
-    if (!E.lblQueued) { E.lblQueued = true; requestAnimationFrame(function () { E.lblQueued = false; ctLabels(T, E); }); }
+    if (E.k !== v.k) {
+      E.k = v.k;
+      var u = (1 / v.k).toFixed(5), far = CT_LEAF * v.k < CT_FAR;
+      E.gLbls.style.setProperty("--ctu", u); E.nums.style.setProperty("--ctu", u);     // only what uses it: not the whole drawing
+      if (far !== E.far) { E.far = far; E.svg.classList.toggle("far", far); }
+    }
+    if (!E.lblQueued) { E.lblQueued = true; requestAnimationFrame(function () { E.lblQueued = false; if (E === T.els) { ctLabels(T, E); ctHeadsFit(T); } }); }
+  }
+  // moves come faster than frames: the last one in a frame is drawn
+  function ctApplySoon(T) {
+    var E = T.els; if (!E || E.moveQueued) return;
+    E.moveQueued = true;
+    requestAnimationFrame(function () { E.moveQueued = false; if (E === T.els) ctApply(T); });
   }
   function ctStop(T) { if (T.anim) { cancelAnimationFrame(T.anim); T.anim = null; } }
   function ctFly(T, to) {
@@ -18817,70 +18854,86 @@ function __detabaseMain() {
     T.anim = requestAnimationFrame(step);
   }
   function ctFlyBox(T, b, maxK) { if (!b) return; T.focus = null; T.auto = { box: b, maxK: maxK }; ctFly(T, ctFitTo(T, b, maxK)); }
-  // names come and go with the zoom: a name shows once its circle is big enough on screen to own it
+  // names come and go with the zoom: a name is on the page only while its circle is big enough on screen to
+  // own it, and is on screen
   function ctLabels(T, E) {
     if (!E || !T.view || E !== T.els) return;
-    var k = T.view.k;
-    E.labels.forEach(function (L) {
-      var sr = L.r * k, show, room, hit = !!L.el.__hit;
-      if (L.lvl === "p") { show = sr >= 7 || (hit && sr >= 3); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
-      else if (L.leaf) { show = sr >= 14 || (hit && sr >= 4); room = hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
-      else { show = sr >= (L.lvl === "s" ? 34 : 46); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
-      if (show) {
-        var max = Math.max(3, Math.floor(room / (L.lvl === "s" ? 8.4 : 6.6)));
-        var txt = L.full.length > max ? L.full.slice(0, max - 1) + "…" : L.full;
-        var shown = bidiText(txt);
-        if (L.el.textContent !== shown) L.el.textContent = shown;
+    var sz = ctSize(T); if (!sz[0]) return;
+    var k = T.view.k, hw = (sz[0] / 2 + 140) / k, hh = (sz[1] / 2 + 60) / k, cx = T.view.cx, cy = T.view.cy;
+    E.labels.forEach(function (lb) {
+      var sr = lb.r * k, show = false, room = 0;
+      if (Math.abs(lb.x - cx) <= hw && Math.abs(lb.y - cy) <= hh) {
+        var hit = !!E.any[lb.key], dim = E.on && !hit && !E.inside[lb.key];
+        if (lb.lvl === "p") { show = !dim && (sr >= 7 || (hit && sr >= 3)); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
+        else if (lb.leaf) { show = !dim && (sr >= 14 || (hit && sr >= 4)); room = hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
+        else { show = sr >= (lb.lvl === "s" ? 34 : 46); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
       }
-      L.el.style.display = show ? "" : "none";
+      if (!show) {
+        if (lb.el) { lb.el.remove(); lb.el = null; }
+        return;
+      }
+      if (!lb.el) {
+        var t = lb.el = document.createElementNS(CT_NS, "text");
+        t.setAttribute("x", ctF(lb.x)); t.setAttribute("y", ctF(lb.y)); t.setAttribute("dy", lb.dy); t.setAttribute("class", lb.cls);
+        if (lb.fill) t.setAttribute("fill", lb.fill);
+        lb.txt = null; lb.dim = false;
+        E.gLbls.appendChild(t);
+      }
+      if (dim !== lb.dim) { lb.dim = dim; lb.el.classList.toggle("m-dim", dim); }
+      var max = Math.max(3, Math.floor(room / (lb.lvl === "s" ? 8.4 : 6.6)));
+      var txt = lb.full.length > max ? lb.full.slice(0, max - 1) + "…" : lb.full;
+      if (txt !== lb.txt) { lb.txt = txt; lb.el.textContent = bidiText(txt); }
     });
   }
-  // ---- marks: every layer painted as classes, without redrawing the tree ----
+  // ---- marks: painted as classes on the points whose marks changed, never a redraw ----
   //   hit (a search result, with its number), sel (the point being previewed), conn (its connections),
-  //   board (on the Clipboard), mk (marked by "Mark connected"), pick (chosen to add). With any of them on,
-  //   everything else steps back.
+  //   board (on the Clipboard), mk (marked by "Mark connected"), pick (chosen to add). With any of them on
+  //   (svg.marking) everything else steps back by itself, in CSS: only marked points carry classes (m-on),
+  //   and the rings holding them (m-in). The lines between marked points are drawn on their own layer.
   function ctPaint(T) {
     var E = T.els; if (!E) return;
-    var layers = { hit: T.hits || {}, sel: T.sel ? (function () { var o = {}; o[T.sel] = 1; return o; })() : {}, conn: T.conn || {}, board: T.board || {}, mk: T.mk || {}, pick: T.pick || {} };
-    var any = {}, on = false;
-    Object.keys(layers).forEach(function (l) { Object.keys(layers[l]).forEach(function (k) { any[k] = 1; on = true; }); });
+    var layers = { hit: T.hits || {}, sel: {}, conn: T.conn || {}, board: T.board || {}, mk: T.mk || {}, pick: T.pick || {} };
+    if (T.sel) layers.sel[T.sel] = 1;
+    var any = {}, cls = {}, on = false;
+    Object.keys(layers).forEach(function (l) { Object.keys(layers[l]).forEach(function (k) { any[k] = 1; on = true; cls[k] = (cls[k] || "m-on") + " m-" + l; }); });
     // a ring stays bright while something marked is inside it
     var inside = {};
     Object.keys(any).forEach(function (k) {
-      var p = k.slice(0, 2) === "p|" ? (function () { var pg = psPageById(k.slice(2)); return pg && E.model.nodes["s|" + pg.subject]; })() : E.model.nodes[k];
-      for (; p; p = p.parent) inside[p.key] = 1;
+      var p = E.model.nodes[k];
+      if (k.slice(0, 2) === "p|") { var v = E.methods.byPg[k.slice(2)]; p = v && E.model.nodes["s|" + v.pg.subject]; }
+      for (; p; p = p.parent) {
+        if (inside[p.key]) break;
+        inside[p.key] = 1;
+        if (!any[p.key]) cls[p.key] = "m-in";
+      }
     });
+    function put(k) {
+      var to = cls[k] || "", els = E.byKey[k]; if (!els) return;
+      els.forEach(function (el) { el.setAttribute("class", el.__base + (to ? " " + to : "")); });
+    }
+    Object.keys(E.painted).forEach(function (k) { if (!cls[k]) put(k); });
+    Object.keys(cls).forEach(function (k) { if (E.painted[k] !== cls[k]) put(k); });
+    E.painted = cls; E.any = any; E.inside = inside; E.on = on;
     E.svg.classList.toggle("marking", on);
-    Array.prototype.forEach.call(E.svg.querySelectorAll("[data-k], [data-v]"), function (el) {
-      var k = el.hasAttribute("data-k") ? el.getAttribute("data-k") : "p|" + el.getAttribute("data-v");
-      Object.keys(layers).forEach(function (l) { el.classList.toggle("m-" + l, !!layers[l][k]); });
-      el.classList.toggle("m-in", on && !any[k] && !!inside[k]);
-      el.classList.toggle("m-dim", on && !any[k] && !inside[k]);
+    var strats = T.mkState && T.mkState.strats, lit = [];
+    if (on) E.lines.forEach(function (ln) {
+      var sgOn = !!(ln.sg && strats && strats.indexOf(ln.sg) >= 0);
+      var hot = sgOn || !!(T.sel && (ln.a === T.sel || ln.b === T.sel) && (layers.conn[ln.a] || layers.conn[ln.b])) || !!(layers.mk[ln.a] && layers.mk[ln.b] && !(ln.sg && strats));
+      if (hot || (any[ln.a] && any[ln.b])) lit.push({ ln: ln, extra: hot ? " m-hot" : "" });
     });
-    Array.prototype.forEach.call(E.svg.querySelectorAll("[data-ka]"), function (el) {
-      var a = el.getAttribute("data-ka"), b = el.getAttribute("data-kb");
-      var sg = el.getAttribute("data-sg"), sgOn = !!(sg && T.mkState && T.mkState.strats && T.mkState.strats.indexOf(sg) >= 0);
-      el.classList.toggle("m-hot", sgOn || !!(T.sel && (a === T.sel || b === T.sel) && (layers.conn[a] || layers.conn[b])) || !!(layers.mk[a] && layers.mk[b] && !(sg && T.mkState && T.mkState.strats)));
-      el.classList.toggle("m-dim", on && !(any[a] && any[b]));
-    });
-    E.labels.forEach(function (L) { L.el.__hit = !!any[L.key]; L.el.classList.toggle("m-dim", on && !any[L.key] && !inside[L.key]); });
+    var litH = ctPaths(lit);
+    if (litH !== E.litH) { E.litH = litH; E.gLit.innerHTML = litH; E.litList = lit; ctHeadsFit(T, true); }
     // numbers beside the search results
-    var g = E.nums; g.innerHTML = "";
-    Object.keys(layers.hit).forEach(function (k) {
+    var g = E.nums; g.textContent = "";
+    function mark(k, side, c, txt) {
       var p = ctPoint(T, k); if (!p) return;
-      var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      t.setAttribute("x", ctF(p.x + p.r * 0.75)); t.setAttribute("y", ctF(p.y - p.r * 0.75));
-      t.setAttribute("class", "ct-num" + (T.sel === k ? " sel" : ""));
-      t.textContent = layers.hit[k];
+      var t = document.createElementNS(CT_NS, "text");
+      t.setAttribute("x", ctF(p.x + side * p.r * 0.75)); t.setAttribute("y", ctF(p.y - p.r * 0.75));
+      t.setAttribute("class", c); t.textContent = txt;
       g.appendChild(t);
-    });
-    Object.keys(layers.pick).forEach(function (k) {
-      var p = ctPoint(T, k); if (!p) return;
-      var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      t.setAttribute("x", ctF(p.x - p.r * 0.75)); t.setAttribute("y", ctF(p.y - p.r * 0.75));
-      t.setAttribute("class", "ct-check"); t.textContent = "✓";
-      g.appendChild(t);
-    });
+    }
+    Object.keys(layers.hit).forEach(function (k) { mark(k, 1, "ct-num" + (T.sel === k ? " sel" : ""), layers.hit[k]); });
+    Object.keys(layers.pick).forEach(function (k) { mark(k, -1, "ct-check", "✓"); });
     ctLabels(T, E);
     ctLegend(T, layers);
   }
@@ -18900,7 +18953,8 @@ function __detabaseMain() {
   // or all of them; "+1 step" reaches one link further each time. Strategies: the strategies that hold it,
   // their vines lit and listed. Marks are pink (T.mk), their links lit; Undo steps back, "Clear marks" ends.
   var CT_MK = [["m", "Method connections"], ["c", "Concept connections"], ["b", "Builds on"], ["o", "Part of"]];
-  function ctExpand(seed, kinds, steps) {
+  function ctExpand(seed, kinds, steps) { return libFast(function () { return ctExpandNow(seed, kinds, steps); }); }
+  function ctExpandNow(seed, kinds, steps) {
     var set = {}, front = seed.slice();
     seed.forEach(function (k) { set[k] = 1; });
     for (var i = 0; i < steps && front.length; i++) {
@@ -19084,10 +19138,10 @@ function __detabaseMain() {
     ctFly(T, to);
   }
   function ctWire(T, E) {
-    var svg = E.svg, P = {}, pinch = null, pan = null, holdT = null;
-    function local(e) { var r = svg.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+    var svg = E.svg, P = {}, pinch = null, pan = null, holdT = null, box = null;
+    function local(e) { var r = ids().length && box ? box : (box = svg.getBoundingClientRect()); return [e.clientX - r.left, e.clientY - r.top]; }
     function ids() { return Object.keys(P); }
-    function startPan(id) { pan = { id: String(id), xy: P[id], cx: T.view.cx, cy: T.view.cy, moved: 0, t: Date.now(), held: false }; }
+    function startPan(id, at) { pan = { id: String(id), xy: P[id], cx: T.view.cx, cy: T.view.cy, moved: 0, t: at, held: false }; }
     svg.addEventListener("pointerdown", function (e) {
       if (e.button > 0 || !T.view) return;
       e.preventDefault();
@@ -19097,7 +19151,7 @@ function __detabaseMain() {
       P[e.pointerId] = local(e);
       clearTimeout(holdT);
       if (ids().length === 1) {
-        startPan(e.pointerId);
+        startPan(e.pointerId, e.timeStamp);
         var h = ctHitAt(T, e.clientX, e.clientY), p0 = pan;
         if (h && (h.leaf || h.method || h.ref)) holdT = setTimeout(function () {
           if (pan !== p0 || p0.moved >= 8) return;
@@ -19124,7 +19178,7 @@ function __detabaseMain() {
         var wx = pinch.v.cx + (pinch.mid[0] - sz[0] / 2) / pinch.v.k, wy = pinch.v.cy + (pinch.mid[1] - sz[1] / 2) / pinch.v.k;
         T.view = { cx: wx - (mid[0] - sz[0] / 2) / nk, cy: wy - (mid[1] - sz[1] / 2) / nk, k: nk };
         T.focus = null; T.auto = null;
-        ctApply(T);
+        ctApplySoon(T);
       } else if (pan && pan.id === String(e.pointerId)) {
         var dx = P[e.pointerId][0] - pan.xy[0], dy = P[e.pointerId][1] - pan.xy[1];
         pan.moved = Math.max(pan.moved, Math.hypot(dx, dy));
@@ -19132,7 +19186,7 @@ function __detabaseMain() {
         clearTimeout(holdT);
         T.view = { cx: pan.cx - dx / T.view.k, cy: pan.cy - dy / T.view.k, k: T.view.k };
         T.focus = null; T.auto = null;
-        ctApply(T);
+        ctApplySoon(T);
       }
     });
     function end(e) {
@@ -19140,10 +19194,10 @@ function __detabaseMain() {
       delete P[e.pointerId];
       var k = ids();
       if (k.length < 2) pinch = null;
-      if (k.length === 1) { startPan(k[0]); pan.moved = 99; return; }   // a pinch that lifts one finger carries on as a pan
+      if (k.length === 1) { startPan(k[0], e.timeStamp); pan.moved = 99; return; }   // a pinch that lifts one finger carries on as a pan
       clearTimeout(holdT);
       var p = pan; pan = null;
-      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < 8 && !p.held && Date.now() - p.t < 700) ctTap(T, e.clientX, e.clientY);
+      if (p && e.type === "pointerup" && p.id === String(e.pointerId) && p.moved < 8 && !p.held && e.timeStamp - p.t < 700) ctTap(T, e.clientX, e.clientY);
     }
     svg.addEventListener("pointerup", end);
     svg.addEventListener("pointercancel", end);
@@ -19163,14 +19217,29 @@ function __detabaseMain() {
       ctStop(T);
       T.view = { cx: wx - (xy[0] - sz[0] / 2) / nk, cy: wy - (xy[1] - sz[1] / 2) / nk, k: nk };
       T.focus = null; T.auto = null;
-      ctApply(T);
+      ctApplySoon(T);
     }, { passive: false });
-    // desktop: a method under the mouse stands out, with its lines
-    function hot(id, on) {
-      Array.prototype.forEach.call(svg.querySelectorAll('[data-vv~="' + id + '"]'), function (n) { n.classList.toggle("hot", on); });
+    // desktop: a method under the mouse stands out, with its lines; any point tells its name
+    function hot(id) {
+      if (E.hot === id) return;
+      var was = E.hot; E.hot = id;
+      if (was) (E.byKey["p|" + was] || []).forEach(function (n) { n.classList.remove("hot"); });
+      if (id) (E.byKey["p|" + id] || []).forEach(function (n) { n.classList.add("hot"); });
+      var over = id ? E.lines.filter(function (ln) { return ln.vv && ln.vv.indexOf(id) >= 0; }).map(function (ln) { return { ln: ln, extra: " hot" }; }) : [];
+      E.gHover.innerHTML = ctPaths(over) + ctHeads(over, T.view && T.view.k);
     }
-    svg.addEventListener("mouseover", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), true); });
-    svg.addEventListener("mouseout", function (e) { var t = e.target.closest && e.target.closest("[data-v]"); if (t) hot(t.getAttribute("data-v"), false); });
+    svg.addEventListener("pointerover", function (e) {
+      if (e.pointerType !== "mouse" || ids().length) return;
+      var t = e.target.closest && e.target.closest("[data-k], [data-v]");
+      hot(t && t.hasAttribute("data-v") ? t.getAttribute("data-v") : null);
+      if (!t || t.querySelector("title")) return;
+      var v = t.hasAttribute("data-v") && E.methods.byPg[t.getAttribute("data-v")], n = !v && E.model.nodes[t.getAttribute("data-k")];
+      if (!v && !n) return;
+      var tip = document.createElementNS(CT_NS, "title");
+      tip.textContent = bidiText(v ? L(v.pg.name) + (v.pg.kind ? "" : L(" — needs a kind")) : L(n.name));
+      t.appendChild(tip);
+    });
+    svg.addEventListener("pointerleave", function () { hot(null); });
     E.box.querySelector(".ct-ctrl").addEventListener("click", function (e) {
       var b = e.target.closest("button[data-z]"); if (!b || !T.view) return;
       var z = b.getAttribute("data-z");
@@ -19180,59 +19249,39 @@ function __detabaseMain() {
       ctFly(T, { cx: T.view.cx, cy: T.view.cy, k: ctClampK(T, T.view.k * (z === "in" ? 1.6 : 1 / 1.6)) });
     });
   }
-  function ctRender(T, box) {
-    if (T.els && T.els.ro) T.els.ro.disconnect();
-    T.box = box;
-    var model = ctBuild();
-    var dark = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
-    var methods = ctMethods(model, dark);
-    var NS = "http://www.w3.org/2000/svg", U = T.uid;
-    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><defs>' + ['cc', 'mm'].map(function (id) {
-        return '<marker id="' + U + 'Arrow' + id + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="' + byId(CT_LAYERS, id).color + '"/></marker>';
-      }).join('') + '</defs><g class="ct-world"><g class="ct-rings"></g><g class="ct-links"></g>' +
-      '<g class="ct-leaves"></g><g class="ct-methods"></g><g class="ct-lbls"></g><g class="ct-nums"></g></g></svg>' +
-      '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
-      '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
-      '<div class="ct-mkbar" hidden></div><div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in · hold one to mark what it connects to" :
-        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold one to mark what it connects to")) + '</div>';
-    var svg = box.querySelector("svg"), world = svg.querySelector(".ct-world");
-    var gRings = world.querySelector(".ct-rings"), gLinks = world.querySelector(".ct-links"), gLeaves = world.querySelector(".ct-leaves"),
-        gMethods = world.querySelector(".ct-methods"), gLbls = world.querySelector(".ct-lbls");
-    function el(tag, attrs, parent) {
-      var n = document.createElementNS(NS, tag);
-      for (var a in attrs) n.setAttribute(a, attrs[a]);
-      parent.appendChild(n);
-      return n;
+  // ---- drawing a tree (B217) ----
+  // The layout is made once for the whole app and kept until the library changes (ctModel). Each tree is drawn
+  // once from it (ctRender) and from then on only updated (ctUpdate): marks, the view, and the lines when a
+  // layer is switched. Lines of one look are one path; arrow heads are part of theirs. Zoomed out (CT_FAR),
+  // the smallest circles are one path too.
+  var CT_FAR = 3, CT_NS = "http://www.w3.org/2000/svg", ctKept = null;
+  function ctModel() {
+    var rev = libRev(), dark = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+    if (ctKept && ctKept.rev === rev && ctKept.dark === dark) return ctKept;
+    return ctKept = libFast(function () {
+      var model = ctBuild();
+      return { rev: rev, dark: dark, model: model, methods: ctMethods(model, dark), allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
+    });
+  }
+  function ctLineKey() { return JSON.stringify([store.ui.treeOff || {}, store.ui.treeStratOff || {}]); }
+  // every line of the layers that are on: { d, head, cls, color, a, b: the keys it joins, vv: methods, sg: strategy }
+  function ctLinesOf(model, methods) {
+    var out = [];
+    function arrow(e, color, a, b, vv) {
+      var q = ctBend(e[0], e[1]);
+      out.push({ d: ctCurve(e[0], e[1], q), head: ctHead(e[1], q), cls: "ct-arrow", color: color, a: a, b: b, vv: vv });
     }
-    var labels = [];
-    (function walk(n) {
-      if (n.ref.lvl !== "root") {
-        var cls = n.leaf ? "ct-leaf" : "ct-ring lvl-" + n.ref.lvl + (n.empty ? " empty" : "");
-        if (n.uses) cls += " used";
-        var c = el("circle", { cx: ctF(n.x), cy: ctF(n.y), r: ctF(n.r), "class": cls, "data-k": n.key }, n.leaf ? gLeaves : gRings);
-        el("title", {}, c).textContent = bidiText(n.name);
-        // a ring that is the only one in its parent shares its top edge, so its name goes under the parent's
-        var only = 0;
-        for (var p = n; p.parent && p.parent.ref.lvl !== "root" && p.parent.kids.length === 1; p = p.parent) only++;
-        var t = el("text", { x: ctF(n.x), y: ctF(n.leaf ? n.y + n.r : n.y - n.r), dy: n.leaf ? "1em" : (1.25 + only * 1.4) + "em",
-          "class": "ct-lbl " + (n.leaf ? "leaf" : "lvl-" + n.ref.lvl) }, gLbls);
-        labels.push({ el: t, key: n.key, r: n.r, leaf: !!n.leaf, lvl: n.ref.lvl, full: n.name });
-      }
-      n.kids.forEach(walk);
-    })(model.root);
     // "builds on": an arrow from the earlier concept to the one built on it
     if (ctOn("cc")) Object.keys(conceptLinkMap()).forEach(function (id) {
       var b = model.nodes["t|" + id]; if (!b) return;
       conceptBuildsOn(id).forEach(function (x) {
         var a = model.nodes["t|" + x]; if (!a) return;
-        var e = ctEdge(a, b);
-        el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow", stroke: byId(CT_LAYERS, "cc").color, "marker-end": "url(#" + U + "Arrowcc)", "data-ka": a.key, "data-kb": b.key, "data-ly": "b" }, gLinks);
+        arrow(ctEdge(a, b), byId(CT_LAYERS, "cc").color, a.key, b.key);
       });
     });
     // "uses": an arrow from the method used to the one using it
     if (ctOn("mm")) methods.links.forEach(function (l) {
-      var e = ctEdge({ x: l.b.x, y: l.b.y, r: CT_MR }, { x: l.a.x, y: l.a.y, r: CT_MR });
-      el("path", { d: ctCurve(e[0], e[1]), "class": "ct-arrow", stroke: byId(CT_LAYERS, "mm").color, "marker-end": "url(#" + U + "Arrowmm)", "data-vv": l.a.pg.id + " " + l.b.pg.id, "data-ka": "p|" + l.a.pg.id, "data-kb": "p|" + l.b.pg.id, "data-ly": "m" }, gLinks);
+      arrow(ctEdge({ x: l.b.x, y: l.b.y, r: CT_MR }, { x: l.a.x, y: l.a.y, r: CT_MR }), byId(CT_LAYERS, "mm").color, "p|" + l.a.pg.id, "p|" + l.b.pg.id, [l.a.pg.id, l.b.pg.id]);
     });
     // strategies: each one's lines in its color; tapping a vine opens the strategy
     if (ctOn("st")) stratsAll().forEach(function (s) {
@@ -19240,67 +19289,162 @@ function __detabaseMain() {
       s.edges.forEach(function (ed) {
         ctNodePoints(model, methods, s.nodes[ed.a]).forEach(function (a) {
           ctNodePoints(model, methods, s.nodes[ed.b]).forEach(function (b) {
-            var e = ctEdge(a, b), d = ctCurve(e[0], e[1]);
-            el("path", { d: d, "class": "ct-vine", stroke: s.color, "data-ka": a.key, "data-kb": b.key, "data-sg": s.id, "data-ly": "s" }, gLinks);
-            el("path", { d: d, "class": "ct-vhit", "data-strat": s.id }, gLinks);
+            var e = ctEdge(a, b);
+            out.push({ d: ctCurve(e[0], e[1]), cls: "ct-vine", color: s.color, a: a.key, b: b.key, sg: s.id });
           });
         });
       });
     });
-    methods.nodes.forEach(function (v) {
-      var vk = "p|" + v.pg.id;
-      if (ctOn("cm")) {
-        v.lines.forEach(function (L) {
-          el("path", { d: ctCurve([v.x, v.y], L.to), "class": "ct-link" + (L.also ? " also" : ""), stroke: v.color, "data-vv": v.pg.id, "data-ka": vk, "data-kb": L.key, "data-ly": "c" }, gLinks);
-        });
-        el("line", { x1: ctF(v.x), y1: ctF(v.y), x2: ctF(v.rim[0]), y2: ctF(v.rim[1]), "class": "ct-stem", stroke: v.color, "data-vv": v.pg.id, "data-ka": vk, "data-kb": "s|" + v.pg.subject, "data-ly": "o" }, gLinks);
-      }
-      el("rect", { x: ctF(v.x - CT_MR - 9), y: ctF(v.y - CT_MR - 9), width: 2 * CT_MR + 18, height: 2 * CT_MR + 18, "class": "ct-mhit", "data-v": v.pg.id }, gMethods);   // a finger-sized target
-      var sq = el("rect", { x: ctF(v.x - CT_MR), y: ctF(v.y - CT_MR), width: 2 * CT_MR, height: 2 * CT_MR, rx: 3, fill: v.color,
-        "class": "ct-method" + (v.pg.kind ? "" : " nokind"), "data-v": v.pg.id, "data-vv": v.pg.id }, gMethods);
-      el("title", {}, sq).textContent = bidiText(v.pg.name + (v.pg.kind ? "" : " — needs a kind"));
-      var lb = el("text", { x: ctF(v.x), y: ctF(v.y + CT_MR), dy: "1em", fill: v.color, "class": "ct-lbl ct-mlbl", "data-vv": v.pg.id }, gLbls);
-      labels.push({ el: lb, key: vk, r: CT_MR, leaf: false, lvl: "p", full: L(v.pg.name) });
+    if (ctOn("cm")) methods.nodes.forEach(function (v) {
+      var vk = "p|" + v.pg.id, vv = [v.pg.id];
+      v.lines.forEach(function (ln) { out.push({ d: ctCurve([v.x, v.y], ln.to), cls: "ct-link" + (ln.also ? " also" : ""), color: v.color, a: vk, b: ln.key, vv: vv }); });
+      out.push({ d: "M" + ctF(v.x) + " " + ctF(v.y) + "L" + ctF(v.rim[0]) + " " + ctF(v.rim[1]), cls: "ct-stem", color: v.color, a: vk, b: "s|" + v.pg.subject, vv: vv });
     });
-    box.appendChild(ctViewsEl(T));
-    var E = T.els = { box: box, svg: svg, world: world, labels: labels, model: model, methods: methods, nums: world.querySelector(".ct-nums"),
-      allBox: ctBoxOf(model.root.kids) || [-100, -100, 100, 100] };
+    return out;
+  }
+  // [{ln, extra class}] → markup: one path for each look
+  function ctPaths(list) {
+    return ctMerged(list, function (x) { return { cls: x.ln.cls + x.extra, color: x.ln.color, d: x.ln.d }; }, "stroke");
+  }
+  // their arrow heads, at zoom k
+  function ctHeads(list, k) {
+    var u = 1 / (k || 1);
+    return ctMerged(list.filter(function (x) { return x.ln.head; }), function (x) { return { cls: "ct-head" + x.extra, color: x.ln.color, d: ctHeadPath(x.ln.head, u) }; }, "fill");
+  }
+  function ctMerged(list, part, attr) {
+    var by = new Map(), out = "";
+    list.forEach(function (x) {
+      var p = part(x), k = p.cls + "|" + p.color, g = by.get(k);
+      if (!g) { g = { cls: p.cls, color: p.color, d: [] }; by.set(k, g); }
+      g.d.push(p.d);
+    });
+    by.forEach(function (g) { out += '<path class="' + g.cls + '" ' + attr + '="' + escapeHtml(g.color) + '" d="' + g.d.join("") + '"/>'; });
+    return out;
+  }
+  // the heads keep their size on screen: drawn again once the zoom has moved more than an eighth
+  function ctHeadsFit(T, force) {
+    var E = T.els; if (!E || !T.view) return;
+    var k = T.view.k;
+    if (!force && E.headK && Math.abs(Math.log(k / E.headK)) < 0.12) return;
+    E.headK = k;
+    E.gBaseH.innerHTML = ctHeads(E.baseList, k);
+    E.gLitH.innerHTML = ctHeads(E.litList, k);
+  }
+  function ctDrawLines(T) {
+    var E = T.els, hits = {};
+    E.lineKey = ctLineKey();
+    E.lines = libFast(function () { return ctLinesOf(E.model, E.methods); });
+    E.lines.forEach(function (ln) { if (ln.sg) (hits[ln.sg] = hits[ln.sg] || []).push(ln.d); });
+    E.baseList = E.lines.map(function (ln) { return { ln: ln, extra: "" }; });
+    E.gBase.innerHTML = ctPaths(E.baseList);
+    E.litList = []; E.headK = 0;
+    ctHeadsFit(T, true);
+    E.gVhit.innerHTML = Object.keys(hits).map(function (id) { return '<path class="ct-vhit" data-strat="' + escapeHtml(id) + '" d="' + hits[id].join("") + '"/>'; }).join("");
+    E.gLit.innerHTML = E.gHover.innerHTML = ""; E.litH = ""; E.hot = null;
+    var views = E.box.querySelector(".ct-views"); if (views) views.remove();
+    E.box.appendChild(ctViewsEl(T));
+  }
+  function ctRender(T, box, M) {
+    if (T.els && T.els.ro) T.els.ro.disconnect();
+    T.box = box;
+    var model = M.model, methods = M.methods, labels = [], rings = [], leaves = [], squares = [], dots = { "ct-leaf": [], "ct-leaf used": [] };
+    (function walk(n) {
+      if (n.ref.lvl !== "root") {
+        var cls = n.leaf ? "ct-leaf" : "ct-ring lvl-" + n.ref.lvl + (n.empty ? " empty" : "");
+        if (n.uses) cls += " used";
+        (n.leaf ? leaves : rings).push('<circle cx="' + ctF(n.x) + '" cy="' + ctF(n.y) + '" r="' + ctF(n.r) + '" class="' + cls + '" data-k="' + escapeHtml(n.key) + '"/>');
+        if (n.leaf) dots[cls].push("M" + ctF(n.x - n.r) + " " + ctF(n.y) + "a" + n.r + " " + n.r + " 0 1 0 " + 2 * n.r + " 0a" + n.r + " " + n.r + " 0 1 0 " + -2 * n.r + " 0");
+        // a ring that is the only one in its parent shares its top edge, so its name goes under the parent's
+        var only = 0;
+        for (var p = n; p.parent && p.parent.ref.lvl !== "root" && p.parent.kids.length === 1; p = p.parent) only++;
+        labels.push({ key: n.key, r: n.r, leaf: !!n.leaf, lvl: n.ref.lvl, full: L(n.name || ""), x: n.x, y: n.leaf ? n.y + n.r : n.y - n.r,
+          dy: n.leaf ? "1em" : (1.25 + only * 1.4) + "em", cls: "ct-lbl " + (n.leaf ? "leaf" : "lvl-" + n.ref.lvl) });
+      }
+      n.kids.forEach(walk);
+    })(model.root);
+    methods.nodes.forEach(function (v) {
+      var id = escapeHtml(v.pg.id);
+      squares.push('<rect x="' + ctF(v.x - CT_MR - 9) + '" y="' + ctF(v.y - CT_MR - 9) + '" width="' + (2 * CT_MR + 18) + '" height="' + (2 * CT_MR + 18) + '" class="ct-mhit" data-v="' + id + '"/>' +    // a finger-sized target
+        '<rect x="' + ctF(v.x - CT_MR) + '" y="' + ctF(v.y - CT_MR) + '" width="' + 2 * CT_MR + '" height="' + 2 * CT_MR + '" rx="3" fill="' + escapeHtml(v.color) + '" class="ct-method' + (v.pg.kind ? "" : " nokind") + '" data-v="' + id + '"/>');
+      labels.push({ key: "p|" + v.pg.id, r: CT_MR, leaf: false, lvl: "p", full: L(v.pg.name || ""), x: v.x, y: v.y + CT_MR, dy: "1em", cls: "ct-lbl ct-mlbl", fill: v.color });
+    });
+    box.innerHTML = '<svg class="ct-svg" aria-label="concept tree"><g class="ct-world"><g class="ct-rings">' + rings.join("") + '</g>' +
+      '<g class="ct-links"><g class="ct-base"></g><g class="ct-base ct-baseh"></g><g class="ct-lit"></g><g class="ct-lith"></g><g class="ct-hover"></g><g class="ct-vhits"></g></g>' +
+      '<g class="ct-dots">' + Object.keys(dots).map(function (c) { return dots[c].length ? '<path class="' + c + '" d="' + dots[c].join("") + '"/>' : ""; }).join("") + '</g>' +
+      '<g class="ct-leaves">' + leaves.join("") + '</g><g class="ct-methods">' + squares.join("") + '</g><g class="ct-lbls"></g><g class="ct-nums"></g></g></svg>' +
+      '<div class="ct-ctrl"><button type="button" data-z="in" title="zoom in">＋</button><button type="button" data-z="out" title="zoom out">−</button>' +
+      '<button type="button" data-z="all" title="the whole tree">⤢</button></div>' +
+      '<div class="ct-mkbar" hidden></div><div class="ct-legend" hidden></div><div class="ct-hint">' + (T.opts.hint || (T.opts.mode === "add" ? "Tap a circle or a square to see it and add it · a ring to zoom in · hold one to mark what it connects to" :
+        "Tap a circle to open it · a ring to zoom in · a square (a method) to open it · hold one to mark what it connects to")) + '</div>';
+    var svg = box.querySelector("svg"), byKey = {};
+    function keep(el, key) { el.__base = el.getAttribute("class"); (byKey[key] = byKey[key] || []).push(el); }
+    Array.prototype.forEach.call(svg.querySelectorAll("circle[data-k]"), function (el) { keep(el, el.getAttribute("data-k")); });
+    Array.prototype.forEach.call(svg.querySelectorAll("rect.ct-method"), function (el) { keep(el, "p|" + el.getAttribute("data-v")); });
+    var E = T.els = { box: box, svg: svg, world: svg.querySelector(".ct-world"), M: M, model: model, methods: methods, allBox: M.allBox, labels: labels, byKey: byKey,
+      gBase: svg.querySelector(".ct-base"), gBaseH: svg.querySelector(".ct-baseh"), gLit: svg.querySelector(".ct-lit"), gLitH: svg.querySelector(".ct-lith"), gHover: svg.querySelector(".ct-hover"), gVhit: svg.querySelector(".ct-vhits"),
+      gLbls: svg.querySelector(".ct-lbls"), nums: svg.querySelector(".ct-nums"), lines: [], painted: {}, any: {}, inside: {} };
     ctWire(T, E);
+    ctDrawLines(T);
     if (T.sel && !ctPoint(T, T.sel)) { T.sel = null; T.conn = {}; }
+    if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === T.els) ctLook(T); }); E.ro.observe(svg); }
+  }
+  // show a tree in its box: drawn the first time and when the library changed, otherwise only what changed
+  function ctUpdate(T, box) {
+    var M = ctModel(), E = T.els;
+    if (!E || E.M !== M || E.svg.parentNode !== E.box) ctRender(T, box, M);
+    else {
+      if (E.box !== box) {                                 // the same drawing, in the page's new box
+        box.textContent = "";
+        while (E.box.firstChild) box.appendChild(E.box.firstChild);
+        E.box = T.box = box;
+      }
+      if (E.lineKey !== ctLineKey()) ctDrawLines(T);
+    }
+    E = T.els;
     ctPaint(T);
-    ctPreview(T);
+    var pk = T.sel ? T.sel + "|" + ((T.hits || {})[T.sel] || "") + "|" + !!T.hits : "";
+    if (E.pk !== pk) { E.pk = pk; ctPreview(T); }
     ctMarksBar(T);
     // where to look: the whole tree the first time; the search's results when they change; and back to
     // where you were once the search is cleared
-    var hitKeys = Object.keys(T.hits || {}), want = null;
     if (T.hitSig !== T.sig) {
-      if (hitKeys.length) { if (!T.preView && T.sig !== null && T.view) T.preView = T.auto ? { auto: T.auto } : { view: T.view }; var fb = ctBoxOfKeys(T, hitKeys); want = fb ? { box: fb, maxK: 3 } : null; }
-      else { want = T.preView ? (T.preView.auto || T.preView) : { box: null }; T.preView = null; }
+      var hitKeys = Object.keys(T.hits || {});
+      if (hitKeys.length) { if (!T.preView && T.sig !== null && T.view) T.preView = T.auto ? { auto: T.auto } : { view: T.view }; var fb = ctBoxOfKeys(T, hitKeys); T.want = fb ? { box: fb, maxK: 3 } : null; }
+      else { T.want = T.preView ? (T.preView.auto || T.preView) : { box: null }; T.preView = null; }
       T.focus = null;
     }
-    if (!T.view) want = { box: null };
+    if (!T.view && !T.want) T.want = { box: null };
     T.sig = T.hitSig;
-    function look() {
-      if (!ctSize(T)[0] || !ctSize(T)[1]) return false;   // not on screen yet
-      if (want) {
-        var to = want.view || ctFitTo(T, want.box || E.allBox, want.maxK);
-        T.auto = want.view ? null : want;
-        want = null;
-        if (T.view) ctFly(T, to); else { T.view = to; ctApply(T); }
-      } else if (T.auto && !T.anim) {
-        T.view = ctFitTo(T, T.auto.box || E.allBox, T.auto.maxK);
-        ctApply(T);
-      } else ctApply(T);
-      return true;
-    }
-    look();
-    if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === T.els) look(); }); E.ro.observe(svg); }
+    ctLook(T);
   }
-  // show a tree in its box
-  function ctUpdate(T, box) { libFast(function () { ctRender(T, box); }); }
+  function ctLook(T) {
+    var E = T.els; if (!E) return;
+    E.size = null;
+    if (!ctSize(T)[0] || !ctSize(T)[1]) return;            // not on screen yet
+    var want = T.want;
+    if (want) {
+      var to = want.view || ctFitTo(T, want.box || E.allBox, want.maxK);
+      T.auto = want.view ? null : want;
+      T.want = null;
+      if (T.view) ctFly(T, to); else { T.view = to; ctApply(T); }
+    } else if (T.auto && !T.anim) {
+      T.view = ctFitTo(T, T.auto.box || E.allBox, T.auto.maxK);
+      ctApply(T);
+    } else ctApply(T);
+  }
+  // the page is made once and then kept: later visits update the results and the tree's marks
   function renderEtiMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
+    if (!host.querySelector(".em-tree")) etiMainMake(host);
+    var input = host.querySelector(".em-search");
+    if (document.activeElement !== input) input.value = mainQ;
+    mainResults(host.querySelector(".em-results"));
+    mainTreeHits();
+    ctUpdate(mainTree, host.querySelector(".em-tree"));
+    if (mainQ && document.activeElement !== input) { input.focus({ preventScroll: true }); input.setSelectionRange(input.value.length, input.value.length); }
+  }
+  function etiMainMake(host) {
     host.innerHTML =
       '<div class="cc-bar em-libbar"></div>' +
       '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search by name — subjects, concepts, cards, methods, study sheets, strategies" autocomplete="off">' +
@@ -19310,7 +19454,6 @@ function __detabaseMain() {
     host.querySelector(".em-libbar").appendChild(actBtn("🧷 Clipboard", "a big board to lay out and connect library items", openBoard, "btn-primary"));
     host.querySelector(".em-libbar").appendChild(actBtn("🏷 Naming check", "your own names that are too general or used twice, with suggestions", openNamingCheck));
     var input = host.querySelector(".em-search");
-    input.value = mainQ;
     srchTyping(input, function (fresh) { mainQ = input.value; mainSearch(fresh); });
     host.querySelector(".em-clear").addEventListener("click", function () { mainQ = input.value = ""; mainSearch(); });
     // the list and the tree mark each other (B183): the tree numbers the results as the list does; a
@@ -19319,10 +19462,6 @@ function __detabaseMain() {
       srchReveal(document.querySelector("#etiMain .em-results"), mainSS, key);
       Array.prototype.forEach.call(document.querySelectorAll("#etiMain .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); });
     } });
-    mainResults(host.querySelector(".em-results"));
-    mainTreeHits();
-    ctUpdate(mainTree, host.querySelector(".em-tree"));
-    if (mainQ && document.activeElement !== input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
   }
   // ============================================================
   // METHOD FOLDERS — a subject's methods, grouped
