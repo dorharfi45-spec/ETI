@@ -1026,9 +1026,11 @@
   .bd-bar button, .bd-sel button { min-height: var(--tap); min-width: var(--tap); }
   .bd-bar .ps-back { margin: 0; }
   .bd-name { font-size: 1.05rem; }
-  .bd-pal { display: inline-flex; flex-wrap: wrap; gap: 6px; }
-  .bd-sw { width: 38px; height: 38px; min-width: 38px !important; min-height: 38px !important; padding: 0; border: 2px solid var(--bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer; }
-  .bd-sw.on { box-shadow: 0 0 0 3px var(--text-primary); }
+  .bd-pal { display: inline-flex; flex-wrap: wrap; gap: 0; }
+  /* a colour: the whole finger-sized square is the button, the dot is drawn inside it (B230) */
+  .bd-sw { position: relative; width: var(--tap); height: var(--tap); min-width: var(--tap) !important; min-height: var(--tap) !important; padding: 0; border: 0 !important; border-radius: var(--r-md); background: none !important; box-shadow: none !important; cursor: pointer; }
+  .bd-sw::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--sw); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--border-strong); pointer-events: none; }
+  .bd-sw.on::before { box-shadow: 0 0 0 3px var(--text-primary); }
   .bd-main { position: relative; flex: 1; min-height: 0; display: flex; overflow: hidden; }
   .bd-side { width: 270px; max-width: calc(100% - 56px); flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; overflow: hidden; border-inline-end: 1px solid var(--border); background: var(--surface-1); }
   .bd-side[hidden] { display: none; }
@@ -3167,7 +3169,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B229</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B230</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -21587,7 +21589,7 @@ function __detabaseMain() {
         var row = document.createElement("div");
         row.className = "cs-row";
         var sw = actBtn("", "change its color", function () { c.color = COURSE_COLORS[(COURSE_COLORS.indexOf(c.color) + 1) % COURSE_COLORS.length]; changed(); }, "bd-sw");
-        sw.style.background = c.color;
+        sw.style.setProperty("--sw", c.color);
         row.appendChild(sw);
         var nm = document.createElement("b"); nm.textContent = c.name; row.appendChild(nm);
         row.appendChild(actBtn("✎", "rename", function () { askName("Rename course", "", c.name, function (n) { c.name = n; changed(); }); }, "ed-btn"));
@@ -23156,7 +23158,7 @@ function __detabaseMain() {
     pal.className = "bd-pal";
     BD_COLORS.forEach(function (c) {
       var s = actBtn("", "line color", function () { bd.color = c; bdBar(); }, "bd-sw" + (bd.color === c ? " on" : ""));
-      s.style.background = c;
+      s.style.setProperty("--sw", c);
       pal.appendChild(s);
     });
     bar.appendChild(pal);
@@ -23573,7 +23575,7 @@ function __detabaseMain() {
     var pal = box.body.querySelector(".bd-pal");
     function paint() {
       pal.innerHTML = "";
-      BD_COLORS.forEach(function (c) { var s = actBtn("", "", function () { color = c; paint(); }, "bd-sw" + (color === c ? " on" : "")); s.style.background = c; pal.appendChild(s); });
+      BD_COLORS.forEach(function (c) { var s = actBtn("", "", function () { color = c; paint(); }, "bd-sw" + (color === c ? " on" : "")); s.style.setProperty("--sw", c); pal.appendChild(s); });
     }
     paint();
     var sel = box.body.querySelector("select");
