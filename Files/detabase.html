@@ -3169,7 +3169,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B231</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B232</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3595,9 +3595,17 @@ window.SPD = (function () {
   window.addEventListener("pagehide", function () { try { sessionStorage.removeItem("detabase.open"); } catch (e) {} });
   window.addEventListener("pageshow", function () { try { sessionStorage.setItem("detabase.open", "1"); } catch (e) {} });
   function reloading(why) { try { sessionStorage.setItem("detabase.why", why); } catch (e) {} }
-  var presses = [];                                    // the last 40 button presses (B231), in memory only
-  function press(text) { presses.push(new Date().toLocaleTimeString() + " · " + text); if (presses.length > 40) presses.shift(); }
-  return { mark: mark, frame: frame, rows: rows, note: note, notes: notes, reloading: reloading, press: press, presses: function () { return presses.slice(); }, clear: function () { log = {}; presses = []; } };
+  // the last 40 button presses (B231); kept across reloads on this device (B232: a reload used to wipe them)
+  var PKEY = "detabase.presses", presses = [], pressT = null;
+  try { presses = JSON.parse(localStorage.getItem(PKEY) || "[]"); } catch (e) {}
+  function pressSave() { pressT = null; try { localStorage.setItem(PKEY, JSON.stringify(presses)); } catch (e) {} }
+  function press(text) {
+    presses.push(new Date().toLocaleString() + " · " + text); if (presses.length > 40) presses.shift();
+    if (!pressT) pressT = setTimeout(pressSave, 300);
+  }
+  window.addEventListener("pagehide", function () { if (pressT) { clearTimeout(pressT); pressSave(); } });
+  return { mark: mark, frame: frame, rows: rows, note: note, notes: notes, reloading: reloading, press: press, presses: function () { return presses.slice(); },
+    clear: function () { log = {}; presses = []; pressSave(); } };
 })();
 // Canvas-doc storage (boards, and later library elements / problem pages). localStorage is only
 // ~5MB on iOS, which whole handwritten classes fill quickly, so docs live in IndexedDB. Everything
@@ -13920,7 +13928,7 @@ function __detabaseMain() {
   // tap that comes soon after another: buttons often needed several presses. So a touch or Pencil press on a
   // button made by actBtn runs it on the lift (under 700 ms, moved less than a tap may). The click that may
   // follow is then ignored. A button redrawn while the finger was down still counts: the new one in the same
-  // place with the same words. The mouse and the keyboard still use the click.
+  // place with the same words. B232: the mouse too (an iPad trackpad or a PC); only the keyboard uses the click.
   var actDown = null, actDone = null;
   function actBtnAt(x, y) { var el = document.elementFromPoint(x, y); el = el && el.closest && el.closest("button"); return el && el.__tap ? el : null; }
   function actTapped(e) { return !!actDone && Date.now() - actDone.t < 800 && e.clientX > 0 && Math.hypot(e.clientX - actDone.x, e.clientY - actDone.y) < 30; }   // the click this lift makes
@@ -13937,7 +13945,7 @@ function __detabaseMain() {
   }
   document.addEventListener("pointerdown", function (e) {
     actDown = null;
-    if (e.pointerType === "mouse") return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;     // a right or middle click is not a press
     var b = actBtnAt(e.clientX, e.clientY);
     if (!e.isPrimary) { if (b) actLog(b, e, "not run: a second finger"); return; }
     if (!b) return;
@@ -13956,7 +13964,7 @@ function __detabaseMain() {
     if (!d) { if (actDone && actDone.now) { actDone.t = Date.now(); actDone.x = e.clientX; actDone.y = e.clientY; } return; }   // a touch-time press: its click comes now
     if (e.pointerId !== d.id) { actLog(d.b, e, "not run: another finger lifted"); return; }
     var ms = Math.round(e.timeStamp - d.t), px = Math.round(Math.hypot(e.clientX - d.x, e.clientY - d.y));
-    if (ms > 700) { actLog(d.b, e, "not run: held " + ms + " ms"); return; }
+    if (ms > 700 && e.pointerType !== "mouse") { actLog(d.b, e, "not run: held " + ms + " ms"); return; }   // a long touch is a hold; a slow click is still a click
     if (px > tapSlop(e)) { actLog(d.b, e, "not run: moved " + px + " px"); return; }
     var b = d.b;
     if (!b.isConnected) {                              // redrawn under the finger: the same button in the same place
@@ -24459,7 +24467,8 @@ function __detabaseMain() {
     var box = ovOpen("Speed log", { wide: true }), b = box.body;
     var size = [["Subjects", allSubjectKeys().length], ["Your cards", (store.cards || []).length], ["Methods", store.ps.pages.length],
       ["Clipboard blocks", bdData().blocks.length], ["Page elements", document.getElementsByTagName("*").length]];
-    var head = $("buildTag").textContent + " · " + window.innerWidth + "×" + window.innerHeight + " · " + size.map(function (x) { return x[0] + " " + x[1]; }).join(" · ");
+    var ua = navigator.userAgent, dev = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ? "iPad" : /iPhone/.test(ua) ? "iPhone" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Macintosh/.test(ua) ? "Mac" : "other";
+    var head = $("buildTag").textContent + " · " + dev + ", " + (navigator.maxTouchPoints || 0) + " touch points, pointer " + (matchMedia("(pointer: coarse)").matches ? "coarse" : "fine") + " · " + window.innerWidth + "×" + window.innerHeight + " · " + size.map(function (x) { return x[0] + " " + x[1]; }).join(" · ");
     function draw() {
       b.innerHTML = '<p class="lw-hint">Use the app, then come back here. Times are in milliseconds, since this page loaded.</p><p class="lw-hint spd-size"></p><div class="spd-scroll"><table class="spd-table"><thead><tr><th>Action</th><th>Target</th><th>Last</th><th>Middle</th><th>Slowest</th><th>Times</th></tr></thead><tbody></tbody></table></div>';
       b.querySelector(".spd-size").textContent = head;
