@@ -1254,7 +1254,7 @@
     border-radius: var(--r-lg); background: var(--surface-1); overflow: hidden; }
   /* the tree's box is three rows (B225): the connection filters, the marked window, the drawing in what is left */
   .em-tree, .bd-tree { display: flex; flex-direction: column; }
-  .ct-bars { flex: none; max-height: 40%; min-width: 0; display: flex; flex-direction: column; }
+  .ct-bars { flex: none; max-height: 34%; min-width: 0; display: flex; flex-direction: column; }
   .ct-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
   .ct-svg { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none;
     -webkit-touch-callout: none; cursor: grab; }
@@ -1326,24 +1326,38 @@
   /* selected = bright, marked = dark (B226); their connections wear the same shade, softer. Weakest first. */
   :root { --ct-mark: #5b21b6; --ct-sel: #00bfe8; }
   @media (prefers-color-scheme: dark) { :root { --ct-mark: #8b5cf6; --ct-sel: #5cf0ff; } }
-  .ct-leaf.m-mconn, .ct-ring.m-mconn, .ct-method.m-mconn { stroke: color-mix(in srgb, var(--ct-mark) 62%, var(--bg)); stroke-width: 3; stroke-dasharray: none; }
+  .ct-leaf.m-mconn, .ct-ring.m-mconn, .ct-method.m-mconn { stroke: color-mix(in srgb, var(--ct-mark) 45%, var(--bg)); stroke-width: 1.6; stroke-dasharray: none; }
+  .ct-svg.marking .ct-leaf.m-mconn:not(.m-hit):not(.m-sel):not(.m-conn):not(.m-mk), .ct-svg.marking .ct-method.m-mconn:not(.m-hit):not(.m-sel):not(.m-conn):not(.m-mk) { opacity: .5; }
   .ct-leaf.m-board, .ct-ring.m-board, .ct-method.m-board { stroke: #16a34a; stroke-width: 3.6; stroke-dasharray: none; }
   .ct-leaf.m-board { fill: color-mix(in srgb, #16a34a 30%, var(--bg)); }
-  .ct-leaf.m-mk, .ct-ring.m-mk, .ct-method.m-mk { stroke: var(--ct-mark); stroke-width: 4.6; stroke-dasharray: none; }
-  .ct-leaf.m-mk { fill: color-mix(in srgb, var(--ct-mark) 62%, var(--bg)); }
+  .ct-leaf.m-mk, .ct-ring.m-mk, .ct-method.m-mk { stroke: var(--ct-mark); stroke-width: 5.5; stroke-dasharray: none; opacity: 1; }
+  .ct-leaf.m-mk { fill: var(--ct-mark); }
   .ct-ring.m-mk { fill: color-mix(in srgb, var(--ct-mark) 20%, var(--bg)); }
   .ct-leaf.m-conn, .ct-ring.m-conn, .ct-method.m-conn { stroke: var(--ct-sel); stroke-width: 3; stroke-dasharray: none; }
   .ct-leaf.m-sel, .ct-ring.m-sel, .ct-method.m-sel { stroke: var(--ct-sel); stroke-width: 6.5; stroke-dasharray: none; }
   .ct-leaf.m-sel:not(.m-mk) { fill: color-mix(in srgb, var(--ct-sel) 48%, var(--bg)); }
-  .ct-svg path.m-mline { stroke: var(--ct-mark); }
+  .ct-svg path.m-mline { stroke: var(--ct-mark); opacity: .45; stroke-width: 2; }
   .ct-svg path.m-sline { stroke: var(--ct-sel); }
-  .ct-svg path.ct-head.m-mline { stroke: none; fill: var(--ct-mark); }
+  .ct-svg path.ct-head.m-mline { stroke: none; fill: var(--ct-mark); opacity: .45; }
   .ct-svg path.ct-head.m-sline { stroke: none; fill: var(--ct-sel); }
 
   .ct-mkbar { min-height: 0; margin: 0 6px 6px; display: flex; flex-direction: column; border: 1px solid color-mix(in srgb, var(--ct-mark) 60%, var(--border)); border-radius: var(--r-md); background: var(--surface-1); font-size: .8rem; }
   .ct-mkbar[hidden], .ct-mk-body[hidden] { display: none; }
   .ct-mkbar button.ct-mk-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: var(--tap); padding: 0 12px; border: 0; background: none; font-weight: 700; text-align: start; }
   .ct-mk-head i { font-style: normal; color: var(--text-muted); }
+  .ct-mkbar .ct-mk-conn[aria-pressed="true"] { border-color: var(--ct-mark); }
+  .ct-prev.thin { gap: 0; padding: 6px 8px; overflow: hidden; }
+  .ct-prev.side.thin { width: min(420px, calc(100% - 80px)); }
+  .ct-prev.thin .ct-pv-top { flex-wrap: nowrap; }
+  .ct-prev.thin .ct-pv-what { flex: 1 1 auto; }
+  .ct-prev.thin .ct-pv-what b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow-wrap: normal; }
+  .ct-prev.thin .ct-pv-what small, .ct-prev.thin .ct-pv-body, .ct-prev.thin .ct-pv-conn { display: none; }
+  .ct-prev.thin .ct-pv-top button { flex: none; padding: 0 9px; white-space: nowrap; }
+  .ct-prev.thin .ct-pv-what { min-width: 60px; }
+  .ct-prev.thin:not(.side) { right: 8px; z-index: 2; }
+  .ct-stage:has(.ct-prev.thin.top:not(.side)) .ct-ctrl { top: 74px; }
+  .ct-prev.thin { container-type: inline-size; }
+  @container (max-width: 290px) { .ct-prev.thin .ct-pv-what { display: none; } .ct-prev.thin .ct-pv-top { justify-content: flex-end; } .ct-prev.thin .ct-pv-top button { min-width: 40px; padding: 0 6px; } }
   .ct-mk-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 8px 8px; }
   .ct-mkbar button { min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
   .ct-mk-what { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
@@ -3153,7 +3167,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B227</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B228</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3401,6 +3415,7 @@ window.SYNC = (function () {
       if (same(r, b)) return l;
       var top = path[0];
       // bookkeeping: both answers are right
+      if (top === "oneTime" && l !== undefined && r !== undefined && typeof l !== "object") return typeof l === "number" && typeof r === "number" ? Math.max(l, r) : l;   // "already offered", on either
       if (top === "savedAt" || top === "schema" || top === "libv" || top === "biSeed") {
         if (typeof l === "number" && typeof r === "number") return Math.max(l, r);
       }
@@ -3493,7 +3508,23 @@ window.SYNC = (function () {
     });
     return t;
   }
-  return { merge: merge, put: put, same: same, canon: canon, copy: copy };
+  // With no record of what two copies last shared (B228): what both hold alike. Merged against it, an item on one
+  // side only is kept (nothing is deleted), and only an item both hold differently is asked about.
+  function common(l, r) {
+    if (same(l, r)) return copy(l);
+    if (keyed(l) && keyed(r)) {
+      var R = byId(r), out = [];
+      l.forEach(function (x) { if (R.has(x.id)) { var c = same(x, R.get(x.id)) ? copy(x) : undefined; if (c) out.push(c); } });
+      return out;
+    }
+    if (plain(l) && plain(r)) {
+      var o = {};
+      Object.keys(l).forEach(function (k) { if (r[k] !== undefined && l[k] !== undefined) { var c = common(l[k], r[k]); if (c !== undefined) o[k] = c; } });
+      return o;
+    }
+    return undefined;
+  }
+  return { merge: merge, put: put, same: same, canon: canon, copy: copy, common: common };
 })();
 </script>
 <script>
@@ -19326,10 +19357,10 @@ function __detabaseMain() {
     E.labels.forEach(function (lb) {
       var sr = lb.r * k, show = false, room = 0;
       if (Math.abs(lb.x - cx) <= hw && Math.abs(lb.y - cy) <= hh) {
-        var hit = !!E.any[lb.key], dim = E.on && !hit && !E.inside[lb.key];
-        if (lb.lvl === "p") { show = !dim && (sr >= 7 || (hit && sr >= 3)); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
-        else if (lb.leaf) { show = !dim && (sr >= 14 || (hit && sr >= 4)); room = hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
-        else { show = sr >= (lb.lvl === "s" ? 34 : 46); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
+        var hit = !!E.any[lb.key], strong = !!(E.strong && E.strong[lb.key]), dim = E.on && !hit && !E.inside[lb.key];
+        if (lb.lvl === "p") { show = !dim && (sr >= 7 || (hit && sr >= 3) || strong); room = Math.max(40, (2 * CT_MR + CT_MGAP) * k - 8); }   // a method's name: under its square, as wide as the gap to the next
+        else if (lb.leaf) { show = !dim && (sr >= 14 || (hit && sr >= 4) || strong); room = strong ? Math.max(120, sr * 2.6) : hit ? Math.max(84, sr * 2.6) : sr * 2.6; }   // about the space to the next circle
+        else { show = sr >= (lb.lvl === "s" ? 34 : 46) || (strong && sr >= 10); room = Math.min(sr * 1.6, 2 * Math.sqrt(Math.max(0, 2 * sr * 20 - 400))); }
       }
       if (!show) {
         if (lb.el) { lb.el.remove(); lb.el = null; }
@@ -19378,6 +19409,7 @@ function __detabaseMain() {
     Object.keys(E.painted).forEach(function (k) { if (!cls[k]) put(k); });
     Object.keys(cls).forEach(function (k) { if (E.painted[k] !== cls[k]) put(k); });
     E.painted = cls; E.any = any; E.inside = inside; E.on = on;
+    E.strong = Object.assign({}, T.mk); if (T.sel) E.strong[T.sel] = 1;     // named even when small (B228)
     E.svg.classList.toggle("marking", on);
     var strats = T.mkState && T.mkState.strats, lit = [];
     if (on) E.lines.forEach(function (ln) {
@@ -19414,6 +19446,7 @@ function __detabaseMain() {
   // what the marks connect to (worked out once for each point, per layout)
   function ctMarkConn(T) {
     var E = T.els, memo = E.connOf = E.connOf || {}, all = {}, of = {};
+    if (!ctFlag(CT_MCONN, true)) return { all: all, of: of };     // switched off: only the marks themselves
     libFast(function () {
       Object.keys(T.mk).forEach(function (k) {
         if (!ctPoint(T, k)) return;
@@ -19490,14 +19523,17 @@ function __detabaseMain() {
     var b = ctBoxOfKeys(T, add); if (b) ctFlyBox(T, b, 3);
   }
   function ctMkClear(T) { ctMkSave(T); T.mk = {}; T.mkState = null; ctMkShow(T); }
-  var CT_FOLD = "detabase.marks.folded";               // the marked window folded to its slim bar: per device
-  function ctFolded() { try { return localStorage.getItem(CT_FOLD) === "1"; } catch (e) { return false; } }
+  // per device: the marked window and the preview are thin bars until opened (B228); the marks' connections on or off
+  var CT_FOLD = "detabase.marks.open", CT_PVOPEN = "detabase.preview.open", CT_MCONN = "detabase.marks.conn";
+  function ctFlag(k, dflt) { try { var v = localStorage.getItem(k); return v === null ? dflt : v === "1"; } catch (e) { return dflt; } }
+  function ctSetFlag(k, on) { try { localStorage.setItem(k, on ? "1" : "0"); } catch (e) {} }
+  function ctFolded() { return !ctFlag(CT_FOLD, false); }
   // the marked window: what can be done with the marks, and all of them (tap one = select it on the tree)
   function ctMarksBar(T) {
     var E = T.els; if (!E) return;
     var box = E.box.querySelector(".ct-mkbar"), s = T.mkState, keys = ctMarks(T), n = keys.length, fold = ctFolded();
     var more = Object.keys(T.hits || {}).filter(function (k) { return !T.mk[k] && ctPoint(T, k); });
-    var sig = JSON.stringify([E.M.rev, keys, s, more.length, T.mkUndo.length, T.mkRedo.length, fold]);
+    var sig = JSON.stringify([E.M.rev, keys, s, more.length, T.mkUndo.length, T.mkRedo.length, fold, ctFlag(CT_MCONN, true)]);
     if (box.__sig !== sig) {
       box.__sig = sig;
       var old = box.querySelector(".ct-mk-body"), at = old ? old.scrollTop : 0;
@@ -19505,7 +19541,7 @@ function __detabaseMain() {
       box.hidden = !(n || more.length || T.mkUndo.length || T.mkRedo.length);
       if (!box.hidden) {
         var head = actBtn("", "fold or unfold", function () {
-          try { localStorage.setItem(CT_FOLD, ctFolded() ? "0" : "1"); } catch (e) {}
+          ctSetFlag(CT_FOLD, ctFolded());
           ctMarksBar(T);
         }, "ct-mk-head");
         head.setAttribute("aria-expanded", !fold);
@@ -19528,6 +19564,12 @@ function __detabaseMain() {
     }, "btn-primary"));
     if (more.length) bar.appendChild(actBtn("Mark all results", "every search result on the tree", function () { ctMkSave(T); ctMarkAdd(T, more); }));
     if (keys.length && s && s.kinds) bar.appendChild(actBtn("+1 step", "mark one link further", function () { ctMkStep(T); }));
+    if (keys.length) {
+      var cn = actBtn("Show their connections", "a faint outline around what the marks connect to", function () { ctSetFlag(CT_MCONN, !ctFlag(CT_MCONN, true)); ctMkShow(T); }, "ct-mk-conn");
+      cn.setAttribute("aria-pressed", ctFlag(CT_MCONN, true));
+      cn.textContent = (ctFlag(CT_MCONN, true) ? "☑ " : "☐ ") + "Show their connections";
+      bar.appendChild(cn);
+    }
     var u = actBtn("↶ Undo", "the marks as they were", function () { ctMkStepBack(T, T.mkUndo, T.mkRedo); });
     var r = actBtn("↷ Redo", "", function () { ctMkStepBack(T, T.mkRedo, T.mkUndo); });
     u.disabled = !T.mkUndo.length; r.disabled = !T.mkRedo.length;
@@ -19605,7 +19647,9 @@ function __detabaseMain() {
     if (!pv) { pv = document.createElement("div"); pv.className = "ct-prev"; E.box.querySelector(".ct-stage").appendChild(pv); }
     // never over the point just tapped (it is tapped again to mark it): left, else right, else above or below it
     var side = ctPvSide(T), far = false, at = T.tapAt, sz = ctSize(T);
+    var open = ctFlag(CT_PVOPEN, false);
     pv.classList.remove("far", "top");
+    pv.classList.toggle("thin", !open);
     pv.classList.toggle("side", side);
     if (side && at) {
       var w = pv.getBoundingClientRect().width, gap = CT_DBL_PX;
@@ -19619,11 +19663,15 @@ function __detabaseMain() {
     pv.querySelector("b").textContent = (T.hits && T.hits[T.sel] ? T.hits[T.sel] + ". " : "") + refLabel(ref);
     pv.querySelector("small").textContent = [SRCH_KIND[ref.lvl] || ""].concat(assetCrumbs(ref).length ? [assetCrumbs(ref).join(" › ")] : []).join(" · ");
     var top = pv.querySelector(".ct-pv-top");
-    top.appendChild(T.opts.mode === "add" ? actBtn("＋ Add to board", "put it on the Clipboard", function () { T.opts.onAdd([ref]); }, "btn-primary") : actBtn("Open", "open it", function () { openAnyRef(ref); }, "btn-primary"));
+    top.appendChild(T.opts.mode === "add" ? actBtn(open ? "＋ Add to board" : "＋", "add to board", function () { T.opts.onAdd([ref]); }, "btn-primary") : actBtn("Open", "open it", function () { openAnyRef(ref); }, "btn-primary"));
     var key = T.sel;
     top.appendChild(actBtn("Mark", "keep it highlighted", function () { ctMarkFlip(T, key); }, "ct-pv-mark"));
     ctMarkBtn(T);
-    top.appendChild(actBtn(T.hits ? "↩ Back to all results" : "✕ Close", "", function () { ctBackToAll(T); }));
+    var more = actBtn(open ? "▾" : "▸", open ? "show less" : "show more: where it is, a look inside, its connections", function () { ctSetFlag(CT_PVOPEN, !open); ctPreview(T); });
+    more.setAttribute("aria-expanded", open);
+    top.appendChild(more);
+    top.appendChild(actBtn(T.hits ? "↩" : "✕", T.hits ? "back to all results" : "close", function () { ctBackToAll(T); }));
+    if (!open) return;                                 // the thin bar: nothing more to make
     var body = pv.querySelector(".ct-pv-body");
     if (ref.lvl === "c" || ref.lvl === "p") { var a = assetBody(ref, 300); a.classList.add("ct-pv-asset"); body.appendChild(a); }
     var links = ctLinksOf(ref), cl = pv.querySelector(".ct-pv-conn");
@@ -25131,10 +25179,9 @@ async function docStep(id, force) {
       if (base) {
         const m = SYNC.merge(docBody(base), mine, remote, picks);
         next = m.value; clashes = m.clashes;
-      } else if (unsent.docs[id]) {                     // changed here before B224: no record of what was shared
-        const key = JSON.stringify([SYNC.canon(mine), SYNC.canon(remote)]);
-        if (picks[key]) next = picks[key] === "r" ? remote : mine;
-        else clashes = [{ key, path: [], local: mine, remote }];
+      } else if (unsent.docs[id]) {                     // changed here, no record of what was shared: combined item by item
+        const m = SYNC.merge(SYNC.common(mine, remote), mine, remote, picks);
+        next = m.value; clashes = m.clashes;
       } else if (lts > rts) {
         if (await docPush(id, local, cloudDoc)) return;
         continue;
@@ -25406,11 +25453,10 @@ async function mainStep(force) {
     if (base) {
       const m = SYNC.merge(base.store, local, remote.store, picks);
       next = m.value; clashes = m.clashes;
-    } else if (local && !isEmpty(local)) {              // nothing says what was shared: one copy or the other
-      const key = JSON.stringify([SYNC.canon(local), SYNC.canon(remote.store)]);
-      if (picks[key]) next = picks[key] === "r" ? remote.store : local;
-      else clashes = [{ key, path: [], local, remote: remote.store }];
-    }
+    } else if (local && !isEmpty(local) && unsent.store) {     // nothing says what was shared, and this device changed things
+      const m = SYNC.merge(SYNC.common(local, remote.store), local, remote.store, picks);
+      next = m.value; clashes = m.clashes;
+    }                                                   // (nothing changed here: the cloud's copy; this one is kept first)
     if (clashes.length) {
       if (!force && clashes.every((c) => notNow.has(c.key))) { waitFor("main", syncMain, "☁ which to keep? — tap", "later"); return; }
       if (busy(force)) { waitFor("main", syncMain); return; }
