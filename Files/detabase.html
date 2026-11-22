@@ -1272,7 +1272,7 @@
   .ct-link.hot, .ct-arrow.hot, .ct-stem.hot { opacity: 1; stroke-width: 3; }
   .ct-views { position: absolute; top: 10px; left: 10px; right: 64px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
   .ct-vbtn { pointer-events: auto; min-height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface-1); color: var(--text-muted); font: inherit; font-size: .74rem; font-weight: 600; cursor: pointer; }
-  .ct-vbtn.on { border-color: var(--ct); color: var(--text-primary); box-shadow: inset 0 -3px 0 var(--ct); }
+  button.ct-vbtn.on { border-color: var(--ct); background: var(--surface-1); color: var(--text-primary); box-shadow: inset 0 -3px 0 var(--ct); }
   .ct-mlbl { font-size: calc(10.5px * var(--ctu, 1)); font-weight: 700; }
   .ps-stage.flash { box-shadow: 0 0 0 3px var(--accent); }
   /* a method's cards: on its page, and on every vine row */
@@ -3122,7 +3122,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B221</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B222</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3431,6 +3431,9 @@ window.DBX = (function () {
   // when there is no room for the localStorage copy (the IndexedDB write alone can't finish on the way out).
   // mainSet (a migration, a restore, a cloud copy) is the newer word: what waited is dropped.
   var MAIN_WAIT = 300, MAIN_MAX = 1500, pend = null, pendT = null, fingers = 0;
+  var leaving = false;                               // the page is going away: nothing waits any more
+  window.addEventListener("pagehide", function () { leaving = true; }, true);
+  window.addEventListener("pageshow", function () { leaving = false; });
   document.addEventListener("pointerdown", function (e) { if (e.isPrimary) fingers = 1; }, { capture: true, passive: true });
   ["pointerup", "pointercancel"].forEach(function (ev) { document.addEventListener(ev, function (e) { if (e.isPrimary) fingers = 0; }, { capture: true, passive: true }); });
   function mainDue() {
@@ -3442,7 +3445,7 @@ window.DBX = (function () {
     var now = Date.now();
     pend = { make: make, done: done, first: pend ? pend.first : now };
     clearTimeout(pendT);
-    if (window.__lsFull || now - pend.first >= MAIN_MAX) { mainFlush(); return; }
+    if (leaving || document.hidden || window.__lsFull || now - pend.first >= MAIN_MAX) { mainFlush(); return; }
     pendT = setTimeout(mainDue, MAIN_WAIT);
   }
   function mainFlush() {
@@ -5475,6 +5478,7 @@ function __detabaseMain() {
     if (activeProblem && canvasCache[activeProblem]) saveCanvas(activeProblem);
     if (typeof syncFileAutoSave === "function") syncFileAutoSave();
     if (typeof window.cloudNotifyLocalChange === "function") window.cloudNotifyLocalChange();
+    if (document.hidden && typeof window.cloudFlush === "function") window.cloudFlush();
   }
   // the page is hidden or closed: whatever waits is saved and sent now (B219)
   function saveNow() {
@@ -22132,6 +22136,7 @@ function __detabaseMain() {
     bdWatched.forEach(function (ctx) { if (!ctx.world.isConnected) bdWatched.delete(ctx); else if (ctx.els) bdRemeasure(ctx); });
   });
   function bdWatch(ctx) {
+    bdWatched.forEach(function (c) { if (!c.world.isConnected) bdWatched.delete(c); });
     bdWatched.add(ctx);
     if (!window.ResizeObserver) return null;
     return new ResizeObserver(function (entries) {

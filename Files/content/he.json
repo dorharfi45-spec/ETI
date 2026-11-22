@@ -1,5 +1,7 @@
 {
  "ui": {
+  "☐ Everything on the board": "☐ כל מה שעל הלוח",
+  "☑ Everything on the board": "☑ כל מה שעל הלוח",
   "Clear all": "ניקוי הכול",
   "filter the library": "סינון הספרייה",
   "Nothing matches these filters.": "אין תוצאות למסננים האלה.",
