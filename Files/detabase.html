@@ -3122,7 +3122,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B222</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B223</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5470,6 +5470,7 @@ function __detabaseMain() {
   }
 
   function saveStore() {
+    if (window.__detabaseReplaced) return;             // a newer cloud copy was just saved and the page is reloading (B223)
     srchWarm(1200);
     store.savedAt = Date.now();
     window.DBX.mainLater(function () { return JSON.stringify(mainSnapshot()); }, function () {
@@ -24687,12 +24688,25 @@ function isEmpty(s) {
     || (p.sessions && p.sessions.length) || (p.events && p.events.length)
     || (p.templates && p.templates.length) || (p.dayFormats && p.dayFormats.length));
 }
+// The same data, whatever the save time and the order of the keys (Firestore hands maps back in its own
+// order). Comparing those too made every received copy look changed: it was sent back, and two open devices
+// reloaded each other in a loop (B114–B222).
+function canonStore(s) {
+  return JSON.stringify(Object.assign({}, s, { savedAt: undefined }), function (k, v) {
+    if (!v || typeof v !== "object" || Array.isArray(v)) return v;
+    const o = Object.create(null);
+    Object.keys(v).sort().forEach((key) => { o[key] = v[key]; });
+    return o;
+  });
+}
 function sameStore(a, b) {
-  try { return JSON.stringify(a) === JSON.stringify(b); } catch (e) { return false; }
+  try { return canonStore(a) === canonStore(b); } catch (e) { return false; }
 }
 
+const HIST_KEY = "detabase.reloadHist";
+let pulled = false, pullTries = 0, pullTimer = null;   // pulled: this page has read the cloud copy
 async function pushLocal() {
-  if (!user || pendingRemote || replacing) return;
+  if (!user || !pulled || pendingRemote || applying || replacing) return;
   const ts = Date.now();
   lastPushedTs = ts;   // before the write — the local snapshot echo fires before setDoc resolves
   const n = changeN;
@@ -24742,8 +24756,30 @@ window.__detabaseFlushRemote = function () {
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && pendingRemote) { const d = pendingRemote; pendingRemote = null; commitRemote(d); }
 });
+// More than 3 reloads in 20 s (sessionStorage outlives a reload) means something is looping, so the next
+// update waits. It is decided BEFORE the cloud copy is saved: a page that saved it and didn't reload would
+// hold the older store, and its next save would replace the newer one (B223).
+let waitTimer = null;
+function reloadsTooFast() {
+  try { return JSON.parse(sessionStorage.getItem(HIST_KEY) || "[]").filter((t) => Date.now() - t < 20000).length >= 3; } catch (e) { return false; }
+}
+function noteReload() {
+  try {
+    const now = Date.now();
+    sessionStorage.setItem(HIST_KEY, JSON.stringify(JSON.parse(sessionStorage.getItem(HIST_KEY) || "[]").filter((t) => now - t < 20000).concat(now)));
+  } catch (e) {}
+}
 async function commitRemote(d) {
-  if (replacing) { pendingRemote = d; return; }
+  if (applying) { pendingRemote = d; return; }
+  if (reloadsTooFast()) {
+    pendingRemote = d;                                 // nothing is saved over, and nothing is sent, while it waits
+    setBadge("☁ update waiting — tap", "good");
+    const badge = document.getElementById("cloudBadge");
+    if (badge) badge.onclick = function () { badge.onclick = null; try { sessionStorage.removeItem(HIST_KEY); } catch (e) {} window.__detabaseFlushRemote(); };
+    clearTimeout(waitTimer);
+    waitTimer = setTimeout(() => window.__detabaseFlushRemote(), 21000);
+    return;
+  }
   applying = replacing = true;
   let kept = false;
   try { kept = await keepStore(); } catch (e) { noteCloudErr("backup before update", e); }
@@ -24757,32 +24793,24 @@ async function commitRemote(d) {
   replacing = false;
   if (pendingRemote) { d = pendingRemote; pendingRemote = null; }      // a newer one came meanwhile
   if (pushTimer) { clearTimeout(pushTimer); pushTimer = null; }
+  const was = window.DBX.mainGet();
   d.store.savedAt = Date.now();                        // what came from the cloud is now the newest local copy
-  const wrote = window.DBX.mainSet(JSON.stringify(d.store));
+  window.__detabaseReplaced = true;                    // until the reload this page's store is the older one: it saves nothing
+  let saved = false;
+  try { saved = (await window.DBX.mainSet(JSON.stringify(d.store))) || !window.__lsFull; } catch (e) {}
+  if (!saved) {                                        // not on this device, so it mustn't count as loaded
+    if (was) window.DBX.mainSet(was);
+    window.__detabaseReplaced = false;
+    applying = false;
+    pendingRemote = d;
+    noteCloudErr("update", new Error("no room to save the cloud copy, so it was not loaded"));
+    setBadge("☁ update not loaded — tap", "bad");
+    return;
+  }
   sentStore();
   try { localStorage.setItem(TS_KEY, String(d.updatedAt || Date.now())); } catch (e) {}
-  // Circuit breaker: the B16 signedInDone guard only stops onSignedIn's compare-and-confirm
-  // dance from re-running MULTIPLE TIMES within one page load — it can't stop a RELOAD LOOP,
-  // since every fresh reload resets that in-memory guard and legitimately gets to run once
-  // again. If something keeps making the cloud copy look newer/different every time (still
-  // being investigated), each reload was re-triggering the "cloud is newer" confirm() again,
-  // which is what was making the app unusable even after that guard. sessionStorage survives
-  // a reload (unlike a module variable), so track reload timestamps there and stop reloading
-  // automatically once too many happen too fast — the data above is already saved either way,
-  // this only stops the page from yanking itself out from under the user on a loop.
-  try {
-    var now = Date.now();
-    var hist = JSON.parse(sessionStorage.getItem("detabase.reloadHist") || "[]").filter(function (t) { return now - t < 20000; });
-    hist.push(now);
-    sessionStorage.setItem("detabase.reloadHist", JSON.stringify(hist));
-    if (hist.length > 3) {
-      setBadge("☁ updated — tap ↻ to refresh", "good");
-      var badgeEl = document.getElementById("cloudBadge");
-      if (badgeEl) badgeEl.onclick = function () { sessionStorage.removeItem("detabase.reloadHist"); location.reload(); };
-      return;
-    }
-  } catch (e) {}
-  wrote.then(function () { location.reload(); });
+  noteReload();
+  location.reload();
 }
 function shortName() { return user && user.email ? user.email.split("@")[0] : "synced"; }
 
@@ -24802,7 +24830,18 @@ async function onSignedIn(u) {
 
   let remote = null;
   try { remote = (await getDoc(ref)).data() || null; }
-  catch (e) { noteCloudErr("first pull", e); setBadge("☁ offline — tap", "bad"); }
+  catch (e) {
+    // the cloud copy couldn't be read (offline). That is not an empty cloud: nothing is sent until it has been
+    // read, or this older copy would replace a newer one on reconnect (B223). Changes wait, marked unsent.
+    if (!pullTries++) noteCloudErr("first pull", e);
+    setBadge("☁ offline — tap", "bad");
+    signedInDone = false;
+    clearTimeout(pullTimer);
+    pullTimer = setTimeout(pullAgain, 15000);
+    return;
+  }
+  pulled = true;
+  if (pullTries) { pullTries = 0; setBadge("☁ " + shortName(), "good"); }
 
   const local = localStore();
   if (remote && remote.store) {
@@ -24810,7 +24849,7 @@ async function onSignedIn(u) {
     if (!sameStore(remote.store, local)) {
       if (remoteNewer && (isEmpty(local) ||
           confirm("This device's data is different from the cloud, and the cloud copy is newer.\n\nLoad the cloud copy onto this device? (what's on this device now will be replaced)"))) {
-        applyRemote(remote); return;
+        applyRemote(remote); watchMain(); return;    // it may wait: keep listening for newer ones
       }
       pushLocal(); // this device wins / user kept it
     } else {
@@ -24824,19 +24863,29 @@ async function onSignedIn(u) {
   // canvas docs sync in the background — never blocks the app or the store reconciliation above
   sweepCanvases().catch((e) => { if (window.console) console.error("canvas sweep:", e); });
 
-  if (!snapBound) {
-    snapBound = true;
-    onSnapshot(ref, (snap) => {
-      if (applying || !snap.exists() || snap.metadata.hasPendingWrites) return;
-      const d = snap.data();
-      if (!d || !d.store) return;
-      if ((d.updatedAt || 0) === lastPushedTs) return;      // our own write echoed back
-      if ((d.updatedAt || 0) <= localTs()) return;           // not newer than us
-      if (sameStore(d.store, localStore())) return;
-      setBadge("☁ updating…", "good");
-      applyRemote(d);
-    });
-  }
+  watchMain();
+}
+function pullAgain() {
+  clearTimeout(pullTimer);
+  if (user && !pulled) onSignedIn(user);
+}
+window.addEventListener("online", pullAgain);
+function watchMain() {
+  if (snapBound) return;
+  snapBound = true;
+  onSnapshot(ref, (snap) => {
+    if (applying || !snap.exists() || snap.metadata.hasPendingWrites) return;
+    const d = snap.data();
+    if (!d || !d.store) return;
+    if ((d.updatedAt || 0) === lastPushedTs) return;      // our own write echoed back
+    if ((d.updatedAt || 0) <= localTs()) return;           // not newer than us
+    if (!pendingRemote && sameStore(d.store, localStore())) {
+      try { localStorage.setItem(TS_KEY, String(d.updatedAt)); } catch (e) {}
+      return;
+    }
+    setBadge("☁ updating…", "good");
+    applyRemote(d);
+  });
 }
 
 onAuthStateChanged(auth, (u) => {
