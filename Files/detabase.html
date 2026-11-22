@@ -1254,7 +1254,7 @@
     border-radius: var(--r-lg); background: var(--surface-1); overflow: hidden; }
   /* the tree's box is three rows (B225): the connection filters, the marked window, the drawing in what is left */
   .em-tree, .bd-tree { display: flex; flex-direction: column; }
-  .ct-bars { flex: none; max-height: 45%; min-width: 0; display: flex; flex-direction: column; }
+  .ct-bars { flex: none; max-height: 40%; min-width: 0; display: flex; flex-direction: column; }
   .ct-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
   .ct-svg { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none;
     -webkit-touch-callout: none; cursor: grab; }
@@ -1347,8 +1347,8 @@
   .ct-mk-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 8px 8px; }
   .ct-mkbar button { min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
   .ct-mk-what { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
-  .ct-mk-list { flex-basis: 100%; display: flex; flex-direction: column; gap: 4px; }
-  .ct-mkbar .ct-mk-it { display: flex; align-items: center; gap: 8px; border-radius: var(--r-sm); text-align: start; overflow-wrap: anywhere; }
+  .ct-mk-list { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; }
+  .ct-mkbar .ct-mk-it { max-width: 100%; display: flex; align-items: center; gap: 8px; border-radius: var(--r-sm); text-align: start; overflow-wrap: anywhere; }
   .ct-mk-it i { flex: none; width: 11px; height: 11px; border-radius: 50%; background: var(--ct-mark); }
   .ct-mkbar .ct-mk-it.sel { border-color: var(--ct-sel); box-shadow: inset 0 0 0 2px var(--ct-sel); }
   .ct-mkbar button:disabled { opacity: .4; cursor: default; }
@@ -1374,14 +1374,14 @@
   .ct-pv-what { flex: 1 1 160px; min-width: 0; }
   .ct-pv-what b { display: block; overflow-wrap: anywhere; }
   .ct-pv-what small { display: block; font-size: .74rem; color: var(--text-muted); }
-  .ct-pv-top button, .ct-pv-add { min-height: 38px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); font: inherit; font-size: .84rem; cursor: pointer; }
+  .ct-pv-top button, .ct-pv-add { min-width: var(--tap); min-height: var(--tap); padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--bg); color: var(--text-primary); font: inherit; font-size: .84rem; cursor: pointer; }
   .ct-pv-top .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .ct-pv-body { max-height: 140px; overflow: hidden; border-radius: var(--r-sm); background: var(--bg); font-size: .8rem; -webkit-mask-image: linear-gradient(#000 75%, transparent); mask-image: linear-gradient(#000 75%, transparent); }
   .ct-pv-body:empty { display: none; }
   .ct-pv-asset { zoom: .8; padding: 4px 8px; }
   .ct-pv-h { margin: 2px 0 0; font-size: .74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; }
   .ct-pv-row { display: flex; gap: 6px; align-items: stretch; }
-  .ct-pv-go { flex: 1; min-width: 0; min-height: 40px; display: flex; flex-direction: column; justify-content: center; padding: 2px 8px; border: 1px solid var(--border); border-radius: var(--r-sm); background: none; color: var(--text-primary); font: inherit; font-size: .82rem; text-align: start; cursor: pointer; }
+  .ct-pv-go { flex: 1; min-width: 0; min-height: var(--tap); display: flex; flex-direction: column; justify-content: center; padding: 2px 8px; border: 1px solid var(--border); border-radius: var(--r-sm); background: none; color: var(--text-primary); font: inherit; font-size: .82rem; text-align: start; cursor: pointer; }
   .ct-pv-go span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ct-pv-go small { font-size: .7rem; color: var(--text-muted); }
   .sr-num { flex-shrink: 0; align-self: center; min-width: 38px; height: 38px; padding: 0 6px; border: 1.5px solid #f59e0b; border-radius: 999px; background: color-mix(in srgb, #f59e0b 14%, transparent); color: #b45309; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
@@ -3153,7 +3153,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B226</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B227</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3354,7 +3354,28 @@ window.SYNC = (function () {
       return o;
     });
   }
-  function same(a, b) { return a === b || canon(a) === canon(b); }
+  // equal as saved: key order and undefined fields don't count. It runs on every sync, so it builds nothing.
+  function same(a, b) {
+    if (a === b) return true;
+    if (typeof a === "number" && !isFinite(a)) a = null;     // JSON saves those as null
+    if (typeof b === "number" && !isFinite(b)) b = null;
+    if (a === b) return true;
+    if (!a || !b || typeof a !== "object" || typeof b !== "object") return false;
+    var arr = Array.isArray(a), k, n = 0;
+    if (arr !== Array.isArray(b)) return false;
+    if (arr) {
+      if (a.length !== b.length) return false;
+      for (k = 0; k < a.length; k++) if (!same(a[k] === undefined ? null : a[k], b[k] === undefined ? null : b[k])) return false;
+      return true;
+    }
+    for (k in a) {
+      if (!Object.prototype.hasOwnProperty.call(a, k) || a[k] === undefined) continue;
+      if (!Object.prototype.hasOwnProperty.call(b, k) || !same(a[k], b[k])) return false;
+      n++;
+    }
+    for (k in b) if (Object.prototype.hasOwnProperty.call(b, k) && b[k] !== undefined) n--;
+    return n === 0;
+  }
   function copy(v) { return v === undefined ? v : JSON.parse(JSON.stringify(v)); }
   function keyed(a) {                                  // a list whose entries all have their own id
     if (!Array.isArray(a)) return false;
@@ -19936,7 +19957,7 @@ function __detabaseMain() {
   // show a tree in its box: drawn the first time and when the library changed, otherwise only what changed
   function ctUpdate(T, box) {
     var M = ctModel(), E = T.els;
-    if (!E || E.M !== M || E.svg.parentNode !== E.box) ctRender(T, box, M);
+    if (!E || E.M !== M || !E.box.contains(E.svg)) ctRender(T, box, M);
     else {
       if (E.box !== box) {                                 // the same drawing, in the page's new box
         box.textContent = "";
@@ -24448,7 +24469,7 @@ function __detabaseMain() {
     }
     if (!p.length) return doc === "main" ? "All the data (there is no record of the last sync)" : "The whole page: " + (name || doc);
     if (order) return "The order of: " + (kind || p[p.length - 2]);
-    return (kind || p[0]) + (name ? ": " + name : "");
+    return { kind: kind || p[0], name: name };
   }
   function sySays(v, other, whole) {
     if (v === undefined || v === null) return "deleted";
@@ -24461,7 +24482,7 @@ function __detabaseMain() {
     var o = other && typeof other === "object" ? other : {};
     var diff = Object.keys(Object.assign({}, o, v)).filter(function (k) { return !window.SYNC.same(v[k], o[k]); });
     var moved = (diff.indexOf("x") >= 0 || diff.indexOf("y") >= 0) && typeof v.x === "number";
-    var rest = diff.filter(function (k) { return k !== "x" && k !== "y" && !(k === "h" && v.ref); });
+    var rest = diff.filter(function (k) { return k !== "x" && k !== "y" && k !== "id" && !(k === "h" && v.ref); });
     return (moved ? ["position: " + Math.round(v.x) + ", " + Math.round(v.y)] : []).concat(rest.slice(0, 3).map(function (k) { return (SY_FIELD[k] || k) + ": " + short(v[k]); })).join(" · ") || "kept";
   }
   window.__detabaseAsk = function (doc, clashes) {
@@ -24481,7 +24502,9 @@ function __detabaseMain() {
       function all(side) { clashes.forEach(function (c) { picks[c.key] = side; }); show(); }
       clashes.forEach(function (c) {
         var row = document.createElement("div"); row.className = "sy-item";
-        var what = document.createElement("div"); what.className = "sy-what"; what.textContent = syWhat(doc, c);
+        var what = document.createElement("div"), w = syWhat(doc, c); what.className = "sy-what";
+        if (typeof w === "string") what.textContent = w;
+        else { var k = document.createElement("span"); k.textContent = w.kind; what.appendChild(k); if (w.name) what.appendChild(document.createTextNode(": " + w.name)); }
         row.appendChild(what);
         [["l", "This device", c.local, c.remote], ["r", "The other device", c.remote, c.local]].forEach(function (s) {
           var b = document.createElement("button"); b.type = "button"; b.className = "sy-pick";
