@@ -713,7 +713,14 @@
   /* ---- ETI main page: the vines, the search, the subjects ---- */
   .em-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .em-head h2 { margin: 0; }
-  #buildTag { font-size: .65rem; color: var(--text-muted); opacity: .6; margin-left: auto; }
+  /* five taps on the build tag open the speed log, so it takes a finger without looking like a button */
+  #buildTag { font-size: .65rem; color: var(--text-muted); opacity: .6; margin-left: auto; min-width: var(--tap); min-height: var(--tap); display: inline-flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+  .spd-scroll { overflow-x: auto; }
+  .spd-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+  .spd-table th, .spd-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: end; white-space: nowrap; }
+  .spd-table th:first-child, .spd-table td:first-child { text-align: start; white-space: normal; }
+  .spd-table td.ok { color: #16a34a; font-weight: 700; }
+  .spd-table td.slow { color: var(--danger); font-weight: 700; }
   .eti-main { margin-top: 10px; }
   .em-searchrow { display: flex; gap: 8px; align-items: center; }
   .em-search { flex: 1; min-width: 0; padding: 13px 15px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-primary); font-size: 1.02rem; }
@@ -3053,7 +3060,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B213</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B214</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -3235,6 +3242,56 @@
 </div>
 
 <script>
+// ---------------------------------------------------------------------------
+// SPEED LOG (B214) — times the key actions, for a device with no developer tools (five taps on the
+// build tag show it: openSpeedLog). In memory only, nothing is saved.
+//   SPD.mark(id, t0?)  an action begins (t0: when its input happened); it ends once the screen has been drawn
+//   SPD.frame(id)      one step of a gesture; at most one is timed per frame
+// A tap and a typed letter are timed from the moment the finger did it, so waiting behind other work counts.
+// ---------------------------------------------------------------------------
+window.SPD = (function () {
+  var ACTS = [
+    { id: "tap", name: "A tap responds", target: 100 },
+    { id: "letter", name: "A typed letter appears", target: 100 },
+    { id: "search", name: "Search results update (after the short pause)", target: 100 },
+    { id: "tree", name: "Switch to the tree", target: 300 },
+    { id: "eti", name: "Open ETI", target: 300 },
+    { id: "board", name: "Open the Clipboard", target: 300 },
+    { id: "move", name: "One step of a pan, zoom or drag", target: 34 }
+  ];
+  var KEEP = 80, log = {}, busy = {}, down = null;
+  function add(id, ms) {
+    var a = log[id] = log[id] || [];
+    a.push(ms); if (a.length > KEEP) a.shift();
+  }
+  function drawn(fn) { requestAnimationFrame(function () { setTimeout(fn, 0); }); }
+  function mark(id, t0) {
+    var now = performance.now(), t = t0 > 0 && t0 <= now && now - t0 < 60000 ? t0 : now;
+    drawn(function () { add(id, performance.now() - t); });
+  }
+  function frame(id) {
+    if (busy[id]) return;
+    busy[id] = 1;
+    var t = performance.now();
+    drawn(function () { busy[id] = 0; add(id, performance.now() - t); });
+  }
+  function rows() {
+    return ACTS.map(function (a) {
+      var s = (log[a.id] || []).slice().sort(function (x, y) { return x - y; }), l = log[a.id] || [];
+      return { name: a.name, target: a.target, n: l.length, last: l.length ? Math.round(l[l.length - 1]) : null,
+        mid: s.length ? Math.round(s[Math.floor((s.length - 1) / 2)]) : null, worst: s.length ? Math.round(s[s.length - 1]) : null };
+    });
+  }
+  document.addEventListener("pointerdown", function (e) { if (e.isPrimary) down = { x: e.clientX, y: e.clientY }; }, { capture: true, passive: true });
+  document.addEventListener("pointerup", function (e) {
+    var d = down; down = null;
+    if (d && e.isPrimary && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 12) mark("tap", e.timeStamp);
+  }, { capture: true, passive: true });
+  document.addEventListener("input", function (e) {
+    if (e.target.matches && e.target.matches(".em-search, .bd-q, .mp-search")) mark("letter", e.timeStamp);
+  }, { capture: true, passive: true });
+  return { mark: mark, frame: frame, rows: rows, clear: function () { log = {}; } };
+})();
 // Canvas-doc storage (boards, and later library elements / problem pages). localStorage is only
 // ~5MB on iOS, which whole handwritten classes fill quickly, so docs live in IndexedDB. Everything
 // is read into memory BEFORE the app boots so loadCanvas() can stay synchronous. Keys starting
@@ -8142,6 +8199,7 @@ function __detabaseMain() {
   window.addEventListener("resize", function () { if (sk) skRender(); });
 
   function selectTop(id, coathId, coathOpts) {
+    if (id === "eti") window.SPD.mark("eti");
     activeTop = id; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null;
     miningScreen = id === "eti"; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;           // ETI's main page is its landing page
     if (id === "notebook") { openNotebook(); return; }
@@ -18820,6 +18878,7 @@ function __detabaseMain() {
       if (!P[e.pointerId]) return;
       e.preventDefault();
       P[e.pointerId] = local(e);
+      window.SPD.frame("move");
       var k = ids(), sz = ctSize(T);
       if (pinch && k.length >= 2) {
         var a = P[k[0]], b = P[k[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
@@ -19016,7 +19075,7 @@ function __detabaseMain() {
     var st;
     input.addEventListener("input", function () {
       clearTimeout(st);
-      st = setTimeout(function () { mainQ = input.value; renderEtiMain(); }, 160);
+      st = setTimeout(function () { window.SPD.mark("search"); mainQ = input.value; renderEtiMain(); }, 160);
     });
     host.querySelector(".em-clear").addEventListener("click", function () { mainQ = ""; renderEtiMain(); });
     // the list and the tree mark each other (B183): the tree numbers the results as the list does; a
@@ -19978,6 +20037,7 @@ function __detabaseMain() {
     return groupHasBuiltins(activeGroup) ? "f:" + lastEtiFolder : null;
   }
   function openMiningScreen() {   // ETI's main page
+    window.SPD.mark("eti");
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = true; folderPage = null; scopeSum = null; sheetsLib = false; boardOpen = false; stratPage = null;
     applyView(); renderEtiTree();
   }
@@ -21399,6 +21459,7 @@ function __detabaseMain() {
   function emptyBoard() { return { blocks: [], groups: [], links: [] }; }
   function bdData() { var c = loadCanvas(BOARD_ID); if (!c.ps || !c.ps.blocks) c.ps = emptyBoard(); return c.ps; }
   function openBoard() {
+    window.SPD.mark("board");
     activeTop = "eti"; activeSubject = null; viewingProblem = false; activePsPage = null; activeSummary = null; activeSub = null; miningScreen = false; folderPage = null; scopeSum = null; sheetsLib = false; stratPage = null;
     boardOpen = true;
     if (typeof window.cloudOpenCanvas === "function") window.cloudOpenCanvas(BOARD_ID);
@@ -21614,6 +21675,7 @@ function __detabaseMain() {
         return;
       }
       if (!op) return;
+      window.SPD.frame("move");
       var p = pos(e), dx = p.x - op.p.x, dy = p.y - op.p.y;
       if (!op.moved && Math.hypot(dx, dy) < 6) return;
       op.moved = true;
@@ -21974,14 +22036,14 @@ function __detabaseMain() {
       side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-libtabs"></div><div class="bd-treebar"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
       var q = side.firstChild, qt = null;
       q.value = bd.q;
-      q.addEventListener("input", function () { clearTimeout(qt); qt = setTimeout(function () { bd.q = q.value; bdSide(); }, 160); });
+      q.addEventListener("input", function () { clearTimeout(qt); qt = setTimeout(function () { window.SPD.mark("search"); bd.q = q.value; bdSide(); }, 160); });
     }
     var split = bdSplit(), showTree = split || bd.libView === "tree", showList = split || bd.libView === "list";
     side.classList.toggle("split", split); side.classList.toggle("treeview", !split && bd.libView === "tree");
     var tabs = side.querySelector(".bd-libtabs");
     tabs.innerHTML = ""; tabs.hidden = split;
     [["list", "☰ List"], ["tree", "◎ Tree"]].forEach(function (v) {
-      tabs.appendChild(actBtn(v[1], "", function () { bd.libView = v[0]; bdSide(); }, "em-kind" + (bd.libView === v[0] ? " on" : "")));
+      tabs.appendChild(actBtn(v[1], "", function () { if (v[0] === "tree") window.SPD.mark("tree"); bd.libView = v[0]; bdSide(); }, "em-kind" + (bd.libView === v[0] ? " on" : "")));
     });
     var tbar = side.querySelector(".bd-treebar");
     tbar.innerHTML = ""; tbar.hidden = !showTree;
@@ -22905,6 +22967,48 @@ function __detabaseMain() {
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
   try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
   try { renderEtiTree(); renderHiddenBtn(); } catch (e) {}
+  // the speed log (SPD): five taps on the build tag within three seconds
+  var spdTaps = [];
+  function openSpeedLog() {
+    var box = ovOpen("Speed log", { wide: true }), b = box.body;
+    var size = [["Subjects", allSubjectKeys().length], ["Your cards", (store.cards || []).length], ["Methods", store.ps.pages.length],
+      ["Clipboard blocks", bdData().blocks.length], ["Page elements", document.getElementsByTagName("*").length]];
+    var head = $("buildTag").textContent + " · " + window.innerWidth + "×" + window.innerHeight + " · " + size.map(function (x) { return x[0] + " " + x[1]; }).join(" · ");
+    function draw() {
+      b.innerHTML = '<p class="lw-hint">Use the app, then come back here. Times are in milliseconds, since this page loaded.</p><p class="lw-hint spd-size"></p><div class="spd-scroll"><table class="spd-table"><thead><tr><th>Action</th><th>Target</th><th>Last</th><th>Middle</th><th>Slowest</th><th>Times</th></tr></thead><tbody></tbody></table></div>';
+      b.querySelector(".spd-size").textContent = head;
+      var tb = b.querySelector("tbody");
+      window.SPD.rows().forEach(function (r) {
+        var tr = document.createElement("tr");
+        [[r.name], [r.target], [r.last], [r.mid, r.mid === null ? "" : r.mid <= r.target ? "ok" : "slow"], [r.worst], [r.n]].forEach(function (c) {
+          var td = document.createElement("td");
+          td.textContent = c[0] === null ? "–" : c[0];
+          if (c[1]) td.className = c[1];
+          tr.appendChild(td);
+        });
+        tb.appendChild(tr);
+      });
+    }
+    function copyText() {
+      return head + "\n" + window.SPD.rows().map(function (r) {
+        return r.name + ": " + (r.n ? "middle " + r.mid + ", slowest " + r.worst + ", last " + r.last + " (target " + r.target + ", " + r.n + " times)" : "not used");
+      }).join("\n");
+    }
+    box.foot.appendChild(actBtn("Copy results", "copy them as text", function () {
+      var t = copyText();
+      function byHand() { askText("Speed results", "Select all and copy.", t, function () {}, { allowEmpty: true, okLabel: "Done" }); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { libToast("Copied"); }, byHand);
+      else byHand();
+    }, "btn-primary"));
+    box.foot.appendChild(actBtn("Start over", "forget the times so far", function () { window.SPD.clear(); draw(); }));
+    box.foot.appendChild(actBtn("Close", "", function () { box.close(true); }));
+    draw();
+  }
+  $("buildTag").addEventListener("click", function () {
+    var now = performance.now();
+    spdTaps = spdTaps.filter(function (t) { return now - t < 3000; }).concat([now]);
+    if (spdTaps.length >= 5) { spdTaps = []; openSpeedLog(); }
+  });
   if ($("psNewBtn")) $("psNewBtn").addEventListener("click", function () { newAssetHere("p", null); });
   // back from a method: its subject's Methods page
   if ($("psBack")) $("psBack").addEventListener("click", function () {
