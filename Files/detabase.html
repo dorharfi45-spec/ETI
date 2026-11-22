@@ -1021,8 +1021,8 @@
   .bd-pal { display: inline-flex; flex-wrap: wrap; gap: 6px; }
   .bd-sw { width: 34px; height: 34px; min-height: 34px !important; padding: 0; border: 2px solid var(--bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer; }
   .bd-sw.on { box-shadow: 0 0 0 3px var(--text-primary); }
-  .bd-main { flex: 1; min-height: 0; display: flex; }
-  .bd-side { width: 270px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid var(--border); background: var(--surface-1); }
+  .bd-main { position: relative; flex: 1; min-height: 0; display: flex; overflow: hidden; }
+  .bd-side { width: 270px; max-width: calc(100% - 56px); flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; overflow: hidden; border-inline-end: 1px solid var(--border); background: var(--surface-1); }
   .bd-side[hidden] { display: none; }
   .bd-q { width: 100%; min-height: var(--tap); padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg); color: var(--text-primary); font: inherit; }
   .bd-list { flex: 1; min-height: 0; overflow-y: auto; }
@@ -1363,8 +1363,29 @@
   .bd-tree[hidden], .bd-panes > .bd-list[hidden] { display: none; }
   .bd-side.treeview { width: min(620px, 64vw); }
   .bd-side.split { width: min(900px, 58vw); }
-  @media (max-width: 700px) { .bd-side.treeview { width: 100%; } }
   .bd-side.split .bd-panes > .bd-list { flex: 0 0 300px; }
+  /* narrow screens: the tree takes all but the handle's room */
+  @media (max-width: 700px) { .bd-side.treeview { width: 100%; } }
+  /* the library panel slides (B221): one handle — a grip, the "Library" tab, or the strip */
+  .bd-main.full > .bd-side { flex: 1; width: auto; max-width: none; }
+  .bd-main.full > .bd-stage { display: none; }
+  .bd-main.sliding > .bd-side { max-width: none; padding-inline: min(10px, 2%); }
+  .bd-side.snap { transition: width .18s ease-out; }
+  .bd-edge { position: relative; z-index: 5; flex: 0 0 0; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: col-resize; }
+  .bd-edge:focus { outline: none; }
+  .bd-eknob { position: absolute; top: 0; bottom: 0; inset-inline-start: -5px; width: 30px; }
+  .bd-eknob i { position: absolute; top: 50%; inset-inline-start: 5px; width: 18px; height: 76px; transform: translateY(-50%); border: 1px solid var(--border-strong); border-inline-start: 0; border-start-end-radius: 10px; border-end-end-radius: 10px; background: var(--surface-1); }
+  .bd-eknob i::after { content: ""; position: absolute; top: 50%; left: 50%; width: 4px; height: 36px; transform: translate(-50%, -50%); border-radius: 2px; background: var(--text-muted); }
+  .bd-edge[data-press] .bd-eknob i, .bd-edge:focus-visible .bd-eknob i, .bd-edge.will-snap .bd-eknob i { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 22%, var(--surface-1)); }
+  .bd-edge.will-snap .bd-eknob i::after { background: var(--accent); }
+  .bd-edge.m-hide, .bd-edge.m-full { cursor: pointer; }
+  .bd-etab { position: absolute; top: 50%; inset-inline-start: 0; width: var(--tap); height: 132px; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border-strong)); border-inline-start: 0; border-start-end-radius: var(--r-md); border-end-end-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 14%, var(--surface-1)); color: var(--text-primary); box-shadow: var(--shadow); }
+  .bd-edge.m-full { flex-basis: 48px; }
+  .bd-estrip { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border-inline-start: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border-strong)); background: color-mix(in srgb, var(--accent) 14%, var(--surface-1)); color: var(--text-primary); }
+  .bd-etab i, .bd-estrip i { font-style: normal; font-size: 1.15rem; font-weight: 700; color: var(--accent); }
+  .bd-etab b, .bd-estrip b { writing-mode: vertical-rl; font-size: .84rem; font-weight: 700; white-space: nowrap; }
+  .bd-edge.m-hide[data-press] .bd-etab, .bd-edge.m-full[data-press] .bd-estrip, .bd-edge:focus-visible .bd-etab, .bd-edge:focus-visible .bd-estrip { background: color-mix(in srgb, var(--accent) 28%, var(--surface-1)); }
+  @media (prefers-reduced-motion: reduce) { .bd-side.snap { transition: none; } }
   .bd-tree .ct-views { right: 60px; }
   .bd-tree .ct-hint { display: none; }
   /* the Filters button and window (B220) */
@@ -3101,7 +3122,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B220</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B221</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -22401,9 +22422,9 @@ function __detabaseMain() {
   // made once and kept: leaving hides it, coming back updates what changed
   function renderBoard() {
     var host = $("boardPane"); if (!host) return;
-    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, iv: {}, nat: {}, focus: null, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700 };
+    if (!bd) bd = { undo: [], redo: [], view: { x: 40, y: 20, k: 1 }, sel: {}, color: BD_COLORS[0], cache: {}, iv: {}, nat: {}, focus: null, open: {}, multi: false, linking: null, q: "", side: window.innerWidth > 700, full: false, w: bdWidthLoad() };
     if (bd.ctx && bd.ctx.world.isConnected) { bdSide(); bdRedraw(); return; }
-    host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel" hidden></div><div class="bd-main"><div class="bd-side"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
+    host.innerHTML = '<div class="bd-bar"></div><div class="bd-sel" hidden></div><div class="bd-main"><div class="bd-side"></div><div class="bd-edge" tabindex="0"></div><div class="bd-stage"><div class="bd-world"></div><p class="bd-hint muted">Drag anything from the left onto the board, or tap it.</p></div></div>';
     var ctx = bd.ctx = {
       stage: host.querySelector(".bd-stage"), world: host.querySelector(".bd-world"), ps: bdData, ro: false, view: bd.view, cache: bd.cache, sel: bd.sel, iv: bd.iv, nat: bd.nat, focus: bd.focus,
       linking: null,
@@ -22411,6 +22432,7 @@ function __detabaseMain() {
       onTap: bdTap, onLine: bdLineMenu, afterEdit: bdAfterEdit
     };
     bdGestures(ctx);
+    bdEdgeWire(host.querySelector(".bd-main"));
     dndInto(ctx.stage, { accepts: ["bdasset"], onDrop: function (drag) {
       var r = ctx.stage.getBoundingClientRect(), v = ctx.view;
       bdAdd([bdRefOf(drag.id)], { x: (drag.x - r.left - v.x) / v.k, y: (drag.y - r.top - v.y) / v.k });
@@ -22491,7 +22513,10 @@ function __detabaseMain() {
     ps.blocks.push(b);
     return b;
   }
-  function bdScreenCentre() { var c = bd.ctx, v = c.view; return { x: (c.stage.clientWidth / 2 - v.x) / v.k, y: (c.stage.clientHeight / 2 - v.y) / v.k }; }
+  function bdScreenCentre() {
+    var c = bd.ctx, v = c.view, was = bd.stageSize || [window.innerWidth * 0.6, window.innerHeight * 0.8];
+    return { x: ((c.stage.clientWidth || was[0]) / 2 - v.x) / v.k, y: ((c.stage.clientHeight || was[1]) / 2 - v.y) / v.k };
+  }
   function bdOverlap(a, b, m) { return a.x < b.x + b.w + m && b.x < a.x + a.w + m && a.y < b.y + b.h + m && b.y < a.y + a.h + m; }
   // the free spot nearest `want` (a top-left) for a box w × h
   function bdFreeSpot(obs, want, w, h) {
@@ -22515,7 +22540,7 @@ function __detabaseMain() {
   // bring a world box into view (same zoom unless it doesn't fit)
   function bdShow(r) {
     var c = bd.ctx, v = c.view, sw = c.stage.clientWidth, sh = c.stage.clientHeight;
-    if (!sw || !sh) return;
+    if (!sw || !sh) { bd.showNext = r; return; }      // out of sight (the library fills the page)
     var sx = r.x * v.k + v.x, sy = r.y * v.k + v.y;
     if (sx >= 0 && sy >= 0 && sx + r.w * v.k <= sw && sy + r.h * v.k <= sh) return;
     v.k = Math.max(0.12, Math.min(v.k, (sw - 40) / r.w, (sh - 40) / r.h));
@@ -22558,7 +22583,7 @@ function __detabaseMain() {
     bl.forEach(function (b) { b.x += dx; b.y += dy; });
     if (g) { g.x += dx; g.y += dy; }
     bdSave(); bdRedraw(); bdShow(spot);
-    if (opts.toast) libToast("Added " + bl.length + (bl.length === 1 ? " item" : " items") + " to the Clipboard", { label: "Undo", run: function () { bdUndoRedo(bd.undo, bd.redo); } });
+    if (opts.toast || bd.full) libToast("Added " + bl.length + (bl.length === 1 ? " item" : " items") + " to the Clipboard", { label: "Undo", run: function () { bdUndoRedo(bd.undo, bd.redo); } });
     return { blocks: bl, group: g };
   }
   function bdTap(node) {
@@ -22709,18 +22734,172 @@ function __detabaseMain() {
     if (fly && T.board) { var b = ctBoxOfKeys(T, Object.keys(T.board)); if (b) ctFlyBox(T, b, 3); }
   }
   function bdTreeShown() { return !!(bd && bd.side && (bdSplit() || bd.libView === "tree")); }
-  // the Library button: with blocks selected it opens the tree with them marked; otherwise it shows / hides the panel
+  // the Library button: with blocks selected it opens the tree with them marked; otherwise it shows the panel
+  // (at its last width) / hides it
   function bdLibButton() {
     if (Object.keys(bd.sel).length && !(bd.side && bdTreeShown() && !bd.showAll)) {
       bd.side = true; bd.libView = "tree"; bd.showAll = false; bd.flyBoard = true;
-    } else bd.side = !bd.side;
-    bdBar(); bdSide();
+    } else { bd.side = !bd.side; bd.full = false; }
+    bdBar(); bdSide(); bdShowLater();
   }
-  var BD_SPLIT = 1400;
-  function bdSplit() { return window.innerWidth >= BD_SPLIT; }
+  // ---- the library panel slides (B221) ----
+  // bd.side = open, bd.w = the width it was dragged to (per device: localStorage "detabase.clip.width"; none =
+  // each view's own width), bd.full = it fills the page. One handle (.bd-edge) is all three controls: the
+  // grip between library and board, the "Library" tab at the edge when it is hidden, and the "Slide for
+  // Clipboard" strip when it is full. It is an element of its own, so dragging it never moves the board.
+  var BD_SPLIT = 1400, BD_SPLIT_W = 760, BD_MINW = 240, BD_SNAP = 150, BD_PULL = 60, BD_STRIP = 48, BD_WKEY = "detabase.clip.width";
+  function bdWidthLoad() {
+    try { var w = +localStorage.getItem(BD_WKEY); return w >= BD_MINW && w < 6000 ? Math.round(w) : 0; } catch (e) { return 0; }
+  }
+  // List and Tree side by side: on a wide screen, or whenever the panel was made wide enough
+  function bdSplit() {
+    if (bd && bd.full) return window.innerWidth - BD_STRIP >= BD_SPLIT_W;
+    if (bd && bd.w) return Math.min(bd.w, window.innerWidth - 56) >= BD_SPLIT_W;
+    return window.innerWidth >= BD_SPLIT;
+  }
+  function bdPanelMode() { return !bd.side ? "hide" : bd.full ? "full" : "open"; }
+  function bdPanelShow(side) {
+    if (bd.sliding) return;
+    var main = side.parentNode, edge = main.querySelector(".bd-edge"), mode = bdPanelMode();
+    if (mode === "full" && !main.classList.contains("full")) {
+      var st = bd.ctx.stage;
+      if (st.clientWidth) bd.stageSize = [st.clientWidth, st.clientHeight];     // where "the middle of the screen" is meanwhile
+    }
+    side.hidden = mode === "hide";
+    main.classList.toggle("full", mode === "full");
+    side.style.width = mode === "open" && bd.w ? bd.w + "px" : "";
+    bdEdgeShow(edge, mode);
+  }
+  function bdEdgeShow(edge, mode) {
+    if (edge.__mode === mode) return;
+    edge.__mode = mode;
+    edge.className = "bd-edge m-" + mode;
+    var rtl = document.documentElement.dir === "rtl", out = rtl ? "←" : "→", back = rtl ? "→" : "←";     // which way to slide
+    edge.innerHTML = mode === "open" ? '<span class="bd-eknob"><i></i></span>'
+      : mode === "hide" ? '<span class="bd-etab"><i>' + out + '</i><b>Library</b></span>'
+      : '<span class="bd-estrip"><i>' + back + '</i><b>Slide for Clipboard</b><i>' + back + '</i></span>';
+    var tip = mode === "open" ? "Drag to resize; slide to either edge to hide or fill" : mode === "hide" ? "Tap or slide to open the library" : "Tap or slide to bring the Clipboard back";
+    edge.title = L(tip);
+    edge.setAttribute("aria-label", L(tip));
+    edge.setAttribute("role", mode === "open" ? "separator" : "button");
+  }
+  // what was added while the board was out of sight is brought into view when it is back
+  function bdShowLater() {
+    var r = bd.showNext;
+    if (!r || bd.full) return;
+    bd.showNext = null;
+    bdShow(r);
+  }
+  function bdPanelSet(mode) {
+    bd.side = mode !== "hide"; bd.full = mode === "full";
+    bdBar(); bdSide(); bdShowLater();
+  }
+  function bdEdgeWire(main) {
+    var side = main.querySelector(".bd-side"), edge = main.querySelector(".bd-edge"), op = null, queued = false;
+    function saveW() { try { localStorage.setItem(BD_WKEY, String(bd.w)); } catch (e) {} }
+    // the width the panel settles at when it opens
+    function openW(total) {
+      var w = bd.w;
+      if (!w) {                                          // never dragged: the view's own width
+        var keep = side.style.width, hid = side.hidden, full = main.classList.contains("full");
+        side.style.width = ""; side.hidden = false; main.classList.remove("full");
+        w = side.getBoundingClientRect().width;
+        side.style.width = keep; side.hidden = hid; main.classList.toggle("full", full);
+      }
+      return Math.min(w, total - 56);
+    }
+    function slideTo(mode, from, total) {
+      var to = mode === "hide" ? 0 : mode === "full" ? total - BD_STRIP : openW(total);
+      var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (mode !== "hide" && !bd.side) { bd.side = true; bdSide(); }       // there is something to slide in
+      bdEdgeShow(edge, "open");
+      function done() {
+        side.classList.remove("snap"); main.classList.remove("sliding");
+        bd.sliding = false;
+        bdPanelSet(mode);
+      }
+      bd.sliding = true;
+      main.classList.add("sliding"); main.classList.remove("full");
+      side.hidden = false;
+      side.style.width = from + "px";
+      if (still || Math.abs(to - from) < 2) { done(); return; }
+      side.getBoundingClientRect();                      // start the animation from where it is
+      side.classList.add("snap");
+      side.style.width = to + "px";
+      setTimeout(done, 190);
+    }
+    function nowW(total) {
+      var m = bdPanelMode();
+      return m === "hide" ? 0 : m === "full" ? total - BD_STRIP : side.getBoundingClientRect().width;
+    }
+    edge.addEventListener("pointerdown", function (e) {
+      if (op || bd.sliding || (e.pointerType === "mouse" && e.button !== 0)) return;
+      e.preventDefault();
+      try { edge.setPointerCapture(e.pointerId); } catch (x) {}
+      var total = main.getBoundingClientRect().width, w = nowW(total);
+      op = { id: e.pointerId, x: e.clientX, from: bdPanelMode(), w0: w, w: w, total: total, slop: e.pointerType === "mouse" ? 3 : 8, dir: document.documentElement.dir === "rtl" ? -1 : 1 };
+      edge.setAttribute("data-press", "1");
+    });
+    edge.addEventListener("pointermove", function (e) {
+      if (!op || e.pointerId !== op.id) return;
+      var dx = (e.clientX - op.x) * op.dir;
+      if (!op.moved) {
+        if (Math.abs(dx) < op.slop) return;
+        op.moved = true;
+        if (!bd.side) { bd.side = true; bdSide(); }      // sliding it back: there is something to see
+        bd.sliding = true;
+        main.classList.add("sliding"); main.classList.remove("full");
+        bdEdgeShow(edge, "open");
+      }
+      window.SPD.frame("move");
+      op.w = Math.max(0, Math.min(op.total, op.w0 + dx));
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () {
+        queued = false;
+        if (!op) return;
+        side.style.width = op.w + "px";
+        edge.classList.toggle("will-snap", op.w < BD_SNAP || op.w > op.total - BD_SNAP);
+      });
+    });
+    function end(e) {
+      if (!op || e.pointerId !== op.id) return;
+      var o = op; op = null;
+      edge.removeAttribute("data-press"); edge.classList.remove("will-snap");
+      if (!o.moved) {                                    // a tap: the tab opens the library, the strip brings the board back
+        if (e.type === "pointerup" && o.from !== "open") slideTo("open", o.w0, o.total);
+        return;
+      }
+      var mode = "open", w = o.w, snap = Math.min(BD_SNAP, o.total * 0.2);
+      if (o.from === "hide" && w < BD_PULL) mode = "hide";
+      else if (o.from === "full" && w > o.total - BD_STRIP - BD_PULL) mode = "full";
+      else if (o.from !== "hide" && w < snap) mode = "hide";
+      else if (o.from !== "full" && w > o.total - snap) mode = "full";
+      else {
+        // a short pull on the tab or the strip opens at the last width; a longer one where it was let go
+        var keep = (o.from === "hide" && w < BD_MINW) || (o.from === "full" && w > o.total - snap);
+        if (!keep) { bd.w = Math.round(Math.max(BD_MINW, Math.min(o.total - 56, w))); saveW(); }
+      }
+      slideTo(mode, w, o.total);
+    }
+    edge.addEventListener("pointerup", end);
+    edge.addEventListener("pointercancel", end);
+    edge.addEventListener("lostpointercapture", end);
+    edge.addEventListener("keydown", function (e) {
+      var m = bdPanelMode();
+      if (m !== "open" && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); bdPanelSet("open"); return; }
+      if (m !== "open" || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
+      e.preventDefault();
+      var total = main.getBoundingClientRect().width, d = (e.key === "ArrowRight" ? 24 : -24) * (document.documentElement.dir === "rtl" ? -1 : 1);
+      bd.w = Math.round(Math.max(BD_MINW, Math.min(total - 56, nowW(total) + d))); saveW();
+      bdSide();
+    });
+    // a drop on the strip still lands on the board
+    dndInto(edge, { accepts: ["bdasset"], canDrop: function () { return !!bd.full; }, onDrop: function (drag) { bdAdd([bdRefOf(drag.id)]); } });
+  }
   function bdSide(fresh) {                    // fresh: from typing — says whether that is still the newest search
     var side = $("boardPane").querySelector(".bd-side");
-    side.hidden = !bd.side;
+    bdPanelShow(side);
     if (!bd.side) return;
     bd.libView = bd.libView || "list";
     if (!side.firstChild) {
