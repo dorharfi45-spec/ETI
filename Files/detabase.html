@@ -925,6 +925,8 @@
   /* the shared search view (SEARCH, B181) */
   .sr-chips { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 6px; }
   .sr-chiprow { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+  .sr-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; font-size: .8rem; }
+  .sr-more .btn-quiet { min-height: var(--tap); }
   .sr-chiplab { min-width: 54px; font-size: .72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; }
   .sr-chiprow .em-kind { min-height: 34px; padding: 0 10px; }
   .sr-sec { margin-top: 6px; }
@@ -3064,7 +3066,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B215</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B216</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -5267,12 +5269,14 @@ function __detabaseMain() {
     if (store.deadCanvases.indexOf(id) < 0) store.deadCanvases.push(id);
     delete canvasCache[id];
     window.DBX.del(id);
+    libDocTouched(id);
     if (typeof window.cloudDeleteCanvas === "function") window.cloudDeleteCanvas(id);
   }
   var canvasSaveTimers = {};
   function saveCanvas(id) {
     var c = canvasCache[id]; if (!c) return;
     c.ts = Date.now();
+    libDocTouched(id);
     putCanvasLocal(id, c);
     if (typeof syncFileAutoSave === "function") syncFileAutoSave();
     if (canvasSaveTimers[id]) clearTimeout(canvasSaveTimers[id]);
@@ -5315,6 +5319,7 @@ function __detabaseMain() {
   }
   setInterval(function () { for (var k in cloudPending) { flushCloudPending(); return; } }, 800);
   window.onCloudCanvas = function (id) {
+    libDocTouched(id);
     if (activeProblem === id && boardBusy()) { cloudPending[id] = 1; return; }
     var navKeep = canvasCache[id] && canvasCache[id].nav;
     delete canvasCache[id];
@@ -5352,6 +5357,7 @@ function __detabaseMain() {
   }
 
   function saveStore() {
+    srchWarm(1200);
     store.savedAt = Date.now();
     try {
       mainWrite(JSON.stringify(mainSnapshot())).then(function () {
@@ -10950,9 +10956,12 @@ function __detabaseMain() {
   var searchIndex = [];
   function cleanText(el) {
     if (!el) return "";
-    var c = el.cloneNode(true);
-    c.querySelectorAll(".num, .tnum, .stag, .pin-btn, .del-x, .lib-dots, .used-badge").forEach(function (x) { x.remove(); });
-    return c.textContent.replace(/\s+/g, " ").trim();
+    var DROP = ".num, .tnum, .stag, .pin-btn, .del-x, .lib-dots, .used-badge", src = el;
+    if (el.querySelector(DROP)) {                       // copied only when something has to come out
+      src = el.cloneNode(true);
+      src.querySelectorAll(DROP).forEach(function (x) { x.remove(); });
+    }
+    return src.textContent.replace(/\s+/g, " ").trim();
   }
   function buildIndex() {
     biEnsure();
@@ -12598,7 +12607,16 @@ function __detabaseMain() {
     store.schema = 14;
     try { mainWrite(JSON.stringify(mainSnapshot())); } catch (e) {}
   })();
-  function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
+  var LF;                                    // the tables of the libFast that is running (SEARCH, "the library, read fast")
+  function byId(list, id) {
+    if (LF && list.length > 16) {
+      var m = LF.byId.get(list);
+      if (!m) { m = new Map(); for (var j = list.length - 1; j >= 0; j--) m.set(list[j].id, list[j]); LF.byId.set(list, m); }
+      return m.get(id) || null;
+    }
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }
   function btnLabel(b) {   // "2.2 Unit circle"
     if (!b) return "";
     var n = b.querySelector(".tnum"), c = b.cloneNode(true);
@@ -12609,7 +12627,7 @@ function __detabaseMain() {
   function editName(ref) { var e = store.etiEdits || {}; return (e.names || {})[ref.lvl + "|" + ref.id] || null; }
   function isHiddenRef(ref) { var e = store.etiEdits || {}; return !!(e.hidden || {})[ref.lvl + "|" + ref.id]; }
   function subjectName(key) {
-    if (key.slice(0, 2) === "f:") return editName({ lvl: "s", id: key }) || folderButtonLabel(key.slice(2)) || key.slice(2);
+    if (key.slice(0, 2) === "f:") return libMemo("subject", key, function () { return editName({ lvl: "s", id: key }) || folderButtonLabel(key.slice(2)) || key.slice(2); });
     var s = byId(store.subjects, key.slice(2)); return s ? s.name : "(deleted subject)";
   }
   function allSubjectKeys() {   // every ETI subject, in sidebar order (group by group)
@@ -12674,21 +12692,34 @@ function __detabaseMain() {
     var lvl = pref && { s: "t", t: "c", c: "e" }[pref.lvl];
     if (!lvl) return [];
     biEnsure(); libEnsure();
-    var out = [];
+    var all = LF ? LF.kids[lvl] || (LF.kids[lvl] = libKidsBy(lvl)) : libKidsBy(lvl, pref.id);
+    return (all.get(pref.id) || []).map(function (r) { return { lvl: r.lvl, id: r.id }; });
+  }
+  // the children of every parent at one level (only: of that one), in one pass → Map parent id → [ref]
+  function libKidsBy(lvl, only) {
+    var by = new Map();
+    function put(p, ref, o) {
+      if (only !== undefined && p !== only) return;
+      if (!by.has(p)) by.set(p, []);
+      by.get(p).push({ ref: ref, o: o });
+    }
     if (lvl !== "e") {
-      var bi = lvl === "t" ? BI.tabs : BI.cards;
+      var bi = lvl === "t" ? BI.tabs : BI.cards, hidden = (store.etiEdits || {}).hidden || {}, place = store.place || {};
       Object.keys(bi).forEach(function (k) {
-        var ref = { lvl: lvl, id: bi[k].id };
-        if (isHiddenRef(ref)) return;
-        var pl = libPlace(ref);
-        if (pl.p === pref.id) out.push({ ref: ref, o: pl.o });
+        var b = bi[k], key = lvl + "|" + b.id;
+        if (hidden[key]) return;
+        var s = place[key];
+        put(s ? s.p : b.home, { lvl: lvl, id: b.id }, s ? s.o : b.i);
       });
     }
     (lvl === "t" ? store.tabs : lvl === "c" ? store.cards : store.elements).forEach(function (x, i) {
-      if (x[PARENT_FIELD[lvl]] === pref.id) out.push({ ref: { lvl: lvl, id: x.id }, o: x.order == null ? 1e4 + i : x.order });
+      put(x[PARENT_FIELD[lvl]], { lvl: lvl, id: x.id }, x.order == null ? 1e4 + i : x.order);
     });
-    out.sort(function (a, b) { return a.o - b.o; });
-    return out.map(function (x) { return x.ref; });
+    by.forEach(function (list, p) {
+      list.sort(function (a, b) { return a.o - b.o; });
+      by.set(p, list.map(function (x) { return x.ref; }));
+    });
+    return by;
   }
   // put a tab / card / element at `index` among the children of `parentId` (the end when index is
   // null); both the old and the new parent are renumbered 0, 1, 2…
@@ -12780,19 +12811,21 @@ function __detabaseMain() {
     return out;
   }
   function tabLabel(tabId) {
-    if (tabId.slice(0, 2) === "b:") {
-      var tb = document.querySelector('.tabbar[data-folder] button[data-target="' + tabId.slice(2) + '"]');
+    if (tabId.slice(0, 2) === "b:") return libMemo("tab", tabId, function () {
+      var known = BI && BI.tabs[tabId.slice(2)], tb = known ? known.btn : document.querySelector('.tabbar[data-folder] button[data-target="' + tabId.slice(2) + '"]');
       var tnum = tb && tb.querySelector(".tnum");
       var ov = editName({ lvl: "t", id: tabId });
       return ov ? (tnum ? tnum.textContent.trim() + " " : "") + ov : ((tb && tb.dataset.orig) ? (tnum ? tnum.textContent.trim() + " " : "") + tb.dataset.orig : btnLabel(tb) || tabId);
-    }
+    });
     var t = byId(store.tabs, tabId); return t ? t.name : "(deleted concept)";
   }
   function cardLabel(cardId) {
     var c = byId(store.cards, cardId); if (c) return c.name;
     var ov = editName({ lvl: "c", id: cardId }); if (ov) return ov;
-    var n = document.querySelector('[data-el="' + cardId + '"]');
-    return n ? (n.dataset.origTitle || builtinElTitle(n)) : "(deleted card)";
+    return libMemo("card", cardId, function () {
+      var known = BI && BI.cards[cardId], n = known && known.nodes[0].isConnected ? known.nodes[0] : document.querySelector('[data-el="' + cardId + '"]');
+      return n ? (n.dataset.origTitle || builtinElTitle(n)) : "(deleted card)";
+    });
   }
   function refName(ref) {
     if (!ref) return "";
@@ -12846,6 +12879,13 @@ function __detabaseMain() {
   function psPartById(partId) {
     libEnsure();
     var pages = store.ps.pages;
+    if (LF) {
+      if (!LF.parts) {
+        LF.parts = new Map();
+        pages.forEach(function (pg) { psBody(pg.id).parts.forEach(function (part, j) { if (!LF.parts.has(part.id)) LF.parts.set(part.id, { page: pg, part: part, index: j }); }); });
+      }
+      return LF.parts.get(partId) || null;
+    }
     for (var i = 0; i < pages.length; i++) {
       var ps = psBody(pages[i].id).parts;
       for (var j = 0; j < ps.length; j++) if (ps[j].id === partId) return { page: pages[i], part: ps[j], index: j };
@@ -17566,7 +17606,7 @@ function __detabaseMain() {
     if (ref.lvl === "p") return !!psPageById(ref.id);
     if (ref.lvl === "st") return !!psPartById(ref.id);
     if (ref.lvl === "e") return !!byId(store.elements, ref.id);
-    if (ref.lvl === "c") return !!byId(store.cards, ref.id) || !!document.querySelector('[data-el="' + ref.id + '"]');
+    if (ref.lvl === "c") return !!byId(store.cards, ref.id) || !!(BI && BI.cards[ref.id]) || libMemo("dom", ref.id, function () { return !!document.querySelector('[data-el="' + ref.id + '"]'); });
     if (ref.lvl === "t") return ref.id.slice(0, 2) === "b:" ? !!$("pane-" + ref.id.slice(2)) : !!byId(store.tabs, ref.id);
     return ref.id.slice(0, 2) === "f:" ? builtinFolderIds().indexOf(ref.id.slice(2)) >= 0 : !!byId(store.subjects, ref.id.slice(2));
   }
@@ -17622,6 +17662,41 @@ function __detabaseMain() {
   // never shown as chips; edited in the asset window. A built-in's starting keywords: data-kw on its card
   // (comma-separated) / "kw" on a built-in method; the owner's list replaces them once saved.
   // ============================================================
+  // ---- the library, read fast (B216) ----
+  // libFast(fn): fn only reads the library. While it runs, byId, libKids, refExists, psPartById and the names
+  // answer from tables filled on first use (LF), which are thrown away when it returns, so they can't go stale.
+  // libRev(): a number that changes when anything a derived picture of the library depends on changed: every
+  // key of the store but those in LIB_NOT, the course switch, and the docs of elements and methods
+  // (libDocTouched). assetIndex keeps what it built for as long as that number stands.
+  var LIB_NOT = { ui: 1, planner: 1, savedAt: 1, coath: 1, notes: 1, pdfs: 1, canvases: 1 };
+  var libSeen = {}, libN = 0, libDocs = 0, libDocsSeen = 0;
+  function libFast(fn) {
+    if (LF) return fn();
+    LF = { byId: new Map(), kids: {}, memo: new Map(), parts: null };
+    try { return fn(); } finally { LF = null; }
+  }
+  function libMemo(kind, id, make) {
+    if (!LF) return make();
+    var k = kind + "|" + id;
+    if (!LF.memo.has(k)) LF.memo.set(k, make());
+    return LF.memo.get(k);
+  }
+  function libRev() {
+    var changed = libDocs !== libDocsSeen, keys = Object.keys(store).concat("\u0001course");
+    Object.keys(libSeen).forEach(function (k) { if (keys.indexOf(k) < 0) keys.push(k); });   // a key that was deleted
+    keys.forEach(function (k) {
+      if (LIB_NOT[k]) return;
+      var s = k === "\u0001course" ? String((store.ui || {}).course || "") : JSON.stringify(store[k]);
+      if (libSeen[k] !== s) { libSeen[k] = s; changed = true; }
+    });
+    libDocsSeen = libDocs;
+    if (changed) libN++;
+    return libN;
+  }
+  function libDocTouched(id) {
+    if (id === BOARD_ID || /^(sg_|sk_)/.test(id)) return;   // a layout or a sketch: nothing searched
+    libDocs++;
+  }
   var SRCH_KIND = { s: "Subject", t: "Concept", c: "Card", e: "Element", p: "Method", st: "Method part", sm: "Study sheet", sg: "Strategy" };
   var SRCH_KINDS = ["s", "t", "c", "p", "st", "sm", "sg"];
   function kwMap() { if (!store.keywords) store.keywords = {}; return store.keywords; }
@@ -17638,10 +17713,13 @@ function __detabaseMain() {
   }
   // a built-in card's words never change: read once
   var srchBiText = {};
+  function srchBiWords(id) {
+    if (srchBiText[id] == null) srchBiText[id] = biEnsure().cards[id].nodes.map(cleanText).join(" ");
+    return srchBiText[id];
+  }
   function srchCardText(id) {
     var t = cardTagsOf(id).join(" ") + " " + libElements(id).map(function (e) { return e.name + " " + elWords(e.id); }).join(" ");
-    var c = BI.cards[id];
-    if (c) { if (srchBiText[id] == null) srchBiText[id] = c.nodes.map(cleanText).join(" "); t += " " + srchBiText[id]; }
+    if (BI.cards[id]) t += " " + srchBiWords(id);
     return t;
   }
   // where an asset sits, as names from the outside in
@@ -17677,104 +17755,203 @@ function __detabaseMain() {
     var alt = (store.altNames || {})[refKey(ref)]; if (alt) out.push(alt);
     return out;
   }
+  // the index: built once, then again only when the library changed (libRev). A caller gets the kinds it asks for.
+  var srchIx = null;
   function assetIndex(lvls) {
+    var rev = libRev();
+    if (!srchIx || srchIx.rev !== rev) srchIx = { rev: rev, all: libFast(srchBuild), by: {} };
+    var kinds = lvls || SRCH_KINDS, k = kinds.join();
+    return srchIx.by[k] || (srchIx.by[k] = srchIx.all.filter(function (en) { return kinds.indexOf(en.ref.lvl) >= 0; }));
+  }
+  // lower case, Hebrew without its vowel points, one kind of quote mark
+  function srchNorm(s) {
+    var t = String(s == null ? "" : s).toLowerCase();
+    if (/^[\x00-\x7f]*$/.test(t)) return t;
+    return t.replace(/[֑-ׇֽֿׁׂ]/g, "").replace(/[״“”]/g, '"').replace(/[׳‘’]/g, "'");
+  }
+  function srchBuild() {
     libEnsure();
-    var want = {}, out = [];
-    (lvls || SRCH_KINDS).forEach(function (l) { want[l] = 1; });
+    var out = [];
     function add(ref, name, text, tags) {
-      var subj = assetSubject(ref), lib = { s: 1, t: 1, c: 1, e: 1, p: 1, st: 1 }[ref.lvl];
-      out.push({
-        ref: ref, name: L(name || "(untitled)"), crumbs: assetCrumbs(ref).map(function (c) { return L(c); }), subj: subj, grp: subj ? keyGroup(subj) || "base" : "",
-        tags: (tags || []).map(function (t) { return String(t).trim(); }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }), alt: srchOtherNames(ref, name).map(function (x) { return x.toLowerCase(); }), kw: kwOf(ref), text: (L(text || "") + " " + (text || "")).toLowerCase(), course: assetCourseName(ref),
+      var subj = assetSubject(ref), lib = { s: 1, t: 1, c: 1, e: 1, p: 1, st: 1 }[ref.lvl], shown = L(name || "(untitled)"), words = text || "", there = L(words);
+      var en = {
+        ref: ref, name: shown, crumbs: assetCrumbs(ref).map(function (c) { return L(c); }), subj: subj, grp: subj ? libMemo("group", subj, function () { return keyGroup(subj) || "base"; }) : "",
+        tags: (tags || []).map(function (t) { return String(t).trim(); }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }), alt: srchOtherNames(ref, name).map(srchNorm), kw: kwOf(ref),
+        text: srchNorm(there === words ? words : there + " " + words), course: assetCourseName(ref),
         on: !lib || courseRefOn(ref.lvl === "st" ? { lvl: "p", id: psPartById(ref.id).page.id } : ref)
-      });
+      };
+      // what matching needs, worked out here once
+      en.nName = srchNorm(shown); en.nWords = srchWords(en.nName);
+      en.nKw = en.kw.map(srchNorm); en.nTags = en.tags.map(srchNorm); en.nLoc = srchNorm(en.crumbs.join(" › "));
+      en.key = refKey(ref); en.tk = ctKeyOf(ref);
+      out.push(en);
     }
-    materialIndex().forEach(function (en) {
-      if (!want[en.ref.lvl]) return;
-      if (en.ref.lvl === "c") add(en.ref, en.name, srchCardText(en.ref.id), cardTagsOf(en.ref.id));
-      else if (en.ref.lvl === "e") add(en.ref, en.name, elWords(en.ref.id));
-      else add(en.ref, en.name, "");
+    materialIndex().forEach(function (m) {
+      if (m.ref.lvl === "c") add(m.ref, m.name, srchCardText(m.ref.id), cardTagsOf(m.ref.id));
+      else if (m.ref.lvl === "e") add(m.ref, m.name, elWords(m.ref.id));
+      else add(m.ref, m.name, "");
     });
     store.ps.pages.forEach(function (pg) {
       var kind = pg.kind && byId(methodKinds(), pg.kind);
-      if (want.p) add({ lvl: "p", id: pg.id }, pg.name, [pg.description || "", kind ? kind.name : "", vineOf(pg.id).map(refName).join(" ")].join(" "), (pg.tags || []).filter(Boolean));
-      if (want.st && psDocPresent(pg.id)) psParts(pg.id).forEach(function (p) {
+      add({ lvl: "p", id: pg.id }, pg.name, [pg.description || "", kind ? kind.name : "", vineOf(pg.id).map(refName).join(" ")].join(" "), (pg.tags || []).filter(Boolean));
+      if (psDocPresent(pg.id)) psParts(pg.id).forEach(function (p) {
         add({ lvl: "st", id: p.id }, partLabel(pg.id, p), (p.text || "") + " " + (p.blocks || []).map(function (b) { return (b.lines || []).join(" "); }).join(" "));
       });
     });
-    if (want.sm) sumEnsure().forEach(function (sm) { add({ lvl: "sm", id: sm.id }, sm.name + (sm.draft ? " (draft)" : ""), ""); });
-    if (want.sg) stratsAll().forEach(function (s) { add({ lvl: "sg", id: s.id }, s.name, ""); });
+    sumEnsure().forEach(function (sm) { add({ lvl: "sm", id: sm.id }, sm.name + (sm.draft ? " (draft)" : ""), ""); });
+    stratsAll().forEach(function (s) { add({ lvl: "sg", id: s.id }, s.name, ""); });
     return out;
   }
-  function srchToks(q) { return String(q || "").toLowerCase().split(/\s+/).filter(Boolean); }
-  function srchWords(s) { return s.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean); }
-  // → [{en, score, why: [text]}], best first
+  // ready before the first letter: the built-in cards' words a few at a time while nothing is touched, then
+  // the index; and again a moment after the library changed, while a page that searches is open.
+  var srchWarmT = null;
+  function srchWarm(wait) {
+    clearTimeout(srchWarmT);
+    srchWarmT = setTimeout(function () {
+      if (!(miningScreen || boardOpen)) return;
+      if (ptrDown) { srchWarm(700); return; }
+      var ids = Object.keys(biEnsure().cards).filter(function (id) { return srchBiText[id] == null; }), until = performance.now() + 8, i = 0;
+      while (i < ids.length && performance.now() < until) srchBiWords(ids[i++]);
+      if (i < ids.length) { srchWarm(16); return; }
+      assetIndex();
+    }, wait);
+  }
+  function srchToks(q) { return srchNorm(q).split(/\s+/).filter(Boolean); }
+  function srchWords(s) { return s.split(/[^\p{L}\p{N}]+/u).filter(Boolean); }
+  // → [{en, score, why}], best first (why: told by srchWhy, for the rows that are shown)
   function searchAssets(q, list) {
     var toks = srchToks(q), whole = toks.join(" "), out = [];
     if (!toks.length) return out;
+    function has(t) { return function (s) { return s.indexOf(t) >= 0; }; }
+    var hasT = toks.map(has);
     list.forEach(function (en) {
-      var name = en.name.toLowerCase(), words = srchWords(en.name), score = 0, why = [], inName = 0;
-      var kws = en.kw.map(function (k) { return k.toLowerCase(); }), tags = en.tags.map(function (t) { return t.toLowerCase(); }), loc = en.crumbs.join(" › ").toLowerCase();
+      var score = 0, inName = 0, how = [];
       for (var i = 0; i < toks.length; i++) {
-        var t = toks[i], hit;
-        if (words.indexOf(t) >= 0) { score += 6; inName++; continue; }
-        if (words.some(function (w) { return w.indexOf(t) === 0; })) { score += 5; inName++; continue; }
-        if (name.indexOf(t) >= 0) { score += 4; inName++; continue; }
-        if (en.alt.some(function (a) { return a.indexOf(t) >= 0; })) { score += 4; inName++; continue; }   // its name in the other language (B190)
-        if ((hit = kws.filter(function (k) { return k.indexOf(t) >= 0; })[0]) != null) { score += 3; why.push("keyword “" + en.kw[kws.indexOf(hit)] + "”"); continue; }
-        if ((hit = tags.filter(function (k) { return k.indexOf(t) >= 0; })[0]) != null) { score += 3; why.push("tag “" + en.tags[tags.indexOf(hit)] + "”"); continue; }
-        if (loc.indexOf(t) >= 0) { score += 2; why.push("in " + en.crumbs.join(" › ")); continue; }
-        var at = en.text.indexOf(t);
-        if (at >= 0) { score += 1; why.push("text: “…" + en.text.slice(Math.max(0, at - 24), at + t.length + 24).trim() + "…”"); continue; }
-        return;                                         // a word found nowhere: not a result
+        var t = toks[i];
+        if (en.nName.indexOf(t) >= 0) {
+          var pts = 4;
+          for (var w = 0; w < en.nWords.length; w++) {
+            if (en.nWords[w] === t) { pts = 6; break; }
+            if (en.nWords[w].indexOf(t) === 0) pts = 5;
+          }
+          score += pts; inName++;
+        } else if (en.alt.length && en.alt.some(hasT[i])) { score += 4; inName++; }   // its name in the other language (B190)
+        else if (en.nKw.length && en.nKw.some(hasT[i])) { score += 3; how.push(["kw", t]); }
+        else if (en.nTags.length && en.nTags.some(hasT[i])) { score += 3; how.push(["tag", t]); }
+        else if (en.nLoc.indexOf(t) >= 0) { score += 2; how.push(["loc", t]); }
+        else if (en.text.indexOf(t) >= 0) { score += 1; how.push(["text", t]); }
+        else return;                                    // a word found nowhere: not a result
       }
-      if (name === whole) score += 100;
+      if (en.nName === whole) score += 100;
       else if (inName === toks.length) score += 10;
-      out.push({ en: en, score: score, why: why.filter(function (w, j) { return why.indexOf(w) === j; }) });
+      out.push({ en: en, score: score, how: how });
     });
     out.sort(function (a, b) { return b.score - a.score || a.en.name.length - b.en.name.length; });
     return out;
   }
+  function srchWhy(h) {
+    var en = h.en, out = h.how.map(function (x) {
+      var t = x[1], has = function (s) { return s.indexOf(t) >= 0; };
+      if (x[0] === "kw") return "keyword “" + en.kw[en.nKw.findIndex(has)] + "”";
+      if (x[0] === "tag") return "tag “" + en.tags[en.nTags.findIndex(has)] + "”";
+      if (x[0] === "loc") return "in " + en.crumbs.join(" › ");
+      var at = en.text.indexOf(t);
+      return "text: “…" + en.text.slice(Math.max(0, at - 24), at + t.length + 24).trim() + "…”";
+    });
+    return out.filter(function (w, j) { return out.indexOf(w) === j; });
+  }
   // the typed words marked inside a text
   function srchMark(text, q) {
-    var toks = srchToks(q).map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); });
-    var h = escapeHtml(text);
-    if (!toks.length) return h;
-    return h.replace(new RegExp("(" + toks.map(escapeHtml).join("|") + ")", "giu"), "<mark>$1</mark>");
+    var h = escapeHtml(text), re = srchMarkRe(q);
+    return re ? h.replace(re, "<mark>$1</mark>") : h;
   }
+  var srchMarkLast = { q: null, re: null };
+  function srchMarkRe(q) {
+    if (srchMarkLast.q === q) return srchMarkLast.re;
+    var toks = srchToks(q).map(function (t) { return escapeHtml(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); });
+    srchMarkLast = { q: q, re: toks.length ? new RegExp("(" + toks.join("|") + ")", "giu") : null };
+    return srchMarkLast.re;
+  }
+  // typing in any search box: 150 ms after the last letter `run` is called with a check that says whether
+  // it is still the newest; a letter typed meanwhile drops the search that waits, and what it left for later.
+  var SRCH_WAIT = 150;
+  function srchTyping(input, run) {
+    var timer = null, gen = 0;
+    input.addEventListener("input", function () {
+      var mine = ++gen;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        window.SPD.mark("search");
+        run(function () { return mine === gen; });
+      }, SRCH_WAIT);
+    });
+  }
+  // a parent's children made to be `els`, in that order, moving only what has to move
+  function kidsInOrder(parent, els) {
+    var keep = new Set(els);
+    Array.prototype.slice.call(parent.childNodes).forEach(function (n) { if (!keep.has(n)) parent.removeChild(n); });
+    var at = parent.firstChild;
+    els.forEach(function (el) {
+      if (el === at) at = at.nextSibling;
+      else parent.insertBefore(el, at);
+    });
+  }
+  var SRCH_PAGE = 50;
   // st (kept by the caller between renders): { q, kind, grp, subj, course, tag, closed: {}, all }
-  // opts: { lvls, row(en, el, h) adds the row's actions, limit, redraw() }
+  // opts: { lvls, row(en, el, main) adds a new row's actions, limit, redraw() }
+  // The list is updated in place: a result keeps its row from one letter to the next, so row() runs once for it.
+  // st.shown = the best `limit` results in list order (the tree numbers these); the first SRCH_PAGE get rows,
+  // "Show more" draws more.
   function searchView(host, st, opts) {
-    host.innerHTML = "";
     var q = (st.q || "").trim();
     st.shown = [];
-    if (!q) return;
+    if (!q) { host.textContent = ""; host.__sr = null; return; }
+    var V = host.__sr;
+    if (!V || V.box.parentNode !== host) {
+      host.textContent = "";
+      V = host.__sr = { box: document.createElement("div"), rows: new Map(), secs: new Map() };
+      V.box.innerHTML = '<div class="sr-chips"></div><p class="muted sr-none" hidden></p><div class="sr-secs"></div><div class="sr-foot"></div>';
+      V.chips = V.box.children[0]; V.none = V.box.children[1]; V.list = V.box.children[2]; V.foot = V.box.children[3];
+      host.appendChild(V.box);
+    }
+    V.opts = opts;
     st.closed = st.closed || {};
+    var sig = JSON.stringify([q, st.kind, st.grp, st.subj, st.course, st.tag, !!st.all]);
+    if (st.pageSig !== sig) { st.pageSig = sig; st.page = SRCH_PAGE; }
     var hits = searchAssets(q, assetIndex(opts.lvls)), hiddenN = 0;
     hits = hits.filter(function (h) { if (h.en.on || st.all) return true; hiddenN++; return false; });
+    var TEST = {
+      kind: function (en, v) { return v === "all" || en.ref.lvl === v; },
+      grp: function (en, v) { return !v || en.grp === v; },
+      subj: function (en, v) { return !v || en.subj === v; },
+      course: function (en, v) { return !v || (v === "x" ? en.course === "Extra" : en.course.split(", ").indexOf(v) >= 0); },
+      tag: function (en, v) { return !v || en.tags.indexOf(v) >= 0; }
+    };
+    var fields = Object.keys(TEST), active = fields.filter(function (f) { return st[f] && st[f] !== "all"; });
     function keep(h, skip) {
-      var en = h.en;
-      return (skip === "kind" || st.kind === "all" || en.ref.lvl === st.kind) && (skip === "grp" || !st.grp || en.grp === st.grp) &&
-        (skip === "subj" || !st.subj || en.subj === st.subj) && (skip === "course" || !st.course || (st.course === "x" ? en.course === "Extra" : en.course.split(", ").indexOf(st.course) >= 0)) &&
-        (skip === "tag" || !st.tag || en.tags.indexOf(st.tag) >= 0);
+      for (var i = 0; i < active.length; i++) if (active[i] !== skip && !TEST[active[i]](h.en, st[active[i]])) return false;
+      return true;
     }
-    var chips = document.createElement("div");
-    chips.className = "sr-chips";
-    host.appendChild(chips);
+    var chips = V.chips;
+    chips.textContent = "";
     function chipRow(label, field, items) {               // items: [{id, name}] with counts from the other filters
-      var base = hits.filter(function (h) { return keep(h, field); });
+      var base = active.length ? hits.filter(function (h) { return keep(h, field); }) : hits, n = {};
+      base.forEach(function (h) {
+        var en = h.en, vals = field === "kind" ? [en.ref.lvl] : field === "grp" ? [en.grp] : field === "subj" ? [en.subj] : field === "tag" ? en.tags : en.course === "Extra" ? ["x"] : en.course ? en.course.split(", ") : [];
+        vals.forEach(function (v) { if (v) n[v] = (n[v] || 0) + 1; });
+      });
       var row = document.createElement("div"); row.className = "sr-chiprow";
       row.insertAdjacentHTML("beforeend", '<span class="sr-chiplab">' + label + '</span>');
       var shown = 0;
       items.forEach(function (it) {
-        var n = it.id === "" || it.id === "all" ? base.length : base.filter(it.test).length;
-        if (!n && st[field] !== it.id) return;
+        var c = it.id === "" || it.id === "all" ? base.length : n[it.id] || 0;
+        if (!c && st[field] !== it.id) return;
         shown++;
-        row.appendChild(actBtn(it.name + " " + n, "", function () { st[field] = it.id; if (field === "grp") st.subj = ""; opts.redraw(); }, "em-kind" + (st[field] === it.id ? " on" : "")));
+        row.appendChild(actBtn(it.name + " " + c, "", function () { st[field] = it.id; if (field === "grp") st.subj = ""; V.opts.redraw(); }, "em-kind" + (st[field] === it.id ? " on" : "")));
       });
       if (shown > 2) chips.appendChild(row);
     }
-    chipRow("Kind", "kind", [{ id: "all", name: "All" }].concat((opts.lvls || SRCH_KINDS).map(function (l) { return { id: l, name: SRCH_KIND[l] + "s", test: function (h) { return h.en.ref.lvl === l; } }; })));
+    chipRow("Kind", "kind", [{ id: "all", name: "All" }].concat((opts.lvls || SRCH_KINDS).map(function (l) { return { id: l, name: SRCH_KIND[l] + "s" }; })));
     var grps = {}, subs = {}, crs = {}, tags = {};
     hits.forEach(function (h) {
       if (h.en.grp) grps[h.en.grp] = 1;
@@ -17782,56 +17959,100 @@ function __detabaseMain() {
       if (h.en.course) h.en.course.split(", ").forEach(function (c) { crs[c] = 1; });
       h.en.tags.forEach(function (t) { tags[t] = (tags[t] || 0) + 1; });
     });
-    chipRow("Folder", "grp", [{ id: "", name: "All" }].concat(Object.keys(grps).map(function (g) { return { id: g, name: groupName(g), test: function (h) { return h.en.grp === g; } }; })));
-    chipRow("Subject", "subj", [{ id: "", name: "All" }].concat(Object.keys(subs).map(function (s) { return { id: s, name: subjectName(s), test: function (h) { return h.en.subj === s; } }; })));
-    if (courseSw() === "all") chipRow("Course", "course", [{ id: "", name: "All" }].concat(Object.keys(crs).filter(function (c) { return c !== "Extra"; }).map(function (c) { return { id: c, name: c, test: function (h) { return h.en.course.split(", ").indexOf(c) >= 0; } }; })).concat(crs.Extra ? [{ id: "x", name: "Extra", test: function (h) { return h.en.course === "Extra"; } }] : []));
+    chipRow("Folder", "grp", [{ id: "", name: "All" }].concat(Object.keys(grps).map(function (g) { return { id: g, name: groupName(g) }; })));
+    chipRow("Subject", "subj", [{ id: "", name: "All" }].concat(Object.keys(subs).map(function (s) { return { id: s, name: subjectName(s) }; })));
+    if (courseSw() === "all") chipRow("Course", "course", [{ id: "", name: "All" }].concat(Object.keys(crs).filter(function (c) { return c !== "Extra"; }).map(function (c) { return { id: c, name: c }; })).concat(crs.Extra ? [{ id: "x", name: "Extra" }] : []));
     var topTags = Object.keys(tags).sort(function (a, b) { return tags[b] - tags[a]; }).slice(0, 8);
-    if (topTags.length) chipRow("Tag", "tag", [{ id: "", name: "Any" }].concat(topTags.map(function (t) { return { id: t, name: t, test: function (h) { return h.en.tags.indexOf(t) >= 0; } }; })));
-    var list = hits.filter(function (h) { return keep(h); });
-    if (!list.length) host.insertAdjacentHTML("beforeend", '<p class="muted">Nothing matches “' + escapeHtml(q) + '”.</p>');
+    if (topTags.length) chipRow("Tag", "tag", [{ id: "", name: "Any" }].concat(topTags.map(function (t) { return { id: t, name: t }; })));
+    var list = active.length ? hits.filter(function (h) { return keep(h); }) : hits;
+    V.none.hidden = !!list.length;
+    if (!list.length) V.none.textContent = "Nothing matches “" + q + "”.";
     // grouped by subject, in the order of each subject's best hit
-    var order = [], by = {}, limit = opts.limit || 120;
+    var order = [], by = {}, limit = Math.max(opts.limit || 120, st.page);
     list.slice(0, limit).forEach(function (h) {
       var k = h.en.subj || "~";
       if (!by[k]) { by[k] = []; order.push(k); }
       by[k].push(h);
     });
-    // shown = the results in the order the list shows them; with opts.numbers each gets its tree point's
-    // number (B183: the same numbers the tree marks them with, ctSetHits)
     var shown = [], num = {}, nn = 0;
-    order.forEach(function (k) { by[k].forEach(function (h) { shown.push(h.en); var tk = ctKeyOf(h.en.ref); if (tk && !num[tk]) num[tk] = ++nn; }); });
+    order.forEach(function (k) { by[k].forEach(function (h) { shown.push(h.en); var tk = h.en.tk; if (tk && !num[tk]) num[tk] = ++nn; }); });
+    var rows = new Map(), secs = [], drawn = 0, waiting = list.length > limit;
     order.forEach(function (k) {
-      var sec = document.createElement("div"); sec.className = "sr-sec";
-      var closed = !!st.closed[k], head = actBtn("", closed ? "show" : "fold", function () { st.closed[k] = !st.closed[k]; opts.redraw(); }, "sr-head");
-      head.innerHTML = '<span class="sr-caret">' + (closed ? "▸" : "▾") + '</span><b></b><span class="sr-n">' + by[k].length + '</span>';
-      head.querySelector("b").textContent = k === "~" ? "Study sheets and strategies" : subjectName(k);
-      sec.appendChild(head);
+      var closed = !!st.closed[k];
+      if (drawn >= st.page) { waiting = true; return; }
+      var sec = V.secs.get(k);
+      if (!sec) {
+        var box = document.createElement("div"); box.className = "sr-sec";
+        var head = actBtn("", "", function () { st.closed[k] = !st.closed[k]; V.opts.redraw(); }, "sr-head");
+        head.innerHTML = '<span class="sr-caret"></span><b></b><span class="sr-n"></span>';
+        sec = { el: box, head: head };
+        V.secs.set(k, sec);
+      }
+      var name = k === "~" ? "Study sheets and strategies" : subjectName(k), hs = [closed, by[k].length, name].join("|");
+      if (sec.sig !== hs) {
+        sec.sig = hs;
+        sec.head.title = closed ? "show" : "fold";
+        sec.head.children[0].textContent = closed ? "▸" : "▾";
+        sec.head.children[1].textContent = name;
+        sec.head.children[2].textContent = by[k].length;
+      }
+      var els = [sec.head];
       if (!closed) by[k].forEach(function (h) {
-        var row = document.createElement("div"); row.className = "sr-row";
-        var tk = ctKeyOf(h.en.ref);
-        if (tk) row.setAttribute("data-tk", tk);
-        if (opts.numbers && tk) row.appendChild(actBtn(String(num[tk]), "show it on the tree", function () { opts.numbers(tk); }, "sr-num"));
-        var main = document.createElement("div"); main.className = "sr-main";
-        main.innerHTML = '<span class="sr-name">' + srchMark(h.en.name, q) + '</span><small class="sr-where"></small>' + (h.why.length ? '<small class="sr-why">' + srchMark(h.why.join(" · "), q) + '</small>' : "");
-        main.querySelector(".sr-where").textContent = [SRCH_KIND[h.en.ref.lvl]].concat(h.en.crumbs.length ? [h.en.crumbs.join(" › ")] : []).concat(h.en.course ? [h.en.course] : []).join(" · ");
-        row.appendChild(main);
-        opts.row(h.en, row, main);
-        sec.appendChild(row);
+        if (drawn >= st.page) { waiting = true; return; }
+        drawn++;
+        var en = h.en, r = V.rows.get(en.key), tk = en.tk;
+        if (!r || r.tk !== tk) {
+          var row = document.createElement("div"); row.className = "sr-row";
+          r = { el: row, tk: tk };
+          if (tk) row.setAttribute("data-tk", tk);
+          if (opts.numbers && tk) { r.num = actBtn("", "show it on the tree", function () { V.opts.numbers(tk); }, "sr-num"); row.appendChild(r.num); }
+          r.main = document.createElement("div"); r.main.className = "sr-main";
+          r.main.innerHTML = '<span class="sr-name"></span><small class="sr-where"></small><small class="sr-why"></small>';
+          r.name = r.main.children[0]; r.where = r.main.children[1]; r.why = r.main.children[2];
+          row.appendChild(r.main);
+          opts.row(en, row, r.main);
+        }
+        var nameH = srchMark(en.name, q), whyH = h.how.length ? srchMark(srchWhy(h).join(" · "), q) : "",
+          where = [SRCH_KIND[en.ref.lvl]].concat(en.crumbs.length ? [en.crumbs.join(" › ")] : []).concat(en.course ? [en.course] : []).join(" · ");
+        if (r.nameH !== nameH) { r.name.innerHTML = nameH; r.nameH = nameH; }
+        if (r.whereT !== where) { r.where.textContent = where; r.whereT = where; }
+        if (r.whyH !== whyH) { r.why.innerHTML = whyH; r.why.hidden = !whyH; r.whyH = whyH; }
+        if (r.num && r.n !== num[tk]) { r.num.textContent = num[tk]; r.n = num[tk]; }
+        rows.set(en.key, r);
+        els.push(r.el);
       });
-      host.appendChild(sec);
+      kidsInOrder(sec.el, els);
+      secs.push(sec.el);
     });
-    if (list.length > limit) host.insertAdjacentHTML("beforeend", '<p class="muted">' + (list.length - limit) + ' more — add a word or a filter.</p>');
+    V.rows = rows;
+    kidsInOrder(V.list, secs);
+    var foot = V.foot;
+    foot.textContent = "";
+    if (waiting) {
+      var more = document.createElement("p"); more.className = "sr-more";
+      more.appendChild(actBtn("Show more", "draw the next results", function () { st.page += SRCH_PAGE; V.opts.redraw(); }));
+      var say = document.createElement("span"); say.className = "muted";
+      say.textContent = drawn + " of " + list.length + " shown — or add a word or a filter.";
+      more.appendChild(say);
+      foot.appendChild(more);
+    }
     st.shown = shown;
     if (hiddenN) {
       var p = document.createElement("p"); p.className = "muted cs-hint";
       p.textContent = hiddenN + (hiddenN === 1 ? " more result is" : " more results are") + " hidden by “" + courseSwName(courseSw()) + "”. ";
-      p.appendChild(actBtn("Show them", "", function () { st.all = true; opts.redraw(); }));
-      host.appendChild(p);
+      p.appendChild(actBtn("Show them", "", function () { st.all = true; V.opts.redraw(); }));
+      foot.appendChild(p);
     } else if (st.all && courseSw() !== "all") {
       var p2 = document.createElement("p"); p2.className = "muted cs-hint"; p2.textContent = "Showing results outside “" + courseSwName(courseSw()) + "” too. ";
-      p2.appendChild(actBtn("Hide them", "", function () { st.all = false; opts.redraw(); }));
-      host.appendChild(p2);
+      p2.appendChild(actBtn("Hide them", "", function () { st.all = false; V.opts.redraw(); }));
+      foot.appendChild(p2);
     }
+  }
+  // a point chosen on the tree may be a result whose row isn't drawn yet: draw down to it
+  function srchReveal(host, st, key) {
+    var V = host && host.__sr; if (!key || !V || !st.shown) return;
+    var i = st.shown.findIndex(function (en) { return en.tk === key; });
+    if (i >= 0 && i >= st.page) { st.page = i + 1; V.opts.redraw(); }
   }
 
   // The asset picker: a tree of the library with tick boxes and a tray. It is for CHOOSING assets —
@@ -17918,8 +18139,7 @@ function __detabaseMain() {
       host.querySelector(".mp-clear").hidden = !state.sel.length;
       host.querySelector(".mp-tray").classList.toggle("has", !!state.sel.length);
     }
-    var st;
-    search.addEventListener("input", function () { clearTimeout(st); st = setTimeout(function () { state.q = search.value; renderList(); }, 140); });
+    srchTyping(search, function () { state.q = search.value; renderList(); });
     host.querySelector(".mp-clear").addEventListener("click", function () { state.sel = []; renderTray(); renderList(); });
     host.querySelector(".mp-add").addEventListener("click", function () {
       var refs = state.sel.filter(refExists);
@@ -18219,12 +18439,10 @@ function __detabaseMain() {
     else if (ref.lvl === "sg") openStrat(ref.id);
     else openRef(ref);
   }
-  function mainResultsEl() {
-    var box = document.createElement("div");
-    box.className = "em-results";
+  function mainResults(box) {
     mainSS.q = mainQ;
     searchView(box, mainSS, {
-      redraw: renderEtiMain,
+      redraw: function () { mainSearch(); },
       numbers: function (tk) { if (!mainTree) return; ctSelect(mainTree, tk); var tb = document.querySelector("#etiMain .em-tree"); if (tb) tb.scrollIntoView({ block: "nearest", behavior: "smooth" }); },
       row: function (en, row, main) {
         main.classList.add("em-hit-main"); main.setAttribute("role", "button"); main.tabIndex = 0;
@@ -18233,7 +18451,21 @@ function __detabaseMain() {
         row.appendChild(actBtn("⋯", "properties", function () { assetWindow(en.ref); }, "em-hit-x"));
       }
     });
-    return box;
+  }
+  // the search changed: the list at once, the tree's marks once that is on screen (fresh: still the newest)
+  function mainSearch(fresh) {
+    var host = $("etiMain"), res = host && host.querySelector(".em-results"); if (!res) return;
+    mainResults(res);
+    requestAnimationFrame(function () {
+      setTimeout(function () {
+        if ((fresh && !fresh()) || !res.isConnected || !miningScreen) return;
+        mainTreeHits();
+        ctUpdate(mainTree, host.querySelector(".em-tree"));
+      }, 0);
+    });
+  }
+  function mainTreeHits() {
+    ctSetHits(mainTree, mainQ.trim() ? mainSS.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([mainQ.trim().toLowerCase(), mainSS.kind, mainSS.grp, mainSS.subj, mainSS.course, mainSS.tag]));
   }
   // ============================================================
   // THE CONCEPT TREE — the main page's map of the library
@@ -19064,6 +19296,8 @@ function __detabaseMain() {
     look();
     if (window.ResizeObserver) { E.ro = new ResizeObserver(function () { if (E === T.els) look(); }); E.ro.observe(svg); }
   }
+  // show a tree in its box
+  function ctUpdate(T, box) { libFast(function () { ctRender(T, box); }); }
   function renderEtiMain() {
     var host = $("etiMain"); if (!host) return;
     libEnsure();
@@ -19071,27 +19305,23 @@ function __detabaseMain() {
       '<div class="cc-bar em-libbar"></div>' +
       '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search by name — subjects, concepts, cards, methods, study sheets, strategies" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
-      '<div class="em-res"></div><div class="em-tree"></div>';
+      '<div class="em-res"><div class="em-results"></div></div><div class="em-tree"></div>';
     host.querySelector(".em-libbar").appendChild(actBtn("📚 Study sheets and strategies", "every study sheet, and make new ones", openSheetsLib, "btn-primary"));
     host.querySelector(".em-libbar").appendChild(actBtn("🧷 Clipboard", "a big board to lay out and connect library items", openBoard, "btn-primary"));
     host.querySelector(".em-libbar").appendChild(actBtn("🏷 Naming check", "your own names that are too general or used twice, with suggestions", openNamingCheck));
     var input = host.querySelector(".em-search");
     input.value = mainQ;
-    var st;
-    input.addEventListener("input", function () {
-      clearTimeout(st);
-      st = setTimeout(function () { window.SPD.mark("search"); mainQ = input.value; renderEtiMain(); }, 160);
-    });
-    host.querySelector(".em-clear").addEventListener("click", function () { mainQ = ""; renderEtiMain(); });
+    srchTyping(input, function (fresh) { mainQ = input.value; mainSearch(fresh); });
+    host.querySelector(".em-clear").addEventListener("click", function () { mainQ = input.value = ""; mainSearch(); });
     // the list and the tree mark each other (B183): the tree numbers the results as the list does; a
     // number in the list chooses its point on the tree, a point chosen on the tree lights its rows
     mainTree = mainTree || ctTree({ mode: "open", onPick: function (key) {
+      srchReveal(document.querySelector("#etiMain .em-results"), mainSS, key);
       Array.prototype.forEach.call(document.querySelectorAll("#etiMain .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); });
     } });
-    var res = mainResultsEl();
-    ctSetHits(mainTree, mainQ.trim() ? mainSS.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([mainQ.trim().toLowerCase(), mainSS.kind, mainSS.grp, mainSS.subj, mainSS.course, mainSS.tag]));
-    ctRender(mainTree, host.querySelector(".em-tree"));
-    host.querySelector(".em-res").appendChild(res);
+    mainResults(host.querySelector(".em-results"));
+    mainTreeHits();
+    ctUpdate(mainTree, host.querySelector(".em-tree"));
     if (mainQ && document.activeElement !== input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
   }
   // ============================================================
@@ -22032,16 +22262,16 @@ function __detabaseMain() {
   }
   var BD_SPLIT = 1400;
   function bdSplit() { return window.innerWidth >= BD_SPLIT; }
-  function bdSide() {
+  function bdSide(fresh) {                    // fresh: from typing — says whether that is still the newest search
     var side = $("boardPane").querySelector(".bd-side");
     side.hidden = !bd.side;
     if (!bd.side) return;
     bd.libView = bd.libView || "list";
     if (!side.firstChild) {
       side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-libtabs"></div><div class="bd-treebar"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
-      var q = side.firstChild, qt = null;
+      var q = side.firstChild;
       q.value = bd.q;
-      q.addEventListener("input", function () { clearTimeout(qt); qt = setTimeout(function () { window.SPD.mark("search"); bd.q = q.value; bdSide(); }, 160); });
+      srchTyping(q, function (fresh) { bd.q = q.value; bdSide(fresh); });
     }
     var split = bdSplit(), showTree = split || bd.libView === "tree", showList = split || bd.libView === "list";
     side.classList.toggle("split", split); side.classList.toggle("treeview", !split && bd.libView === "tree");
@@ -22055,17 +22285,17 @@ function __detabaseMain() {
     tbar.appendChild(actBtn((bd.showAll ? "☑" : "☐") + " Everything on the board", "mark every block on the Clipboard in the tree", function () { bd.showAll = !bd.showAll; bd.flyBoard = bd.showAll; bdBar(); bdSide(); }, "em-kind" + (bd.showAll ? " on" : "")));
     var list = side.querySelector(".bd-list"), treeBox = side.querySelector(".bd-tree");
     list.hidden = !showList; treeBox.hidden = !showTree;
-    list.innerHTML = "";
     var q2 = bd.q.trim().toLowerCase();
+    if (!q2 || !list.__sr) list.textContent = "";         // browsing is drawn again; search results update in place
     bd.ss = bd.ss || { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
     bd.ss.q = q2;
     bd.tree = bd.tree || ctTree({ mode: "add", onAdd: function (refs, group) { bdAdd(refs, null, group ? { group: group, toast: true } : null); },
       // a group from the tree is named after the search, or the point the marks started from (B186)
       extraBar: function (bar) { ctPickBar(bd.tree, bar, function () { return bd.q.trim() || (bd.tree.mkState && bd.tree.mkState.name) || "From the tree"; }); },
-      onPick: function (key) { Array.prototype.forEach.call(side.querySelectorAll(".bd-list .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); if (key && r.getAttribute("data-tk") === key && (bdSplit() || bd.libView === "list")) r.scrollIntoView({ block: "nearest" }); }); } });
+      onPick: function (key) { srchReveal(side.querySelector(".bd-list"), bd.ss, key); Array.prototype.forEach.call(side.querySelectorAll(".bd-list .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); if (key && r.getAttribute("data-tk") === key && (bdSplit() || bd.libView === "list")) r.scrollIntoView({ block: "nearest" }); }); } });
     if (q2) {
       searchView(list, bd.ss, {
-        lvls: ["s", "t", "c", "p", "st"], limit: 80, redraw: bdSide,
+        lvls: ["s", "t", "c", "p", "st"], limit: 80, redraw: function () { bdSide(); },
         numbers: function (tk) { if (!bdSplit()) { bd.libView = "tree"; bdSide(); } ctSelect(bd.tree, tk); },
         row: function (en, row, main) {
           row.classList.add("bd-row"); row.setAttribute("data-k", refKey(en.ref));
@@ -22076,24 +22306,32 @@ function __detabaseMain() {
       });
       Array.prototype.forEach.call(list.querySelectorAll(".sr-sec"), bdListDnd);
     } else {
-      allSubjectKeys().filter(function (k) { return courseSubjectOn(k); }).forEach(function (k) {
-        var sr = { lvl: "s", id: k }, tabs2 = libKids(sr).filter(function (t) { return courseTabOn(t); }), ms = psPagesOf(k).filter(function (pg) { return courseIs({ lvl: "p", id: pg.id }); });
-        list.appendChild(bdRow(sr, subjectName(k), "subject", 0, true));
-        if (!bd.open[refKey(sr)]) return;
-        tabs2.forEach(function (t) {
-          var cs = libKids(t);
-          list.appendChild(bdRow(t, tabLabel(t.id), "concept", 1, cs.length > 0));
-          if (bd.open[refKey(t)]) cs.filter(function (c) { return courseIs(c); }).forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
+      list.__sr = null;
+      libFast(function () {
+        allSubjectKeys().filter(function (k) { return courseSubjectOn(k); }).forEach(function (k) {
+          var sr = { lvl: "s", id: k }, open = bd.open[refKey(sr)];
+          list.appendChild(bdRow(sr, subjectName(k), "subject", 0, true));
+          if (!open) return;
+          libKids(sr).filter(function (t) { return courseTabOn(t); }).forEach(function (t) {
+            var cs = libKids(t);
+            list.appendChild(bdRow(t, tabLabel(t.id), "concept", 1, cs.length > 0));
+            if (bd.open[refKey(t)]) cs.filter(function (c) { return courseIs(c); }).forEach(function (c) { list.appendChild(bdRow(c, cardLabel(c.id), "card", 2, false)); });
+          });
+          psPagesOf(k).filter(function (pg) { return courseIs({ lvl: "p", id: pg.id }); }).forEach(function (pg) { list.appendChild(bdRow({ lvl: "p", id: pg.id }, pg.name, "method", 1, false)); });
         });
-        ms.forEach(function (pg) { list.appendChild(bdRow({ lvl: "p", id: pg.id }, pg.name, "method", 1, false)); });
       });
       bdListDnd(list);
     }
     if (showTree) {
-      ctSetHits(bd.tree, q2 ? bd.ss.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([q2, bd.ss.kind, bd.ss.grp, bd.ss.subj, bd.ss.course, bd.ss.tag]));
-      var bk = bdBoardKeys(!!bd.showAll); bd.tree.board = Object.keys(bk).length ? bk : null;
-      ctRender(bd.tree, treeBox);
-      if (bd.flyBoard) { bd.flyBoard = false; setTimeout(function () { bdTreeBoard(true); }, 30); }
+      var drawTree = function () {
+        ctSetHits(bd.tree, q2 ? bd.ss.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([q2, bd.ss.kind, bd.ss.grp, bd.ss.subj, bd.ss.course, bd.ss.tag]));
+        var bk = bdBoardKeys(!!bd.showAll); bd.tree.board = Object.keys(bk).length ? bk : null;
+        ctUpdate(bd.tree, treeBox);
+        if (bd.flyBoard) { bd.flyBoard = false; setTimeout(function () { bdTreeBoard(true); }, 30); }
+      };
+      // while typing: the list first, the tree once that is on screen, unless a newer letter came in
+      if (fresh && showList) requestAnimationFrame(function () { setTimeout(function () { if (fresh() && treeBox.isConnected && !treeBox.hidden) drawTree(); }, 0); });
+      else drawTree();
     }
   }
 
@@ -22972,6 +23210,7 @@ function __detabaseMain() {
   try { applyAllOrders(); } catch (e) { if (window.console) console.error("applyAllOrders:", e); }
   try { applyEtiEdits(); } catch (e) { if (window.console) console.error("applyEtiEdits:", e); }
   try { renderEtiTree(); renderHiddenBtn(); } catch (e) {}
+  srchWarm(1500);
   // the speed log (SPD): five taps on the build tag within three seconds
   var spdTaps = [];
   function openSpeedLog() {
