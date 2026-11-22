@@ -1,5 +1,31 @@
 {
  "ui": {
+  "Clear all": "ניקוי הכול",
+  "filter the library": "סינון הספרייה",
+  "Nothing matches these filters.": "אין תוצאות למסננים האלה.",
+  "Show more": "הצגת עוד",
+  "draw the next results": "הצגת התוצאות הבאות",
+  "Library": "ספרייה",
+  "Slide for Clipboard": "החלקה ללוח",
+  "Tap or slide to open the library": "הקשה או החלקה לפתיחת הספרייה",
+  "Tap or slide to bring the Clipboard back": "הקשה או החלקה להחזרת הלוח",
+  "Drag to resize; slide to either edge to hide or fill": "גרירה לשינוי הרוחב; החלקה לקצה כדי להסתיר או למלא",
+  "Speed log": "יומן מהירות",
+  "Use the app, then come back here. Times are in milliseconds, since this page loaded.": "משתמשים באפליקציה וחוזרים לכאן. הזמנים באלפיות שנייה, מאז טעינת הדף.",
+  "Target": "יעד",
+  "Last": "אחרון",
+  "Middle": "חציון",
+  "Slowest": "האיטי ביותר",
+  "A tap responds": "תגובה להקשה",
+  "A typed letter appears": "אות מוקלדת מופיעה",
+  "Search results update (after the short pause)": "עדכון תוצאות החיפוש (אחרי ההשהיה הקצרה)",
+  "Switch to the tree": "מעבר לעץ",
+  "Open ETI": "פתיחת ETI",
+  "Open the Clipboard": "פתיחת הלוח",
+  "One step of a pan, zoom or drag": "צעד אחד של הזזה, זום או גרירה",
+  "Copy results": "העתקת התוצאות",
+  "Start over": "התחלה מחדש",
+  "Copied": "הועתק",
   "none": "אין",
   "uses": "משתמשת ב־",
   "via": "דרך",
@@ -5088,6 +5114,7 @@
   "<b>Converse:</b> a right angle inscribed in a circle ⇒ its hypotenuse is a diameter": "<b>המשפט ההפוך:</b> זווית ישרה שחסומה במעגל ⇒ היתר שלה הוא קוטר"
  },
  "re": [
+  ["^(\\d+) of (\\d+) shown — or add a word or a filter\\.$", "מוצגות $1 מתוך $2 — אפשר גם להוסיף מילה או מסנן."],
   [
    "^(\\d+) products?$",
    "$1 מוצרים"

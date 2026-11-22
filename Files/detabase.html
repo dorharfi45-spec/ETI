@@ -943,8 +943,6 @@
   .bd-list .sr-row { margin: 0; }
   .bd-list .sr-main { padding: 4px 4px; }
   .bd-list .sr-name { font-size: .84rem; }
-  .bd-list .sr-chiplab { min-width: 0; }
-  .bd-list .sr-chiprow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .sr-chiprow .em-kind, .sr-chiplab { flex-shrink: 0; }
   @media (max-width: 760px) { .sr-chiprow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } }
   .nc-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
@@ -1369,6 +1367,30 @@
   .bd-side.split .bd-panes > .bd-list { flex: 0 0 300px; }
   .bd-tree .ct-views { right: 60px; }
   .bd-tree .ct-hint { display: none; }
+  /* the Filters button and window (B220) */
+  .bd-qrow { display: flex; gap: 6px; }
+  .bd-qrow .bd-q { flex: 1; min-width: 0; }
+  .bd-filt { flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; min-height: var(--tap); padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg); color: var(--text-primary); font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; }
+  .bd-qrow button.bd-filt.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--bg)); color: var(--text-primary); }
+  .bd-fn { padding: 1px 7px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: .76rem; white-space: nowrap; }
+  .bd-fback { position: fixed; inset: 0; z-index: 5900; }
+  .bd-fwin { position: absolute; width: min(400px, calc(100vw - 16px)); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-strong); border-radius: var(--r-lg); background: var(--surface-1); color: var(--text-primary); box-shadow: var(--shadow); }
+  .bd-fback.sheet { background: color-mix(in srgb, #0f172a 35%, transparent); }
+  .bd-fback.sheet .bd-fwin { left: 0; right: 0; bottom: 0; width: min(680px, 100%); max-height: 74vh; margin: 0 auto; border-bottom: 0; border-radius: var(--r-lg) var(--r-lg) 0 0; padding-bottom: env(safe-area-inset-bottom); animation: bdSheetIn .18s ease-out; }
+  @keyframes bdSheetIn { from { transform: translateY(40px); opacity: 0; } }
+  .bd-fhead { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px 4px 16px; border-bottom: 1px solid var(--border); }
+  html[dir="rtl"] .bd-fhead { padding: 4px 16px 4px 6px; }
+  .bd-fx { min-width: var(--tap); min-height: var(--tap); border: 0; background: none; color: var(--text-secondary); font: inherit; cursor: pointer; }
+  .bd-fbody { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px 16px 14px; }
+  .bd-fbody .sr-chips { gap: 0; margin: 0; }
+  .bd-fbody .sr-chiprow { flex-wrap: wrap; gap: 6px; padding: 12px 0; }
+  .bd-fbody .sr-chiprow + .sr-chiprow { border-top: 1px solid var(--border); }
+  .bd-fbody .sr-chiplab { width: 100%; color: var(--text-secondary); }
+  .bd-fbody .sr-chiprow .em-kind { min-height: var(--tap); padding: 0 14px; }
+  .bd-ffoot { display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); }
+  .bd-ffoot button { min-height: var(--tap); }
+  .bd-fclear:disabled { opacity: .4; cursor: default; }
+  @media (prefers-reduced-motion: reduce) { .bd-fback.sheet .bd-fwin { animation: none; } }
   .ct-ctrl { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
   .ct-ctrl button { width: var(--tap); height: var(--tap); border-radius: var(--r-md); border: 1px solid var(--border);
     background: var(--bg); color: var(--text-secondary); font-size: 1.15rem; box-shadow: var(--shadow); cursor: pointer; }
@@ -3079,7 +3101,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B219</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B220</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -18000,27 +18022,33 @@ function __detabaseMain() {
   }
   var SRCH_PAGE = 50;
   // st (kept by the caller between renders): { q, kind, grp, subj, course, tag, closed: {}, all }
-  // opts: { lvls, row(en, el, main) adds a new row's actions, limit, redraw() }
+  // opts: { lvls, row(en, el, main) adds a new row's actions, limit, redraw(), filters: an element the filter
+  //         groups are drawn in instead of above the results (the Clipboard's Filters window, B220); with it,
+  //         filters work with no words too: everything they let through }
   // The list is updated in place: a result keeps its row from one letter to the next, so row() runs once for it.
   // st.shown = the best `limit` results in list order (the tree numbers these); the first SRCH_PAGE get rows,
   // "Show more" draws more.
+  function srchActive(st) { return SRCH_FIELDS.filter(function (f) { return st[f] && st[f] !== "all"; }); }
+  var SRCH_FIELDS = ["kind", "grp", "subj", "course", "tag"];
   function searchView(host, st, opts) {
     var q = (st.q || "").trim();
     st.shown = [];
-    if (!q) { host.textContent = ""; host.__sr = null; return; }
+    if (!q && !opts.filters) { host.textContent = ""; host.__sr = null; return; }
     var V = host.__sr;
     if (!V || V.box.parentNode !== host) {
       host.textContent = "";
       V = host.__sr = { box: document.createElement("div"), rows: new Map(), secs: new Map() };
       V.box.innerHTML = '<div class="sr-chips"></div><p class="muted sr-none" hidden></p><div class="sr-secs"></div><div class="sr-foot"></div>';
       V.chips = V.box.children[0]; V.none = V.box.children[1]; V.list = V.box.children[2]; V.foot = V.box.children[3];
+      if (opts.filters) { V.chips.remove(); V.chips = opts.filters; }
       host.appendChild(V.box);
     }
     V.opts = opts;
     st.closed = st.closed || {};
     var sig = JSON.stringify([q, st.kind, st.grp, st.subj, st.course, st.tag, !!st.all]);
     if (st.pageSig !== sig) { st.pageSig = sig; st.page = SRCH_PAGE; }
-    var hits = searchAssets(q, assetIndex(opts.lvls)), hiddenN = 0;
+    var index = assetIndex(opts.lvls);
+    var hits = q ? searchAssets(q, index) : index.map(function (en) { return { en: en, score: 0, how: [] }; }), hiddenN = 0;
     hits = hits.filter(function (h) { if (h.en.on || st.all) return true; hiddenN++; return false; });
     var TEST = {
       kind: function (en, v) { return v === "all" || en.ref.lvl === v; },
@@ -18029,7 +18057,7 @@ function __detabaseMain() {
       course: function (en, v) { return !v || (v === "x" ? en.course === "Extra" : en.course.split(", ").indexOf(v) >= 0); },
       tag: function (en, v) { return !v || en.tags.indexOf(v) >= 0; }
     };
-    var fields = Object.keys(TEST), active = fields.filter(function (f) { return st[f] && st[f] !== "all"; });
+    var active = srchActive(st);
     function keep(h, skip) {
       for (var i = 0; i < active.length; i++) if (active[i] !== skip && !TEST[active[i]](h.en, st[active[i]])) return false;
       return true;
@@ -18051,7 +18079,7 @@ function __detabaseMain() {
         shown++;
         row.appendChild(actBtn(it.name + " " + c, "", function () { st[field] = it.id; if (field === "grp") st.subj = ""; V.opts.redraw(); }, "em-kind" + (st[field] === it.id ? " on" : "")));
       });
-      if (shown > 2) chips.appendChild(row);
+      if (shown > 2 || active.indexOf(field) >= 0) chips.appendChild(row);
     }
     chipRow("Kind", "kind", [{ id: "all", name: "All" }].concat((opts.lvls || SRCH_KINDS).map(function (l) { return { id: l, name: SRCH_KIND[l] + "s" }; })));
     var grps = {}, subs = {}, crs = {}, tags = {};
@@ -18061,14 +18089,19 @@ function __detabaseMain() {
       if (h.en.course) h.en.course.split(", ").forEach(function (c) { crs[c] = 1; });
       h.en.tags.forEach(function (t) { tags[t] = (tags[t] || 0) + 1; });
     });
+    if (st.grp) grps[st.grp] = 1;
+    if (st.subj) subs[st.subj] = 1;
+    if (st.course) crs[st.course === "x" ? "Extra" : st.course] = 1;
     chipRow("Folder", "grp", [{ id: "", name: "All" }].concat(Object.keys(grps).map(function (g) { return { id: g, name: groupName(g) }; })));
     chipRow("Subject", "subj", [{ id: "", name: "All" }].concat(Object.keys(subs).map(function (s) { return { id: s, name: subjectName(s) }; })));
-    if (courseSw() === "all") chipRow("Course", "course", [{ id: "", name: "All" }].concat(Object.keys(crs).filter(function (c) { return c !== "Extra"; }).map(function (c) { return { id: c, name: c }; })).concat(crs.Extra ? [{ id: "x", name: "Extra" }] : []));
+    if (courseSw() === "all" || st.course) chipRow("Course", "course", [{ id: "", name: "All" }].concat(Object.keys(crs).filter(function (c) { return c !== "Extra"; }).map(function (c) { return { id: c, name: c }; })).concat(crs.Extra ? [{ id: "x", name: "Extra" }] : []));
     var topTags = Object.keys(tags).sort(function (a, b) { return tags[b] - tags[a]; }).slice(0, 8);
+    if (st.tag && topTags.indexOf(st.tag) < 0) topTags.push(st.tag);
     if (topTags.length) chipRow("Tag", "tag", [{ id: "", name: "Any" }].concat(topTags.map(function (t) { return { id: t, name: t }; })));
     var list = active.length ? hits.filter(function (h) { return keep(h); }) : hits;
     V.none.hidden = !!list.length;
-    if (!list.length) V.none.textContent = "Nothing matches “" + q + "”.";
+    if (!q && !active.length) { V.none.hidden = true; V.list.textContent = ""; V.foot.textContent = ""; V.rows = new Map(); return; }   // only the filter groups were wanted
+    if (!list.length) V.none.textContent = q ? "Nothing matches “" + q + "”." : "Nothing matches these filters.";
     // grouped by subject, in the order of each subject's best hit
     var order = [], by = {}, limit = Math.max(opts.limit || 120, st.page);
     list.slice(0, limit).forEach(function (h) {
@@ -22691,10 +22724,13 @@ function __detabaseMain() {
     if (!bd.side) return;
     bd.libView = bd.libView || "list";
     if (!side.firstChild) {
-      side.innerHTML = '<input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off"><div class="bd-libtabs"></div><div class="bd-treebar"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
-      var q = side.firstChild;
+      side.innerHTML = '<div class="bd-qrow"><input type="search" class="bd-q" placeholder="Search name, tag or words…" autocomplete="off">' +
+        '<button type="button" class="bd-filt" aria-haspopup="dialog" aria-expanded="false" title="filter the library"><span>Filters</span><b class="bd-fn" hidden></b></button></div>' +
+        '<div class="bd-libtabs"></div><div class="bd-treebar"></div><div class="bd-panes"><div class="bd-list"></div><div class="bd-tree"></div></div>';
+      var q = side.querySelector(".bd-q");
       q.value = bd.q;
       srchTyping(q, function (fresh) { bd.q = q.value; bdSide(fresh); });
+      side.querySelector(".bd-filt").addEventListener("click", function (e) { bdFiltersOpen(e.currentTarget); });
     }
     var split = bdSplit(), showTree = split || bd.libView === "tree", showList = split || bd.libView === "list";
     side.classList.toggle("split", split); side.classList.toggle("treeview", !split && bd.libView === "tree");
@@ -22709,16 +22745,18 @@ function __detabaseMain() {
     var list = side.querySelector(".bd-list"), treeBox = side.querySelector(".bd-tree");
     list.hidden = !showList; treeBox.hidden = !showTree;
     var q2 = bd.q.trim().toLowerCase();
-    if (!q2 || !list.__sr) list.textContent = "";         // browsing is drawn again; search results update in place
-    bd.ss = bd.ss || { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
+    bdFiltersLoad();
     bd.ss.q = q2;
+    var nFilt = srchActive(bd.ss).length, searching = !!(q2 || nFilt);      // filters alone list what they let through
+    bdFiltersShow(side, nFilt);
+    if (!searching || !list.__sr) list.textContent = "";         // browsing is drawn again; search results update in place
     bd.tree = bd.tree || ctTree({ mode: "add", onAdd: function (refs, group) { bdAdd(refs, null, group ? { group: group, toast: true } : null); },
       // a group from the tree is named after the search, or the point the marks started from (B186)
       extraBar: function (bar) { ctPickBar(bd.tree, bar, function () { return bd.q.trim() || (bd.tree.mkState && bd.tree.mkState.name) || "From the tree"; }); },
       onPick: function (key) { srchReveal(side.querySelector(".bd-list"), bd.ss, key); Array.prototype.forEach.call(side.querySelectorAll(".bd-list .sr-row"), function (r) { r.classList.toggle("sel", !!key && r.getAttribute("data-tk") === key); if (key && r.getAttribute("data-tk") === key && (bdSplit() || bd.libView === "list")) r.scrollIntoView({ block: "nearest" }); }); } });
-    if (q2) {
+    if (searching) {
       searchView(list, bd.ss, {
-        lvls: ["s", "t", "c", "p", "st"], limit: 80, redraw: function () { bdSide(); },
+        lvls: BD_LVLS, limit: 80, filters: bd.fbox, redraw: function () { bdSide(); },
         numbers: function (tk) { if (!bdSplit()) { bd.libView = "tree"; bdSide(); } ctSelect(bd.tree, tk); },
         row: function (en, row, main) {
           row.classList.add("bd-row"); row.setAttribute("data-k", refKey(en.ref));
@@ -22730,6 +22768,7 @@ function __detabaseMain() {
       Array.prototype.forEach.call(list.querySelectorAll(".sr-sec"), bdListDnd);
     } else {
       list.__sr = null;
+      if (bd.fpop) searchView(document.createElement("div"), bd.ss, { lvls: BD_LVLS, filters: bd.fbox, redraw: function () { bdSide(); } });   // the groups, for the open window
       libFast(function () {
         allSubjectKeys().filter(function (k) { return courseSubjectOn(k); }).forEach(function (k) {
           var sr = { lvl: "s", id: k }, open = bd.open[refKey(sr)];
@@ -22747,7 +22786,7 @@ function __detabaseMain() {
     }
     if (showTree) {
       var drawTree = function () {
-        ctSetHits(bd.tree, q2 ? bd.ss.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([q2, bd.ss.kind, bd.ss.grp, bd.ss.subj, bd.ss.course, bd.ss.tag]));
+        ctSetHits(bd.tree, searching ? bd.ss.shown.map(function (en) { return en.ref; }) : null, JSON.stringify([q2, bd.ss.kind, bd.ss.grp, bd.ss.subj, bd.ss.course, bd.ss.tag]));
         var bk = bdBoardKeys(!!bd.showAll); bd.tree.board = Object.keys(bk).length ? bk : null;
         ctUpdate(bd.tree, treeBox);
         if (bd.flyBoard) { bd.flyBoard = false; setTimeout(function () { bdTreeBoard(true); }, 30); }
@@ -22756,6 +22795,78 @@ function __detabaseMain() {
       if (fresh && showList) requestAnimationFrame(function () { setTimeout(function () { if (fresh() && treeBox.isConnected && !treeBox.hidden) drawTree(); }, 0); });
       else drawTree();
     }
+  }
+
+  // ---- the Filters window (B220): the search's filter groups, behind a button. Anchored under it on a PC, a
+  // sheet from the bottom on a touch screen or a narrow one. A tap outside or Esc closes it. The filters apply
+  // at once and are remembered on this device (localStorage "detabase.clip.filters"; never synced).
+  var BD_LVLS = ["s", "t", "c", "p", "st"], BD_FKEY = "detabase.clip.filters";
+  function bdFiltersLoad() {
+    if (bd.ss) return;
+    bd.ss = { kind: "all", grp: "", subj: "", course: "", tag: "", closed: {} };
+    bd.fbox = document.createElement("div");
+    bd.fbox.className = "sr-chips";
+    try {
+      var o = JSON.parse(localStorage.getItem(BD_FKEY) || "null") || {};
+      SRCH_FIELDS.forEach(function (f) { if (typeof o[f] === "string") bd.ss[f] = o[f]; });
+      if (BD_LVLS.indexOf(bd.ss.kind) < 0) bd.ss.kind = "all";
+      if (bd.ss.subj && !refExists({ lvl: "s", id: bd.ss.subj })) bd.ss.subj = "";    // gone since
+      if (bd.ss.grp && !groupExists(bd.ss.grp)) bd.ss.grp = "";
+    } catch (e) {}
+  }
+  function bdFiltersShow(side, n) {
+    var btn = side.querySelector(".bd-filt"), badge = btn.querySelector(".bd-fn"), keep = {};
+    btn.classList.toggle("on", !!n);
+    badge.hidden = !n;
+    badge.textContent = n ? "· " + n : "";
+    if (bd.fpop) bd.fpop.querySelector(".bd-fclear").disabled = !n;
+    SRCH_FIELDS.forEach(function (f) { keep[f] = bd.ss[f]; });
+    var s = JSON.stringify(keep);
+    if (s !== bd.fSaved) { bd.fSaved = s; try { localStorage.setItem(BD_FKEY, s); } catch (e) {} }
+  }
+  function bdFiltersOpen(btn) {
+    if (bd.fpop) return;
+    var back = document.createElement("div");
+    back.className = "bd-fback";
+    back.innerHTML = '<div class="bd-fwin" role="dialog" aria-label="Filters"><div class="bd-fhead"><b>Filters</b><button type="button" class="bd-fx" title="close">✕</button></div>' +
+      '<div class="bd-fbody"></div><div class="bd-ffoot"><button type="button" class="bd-fclear btn-quiet">Clear all</button><button type="button" class="bd-fdone btn-primary">Done</button></div></div>';
+    var win = back.firstChild;
+    win.querySelector(".bd-fbody").appendChild(bd.fbox);
+    function place() {
+      var sheet = window.innerWidth < 700 || !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
+      back.classList.toggle("sheet", sheet);
+      win.style.left = win.style.top = win.style.maxHeight = "";
+      if (sheet || !btn.isConnected) return;
+      var r = btn.getBoundingClientRect(), w = win.offsetWidth, x = document.documentElement.dir === "rtl" ? r.right - w : r.left;
+      win.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x)) + "px";
+      win.style.top = r.bottom + 6 + "px";
+      win.style.maxHeight = Math.max(220, window.innerHeight - r.bottom - 18) + "px";
+    }
+    function key(e) { if (e.key === "Escape") close(); }
+    function close() {
+      if (!bd.fpop) return;
+      bd.fpop = null;
+      back.remove();
+      window.removeEventListener("resize", place);
+      window.removeEventListener("hashchange", close);
+      document.removeEventListener("keydown", key);
+      btn.setAttribute("aria-expanded", "false");
+    }
+    back.addEventListener("click", function (e) { if (e.target === back) close(); });
+    win.querySelector(".bd-fx").addEventListener("click", close);
+    win.querySelector(".bd-fdone").addEventListener("click", close);
+    win.querySelector(".bd-fclear").addEventListener("click", function () {
+      SRCH_FIELDS.forEach(function (f) { bd.ss[f] = f === "kind" ? "all" : ""; });
+      bdSide();
+    });
+    window.addEventListener("resize", place);
+    window.addEventListener("hashchange", close);
+    document.addEventListener("keydown", key);
+    bd.fpop = back;
+    document.body.appendChild(back);
+    btn.setAttribute("aria-expanded", "true");
+    bdSide();                                            // the groups and their counts
+    place();
   }
 
   // ---- strategies ----
