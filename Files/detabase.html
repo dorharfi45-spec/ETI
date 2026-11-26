@@ -3169,7 +3169,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B232</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B233</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -19875,11 +19875,14 @@ function __detabaseMain() {
       e.preventDefault();
       ctPointMenu(T, h.method ? { lvl: "p", id: h.method } : h.ref, e.clientX, e.clientY);
     });
-    // desktop: a pinch on the trackpad (or ctrl + wheel) zooms; a plain wheel still scrolls the page
+    // desktop (B233): the mouse wheel zooms the tree at the pointer, so the page does not scroll while over it;
+    // a trackpad pinch (ctrl + wheel) zooms the same way. Lines and pages are turned into pixels first.
     svg.addEventListener("wheel", function (e) {
-      if (!(e.ctrlKey || e.metaKey) || !T.view) return;
+      if (!T.view) return;
       e.preventDefault();
-      var xy = local(e), sz = ctSize(T), nk = ctClampK(T, T.view.k * Math.exp(-e.deltaY * 0.01));
+      var dy = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaMode === 2 ? e.deltaY * 600 : e.deltaY;
+      if (!dy) return;
+      var xy = local(e), sz = ctSize(T), nk = ctClampK(T, T.view.k * Math.exp(-dy * 0.0015));
       var wx = T.view.cx + (xy[0] - sz[0] / 2) / T.view.k, wy = T.view.cy + (xy[1] - sz[1] / 2) / T.view.k;
       ctStop(T);
       T.view = { cx: wx - (xy[0] - sz[0] / 2) / nk, cy: wy - (xy[1] - sz[1] / 2) / nk, k: nk };
