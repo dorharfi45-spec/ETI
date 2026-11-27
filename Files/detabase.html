@@ -913,6 +913,31 @@
   .ls-subj:first-child > .ls-shead, .ls-body > .ls-shead:first-child { margin-top: 0; }
   .ls-shead:hover { color: var(--accent); }
   .em-libbar { margin: 0 0 12px; }
+  /* freshness (B234–B236): the ✓ Practiced control and the main page's Needs review strip */
+  .fr-ctl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .fr-ctl .fr-rate { min-height: var(--tap); padding: 0 12px; }
+  .fr-ctl .fr-rate.on { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .fr-line { font-size: .78rem; color: var(--text-muted); white-space: nowrap; }
+  .fr-line.fr-fresh, .fr-score.fr-fresh { --fr: var(--tan); }
+  .fr-line.fr-fading, .fr-score.fr-fading { --fr: #b45309; }
+  .fr-line.fr-faded, .fr-score.fr-faded { --fr: var(--danger); }
+  .fr-line[class*="fr-f"] { color: var(--fr); font-weight: 600; }
+  @media (prefers-color-scheme: dark) { .fr-line.fr-fading, .fr-score.fr-fading { --fr: #fbbf24; } }
+  .em-fresh:empty { display: none; }
+  .fr-strip { margin: 0 0 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
+  .fr-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .fr-head .btn-quiet { min-height: var(--tap); }
+  .fr-empty, .fr-more { margin: 4px 0 0; font-size: .85rem; }
+  .fr-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px; }
+  .fr-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: var(--tap); padding: 6px 10px; text-align: start; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--bg); color: var(--text-primary); font: inherit; cursor: pointer; }
+  .fr-row:hover { border-color: var(--border-strong); }
+  .fr-score { flex: none; display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 999px; border: 2px solid var(--fr); color: var(--fr); font-weight: 700; font-size: .85rem; }
+  .fr-what { display: flex; flex-direction: column; min-width: 0; }
+  .fr-what b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fr-what small { color: var(--text-muted); font-size: .74rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fr-sub { margin: 0 0 16px; display: grid; gap: 6px; }
+  .fr-subhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .fr-cards { display: grid; gap: 6px; padding-inline-start: 22px; }
   .sl-head { margin: 22px 0 0; font-size: 1.1rem; }
   .cc-credit { margin-top: 18px; font-size: .74rem; }
   .aw .lw-box { max-width: 620px; }
@@ -3169,7 +3194,7 @@
   <div class="em-head">
     <h2>Methods &amp; concepts</h2>
     <button type="button" id="psNewBtn" class="btn-primary">＋ New asset</button>
-    <span id="buildTag" title="build marker — tell Claude what this says">B233</span>
+    <span id="buildTag" title="build marker — tell Claude what this says">B234</span>
   </div>
   <div id="etiMain" class="eti-main"></div>
 </div>
@@ -13819,6 +13844,7 @@ function __detabaseMain() {
       acts.appendChild(actBtn("↺ Reset to original", "delete your changes to this card", function () { biReset(ref.id); }));
     }
     var bd = usedBadge(ref); if (bd) acts.appendChild(bd);
+    if (!editing) acts.appendChild(frPracticeEl(ref, renderSubPage));
     acts.appendChild(actBtn("✎ Properties", "everything about this card", function () { assetWindow(ref); }));
     acts.appendChild(dotsBtn(ref));
     var spec = { mem: "k|" + ref.id, title: cardLabel(ref.id), redraw: renderSubPage, filters: [cardPartFilter()] };
@@ -14001,6 +14027,7 @@ function __detabaseMain() {
     acts.appendChild(actBtn("📋 Summary", "every card of this concept on one page", function () { openSub("csummary", tref.id); }));
     if (cards.length) acts.appendChild(selectBtn("t|" + tref.id, "cards to give them a type"));
     acts.appendChild(actBtn("＋ New asset", "a card in this concept, or anything else", function () { newAssetHere("c", { lvl: "t", id: tref.id }); }, "btn-primary"));
+    acts.appendChild(frPracticeEl(tref, renderSubPage));
     acts.appendChild(actBtn("✎ Properties", "everything about this concept", function () { assetWindow(tref); }));
     var bd = usedBadge(tref); if (bd) acts.appendChild(bd);
     acts.appendChild(dotsBtn(tref));
@@ -15773,6 +15800,7 @@ function __detabaseMain() {
     meta.className = "ps-meta";
     meta.appendChild(kindSwitchEl(pg.kind, function (k) { psSetKind(pg, k); }));
     if (!pg.kind) meta.insertAdjacentHTML("beforeend", '<span class="ps-needs">Needs a kind</span>');
+    meta.appendChild(frPracticeEl({ lvl: "p", id: pg.id }, renderPsPane));
     head.appendChild(meta);
     $("psBack").textContent = "‹ " + subjectName(pg.subject) + " · Methods";
     // its subject (the one whose Methods page lists it) and the subjects it is also connected to (the tree only)
@@ -18173,7 +18201,7 @@ function __detabaseMain() {
   // libRev(): a number that changes when anything a derived picture of the library depends on changed: every
   // key of the store but those in LIB_NOT, the course switch, and the docs of elements and methods
   // (libDocTouched). assetIndex keeps what it built for as long as that number stands.
-  var LIB_NOT = { ui: 1, planner: 1, savedAt: 1, coath: 1, notes: 1, pdfs: 1, canvases: 1 };
+  var LIB_NOT = { ui: 1, planner: 1, savedAt: 1, coath: 1, notes: 1, pdfs: 1, canvases: 1, practice: 1 };   // practice (B234): freshness only, never the library
   var libSeen = {}, libN = 0, libDocs = 0, libDocsSeen = 0;
   function libFast(fn) {
     if (LF) return fn();
@@ -20132,6 +20160,8 @@ function __detabaseMain() {
     if (!host.querySelector(".em-tree")) etiMainMake(host);
     var input = host.querySelector(".em-search");
     if (document.activeElement !== input) input.value = mainQ;
+    var fr = host.querySelector(".em-fresh");
+    try { fr.replaceChildren(frStripEl()); } catch (e) { if (window.console) console.error("frStripEl:", e); }
     mainResults(host.querySelector(".em-results"));
     mainTreeHits();
     ctUpdate(mainTree, host.querySelector(".em-tree"));
@@ -20139,7 +20169,7 @@ function __detabaseMain() {
   }
   function etiMainMake(host) {
     host.innerHTML =
-      '<div class="cc-bar em-libbar"></div>' +
+      '<div class="cc-bar em-libbar"></div><div class="em-fresh"></div>' +
       '<div class="em-searchrow"><input type="search" class="em-search" placeholder="Search by name — subjects, concepts, cards, methods, study sheets, strategies" autocomplete="off">' +
       '<button type="button" class="em-clear" title="clear">✕</button></div>' +
       '<div class="em-res"><div class="em-results"></div></div><div class="em-tree"></div>';
@@ -21550,6 +21580,259 @@ function __detabaseMain() {
       inp.addEventListener("keydown", function (e) { if (e.key === "Enter") add(); });
     }
     draw();
+    box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
+  }
+
+  // ============================================================
+  // FRESHNESS (B234) — how fresh each card is in memory; what faded bubbles up (plan 2026-11-27-freshness)
+  //   store.practice = { "<YYYY-MM-DD>|<device>|c|<card id>": { r: 1 Hard | 2 OK | 3 Easy, at: ms } }
+  //   One entry per card, day and device: only this device ever writes its own keys, so two devices never
+  //   change the same entry and sync never has to ask. A second practice the same day overwrites it.
+  //   Strength (S, days) and the score are never saved: frCards() replays the log, so FR can be re-tuned
+  //   and every past practice counts again under the new numbers.
+  //   score after t days = 100 / (1 + t / (9·S)) — 100 just after, 90 after S days, 50 after 9·S days
+  //   first practice: S = FR.s0[r]; later: Hard → S·FR.hard, OK / Easy → S·(1 + FR.grow·g·(1 − R))
+  // ============================================================
+  var FR = { s0: { 1: 1, 2: 3, 3: 6 }, g: { 2: 1, 3: 1.4 }, grow: 9, hard: 0.5, minS: 1, maxS: 365, fresh: 85, fade: 60, strip: 6 };
+  var FR_RATE = { 1: "Hard", 2: "OK", 3: "Easy" };
+  var frDev = (function () {
+    var k = "detabase.device", v = null;
+    try { v = localStorage.getItem(k); } catch (e) {}
+    if (!v) { v = "d" + Math.random().toString(36).slice(2, 8); try { localStorage.setItem(k, v); } catch (e) {} }
+    return v;
+  })();
+  function frDay(ms) { var d = new Date(ms == null ? Date.now() : ms); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function frLog() { return store.practice || {}; }
+  function frKey(cardId, ms) { return frDay(ms) + "|" + frDev + "|c|" + cardId; }
+  // the fraction still remembered after t days at strength S
+  function frRet(t, S) { return 1 / (1 + Math.max(0, t) / (9 * S)); }
+  // every practiced card → { S, last, n } (replayed in time order); memo until the log changes
+  var frMemo = { sig: null, map: null };
+  function frCards() {
+    var log = frLog(), keys = Object.keys(log), sig = keys.length, by = {};
+    keys.forEach(function (k) { var v = log[k]; sig += "," + (v && v.at) + (v && v.r); });
+    if (frMemo.sig === sig) return frMemo.map;
+    keys.forEach(function (k) {
+      var v = log[k], i = k.indexOf("|c|"); if (i < 0 || !v || !v.at) return;
+      var id = k.slice(i + 3);
+      (by[id] = by[id] || []).push(v);
+    });
+    var map = {};
+    Object.keys(by).forEach(function (id) {
+      var S = null, last = 0;
+      by[id].sort(function (a, b) { return a.at - b.at; }).forEach(function (v) {
+        var r = FR.s0[v.r] ? v.r : 2;
+        if (S == null) S = FR.s0[r];
+        else if (r === 1) S = Math.max(FR.minS, S * FR.hard);
+        else S = Math.min(FR.maxS, S * (1 + FR.grow * FR.g[r] * (1 - frRet((v.at - last) / 864e5, S))));
+        last = v.at;
+      });
+      map[id] = { S: S, last: last, n: by[id].length };
+    });
+    frMemo = { sig: sig, map: map };
+    return map;
+  }
+  // a card's freshness now: { score 0–100, S, last, days: until it fades below FR.fresh } — or null (not started)
+  function frCard(cardId, now) {
+    var c = frCards()[cardId]; if (!c) return null;
+    var t = ((now || Date.now()) - c.last) / 864e5;
+    return { score: 100 * frRet(t, c.S), S: c.S, last: c.last, n: c.n, days: Math.max(0, 9 * c.S * (100 / FR.fresh - 1) - t) };
+  }
+  function frBand(score) { return score >= FR.fresh ? "fresh" : score >= FR.fade ? "fading" : "faded"; }
+  // the cards a practice of something counts for: a card itself, every card of a concept, a method's cards
+  function frCardsOf(ref) {
+    var out = [], seen = {};
+    function add(id) { if (!seen[id] && refExists({ lvl: "c", id: id }) && !isHiddenRef({ lvl: "c", id: id })) { seen[id] = 1; out.push(id); } }
+    if (ref.lvl === "c") add(ref.id);
+    else if (ref.lvl === "t") libKids(ref).forEach(function (c) { if (courseIs(c)) add(c.id); });
+    else if (ref.lvl === "p") methodCards(ref.id).forEach(function (x) {
+      if (x.ref.lvl === "c") add(x.ref.id); else libKids(x.ref).forEach(function (c) { if (courseIs(c)) add(c.id); });
+    });
+    return out;
+  }
+  // practice now (r = 1 Hard, 2 OK, 3 Easy): one entry per card for today on this device; returns what it replaced (for Undo)
+  function frRecord(ids, r) {
+    if (!store.practice) {           // the first practice ever: keep the store as it was, once
+      try { window.DBX.put("__pre_practice", { store: JSON.stringify(mainSnapshot()), ts: Date.now() }); } catch (e) {}
+      store.practice = {};
+    }
+    var now = Date.now(), was = {};
+    ids.forEach(function (id) {
+      var k = frKey(id, now), old = store.practice[k];
+      was[k] = old ? { r: old.r, at: old.at } : null;
+      // changing the rating later the same day keeps the time it was practiced
+      store.practice[k] = { r: r, at: old && old.r !== r && now - old.at < 864e5 ? old.at : now };
+    });
+    saveStore();
+    return was;
+  }
+  function frRestore(was) {
+    Object.keys(was).forEach(function (k) { if (was[k]) store.practice[k] = was[k]; else delete store.practice[k]; });
+    saveStore();
+  }
+  // this device's rating today for a list of cards: the one they all share, or 0
+  function frToday(ids) {
+    var log = frLog(), r = null;
+    for (var i = 0; i < ids.length; i++) { var v = log[frKey(ids[i])]; if (!v) return 0; if (r == null) r = v.r; else if (r !== v.r) return 0; }
+    return r || 0;
+  }
+  // a concept or subject: the mean of its practiced cards' scores, and how many are faded / not started
+  function frGroup(cardIds, now) {
+    var sum = 0, n = 0, faded = 0, fading = 0, none = 0;
+    cardIds.forEach(function (id) {
+      var f = frCard(id, now);
+      if (!f) { none++; return; }
+      sum += f.score; n++;
+      if (f.score < FR.fade) faded++; else if (f.score < FR.fresh) fading++;
+    });
+    return { score: n ? sum / n : null, practiced: n, faded: faded, fading: fading, none: none, total: cardIds.length };
+  }
+  function frDaysText(d) { d = Math.round(d); return d <= 0 ? "now" : d === 1 ? "in 1 day" : "in " + d + " days"; }
+  // how long ago, in calendar days
+  function frAgoText(ms) { var a = new Date(ms), b = new Date(); var d = Math.round((new Date(b.getFullYear(), b.getMonth(), b.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5); return d <= 0 ? "practiced today" : d === 1 ? "practiced yesterday" : "practiced " + d + " days ago"; }
+  var FR_BAND = { fresh: "Fresh", fading: "Fading", faded: "Needs review" };
+  // one card: "Fresh 92 · fades in 6 days" / "Fading 71 · practiced 9 days ago"
+  function frCardText(f) { return FR_BAND[frBand(f.score)] + " " + Math.round(f.score) + " · " + (f.score >= FR.fresh ? "fades " + frDaysText(f.days) : frAgoText(f.last)); }
+  // ---- "✓ Practiced" (B235): on a card, a concept and a method page. One tap = OK; Hard / Easy change it. ----
+  function frPracticeEl(ref, redraw) {
+    var box = document.createElement("span");
+    box.className = "fr-ctl";
+    var ids = frCardsOf(ref);
+    if (!ids.length) return box;                 // a method with no cards, an empty concept: nothing to practice
+    var today = frToday(ids);
+    function act(r) {
+      var was = frRecord(ids, r);
+      redraw();
+      libToast((ids.length > 1 ? "Practiced " + ids.length + " cards" : "Practiced") + " · " + FR_RATE[r], { label: "Undo", run: function () { frRestore(was); redraw(); } });
+    }
+    box.appendChild(actBtn(today ? "✓ Practiced today" : "✓ Practiced",
+      ids.length > 1 ? "you practiced this — counts for its " + ids.length + " cards" : "you practiced this card — it stays fresh longer each time",
+      function () { act(today || 2); }, today ? "btn-quiet fr-done" : "btn-primary"));
+    if (today) [1, 2, 3].forEach(function (r) {
+      var b = actBtn(FR_RATE[r], "how it went today", function () { if (r !== today) act(r); }, "btn-quiet fr-rate" + (r === today ? " on" : ""));
+      b.__now = true;
+      box.appendChild(b);
+    });
+    // where it stands: a card's own score, or the mean of a concept's / method's practiced cards
+    var line = document.createElement("span");
+    line.className = "fr-line";
+    if (ids.length === 1) {
+      var f = frCard(ids[0]);
+      if (f) { line.classList.add("fr-" + frBand(f.score)); line.textContent = frCardText(f); }
+      else line.textContent = "Not started";
+    } else {
+      var g = frGroup(ids);
+      if (g.practiced) {
+        line.classList.add("fr-" + frBand(g.score));
+        line.textContent = FR_BAND[frBand(g.score)] + " " + Math.round(g.score) + " · " + g.practiced + " of " + g.total + " cards practiced" + (g.faded ? " · " + g.faded + " need review" : "");
+      } else line.textContent = "Not started · " + g.total + " cards";
+    }
+    box.appendChild(line);
+    return box;
+  }
+  // ---- what needs review (B236): the main page's strip and the full list ----
+  // Every subject → concepts → cards on the course switch. A concept where at least half of its practiced
+  // cards (two or more) faded is one row instead of its cards; a subject where at least half of its practiced
+  // concepts (two or more) faded likewise. → { rows: [{ ref, score, note }] lowest first, subjects: [...] }
+  function frReview(now) {
+    now = now || Date.now();
+    return libFast(function () {
+      var rows = [], subjects = [];
+      allSubjectKeys().forEach(function (sk) {
+        var sref = { lvl: "s", id: sk };
+        if (isHiddenRef(sref) || !courseIs(sref)) return;
+        var cons = [], all = [];
+        libKids(sref).forEach(function (t) {
+          if (!courseIs(t)) return;
+          var ids = libKids(t).filter(function (c) { return courseIs(c); }).map(function (c) { return c.id; });
+          var g = frGroup(ids, now), cardRows = [];
+          ids.forEach(function (id) {
+            var f = frCard(id, now);
+            if (f && f.score < FR.fresh) cardRows.push({ ref: { lvl: "c", id: id }, score: f.score, note: frAgoText(f.last) });
+          });
+          all = all.concat(ids);
+          cons.push({ ref: t, g: g, cardRows: cardRows, whole: g.practiced >= 2 && g.faded * 2 >= g.practiced });
+        });
+        var sg = frGroup(all, now), done = cons.filter(function (c) { return c.g.practiced; });
+        var fadedCons = done.filter(function (c) { return c.g.score < FR.fade; });
+        subjects.push({ key: sk, g: sg, cons: cons });
+        if (done.length >= 2 && fadedCons.length * 2 >= done.length) {
+          rows.push({ ref: sref, score: sg.score, note: fadedCons.length + " of " + done.length + " practiced concepts need review" });
+          return;
+        }
+        cons.forEach(function (c) {
+          if (c.whole) rows.push({ ref: c.ref, score: c.g.score, note: c.g.faded + " of " + c.g.practiced + " practiced cards need review" });
+          else rows = rows.concat(c.cardRows);
+        });
+      });
+      rows.sort(function (a, b) { return a.score - b.score; });
+      return { rows: rows, subjects: subjects };
+    });
+  }
+  function frScoreEl(score) {
+    var s = document.createElement("span");
+    s.className = "fr-score fr-" + frBand(score);
+    s.textContent = Math.round(score);
+    return s;
+  }
+  // one row: score, name, where it is, why; a tap opens it
+  function frRowEl(row) {
+    var b = actBtn("", "open it", function () { var o = b.closest(".lw-overlay"); if (o) o.remove(); openRef(row.ref); }, "fr-row");   // from the full list: it closes
+    b.appendChild(frScoreEl(row.score));
+    var t = document.createElement("span"); t.className = "fr-what";
+    t.innerHTML = '<b></b><small></small>';
+    t.firstChild.textContent = refName(row.ref);
+    var where = assetCrumbs(row.ref).join(" › ");
+    t.lastChild.textContent = (row.ref.lvl === "s" ? "Subject" : row.ref.lvl === "t" ? "Concept" : "Card") + (where ? " · " + where : "") + " · " + row.note;
+    b.appendChild(t);
+    return b;
+  }
+  function frStripEl() {
+    var box = document.createElement("section");
+    box.className = "fr-strip";
+    var rv = frReview(), due = rv.rows.filter(function (r) { return r.score < FR.fresh; });
+    var any = rv.subjects.some(function (s) { return s.g.practiced; });
+    var head = document.createElement("div"); head.className = "fr-head";
+    head.innerHTML = '<b>Needs review</b>';
+    if (any) head.appendChild(actBtn("Show all", "every subject, concept and card you practiced, by freshness", openFreshness, "btn-quiet"));
+    box.appendChild(head);
+    if (!any) { box.insertAdjacentHTML("beforeend", '<p class="muted fr-empty">Nothing practiced yet. Tap “✓ Practiced” on a card, a concept or a method after you study it; what fades shows up here.</p>'); return box; }
+    if (!due.length) { box.insertAdjacentHTML("beforeend", '<p class="muted fr-empty">Everything you practiced is fresh. ✓</p>'); return box; }
+    var list = document.createElement("div"); list.className = "fr-list";
+    due.slice(0, FR.strip).forEach(function (r) { list.appendChild(frRowEl(r)); });
+    box.appendChild(list);
+    if (due.length > FR.strip) box.insertAdjacentHTML("beforeend", '<p class="muted fr-more">' + (due.length - FR.strip) + ' more fading</p>');
+    return box;
+  }
+  // the full list: each subject with its score, then its concepts and practiced cards, lowest first
+  function openFreshness() {
+    var box = ovOpen("Freshness", { wide: true });
+    var rv = frReview();
+    box.body.innerHTML = '<p class="lw-hint">100 = just practiced. A score falls a little each day and slower each time you practice. Below ' + FR.fresh + ' it is fading, below ' + FR.fade + ' it needs review.</p>';
+    var subs = rv.subjects.filter(function (s) { return s.g.practiced; }).sort(function (a, b) { return a.g.score - b.g.score; });
+    subs.forEach(function (s) {
+      var sec = document.createElement("section"); sec.className = "fr-sub";
+      var h = document.createElement("div"); h.className = "fr-subhead";
+      h.appendChild(frScoreEl(s.g.score));
+      var n = document.createElement("b"); n.textContent = subjectName(s.key); h.appendChild(n);
+      var c = document.createElement("small"); c.className = "muted";
+      c.textContent = s.g.practiced + " practiced" + (s.g.faded ? " · " + s.g.faded + " need review" : "") + (s.g.none ? " · " + s.g.none + " not started" : "");
+      h.appendChild(c);
+      sec.appendChild(h);
+      s.cons.filter(function (x) { return x.g.practiced; }).sort(function (a, b) { return a.g.score - b.g.score; }).forEach(function (x) {
+        sec.appendChild(frRowEl({ ref: x.ref, score: x.g.score, note: x.g.practiced + " of " + x.g.total + " cards practiced" + (x.g.faded ? " · " + x.g.faded + " need review" : "") }));
+        var cards = libKids(x.ref).map(function (r) { var f = frCard(r.id); return f && courseIs(r) ? { ref: r, score: f.score, note: f.score >= FR.fresh ? "fades " + frDaysText(f.days) : frAgoText(f.last) } : null; })
+          .filter(Boolean).sort(function (a, b) { return a.score - b.score; });
+        if (cards.length > 1 || (cards.length && x.g.total > 1)) {
+          var sub = document.createElement("div"); sub.className = "fr-cards";
+          cards.forEach(function (r) { sub.appendChild(frRowEl(r)); });
+          sec.appendChild(sub);
+        }
+      });
+      box.body.appendChild(sec);
+    });
+    var untouched = rv.subjects.filter(function (s) { return !s.g.practiced && s.g.total; }).length;
+    if (untouched) box.body.insertAdjacentHTML("beforeend", '<p class="muted">' + untouched + ' subjects not started.</p>');
     box.buttons([{ label: "Done", primary: true, right: true, run: function () { box.close(true); } }]);
   }
 
